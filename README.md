@@ -10,3 +10,7 @@ Access the MEGAN Ultimate Edition here: https://computomics.com/megan
 
 Please visit the MEGAN Community Website for help: http://megan.informatik.uni-tuebingen.de
 
+You can run the program by typing "ant run" in the antbuild directory.
+
+This project depends on https://github.com/danielhuson/jloda
+

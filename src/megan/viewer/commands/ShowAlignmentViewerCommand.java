@@ -1,0 +1,99 @@
+/*
+ *  Copyright (C) 2016 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package megan.viewer.commands;
+
+import jloda.graph.Node;
+import jloda.gui.commands.ICommand;
+import jloda.util.ResourceManager;
+import jloda.util.parse.NexusStreamParser;
+import megan.alignment.AlignmentViewer;
+import megan.commands.CommandBase;
+import megan.core.Director;
+import megan.core.Document;
+import megan.viewer.ClassificationViewer;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+public class ShowAlignmentViewerCommand extends CommandBase implements ICommand {
+    public String getSyntax() {
+        return "show window=aligner;";
+    }
+
+    public void apply(NexusStreamParser np) throws Exception {
+        np.matchIgnoreCase("show window=aligner");
+        np.matchIgnoreCase(";");
+
+        final Director dir = getDir();
+        final Document doc = dir.getDocument();
+        final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
+
+        if (classificationViewer.getSelectedNodes().size() > 0) {
+            for (Node v = classificationViewer.getSelectedNodes().getFirstElement(); v != null; v = classificationViewer.getSelectedNodes().getNextElement(v)) {
+                if (classificationViewer.getNodeData(v).getCountAssigned() > 0) {
+                    int id = (Integer) v.getInfo();
+                    String name = classificationViewer.getLabel(v);
+                    AlignmentViewer alignerViewer = new AlignmentViewer(dir);
+                    dir.addViewer(alignerViewer);
+                    alignerViewer.getBlast2Alignment().loadData(classificationViewer.getClassName(), id, name, doc.getProgressListener());
+                    alignerViewer.setVisible(true);
+                    alignerViewer.toFront();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void actionPerformed(ActionEvent event) {
+        execute("show window=aligner;");
+    }
+
+    public boolean isApplicable() {
+        final Document doc = getDir().getDocument();
+        final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
+        return classificationViewer != null && doc.getMeganFile().hasDataConnector() && classificationViewer.getSelectedNodeIds().size() == 1;
+        // && (doc.getBlastMode().equals(BlastMode.BlastX) || (doc.getBlastMode().equals(BlastMode.BlastN) || (doc.getBlastMode().equals(BlastMode.BlastP))));
+    }
+
+    final public static String NAME = "Show Alignment...";
+
+    public String getName() {
+        return NAME;
+    }
+
+    public String getDescription() {
+        return "Show alignment of reads to a specified reference sequence";
+    }
+
+    public ImageIcon getIcon() {
+        return ResourceManager.getIcon("Alignment16.gif");
+    }
+
+    public boolean isCritical() {
+        return true;
+    }
+
+    public KeyStroke getAcceleratorKey() {
+        return KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+    }
+}
+
+

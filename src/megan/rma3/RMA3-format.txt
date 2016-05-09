@@ -1,0 +1,15 @@
+RMA3 file format:
+
+fileHeader
+matchesStart
+    matches
+matchesFooter  -> contains number of reads and matches, and definitions of query lines and match lines
+classificationStart
+    classifications
+classificationsFooter
+auxStart
+    auxData
+auxFooter
+fileFooter
+
+fileFooter contains pointers to all blocks

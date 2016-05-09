@@ -1,0 +1,421 @@
+/*
+ *  Copyright (C) 2015 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package megan.algorithms;
+
+
+import jloda.util.ProgramProperties;
+import megan.classification.Classification;
+import megan.classification.ClassificationManager;
+import megan.classification.IdMapper;
+import megan.classification.data.ClassificationFullTree;
+import megan.classification.data.IntIntMap;
+import megan.classification.data.Name2IdMap;
+import megan.daa.connector.MatchBlockDAA;
+import megan.data.IMatchBlock;
+import megan.data.IReadBlock;
+
+import java.util.*;
+
+/**
+ * computes the assignment for a read, using the Weighted LCA algorithm
+ * This is essentially the same algorithm that is used in MetaScope
+ *
+ * Daniel Huson, 3.2016
+ */
+public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
+    private final String cName;
+    private final boolean cNameIsTaxonomy;
+    private final ClassificationFullTree fullTree;
+    private final Name2IdMap name2IdMap;
+    private final IdMapper idMapper;
+
+    private final int[] refId2weight;
+    private final Map<String, Integer> ref2weight; // map reference sequence to number of reads associated with it
+    private final IntIntMap taxId2SpeciesId;
+
+    private final boolean useIdentityFilter;
+    private final float percentToCover;
+    private final boolean allowBelowSpeciesAssignment = ProgramProperties.get("allowWeightedLCABelowSpecies", false);
+
+    private final Map<Character, Integer> ch2weight = new HashMap<>(Character.MAX_VALUE, 1f);
+
+    private WeightedAddress[] addressingArray = new WeightedAddress[0];
+
+    private AssignmentUsingWeightedLCA() {
+        cName = null;
+        cNameIsTaxonomy = false;
+        fullTree = null;
+        name2IdMap = null;
+        idMapper = null;
+        refId2weight = null;
+        ref2weight = null;
+        taxId2SpeciesId = null;
+        useIdentityFilter = false;
+        percentToCover = 70;
+    }
+
+    /**
+     * constructor
+     * @param cName
+     * @param refId2Weight
+     * @param ref2weight
+     * @param percentToCover
+     */
+    public AssignmentUsingWeightedLCA(final String cName, final int[] refId2Weight, final Map<String, Integer> ref2weight, final IntIntMap taxId2SpeciesId, final float percentToCover, final boolean useIdentityFilter) {
+        this.cName = cName;
+        this.useIdentityFilter = useIdentityFilter;
+        fullTree = ClassificationManager.get(cName, true).getFullTree();
+        idMapper = ClassificationManager.get(cName, true).getIdMapper();
+        name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
+        cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
+        this.refId2weight = refId2Weight;
+        this.ref2weight = ref2weight;
+        this.taxId2SpeciesId = taxId2SpeciesId;
+
+        addressingArray = resizeArray(addressingArray, 1000);
+
+        this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
+    }
+
+    /**
+     * determine the taxon id of a read from its matches
+     *
+     * @param activeMatches
+     * @param readBlock
+     * @return taxon id
+     */
+    public int computeId(final BitSet activeMatches, final IReadBlock readBlock) {
+        if (readBlock.getNumberOfMatches() == 0)
+            return IdMapper.NOHITS_ID;
+
+        // compute addresses of all hit taxa:
+        if (activeMatches.cardinality() > 0) {
+            int arrayLength = 0;
+
+            boolean hasDisabledMatches = false;
+
+            // collect the addresses of all non-disabled taxa:
+            for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
+                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                if (taxId > 0) {
+                    if (!idMapper.isDisabled(taxId)) {
+                        final String address = fullTree.getAddress(taxId);
+                        if (address != null) {
+                            if (arrayLength == addressingArray.length)
+                                AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+
+                            if (ref2weight != null) {
+                                final String ref = matchBlock.getTextFirstWord();
+                                Integer weight = ref2weight.get(ref);
+                                if (weight == null)
+                                    weight = 1;
+                                addressingArray[arrayLength++].set(address, weight);
+
+                            } else {
+                                final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
+                                int weight = Math.max(1, refId2weight[refId]);
+                                addressingArray[arrayLength++].set(address, weight);
+                            }
+                        }
+                    } else
+                        hasDisabledMatches = true;
+                }
+            }
+
+            // if there only matches to disabled taxa, then use them:
+            if (arrayLength == 0 && hasDisabledMatches) {
+                for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
+                    final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                    int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                    if (taxId > 0) {
+                        if (!idMapper.isDisabled(taxId)) {
+                            final String address = fullTree.getAddress(taxId);
+                            if (address != null) {
+                                if (arrayLength == addressingArray.length)
+                                    AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+
+                                if (ref2weight != null) {
+                                    final String ref = matchBlock.getTextFirstWord();
+                                    Integer weight = ref2weight.get(ref);
+                                    if (weight == null)
+                                        weight = 1;
+                                    addressingArray[arrayLength++].set(address, weight);
+
+                                } else {
+                                    final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
+                                    int weight = Math.max(1, refId2weight[refId]);
+                                    addressingArray[arrayLength++].set(address, weight);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // compute LCA using addresses:
+            if (arrayLength > 0) {
+                final String address = computeWeightedLCA(percentToCover, addressingArray, arrayLength);
+                Integer id = fullTree.getAddress2Id(address);
+                if (id == null) {
+                    System.err.println("WCA: internal error, address not mapped");
+                } else if (id > 0) {
+                    if (useIdentityFilter) {
+                        return AssignmentUsingLCAForTaxonomy.adjustByPercentIdentity(id, activeMatches, readBlock, fullTree, name2IdMap);
+                    }
+                    if (allowBelowSpeciesAssignment)
+                        return id;
+                    int species = taxId2SpeciesId.get(id);
+                    return species > 0 ? species : id;
+                }
+            }
+        }
+
+        // although we had some hits, couldn't make an assignment
+        return IdMapper.UNASSIGNED_ID;
+    }
+
+    /**
+     * compute the address of the weighted LCA
+     *
+     * @param percentToCover
+     * @param array
+     * @param origLength
+     * @return address or ""
+     */
+    private String computeWeightedLCA(final float percentToCover, final WeightedAddress[] array, final int origLength) {
+        if (origLength == 0)
+            return "";
+        // sort:
+        Arrays.sort(array, 0, origLength, new Comparator<WeightedAddress>() {
+            @Override
+            public int compare(WeightedAddress a, WeightedAddress b) {
+                return a.address.compareTo(b.address);
+            }
+        });
+        // setup links:
+        for (int i = 0; i < origLength - 1; i++) {
+            array[i].next = array[i + 1];
+        }
+        array[origLength - 1].next = null;
+
+        final WeightedAddress head = new WeightedAddress(null, 0); // head.next points to first element of list, but head is NOT the first element
+        head.next = array[0];
+
+        int length = mergeIdentical(head, origLength);
+
+        int totalWeight = getTotalWeight(head);
+        int weightToCover = ((int) Math.ceil((totalWeight / 100.0) * percentToCover));
+
+        for (int pos = 0; ; pos++) { // look at next letter after current prefix
+            ch2weight.clear();
+            // determine weights for each letter at pos, remove any addresses that equalOverShorterOfBoth the prefix:
+            {
+                WeightedAddress prev = head; // we are using a single-linked list, so need to update prev.next to delete current
+                for (WeightedAddress current = head.next; current != null; current = current.next) {
+                    final String address = current.address;
+                    if (pos == address.length()) { // current has run out of symbols
+                        if (--length == 0) // run out of addresses, return  prefix
+                            return address.substring(0, pos);
+                        prev.next = current.next;
+                        weightToCover -= current.weight;
+                        // this node lies on route to best node, so it is covered and its weight can  be removed from weightToCover
+                        // Note: prev does not change
+                    } else {
+                        final char ch = address.charAt(pos);
+                        final Integer count = ch2weight.get(ch);
+                        ch2weight.put(ch, count == null ? current.weight : count + current.weight);
+                        prev = current;
+                    }
+                }
+            }
+
+            // determine the heaviest character
+            // no way that weight can be null
+            char bestCh = 0;
+            int bestCount = 0;
+            for (char ch : ch2weight.keySet()) {
+                int weight = ch2weight.get(ch);
+                if (weight > bestCount) {
+                    bestCh = ch;
+                    bestCount = weight;
+                }
+            }
+
+            if (bestCount < weightToCover) // best count no longer good enough, return current prefix
+                return head.next.getAddress().substring(0, pos);
+
+            // remove all that do not match the heaviest character:
+            {
+                WeightedAddress prev = head;
+                for (WeightedAddress current = head.next; current != null; current = current.next) {
+                    final String address = current.address;
+                    if (address.charAt(pos) != bestCh) { // remove the current from the list
+                        if (--length == 0)
+                            return address.substring(0, pos);
+                        prev.next = current.next;
+                        // Note: prev does not change
+                    } else
+                        prev = current;
+                }
+            }
+        }
+    }
+
+    /**
+     * merge identical entries, adding their weights. After running this, still have start=0
+     *
+     * @param length
+     * @return new length
+     */
+    private static int mergeIdentical(final WeightedAddress headPtr, int length) {
+        for (WeightedAddress a = headPtr.next; a != null; a = a.next) {
+            for (WeightedAddress b = a.next; b != null; b = b.next) {
+                if (a.getAddress().equals(b.getAddress())) {
+                    if (false) {
+                        a.weight += b.weight;
+                    } else {
+                        if (b.weight > a.weight) // keep the maximum weight, NOT the sum
+                            a.weight = b.weight;
+                    }
+                    a.next = b.next;
+                    length--;
+                } else
+                    break;
+            }
+        }
+        return length;
+    }
+
+    /**
+     * compute total weight.
+     *
+     * @param head
+     * @return sum of weights
+     */
+    private static int getTotalWeight(final WeightedAddress head) {
+        int totalWeight = 0;
+        for (WeightedAddress a = head.next; a != null; a = a.next) {
+            totalWeight += a.weight;
+        }
+        return totalWeight;
+    }
+
+    /**
+     * converts an address to numbers of easier display
+     *
+     * @param address
+     * @return as numbers
+     */
+    public static String toNumbers(String address) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < address.length(); i++)
+            buf.append(String.format("%d.", (int) address.charAt(i)));
+        return buf.toString();
+    }
+
+    /**
+     * utility for resizing an array of weighted addresses
+     *
+     * @param array
+     * @param size
+     * @return new array
+     */
+    public static WeightedAddress[] resizeArray(WeightedAddress[] array, int size) {
+        WeightedAddress[] result = new WeightedAddress[size];
+        System.arraycopy(array, 0, result, 0, array.length);
+        for (int i = array.length; i < result.length; i++)
+            result[i] = new WeightedAddress();
+        return result;
+    }
+
+    /**
+     * address and weight
+     */
+    public static class WeightedAddress {
+        private String address;
+        private int weight;
+        private WeightedAddress next;
+
+        /**
+         * default constructor
+         */
+        public WeightedAddress() {
+        }
+
+        /**
+         * constructor
+         *
+         * @param address
+         * @param weight
+         */
+        public WeightedAddress(String address, int weight) {
+            this.address = address;
+            this.weight = weight;
+        }
+
+        public void set(String address, int weight) {
+            this.address = address;
+            this.weight = weight;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+        public String toString() {
+            return "[" + toNumbers(address) + "," + weight + "]";
+        }
+    }
+
+    public static void main(String[] args) {
+        List<WeightedAddress> list = new LinkedList<>();
+
+        list.add(new WeightedAddress("a", 0));
+        list.add(new WeightedAddress("aa", 0));
+        list.add(new WeightedAddress("aaa", 20));
+        list.add(new WeightedAddress("aaaa", 20));
+        list.add(new WeightedAddress("aaab", 10));
+        list.add(new WeightedAddress("aaab", 10));
+
+        list.add(new WeightedAddress("aaba", 5));
+        list.add(new WeightedAddress("aaba", 5));
+        list.add(new WeightedAddress("aabb", 5));
+        list.add(new WeightedAddress("aabc", 5));
+
+        list.add(new WeightedAddress("ab", 20));
+
+        WeightedAddress[] array = list.toArray(new WeightedAddress[list.size()]);
+
+        System.err.println("GOT: " + (new AssignmentUsingWeightedLCA()).computeWeightedLCA(75, array, array.length));
+    }
+}

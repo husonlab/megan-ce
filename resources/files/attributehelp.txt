@@ -1,0 +1,92 @@
+<body>
+<font face=\"Arial\">
+<ul>
+
+
+<li><b>Endospores</b>
+<ul>
+	<li>"Yes" if the organism produces endospores</li>
+	<li>"No" if it does not</li>
+	<li>"" if unknown</li> 
+</ul>
+</li>
+
+<li><b>Gram stain</b>
+<ul>
+<li>"+" (Positive)</li>
+<li>"-" (Negative)</li>
+<li>"" (Unknown), if no gram stain has been performed or no information about the staining results are known.
+</ul>
+</li>
+ 
+<li><b>Habitat</b>
+<ul>
+	<li>"" - it is not known where this organism grows</li>
+    <li><u>host-associated</u> - this organism is often or obligately associated with a host organism</li>
+    <li><u>aquatic</u> - this organism is often or obligately associated with either fresh or seawater environments</li>
+    <li><u>terrestrial</u> - this organism is often or obligately associated with a terrestrial environment such as soil</li>
+    <li><u>specialized</u> - this organism lives in a specialized environment like a marine thermal vent</li>
+    <li><u>multiple</u> - the organism can be found in more than one of the above environments</li>
+</ul>
+</li>
+
+<li><b>Motility</b>
+<ul>
+	<li>"Yes" means the organism has been found to be motile</li>
+	<li>"No" if it does not</li>
+	<li>"" means it has not, as of yet, been shown to be motile</li>
+</ul>
+</li>
+	
+<li><b>Oxygen Req.</b>
+<ul>
+	<li>"" - unknown oxygen requirements</li>
+    <li><u>aerobic</u> - the organism can grow in the presence of oxygen and probably uses oxygen as an electron acceptor</li>
+    <li><u>microaerophilic</u> - the organism can tolerate low levels of oxygen and probably does not use oxygen as an electron acceptor</li>
+    <li><u>facultative</u> - the organism can grow both aerobically or anerobically</li>
+    <li><u>anaerobic</u> - the organism grows in the absence of oxygen and utilizes alternative electron acceptors</li>
+</ul>
+</li>
+
+<li><b>Pathogenic</b>
+<ul> 	
+	<li>"Yes" means the organism has been found to be pathogenic</li>
+	<li>"No" if it is not pathogenic</li>
+	<li>"" means that it is unknown</li>
+</ul>
+</li>
+
+<li>
+<b>Salinity</b>
+<ul>
+	<li>"" - unknown salinity requirements</li>
+    <li><u>Non-halophilic</u> - 0-2% NaCl</li>
+    <li><u>Mesophilic</u> - 2-5% NaCl</li>
+    <li><u>Moderate halophile</u> - 5-20% NaCl</li>
+    <li><u>Extreme halophile</u> - 20-30% NaCl</li>
+</ul>
+</li>
+	
+
+
+
+
+<li><b>Temp. range</b>
+<ul>
+    <li>"" - it is not known what temperature this organism grows at</li>
+    <li><u>cryophilic</u> - the organism grows at -30 to -2</li>
+    <li><u>psychrophilic</u> - the organism grows at -1 to +10</li>
+    <li><u>mesophilic</u> - the organism grows at +11 to +45</li>
+    <li><u>thermophilic</u> - the organism grows at +46 to +75</li>
+    <li><u>hyperthermophilic</u> - the organism grows above +75</li>
+</ul>
+</li>
+
+
+</ul>
+
+<p>
+Definitions adapted from: <br>
+<em>http://web.ncbi.nlm.nih.gov/genomes/static/gprj_help.html#prok_attributes</em> and <br>
+<em>http://www.ncbi.nlm.nih.gov/genomes/lproks.cgi/<em>
+</font>

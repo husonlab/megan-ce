@@ -1,0 +1,107 @@
+<!-- file build.xml in your project root directory -->
+<!-- Ant build script for yfiles -->
+<!-- The java based Ant tool is available from -->
+<!-- http://jakarta.apache.org/ant -->
+<!-- This file demonstrates the use of the yGuard byte -->
+<!-- code obfuscator from yWorks Gmbh -->
+<!-- yGuard can be downloaded from -->
+<!--- http://www.yworks.com/products/yguard -->
+
+<project name="project" default="jar" basedir=".">
+
+    <!-- edit the following lines to your needs -->
+    <property name="project_name" value="MEGAN"/>
+    <property name="jlodaSrcDir" value="../../jloda/src"/>
+    <property name="meganSrcDir" value="../src"/>
+    <property name="srcDir" value="src"/>
+    <property name="classDir" value="classes"/>
+    <property name="jar" value="${project_name}.jar"/>
+    <property name="mainclass" value="megan.main.Megan6"/>
+
+    <!-- class path -->
+
+    <path id="build.classpath">
+        <fileset dir="../../jloda/jars"  includes="*.jar"/>
+	<fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
+
+        <fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
+        <fileset dir="../../megan-ce/jars"  includes="*.jar" excludes="data.jar"/>
+
+        <fileset dir="../jars"  includes="*.jar"/>
+
+    </path>
+
+    <!-- init -->
+    <target name="init">
+        <mkdir dir="${srcDir}"/>
+        <mkdir dir="${classDir}"/>
+        <mkdir dir="${classDir}/resources"/>
+    </target>
+
+    <!-- copy resources -->
+    <target name="copy_resources" depends="init">
+        <mkdir dir="${classDir}/resources"/>
+        <mkdir dir="${classDir}/resources/css"/>
+        <mkdir dir="${classDir}/resources/files"/>
+        <copy todir="${classDir}">
+            <fileset dir="../resources" includes="log4j.properties"/>
+        </copy>
+    </target>
+
+    <!-- copy sources -->
+    <target name="copy_sources" depends="copy_resources">
+        <copy todir="${srcDir}">
+            <fileset dir="${jlodaSrcDir}" excludes=""/>
+            <fileset dir="${meganSrcDir}" excludes=""/>
+        </copy>
+    </target>
+
+    <!-- compile  MEGAN -->
+    <target name="compile" depends="copy_sources">
+        <javac  includeantruntime="false"
+                srcdir="${srcDir}"
+                destdir="${classDir}"
+                debug="on"
+                compiler="javac1.8"
+                source="1.7"
+                target="1.8"
+                classpathref="build.classpath">
+            <compilerarg value="-XDignore.symbol.file=true"/>
+        </javac>
+    </target>
+
+    <!-- create .jar -->
+    <target name="jar" depends="compile">
+        <jar jarfile="${jar}"
+             basedir="${classDir}"
+	     includes="jloda/** megan/** rma/** rusch/**">
+        </jar>
+    </target>
+
+
+    <!-- run project -->
+    <target name="run" depends="jar">
+        <java classname="${mainclass}" fork="true"
+              classpathref="build.classpath">
+            <classpath>
+                <pathelement location="${jar}"/>
+            </classpath>
+            <arg value="-d"/>
+            <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
+            <jvmarg value="-server"/>
+            <jvmarg value="-d64"/>
+            <jvmarg value="-Xmx4000M"/>
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.region=US"/>
+        </java>
+    </target>
+
+    <!-- removes all that has been built -->
+    <target name="clean">
+        <delete dir="${classDir}" includeEmptyDirs="true"/>
+        <delete dir="${srcDir}" includeEmptyDirs="true"/>
+        <delete file="${jar}"/>
+    </target>
+</project>
+
+        <!-- end file build.xml -->

@@ -1,12 +1,30 @@
+# Class files
+class/
 *.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# intellij 
+*.iml
+.idea
+
+# MacOS
+.DS_Store
+
+# LaTeX auxiliary files 
+*.aux
+*.blg
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.toc
+
+# antbuild:
+antbuild/*.jar
+antbuild/*rename*
+antbuild/*shrink*
+antbuild/src/
+antbuild/classes/

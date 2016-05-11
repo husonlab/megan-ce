@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Runs the blast-to-taxonomy analyzer
+#
+# Copyright (C) 2016 Daniel H. Huson
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+options=$*
+if [ $# == 0 ]
+then
+	options="-h"
+fi	
+
+bin_dir=`dirname "$0"`       # may be relative path
+bin_dir=`cd "$bin_dir" && pwd`    # ensure absolute path
+jars_dir="$bin_dir/../jars"
+
+if [ -e $bin_dir/../MEGAN.vmoptions ]
+then
+	java=${installer:sys.preferredJre}/bin/java
+	vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
+	classpath="$jars_dir/MEGAN.jar:$jars_dir/data.jar:"
+else
+	java=java
+	vmOptions="-Xmx4G"
+	classpath="../antbuild/MEGAN.jar:$jars_dir/data.jar:"
+fi
+
+java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
+
+$java $java_flags -cp "$classpath" megan.tools.Blast2LCA  $options

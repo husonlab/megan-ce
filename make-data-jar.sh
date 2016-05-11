@@ -15,4 +15,5 @@ cp -rX $RESOURCES/files tmp/resources
 
 cd tmp
 jar -cvf $JARS/data.jar resources/*
+cd ..
 rm -rf tmp

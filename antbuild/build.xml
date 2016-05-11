@@ -25,9 +25,8 @@
 	<fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
 
         <fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
-        <fileset dir="../../megan-ce/jars"  includes="*.jar" excludes="data.jar"/>
+        <fileset dir="../../megan-ce/jars" includes="*.jar"/>
 
-        <fileset dir="../jars"  includes="*.jar"/>
 
     </path>
 
@@ -44,7 +43,7 @@
         <mkdir dir="${classDir}/resources/css"/>
         <mkdir dir="${classDir}/resources/files"/>
         <copy todir="${classDir}">
-            <fileset dir="../resources" includes="log4j.properties"/>
+            <fileset dir="../../megan-ce/resources" includes="log4j.properties"/>
         </copy>
     </target>
 

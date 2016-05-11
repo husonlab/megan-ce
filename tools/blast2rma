@@ -38,4 +38,4 @@ fi
 
 java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
 
-$java $java_flags -cp "$classpath" megan.tools.Blast2RMA6   $options
+$java $java_flags -cp "$classpath" megan.tools.BLAST2RMA6   $options

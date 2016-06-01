@@ -19,7 +19,6 @@
 package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
-import jloda.graph.NodeData;
 import jloda.util.Basic;
 import megan.clusteranalysis.tree.Distances;
 import megan.core.Document;
@@ -75,10 +74,10 @@ public class CalculateEcologicalIndices {
                 if (!seen.contains(id)) {
                     seen.add(id);
                     countNodesUsed++;
-                    NodeData nodeData = (NodeData) v.getData();
-                    Double[] numbers = new Double[nodeData.getSummarized().length];
-                    for (int i = 0; i < numbers.length; i++) {
-                        numbers[i] = (double) nodeData.getSummarized()[i];
+                    final int[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
+                    final Double[] numbers = new Double[counts.length];
+                    for (int i = 0; i < counts.length; i++) {
+                        numbers[i] = (double) counts[i];
                         total[i] += numbers[i];
                     }
                     input.addElement(numbers);
@@ -88,20 +87,13 @@ public class CalculateEcologicalIndices {
         if (normalize) {
             for (Double[] numbers : input) {
                 for (int i = 0; i < numbers.length; i++) {
-                    if (total[i] > 0 && numbers[i] != null) {
+                    if (total[i] > 0) {
                         numbers[i] /= total[i];
-                    } else
-                        numbers[i] = 0.0;
-                }
-            }
-        } else {
-            for (Double[] numbers : input) {
-                for (int i = 0; i < numbers.length; i++) {
-                    if (numbers[i] == null)
-                        numbers[i] = 0.0;
+                    }
                 }
             }
         }
+
         System.err.println("Nodes used: " + seen.size());
 
         Vector<Vector<Double>> upperTriangle;

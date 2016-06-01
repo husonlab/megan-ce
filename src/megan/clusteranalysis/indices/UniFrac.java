@@ -54,10 +54,10 @@ public class UniFrac {
             if (v.getOutDegree() != 1 && (Integer) v.getInfo() > 0)  // only use proper nodes
             {
                 countNodes++;
-                int[] summarized = viewer.getNodeData(v).getSummarized();
+                final int[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
                 for (int s = 1; s <= distances.getNtax(); s++) {
                     for (int t = s + 1; t <= distances.getNtax(); t++) {
-                        if ((summarized[s - 1] < threshold) != (summarized[t - 1] < threshold))
+                        if ((counts[s - 1] < threshold) != (counts[t - 1] < threshold))
                             distances.increment(s, t);
                     }
                 }

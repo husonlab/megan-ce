@@ -40,9 +40,7 @@ import megan.data.IReadBlockIterator;
 import megan.viewer.TaxonomicLevels;
 
 import java.io.IOException;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -249,6 +247,14 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         System.err.println(String.format("Total references: %,12d ", (ref2weight != null ? ref2weight.size() : refId2weight.length)));
         System.err.println(String.format("Total weights:    %,12d ", Basic.getSum(totalWeight)));
         System.err.println();
+
+        if (false) {
+            SortedSet<String> refs = new TreeSet<>();
+            refs.addAll(ref2weight.keySet());
+            for (String ref : refs) {
+                System.err.println(String.format("%s ->%5d", ref, ref2weight.get(ref)));
+            }
+        }
     }
 
     /**

@@ -25,15 +25,17 @@ bin_dir=`dirname "$0"`       # may be relative path
 bin_dir=`cd "$bin_dir" && pwd`    # ensure absolute path
 jars_dir="$bin_dir/../jars"
 
-if [ -e $bin_dir/../MEGAN.vmoptions ]
+jre_dir=${installer:sys.preferredJre}
+
+if [ -z $jre_dir ]
 then
-	java=${installer:sys.preferredJre}/bin/java
-	vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
-	classpath="$jars_dir/MEGAN.jar:$jars_dir/data.jar:"
-else
 	java=java
 	vmOptions="-Xmx8G"
 	classpath="../antbuild/MEGAN.jar:$jars_dir/data.jar:"
+else
+	java=$jre_dir/bin/java
+	vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
+	classpath="$jars_dir/MEGAN.jar:$jars_dir/data.jar:"
 fi
 
 java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"

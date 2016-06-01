@@ -48,7 +48,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
     /**
      * update the classifications
      *
-     * @param fNames
+     * @param cNames
      * @param fName2ClassId2Location
      * @param fName2ClassId2Weight
      * @throws IOException

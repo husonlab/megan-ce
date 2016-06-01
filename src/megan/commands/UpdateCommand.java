@@ -62,8 +62,9 @@ public class UpdateCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
 
         if (viewer instanceof MainViewer) {
-            if (reprocess)
+            if (reprocess) {
                 getDoc().processReadHits();
+            }
             ((MainViewer) viewer).setDoReset(reset);
             ((MainViewer) viewer).setDoReInduce(reInduce);
             if (reInduce) {

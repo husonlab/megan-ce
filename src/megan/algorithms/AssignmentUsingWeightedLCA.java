@@ -115,7 +115,14 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                 int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+
                 if (taxId > 0) {
+                    if (!allowBelowSpeciesAssignment) {
+                        int species = taxId2SpeciesId.get(taxId);
+                        if (species != 0 && species != taxId)
+                            taxId = species;
+                    }
+
                     if (!idMapper.isDisabled(taxId)) {
                         final String address = fullTree.getAddress(taxId);
                         if (address != null) {
@@ -146,6 +153,12 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                     int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
                     if (taxId > 0) {
+                        if (!allowBelowSpeciesAssignment) {
+                            int species = taxId2SpeciesId.get(taxId);
+                            if (species != 0 && species != taxId)
+                                taxId = species;
+                        }
+
                         if (!idMapper.isDisabled(taxId)) {
                             final String address = fullTree.getAddress(taxId);
                             if (address != null) {
@@ -226,7 +239,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
         for (int pos = 0; ; pos++) { // look at next letter after current prefix
             ch2weight.clear();
-            // determine weights for each letter at pos, remove any addresses that equalOverShorterOfBoth the prefix:
+            // determine weights for each letter at pos, remove any addresses that equal the prefix:
             {
                 WeightedAddress prev = head; // we are using a single-linked list, so need to update prev.next to delete current
                 for (WeightedAddress current = head.next; current != null; current = current.next) {
@@ -235,8 +248,9 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         if (--length == 0) // run out of addresses, return  prefix
                             return address.substring(0, pos);
                         prev.next = current.next;
-                        weightToCover -= current.weight;
-                        // this node lies on route to best node, so it is covered and its weight can  be removed from weightToCover
+                        // this node lies on route to best node, so it is covered and its weight can  be removed from totalWeight
+                        totalWeight -= current.weight;
+                        weightToCover = ((int) Math.ceil((totalWeight / 100.0) * percentToCover));
                         // Note: prev does not change
                     } else {
                         final char ch = address.charAt(pos);
@@ -280,7 +294,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     }
 
     /**
-     * merge identical entries, adding their weights. After running this, still have start=0
+     * merge identical entries, using max weight for identical taxa. After running this, still have start=0
      *
      * @param length
      * @return new length
@@ -289,12 +303,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         for (WeightedAddress a = headPtr.next; a != null; a = a.next) {
             for (WeightedAddress b = a.next; b != null; b = b.next) {
                 if (a.getAddress().equals(b.getAddress())) {
-                    if (false) {
-                        a.weight += b.weight;
-                    } else {
                         if (b.weight > a.weight) // keep the maximum weight, NOT the sum
                             a.weight = b.weight;
-                    }
                     a.next = b.next;
                     length--;
                 } else

@@ -28,6 +28,7 @@ import megan.commands.CommandBase;
 import megan.core.Document;
 import megan.dialogs.parameters.ParametersDialog;
 import megan.fx.NotificationsInSwing;
+import megan.inspector.InspectorWindow;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
@@ -97,6 +98,17 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
                 getDoc().getActiveViewers().add(np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), " ")));
         }
         np.matchIgnoreCase(";");
+
+        final InspectorWindow inspectorWindow = (InspectorWindow) getDir().getViewerByClass(InspectorWindow.class);
+        if (inspectorWindow != null && inspectorWindow.getDataTree().getRowCount() > 1) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    inspectorWindow.clear();
+                }
+            });
+        }
+
         getDoc().processReadHits();
         getDoc().setDirty(true);
         if (getViewer() instanceof MainViewer)

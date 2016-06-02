@@ -67,7 +67,6 @@ public class ParametersDialog extends JDialog {
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
 
-
     private final Set<String> activeFNames = new HashSet<>();
     private boolean canceled = true;
 
@@ -321,6 +320,10 @@ public class ParametersDialog extends JDialog {
             final JLabel weightLCALabel = new JLabel("Weighted LCA %:");
             aPanel.add(weightLCALabel);
             weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
+
+            weightedLCAPercentField.setEnabled(isWeightedLCA());
+            weightLCALabel.setEnabled(isWeightedLCA());
+
             aPanel.add(weightedLCAPercentField);
             weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA");
             weightedLCAPercentField.getDocument().addDocumentListener(new DocumentListener() {
@@ -345,8 +348,8 @@ public class ParametersDialog extends JDialog {
             useWeightedLCACBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    weightedLCAPercentField.setEnabled(useWeightedLCACBox.isSelected());
-                    weightLCALabel.setEnabled(useWeightedLCACBox.isSelected());
+                    weightedLCAPercentField.setEnabled(isWeightedLCA());
+                    weightLCALabel.setEnabled(isWeightedLCA());
                 }
             });
 

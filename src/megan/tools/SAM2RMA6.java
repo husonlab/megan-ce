@@ -106,6 +106,7 @@ public class SAM2RMA6 {
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
         final boolean weightedLCA = options.getOption("-wlca", "weightedLCA", "Use the weighted LCA for taxonomic assignment", Document.DEFAULT_WEIGHTED_LCA);
+        final float weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
 
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
@@ -255,6 +256,7 @@ public class SAM2RMA6 {
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(BlastMode.determineBlastModeSAMFile(samFiles[i]));
             doc.setWeightedLCA(weightedLCA);
+            doc.setWeightedLCAPercent(weightedLCAPercent);
 
             createRMA6FileFromSAM("SAM2RMA6", samFiles[i], readsFiles[i], outputFiles[i], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
 

@@ -32,7 +32,7 @@ import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
-import megan.util.BiomFileFilter;
+import megan.util.Biom1FileFilter;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -119,7 +119,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
             lastOpenFile = new File(lastDir, name);
         }
 
-        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new BiomFileFilter(), new BiomFileFilter(), event,
+        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new Biom1FileFilter(), new Biom1FileFilter(), event,
                 "Save as BIOM 1.0.0 file (JSON format)", ".txt");
 
         if (file != null) {

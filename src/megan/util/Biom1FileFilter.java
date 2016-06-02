@@ -18,20 +18,23 @@
  */
 package megan.util;
 
+import jloda.util.Basic;
 import jloda.util.FileFilterBase;
 
+import java.io.File;
 import java.io.FilenameFilter;
 
 /**
  * The biome file filter
  * Daniel Huson         9.2012
  */
-public class BiomFileFilter extends FileFilterBase implements FilenameFilter {
+public class Biom1FileFilter extends FileFilterBase implements FilenameFilter {
     /**
      * constructor
      */
-    public BiomFileFilter() {
+    public Biom1FileFilter() {
         add("biom");
+        add("biom1");
         add("txt");
 
     }
@@ -41,5 +44,14 @@ public class BiomFileFilter extends FileFilterBase implements FilenameFilter {
      */
     public String getBriefDescription() {
         return "BIOM files";
+    }
+
+    @Override
+    public boolean accept(File dir, String name) {
+        if (super.accept(dir, name)) { // ensure that file is not biom2 format...
+            final byte[] bytes = Basic.getFirstBytesFromFile(new File(dir, name), 4);
+            return bytes != null && bytes[0] == '{' && !Basic.toString(bytes).contains("ﾉHDF");
+        }
+        return false;
     }
 }

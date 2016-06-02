@@ -18,6 +18,7 @@
  */
 package megan.biom;
 
+import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
@@ -28,6 +29,7 @@ import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -46,6 +48,14 @@ public class BIOMImporter {
      * @param type
      */
     static public void apply(String fileName, Document doc, String type) throws IOException {
+        byte[] bytes = Basic.getFirstBytesFromFile(new File(fileName), 4);
+        if (bytes == null)
+            throw new IOException("Failed read file: " + fileName);
+        System.err.println(Basic.toString(bytes));
+        if (Basic.toString(bytes).contains("ﾉHDF")) {
+            throw new IOException("File is in BIOM2 format, not supported, please first convert to BIOM1 format");
+        }
+
         System.err.println("Importing data from BIOM file");
 
         BiomData biomData = BiomData.fromReader(new FileReader(fileName));

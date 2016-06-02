@@ -29,7 +29,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.inspector.InspectorWindow;
 import megan.main.MeganProperties;
-import megan.util.BiomFileFilter;
+import megan.util.Biom1FileFilter;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
@@ -69,7 +69,9 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
         if (!ProgramProperties.isUseGUI() || doc.neverOpenedReads) {
             doc.neverOpenedReads = false;
             doc.clearReads();
+
             BIOMImporter.apply(fileName, doc, type);
+
             if (dir.getViewerByClass(InspectorWindow.class) != null)
                 ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
             getDir().getMainViewer().getCollapsedIds().clear();
@@ -96,7 +98,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.CSVFILE);
 
-        List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new BiomFileFilter(), new BiomFileFilter(), event, "Open BIOM 1.0 file");
+        List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new Biom1FileFilter(), new Biom1FileFilter(), event, "Open BIOM 1.0 file");
         if (files != null && files.size() > 0) {
             final String[] choices = new String[]{"Taxonomy", "KEGG", "SEED", "Unknown"};
             String choice = ProgramProperties.get("BIOMImportType", "Unknown");

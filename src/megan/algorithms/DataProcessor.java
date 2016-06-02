@@ -88,7 +88,7 @@ public class DataProcessor {
             for (int i = 0; i < numberOfClassifications; i++) {
                 if (i == taxonomyIndex) {
                     if (doc.isWeightedLCA()) {
-                        assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.getWeightedLcaPercent());
+                        assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.getWeightedLCAPercent());
                     } else
                         assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))

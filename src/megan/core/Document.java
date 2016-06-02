@@ -79,7 +79,7 @@ public class Document {
     private int minSupport = DEFAULT_MINSUPPORT; // min summary count that a node needs to make it into the induced taxonomy
 
     private boolean weightedLCA = DEFAULT_WEIGHTED_LCA;
-    private float weightedLcaPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
+    private float weightedLCAPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
@@ -125,7 +125,7 @@ public class Document {
                     return name;
             }
         };
-        setWeightedLcaPercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_WEIGHTED_LCA_PERCENT));
+        setWeightedLCAPercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_WEIGHTED_LCA_PERCENT));
     }
 
     public Director getDir() {
@@ -234,7 +234,7 @@ public class Document {
                     setWeightedLCA(true);
                 else if (np.findIgnoreCase(tokens, "weightedLCA=false", true, false))
                     setWeightedLCA(false);
-                setWeightedLcaPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLcaPercent()));
+                setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
 
                 if (np.findIgnoreCase(tokens, "pairedReads=true", true, false))
@@ -288,7 +288,7 @@ public class Document {
         buf.append(" minSupport=").append(getMinSupport());
         if (isWeightedLCA())
             buf.append(" weightedLCA=true");
-        buf.append(" weightedLCAPercent=").append(getWeightedLcaPercent());
+        buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
         if (isPairedReads())
             buf.append(" pairedReads=true");
@@ -677,13 +677,12 @@ public class Document {
         return name2versionInfo;
     }
 
-    public float getWeightedLcaPercent() {
-        return weightedLcaPercent;
+    public float getWeightedLCAPercent() {
+        return weightedLCAPercent;
     }
 
-    public void setWeightedLcaPercent(float weightedLcaPercent) {
-        this.weightedLcaPercent = weightedLcaPercent;
-        ProgramProperties.put("WeightedLCAPercent", getWeightedLcaPercent());
+    public void setWeightedLCAPercent(float weightedLCAPercent) {
+        this.weightedLCAPercent = weightedLCAPercent;
     }
 
 

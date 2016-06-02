@@ -65,6 +65,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     final JTextField topPercentField = new JTextField(8);
     final JTextField minSupportField = new JTextField(8);
     final JTextField minSupportPercentField = new JTextField(8);
+    final JTextField weightedLCAPercentField = new JTextField(8);
     final JTextField minComplexityField = new JTextField(8);
 
     private boolean usePairedReads = false;
@@ -138,6 +139,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
         setMinComplexity(doc.getMinComplexity());
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
+        setWeightedLCAPercent(doc.getWeightedLCAPercent());
         setWeightedLCA(doc.isWeightedLCA());
 
         ArrayList<String> toDelete = new ArrayList<>();
@@ -410,6 +412,24 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     public void setWeightedLCA(boolean weightedLCA) {
         this.weightedLCA = weightedLCA;
+    }
+
+    public double getWeightedLCAPercent() {
+        double value = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
+        try {
+            value = Basic.parseDouble(weightedLCAPercentField.getText());
+        } catch (NumberFormatException e) {
+            Basic.caught(e);
+        }
+        return value;
+    }
+
+    public void setWeightedLCAPercent(double value) {
+        weightedLCAPercentField.setText("" + (float) value);
+    }
+
+    public JTextField getWeightedLCAPercentField() {
+        return weightedLCAPercentField;
     }
 
     public JTextField getMaxNumberOfMatchesPerReadField() {
@@ -712,6 +732,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" weightedLCA=").append(isWeightedLCA());
+        buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 

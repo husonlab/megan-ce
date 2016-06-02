@@ -76,7 +76,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
         }
         if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
             np.matchIgnoreCase("weightedLCAPercent=");
-            getDoc().setWeightedLcaPercent((float) np.getDouble(1, 100));
+            getDoc().setWeightedLCAPercent((float) np.getDouble(1, 100));
         }
         if (np.peekMatchIgnoreCase("minComplexity")) {
             np.matchIgnoreCase("minComplexity=");

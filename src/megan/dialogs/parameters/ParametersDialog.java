@@ -41,6 +41,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,12 +60,13 @@ public class ParametersDialog extends JDialog {
     private final JTextField minSupportPercentField = new JTextField(8);
     private final JTextField minPercentIdentityField = new JTextField(8);
     private final JTextField minComplexityField = new JTextField(8);
+    private final JTextField weightedLCAPercentField = new JTextField(8);
+
     private final JCheckBox useWeightedLCACBox = new JCheckBox("Use Weighted LCA");
     private final JCheckBox useMagnitudesCBox = new JCheckBox("Use Read Magnitudes");
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
 
-    private final float weightedLCAPercent;
 
     private final Set<String> activeFNames = new HashSet<>();
     private boolean canceled = true;
@@ -87,8 +89,6 @@ public class ParametersDialog extends JDialog {
 
         final Document doc = dir.getDocument();
 
-        weightedLCAPercent = doc.getWeightedLcaPercent();
-
         setMinScore(doc.getMinScore());
         setMaxExpected(doc.getMaxExpected());
         setMinPercentIdentity(doc.getMinPercentIdentity());
@@ -96,7 +96,8 @@ public class ParametersDialog extends JDialog {
         setMinSupportPercent(doc.getMinSupportPercent());
         setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
 
-        setWeightedLCAC(doc.isWeightedLCA());
+        setWeightedLCAPercent(doc.getWeightedLCAPercent());
+        setWeightedLCA(doc.isWeightedLCA());
 
         setMinComplexity(doc.getMinComplexity());
         setPairedReads(doc.isPairedReads());
@@ -154,7 +155,7 @@ public class ParametersDialog extends JDialog {
 
             final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
 
-            aPanel.setLayout(new GridLayout(14 + (cNames.length + 1) / 2, 2));
+            aPanel.setLayout(new GridLayout(15 + (cNames.length + 1) / 2, 2));
 
             aPanel.add(new JLabel("Min Score:"));
             aPanel.add(minScoreField);
@@ -300,11 +301,29 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
-
             aPanel.add(new JLabel("Min Complexity:"));
             aPanel.add(minComplexityField);
             minComplexityField.setToolTipText("Minimum complexity for a read to be considered non-repetitive");
             minComplexityField.getDocument().addDocumentListener(new DocumentListener() {
+                public void insertUpdate(DocumentEvent event) {
+                    commandManager.updateEnableState();
+                }
+
+                public void removeUpdate(DocumentEvent event) {
+                    commandManager.updateEnableState();
+                }
+
+                public void changedUpdate(DocumentEvent event) {
+                    commandManager.updateEnableState();
+                }
+            });
+
+            final JLabel weightLCALabel = new JLabel("Weighted LCA %:");
+            aPanel.add(weightLCALabel);
+            weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
+            aPanel.add(weightedLCAPercentField);
+            weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA");
+            weightedLCAPercentField.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent event) {
                     commandManager.updateEnableState();
                 }
@@ -323,6 +342,13 @@ public class ParametersDialog extends JDialog {
 
             aPanel.add(useWeightedLCACBox);
             useWeightedLCACBox.setToolTipText(SetUseWeightedLCACommand.DESCRIPTION);
+            useWeightedLCACBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    weightedLCAPercentField.setEnabled(useWeightedLCACBox.isSelected());
+                    weightLCALabel.setEnabled(useWeightedLCACBox.isSelected());
+                }
+            });
 
             aPanel.add(useMagnitudesCBox);
             useMagnitudesCBox.setToolTipText("Parse and use read magnitudes (given e.g. as magnitude|99 in read header line0");
@@ -534,16 +560,29 @@ public class ParametersDialog extends JDialog {
         return useWeightedLCACBox.isSelected();
     }
 
-    public void setWeightedLCAC(boolean use) {
+    public void setWeightedLCA(boolean use) {
         useWeightedLCACBox.setSelected(use);
     }
 
+    public float getWeightedLCAPercent() {
+        float value = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
+        try {
+            value = Basic.parseFloat(weightedLCAPercentField.getText());
+        } catch (NumberFormatException e) {
+            Basic.caught(e);
+        }
+        return Math.min(100, Math.max(0, value));
+    }
+
+    public void setWeightedLCAPercent(float value) {
+        weightedLCAPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
+    }
 
     public String getParameterString() {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " weightedLCA=" + isWeightedLCA() + (isWeightedLCA() ? " weightedLCAPercent=" + weightedLCAPercent : "") +
+                " weightedLCA=" + isWeightedLCA() + (isWeightedLCA() ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
                 " minComplexity=" + getMinComplexity() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");

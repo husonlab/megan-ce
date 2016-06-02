@@ -60,7 +60,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
         return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[hasMagnitudes={false|true}] [description=<text>];";
     }
@@ -170,6 +170,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 getDoc().setWeightedLCA(np.getBoolean());
                 ProgramProperties.put("weightedLCA", doc.isWeightedLCA());
             }
+            if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
+                np.matchIgnoreCase("weightedLCAPercent=");
+                getDoc().setWeightedLCAPercent((float) np.getDouble(1, 100));
+                ProgramProperties.put("weightedLCAPercent", doc.getWeightedLCAPercent());
+            }
+
             if (np.peekMatchIgnoreCase("minComplexity")) {
                 np.matchIgnoreCase("minComplexity=");
                 doc.setMinComplexity((float) np.getDouble(-1.0, 1.0));

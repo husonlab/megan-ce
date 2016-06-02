@@ -54,7 +54,7 @@ import java.util.Set;
 public class ExtractToNewDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "extract what=document file=<megan-filename> [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
-                "\t[ids=<SELECTED|numbers...>] [allBelow={false|true}];";
+                "\t[ids=<SELECTED|numbers...>] [includeCollapsed={true|false}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -87,14 +87,14 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
                     ids.addAll(viewer.getSelectedIds());
                 }
             } else {
-                while (!np.peekMatchAnyTokenIgnoreCase("allBelow ;"))
+                while (!np.peekMatchAnyTokenIgnoreCase("includeCollapsed ;"))
                     ids.add(np.getInt());
             }
         }
 
-        boolean allBelow = false;
-        if (np.peekMatchIgnoreCase("allBelow")) {
-            np.matchIgnoreCase("allBelow=");
+        boolean allBelow = true;
+        if (np.peekMatchIgnoreCase("includeCollapsed")) {
+            np.matchIgnoreCase("includeCollapsed=");
             allBelow = np.getBoolean();
         }
         np.matchIgnoreCase(";");
@@ -106,13 +106,25 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         }
 
         if (allBelow) {
-            System.err.println("Collecting all nodes below the selected ones");
-            if (classificationName.equalsIgnoreCase(ClassificationType.Taxonomy.toString()))
-                ids.addAll(TaxonomyData.getTree().getAllDescendants(ids));
-            else if (!classificationName.equalsIgnoreCase("readNames")) {
+            System.err.println("Collecting all ids below selected leaves");
+            final Set<Integer> collapsedIds = new HashSet<>();
+            if (classificationName.equals(Classification.Taxonomy)) {
+                for (Integer id : ids) {
+                    if (mainViewer.getCollapsedIds().contains(id))
+                        collapsedIds.add(id);
+                }
+                ids.addAll(TaxonomyData.getTree().getAllDescendants(collapsedIds));
+
+            } else if (!classificationName.equalsIgnoreCase("readNames")) {
                 final ClassificationViewer viewer = (ClassificationViewer) srcDir.getViewerByClassName(classificationName);
-                if (viewer != null)
-                    ids.addAll(viewer.getClassification().getFullTree().getAllDescendants(ids));
+                if (viewer != null) {
+                    for (Integer id : ids) {
+                        if (viewer.getCollapsedIds().contains(id))
+                            collapsedIds.add(id);
+
+                    }
+                    ids.addAll(viewer.getClassification().getFullTree().getAllDescendants(collapsedIds));
+                }
             }
         }
 
@@ -187,15 +199,8 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new RMAFileFilter(), new RMAFileFilter(), event, "Extract selected data to document", ".rma");
 
         if (file != null) {
-            String data;
-            if (getViewer() instanceof ClassificationViewer)
-                data = ((ClassificationViewer) getViewer()).getClassName();
-            else
-                data = ClassificationType.Taxonomy.toString();
-
-            String cmd;
-            cmd = ("extract what=document file='" + file.getPath() + "' data=" + data + " ids=selected allBelow=false ;");
-            execute(cmd);
+            final String data = (getViewer() instanceof ClassificationViewer ? getViewer().getClassName() : ClassificationType.Taxonomy.toString());
+            execute("extract what=document file='" + file.getPath() + "' data=" + data + " ids=selected includeCollapsed=true;");
         } else
             dir.notifyUnlockInput();
     }

@@ -26,6 +26,8 @@ import megan.importblast.commands.SetUseWeightedLCACommand;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * panel for setting LCA parameters
@@ -35,7 +37,7 @@ public class LCAParametersPanel extends JPanel {
     /**
      * construct the parameters panel
      */
-    public LCAParametersPanel(ImportBlastDialog dialog) {
+    public LCAParametersPanel(final ImportBlastDialog dialog) {
         final CommandManager commandManager = dialog.getCommandManager();
 
         setLayout(new BorderLayout());
@@ -44,7 +46,7 @@ public class LCAParametersPanel extends JPanel {
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(13, 2));
+        centerPanel.setLayout(new GridLayout(14, 2));
 
         centerPanel.add(new JLabel("Min Score:"));
         centerPanel.add(dialog.getMinScoreField());
@@ -65,7 +67,6 @@ public class LCAParametersPanel extends JPanel {
         centerPanel.add(dialog.getTopPercentField());
         dialog.getTopPercentField().setToolTipText("Match must lie within this percentage of the best score attained for a read");
 
-
         centerPanel.add(new JLabel(" "));
         centerPanel.add(new JLabel(" "));
 
@@ -80,15 +81,31 @@ public class LCAParametersPanel extends JPanel {
         centerPanel.add(new JLabel(" "));
         centerPanel.add(new JLabel(" "));
 
-        AbstractButton button = commandManager.getButton(SetUseComplexityFilterCommand.NAME);
-        button.setText(button.getText() + ":");
-        centerPanel.add(button);
+        {
+            final AbstractButton button = commandManager.getButton(SetUseWeightedLCACommand.NAME);
+            button.setText(button.getText() + ":");
+            centerPanel.add(button);
+            dialog.getWeightedLCAPercentField().setEnabled(dialog.isWeightedLCA());
+            centerPanel.add(dialog.getWeightedLCAPercentField());
+            dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialog.getWeightedLCAPercentField().setEnabled(button.isSelected());
+                }
+            });
 
-        centerPanel.add(dialog.getMinComplexityField());
-        dialog.getMinComplexityField().setToolTipText("Minimum complexity for a read to be considered non-repetitive\nComputed as compression ratio between 0 and 1");
+            centerPanel.add(new JLabel(" "));
+            centerPanel.add(new JLabel(" "));
+        }
 
-        centerPanel.add(new JLabel(" "));
-        centerPanel.add(new JLabel(" "));
+        {
+            final AbstractButton button = commandManager.getButton(SetUseComplexityFilterCommand.NAME);
+            button.setText(button.getText() + ":");
+            centerPanel.add(button);
+            centerPanel.add(dialog.getMinComplexityField());
+            dialog.getMinComplexityField().setToolTipText("Minimum complexity for a read to be considered non-repetitive\nComputed as compression ratio between 0 and 1");
+        }
 
         JPanel three = new JPanel();
         three.setLayout(new BoxLayout(three, BoxLayout.X_AXIS));
@@ -101,7 +118,6 @@ public class LCAParametersPanel extends JPanel {
         outerPanel.add(three);
 
         JPanel aPanel = new JPanel();
-        aPanel.add(commandManager.getButton(SetUseWeightedLCACommand.NAME));
         aPanel.add(commandManager.getButton(SetUseReadMagnitudesCommand.NAME));
         aPanel.add(commandManager.getButton(SetUseIdentityFilterCommand.NAME));
         outerPanel.add(aPanel);

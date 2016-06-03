@@ -158,7 +158,7 @@ public class Comparer {
 
         final long[] readCountPerThread = new long[numberOfThreads];
 
-        final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in on thread
+        final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
         final ProgressSilent progressSilent = new ProgressSilent();
 
         for (int i = 0; i < numberOfThreads; i++) {

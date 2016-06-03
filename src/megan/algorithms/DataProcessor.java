@@ -98,7 +98,8 @@ public class DataProcessor {
             }
 
             // setup multi-threading:
-            final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+            // todo: Do not use multi-threading, has a bug!
+            final int numberOfThreads = 1; // Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
             final ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

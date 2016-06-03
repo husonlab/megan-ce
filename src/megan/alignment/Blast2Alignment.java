@@ -42,7 +42,6 @@ public class Blast2Alignment {
     private final Document doc;
 
     private String classificationName;
-    private int classId;
     private String className;
 
     private int totalNumberOfReads = 0;
@@ -72,10 +71,6 @@ public class Blast2Alignment {
         return classificationName;
     }
 
-    public int getClassId() {
-        return classId;
-    }
-
     public String getClassName() {
         return className;
     }
@@ -84,13 +79,12 @@ public class Blast2Alignment {
      * loads data for aligning. This also determines the type of blast data
      *
      * @param classificationName
-     * @param classId
+     * @param classIds
      * @throws java.io.IOException
      * @throws jloda.util.CanceledException
      */
-    public void loadData(String classificationName, Integer classId, String name, ProgressListener progressListener) throws IOException, CanceledException {
+    public void loadData(String classificationName, Set<Integer> classIds, String name, ProgressListener progressListener) throws IOException, CanceledException {
         this.classificationName = classificationName;
-        this.classId = classId;
         this.className = name;
 
         totalNumberOfReads = 0;
@@ -110,7 +104,7 @@ public class Blast2Alignment {
 
         final Map<String, Set<String>> reference2seen = new HashMap<>(100000);
         int count = 0;
-        try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
+        try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getReadsIteratorForListOfClassIds(classificationName, classIds, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 
@@ -248,7 +242,6 @@ public class Blast2Alignment {
      */
     public void loadData(String classificationName, Integer classId, String name, String key, List<Pair<IReadBlock, IMatchBlock>> readMatchPairs) {
         this.classificationName = classificationName;
-        this.classId = classId;
         this.className = name;
 
         reference2ReadMatchPairs.clear();

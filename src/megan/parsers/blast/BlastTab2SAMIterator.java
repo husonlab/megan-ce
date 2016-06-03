@@ -89,6 +89,8 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                 if (line == null)// at end of file
                     break;
 
+                if (line.startsWith("# "))
+                    continue; // is a comment line
                 if (line.startsWith("@") || line.startsWith((">")))
                     line = line.substring(1);
 

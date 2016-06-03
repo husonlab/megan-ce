@@ -32,6 +32,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ShowAlignmentViewerCommand extends CommandBase implements ICommand {
     public String getSyntax() {
@@ -46,18 +48,21 @@ public class ShowAlignmentViewerCommand extends CommandBase implements ICommand 
         final Document doc = dir.getDocument();
         final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
 
-        if (classificationViewer.getSelectedNodes().size() > 0) {
-            for (Node v = classificationViewer.getSelectedNodes().getFirstElement(); v != null; v = classificationViewer.getSelectedNodes().getNextElement(v)) {
-                if (classificationViewer.getNodeData(v).getCountAssigned() > 0) {
-                    int id = (Integer) v.getInfo();
-                    String name = classificationViewer.getLabel(v);
-                    AlignmentViewer alignerViewer = new AlignmentViewer(dir);
-                    dir.addViewer(alignerViewer);
-                    alignerViewer.getBlast2Alignment().loadData(classificationViewer.getClassName(), id, name, doc.getProgressListener());
-                    alignerViewer.setVisible(true);
-                    alignerViewer.toFront();
-                    break;
+        if (classificationViewer.getSelectedNodeIds().size() == 1) {
+            final int id = classificationViewer.getSelectedNodeIds().iterator().next();
+            final Node v = classificationViewer.getANode(id);
+            if (v != null) {
+                final String name = classificationViewer.getLabel(v);
+                final Set<Integer> ids = new HashSet<>();
+                ids.add(id);
+                if (v.getOutDegree() == 0) {
+                    ids.addAll(classificationViewer.getClassification().getFullTree().getAllDescendants(id));
                 }
+                final AlignmentViewer alignerViewer = new AlignmentViewer(dir);
+                dir.addViewer(alignerViewer);
+                alignerViewer.getBlast2Alignment().loadData(classificationViewer.getClassName(), ids, name, doc.getProgressListener());
+                alignerViewer.setVisible(true);
+                alignerViewer.toFront();
             }
         }
     }

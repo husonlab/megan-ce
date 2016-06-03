@@ -129,7 +129,17 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 }
                 final int referenceLength = Basic.parseInt(getNextToken(line, LENGTH, EQUALS));
                 final String refName = Basic.swallowLeadingGreaterSign(Basic.toString(refHeaderLines, " "));
-                line = skipEmptyLines();
+
+                // Blast text downloaded from NBCI might have some text before the alignment starts:
+                do {
+                    line = skipEmptyLines();
+                    if (line.startsWith("Score ="))
+                        break;
+                    else
+                        line = nextLine().trim();
+                }
+                while (hasNext());
+
                 float bitScore = Basic.parseFloat(getNextToken(line, SCORE, EQUALS));
                 int rawScore = Basic.parseInt(getNextToken(line, "("));
                 float expect = Basic.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=

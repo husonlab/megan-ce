@@ -75,7 +75,7 @@ public class ExtractToNewDocument {
                     }
                     totalReads.set(totalReads.get() + 1);
 
-                    final byte[] readBytes = readBlock.getReadHeader().getBytes();
+                    final byte[] readBytes = (">" + readBlock.getReadHeader() + "\n" + readBlock.getReadSequence()).getBytes();
                     final byte[] matchBytes = computeSAM(srcDoc.getBlastMode(), 1000, blastTextBuf.toString());
                     rma6FileCreator.addQuery(readBytes, readBytes.length, readBlock.getNumberOfAvailableMatchBlocks(), matchBytes, matchBytes.length, match2classification2id, 0L);
                     progress.setProgress(iterator.getProgress());

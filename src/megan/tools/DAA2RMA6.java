@@ -83,7 +83,7 @@ public class DAA2RMA6 {
 
         final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
         options.setAuthors("Daniel H. Huson");
-        options.setVersion(malt.Version.SHORT_DESCRIPTION);
+        options.setVersion(ProgramProperties.getProgramVersion());
 
         options.comment("Input");
         final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file", new String[0]);

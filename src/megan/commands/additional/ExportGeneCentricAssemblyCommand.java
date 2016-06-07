@@ -29,6 +29,7 @@ import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
 import megan.data.IReadBlockIterator;
+import megan.data.ReadBlockIteratorMaxCount;
 import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.BlastMode;
 import megan.viewer.ViewerBase;
@@ -52,7 +53,7 @@ import java.util.Set;
 public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [maxPercentIdentity=<number>] [showGraph={false|true}] ;";
+        return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [maxPercentIdentity=<number>] [maxNumberOfReads=<number>] [showGraph={false|true}];";
     }
 
     // nt minReads, double minCoverage, int minLength,
@@ -96,6 +97,11 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             maxPercentIdentity = (float) np.getDouble(0, 100);
         }
 
+        int maxNumberOfReads = -1;
+        if (np.peekMatchIgnoreCase("maxNumberOfReads")) {
+            np.matchIgnoreCase("maxNumberOfReads=");
+            maxNumberOfReads = np.getInt(-1, Integer.MAX_VALUE);
+        }
         boolean showGraph = false;
         if (np.peekMatchIgnoreCase("showGraph")) {
             np.matchIgnoreCase("showGraph=");
@@ -135,7 +141,8 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             if (viewer.getSelectedIds().size() > 0) {
                 ReadAssembler readAssembler = new ReadAssembler();
 
-                try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true)) {
+                final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true);
+                try (IReadBlockIterator it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
                     final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedIds(), ", ");
                     readAssembler.computeOverlapGraph(label, minOverlap, it, progress);
                     int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);

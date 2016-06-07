@@ -62,6 +62,8 @@ public class IdParser {
     private final MultiTaggedAccessions giTaggedIds;
     private final MultiTaggedAccessions accTaggedIds;
 
+    private int maxWarnings = 10;
+
     /**
      * constructor
      *
@@ -99,23 +101,30 @@ public class IdParser {
             int countLabels = taggedIds.compute(headerString);
             for (int i = 0; i < countLabels; i++) {
                 final String label = taggedIds.getWord(i);
-                int id = Basic.parseInt(label);
-                if (id != 0) {
-                    if (disabledIds.contains(id))
-                        disabled.add(id);
-                    else {
-                        switch (algorithm) {
-                            default:
-                            case First_Hit:
-                                return id;
-                            case LCA:
-                                ids.add(id);
-                                break;
-                            case Majority:
-                                final Integer count = id2count.get(id);
-                                id2count.put(id, count == null ? 1 : count + 1);
-                                break;
+                try {
+                    int id = Integer.parseInt(label);
+                    if (id != 0) {
+                        if (disabledIds.contains(id))
+                            disabled.add(id);
+                        else {
+                            switch (algorithm) {
+                                default:
+                                case First_Hit:
+                                    return id;
+                                case LCA:
+                                    ids.add(id);
+                                    break;
+                                case Majority:
+                                    final Integer count = id2count.get(id);
+                                    id2count.put(id, count == null ? 1 : count + 1);
+                                    break;
+                            }
                         }
+                    }
+                } catch (NumberFormatException ex) {
+                    if (maxWarnings > 0) {
+                        System.err.println("parseInt() failed: " + label);
+                        maxWarnings--;
                     }
                 }
             }
@@ -183,26 +192,33 @@ public class IdParser {
             final int countLabels = giTaggedIds.compute(headerString);
             for (int i = 0; i < countLabels; i++) {
                 final String label = giTaggedIds.getWord(i);
-                Long giNumber = Long.parseLong(label);
-                if (giNumber > 0) {
-                    int id = idMapper.getGiMap().get(giNumber);
-                    if (id != 0) {
-                        if (disabledIds.contains(id))
-                            disabled.add(id);
-                        else {
-                            switch (algorithm) {
-                                default:
-                                case First_Hit:
-                                    return id;
-                                case LCA:
-                                    ids.add(id);
-                                    break;
-                                case Majority:
-                                    final Integer count = id2count.get(id);
-                                    id2count.put(id, count == null ? 1 : count + 1);
-                                    break;
+                try {
+                    Long giNumber = Long.parseLong(label);
+                    if (giNumber > 0) {
+                        int id = idMapper.getGiMap().get(giNumber);
+                        if (id != 0) {
+                            if (disabledIds.contains(id))
+                                disabled.add(id);
+                            else {
+                                switch (algorithm) {
+                                    default:
+                                    case First_Hit:
+                                        return id;
+                                    case LCA:
+                                        ids.add(id);
+                                        break;
+                                    case Majority:
+                                        final Integer count = id2count.get(id);
+                                        id2count.put(id, count == null ? 1 : count + 1);
+                                        break;
+                                }
                             }
                         }
+                    }
+                } catch (NumberFormatException ex) {
+                    if (maxWarnings > 0) {
+                        System.err.println("parseLong() failed: " + label);
+                        maxWarnings--;
                     }
                 }
             }

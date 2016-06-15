@@ -23,6 +23,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.gui.IPopupMenuModifier;
+import jloda.phylo.PhyloTree;
 import jloda.util.ProgramProperties;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;
@@ -45,6 +46,9 @@ public class ViewerJTree extends JTree {
     private final Map<Integer, MyJTreeNode> id2node = new HashMap<>();
     private IPopupMenuModifier popupMenuModifier;
 
+    private final PhyloTree inducedTree; // need use own copy of induced tree that has no collapsed nodes
+    private final Map<Integer, Set<Node>> id2NodesInInducedTree;
+
     private final JPopupMenu popupMenu;
 
     boolean inSelection = false;  // use this to prevent bouncing when selecting from viewer
@@ -56,7 +60,11 @@ public class ViewerJTree extends JTree {
      */
     public ViewerJTree(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;
-        setCellRenderer(new MyJTreeCellRender(classificationViewer));
+
+        inducedTree = new PhyloTree();
+        id2NodesInInducedTree = new HashMap<>();
+
+        setCellRenderer(new MyJTreeCellRender(classificationViewer, id2NodesInInducedTree));
 
         addTreeSelectionListener(new MyJTreeSelectionListener(this, classificationViewer));
 
@@ -75,8 +83,13 @@ public class ViewerJTree extends JTree {
         if (classificationViewer.getTree().getNumberOfNodes() > 1) {
             removeAll();
             id2node.clear();
-            Node root = classificationViewer.getClassification().getFullTree().getRoot();
-            int id = (Integer) root.getInfo();
+            inducedTree.clear();
+            id2NodesInInducedTree.clear();
+            if (classificationViewer.getDocument().getNumberOfReads() > 0)
+                classificationViewer.computeInduceTreeWithNoCollapsedNodes(inducedTree, id2NodesInInducedTree);
+
+            final Node root = classificationViewer.getClassification().getFullTree().getRoot();
+            final int id = (Integer) root.getInfo();
             final MyJTreeNode node = new MyJTreeNode(root);
             final DefaultTreeModel model = (DefaultTreeModel) getModel();
             model.setRoot(node);
@@ -84,6 +97,8 @@ public class ViewerJTree extends JTree {
             setRootVisible(true);
             setShowsRootHandles(true);
             addChildren(node);
+
+
         }
     }
 
@@ -214,26 +229,30 @@ public class ViewerJTree extends JTree {
  */
 class MyJTreeCellRender implements TreeCellRenderer {
     private final ClassificationViewer classificationViewer;
+    private final Map<Integer, Set<Node>> id2NodesInInducedTree;
+
     private final JLabel label = new JLabel();
     private final LineBorder selectedBorder = (LineBorder) BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER);
 
-    public MyJTreeCellRender(ClassificationViewer classificationViewer) {
+    public MyJTreeCellRender(ClassificationViewer classificationViewer, Map<Integer, Set<Node>> id2NodesInInducedTree) {
         this.classificationViewer = classificationViewer;
+        this.id2NodesInInducedTree = id2NodesInInducedTree;
         label.setOpaque(true);
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         if (value instanceof ViewerJTree.MyJTreeNode) {
             final ViewerJTree.MyJTreeNode jNode = (ViewerJTree.MyJTreeNode) value;
-            final Node v = jNode.getV(); // node in full tree
+            final Node v = jNode.getV(); // node in full tree tree
             final Integer classId = (Integer) v.getInfo();
             int count = 0;
-            final Node w = classificationViewer.getANode(classId); // a node in the tree
-            if (w != null) {
-                final NodeData nodeData = classificationViewer.getNodeData(w);
+            Set<Node> inducedNodes = id2NodesInInducedTree.get(classId);
+            if (inducedNodes != null && inducedNodes.size() > 0) {
+                final NodeData nodeData = (NodeData) inducedNodes.iterator().next().getData();
                 if (nodeData != null)
                     count = nodeData.getCountSummarized();
             }
+
             final String name = (classificationViewer.getClassification().getName2IdMap().get((Integer) v.getInfo()));
 
             if (count > 0) {

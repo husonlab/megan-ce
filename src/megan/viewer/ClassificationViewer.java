@@ -1662,7 +1662,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public List<Integer> computeAllIdsInSearchOrder() {
         final PhyloTree tree = new PhyloTree();
-        classification.getFullTree().extractInducedTree(id2NodeData, new HashSet<Integer>(), tree, new HashMap<Integer, Set<Node>>());
+        computeInduceTreeWithNoCollapsedNodes(tree, new HashMap<Integer, Set<Node>>());
         final List<Integer> list = new ArrayList<>(tree.getNumberOfNodes());
         final Set<Integer> seen = new HashSet<>();
         final Stack<Node> stack = new Stack<>();
@@ -1679,6 +1679,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 stack.push(e.getTarget());
         }
         return list;
+    }
+
+    public void computeInduceTreeWithNoCollapsedNodes(PhyloTree tree, Map<Integer, Set<Node>> id2nodes) {
+        tree.clear();
+        classification.getFullTree().extractInducedTree(id2NodeData, new HashSet<Integer>(), tree, id2nodes);
     }
 
     public int getTotalAssignedReads() {

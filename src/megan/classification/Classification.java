@@ -19,7 +19,6 @@
 package megan.classification;
 
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
@@ -54,8 +53,7 @@ public class Classification {
         name2IdMap = new Name2IdMap();
         fullTree = new ClassificationFullTree(cName, name2IdMap);
         fullTree.setRoot(fullTree.newNode(-1));
-        final String[] idTags = ProgramProperties.get(cName + "Tags", createTags(cName)); // user can override tags using program property
-        idMapper = new IdMapper(cName, fullTree, idTags, name2IdMap);
+        idMapper = new IdMapper(cName, fullTree, name2IdMap);
         if (cName.equals(Taxonomy))
             TaxonomyData.setTaxonomyClassification(this);
     }
@@ -146,18 +144,4 @@ public class Classification {
             return cName.toLowerCase() + "|";
     }
 
-    /**
-     * create tags for parsing header line
-     *
-     * @param cName
-     * @return short tag
-     */
-    public static String[] createTags(String cName) {
-        String shortTag = createShortTag(cName);
-        String longTag = cName.toLowerCase() + "|";
-        if (shortTag.equals(longTag))
-            return new String[]{shortTag};
-        else
-            return new String[]{shortTag, longTag};
-    }
 }

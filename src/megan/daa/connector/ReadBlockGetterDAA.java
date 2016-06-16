@@ -47,6 +47,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
     private final long end;
 
     private final InputReaderLittleEndian reader;
+    private final InputReaderLittleEndian refReader;
 
     private final ByteInputBuffer inputBuffer = new ByteInputBuffer();
     private final DAAMatchRecord[] daaMatchRecords = new DAAMatchRecord[1000];
@@ -75,6 +76,10 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
         this.end = start + daaParser.getHeader().getBlockSize(daaParser.getHeader().getAlignmentsBlockIndex());
 
         reader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
+        refReader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
+
+        // todo: stream only doesn't work when need to grab reference headers
+        //reader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
 
         if (streamOnly)
             reader.seek(start);
@@ -111,7 +116,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
             }
             final ReadBlockDAA readBlock = (reuseableReadBlock == null ? new ReadBlockDAA() : reuseableReadBlock);
 
-            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, daaMatchRecords.length, inputBuffer, daaMatchRecords);
+            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, refReader, daaMatchRecords.length, inputBuffer, daaMatchRecords);
             readBlock.setFromQueryAndMatchRecords(pair.get1(), pair.get2(), wantReadSequences, wantMatches, minScore, maxExpected);
             return readBlock;
         }
@@ -127,6 +132,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
     public void close() {
         try {
             reader.close();
+            refReader.close();
         } catch (IOException e) {
             Basic.caught(e);
         }

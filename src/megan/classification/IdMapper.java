@@ -49,6 +49,21 @@ public class IdMapper {
     static public final int UNCLASSIFIED_ID = -4;
     static public final String UNCLASSIFIED_LABEL = "Unclassified";
 
+    /**
+     * create tags for parsing header line
+     *
+     * @param cName
+     * @return short tag
+     */
+    public static String[] createTags(String cName) {
+        String shortTag = Classification.createShortTag(cName);
+        String longTag = cName.toLowerCase() + "|";
+        if (shortTag.equals(longTag))
+            return new String[]{shortTag};
+        else
+            return new String[]{shortTag, longTag};
+    }
+
     public enum MapType {GI, Accession, Synonyms}
 
     private final String cName;
@@ -60,7 +75,6 @@ public class IdMapper {
     protected final EnumSet<MapType> activeMaps = EnumSet.noneOf(MapType.class);
 
     protected final ClassificationFullTree fullTree;
-    protected final String[] idTags;
     protected final Name2IdMap name2IdMap;
 
     protected boolean useTextParsing;
@@ -76,13 +90,11 @@ public class IdMapper {
     /**
      * constructor
      *
-     * @param idTags
      * @param name2IdMap
      */
-    public IdMapper(String name, ClassificationFullTree fullTree, String[] idTags, Name2IdMap name2IdMap) {
+    public IdMapper(String name, ClassificationFullTree fullTree, Name2IdMap name2IdMap) {
         this.cName = name;
         this.fullTree = fullTree;
-        this.idTags = idTags;
         this.name2IdMap = name2IdMap;
 
         algorithm = (ProgramProperties.get(cName + "UseLCAToParse", name.equals(Classification.Taxonomy)) ? IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
@@ -255,7 +267,10 @@ public class IdMapper {
     }
 
     public String[] getIdTags() {
-        return idTags;
+        if (ProgramProperties.get(cName + "ParseIds", false)) {
+            return ProgramProperties.get(cName + "Tags", createTags(cName)); // user can override tags using program property
+        } else
+            return new String[0];
     }
 
     public Name2IdMap getName2IdMap() {

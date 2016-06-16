@@ -24,7 +24,7 @@ import jloda.gui.director.IDirectableViewer;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
-import megan.classification.Classification;
+import megan.classification.IdMapper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -73,7 +73,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
         if (isSelected())
             execute("set idParsing=false cName=" + cName + ";");
         else {
-            String idTags = Basic.toString(ProgramProperties.get(cName + "Tags", Classification.createTags(cName)), " ");
+            String idTags = Basic.toString(ProgramProperties.get(cName + "Tags", IdMapper.createTags(cName)), " ");
             final JFrame frame = ((getParent() instanceof IDirectableViewer) ? ((IDirectableViewer) getParent()).getFrame() : null);
 
             idTags = JOptionPane.showInputDialog(frame, "Enter tag(s) used to identify ids (separated by spaces):", idTags);

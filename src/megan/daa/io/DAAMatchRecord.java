@@ -50,16 +50,21 @@ public class DAAMatchRecord {
      * parse from buffer
      *
      * @param buffer
+     * @param refIns input stream to read reference sequences
      * @return new position
      */
-    public void parseBuffer(ByteInputBuffer buffer, InputReaderLittleEndian ins) throws IOException {
+    public void parseBuffer(ByteInputBuffer buffer, InputReaderLittleEndian refIns) throws IOException {
         subjectId = buffer.readIntLittleEndian();
         int flag = buffer.read();
         score = buffer.readPacked(flag & 3);
         queryBegin = buffer.readPacked((flag >>> 2) & 3);
         subjectBegin = buffer.readPacked((flag >>> 4) & 3);
         transcript.read(buffer);
-        subjectName = daaHeader.getReference(subjectId, ins);
+        if (refIns != null)
+            subjectName = daaHeader.getReference(subjectId, refIns);
+        else
+            subjectName = "unknown".getBytes();
+
         totalSubjectLen = daaHeader.getRefLength(subjectId);
 
         switch (daaHeader.getAlignMode()) {

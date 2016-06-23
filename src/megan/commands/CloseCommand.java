@@ -21,17 +21,21 @@ package megan.commands;
 
 import jloda.graphview.GraphView;
 import jloda.gui.commands.ICommand;
+import jloda.gui.director.IDirectableViewer;
+import jloda.gui.director.IDirector;
 import jloda.gui.director.ProjectManager;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.Director;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  * close the window
@@ -55,7 +59,7 @@ public class CloseCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Close the window";
+        return "Close window";
     }
 
     /**
@@ -84,38 +88,64 @@ public class CloseCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase(getSyntax());
+        np.matchIgnoreCase("close");
+        final String what;
+        if (np.peekMatchAnyTokenIgnoreCase("what")) {
+            np.matchIgnoreCase("what=");
+            what = np.getWordMatchesIgnoringCase("current others");
+        } else
+            what = "current";
 
-        if (getViewer() instanceof MainViewer) {
-            if (getViewer().isLocked()) {
-                if (ProgramProperties.isUseGUI()) {
-                    int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Process running, close anyway?", "Close?", JOptionPane.YES_NO_OPTION);
-                    if (result != JOptionPane.YES_OPTION)
-                        return;
-                } else {
-                    System.err.println("Internal error: process running, close request ignored");
-                    return; // todo: could cause problems
+        if (what.equalsIgnoreCase("current")) {
+            if (getViewer() instanceof MainViewer) {
+                if (getViewer().isLocked()) {
+                    if (ProgramProperties.isUseGUI()) {
+                        int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Process running, close anyway?", "Close?", JOptionPane.YES_NO_OPTION);
+                        if (result != JOptionPane.YES_OPTION)
+                            return;
+                    } else {
+                        System.err.println("Internal error: process running, close request ignored");
+                        return; // todo: could cause problems
+                    }
+                }
+                if (ProjectManager.getNumberOfProjects() == 1)
+                    executeImmediately("quit;");
+                else {
+                    try {
+                        if (getDir().getDocument().getProgressListener() != null)
+                            getDir().getDocument().getProgressListener().setUserCancelled(true);
+                        getDir().close();
+                    } catch (CanceledException ex) {
+                        //Basic.caught(ex);
+                    }
+                }
+            } else if (getViewer() != null) {
+                getViewer().destroyView();
+
+            } else if (getParent() instanceof GraphView) {
+                ((GraphView) getParent()).getFrame().setVisible(false);
+            }
+        } else if (what.equalsIgnoreCase("others")) {
+            final ArrayList<IDirector> projects = new ArrayList<>();
+            projects.addAll(ProjectManager.getProjects());
+
+            for (IDirector aDir : projects) {
+                if (aDir == getDir()) {
+                    for (IDirectableViewer viewer : ((Director) aDir).getViewers()) {
+                        if (!(viewer instanceof MainViewer) && viewer != getViewer()) {
+                            viewer.destroyView();
+                        }
+                    }
+                } else if (ProjectManager.getProjects().contains(aDir) && !((Director) aDir).isLocked()) {
+                    int numberOfProjects = ProjectManager.getNumberOfProjects();
+                    aDir.executeImmediately("close;", ((Director) aDir).getCommandManager());
+                    if (numberOfProjects == ProjectManager.getNumberOfProjects()) {
+                        System.err.println("(Failed to close window, canceled?)");
+                        break;
+                    }
                 }
             }
-            if (ProjectManager.getNumberOfProjects() == 1)
-                executeImmediately("quit;");
-            else {
-                try {
-                    if (getDir().getDocument().getProgressListener() != null)
-                        getDir().getDocument().getProgressListener().setUserCancelled(true);
-                    getDir().close();
-                } catch (CanceledException ex) {
-                    //Basic.caught(ex);
-                }
-            }
-        } else if (getViewer() != null) {
-            getViewer().destroyView();
-
-        } else if (getParent() instanceof GraphView) {
-            ((GraphView) getParent()).getFrame().setVisible(false);
         }
-
-
     }
 
     /**
@@ -124,7 +154,7 @@ public class CloseCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        executeImmediately(getSyntax());
+        executeImmediately("close what=current;");
     }
 
     /**
@@ -143,7 +173,7 @@ public class CloseCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "close;";
+        return "close [what={current|others};";
     }
 
     /**

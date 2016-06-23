@@ -20,7 +20,7 @@ package megan.commands;
 
 import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
-import megan.core.ClassificationType;
+import megan.core.Document;
 import megan.fx.NotificationsInSwing;
 import megan.util.DiversityIndex;
 import megan.viewer.ViewerBase;
@@ -32,18 +32,19 @@ public class ComputeShannonIndexCommand extends CommandBase implements ICommand 
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute index=");
-
-        String indexName = np.getWordMatchesIgnoringCase(DiversityIndex.SHANNON + " " + DiversityIndex.SIMPSON_RECIPROCAL);
-
+        final String indexName = np.getWordMatchesIgnoringCase(DiversityIndex.SHANNON + " " + DiversityIndex.SIMPSON_RECIPROCAL);
         np.matchIgnoreCase(";");
 
         String message;
+        final Document doc = getDir().getDocument();
+        int numberSelectedNodes = ((ViewerBase) getViewer()).getNumberSelectedNodes();
+
         if (indexName.equalsIgnoreCase(DiversityIndex.SHANNON)) {
-            message = "Shannon-Weaver index for selected nodes:\n"
-                    + DiversityIndex.computeShannonWeaver((ViewerBase) getViewer(), getDir().getDocument().getProgressListener());
+            message = "Shannon-Weaver index for " + doc.getNumberOfSamples() + " samples based on " + numberSelectedNodes + " selected nodes:\n"
+                    + DiversityIndex.computeShannonWeaver((ViewerBase) getViewer(), doc.getProgressListener());
         } else if (indexName.equalsIgnoreCase(DiversityIndex.SIMPSON_RECIPROCAL)) {
-            message = "Simpson's reciprocal index for selected nodes:\n"
-                    + DiversityIndex.computeSimpsonReciprocal((ViewerBase) getViewer(), getDir().getDocument().getProgressListener());
+            message = "Simpson's reciprocal index for " + doc.getNumberOfSamples() + " samples based on " + numberSelectedNodes + " selected nodes:\n"
+                    + DiversityIndex.computeSimpsonReciprocal((ViewerBase) getViewer(), doc.getProgressListener());
         } else {
             message = "Error: Unknown index: " + indexName;
         }
@@ -60,7 +61,7 @@ public class ComputeShannonIndexCommand extends CommandBase implements ICommand 
     }
 
     public String getSyntax() {
-        return "compute index={" + DiversityIndex.SHANNON + "|" + DiversityIndex.SIMPSON_RECIPROCAL + "} [data={" + ClassificationType.Taxonomy + "|" + ClassificationType.SEED + "|" + ClassificationType.KEGG + "}];";
+        return "compute index={" + DiversityIndex.SHANNON + "|" + DiversityIndex.SIMPSON_RECIPROCAL + "};";
     }
 
     public void actionPerformed(ActionEvent event) {

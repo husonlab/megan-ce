@@ -46,7 +46,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Options", "Collapse Inspector;Expand Inspector;|;Sort Reads Alphabetically;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
                 ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;");
 

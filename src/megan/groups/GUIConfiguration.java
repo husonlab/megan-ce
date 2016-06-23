@@ -45,7 +45,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Find...;Find Again;|;Select All;Select None;|;From Previous Window;|;Add New Group;");
         menuConfig.defineMenu("Options", "Taxonomy Contrasts...;|;SEED Contrasts...;EGGNOG Contrasts...;KEGG Contrasts...;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
                 ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;");
 

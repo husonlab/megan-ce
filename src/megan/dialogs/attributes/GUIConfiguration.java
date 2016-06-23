@@ -49,7 +49,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("View", "Sort Taxa Alphabetically;Sort Taxa Numerically;|;" +
                 "Chart Microbial Attributes...;Show Definitions;|;Open NCBI Webpage Attributes;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                         "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
                         ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;"
         );

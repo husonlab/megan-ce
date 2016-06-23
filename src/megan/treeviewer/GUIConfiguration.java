@@ -47,7 +47,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Tree Viewer Cut;Tree Viewer Copy;Samples TRee Paste;|;Select All;Select None;Select Similar;From Previous Window;|;Find...;Find Again;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;Groups Viewer...;|;");
 
         menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));

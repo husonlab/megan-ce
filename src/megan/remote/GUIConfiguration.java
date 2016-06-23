@@ -43,7 +43,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Options", "Open Server...;Close Remote Server...;");
         menuConfig.defineMenu("Layout", "Expand Remote Browser Nodes;Collapse Remote Browser Nodes;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;");
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;");
 
         menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
 

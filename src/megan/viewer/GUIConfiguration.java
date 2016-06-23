@@ -66,7 +66,7 @@ public class GUIConfiguration {
                 "Uncollapse;Uncollapse Subtree;Uncollapse All;|;Show Names;Show IDs;Show Number of Reads Assigned;" +
                 "Show Number of Reads Summarized;|;Node Labels On;Node Labels Off;|;Show Intermediate Labels;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;Show Alignment...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;Groups Viewer...;" +
                 "|;Chart...;|;Chart Microbial Attributes...;|;Cluster Analysis...;|;Rarefaction Analysis...;|;");
 

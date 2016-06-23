@@ -44,7 +44,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Find...;Find Again;|;Browse Extractor;Include Summarized Reads;|;Extract;");
 
-        menuConfig.defineMenu("Window", "Reset Window Location;Set Window Size...;|;Message Window...;|;" +
+        menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
                 ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;");
 

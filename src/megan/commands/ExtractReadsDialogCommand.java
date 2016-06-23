@@ -24,7 +24,6 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.core.ClassificationType;
 import megan.core.Director;
 import megan.core.Document;
 import megan.data.IName2IdMap;
@@ -63,7 +62,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
         String cName = Classification.Taxonomy;
         if (np.peekMatchIgnoreCase("data")) {
             np.matchIgnoreCase("data=");
-            cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationType.values(), " "));
+            cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
 
         final ViewerBase viewer;

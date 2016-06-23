@@ -44,7 +44,7 @@ public class XIntArray {
      * @throws java.io.IOException
      */
     public XIntArray() throws IOException {
-        this(0L);
+        this((byte) 0);
     }
 
     /**

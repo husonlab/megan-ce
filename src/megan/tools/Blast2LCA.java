@@ -83,10 +83,10 @@ public class Blast2LCA {
      * @throws ClassNotFoundException
      */
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Applies the LCA alignment to reads and produce a taxonomic classification");
-        options.setAuthors("Daniel H. Huson");
+        final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA alignment to reads and produce a taxonomic classification");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
 

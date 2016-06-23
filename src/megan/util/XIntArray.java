@@ -70,11 +70,9 @@ public class XIntArray {
         SEGMENT_SIZE = (1 << (SEGMENT_BITS));
         SEGMENT_MASK = SEGMENT_SIZE - 1;
 
-        /*
         System.err.println("SEGMENT_BITS: " + SEGMENT_BITS);
         System.err.println("SEGMENT_MASK: " + Integer.toBinaryString(SEGMENT_MASK));
         System.err.println("SEGMENT_SIZE: " + SEGMENT_SIZE);
-        */
     }
 
     /**

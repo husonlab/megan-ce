@@ -81,9 +81,10 @@ public class DAA2RMA6 {
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
-        options.setAuthors("Daniel H. Huson");
+        final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
         options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
         final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file", new String[0]);

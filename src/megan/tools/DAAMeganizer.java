@@ -72,9 +72,10 @@ public class DAAMeganizer {
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
-        options.setAuthors("Daniel H. Huson");
+        final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
         options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         options.comment("Files");
         final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file", new String[0]);

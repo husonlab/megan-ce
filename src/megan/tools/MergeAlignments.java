@@ -102,6 +102,9 @@ public class MergeAlignments {
      */
     public void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Merges reads-to-reference alignments using reference alignment");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         final String referencesAlignmentFile = options.getOptionMandatory("-ref", "refInput", "file containing multiple alignment of references", "");
         String[] readsAlignmentFiles = options.getOption("-rea", "readAlignmentsFile", "Files containing alignments of reads to references", new String[0]);

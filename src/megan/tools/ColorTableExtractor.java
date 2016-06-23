@@ -70,6 +70,10 @@ public class ColorTableExtractor {
      */
     public void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Extract colors from image file");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
+
         final String inputFile = options.getOptionMandatory("-i", "in", "Input file", "");
         final String iconFile = options.getOption("-ic", "icon", "Output icon file", Basic.replaceFileSuffix(inputFile, "_16.gif"));
         final boolean noWhite = options.getOption("-nw", "noWhite", "No white color", true);

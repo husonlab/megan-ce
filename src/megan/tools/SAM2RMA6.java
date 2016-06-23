@@ -81,7 +81,9 @@ public class SAM2RMA6 {
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
+        final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");

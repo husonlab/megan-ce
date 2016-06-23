@@ -80,9 +80,10 @@ public class BLAST2RMA6 {
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Computes a MEGAN-RMA files from  BLAST (or similar) files");
-        options.setAuthors("Daniel H. Huson");
+        final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN-RMA files from  BLAST (or similar) files");
         options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
         final String[] blastFiles = options.getOptionMandatory("-i", "in", "Input BLAST file[s] (gzipped ok)", new String[0]);

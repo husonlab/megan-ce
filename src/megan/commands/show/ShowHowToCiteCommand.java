@@ -40,8 +40,9 @@ public class ShowHowToCiteCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
         new Message(getViewer().getFrame(),
-                "Please cite:\nD.H. Huson et al., MEGAN Community Edition - Interactive exploration and 2 analysis of large-scale microbiome sequencing data, under review\n" +
-                        "D.H. Huson et al., Integrative analysis of environmental sequences using MEGAN 4, Genome Res. 2011. 21:1552-1560.");
+                "Please cite:\n" +
+                        "D.H. Huson et al (2016) MEGAN Community Edition - Interactive exploration and 2 analysis of large-scale microbiome sequencing data,\n" +
+                        "PLoS Computational Biology 12(6): e1004957. doi:10.1371/journal. pcbi.1004957\n");
     }
 
     public void actionPerformed(ActionEvent event) {

@@ -78,7 +78,10 @@ public class HMM2Blastx {
      * @param args
      */
     public void run(String[] args) throws Exception {
-        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Converts HMM output to BLASTX");
+        final ArgsOptions options = new ArgsOptions(args, this, "Converts HMM output to BLASTX");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
         final String[] inputFiles = options.getOptionMandatory("-i", "input", "HMM  files", new String[0]);
         final String[] readsFiles = options.getOption("-r", "reads", "Reads files (to determine order of output)", new String[0]);

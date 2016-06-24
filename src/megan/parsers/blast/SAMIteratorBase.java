@@ -100,6 +100,27 @@ public class SAMIteratorBase {
     }
 
     /**
+     * gets the next token consisting only of letters, following tag1 and then tag2 in aLine. Treats spaces in tag as match 0 or 1 spaces...
+     *
+     * @param aLine
+     * @param tag1
+     * @return next token after tag
+     */
+    public static String getNextLetters(String aLine, String tag1, String tag2) {
+        int a = endOfTagMatch(aLine, tag1);
+        if (a >= 0) {
+            a = endOfTagMatch(aLine, a, tag2);
+            while (a < aLine.length() && Character.isWhitespace(aLine.charAt(a)))
+                a++;
+            int b = a;
+            while (b < aLine.length() && Character.isLetter(aLine.charAt(b)))
+                b++;
+            return aLine.substring(a, b);
+        }
+        return "";
+    }
+
+    /**
      * matches tag to string (allowing spaces inside tag to be missing in string)
      *
      * @param string

@@ -132,7 +132,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 line = nextLine();
                 final float percentIdentities = Basic.parseFloat(getNextToken(line, IDENTITIES, "("));
                 line = nextLine();
-                final String queryDirection = getNextToken(line, STRAND, "=");
+                final String queryDirection = getNextLetters(line, STRAND, "=");
                 final String refDirection = getNextToken(line, "/");
 
                 // skip line containing Strand

@@ -225,10 +225,15 @@ public class CommandManagerFX extends CommandManager {
             menuItem.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
                 @Override
                 public void handle(javafx.event.ActionEvent event) {
-                    if (command.getAutoRepeatInterval() > 0)
-                        command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                    else
-                        command.actionPerformed(ACTION_EVENT_FROM_FX);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (command.getAutoRepeatInterval() > 0)
+                                command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                            else
+                                command.actionPerformed(ACTION_EVENT_FROM_FX);
+                        }
+                    });
                 }
             });
             if (command.getDescription() != null)

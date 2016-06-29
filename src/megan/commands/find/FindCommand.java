@@ -139,6 +139,6 @@ public class FindCommand extends CommandBase implements ICheckBoxCommand {
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        executeImmediately("show findToolbar=true;");
+        execute("show findToolbar=" + (!isSelected()) + ";");
     }
 }

@@ -165,7 +165,7 @@ public class SamplesSpreadSheet {
                 spreadsheetView.getRowPickers().put(row, new Picker() {
                     public void onClick() {
                         final BitSet selectedRows = getSelectedSampleIndices();
-                        if (!selectedRows.get(theRow) || getNumberOfSelectedCols() > 0) {
+                        if (!selectedRows.get(theRow) /* || getNumberOfSelectedCols() > 0*/) {
                             spreadsheetView.getSelectionModel().clearSelection();
                             selectedRows.clear();
                             selectRow(theRow);
@@ -187,17 +187,22 @@ public class SamplesSpreadSheet {
                         changeColor.setHideOnClick(false);
                         colorPicker.setOnAction(new EventHandler<ActionEvent>() {
                             public void handle(ActionEvent t) {
-                                spreadsheetView.getSelectionModel().clearSelection();
-                                selectRow(theRow);
+                                if (!selectedRows.get(theRow)) {
+                                    spreadsheetView.getSelectionModel().clearSelection();
+                                    selectRow(theRow);
+                                }
 
-                                samplesViewer.getDocument().getSampleAttributeTable().putSampleColor(sample, Utilities.getColorAWT(colorPicker.getValue()));
+                                final Color color = colorPicker.getValue();
+                                System.out.println("New Color's RGB = " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
+                                final java.awt.Color colorAWT = Utilities.getColorAWT(color);
+                                for (int sr = selectedRows.nextSetBit(0); sr != -1; sr = selectedRows.nextSetBit(sr + 1)) {
+                                    final String sample = dataGrid.getRowName(sr);
+                                    samplesViewer.getDocument().getSampleAttributeTable().putSampleColor(sample, colorAWT);
+                                }
+
                                 rowContextMenu.hide();
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
+                                syncFromDocument();
                                         samplesViewer.getDocument().getDir().notifyUpdateViewer(IDirector.ALL);
-                                    }
-                                });
                             }
                         });
 

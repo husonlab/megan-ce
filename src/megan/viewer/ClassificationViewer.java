@@ -176,10 +176,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         statusBar = new StatusBar();
 
         frame = new JFrame();
-        frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+
+        getFrame().setIconImage(ProgramProperties.getProgramIcon().getImage());
 
         this.menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), getCommandManager());
-        frame.setJMenuBar(menuBar);
+        getFrame().setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
         if (!(this instanceof MainViewer))
@@ -199,23 +200,23 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         mainSplitPane.setOneTouchExpandable(true);
         mainSplitPane.setEnabled(true);
 
-        frame.getContentPane().setLayout(new BorderLayout());
+        getFrame().getContentPane().setLayout(new BorderLayout());
 
         JToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), getCommandManager());
-        frame.getContentPane().add(toolBar, BorderLayout.NORTH);
-        frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-        frame.getContentPane().add(statusBar, BorderLayout.SOUTH);
+        getFrame().getContentPane().add(toolBar, BorderLayout.NORTH);
+        getFrame().getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+        getFrame().getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-        searchManager = new SearchManager(dir, this, new ClassificationViewerSearcher(frame, getClassName(), this), false, true);
+        searchManager = new SearchManager(dir, this, new ClassificationViewerSearcher(getFrame(), getClassName(), this), false, true);
 
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        getFrame().pack();
+        getFrame().setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         final int[] geometry = ProgramProperties.get(ClassificationManager.getWindowGeometryKey(getClassName()), new int[]{100, 100, 800, 600});
         if (getClassName().equals(Classification.Taxonomy))
-            frame.setLocation(geometry[0] + (ProjectManager.getNumberOfProjects() > 0 ? 20 : 0), geometry[1] + (ProjectManager.getNumberOfProjects() > 0 ? 20 : 0));
+            getFrame().setLocation(geometry[0] + (ProjectManager.getNumberOfProjects() > 0 ? 20 : 0), geometry[1] + (ProjectManager.getNumberOfProjects() > 0 ? 20 : 0));
         else
-            frame.setLocationRelativeTo(MainViewer.getLastActiveFrame());
-        frame.setSize(geometry[2], geometry[3]);
+            getFrame().setLocationRelativeTo(MainViewer.getLastActiveFrame());
+        getFrame().setSize(geometry[2], geometry[3]);
 
         // add window listeners
         addComponentListener(new ComponentAdapter() {
@@ -227,8 +228,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 if ((event.getID() == ComponentEvent.COMPONENT_RESIZED || event.getID() == ComponentEvent.COMPONENT_MOVED) &&
                         (getFrame().getExtendedState() & JFrame.MAXIMIZED_HORIZ) == 0
                         && (getFrame().getExtendedState() & JFrame.MAXIMIZED_VERT) == 0) {
-                    ProgramProperties.put(ClassificationManager.getWindowGeometryKey(getClassName()), new int[]{frame.getLocation().x, frame.getLocation().y, frame.getSize().width,
-                                    frame.getSize().height}
+                    ProgramProperties.put(ClassificationManager.getWindowGeometryKey(getClassName()), new int[]{getFrame().getLocation().x, getFrame().getLocation().y, getFrame().getSize().width,
+                            getFrame().getSize().height}
                     );
                 }
             }
@@ -236,13 +237,18 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         getFrame().addWindowListener(new WindowAdapter() {
             public void windowActivated(WindowEvent event) {
-                //System.err.println(getTitle()+" activiated");
+                // System.err.println(getTitle()+" activiated");
                 //Basic.caught(new Exception());
 
-                MainViewer.setLastActiveFrame(frame);
+                MainViewer.setLastActiveFrame(getFrame());
                 if (Formatter.getInstance() != null) {
                     Formatter.getInstance().setViewer(dir, ClassificationViewer.this);
                 }
+
+                InputDialog inputDialog = InputDialog.getInstance();
+                if (inputDialog != null)
+                    inputDialog.setViewer(dir, ClassificationViewer.this);
+                requestFocus();
             }
 
             public void windowDeactivated(WindowEvent event) {
@@ -256,16 +262,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             public void windowClosing(WindowEvent e) {
                 if (dir.getDocument().getProgressListener() != null)
                     dir.getDocument().getProgressListener().setUserCancelled(true);
-                if (MainViewer.getLastActiveFrame() == frame)
+                if (MainViewer.getLastActiveFrame() == getFrame())
                     MainViewer.setLastActiveFrame(null);
-            }
-        });
-
-        getFrame().addWindowListener(new WindowAdapter() {
-            public void windowActivated(WindowEvent event) {
-                InputDialog inputDialog = InputDialog.getInstance();
-                if (inputDialog != null)
-                    inputDialog.setViewer(dir, ClassificationViewer.this);
             }
         });
 
@@ -350,7 +348,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         setupKeyListener();
         splitPane.setDividerLocation(1.0);
-        frame.setVisible(visible);
+        getFrame().setVisible(visible);
     }
 
     /**
@@ -418,11 +416,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (!findToolBar.isEnabled() && showFindToolBar) {
             mainPanel.add(findToolBar, BorderLayout.NORTH);
             findToolBar.setEnabled(true);
-            frame.getContentPane().validate();
+            getFrame().getContentPane().validate();
         } else if (findToolBar.isEnabled() && !showFindToolBar) {
             mainPanel.remove(findToolBar);
             findToolBar.setEnabled(false);
-            frame.getContentPane().validate();
+            getFrame().getContentPane().validate();
         }
         getCommandManager().updateEnableState();
         if (findToolBar.isEnabled())
@@ -548,8 +546,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         viewerJTable.update();
         viewerJTree.update();
-
-        requestFocus();
     }
 
 
@@ -602,18 +598,19 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         else
             newTitle += " - [" + dir.getID() + "] - " + ProgramProperties.getProgramVersion();
 
-        if (!frame.getTitle().equals(newTitle)) {
-            frame.setTitle(newTitle);
+        if (!getFrame().getTitle().equals(newTitle)) {
+            getFrame().setTitle(newTitle);
             ProjectManager.updateWindowMenus();
         }
     }
 
     /**
-     * gets the frame
+     * gets the getFrame()
      *
      * @return
      */
     public JFrame getFrame() {
+        // Basic.caught(new Exception());
         return frame;
     }
 
@@ -635,17 +632,17 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public void destroyView() throws CanceledException {
         ProgramProperties.put(ClassificationManager.getWindowGeometryKey(getClassName()), new int[]{
-                frame.getLocation().x, frame.getLocation().y, frame.getSize().width, frame.getSize().height});
+                getFrame().getLocation().x, getFrame().getLocation().y, getFrame().getSize().width, getFrame().getSize().height});
         SyncDataTableAndClassificationViewer.syncFormattingFromViewer2Summary(this, doc.getDataTable());
 
         searchManager.getFindDialogAsToolBar().close();
 
-        frame.setVisible(false);
+        getFrame().setVisible(false);
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         if (MainViewer.getLastActiveFrame() == this.getFrame())
             MainViewer.setLastActiveFrame(null);
         dir.removeViewer(this);
-        frame.dispose();
+        getFrame().dispose();
     }
 
 
@@ -668,7 +665,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         locked = true;
         statusBar.setText1("");
         statusBar.setText2("Busy...");
-        frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getCommandManager().setEnableCritical(false);
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
     }
@@ -692,9 +689,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     public void unlockUserInput() {
         locked = false;
         getCommandManager().setEnableCritical(true);
-        frame.setCursor(Cursor.getDefaultCursor());
         searchManager.getFindDialogAsToolBar().setEnableCritical(true);
-        frame.setCursor(Cursor.getDefaultCursor());
+        getFrame().setCursor(Cursor.getDefaultCursor());
         updateStatusBar();
     }
 

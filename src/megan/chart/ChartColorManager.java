@@ -226,7 +226,13 @@ public class ChartColorManager {
                 position = attributeState2position.size();
                 attributeState2position.put(attributeState, position);
             }
-            return colorTable.get(position);
+            if (attributeState2position.size() >= colorTable.size()) {
+                return colorTable.get(position);
+            } else { // scale to color table
+                int index = (position * colorTable.size()) / attributeState2position.size();
+                //System.err.println("Position: "+position+" -> "+index);
+                return colorTable.get(index);
+            }
         } else {
             return colorTable.get(attributeState.hashCode());
         }

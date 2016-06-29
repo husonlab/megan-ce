@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * select all nodes
+ * use colors
  * Daniel Huson, 6.2010
  */
 public class UseColorsCommand extends CommandBase implements ICheckBoxCommand {

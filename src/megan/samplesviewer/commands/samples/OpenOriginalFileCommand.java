@@ -22,6 +22,7 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.MeganFile;
 import megan.core.SampleAttributeTable;
 import megan.samplesviewer.SamplesViewer;
 
@@ -72,7 +73,14 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
                     for (String sample : viewer.getSamplesTable().getSelectedSamples()) {
                         Object source = viewer.getDocument().getSampleAttributeTable().get(sample, SampleAttributeTable.HiddenAttribute.Source.toString());
                         if (source != null) {
-                            return true;
+                            final MeganFile meganFile = new MeganFile();
+                            meganFile.setFileFromExistingFile(source.toString(), true);
+                            try {
+                                meganFile.checkFileOkToRead();
+                                return true;
+                            } catch (Exception ex) {
+                                // ignore
+                            }
                         }
                     }
                 }

@@ -227,14 +227,13 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     }
 
     /**
-     * ask view to rescan itself. This is method is wrapped into a runnable object
-     * and put in the swing event queue to avoid concurrent modifications.
+     * ask view to rescan itself
      *
      * @param what what should be updated? Possible values: Director.ALL or Director.TITLE
      */
     public void updateView(String what) {
-        if (!SwingUtilities.isEventDispatchThread())
-            System.err.println("updateView(): not in swing thread!");
+        // if (!SwingUtilities.isEventDispatchThread() && !Platform.isFxApplicationThread())
+        //     System.err.println("updateView(): not in Swing or FX thread!");
 
         if (what.equals(Director.ALL)) {
             samplesSpreadSheet.syncFromDocument();

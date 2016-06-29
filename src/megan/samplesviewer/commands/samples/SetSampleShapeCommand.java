@@ -18,6 +18,7 @@
  */
 package megan.samplesviewer.commands.samples;
 
+import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
@@ -127,16 +128,26 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
                     }
                 }
             }
+            final int whichFinal = which;
 
-            final ChoiceDialog<String> dialog = new ChoiceDialog<>(SetNodeShapeCommand.SHAPES[which], SetNodeShapeCommand.SHAPES);
-            dialog.setTitle("MEGAN choice");
-            dialog.setHeaderText("Choose shape to represent sample(s)");
-            dialog.setContentText("Shape:");
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    final ChoiceDialog<String> dialog = new ChoiceDialog<>(SetNodeShapeCommand.SHAPES[whichFinal], SetNodeShapeCommand.SHAPES);
+                    dialog.setTitle("MEGAN choice");
+                    dialog.setHeaderText("Choose shape to represent sample(s)");
+                    dialog.setContentText("Shape:");
 
-            final Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()) {
-                execute("set nodeShape=" + result.get() + " sample='" + Basic.toString(selected, "' '") + "';");
-            }
+                    final Optional<String> result = dialog.showAndWait();
+                    if (result.isPresent()) {
+                        execute("set nodeShape=" + result.get() + " sample='" + Basic.toString(selected, "' '") + "';");
+                    }
+                }
+            };
+            if (Platform.isFxApplicationThread())
+                runnable.run();
+            else
+                Platform.runLater(runnable);
         }
     }
 

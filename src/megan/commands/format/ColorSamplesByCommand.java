@@ -47,10 +47,10 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("colorBy attribute=");
-        String attribute = np.getWordRespectCase();
-        Document doc = ((Director) getDir()).getDocument();
+        final String attribute = np.getWordRespectCase();
+        final Document doc = ((Director) getDir()).getDocument();
 
-        java.util.Collection<String> samples;
+        final java.util.Collection<String> samples;
         if (getViewer() instanceof SamplesViewer) {
             samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamples();
         } else

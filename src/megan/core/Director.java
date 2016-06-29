@@ -145,21 +145,22 @@ public class Director implements IDirectableViewer, IDirector {
         synchronized (directorListeners) {
             for (IDirectorListener directorListener : directorListeners) {
                 final IDirectorListener d = directorListener;
+                final Runnable runnable = new Runnable() {
+                    public void run() {
+                        try {
+                            d.setUptoDate(false);
+                            d.updateView(what);
+                            d.setUptoDate(true);
+                        } catch (Exception ex) {
+                            Basic.caught(ex);
+                            d.setUptoDate(true);
+                        }
+                    }
+                };
 
                 try {
-                    // Put the rescan into the swing event queue
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            try {
-                                d.setUptoDate(false);
-                                d.updateView(what);
-                                d.setUptoDate(true);
-                            } catch (Exception ex) {
-                                Basic.caught(ex);
-                                d.setUptoDate(true);
-                            }
-                        }
-                    });
+                    if (!SwingUtilities.isEventDispatchThread())
+                        SwingUtilities.invokeLater(runnable);
                 } catch (Exception ex) {
                     Basic.caught(ex);
                     d.setUptoDate(true);
@@ -268,6 +269,7 @@ public class Director implements IDirectableViewer, IDirector {
     public boolean executeImmediately(final String command, CommandManager commandManager) {
         System.err.println("Executing: " + command);
         try {
+
             if (doc.getProgressListener() == null) {
                 ProgressListener progressListener = new ProgressPercentage();
                 doc.setProgressListener(progressListener);
@@ -364,7 +366,6 @@ public class Director implements IDirectableViewer, IDirector {
                     {
                         NotificationsInSwing.showInformation("Command completed (" + timeInSeconds + "s): " + command);
                     }
-
                 }
             });
         } else

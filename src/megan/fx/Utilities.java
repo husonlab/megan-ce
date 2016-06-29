@@ -601,7 +601,7 @@ public class Utilities {
      * @return AWT color
      */
     public static java.awt.Color getColorAWT(javafx.scene.paint.Color colorFX) {
-        return new java.awt.Color((float) colorFX.getRed(), (float) colorFX.getGreen(), (float) colorFX.getGreen());
+        return new java.awt.Color((float) colorFX.getRed(), (float) colorFX.getGreen(), (float) colorFX.getBlue());
     }
 
     /**

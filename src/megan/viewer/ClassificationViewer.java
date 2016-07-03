@@ -237,7 +237,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         getFrame().addWindowListener(new WindowAdapter() {
             public void windowActivated(WindowEvent event) {
-                // System.err.println(getTitle()+" activiated");
+                //System.err.println(getTitle()+" activiated");
                 //Basic.caught(new Exception());
 
                 MainViewer.setLastActiveFrame(getFrame());
@@ -248,9 +248,9 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 InputDialog inputDialog = InputDialog.getInstance();
                 if (inputDialog != null)
                     inputDialog.setViewer(dir, ClassificationViewer.this);
-                requestFocus();
+                ClassificationViewer.this.requestFocus();
             }
-
+            
             public void windowDeactivated(WindowEvent event) {
                 Collection<String> selectedLabels = getSelectedNodeLabels(false);
                 if (selectedLabels.size() != 0) {
@@ -666,6 +666,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         statusBar.setText1("");
         statusBar.setText2("Busy...");
         getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        getScrollPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        getLegendPanel().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getCommandManager().setEnableCritical(false);
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
     }
@@ -691,6 +693,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         getCommandManager().setEnableCritical(true);
         searchManager.getFindDialogAsToolBar().setEnableCritical(true);
         getFrame().setCursor(Cursor.getDefaultCursor());
+        getScrollPane().setCursor(Cursor.getDefaultCursor());
+        getLegendPanel().setCursor(Cursor.getDefaultCursor());
         updateStatusBar();
     }
 
@@ -1590,6 +1594,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     }
 
     public void setShowFindToolBar(boolean showFindToolBar) {
+        if (this.showFindToolBar && !showFindToolBar)
+            requestFocus();
         this.showFindToolBar = showFindToolBar;
     }
 

@@ -126,8 +126,8 @@ public class Megan6 {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    final Director dir = Director.newProject();
-                    final MainViewer viewer = dir.getMainViewer();
+                    final Director newDir = Director.newProject();
+                    final MainViewer viewer = newDir.getMainViewer();
                     viewer.getFrame().setVisible(true);
                     if (MessageWindow.getInstance() == null) {
                         MessageWindow.setInstance(
@@ -141,7 +141,7 @@ public class Megan6 {
 
                     System.err.println(Basic.stopCollectingStdErr());
                     MeganProperties.notifyListChange("RecentFiles");
-                    dir.executeOpen(treeFile, meganFiles, null);
+                    newDir.executeOpen(treeFile, meganFiles, null);
 
                 } catch (Exception e) {
                     Basic.caught(e);

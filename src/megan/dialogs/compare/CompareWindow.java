@@ -134,7 +134,7 @@ public class CompareWindow extends JDialog {
         JPanel modePanelLeft = new JPanel();
         modePanelLeft.setLayout(new BoxLayout(modePanelLeft, BoxLayout.Y_AXIS));
 
-        ButtonGroup group = new ButtonGroup();
+        final ButtonGroup group = new ButtonGroup();
         AbstractButton but = commandManager.getRadioButton(commandManager.getCommand(SetAbsoluteModeCommand.NAME));
         modePanelLeft.add(but);
         group.add(but);

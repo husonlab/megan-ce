@@ -52,7 +52,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         final String classificationName;
 
         if (viewer instanceof ClassificationViewer)
-            classificationName = ((ClassificationViewer) viewer).getClassName();
+            classificationName = viewer.getClassName();
         else
             classificationName = Classification.Taxonomy;
 

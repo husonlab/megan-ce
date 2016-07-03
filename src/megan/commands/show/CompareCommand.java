@@ -21,6 +21,7 @@ package megan.commands.show;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.ProjectManager;
 import jloda.util.Basic;
+import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
@@ -107,11 +108,12 @@ public class CompareCommand extends CommandBase implements ICommand {
                 doc.getProgressListener().setTasks("Comparison", "Loading files");
                 doc.getProgressListener().setMaximum(files.size());
                 for (String fileName : files) {
-                    Director newDir = Director.newProject(false, true);
-                    newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
-
-                    comparer.addDirector(newDir);
-                    toDelete.add(newDir);
+                    final Director newDir = Director.newProject(false, true);
+                    if (newDir != null) {
+                        newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
+                        comparer.addDirector(newDir);
+                        toDelete.add(newDir);
+                    }
                     doc.getProgressListener().incrementProgress();
                 }
             }
@@ -147,16 +149,29 @@ public class CompareCommand extends CommandBase implements ICommand {
      * @param event
      */
     public void actionPerformed(ActionEvent event) {
-        CompareWindow compareWindow = new CompareWindow(getViewer().getFrame(), getDir(), null);
+        final Director newDir = Director.newProject();
+        newDir.getMainViewer().getFrame().setVisible(true);
+        newDir.getMainViewer().setDoReInduce(true);
+        newDir.getMainViewer().setDoReset(true);
+
+        boolean ok = false;
+        final CompareWindow compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
         if (!compareWindow.isCanceled()) {
-            final Director newDir = Director.newProject();
-            newDir.getMainViewer().getFrame().setVisible(true);
-            newDir.getMainViewer().setDoReInduce(true);
-            newDir.getMainViewer().setDoReset(true);
             String command = compareWindow.getCommand();
-            if (command != null)
+            if (command != null) {
                 newDir.execute(command, newDir.getCommandManager());
+                ok = true;
+            }
         }
+        if (!ok) {
+            try {
+                newDir.close();
+            } catch (CanceledException e) {
+                e.printStackTrace();
+            }
+            ProjectManager.removeProject(newDir);
+        }
+
     }
 
     public boolean isApplicable() {

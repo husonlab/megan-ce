@@ -19,13 +19,11 @@
 package megan.commands.export;
 
 import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.ClassificationType;
 import megan.core.DataTable;
-import megan.core.Director;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
@@ -42,9 +40,6 @@ public class ExportCSVForAllLevels extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
 
         np.matchIgnoreCase("export taxonname_count");
-
-        Director dir = getDir();
-        IDirectableViewer viewer = getViewer();
 
         char separator = '\t';
         if (np.peekMatchIgnoreCase("separator")) {

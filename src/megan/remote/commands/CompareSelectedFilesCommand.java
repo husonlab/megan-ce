@@ -76,7 +76,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
                     newDir.getMainViewer().getFrame().setVisible(true);
                     newDir.getMainViewer().setDoReInduce(true);
                     newDir.getMainViewer().setDoReset(true);
-                    String command = compareWindow.getCommand();
+                    final String command = compareWindow.getCommand();
                     if (command != null)
                         newDir.execute(command, newDir.getCommandManager());
                     }

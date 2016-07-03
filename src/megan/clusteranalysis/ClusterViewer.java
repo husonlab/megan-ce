@@ -307,7 +307,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);
-        requestFocus();
     }
 
     /**
@@ -399,9 +398,28 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         if (what.equals(IDirector.ALL)) {
             if (graphView != null) {
-                group2Nodes.clear();
-
                 final PhyloTree graph = ((PhyloTree) graphView.getGraph());
+
+                group2Nodes.clear();
+                if (isPCoATab()) { // setup group 2 nodes in order that samples appear in table
+                    Map<String, Node> sample2node = new HashMap<>();
+                    for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                        sample2node.put(graphView.getNV(v).getLabel(), v);
+                    }
+                    for (String sample : getDir().getDocument().getSampleAttributeTable().getSampleOrder()) {
+                        String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(sample);
+                        if (groupId != null) {
+                            LinkedList<Node> nodes = group2Nodes.get(groupId);
+                            if (nodes == null) {
+                                nodes = new LinkedList<>();
+                                group2Nodes.put(groupId, nodes);
+                            }
+                            nodes.add(sample2node.get(sample));
+                        }
+                    }
+                }
+
+
                 if (frame.isActive())
                     graphView.requestFocus();
                 final Set<String> selectedLabels = doc.getSampleSelection().getAll();
@@ -425,18 +443,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                                 nv.setLabelBackgroundColor(color);
                         } else
                             nv.setBackgroundColor(null);
-                        if (isPCoATab()) {
-                            String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(graph.getLabel(v));
-                            if (groupId != null) {
-                                LinkedList<Node> nodes = group2Nodes.get(groupId);
-                                if (nodes == null) {
-                                    nodes = new LinkedList<>();
-                                    group2Nodes.put(groupId, nodes);
-                                }
-                                nodes.add(v);
 
-                            }
-                        }
                         if (selectedLabels.contains(nv.getLabel()))
                             toSelect.add(v);
                     }

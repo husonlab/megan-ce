@@ -27,6 +27,7 @@ import megan.core.ClassificationType;
 import megan.core.Director;
 import megan.data.*;
 import megan.viewer.MainViewer;
+import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;
@@ -72,21 +73,24 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    w.write(getTaxonLabelSource(dir, format, taxonId));
-                    long length = 0L;
-                    for (int id : allBelow) {
-                        if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                while (it.hasNext()) {
-                                    length += it.next().getReadLength();
+                    final String name = getTaxonLabelSource(dir, format, taxonId);
+                    if (name != null) {
+                        w.write(name);
+                        long length = 0L;
+                        for (int id : allBelow) {
+                            if (classificationBlock.getSum(id) > 0) {
+                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                                    while (it.hasNext()) {
+                                        length += it.next().getReadLength();
+                                    }
                                 }
+                                totalLines++;
+                                progressListener.checkForCancel();
                             }
-                            totalLines++;
-                            progressListener.checkForCancel();
-                        }
 
+                        }
+                        w.write(separator + "" + length + "\n");
                     }
-                    w.write(separator + "" + length + "\n");
                     progressListener.incrementProgress();
                 }
             }
@@ -137,11 +141,14 @@ public class CSVExportTaxonomy {
                         else
                             values = nodeData.getAssigned();
 
-                        w.write(getTaxonLabelSource(dir, format, taxonId));
-                        for (int num : values)
-                            w.write(separator + "" + num);
-                        w.write("\n");
-                        totalLines++;
+                        final String name = getTaxonLabelSource(dir, format, taxonId);
+                        if (name != null) {
+                            w.write(name);
+                            for (int num : values)
+                                w.write(separator + "" + num);
+                            w.write("\n");
+                            totalLines++;
+                        }
                     }
                     progressListener.incrementProgress();
                 }
@@ -344,18 +351,21 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    w.write(getTaxonLabelSource(dir, format, taxonId));
-                    for (int id : allBelow) {
-                        if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                while (it.hasNext()) {
-                                    String readId = it.next().getReadName();
-                                    w.write(separator + "" + readId);
+                    final String name = getTaxonLabelSource(dir, format, taxonId);
+                    if (name != null) {
+                        w.write(name);
+                        for (int id : allBelow) {
+                            if (classificationBlock.getSum(id) > 0) {
+                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                                    while (it.hasNext()) {
+                                        String readId = it.next().getReadName();
+                                        w.write(separator + "" + readId);
+                                    }
                                 }
+                                w.write("\n");
+                                totalLines++;
+                                progressListener.checkForCancel();
                             }
-                            w.write("\n");
-                            totalLines++;
-                            progressListener.checkForCancel();
                         }
                     }
                     progressListener.incrementProgress();
@@ -400,18 +410,21 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    w.write(getTaxonLabelSource(dir, format, taxonId));
-                    for (int id : allBelow) {
-                        if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                while (it.hasNext()) {
-                                    String readId = it.next().getReadName();
-                                    w.write(separator + "" + readId);
+                    final String name = getTaxonLabelSource(dir, format, taxonId);
+                    if (name != null) {
+                        w.write(name);
+                        for (int id : allBelow) {
+                            if (classificationBlock.getSum(id) > 0) {
+                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                                    while (it.hasNext()) {
+                                        String readId = it.next().getReadName();
+                                        w.write(separator + "" + readId);
+                                    }
                                 }
+                                w.write("\n");
+                                totalLines++;
+                                progressListener.checkForCancel();
                             }
-                            w.write("\n");
-                            totalLines++;
-                            progressListener.checkForCancel();
                         }
                     }
                     progressListener.incrementProgress();
@@ -461,6 +474,13 @@ public class CSVExportTaxonomy {
             return "\"" + TaxonomyData.getName2IdMap().get(taxonId) + "\"";
         else if (format.startsWith("taxonPath"))
             return "\"" + getPath(dir, taxonId) + "\"";
+        else if (format.startsWith("taxonRank")) {
+            final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
+            if (rankName != null)
+                return rankName + ":\"" + TaxonomyData.getName2IdMap().get(taxonId) + "\"";
+            else
+                return "No_rank:\"" + TaxonomyData.getName2IdMap().get(taxonId) + "\"";
+        }
         else
             return "" + taxonId;
     }

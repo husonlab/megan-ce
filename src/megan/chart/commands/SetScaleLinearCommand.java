@@ -49,7 +49,7 @@ public class SetScaleLinearCommand extends CommandBase implements ICheckBoxComma
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set chartScale=linear;");
+        execute("set chartScale=linear;");
     }
 
     public boolean isApplicable() {

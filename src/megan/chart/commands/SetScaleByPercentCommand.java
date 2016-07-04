@@ -41,7 +41,7 @@ public class SetScaleByPercentCommand extends CommandBase implements ICheckBoxCo
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set chartScale=percent;");
+        execute("set chartScale=percent;");
     }
 
     public boolean isApplicable() {

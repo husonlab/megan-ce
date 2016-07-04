@@ -96,6 +96,9 @@ public class BlastXMLParser extends DefaultHandler {
                 saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             saxParser.parse(Basic.getInputStreamPossiblyZIPorGZIP(blastFile.getPath()), this);
+        } catch (Exception e) {
+            blockQueue.abort(new MatchesText());
+            throw e;
         } finally {
             blockQueue.setInputDone();
         }

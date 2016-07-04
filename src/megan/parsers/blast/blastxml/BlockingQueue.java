@@ -53,6 +53,10 @@ public class BlockingQueue<T> {
         }
     }
 
+    public void abort(T sentinel) {
+        queue.add(sentinel);
+    }
+
     /**
      * take the next object of the queue, block if queue is empty and input is not done
      * @return next object or null

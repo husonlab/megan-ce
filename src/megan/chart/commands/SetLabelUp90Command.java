@@ -33,7 +33,7 @@ public class SetLabelUp90Command extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set labelorientation=up90;");
+        execute("set labelorientation=up90;");
     }
 
     public String getName() {

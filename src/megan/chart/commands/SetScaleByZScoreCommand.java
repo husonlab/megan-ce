@@ -41,7 +41,7 @@ public class SetScaleByZScoreCommand extends CommandBase implements ICheckBoxCom
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set chartScale=zscore;");
+        execute("set chartScale=zscore;");
     }
 
     public boolean isApplicable() {

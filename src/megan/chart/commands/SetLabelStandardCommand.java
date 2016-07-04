@@ -69,7 +69,7 @@ public class SetLabelStandardCommand extends CommandBase implements ICommand {
 
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set labelOrientation=standard;");
+        execute("set labelOrientation=standard;");
     }
 
     public String getName() {

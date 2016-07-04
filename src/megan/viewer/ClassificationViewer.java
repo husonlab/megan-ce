@@ -250,7 +250,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     inputDialog.setViewer(dir, ClassificationViewer.this);
                 ClassificationViewer.this.requestFocus();
             }
-            
+
             public void windowDeactivated(WindowEvent event) {
                 Collection<String> selectedLabels = getSelectedNodeLabels(false);
                 if (selectedLabels.size() != 0) {

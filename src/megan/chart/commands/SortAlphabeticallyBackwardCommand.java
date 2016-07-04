@@ -35,7 +35,7 @@ public class SortAlphabeticallyBackwardCommand extends CommandBase implements IC
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set sort=alphaBackward;");
+        execute("set sort=alphaBackward;");
     }
 
     public boolean isApplicable() {

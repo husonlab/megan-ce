@@ -461,7 +461,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         return theHeight;
     }
 
-    private double computeXAxisLabelHeightTransposed(Graphics2D gc) {
+    protected double computeXAxisLabelHeightTransposed(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
         double theHeight = 2 * gc.getFont().getSize();
         if (classLabelAngle != 0) {
@@ -517,7 +517,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         int d = 0;
         for (String series : getChartData().getSeriesNames()) {
             if (isShowXAxis()) {
-                double xLabel = x0 + (isGapBetweenBars() ? d + 1 * bigSpace : 0) + ((d + 0.5) * numberOfClasses) * xStep;
+                final double xLabel = leftMargin + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + ((d + 0.5) * numberOfClasses) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
                 Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();

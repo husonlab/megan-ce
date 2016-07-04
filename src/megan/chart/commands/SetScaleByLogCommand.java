@@ -41,7 +41,7 @@ public class SetScaleByLogCommand extends CommandBase implements ICheckBoxComman
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set chartScale=log;");
+        execute("set chartScale=log;");
     }
 
     public boolean isApplicable() {

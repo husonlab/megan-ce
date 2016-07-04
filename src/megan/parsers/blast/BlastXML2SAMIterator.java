@@ -65,7 +65,7 @@ public class BlastXML2SAMIterator implements ISAMIterator {
                 } catch (Exception e) {
                     Basic.caught(e);
                 } finally {
-                    executorService.shutdown();
+                    executorService.shutdownNow();
                 }
             }
         });

@@ -43,6 +43,7 @@ public class BlastXMLFileFilter extends FileFilterBase implements FilenameFilter
     private BlastXMLFileFilter() {
         add("xml");
         add("blastxml");
+        add("txt");
     }
 
 

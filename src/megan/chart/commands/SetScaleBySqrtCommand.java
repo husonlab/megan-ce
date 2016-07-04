@@ -41,7 +41,7 @@ public class SetScaleBySqrtCommand extends CommandBase implements ICheckBoxComma
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set chartScale=sqrt;");
+        execute("set chartScale=sqrt;");
     }
 
     public boolean isApplicable() {

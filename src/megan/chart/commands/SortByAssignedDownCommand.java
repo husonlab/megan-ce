@@ -39,7 +39,7 @@ public class SortByAssignedDownCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set sort=down;");
+        execute("set sort=down;");
     }
 
     public boolean isApplicable() {

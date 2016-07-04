@@ -52,7 +52,7 @@ public class SetSeriesLabelCommand extends CommandBase implements ICommand {
 
         String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set Series Label", viewer.getChartData().getSeriesLabel());
         if (result != null)
-            executeImmediately("set seriesLabel='" + result.replaceAll("'", "\"") + "';");
+            execute("set seriesLabel='" + result.replaceAll("'", "\"") + "';");
     }
 
     public boolean isApplicable() {

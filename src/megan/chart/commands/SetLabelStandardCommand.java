@@ -19,7 +19,7 @@
 package megan.chart.commands;
 
 import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
@@ -27,7 +27,13 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetLabelStandardCommand extends CommandBase implements ICommand {
+public class SetLabelStandardCommand extends CommandBase implements ICheckBoxCommand {
+    @Override
+    public boolean isSelected() {
+        ChartViewer chartViewer = (ChartViewer) getViewer();
+        return chartViewer.getClassLabelAngle() == 0;
+    }
+
     public String getSyntax() {
         return "set labelOrientation={standard|up45|up90|down45|down90};";
     }

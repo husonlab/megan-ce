@@ -616,6 +616,18 @@ public class SampleAttributeTable {
     }
 
     /**
+     * are there any groups defined?
+     * @return true, if at least one sample has a group
+     */
+    public boolean hasGroups() {
+        for (String sampleName : sampleOrder) {
+            if (getGroupId(sampleName) != null)
+                return true;
+        }
+        return false;
+    }
+
+    /**
      * put the label to be used for the sample
      *
      * @param sampleName

@@ -30,10 +30,7 @@ import megan.core.Document;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * draws a box chart
@@ -141,14 +138,16 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (x0 >= x1)
             return;
 
-
         final Document doc = getViewer().getDir().getDocument();
         final Map<String, Integer> group2index = new HashMap<>();
         final ArrayList<Pair<String, ArrayList<String>>> groupSamplePairs = new ArrayList<>();
+        final boolean hasGroups = doc.getSampleAttributeTable().hasGroups();
+        final Random random = new Random(666);
 
-        for (String sample : doc.getSampleAttributeTable().getSampleOrder()) {
-            if (chartData.getSeriesNames().contains(sample)) {
-                String groupId = doc.getSampleAttributeTable().getGroupId(sample);
+        for (String series : doc.getSampleAttributeTable().getSampleOrder()) {
+            series = cleanSeriesName(series);
+            if (chartData.getSeriesNames().contains(series)) {
+                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : series;
                 if (groupId != null) {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
@@ -157,7 +156,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                         group2index.put(groupId, index);
                     }
                     final ArrayList<String> list = groupSamplePairs.get(index).getSecond();
-                    list.add(sample);
+                    list.add(series);
                 }
             }
         }
@@ -192,6 +191,8 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
             int c = 0;
             for (String className : getChartData().getClassNames()) {
                 int xPos = (int) Math.round(x0 + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + (d * numberOfClasses + c) * xStep);
+                final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
+
 
                 if (isShowXAxis()) {
                     Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
@@ -202,8 +203,8 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                         apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
                     }
                     if (sgc != null)
-                        sgc.setCurrentItem(new String[]{className, null});
-                    if (getChartData().getChartSelection().isSelected(className, null)) {
+                        sgc.setCurrentItem(new String[]{null, className});
+                    if (isSelected) {
                         gc.setColor(ProgramProperties.SELECTION_COLOR);
                         fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                     }
@@ -253,19 +254,14 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{null, className});
 
-                final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
-
                 for (Iterator<Double> iterator = whiskerDataTransformed.iterator(); iterator.hasNext(); ) {
-                    double value = iterator.next();
-
-                    if (value > whiskerDataTransformed.getMin() && value < whiskerDataTransformed.getFirstQuarter() ||
-                            value < whiskerDataTransformed.getMax() && value > whiskerDataTransformed.getThirdQuarter()) {
+                    final double value = iterator.next();
+                    final int x = xPos + random.nextInt(6) - 3;
                         int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
                         gc.setColor(color);
-                        gc.fillOval(xPos - 2, height - 2, 4, 4);
+                    gc.fillOval(x - 1, height - 1, 2, 2);
                         gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
-                        gc.drawOval(xPos - 2, height - 2, 4, 4);
-                    }
+                    gc.drawOval(x - 1, height - 1, 2, 2);
                 }
 
                 gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
@@ -349,14 +345,16 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (x0 >= x1)
             return;
 
-
         final Document doc = getViewer().getDir().getDocument();
         final Map<String, Integer> group2index = new HashMap<>();
         final ArrayList<Pair<String, ArrayList<String>>> groupSamplePairs = new ArrayList<>();
+        final boolean hasGroups = doc.getSampleAttributeTable().hasGroups();
+        final Random random = new Random(666);
 
-        for (String sample : doc.getSampleAttributeTable().getSampleOrder()) {
-            if (chartData.getSeriesNames().contains(sample)) {
-                String groupId = doc.getSampleAttributeTable().getGroupId(sample);
+        for (String series : doc.getSampleAttributeTable().getSampleOrder()) {
+            series = cleanSeriesName(series);
+            if (chartData.getSeriesNames().contains(series)) {
+                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : series;
                 if (groupId != null) {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
@@ -365,7 +363,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                         group2index.put(groupId, index);
                     }
                     final ArrayList<String> list = groupSamplePairs.get(index).getSecond();
-                    list.add(sample);
+                    list.add(series);
                 }
             }
         }
@@ -392,31 +390,37 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
             for (String className : getChartData().getClassNames()) {
                 whiskerData.clear();
                 whiskerDataTransformed.clear();
-                int xPos = (int) Math.round(x0 + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + (c * numberOfGroups + d) * xStep);
+
+                final int xPos = (int) Math.round(x0 + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + (c * numberOfGroups + d) * xStep);
+                final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
 
                 for (String series : pair.getSecond()) {
-
                     if (isShowXAxis()) {
+                        if (group2index.size() > 1) {
+                            Point2D bpt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
+                            final Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
+                            if (classLabelAngle == 0) {
+                                bpt.setLocation(bpt.getX() - labelSize.getWidth() / 2, bpt.getY() + getFont().getSize() + 1);
+                            } else {
+                                bpt.setLocation(bpt.getX() - getFont().getSize() - 1, bpt.getY());
+                                if (classLabelAngle > Math.PI / 2) {
+                                    bpt = Geometry.translateByAngle(bpt, classLabelAngle, -labelSize.width);
+                                }
+                            }
+                            gc.setColor(Color.LIGHT_GRAY);
+                            drawString(gc, groupName, bpt.getX(), bpt.getY(), classLabelAngle);
+                        }
+
                         Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                        Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
+                        final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
                         if (classLabelAngle == 0) {
                             apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                         } else if (classLabelAngle > Math.PI / 2) {
                             apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
                         }
-                        gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
-                        drawString(gc, groupName, apt.getX(), apt.getY(), classLabelAngle);
-                        if (classLabelAngle == 0) {
-                            apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY() + 12);
-                        } else {
-                            apt.setLocation(apt.getX() + 15, apt.getY());
-                            if (classLabelAngle > Math.PI / 2) {
-                                apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
-                            }
-                        }
                         if (sgc != null)
-                            sgc.setCurrentItem(new String[]{className, null});
-                        if (getChartData().getChartSelection().isSelected(className, null)) {
+                            sgc.setCurrentItem(new String[]{null, className});
+                        if (isSelected) {
                             gc.setColor(ProgramProperties.SELECTION_COLOR);
                             fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                         }
@@ -462,19 +466,14 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{null, className});
 
-                final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
-
                 for (Iterator<Double> iterator = whiskerDataTransformed.iterator(); iterator.hasNext(); ) {
-                    double value = iterator.next();
-
-                    if (value > whiskerDataTransformed.getMin() && value < whiskerDataTransformed.getFirstQuarter() ||
-                            value < whiskerDataTransformed.getMax() && value > whiskerDataTransformed.getThirdQuarter()) {
-                        int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
-                        gc.setColor(color);
-                        gc.fillOval(xPos - 2, height - 2, 4, 4);
-                        gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
-                        gc.drawOval(xPos - 2, height - 2, 4, 4);
-                    }
+                    final double value = iterator.next();
+                    final int x = xPos + random.nextInt(6) - 3;
+                    int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
+                    gc.setColor(color);
+                    gc.fillOval(x - 1, height - 1, 2, 2);
+                    gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
+                    gc.drawOval(x - 1, height - 1, 2, 2);
                 }
 
                 gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
@@ -525,6 +524,13 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
             DrawableValue.drawValues(gc, valuesList, true, false);
             valuesList.clear();
         }
+    }
+
+    private String cleanSeriesName(String series) {
+        if (series.endsWith(".rma") || series.endsWith(".rma2") || series.endsWith(".rma6") || series.endsWith(".daa"))
+            return series.substring(0, series.lastIndexOf("."));
+        else
+            return series;
     }
 
 

@@ -82,7 +82,7 @@ public class ContigBuilder {
                     int readId = (Integer) contig[i].getInfo();
                     if (readId2ContainedReads[readId] != null) {
                         totalReads += readId2ContainedReads[readId].size();
-                        System.err.println("Contained: " + readId2ContainedReads[readId].size());
+                        // System.err.println("Contained: " + readId2ContainedReads[readId].size());
                     }
                     final Lane iLane = alignment.getLane(readId);
                     minCoordinate = Math.min(minCoordinate, iLane.getFirstNonGapPosition());

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,15 +19,27 @@
 package megan.chart.drawers;
 
 import jloda.gui.ColorTable;
+import jloda.gui.IPopupMenuModifier;
+import jloda.gui.commands.CommandManager;
 import jloda.util.Basic;
 import jloda.util.Geometry;
 import jloda.util.ProgramProperties;
+import jloda.util.Statistics;
 import megan.chart.IChartDrawer;
+import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.Table;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * draws a heatmap chart
@@ -36,15 +48,31 @@ import java.awt.geom.Point2D;
 public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     public static final String NAME = "HeatMap";
 
-    private int maxRadius = 30;
-    private boolean useRed = false;
-
     private ColorTable colorTable;
+
+    protected Table<String, String, Double> zScores = null;
+    private double zScoreCutoff = 3;
+
+    protected boolean inUpdateCoordinates = true;
+    private final ArrayList<String> previousSamples = new ArrayList<>();
+    private final ArrayList<String> previousClasses = new ArrayList<>();
+    private Future future; // used in recompute
+
+    private final ClusteringTree seriesClusteringTree;
+    private final ClusteringTree classesClusteringTree;
+
+    private final int treeSpace = 100;
+
+    private boolean previousTranspose;
 
     /**
      * constructor
      */
     public HeatMapDrawer() {
+        getSupportedScalingTypes().add(ChartViewer.ScalingType.ZSCORE);
+        seriesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.SERIES, ClusteringTree.SIDE.TOP);
+        classesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.CLASSES, ClusteringTree.SIDE.RIGHT);
+        previousTranspose = isTranspose();
     }
 
     /**
@@ -62,14 +90,55 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         int y1 = topMargin;
 
         int x0 = leftMargin;
-        int x1 = getWidth() - rightMargin;
+        int scaleWidth = 30;
+        int x1 = getWidth() - rightMargin - scaleWidth;
         if (x0 >= x1)
             return;
 
-        int numberOfDataSets = getChartData().getNumberOfSeries();
+        if (inUpdateCoordinates) {
+            gc.setFont(getFont("Default"));
+            gc.setColor(Color.LIGHT_GRAY);
+            gc.drawString("Computing z-scores...", x0, y1 + 20);
+            viewer.getScrollPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            return;
+        } else {
+            viewer.getScrollPane().setCursor(Cursor.getDefaultCursor());
+        }
+
+
+        int numberOfSeries = getChartData().getNumberOfSeries();
         int numberOfClasses = getChartData().getNumberOfClasses();
 
-        double xStep = (x1 - x0) / (double) numberOfDataSets;
+        final Collection<String> seriesOrder;
+        final Collection<String> classesOrder;
+        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+            x1 -= treeSpace;
+            if (sgc == null)
+                drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
+            y1 += treeSpace;
+
+            {
+                int width = (int) ((x1 - x0) / (numberOfSeries + 1.0) * numberOfSeries);
+                int xStart = x0 + ((x1 - x0) - width) / 2;
+                final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+                seriesClusteringTree.paint(gc, rect);
+                seriesOrder = seriesClusteringTree.getLabelOrder();
+            }
+            {
+                int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
+                int yStart = y0 + ((y1 - y0) - height) / 2;
+                final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+                classesClusteringTree.paint(gc, rect);
+                classesOrder = classesClusteringTree.getLabelOrder();
+            }
+        } else {
+            seriesOrder = getChartData().getSeriesNames();
+            classesOrder = getChartData().getClassNames();
+            if (sgc == null)
+                drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
+        }
+
+        double xStep = (x1 - x0) / (double) numberOfSeries;
         double yStep = (y0 - y1) / (double) (numberOfClasses);
 
         double maxValue = getChartData().getRange().get2().doubleValue();
@@ -87,7 +156,8 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         // main drawing loop:
         {
             int d = 0;
-            for (String series : getChartData().getSeriesNames()) {
+
+            for (String series : seriesOrder) {
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
@@ -97,7 +167,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 } else if (classLabelAngle > Math.PI / 2) {
                     apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
                 }
-                if (getChartData().getChartSelection().isSelected(series, null)) {
+                if (getChartData().getChartSelection().isSelectedSeries(series)) {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                 }
@@ -109,7 +179,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                     sgc.clearCurrentItem();
                 }
                 int c = 0;
-                for (String className : getChartData().getClassNames()) {
+                for (String className : classesOrder) {
                     Color color;
                     if (scalingType == ChartViewer.ScalingType.PERCENT) {
                         double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
@@ -118,28 +188,19 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             value = 0;
                         else
                             value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) (1000 * value), (int) (1000 * maxValue));
                     } else if (scalingType == ChartViewer.ScalingType.LOG) {
                         double value = getChartData().getValueAsDouble(series, className);
-                        if (useRed)
-                            color = Black2RedGradient.getColorLogScale((int) value, maxValue, inverseMaxValueLog);
-                        else
-                            color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
+                        color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
                     } else if (scalingType == ChartViewer.ScalingType.SQRT) {
                         double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) value, (int) maxValue);
+                    } else if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+                        double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className)));
+                        color = colorTable.getColor((int) (value + zScoreCutoff), (int) (2 * zScoreCutoff));
                     } else {
                         double value = getChartData().getValueAsDouble(series, className);
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) value, (int) maxValue);
                     }
                     gc.setColor(color);
 
@@ -147,10 +208,14 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
+                    if (isGapBetweenBars()) {
+                        gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
+                    } else
+                        gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
                     if (sgc != null)
                         sgc.clearCurrentItem();
-                    boolean isSelected = getChartData().getChartSelection().isSelected(series, className);
+                    boolean isSelected = getChartData().getChartSelection().isSelectedSeries(series)
+                            || getChartData().getChartSelection().isSelectedClass(className);
                     if (isSelected) {
                         gc.setStroke(HEAVY_STROKE);
                         gc.setColor(ProgramProperties.SELECTION_COLOR);
@@ -158,7 +223,11 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         gc.setStroke(NORMAL_STROKE);
                     }
                     if (showValues || isSelected) {
-                        String aLabel = "" + (int) getChartData().getValueAsDouble(series, className);
+                        String aLabel;
+                        if (scalingType == ChartViewer.ScalingType.ZSCORE)
+                            aLabel = String.format("%.2f", zScores.get(series, className));
+                        else
+                            aLabel = "" + (int) getChartData().getValueAsDouble(series, className);
                         valuesList.add(new DrawableValue(aLabel, rect[0] + rect[2] / 2, rect[1] + rect[3] / 2, isSelected));
                     }
                     c++;
@@ -167,23 +236,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             }
         }
         gc.setColor(Color.WHITE);
-
-        if (isGapBetweenBars()) {
-
-            gc.drawLine(x0, y0, x1, y0);
-            for (int c = 1; c < numberOfClasses; c++) {
-                int y = (int) Math.round(y0 - c * yStep);
-                gc.drawLine(x0, y, x1, y);
-            }
-            gc.drawLine(x0, y1, x1, y1);
-
-            gc.drawLine(x0, y0, x0, y1);
-            for (int d = 1; d < numberOfDataSets; d++) {
-                int x = (int) Math.round(x0 + d * xStep);
-                gc.drawLine(x, y0, x, y1);
-            }
-            gc.drawLine(x1, y0, x1, y1);
-        }
 
         if (valuesList.size() > 0) {
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
@@ -207,12 +259,52 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         int y1 = topMargin;
 
         int x0 = leftMargin;
-        int x1 = getWidth() - rightMargin;
+        int scaleWidth = 30;
+        int x1 = getWidth() - rightMargin - scaleWidth;
         if (x0 >= x1)
             return;
 
+        if (inUpdateCoordinates) {
+            gc.setFont(getFont("Default"));
+            gc.setColor(Color.LIGHT_GRAY);
+            gc.drawString("Computing z-scores...", x0, y1 + 20);
+            viewer.getScrollPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            return;
+        } else
+            viewer.getScrollPane().setCursor(Cursor.getDefaultCursor());
+
         int numberOfSeries = getChartData().getNumberOfSeries();
         int numberOfClasses = getChartData().getNumberOfClasses();
+
+        final Collection<String> seriesOrder;
+        final Collection<String> classesOrder;
+
+        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+            x1 -= treeSpace;
+            if (sgc == null)
+                drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
+            y1 += treeSpace;
+
+            {
+                int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
+                int xStart = x0 + ((x1 - x0) - width) / 2;
+                final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+                classesClusteringTree.paint(gc, rect);
+                classesOrder = classesClusteringTree.getLabelOrder();
+            }
+            {
+                int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
+                int yStart = y0 + ((y1 - y0) - height) / 2;
+                final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+                seriesClusteringTree.paint(gc, rect);
+                seriesOrder = seriesClusteringTree.getLabelOrder();
+            }
+        } else {
+            seriesOrder = getChartData().getSeriesNames();
+            classesOrder = getChartData().getClassNames();
+            if (sgc == null)
+                drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
+        }
 
         double xStep = (x1 - x0) / (double) numberOfClasses;
         double yStep = (y0 - y1) / (double) numberOfSeries;
@@ -228,10 +320,11 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         } else if (scalingType == ChartViewer.ScalingType.PERCENT)
             maxValue = 100;
 
+
         // main drawing loop:
         {
             int d = 0;
-            for (String className : getChartData().getClassNames()) {
+            for (String className : classesOrder) {
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
@@ -240,7 +333,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 } else if (classLabelAngle > Math.PI / 2) {
                     apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
                 }
-                if (getChartData().getChartSelection().isSelected(null, className)) {
+                if (getChartData().getChartSelection().isSelectedClass(className)) {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                 }
@@ -254,7 +347,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 }
 
                 int c = 0;
-                for (String series : getChartData().getSeriesNames()) {
+                for (String series : seriesOrder) {
                     Color color;
                     if (scalingType == ChartViewer.ScalingType.PERCENT) {
                         double total = getChartData().getTotalForClassIncludingDisabledSeries(className);
@@ -263,28 +356,19 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             value = 0;
                         else
                             value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) value, (int) maxValue);
                     } else if (scalingType == ChartViewer.ScalingType.LOG) {
                         double value = getChartData().getValueAsDouble(series, className);
-                        if (useRed)
-                            color = Black2RedGradient.getColorLogScale((int) value, maxValue, inverseMaxValueLog);
-                        else
-                            color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
+                        color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
                     } else if (scalingType == ChartViewer.ScalingType.SQRT) {
                         double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) value, (int) maxValue);
+                    } else if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+                        double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className)));
+                        color = colorTable.getColor((int) (value + zScoreCutoff), (int) (2 * zScoreCutoff));
                     } else {
                         double value = getChartData().getValueAsDouble(series, className);
-                        if (useRed)
-                            color = Black2RedGradient.getColor((int) value, (int) maxValue);
-                        else
-                            color = colorTable.getColor((int) value, (int) maxValue);
+                        color = colorTable.getColor((int) value, (int) maxValue);
                     }
                     gc.setColor(color);
 
@@ -292,10 +376,14 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
+                    if (isGapBetweenBars()) {
+                        gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
+                    } else
+                        gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
                     if (sgc != null)
                         sgc.clearCurrentItem();
-                    boolean isSelected = getChartData().getChartSelection().isSelected(series, className);
+                    boolean isSelected = getChartData().getChartSelection().isSelectedSeries(series)
+                            || getChartData().getChartSelection().isSelectedClass(className);
                     if (isSelected) {
                         gc.setStroke(HEAVY_STROKE);
                         gc.setColor(ProgramProperties.SELECTION_COLOR);
@@ -303,43 +391,24 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         gc.setStroke(NORMAL_STROKE);
                     }
                     if (showValues || isSelected) {
-                        String label = "" + (int) getChartData().getValueAsDouble(series, className);
-                        valuesList.add(new DrawableValue(label, rect[0] - rect[2] / 2, rect[1] + rect[3] / 2, isSelected));
+                        String aLabel;
+                        if (scalingType == ChartViewer.ScalingType.ZSCORE)
+                            aLabel = String.format("%.2f", zScores.get(series, className));
+                        else
+                            aLabel = "" + (int) getChartData().getValueAsDouble(series, className);
+                        valuesList.add(new DrawableValue(aLabel, rect[0] - rect[2] / 2, rect[1] + rect[3] / 2, isSelected));
                     }
                     c++;
                 }
                 d++;
             }
         }
-        gc.setColor(Color.WHITE);
-
-        gc.drawLine(x0, y0, x1, y0);
-        for (int c = 1; c < numberOfSeries; c++) {
-            int y = (int) Math.round(y0 - c * yStep);
-            gc.drawLine(x0, y, x1, y);
-        }
-        gc.drawLine(x0, y1, x1, y1);
-
-        gc.drawLine(x0, y0, x0, y1);
-        for (int d = 1; d < numberOfClasses; d++) {
-            int x = (int) Math.round(x0 + d * xStep);
-            gc.drawLine(x, y0, x, y1);
-        }
-        gc.drawLine(x1, y0, x1, y1);
 
         if (valuesList.size() > 0) {
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
             DrawableValue.drawValues(gc, valuesList, true, true);
             valuesList.clear();
         }
-    }
-
-    public int getMaxRadius() {
-        return maxRadius;
-    }
-
-    public void setMaxRadius(int maxRadius) {
-        this.maxRadius = maxRadius;
     }
 
     /**
@@ -378,6 +447,17 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
 
+        final Collection<String> seriesOrder;
+        final Collection<String> classesOrder;
+
+        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+            y1 += treeSpace;
+            seriesOrder = seriesClusteringTree.getLabelOrder();
+            classesOrder = classesClusteringTree.getLabelOrder();
+        } else {
+            seriesOrder = getChartData().getSeriesNames();
+            classesOrder = getChartData().getClassNames();
+        }
         /*
         if (getyAxisLabel() != null) {
             gc.setColor(Color.BLACK);
@@ -394,7 +474,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 return;
 
             int longest = 0;
-            for (String series : getChartData().getSeriesNames()) {
+            for (String series : seriesOrder) {
                 String label = seriesLabelGetter.getLabel(series);
                 longest = Math.max(longest, Basic.getStringSize(gc, label, gc.getFont()).getSize().width);
             }
@@ -406,13 +486,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             int numberOfDataSets = getChartData().getNumberOfSeries();
             double yStep = (y0 - y1) / (numberOfDataSets);
             int d = 0;
-            for (String series : getChartData().getSeriesNames()) {
+            for (String series : seriesOrder) {
                 String label = seriesLabelGetter.getLabel(series);
                 Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (d + 0.5) * yStep);
                 if (doDraw) {
-                    if (getChartData().getChartSelection().isSelected(series, null)) {
+                    if (getChartData().getChartSelection().isSelectedSeries(series)) {
                         gc.setColor(ProgramProperties.SELECTION_COLOR);
                         fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                     }
@@ -434,7 +514,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             }
         } else {
             int longest = 0;
-            for (String className : getChartData().getClassNames()) {
+            for (String className : classesOrder) {
                 longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
             }
             int right = Math.max(leftMargin, longest + 5);
@@ -444,12 +524,12 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             int numberOfClasses = getChartData().getNumberOfClasses();
             double yStep = (y0 - y1) / (double) numberOfClasses;
             int c = 0;
-            for (String className : getChartData().getClassNames()) {
+            for (String className : classesOrder) {
                 Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (c + 0.5) * yStep);
                 if (doDraw) {
-                    if (getChartData().getChartSelection().isSelected(null, className)) {
+                    if (getChartData().getChartSelection().isSelectedClass(className)) {
                         gc.setColor(ProgramProperties.SELECTION_COLOR);
                         fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                     }
@@ -476,6 +556,310 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         }
     }
 
+    /**
+     * draw scale bar
+     *
+     * @param gc
+     * @param x
+     * @param width
+     * @param y
+     * @param height
+     */
+    protected void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
+        final int x0 = x + Math.max(10, width - 25);
+
+        int xLabel = x0 + 15;
+        int boxWidth = 10;
+        int boxHeight = Math.min(getScalingType() == ChartViewer.ScalingType.ZSCORE ? treeSpace - 12 : 150, height - 15);
+
+        int y0 = y;
+
+
+        for (int i = 0; i <= boxHeight; i++) {
+            float p = 1f - (float) i / (float) boxHeight; // is between 1 and 0
+            final Color color = getChartColors().getHeatMapTable().getColor(Math.round(1000 * p), 1000);
+            gc.setColor(color);
+            gc.drawLine(x0, y0 + i, x0 + boxWidth, y0 + i);
+        }
+        gc.setColor(Color.BLACK);
+
+        gc.drawRect(x0, y0, boxWidth, boxHeight);
+
+        final double max;
+        final double min;
+        final double step;
+        final double yStep;
+        final String format;
+
+        switch (getScalingType()) {
+            case ZSCORE:
+                gc.drawString("z-score", x0, y - 5);
+                max = zScoreCutoff;
+                min = -zScoreCutoff;
+                step = 1;
+                yStep = boxHeight / (2.0 * zScoreCutoff);
+                format = "%+1.1f";
+                break;
+            case PERCENT:
+                gc.drawString("%", x0, y - 5);
+                max = 100;
+                min = 0;
+                step = 20;
+                yStep = boxHeight / 5;
+                format = "%.0f";
+                break;
+            case LINEAR: {
+                double maxValue = 0;
+                for (String series : getChartData().getSeriesNames()) {
+                    maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
+                }
+                gc.drawString("Count", x0, y - 5);
+                int tens = 1;
+                int factor = 1;
+                while (factor * tens < maxValue) {
+                    if (factor < 9)
+                        factor++;
+                    else {
+                        tens *= 10;
+                        factor = 1;
+                    }
+                }
+                max = factor * tens;
+                min = 0;
+                if (factor >= 4) {
+                    step = tens;
+                    yStep = boxHeight / factor;
+                } else {
+                    step = tens / 2;
+                    yStep = boxHeight / (2 * factor);
+                }
+                format = "%,.0f";
+                break;
+            }
+            case LOG: {
+                double maxValue = 0;
+                for (String series : getChartData().getSeriesNames()) {
+                    maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
+                }
+                gc.drawString("Log", x0, y - 5);
+                int tens = 1;
+                int factor = 1;
+                while (factor * tens < maxValue) {
+                    if (factor < 9)
+                        factor++;
+                    else {
+                        tens *= 10;
+                        factor = 1;
+                    }
+                }
+                max = factor * tens;
+                min = 1;
+                format = "%,.0f";
+
+                double q = boxHeight / Math.log10(factor * tens);
+
+                gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+                boolean first = true;
+                for (double p = max; p >= min; p /= 10) {
+                    double yy = y0 + boxHeight - q * Math.log10(p);
+                    gc.drawString(String.format(format, p), xLabel, Math.round(yy + gc.getFont().getSize() / 2));
+                    if (first) {
+                        p /= factor;
+                        first = false;
+                    }
+                }
+                return;
+            }
+            case SQRT: {
+                double maxValue = 0;
+                for (String series : getChartData().getSeriesNames()) {
+                    maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
+                }
+                gc.drawString("Sqrt", x0, y - 5);
+                int tens = 1;
+                int factor = 1;
+                while (factor * tens < maxValue) {
+                    if (factor < 9)
+                        factor++;
+                    else {
+                        tens *= 10;
+                        factor = 1;
+                    }
+                }
+                max = factor * tens;
+                min = 0;
+                if (factor >= 4) {
+                    step = tens;
+                } else {
+                    step = tens / 2;
+                }
+                format = "%,.0f";
+
+                double q = boxHeight / Math.sqrt(factor * tens);
+
+                gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+                for (double p = min; p <= max; p += step) {
+                    double yy = y0 + boxHeight - q * Math.sqrt(p);
+                    gc.drawString(String.format(format, p), xLabel, Math.round(yy + gc.getFont().getSize() / 2));
+                }
+                return;
+            }
+            default: {
+                double maxValue = 0;
+                for (String series : getChartData().getSeriesNames()) {
+                    maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
+                }
+                gc.drawString("Count", x0, y - 5);
+                int tens = 1;
+                int factor = 1;
+                while (factor * tens < maxValue) {
+                    if (factor < 9)
+                        factor++;
+                    else {
+                        tens *= 10;
+                        factor = 1;
+                    }
+                }
+                max = factor * tens;
+                min = 0;
+                step = max;
+                yStep = boxHeight;
+                format = "%,.0f";
+                break;
+            }
+        }
+        gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+        for (double p = max; p >= min; p -= step) {
+            gc.drawString(String.format(format, p), xLabel, y0 + gc.getFont().getSize() / 2);
+            y0 += yStep;
+        }
+    }
+
+    /**
+     * do we need to recompute coordinates?
+     *
+     * @return true, if coordinates need to be recomputed
+     */
+    private boolean mustUpdateCoordinates() {
+        boolean mustUpdate = (zScores == null);
+
+        if (previousTranspose != isTranspose()) {
+            mustUpdate = true;
+            previousTranspose = isTranspose();
+        }
+
+        if (!mustUpdate && scalingType == ChartViewer.ScalingType.ZSCORE && getChartData().getNumberOfClasses() > 0 &&
+                getChartData().getNumberOfSeries() > 0 && zScores.size() == 0) {
+            mustUpdate = true;
+        }
+
+        final ArrayList<String> currentClasses = new ArrayList<>();
+        currentClasses.addAll(getChartData().getClassNames());
+        if (!previousClasses.equals(currentClasses)) {
+            mustUpdate = true;
+            previousClasses.clear();
+            previousClasses.addAll(currentClasses);
+        }
+        final ArrayList<String> currentSamples = new ArrayList<>();
+        currentSamples.addAll(getChartData().getSeriesNames());
+        if (!previousSamples.equals(currentSamples)) {
+            mustUpdate = true;
+            previousSamples.clear();
+            previousSamples.addAll(currentSamples);
+        }
+        return mustUpdate;
+    }
+
+    /**
+     * updates the view
+     */
+    public void updateView() {
+        if (mustUpdateCoordinates()) {
+            if (future != null) {
+                future.cancel(true);
+                future = null;
+            }
+            inUpdateCoordinates = true;
+            future = executorService.submit(new Runnable() {
+                public void run() {
+                    try {
+                        updateCoordinates();
+                        if (SwingUtilities.isEventDispatchThread()) {
+                            inUpdateCoordinates = false;
+                            viewer.repaint();
+                            future = null;
+                        } else {
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                public void run() {
+                                    inUpdateCoordinates = false;
+                                    viewer.repaint();
+                                    future = null;
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        inUpdateCoordinates = false;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * force update
+     */
+    @Override
+    public void forceUpdate() {
+        zScores = null;
+        previousClasses.clear();
+        previousSamples.clear();
+        seriesClusteringTree.clear();
+        classesClusteringTree.clear();
+    }
+
+    /**
+     * computes z-scores on scale of -zScoreCutoff to zScoreCutoff
+     */
+    protected void updateCoordinates() {
+        System.err.println("Updating...");
+        zScores = new Table<>();
+
+        if (isTranspose()) {
+            classesClusteringTree.setRootSide(ClusteringTree.SIDE.TOP);
+            seriesClusteringTree.setRootSide(ClusteringTree.SIDE.RIGHT);
+        } else {
+            classesClusteringTree.setRootSide(ClusteringTree.SIDE.RIGHT);
+            seriesClusteringTree.setRootSide(ClusteringTree.SIDE.TOP);
+
+        }
+
+        if (seriesClusteringTree.getChartSelection() == null)
+            seriesClusteringTree.setChartSelection(viewer.getChartSelection());
+        if (classesClusteringTree.getChartSelection() == null)
+            classesClusteringTree.setChartSelection(viewer.getChartSelection());
+
+        for (String className : getChartData().getClassNames()) {
+
+            final Map<String, Double> series2value = new HashMap<>();
+            for (String series : getChartData().getSeriesNames()) {
+                final double total = getChartData().getTotalForSeries(series);
+                series2value.put(series, (total > 0 ? (getChartData().getValueAsDouble(series, className) / total) : 0));
+            }
+            final Statistics statistics = new Statistics(series2value.values());
+            for (String series : getChartData().getSeriesNames()) {
+                final double value = series2value.get(series);
+                zScores.put(series, className, statistics.getZScore(value));
+            }
+        }
+
+        seriesClusteringTree.updateClustering(zScores);
+        classesClusteringTree.updateClustering(zScores);
+        updateSeriesJList();
+        updateClassesJList();
+        //System.err.println("Order: " + Basic.toString(seriesClustering.getLabelOrder(), ","));
+        //System.err.println("Order: " + Basic.toString(classesClustering.getLabelOrder(), ","));
+    }
+
     protected void drawYAxisGrid(Graphics2D gc) {
     }
 
@@ -491,5 +875,61 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     @Override
     public boolean usesHeatMapColors() {
         return true;
+    }
+
+    public ChartViewer.ScalingType getScalingTypePreference() {
+        return ChartViewer.ScalingType.ZSCORE;
+    }
+
+    public IPopupMenuModifier getPopupMenuModifier() {
+        return new IPopupMenuModifier() {
+            @Override
+            public void apply(JPopupMenu menu, final CommandManager commandManager) {
+                menu.addSeparator();
+
+                final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (classesClusteringTree.hasSelectedSubTree()) {
+                            //System.err.println("Rotate Classes");
+                            classesClusteringTree.rotateSelectedSubTree();
+                            updateClassesJList();
+                            HeatMapDrawer.this.repaint();
+                        } else if (seriesClusteringTree.hasSelectedSubTree()) {
+                            // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                            //System.err.println("Rotate Series");
+                            seriesClusteringTree.rotateSelectedSubTree();
+                            //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                            updateSeriesJList();
+                            HeatMapDrawer.this.repaint();
+                        }
+                    }
+                });
+                action.setEnabled(classesClusteringTree.hasSelectedSubTree() != seriesClusteringTree.hasSelectedSubTree());
+                menu.add(action);
+            }
+        };
+    }
+
+    private void updateSeriesJList() {
+        final Collection<String> selected = new ArrayList<>();
+        selected.addAll(viewer.getChartSelection().getSelectedSeries());
+        final Collection<String> ordered = seriesClusteringTree.getLabelOrder();
+        final Collection<String> others = viewer.getSeriesList().getAllLabels();
+        others.removeAll(ordered);
+        ordered.addAll(others);
+        viewer.getSeriesList().sync(ordered, viewer.getSeriesList().getLabel2ToolTips(), true);
+        viewer.getChartSelection().setSelectedSeries(selected, true);
+    }
+
+    private void updateClassesJList() {
+        final Collection<String> selected = new ArrayList<>();
+        selected.addAll(viewer.getChartSelection().getSelectedClasses());
+        final Collection<String> ordered = classesClusteringTree.getLabelOrder();
+        final Collection<String> others = viewer.getClassesList().getAllLabels();
+        others.removeAll(ordered);
+        ordered.addAll(others);
+        viewer.getClassesList().sync(ordered, viewer.getClassesList().getLabel2ToolTips(), true);
+        viewer.getChartSelection().setSelectedClass(selected, true);
     }
 }

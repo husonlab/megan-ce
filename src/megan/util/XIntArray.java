@@ -18,6 +18,7 @@
  */
 package megan.util;
 
+import jloda.util.Basic;
 import megan.io.OutputWriter;
 
 import java.io.IOException;
@@ -48,17 +49,6 @@ public class XIntArray {
     }
 
     /**
-     * constructs a new array of the given size
-     *
-     * @throws java.io.IOException
-     */
-    public XIntArray(long size) {
-        this((byte) (Math.min(30, 1 + Math.max(10, (int) (Math.log(size) / Math.log(2))))));
-        int segment = (int) (size >>> SEGMENT_BITS);
-        grow(segment + 1);
-    }
-
-    /**
      * constructs a new array using the given number of bits as segmentation key (in the range 10 to 30)
      *
      * @param bits
@@ -70,9 +60,11 @@ public class XIntArray {
         SEGMENT_SIZE = (1 << (SEGMENT_BITS));
         SEGMENT_MASK = SEGMENT_SIZE - 1;
 
+         /*
         System.err.println("SEGMENT_BITS: " + SEGMENT_BITS);
         System.err.println("SEGMENT_MASK: " + Integer.toBinaryString(SEGMENT_MASK));
         System.err.println("SEGMENT_SIZE: " + SEGMENT_SIZE);
+        */
     }
 
     /**
@@ -86,29 +78,6 @@ public class XIntArray {
         numberOfNonZeroEntries = 0;
     }
 
-    /**
-     * put a value
-     *
-     * @param index
-     * @param value
-     */
-    public void put(long index, int value) {
-        final int segment = (int) (index >>> SEGMENT_BITS);
-        final int position = (int) (index & SEGMENT_MASK);
-
-        final int old = segments[segment][position];
-        if (old == 0) {
-            if (value != 0) {
-                segments[segment][position] = value;
-                numberOfNonZeroEntries++;
-            }
-        } else {
-            segments[segment][position] = value;
-            if (value == 0)
-                numberOfNonZeroEntries--;
-        }
-        maxIndex = Math.max(maxIndex, index);
-    }
 
     /**
      * put a value, If the index is larger than current maxIndex(), increases length of array
@@ -116,11 +85,18 @@ public class XIntArray {
      * @param index
      * @param value
      */
-    public void putAndEnsureCapacity(long index, int value) {
+    public void put(long index, int value) {
         int segment = (int) (index >>> SEGMENT_BITS);
         int position = (int) (index & SEGMENT_MASK);
         if (segment >= segments.length) {
-            grow(segment + 1);
+            {
+                final int[][] tmp = new int[segment + 1][];
+                System.arraycopy(segments, 0, tmp, 0, segments.length);
+                for (int i = segments.length; i < segment + 1; i++) {
+                    tmp[i] = new int[SEGMENT_SIZE];
+                }
+                segments = tmp;
+            }
             segments[segment][position] = value;
             if (value != 0)
                 numberOfNonZeroEntries++;
@@ -148,20 +124,6 @@ public class XIntArray {
      */
     public int get(long index) {
         return segments[(int) (index >>> SEGMENT_BITS)][(int) (index & SEGMENT_MASK)];
-    }
-
-    /**
-     * resizes the array
-     */
-    private void grow(int newLength) {
-        if (newLength < segments.length)
-            throw new IllegalArgumentException("grow(newLine=" + newLength + "): can't grow smaller");
-        final int[][] tmp = new int[newLength][];
-        System.arraycopy(segments, 0, tmp, 0, segments.length);
-        for (int i = segments.length; i < newLength; i++) {
-            tmp[i] = new int[SEGMENT_SIZE];
-        }
-        segments = tmp;
     }
 
     /**

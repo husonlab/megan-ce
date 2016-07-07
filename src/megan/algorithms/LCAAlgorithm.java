@@ -92,6 +92,65 @@ public class LCAAlgorithm {
         return IdMapper.UNASSIGNED_ID;
     }
 
+    /**
+     * returns the LCA of a set of taxon ids
+     *
+     * @param taxonIds
+     * @return id
+     */
+    public int computeNaiveLCA(final int[] taxonIds, final int length) {
+        if (length == 0)
+            return IdMapper.NOHITS_ID;
+        else if (length == 1)
+            return taxonIds[0];
+
+        if (taxonIds.length > addresses.length) {  // grow, if necessary
+            addresses = new String[taxonIds.length];
+            weights = new int[taxonIds.length];
+        }
+
+        int numberOfAddresses = 0;
+
+        // compute addresses of all hit taxa:
+        for (int i = 0; i < length; i++) {
+            int taxonId = taxonIds[i];
+            if (!TaxonomyData.isTaxonDisabled(taxonId)) {
+                String address = TaxonomyData.getAddress(taxonId);
+                if (address != null) {
+                    addresses[numberOfAddresses++] = address;
+                }
+            }
+        }
+
+        if (true) { // todo: fix this
+            Arrays.sort(addresses, 0, numberOfAddresses);
+            // determine nested addresses:
+            for (int i = 0; i < numberOfAddresses - 1; i++) {
+                if (addresses[i + 1].startsWith(addresses[i]))
+                    toRemove.set(i);
+            }
+            // remove them:
+            if (toRemove.cardinality() > 0) {
+                int pos = 0;
+                for (int i = 0; i < numberOfAddresses; i++) {
+                    if (!toRemove.get(i)) {
+                        addresses[pos++] = addresses[i];
+                    }
+                }
+                numberOfAddresses = pos;
+                toRemove.clear();
+            }
+        }
+
+        // compute LCA using addresses:
+        if (numberOfAddresses > 0) {
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+            return TaxonomyData.getAddress2Id(address);
+        }
+
+        // although we had some hits, couldn't make an assignment
+        return IdMapper.UNASSIGNED_ID;
+    }
 
     /**
      * computes the weighted LCA

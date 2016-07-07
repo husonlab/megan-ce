@@ -38,7 +38,7 @@ public class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Options;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;|;Close;|;Quit;");
+        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
 

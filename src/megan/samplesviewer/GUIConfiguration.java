@@ -37,7 +37,7 @@ public class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Attributes;Samples;Layout;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;|;Save As...;|;"
+        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Save As...;|;"
                 + "Export Image...;Export Legend...;@Export;|;Page Setup...;Print...;|;Properties...;|;Close;|;Quit;");
 
         menuConfig.defineMenu("Open Recent", ";");

@@ -36,7 +36,7 @@ public class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Options;Layout;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open Selected Files;@Open Recent;|;Open From URL...;|;Compare...;|;Compare Selected Files;|;Import From BLAST...;@Import;|;Close;|;Quit;");
+        menuConfig.defineMenu("File", "New...;|;Open Selected Files;@Open Recent;|;Open From URL...;|;Compare...;|;Compare Selected Files;|;Import From BLAST...;@Import;Meganize DAA File...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Select All;Select None;|;Find...;Find Again;");

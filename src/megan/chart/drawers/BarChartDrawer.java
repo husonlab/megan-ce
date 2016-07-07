@@ -58,7 +58,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     public void paint(Graphics gc0) {
         super.paint(gc0);
 
-        leftMargin = 80;
+        leftMargin = 90;
         rightMargin = 75;
         bottomMargin = 200;
         topMargin = 20;

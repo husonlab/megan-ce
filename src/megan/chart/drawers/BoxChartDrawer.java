@@ -394,42 +394,42 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 final int xPos = (int) Math.round(x0 + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + (c * numberOfGroups + d) * xStep);
                 final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
 
-                for (String series : pair.getSecond()) {
-                    if (isShowXAxis()) {
-                        if (group2index.size() > 1) {
-                            Point2D bpt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                            final Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
-                            if (classLabelAngle == 0) {
-                                bpt.setLocation(bpt.getX() - labelSize.getWidth() / 2, bpt.getY() + getFont().getSize() + 1);
-                            } else {
-                                bpt.setLocation(bpt.getX() - getFont().getSize() - 1, bpt.getY());
-                                if (classLabelAngle > Math.PI / 2) {
-                                    bpt = Geometry.translateByAngle(bpt, classLabelAngle, -labelSize.width);
-                                }
-                            }
-                            gc.setColor(Color.LIGHT_GRAY);
-                            drawString(gc, groupName, bpt.getX(), bpt.getY(), classLabelAngle);
-                        }
-
-                        Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                        final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                if (isShowXAxis()) {
+                    if (group2index.size() > 1) {
+                        Point2D bpt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
+                        final Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
                         if (classLabelAngle == 0) {
-                            apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
-                        } else if (classLabelAngle > Math.PI / 2) {
-                            apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
+                            bpt.setLocation(bpt.getX() - labelSize.getWidth() / 2, bpt.getY() + getFont().getSize() + 1);
+                        } else {
+                            bpt.setLocation(bpt.getX() - getFont().getSize() - 1, bpt.getY());
+                            if (classLabelAngle > Math.PI / 2) {
+                                bpt = Geometry.translateByAngle(bpt, classLabelAngle, -labelSize.width);
+                            }
                         }
-                        if (sgc != null)
-                            sgc.setCurrentItem(new String[]{null, className});
-                        if (isSelected) {
-                            gc.setColor(ProgramProperties.SELECTION_COLOR);
-                            fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
-                        }
-                        gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
-                        drawString(gc, className, apt.getX(), apt.getY(), classLabelAngle);
-                        if (sgc != null)
-                            sgc.clearCurrentItem();
+                        gc.setColor(Color.LIGHT_GRAY);
+                        drawString(gc, groupName, bpt.getX(), bpt.getY(), classLabelAngle);
                     }
 
+                    Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
+                    final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                    if (classLabelAngle == 0) {
+                        apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
+                    } else if (classLabelAngle > Math.PI / 2) {
+                        apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
+                    }
+                    if (sgc != null)
+                        sgc.setCurrentItem(new String[]{null, className});
+                    if (isSelected) {
+                        gc.setColor(ProgramProperties.SELECTION_COLOR);
+                        fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+                    }
+                    gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
+                    drawString(gc, className, apt.getX(), apt.getY(), classLabelAngle);
+                    if (sgc != null)
+                        sgc.clearCurrentItem();
+                }
+
+                for (String series : pair.getSecond()) {
                     double value = getChartData().getValueAsDouble(series, className);
                     whiskerData.add(value);
                     switch (scalingType) { // modify if not linear scale:

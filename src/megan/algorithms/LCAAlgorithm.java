@@ -22,10 +22,7 @@ import jloda.util.Basic;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * implements the naive and weighted LCA algorithms
@@ -42,22 +39,21 @@ public class LCAAlgorithm {
      * @param taxonIds
      * @return id
      */
-    public int computeNaiveLCA(final int[] taxonIds, final int length) {
-        if (length == 0)
+    public int computeNaiveLCA(Collection<Integer> taxonIds) {
+        if (taxonIds.size() == 0)
             return IdMapper.NOHITS_ID;
-        else if (length == 1)
-            return taxonIds[0];
+        else if (taxonIds.size() == 1)
+            return taxonIds.iterator().next();
 
-        if (taxonIds.length > addresses.length) {  // grow, if necessary
-            addresses = new String[taxonIds.length];
-            weights = new int[taxonIds.length];
+        if (taxonIds.size() > addresses.length) {  // grow, if necessary
+            addresses = new String[taxonIds.size()];
+            weights = new int[taxonIds.size()];
         }
 
         int numberOfAddresses = 0;
 
         // compute addresses of all hit taxa:
-        for (int i = 0; i < length; i++) {
-            int taxonId = taxonIds[i];
+        for (Integer taxonId : taxonIds) {
             if (!TaxonomyData.isTaxonDisabled(taxonId)) {
                 String address = TaxonomyData.getAddress(taxonId);
                 if (address != null) {

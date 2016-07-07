@@ -24,7 +24,6 @@ import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.core.Document;
 import megan.core.SyncArchiveAndDataTable;
-import megan.daa.connector.ReadBlockDAA;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
@@ -39,10 +38,6 @@ import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Analyzes all reads in a sample
@@ -77,7 +72,7 @@ public class DataProcessor {
 
             final boolean doMatePairs = doc.isPairedReads() && doc.getMeganFile().isRMA6File();
 
-            if (doc.isPairedReads() && !doMatePairs)
+            if (doc.isPairedReads() && !doc.getMeganFile().isRMA6File())
                 System.err.println("WARNING: Not an RMA6 file, will ignore paired read information");
             if (doMatePairs)
                 System.err.println("Using paired reads in taxonomic assignment...");
@@ -97,158 +92,115 @@ public class DataProcessor {
                     assignmentAlgorithmCreators[i] = new AssignmentUsingBestHitCreator(cNames[i]);
             }
 
-            // setup multi-threading:
-            // todo: Do not use multi-threading, has a bug!
-            final int numberOfThreads = 1; // Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
-            final ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-
-            final Integer[] classIds = new Integer[numberOfClassifications];
-
             // step 1:  stream through reads and assign classes
 
             progress.setSubtask("Processing alignments");
 
-            final long[] numberOfReadsFound = new long[numberOfThreads];
-            final long[] numberOfMatches = new long[numberOfThreads];
-            final long[] numberOfReadsWithLowComplexity = new long[numberOfThreads];
-            final long[] numberOfReadsWithHits = new long[numberOfThreads];
-            final long[] numberAssignedViaMatePair = new long[numberOfThreads];
+            long numberOfReadsFound = 0;
+            long numberOfMatches = 0;
+            long numberOfReadsWithLowComplexity = 0;
+            long numberOfReadsWithHits = 0;
+            long numberAssignedViaMatePair = 0;
+
+            final int[] countUnassigned = new int[numberOfClassifications];
+            final int[] countAssigned = new int[numberOfClassifications];
+
+            final IAssignmentAlgorithm[] assignmentAlgorithm = new IAssignmentAlgorithm[numberOfClassifications];
+            for (int i = 0; i < numberOfClassifications; i++)
+                assignmentAlgorithm[i] = assignmentAlgorithmCreators[i].createAssignmentAlgorithm();
+
+            final Set<Integer>[] knownIds = new HashSet[numberOfClassifications];
+            for (int i = 0; i < cNames.length; i++) {
+                knownIds[i] = new HashSet<>();
+                knownIds[i].addAll(ClassificationManager.get(cNames[i], true).getName2IdMap().getIds());
+            }
 
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final int[][] countUnassigned = new int[numberOfClassifications][numberOfThreads];
-            final int[][] countAssigned = new int[numberOfClassifications][numberOfThreads];
-
-            final ArrayBlockingQueue<IReadBlock> queue = new ArrayBlockingQueue<>(1000);
-            final IReadBlock sentinel = new ReadBlockDAA();
-
-            for (int i = 0; i < numberOfThreads; i++) {
-                final int threadNumber = i;
-                executorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            final IAssignmentAlgorithm[] assignmentAlgorithm = new IAssignmentAlgorithm[numberOfClassifications];
-                            for (int i = 0; i < numberOfClassifications; i++)
-                                assignmentAlgorithm[i] = assignmentAlgorithmCreators[i].createAssignmentAlgorithm();
-
-                            final Set<Integer>[] knownIds = new HashSet[numberOfClassifications];
-                            for (int i = 0; i < cNames.length; i++) {
-                                knownIds[i] = new HashSet<>();
-                                knownIds[i].addAll(ClassificationManager.get(cNames[i], true).getName2IdMap().getIds());
-                            }
-                            final ReadBlockRMA6 mateReadBlock;
-                            if (doMatePairs) {
-                                try (RMA6File RMA6File = new RMA6File(doc.getMeganFile().getFileName(), "r")) {
-                                    String[] matchClassificationNames = RMA6File.getHeaderSectionRMA6().getMatchClassNames();
-                                    mateReadBlock = new ReadBlockRMA6(doc.getBlastMode(), doMatePairs, matchClassificationNames);
-                                }
-                            } else
-                                mateReadBlock = null;
-
-                            final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
-                            final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
-
-                            while (true) {
-                                final IReadBlock readBlock = queue.take();
-                                if (readBlock == sentinel)
-                                    break;
-
-                                if (progress.isUserCancelled())
-                                    break;
-
-                                if (readBlock.getReadWeight() == 0)
-                                    readBlock.setReadWeight(1);
-
-                                numberOfReadsFound[threadNumber] += readBlock.getReadWeight();
-                                numberOfMatches[threadNumber] += readBlock.getNumberOfMatches();
-
-                                final boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
-
-                                if (hasLowComplexity)
-                                    numberOfReadsWithLowComplexity[threadNumber] += readBlock.getReadWeight();
-
-                                ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
-
-                                int taxId;
-                                if (doMatePairs && readBlock.getMateUId() > 0) {
-                                    synchronized (mateReader) {
-                                        mateReader.seek(readBlock.getMateUId());
-                                        mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                                    }
-                                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                                    ActiveMatches.restrictActiveMatchesToSameIds(readBlock, activeMatches, mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                                    taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                                    if (taxId <= 0) {
-                                        taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                                        if (taxId > 0)
-                                            numberAssignedViaMatePair[threadNumber]++;
-                                    }
-                                } else
-                                    taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-
-                                if (activeMatches.cardinality() > 0)
-                                    numberOfReadsWithHits[threadNumber] += readBlock.getReadWeight();
-
-                                for (int i = 0; i < numberOfClassifications; i++) {
-                                    int id;
-                                    if (hasLowComplexity) {
-                                        id = IdMapper.LOW_COMPLEXITY_ID;
-                                    } else if (i == taxonomyIndex) {
-                                        id = taxId;
-                                    } else {
-                                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
-                                        id = assignmentAlgorithm[i].computeId(activeMatches, readBlock);
-                                    }
-                                    if (!knownIds[i].contains(id))
-                                        id = IdMapper.UNASSIGNED_ID;
-
-                                    classIds[i] = id;
-                                    if (id == IdMapper.UNASSIGNED_ID)
-                                        countUnassigned[i][threadNumber]++;
-                                    else if (id > 0)
-                                        countAssigned[i][threadNumber]++;
-                                }
-                                synchronized (updateList) {
-                                    updateList.addItem(readBlock.getUId(), readBlock.getReadWeight(), classIds);
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        } finally {
-                            countDownLatch.countDown();
-                        }
-                    }
-                });
-            }
-
-            /**
-             * feed the queue:
-             */
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {
                 progress.setMaximum(it.getMaximumProgress());
                 progress.setProgress(0);
 
-                while (it.hasNext()) {
-                    queue.put(it.next());
-                    progress.setProgress(it.getProgress());
-                }
-                for (int i = 0; i < numberOfThreads; i++) { // add one sentinel for each thread
-                    queue.put(sentinel);
-                }
-            } catch (Exception e) {
-                Basic.caught(e);
-            }
+                final ReadBlockRMA6 mateReadBlock;
+                if (doMatePairs) {
+                    try (RMA6File RMA6File = new RMA6File(doc.getMeganFile().getFileName(), "r")) {
+                        String[] matchClassificationNames = RMA6File.getHeaderSectionRMA6().getMatchClassNames();
+                        mateReadBlock = new ReadBlockRMA6(doc.getBlastMode(), true, matchClassificationNames);
+                    }
+                } else
+                    mateReadBlock = null;
 
-            // await worker threads:
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                Basic.caught(e);
+                final Integer[] classIds = new Integer[numberOfClassifications];
+                final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
+                final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
+
+                while (it.hasNext()) {
+                    IReadBlock readBlock = it.next();
+
+                    if (progress.isUserCancelled())
+                        break;
+
+                    if (readBlock.getReadWeight() == 0)
+                        readBlock.setReadWeight(1);
+
+                    numberOfReadsFound += readBlock.getReadWeight();
+                    numberOfMatches += readBlock.getNumberOfMatches();
+
+                    final boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
+
+                    if (hasLowComplexity)
+                        numberOfReadsWithLowComplexity += readBlock.getReadWeight();
+
+                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
+
+                    int taxId;
+                    if (doMatePairs && readBlock.getMateUId() > 0 && taxonomyIndex >= 0) {
+                        mateReader.seek(readBlock.getMateUId());
+                        mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
+                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                        ActiveMatches.restrictActiveMatchesToSameIds(readBlock, activeMatches, mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                        taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                        if (taxId <= 0) {
+                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                            if (taxId > 0)
+                                numberAssignedViaMatePair++;
+                        }
+                    } else
+                        taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+
+                    if (activeMatches.cardinality() > 0)
+                        numberOfReadsWithHits += readBlock.getReadWeight();
+
+                    for (int i = 0; i < numberOfClassifications; i++) {
+                        int id;
+                        if (hasLowComplexity) {
+                            id = IdMapper.LOW_COMPLEXITY_ID;
+                        } else if (i == taxonomyIndex) {
+                            id = taxId;
+                        } else {
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
+                            id = assignmentAlgorithm[i].computeId(activeMatches, readBlock);
+                        }
+                        if (!knownIds[i].contains(id))
+                            id = IdMapper.UNASSIGNED_ID;
+
+                        classIds[i] = id;
+                        if (id == IdMapper.UNASSIGNED_ID)
+                            countUnassigned[i]++;
+                        else if (id > 0)
+                            countAssigned[i]++;
+                    }
+                    updateList.addItem(readBlock.getUId(), readBlock.getReadWeight(), classIds);
+
+                    progress.setProgress(it.getProgress());
+
+                }
+            } catch (Exception ex) {
+                Basic.caught(ex);
             } finally {
-                executorService.shutdownNow();
+                if (mateReader != null)
+                    mateReader.close();
             }
 
             if (progress.isUserCancelled())
@@ -258,28 +210,28 @@ public class DataProcessor {
                 ((ProgressPercentage) progress).reportTaskCompleted();
             }
 
-            System.err.println(String.format("Total reads:   %,15d", Basic.getSum(numberOfReadsFound)));
-            if (Basic.getSum(numberOfReadsWithLowComplexity) > 0)
-                System.err.println(String.format("Low complexity:%,15d", Basic.getSum(numberOfReadsWithLowComplexity)));
-            System.err.println(String.format("With hits:     %,15d ", Basic.getSum(numberOfReadsWithHits)));
-            System.err.println(String.format("Alignments:    %,15d", Basic.getSum(numberOfMatches)));
+            System.err.println(String.format("Total reads:   %,15d", numberOfReadsFound));
+            if (numberOfReadsWithLowComplexity > 0)
+                System.err.println(String.format("Low complexity:%,15d", numberOfReadsWithLowComplexity));
+            System.err.println(String.format("With hits:     %,15d ", numberOfReadsWithHits));
+            System.err.println(String.format("Alignments:    %,15d", numberOfMatches));
 
             for (int i = 0; i < countAssigned.length; i++) {
-                System.err.println(String.format("%-19s%,11d", "Assig. " + cNames[i] + ":", Basic.getSum(countAssigned[i])));
+                System.err.println(String.format("%-19s%,11d", "Assig. " + cNames[i] + ":", countAssigned[i]));
             }
 
             // if used mate pairs, report here:
-            if (Basic.getSum(numberAssignedViaMatePair) > 0) {
-                System.err.println(String.format("Tax. ass. by mate:%,12d", Basic.getSum(numberAssignedViaMatePair)));
+            if (numberAssignedViaMatePair > 0) {
+                System.err.println(String.format("Tax. ass. by mate:%,12d", numberAssignedViaMatePair));
             }
 
             progress.setCancelable(false); // can't cancel beyond here because file could be left in undefined state
 
-            doc.setNumberReads(Basic.getSum(numberOfReadsFound));
+            doc.setNumberReads(numberOfReadsFound);
 
             // If min support percentage is set, set the min support:
             if (doc.getMinSupportPercent() > 0) {
-                doc.setMinSupport((int) Math.max(1, (doc.getMinSupportPercent() / 100.0) * (Basic.getSum(numberOfReadsWithHits) + Basic.getSum(numberAssignedViaMatePair))));
+                doc.setMinSupport((int) Math.max(1, (doc.getMinSupportPercent() / 100.0) * (numberOfReadsWithHits + numberAssignedViaMatePair)));
                 System.err.println("MinSupport set to: " + doc.getMinSupport());
             }
 

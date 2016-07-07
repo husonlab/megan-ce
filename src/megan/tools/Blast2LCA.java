@@ -144,7 +144,6 @@ public class Blast2LCA {
             }
         }
 
-
         final String propertiesFile;
         if (ProgramProperties.isMacOS())
             propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";

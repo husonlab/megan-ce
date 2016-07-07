@@ -252,7 +252,7 @@ public class LoadableLong2IntegerMap implements Closeable {
         map1.loadBinFile(new File("/Users/huson/mapping/ncbi/gi2tax-Feb2016X.bin"));
         //map1.loadBinFile(new File("/Users/huson/tmp/ncbi-4March2015/gi_taxid-March2015X.bin"));
 
-        long gid = 2;
+        long gid = 492038567;
 
 
         System.err.println(gid + " -> " + map1.get(gid));

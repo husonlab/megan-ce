@@ -82,7 +82,11 @@ public class RMA6FromBlastCreator {
         this.doc = doc;
         doc.getMeganFile().setFile(rma6File, MeganFile.Type.RMA6_FILE);
 
-        cNames = doc.getActiveViewers().toArray(new String[doc.getActiveViewers().size()]);
+        if (doc.getActiveViewers().size() > 0)
+            cNames = doc.getActiveViewers().toArray(new String[doc.getActiveViewers().size()]);
+        else
+            cNames = new String[]{Classification.Taxonomy};
+
         this.parsers = new IdParser[cNames.length];
         int taxonMapperIndex = -1;
 

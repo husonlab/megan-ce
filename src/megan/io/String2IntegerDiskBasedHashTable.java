@@ -83,7 +83,6 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
         return size;
     }
 
-
     /**
      * get the value for a key
      */

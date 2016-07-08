@@ -290,8 +290,7 @@ public class Director implements IDirectableViewer, IDirector {
 
             return false;
         } catch (Exception ex) {
-            Basic.caught(ex);
-            NotificationsInSwing.showError("Command failed:" + ex.getMessage());
+            NotificationsInSwing.showError("Command failed: " + ex.getMessage());
             return false;
         }
     }
@@ -572,7 +571,7 @@ public class Director implements IDirectableViewer, IDirector {
                                 if (file.canRead()) {
                                     buf.append("open file='").append(fileName).append("';");
                                 } else {
-                                    System.err.println("Warning: Can't read MEGAN file: <" + fileName + ">");
+                                    System.err.println("Warning: Can't read MEGAN file: '" + fileName + "'");
                                 }
                             }
                         }

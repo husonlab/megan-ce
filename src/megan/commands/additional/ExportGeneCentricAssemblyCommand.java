@@ -39,10 +39,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -112,6 +109,10 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
         final Director dir = getDir();
         final Document doc = dir.getDocument();
+
+        if (doc.getNumberOfReads() == 0 || doc.getMeganFile().isMeganSummaryFile())
+            throw new IOException("No reads available for assembly");
+
         final ProgressListener progress = (ProgramProperties.isUseGUI() ? doc.getProgressListener() : new ProgressPercentage());
 
         progress.setTasks("Gene-centric assembly", "Initializing");
@@ -399,7 +400,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
     public String getDescription() {
         return "Compute and export 'gene-centric' assembly of reads for all selected nodes.\n" +
-                "This is experimental code, we are currently developing this method and will describe it in a future paper";
+                "Huson et al, Protein-alignment-guided assembly of orthologous gene families from microbiome sequencing reads. Under review.";
     }
 
     public ImageIcon getIcon() {

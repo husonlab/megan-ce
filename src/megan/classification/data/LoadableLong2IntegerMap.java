@@ -249,13 +249,12 @@ public class LoadableLong2IntegerMap implements Closeable {
 
     public static void main(String[] args) throws IOException, CanceledException {
         LoadableLong2IntegerMap map1 = new LoadableLong2IntegerMap();
-        map1.loadBinFile(new File("/Users/huson/mapping/ncbi/gi2tax-Feb2016X.bin"));
+        map1.loadBinFile(new File("/Users/huson/mapping/ncbi-June2016/gi2tax-July2016.bin"));
         //map1.loadBinFile(new File("/Users/huson/tmp/ncbi-4March2015/gi_taxid-March2015X.bin"));
 
         long gid = 492038567;
 
 
         System.err.println(gid + " -> " + map1.get(gid));
-
     }
 }

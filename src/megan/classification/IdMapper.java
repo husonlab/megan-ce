@@ -26,8 +26,10 @@ import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.LoadableLong2IntegerMap;
 import megan.classification.data.LoadableString2IntegerMap;
 import megan.classification.data.Name2IdMap;
+import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -128,6 +130,9 @@ public class IdMapper {
                         }
                     }
                     final LoadableLong2IntegerMap giMap = new LoadableLong2IntegerMap();
+                    String name = (new File(fileName)).getName();
+                    if (name.equals("gi_taxid-March2015X.bin") || name.equals("gi2kegg-Nov2015X.bin") || name.equals("gi2tax-Feb2016.bin") || name.equals("gi2tax-Feb2016X.bin"))
+                        NotificationsInSwing.showWarning("The mapping file '" + name + "' is known to contain errors, please use latest file from the MEGAN6 download page");
                     try {
                         giMap.loadFile(name2IdMap, fileName, progress);
                         this.giMap = giMap;

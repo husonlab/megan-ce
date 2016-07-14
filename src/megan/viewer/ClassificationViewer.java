@@ -248,7 +248,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 InputDialog inputDialog = InputDialog.getInstance();
                 if (inputDialog != null)
                     inputDialog.setViewer(dir, ClassificationViewer.this);
-                ClassificationViewer.this.requestFocus();
+                //ClassificationViewer.this.requestFocusInWindow();
             }
 
             public void windowDeactivated(WindowEvent event) {
@@ -435,6 +435,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             splitPane.setDividerLocation(1.0);
         legendPanel.repaint();
         setWindowTitle();
+        requestFocusInWindow();
     }
 
     /**
@@ -1595,7 +1596,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public void setShowFindToolBar(boolean showFindToolBar) {
         if (this.showFindToolBar && !showFindToolBar)
-            requestFocus();
+            requestFocusInWindow();
         this.showFindToolBar = showFindToolBar;
     }
 

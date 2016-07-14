@@ -421,7 +421,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
 
                 if (frame.isActive())
-                    graphView.requestFocus();
+                    graphView.requestFocusInWindow();
                 final Set<String> selectedLabels = doc.getSampleSelection().getAll();
                 final NodeSet toSelect = new NodeSet(graphView.getGraph());
                 for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {

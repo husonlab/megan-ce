@@ -99,7 +99,7 @@ public class SetSortNumericallyCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("SortNrHitsdesc16.gif");
+        return ResourceManager.getIcon("SortNrHitsBackward16.gif");
     }
 
     /**

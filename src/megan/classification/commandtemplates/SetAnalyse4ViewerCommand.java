@@ -20,9 +20,9 @@ package megan.classification.commandtemplates;
 
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICheckBoxCommand;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.core.Director;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +40,7 @@ public class SetAnalyse4ViewerCommand extends CommandBase implements ICheckBoxCo
     }
 
     public boolean isSelected() {
-        return ((Director) getDir()).getDocument().getActiveViewers().contains(cName);
+        return ProgramProperties.get("Use" + cName, false);
     }
 
     public String getSyntax() {

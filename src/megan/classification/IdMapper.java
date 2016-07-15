@@ -22,14 +22,9 @@ import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
-import megan.classification.data.ClassificationFullTree;
-import megan.classification.data.LoadableLong2IntegerMap;
-import megan.classification.data.LoadableString2IntegerMap;
-import megan.classification.data.Name2IdMap;
-import megan.fx.NotificationsInSwing;
+import megan.classification.data.*;
 import megan.main.MeganProperties;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -50,6 +45,8 @@ public class IdMapper {
     static public final String LOW_COMPLEXITY_LABEL = "Low complexity";
     static public final int UNCLASSIFIED_ID = -4;
     static public final String UNCLASSIFIED_LABEL = "Unclassified";
+
+    public static ILong2IntegerMapFactory giMapFactory = new GI2IdMapFactory();
 
     /**
      * create tags for parsing header line
@@ -83,7 +80,7 @@ public class IdMapper {
 
     private final Set<Integer> disabledIds = new HashSet<>();
 
-    protected LoadableLong2IntegerMap giMap = null;
+    protected ILong2IntegerMap giMap = null;
     protected Accession2IdMap accessionMap = null;
     protected LoadableString2IntegerMap synonymsMap = null;
 
@@ -129,13 +126,8 @@ public class IdMapper {
                             Basic.caught(e);
                         }
                     }
-                    final LoadableLong2IntegerMap giMap = new LoadableLong2IntegerMap();
-                    String name = (new File(fileName)).getName();
-                    if (name.equals("gi_taxid-March2015X.bin") || name.equals("gi2kegg-Nov2015X.bin") || name.equals("gi2tax-Feb2016.bin") || name.equals("gi2tax-Feb2016X.bin"))
-                        NotificationsInSwing.showWarning("The mapping file '" + name + "' is known to contain errors, please use latest file from the MEGAN6 download page");
                     try {
-                        giMap.loadFile(name2IdMap, fileName, progress);
-                        this.giMap = giMap;
+                        this.giMap = giMapFactory.create(name2IdMap, fileName, progress);
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
@@ -251,7 +243,7 @@ public class IdMapper {
         return map2Filename.get(mapType);
     }
 
-    public LoadableLong2IntegerMap getGiMap() {
+    public ILong2IntegerMap getGiMap() {
         return giMap;
     }
 

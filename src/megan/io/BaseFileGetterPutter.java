@@ -98,9 +98,9 @@ public abstract class BaseFileGetterPutter {
         {
             if (!file.exists())
                 throw new IOException("No such file: " + file);
-            RandomAccessFile raf = new RandomAccessFile(file, "r");
-            this.fileLength = raf.length();
-            raf.close();
+            try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+                this.fileLength = raf.length();
+            }
             if (fileLength > 0 && this.fileLength != fileLength) {
                 throw new IOException("File length expected: " + fileLength + ", got: " + this.fileLength);
             }

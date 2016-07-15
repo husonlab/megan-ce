@@ -21,10 +21,10 @@ package megan.classification.commandtemplates;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
-import megan.core.Director;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 4.2015
  */
 public class SetAnalyseCommand extends CommandBase implements ICommand {
-
 
     public String getSyntax() {
         return "use cViewer=<name> state={true|false};";
@@ -46,11 +45,7 @@ public class SetAnalyseCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("state=");
         boolean select = np.getBoolean();
         np.matchIgnoreCase(";");
-
-        if (select)
-            ((Director) getDir()).getDocument().getActiveViewers().add(cName);
-        else
-            ((Director) getDir()).getDocument().getActiveViewers().remove(cName);
+        ProgramProperties.put("Use" + cName, select);
     }
 
     public void actionPerformed(ActionEvent event) {

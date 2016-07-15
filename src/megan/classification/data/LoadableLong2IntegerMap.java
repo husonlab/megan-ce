@@ -31,7 +31,7 @@ import java.io.*;
  * long to integer mapping that can be loaded from and saved to a file
  * Daniel Huson, 4.2010, 4.2015
  */
-public class LoadableLong2IntegerMap implements Closeable {
+public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
     public static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
 
     private final static int BITS = 10; // 2^10=1024
@@ -163,6 +163,8 @@ public class LoadableLong2IntegerMap implements Closeable {
             throw new IOException("No such file: " + file);
         if (!file.canRead())
             throw new IOException("Can't read file: " + file);
+        if (!isBinFile(file))
+            throw new IOException("Wrong magic number: " + file);
         try {
             reader = new IntFileGetterMappedMemory(file);
         } catch (IOException ex) { // on 32-bit machine, memory mapping will fail... use Random access
@@ -245,16 +247,5 @@ public class LoadableLong2IntegerMap implements Closeable {
             }
         }
         System.err.println("done (" + totalOut + " entries)");
-    }
-
-    public static void main(String[] args) throws IOException, CanceledException {
-        LoadableLong2IntegerMap map1 = new LoadableLong2IntegerMap();
-        map1.loadBinFile(new File("/Users/huson/mapping/ncbi-June2016/gi2tax-July2016.bin"));
-        //map1.loadBinFile(new File("/Users/huson/tmp/ncbi-4March2015/gi_taxid-March2015X.bin"));
-
-        long gid = 492038567;
-
-
-        System.err.println(gid + " -> " + map1.get(gid));
     }
 }

@@ -44,7 +44,6 @@ public class Classification {
 
     /**
      * constructor
-     *
      * @param cName
      */
     public Classification(String cName) {
@@ -53,7 +52,7 @@ public class Classification {
         name2IdMap = new Name2IdMap();
         fullTree = new ClassificationFullTree(cName, name2IdMap);
         fullTree.setRoot(fullTree.newNode(-1));
-        idMapper = new IdMapper(cName, fullTree, name2IdMap);
+        this.idMapper = new IdMapper(cName, fullTree, name2IdMap);
         if (cName.equals(Taxonomy))
             TaxonomyData.setTaxonomyClassification(this);
     }

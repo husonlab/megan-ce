@@ -64,8 +64,9 @@ public class ClassificationManager {
                 classification = name2classification.get(name);
                 if (classification == null) {
                     if (load) {
-                        classification = load(name, name.equals(Classification.Taxonomy) ? "ncbi.tre" : name.toLowerCase() + ".tre",
-                                name.equals(Classification.Taxonomy) ? "ncbi.map" : name.toLowerCase() + ".map", new ProgressSilent());
+                        final String treeFile = name.equals(Classification.Taxonomy) ? "ncbi.tre" : name.toLowerCase() + ".tre";
+                        final String mapFile = name.equals(Classification.Taxonomy) ? "ncbi.map" : name.toLowerCase() + ".map";
+                        classification = load(name, treeFile, mapFile, new ProgressSilent());
                     } else {
                         classification = new Classification(name);
                     }
@@ -94,22 +95,6 @@ public class ClassificationManager {
             classification.load(treeFile, mapFile, progress);
             return classification;
         }
-    }
-
-    /**
-     * gets the named classification, setting up the tree and mapping, if necessary
-     * There is one static classification object per name
-     *
-     * @param name
-     * @return classification
-     */
-    public static Classification getEmpty(String name) {
-        Classification classification = name2classification.get(name);
-        if (classification == null) {
-            classification = new Classification(name);
-            name2classification.put(name, classification);
-        }
-        return classification;
     }
 
     /**
@@ -170,10 +155,6 @@ public class ClassificationManager {
 
     public static String getWindowGeometryKey(String name) {
         return name + "WindowGeometry";
-    }
-
-    public static String getBuiltInRefSeqFile(String name) {
-        return "ref2" + name.toLowerCase() + ".map";
     }
 
     public static boolean isTaxonomy(String name) {

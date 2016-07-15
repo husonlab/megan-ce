@@ -159,11 +159,11 @@ public class XIntArray {
      * @return value or 0
      */
     public int getEvenIfTooBig(long index) {
-        int a = (int) (index >>> SEGMENT_BITS);
-        if (a >= segments.length)
+        int segment = (int) (index >>> SEGMENT_BITS);
+        if (segment >= segments.length)
             return 0;
         else
-            return segments[a][(int) (index & SEGMENT_MASK)];
+            return segments[segment][(int) (index & SEGMENT_MASK)];
     }
 
     /**

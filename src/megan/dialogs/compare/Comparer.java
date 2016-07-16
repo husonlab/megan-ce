@@ -150,7 +150,7 @@ public class Comparer {
         progressListener.setProgress(0);
 
         final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
-        final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(100 * numberOfThreads);
+        final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size());
         final ExecutorService executor = Executors.newCachedThreadPool();
 
         final Counter submittedJobs = new Counter();
@@ -312,9 +312,9 @@ public class Comparer {
         }
 
         if (useRelative) {
-            System.err.println(" " + totalNumberOfReads + " normalized relative reads");
+            System.err.println(String.format("Total: %,12d normalized reads", totalNumberOfReads));
         } else {
-            System.err.println(" " + totalNumberOfReads);
+            System.err.println(String.format("Total: %,12d", totalNumberOfReads));
         }
 
         result.setTotalReads((int) totalNumberOfReads);

@@ -66,22 +66,30 @@ public class NNetTab extends TreeTabBase implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-            final NeighborNet neighborNet = new NeighborNet();
+            final boolean isLocked = clusterViewer.getDir().isLocked();
+            if (!isLocked)
+                clusterViewer.getDir().lockUserInput();
 
-            final SplitSystem splits = neighborNet.apply(new ProgressCmdLine(), taxa, distances);
-            final int[] ordering = neighborNet.getOrdering();
+            try {
+                final NeighborNet neighborNet = new NeighborNet();
 
-            getGraphView().setAutoLayoutLabels(true);
-            EqualAngle equalAngle = new EqualAngle();
-            equalAngle.createNetwork(ordering, taxa, splits, getGraphView());
-            getGraphView().setFixedNodeSize(true);
-            getGraphView().resetViews();
-            getGraphView().trans.setCoordinateRect(getGraphView().getBBox());
-            getGraphView().getScrollPane().revalidate();
-            getGraphView().fitGraphToWindow();
-            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
-            clusterViewer.addFormatting(getGraphView());
+                final SplitSystem splits = neighborNet.apply(new ProgressCmdLine(), taxa, distances);
+                final int[] ordering = neighborNet.getOrdering();
 
+                getGraphView().setAutoLayoutLabels(true);
+                EqualAngle equalAngle = new EqualAngle();
+                equalAngle.createNetwork(ordering, taxa, splits, getGraphView());
+                getGraphView().setFixedNodeSize(true);
+                getGraphView().resetViews();
+                getGraphView().trans.setCoordinateRect(getGraphView().getBBox());
+                getGraphView().getScrollPane().revalidate();
+                getGraphView().fitGraphToWindow();
+                getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
+                clusterViewer.addFormatting(getGraphView());
+            } finally {
+                if (!isLocked)
+                    clusterViewer.getDir().unlockUserInput();
+            }
         }
     }
 }

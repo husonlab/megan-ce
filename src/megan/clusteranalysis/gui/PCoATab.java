@@ -513,7 +513,7 @@ public class PCoATab extends JPanel implements ITab {
 
         progressListener.setSubtask("Calculating PCoA");
         progressListener.setMaximum(-1);
-        long endTime = System.currentTimeMillis() + ProgramProperties.get("PCoAMaxTimeSeconds", 30) * 1000;
+        long endTime = System.currentTimeMillis() + ProgramProperties.get("PCoAMaxTimeSeconds", 120) * 1000;
         try {
             progressListener.setProgress(-1);
             while (t.isAlive()) {
@@ -1203,15 +1203,24 @@ public class PCoATab extends JPanel implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (graph.getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-            getGraphView().setAutoLayoutLabels(true);
-            setData(taxa, distances);
-            getGraphView().setFixedNodeSize(true);
-            getGraphView().resetViews();
-            getGraphView().getScrollPane().revalidate();
-            getGraphView().fitGraphToWindow();
-            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
-            clusterViewer.addFormatting(getGraphView());
-            clusterViewer.updateConvexHulls = true;
+            final boolean isLocked = clusterViewer.getDir().isLocked();
+            if (!isLocked)
+                clusterViewer.getDir().lockUserInput();
+
+            try {
+                getGraphView().setAutoLayoutLabels(true);
+                setData(taxa, distances);
+                getGraphView().setFixedNodeSize(true);
+                getGraphView().resetViews();
+                getGraphView().getScrollPane().revalidate();
+                getGraphView().fitGraphToWindow();
+                getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
+                clusterViewer.addFormatting(getGraphView());
+                clusterViewer.updateConvexHulls = true;
+            } finally {
+                if (!isLocked)
+                    clusterViewer.getDir().unlockUserInput();
+            }
         }
     }
 

@@ -64,20 +64,11 @@ public class NJTab extends TreeTabBase implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-            final boolean isLocked = clusterViewer.getDir().isLocked();
-            if (!isLocked)
-                clusterViewer.getDir().lockUserInput();
-
-            try {
                 getGraphView().setAutoLayoutLabels(true);
                 NJ.apply(taxa, distances, getGraphView());
                 getGraphView().setFixedNodeSize(true);
                 getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
                 clusterViewer.addFormatting(getGraphView());
-            } finally {
-                if (!isLocked)
-                    clusterViewer.getDir().unlockUserInput();
-            }
         }
     }
 }

@@ -32,12 +32,12 @@ public interface ITab {
     /**
      * this tab has been selected
      */
-    public void activate();
+    void activate();
 
     /**
      * this tab has been deselected
      */
-    public void deactivate();
+    void deactivate();
 
     /**
      * compute the graphics
@@ -45,50 +45,61 @@ public interface ITab {
      * @param taxa
      * @param distances
      */
-    public void compute(Taxa taxa, Distances distances) throws Exception;
+    void compute(Taxa taxa, Distances distances) throws Exception;
 
     /**
      * get the label
      *
      * @return
      */
-    public String getLabel();
+    String getLabel();
 
     /**
      * get the method name
      *
      * @return method of computation
      */
-    public String getMethod();
+    String getMethod();
 
     /**
      * update the view
      *
      * @param what
      */
-    public void updateView(String what);
+    void updateView(String what);
 
     /**
      * get the associated graphview
      *
      * @return graphview
      */
-    public GraphView getGraphView();
+    GraphView getGraphView();
 
     /**
      * zoom to fit
      */
-    public void zoomToFit();
+    void zoomToFit();
 
     /**
      * zoom to selection
      */
-    public void zoomToSelection();
+    void zoomToSelection();
 
     /**
      * gets the searcher associated with this tab
      *
      * @return searcher
      */
-    public IObjectSearcher getSearcher();
+    IObjectSearcher getSearcher();
+
+    /**
+     * should this tab be enabled?
+     *
+     * @return true, if currently applicable
+     */
+    boolean isApplicable();
+
+    boolean isComputing();
+
+    void setComputing(boolean computing);
 }

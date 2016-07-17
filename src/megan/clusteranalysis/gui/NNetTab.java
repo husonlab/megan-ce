@@ -66,11 +66,6 @@ public class NNetTab extends TreeTabBase implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-            final boolean isLocked = clusterViewer.getDir().isLocked();
-            if (!isLocked)
-                clusterViewer.getDir().lockUserInput();
-
-            try {
                 final NeighborNet neighborNet = new NeighborNet();
 
                 final SplitSystem splits = neighborNet.apply(new ProgressCmdLine(), taxa, distances);
@@ -86,10 +81,6 @@ public class NNetTab extends TreeTabBase implements ITab {
                 getGraphView().fitGraphToWindow();
                 getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
                 clusterViewer.addFormatting(getGraphView());
-            } finally {
-                if (!isLocked)
-                    clusterViewer.getDir().unlockUserInput();
-            }
         }
     }
 }

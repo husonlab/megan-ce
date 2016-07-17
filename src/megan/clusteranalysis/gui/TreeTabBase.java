@@ -50,6 +50,8 @@ public class TreeTabBase extends JPanel {
     protected final ClusterViewer clusterViewer;
     protected final IObjectSearcher searcher;
 
+    private boolean computing = false;
+
     /**
      * constructor
      *  @param clusterViewer
@@ -115,6 +117,16 @@ public class TreeTabBase extends JPanel {
             }
 
             public void resetViews() {
+            }
+
+            @Override
+            public void paint(Graphics gc) {
+                if (isComputing()) {
+                    gc.setFont(getFont());
+                    gc.setColor(Color.LIGHT_GRAY);
+                    gc.drawString("Computing...", 20, 20);
+                } else
+                    super.paint(gc);
             }
         };
         graphView.setCanvasColor(Color.WHITE);
@@ -248,5 +260,17 @@ public class TreeTabBase extends JPanel {
      */
     public IObjectSearcher getSearcher() {
         return searcher;
+    }
+
+    public boolean isApplicable() {
+        return true;
+    }
+
+    public boolean isComputing() {
+        return computing;
+    }
+
+    public void setComputing(boolean computing) {
+        this.computing = computing;
     }
 }

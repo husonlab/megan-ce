@@ -76,10 +76,10 @@ public class BoyerMoore {
      * @param pattern the pattern string
      * @param R the alphabet size
      */
-    public BoyerMoore(byte[] pattern, int R) {
+    public BoyerMoore(byte[] pattern, int offset, int length, int R) {
         this.R = R;
-        this.pattern = new byte[pattern.length];
-        System.arraycopy(pattern, 0, this.pattern, 0, pattern.length);
+        this.pattern = new byte[length];
+        System.arraycopy(pattern, offset, this.pattern, 0, length);
 
         // position of rightmost occurrence of c in the pattern
         right = new int[R];

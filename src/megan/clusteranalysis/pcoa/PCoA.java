@@ -74,7 +74,10 @@ public class PCoA {
      * calculate the MDS analysis
      */
     public void calculateClassicMDS(ProgressListener progress) throws CanceledException {
-        progress.setSubtask("Calculating PCoA");
+        progress.setSubtask("Eigenvalue decomposition");
+
+        progress.setProgress(-1);
+        progress.setMaximum(-1);
 
         loadingVectorsBiPlot.clear();
         loadingVectorsTriPlot.clear();
@@ -108,9 +111,11 @@ public class PCoA {
         //positiveEigenValues.print(pw, rank, rank);
         //pw.flush();
 
+
         // multiple eigenvectors by sqrt of eigenvalues
+        progress.setSubtask("Calculating PCoA");
         progress.setProgress(0);
-        progress.setMaximum(2 * rank * rank);
+        progress.setMaximum(2 * rank);
         final Matrix scaledEigenVectors = (Matrix) eigenVectors.clone();
         for (int i = 0; i < rank; i++) {
             for (int j = 0; j < rank; j++) {

@@ -161,9 +161,9 @@ public class ReadAssembler {
             return contigs.size();
         }
 
-        final List<Pair<String, String>> sorted = new ArrayList<>(contigs.size());
-        sorted.addAll(contigs);
-        sorted.sort(new Comparator<Pair<String, String>>() {
+        final List<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
+        sortedContigs.addAll(contigs);
+        sortedContigs.sort(new Comparator<Pair<String, String>>() {
             @Override
             public int compare(Pair<String, String> pair1, Pair<String, String> pair2) {
                 if (pair1.getSecond().length() > pair2.getSecond().length())
@@ -178,14 +178,14 @@ public class ReadAssembler {
 
         final boolean verbose = ProgramProperties.get("verbose-assembly", false);
 
-        final int numberOfThreads = Math.min(sorted.size(), Runtime.getRuntime().availableProcessors() - 1);
+        final int numberOfThreads = Math.min(sortedContigs.size(), Runtime.getRuntime().availableProcessors() - 1);
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final BitSet containedContigs = new BitSet();
-        final CountDownLatch countDownLatch = new CountDownLatch(sorted.size());
+        final CountDownLatch countDownLatch = new CountDownLatch(sortedContigs.size());
 
-        progress.setMaximum(sorted.size());
+        progress.setMaximum(sortedContigs.size());
         progress.setProgress(0);
-        for (int i0 = 0; i0 < sorted.size(); i0++) {
+        for (int i0 = 0; i0 < sortedContigs.size(); i0++) {
             final int i = i0;
 
             service.submit(new Runnable() {
@@ -193,11 +193,13 @@ public class ReadAssembler {
                 public void run() {
                     try {
                         if (maxPercentIdentityAllowForSeparateContigs < 100) {
-                            final byte[] iBytes = sorted.get(i).getSecond().getBytes();
-                            final byte[] iBytesReverseComplemented = Basic.getReverseComplement(sorted.get(i).getSecond()).getBytes();
+                            final byte[] iBytes = sortedContigs.get(i).getSecond().getBytes();
+                            final byte[] iBytesReverseComplemented = Basic.getReverseComplement(sortedContigs.get(i).getSecond()).getBytes();
 
                             final SimpleAligner4DNA simpleAlignerDNA = new SimpleAligner4DNA();
                             simpleAlignerDNA.setMinPercentIdentity(maxPercentIdentityAllowForSeparateContigs);
+
+                            final Single<Integer> overlap = new Single<>(0);
 
                             for (int j = 0; j < i; j++) {
                                 boolean gone;
@@ -205,40 +207,57 @@ public class ReadAssembler {
                                     gone = containedContigs.get(j);
                                 }
                                 if (!gone) {
-                                    final byte[] jBytes = sorted.get(j).getSecond().getBytes(); // this is the longer sequence, does it contain the shorter one, iBytes?
-                                    if (simpleAlignerDNA.isContained(iBytes, jBytes)) {
-                                        if (verbose) {
-                                            System.err.println(String.format("Removed contig '%s', is %6.2f%% contained in '%s'",
-                                                    Basic.skipFirstWord(sorted.get(i).getFirst()), simpleAlignerDNA.getPercentIdentity(),
-                                                    Basic.skipFirstWord(sorted.get(j).getFirst())));
-                                            System.err.println(simpleAlignerDNA.getAlignmentString());
+                                    final byte[] jBytes = sortedContigs.get(j).getSecond().getBytes(); // this is the longer sequence, does it contain the shorter one, iBytes?
+
+                                    for (int orient = 0; orient <= 1; orient++) { // 0: forward strand, 1: backward strand
+                                        final byte[] iBytesOriented = (orient == 0 ? iBytes : iBytesReverseComplemented);
+
+                                        final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytesOriented, jBytes, overlap);
+
+                                        if (overlapType == SimpleAligner4DNA.OverlapType.Infix
+                                                || (overlapType == SimpleAligner4DNA.OverlapType.Prefix && (iBytesOriented.length - overlap.get()) < 100)
+                                                || (overlapType == SimpleAligner4DNA.OverlapType.Suffix && (iBytesOriented.length - overlap.get()) < 100)) {
+                                            if (verbose) {
+                                                System.err.println(String.format("Removed contig '%s', is %6.2f%% contained in '%s'",
+                                                        Basic.skipFirstWord(sortedContigs.get(i).getFirst()), simpleAlignerDNA.getPercentIdentity(),
+                                                        Basic.skipFirstWord(sortedContigs.get(j).getFirst())));
+                                                System.err.println(simpleAlignerDNA.getAlignmentString());
+                                            }
+                                            synchronized (containedContigs) {
+                                                containedContigs.set(i);
+                                            }
+                                            return;
                                         }
-                                        synchronized (containedContigs) {
-                                            containedContigs.set(i);
+                                        /*
+                                        else if((overlapType == SimpleAligner4DNA.OverlapType.Prefix && overlap.get() > 100)
+                                        || (overlapType == SimpleAligner4DNA.OverlapType.Suffix && overlap.get() > 100)){
+                                            System.err.println(String.format("Contigs '%s' and '%s' overlap by %d, consider merging",
+                                                    Basic.skipFirstWord(sortedContigs.get(i).getFirst()),
+                                                    Basic.skipFirstWord(sortedContigs.get(j).getFirst()),overlap.get()));
+
+                                            String merged;
+                                            if(overlapType == SimpleAligner4DNA.OverlapType.Prefix)
+                                                merged=Basic.toString(iBytesOriented,0,iBytesOriented.length-overlap.get())+ Basic.toString(jBytes);
+                                            else
+                                                merged=Basic.toString(jBytes)+Basic.toString(iBytesOriented,overlap.get(),iBytesOriented.length-overlap.get());
+
+                                            System.err.println(">Merged length="+(iBytesOriented.length+jBytes.length-overlap.get())
+                                                    +Basic.skipFirstWord(sortedContigs.get(i).getFirst())+" merged with "
+                                                    +Basic.skipFirstWord(sortedContigs.get(j).getFirst()));
+                                            System.err.println(merged);
                                         }
-                                        return;
-                                    } else if (simpleAlignerDNA.isContained(iBytesReverseComplemented, jBytes)) {
-                                        if (verbose) {
-                                            System.err.println(String.format("Removed contig '%s', is %6.2f%% contained in '%s'",
-                                                    Basic.skipFirstWord(sorted.get(i).getFirst()), simpleAlignerDNA.getPercentIdentity(),
-                                                    Basic.skipFirstWord(sorted.get(j).getFirst())));
-                                            System.err.println(simpleAlignerDNA.getAlignmentString());
-                                        }
-                                        synchronized (containedContigs) {
-                                            containedContigs.set(i);
-                                        }
-                                        return;
+                                        */
                                     }
                                 }
                             }
                         } else { // 100% contained, no need to align..., just check whether contained
-                            final String iSequence = sorted.get(i).getSecond();
+                            final String iSequence = sortedContigs.get(i).getSecond();
                             final String iSequenceReverseComplemented = Basic.getReverseComplement(iSequence);
 
                             final BoyerMoore boyerMoore = new BoyerMoore(iSequence); // make Boyer Moore for query
                             final BoyerMoore boyerMooreReverseComplemented = new BoyerMoore(iSequenceReverseComplemented);
                             for (int j = 0; j < i; j++) {
-                                final String jSequence = sorted.get(j).getSecond();
+                                final String jSequence = sortedContigs.get(j).getSecond();
                                 if (boyerMoore.search(jSequence) < jSequence.length() || boyerMooreReverseComplemented.search(jSequence) < jSequence.length()) {
                                     containedContigs.set(i);
                                     return;
@@ -267,13 +286,13 @@ public class ReadAssembler {
         service.shutdownNow();
 
         int count = 0;
-        for (int i = 0; i < sorted.size(); i++) {
+        for (int i = 0; i < sortedContigs.size(); i++) {
             if (!containedContigs.get(i)) {
-                String iName = sorted.get(i).getFirst().trim();
+                String iName = sortedContigs.get(i).getFirst().trim();
                 if (iName.contains("length="))
                     iName = iName.substring(iName.indexOf("length="));
                 iName = String.format(">Contig-%06d %s", ++count, iName);
-                contigs.add(new Pair<>(iName, sorted.get(i).getSecond()));
+                contigs.add(new Pair<>(iName, sortedContigs.get(i).getSecond()));
             }
         }
         if (progress instanceof ProgressPercentage)

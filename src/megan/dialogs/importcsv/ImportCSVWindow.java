@@ -92,7 +92,7 @@ public class ImportCSVWindow extends JDialog {
         multiplierField.setToolTipText("Multiple all counts by this number");
 
         final JRadioButton firstFormat = new JRadioButton();
-        firstFormat.setAction(new AbstractAction("Class,Count(,Counts...)") {
+        firstFormat.setAction(new AbstractAction("Class Count [Count ...]") {
             public void actionPerformed(ActionEvent e) {
                 doReadsHits = !firstFormat.isSelected();
                 multiplierField.setEnabled(true);
@@ -102,13 +102,13 @@ public class ImportCSVWindow extends JDialog {
         firstFormat.setSelected(!isDoReadsHits());
         aPanel.add(firstFormat);
         final JRadioButton secondFormat = new JRadioButton();
-        secondFormat.setAction(new AbstractAction("Read,Class,Score") {
+        secondFormat.setAction(new AbstractAction("Read Class [Score]") {
             public void actionPerformed(ActionEvent e) {
                 doReadsHits = secondFormat.isSelected();
                 multiplierField.setEnabled(false);
             }
         });
-        secondFormat.setToolTipText("CSV format is Read-Name,Class-Name,Score");
+        secondFormat.setToolTipText("CSV format is R,C,S, where R=nead-name, C=class-name or class-id (if only importing one classification) and S=score (optional)");
         secondFormat.setSelected(isDoReadsHits());
         aPanel.add(secondFormat);
         ButtonGroup group = new ButtonGroup();

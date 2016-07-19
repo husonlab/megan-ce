@@ -99,7 +99,10 @@ public interface ITab {
      */
     boolean isApplicable();
 
-    boolean isComputing();
-
-    void setComputing(boolean computing);
+    /**
+     * need update
+     *
+     * @return update
+     */
+    boolean needsUpdate();
 }

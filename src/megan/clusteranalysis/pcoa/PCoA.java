@@ -21,7 +21,9 @@ package megan.clusteranalysis.pcoa;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import jloda.util.Basic;
+import jloda.util.CanceledException;
 import jloda.util.Pair;
+import jloda.util.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 
@@ -71,7 +73,9 @@ public class PCoA {
     /**
      * calculate the MDS analysis
      */
-    public void calculateClassicMDS() {
+    public void calculateClassicMDS(ProgressListener progress) throws CanceledException {
+        progress.setSubtask("Calculating PCoA");
+
         loadingVectorsBiPlot.clear();
         loadingVectorsTriPlot.clear();
 
@@ -105,6 +109,8 @@ public class PCoA {
         //pw.flush();
 
         // multiple eigenvectors by sqrt of eigenvalues
+        progress.setProgress(0);
+        progress.setMaximum(2 * rank * rank);
         final Matrix scaledEigenVectors = (Matrix) eigenVectors.clone();
         for (int i = 0; i < rank; i++) {
             for (int j = 0; j < rank; j++) {
@@ -112,6 +118,7 @@ public class PCoA {
                 v = v * Math.sqrt(positiveEigenValues.get(j, j));
                 scaledEigenVectors.set(i, j, v);
             }
+            progress.incrementProgress();
         }
         //System.err.println("scaledEigenVectors:");
         //scaledEigenVectors.print(pw, rank, rank);
@@ -156,6 +163,7 @@ public class PCoA {
                 vector[j] = scaledEigenVectors.get(i, indices[j]);
             }
             points[i] = vector;
+            progress.incrementProgress();
         }
         done = true;
     }

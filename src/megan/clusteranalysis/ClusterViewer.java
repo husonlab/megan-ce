@@ -68,8 +68,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * viewer for distance-based comparison of metagenome datasets
@@ -135,7 +133,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
     public static Appliable clusterViewerAddOn;
 
-    private static ExecutorService executor = null;
 
     /**
      * creates a new network viewer
@@ -143,9 +140,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      * @param dir
      */
     public ClusterViewer(final Director dir, ViewerBase parentViewer, String dataType) {
-        if (executor == null)
-            executor = Executors.newFixedThreadPool(5); // allow upto 5 updates simulataneously
-
         this.dataType = dataType;
         this.parentViewer = parentViewer;
 
@@ -211,48 +205,51 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent changeEvent) {
-                int tab = tabbedPane.getSelectedIndex();
-                if (tab != currentTab) {
+                int tabId = tabbedPane.getSelectedIndex();
+                if (tabId != currentTab) {
                     if (tabbedPane.getComponentAt(currentTab) instanceof ITab) {
                         ((ITab) tabbedPane.getComponentAt(currentTab)).deactivate();
                     }
-                    if (tabbedPane.getSelectedComponent() instanceof ITab) {
-                        ((ITab) tabbedPane.getSelectedComponent()).activate();
-                    }
-                    GraphView prevView = getGraphViewForTabId(currentTab);
-                    GraphView nextView = getGraphViewForTabId(tab);
-                    if (prevView != null && nextView != null && prevView != nextView) // copy attributes from one labeled node to next
-                    {
-                        for (Node v = prevView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
-                            if (prevView.getLabel(v) != null) {
-                                for (Node w = nextView.getGraph().getFirstNode(); w != null; w = w.getNext()) {
-                                    if (nextView.getLabel(w) != null && prevView.getLabel(v).equals(nextView.getLabel(w))) {
-                                        NodeView nw = nextView.getNV(w);
-                                        NodeView nv = prevView.getNV(v);
-                                        nw.setColor(nv.getColor());
-                                        nw.setFont(nv.getFont());
-                                        nw.setLabelColor(nv.getLabelColor());
-                                        nw.setBackgroundColor(nv.getBackgroundColor());
-                                        nw.setLabelBackgroundColor(nv.getLabelBackgroundColor());
-                                        nw.setHeight(nv.getHeight());
-                                        nw.setWidth(nv.getWidth());
-                                        nw.setShape(nv.getShape());
-                                        nw.setLineWidth((byte) nv.getLineWidth());
-                                        nextView.setSelected(w, prevView.getSelected(v));
+                    if (tabbedPane.getSelectedComponent() instanceof ITab && ((ITab) tabbedPane.getSelectedComponent()).needsUpdate()) {
+                        final ITab tab = ((ITab) tabbedPane.getSelectedComponent());
+                        tab.activate();
+                        dir.execute("sync;", getCommandManager());
+                    } else {
+                        final GraphView prevView = getGraphViewForTabId(currentTab);
+                        final GraphView nextView = getGraphViewForTabId(tabId);
+                        if (prevView != null && nextView != null && prevView != nextView) // copy attributes from one labeled node to next
+                        {
+                            for (Node v = prevView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
+                                if (prevView.getLabel(v) != null) {
+                                    for (Node w = nextView.getGraph().getFirstNode(); w != null; w = w.getNext()) {
+                                        if (nextView.getLabel(w) != null && prevView.getLabel(v).equals(nextView.getLabel(w))) {
+                                            NodeView nw = nextView.getNV(w);
+                                            NodeView nv = prevView.getNV(v);
+                                            nw.setColor(nv.getColor());
+                                            nw.setFont(nv.getFont());
+                                            nw.setLabelColor(nv.getLabelColor());
+                                            nw.setBackgroundColor(nv.getBackgroundColor());
+                                            nw.setLabelBackgroundColor(nv.getLabelBackgroundColor());
+                                            nw.setHeight(nv.getHeight());
+                                            nw.setWidth(nv.getWidth());
+                                            nw.setShape(nv.getShape());
+                                            nw.setLineWidth((byte) nv.getLineWidth());
+                                            nextView.setSelected(w, prevView.getSelected(v));
+                                        }
                                     }
                                 }
                             }
                         }
+                        if (nextView != null)
+                            nextView.fitGraphToWindow();
                     }
-                    currentTab = tab;
-                    if (nextView != null)
-                        nextView.fitGraphToWindow();
+                    currentTab = tabId;
                 }
 
                 if (frame.isActive() && Formatter.getInstance() != null) {
                     Formatter.getInstance().setViewer(dir, getGraphView());
                 }
-                updateView(IDirector.ALL);
+                // updateView(IDirector.ALL);
             }
         });
 
@@ -294,13 +291,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             }
         });
 
-        try {
-            updateDistances();
-            updateView(IDirector.ALL);
-        } catch (Exception e) {
-            Basic.caught(e);
-            NotificationsInSwing.showError(frame, "Sync failed: " + e.getMessage());
-        }
 
         setTitle();
 
@@ -315,6 +305,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);
+
+        dir.execute("sync;", commandManager);
     }
 
     /**
@@ -387,152 +379,114 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         }
         setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));
 
-        // we put most of the update code into a runnable object
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final GraphView graphView = getGraphViewForTabId(tabbedPane.getSelectedIndex());
+        final GraphView graphView = getGraphViewForTabId(tabbedPane.getSelectedIndex());
 
-                    setStatusLine(ClusterViewer.this);
-                    getCommandManager().updateEnableState();
-                    setTitle();
-
-                    if (what.equals(IDirector.ALL)) {
-                        if (graphView != null) {
-                            final PhyloTree graph = ((PhyloTree) graphView.getGraph());
-
-                            group2Nodes.clear();
-                            if (isPCoATab()) { // setup group 2 nodes in order that samples appear in table
-                                Map<String, Node> sample2node = new HashMap<>();
-                                for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-                                    sample2node.put(graphView.getNV(v).getLabel(), v);
-                                }
-                                for (String sample : getDir().getDocument().getSampleAttributeTable().getSampleOrder()) {
-                                    String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(sample);
-                                    if (groupId != null) {
-                                        LinkedList<Node> nodes = group2Nodes.get(groupId);
-                                        if (nodes == null) {
-                                            nodes = new LinkedList<>();
-                                            group2Nodes.put(groupId, nodes);
-                                        }
-                                        nodes.add(sample2node.get(sample));
-                                    }
-                                }
-                            }
-
-                            if (frame.isActive())
-                                graphView.requestFocusInWindow();
-                            final Set<String> selectedLabels = doc.getSampleSelection().getAll();
-                            final NodeSet toSelect = new NodeSet(graphView.getGraph());
-                            for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-                                final NodeView nv = graphView.getNV(v);
-                                if (nv.getLabel() != null) {
-                                    nv.setLabelVisible(showLabels);
-                                    if (nv.getHeight() <= 3)
-                                        nv.setHeight(nodeRadius);
-                                    if (nv.getWidth() <= 3)
-                                        nv.setWidth(nodeRadius);
-                                    nv.setFixedSize(true);
-                                    if (useColors) {
-                                        String sample = graph.getLabel(v);
-                                        Color color = dir.getDocument().getChartColorManager().getSampleColor(sample);
-                                        if (nodeRadius > 1 || !showLabels) {
-                                            nv.setBackgroundColor(color);
-                                            nv.setLabelBackgroundColor(null);
-                                        } else
-                                            nv.setLabelBackgroundColor(color);
-                                    } else
-                                        nv.setBackgroundColor(null);
-
-                                    if (selectedLabels.contains(nv.getLabel()))
-                                        toSelect.add(v);
-                                }
-                            }
-                            addFormatting(upgmaTab.getGraphView());
-                            addFormatting(njTab.getGraphView());
-                            addFormatting(nnetTab.getGraphView());
-                            if (pcoaTab.isShowGroups())
-                                pcoaTab.computeConvexHullOfGroups(group2Nodes);
-                            addFormatting(pcoaTab.getGraphView());
-                            graphView.setSelected(toSelect, true);
-                        }
-                    }
-
-                    if (graphView != null)
-                        graphView.repaint();
-
-                    final FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
-                    if (findToolBar.isClosing()) {
-                        showFindToolBar = false;
-                        findToolBar.setClosing(false);
-                    }
-                    if (!findToolBar.isEnabled() && showFindToolBar) {
-                        mainPanel.add(findToolBar, BorderLayout.NORTH);
-                        findToolBar.setEnabled(true);
-                        frame.getContentPane().validate();
-                        getCommandManager().updateEnableState();
-                    } else if (findToolBar.isEnabled() && !showFindToolBar) {
-                        mainPanel.remove(findToolBar);
-                        findToolBar.setEnabled(false);
-                        frame.getContentPane().validate();
-                        getCommandManager().updateEnableState();
-                    }
-
-                    if (tabbedPane.getSelectedComponent() instanceof ITab) {
-                        try {
-                            ((ITab) tabbedPane.getSelectedComponent()).updateView(what);
-                        } catch (Exception e) {
-                            Basic.caught(e);
-                        }
-                    }
-
-                    legendPanel.updateView();
-                    if (doc.getNumberOfSamples() <= 1)
-                        splitPane.setDividerLocation(1.0);
-                    legendPanel.repaint();
-
-                    // enable applicable tabs
-                    for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-                        if (tabbedPane.getComponentAt(i) instanceof ITab) {
-                            ITab tab = (ITab) tabbedPane.getComponentAt(i);
-                            tabbedPane.setEnabledAt(i, tab.isApplicable());
-
-                        }
-                    }
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                }
-            }
-        };
+        setStatusLine(ClusterViewer.this);
+        getCommandManager().updateEnableState();
+        setTitle();
 
         if (what.equals(IDirector.ALL)) {
-            if (tabbedPane.getSelectedComponent() instanceof ITab) {
-                final ITab iTab = (ITab) tabbedPane.getSelectedComponent();
-                if (!iTab.isComputing()) {
-                    iTab.setComputing(true);
-                    getGraphView().repaint();
-                    executor.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
+            if (graphView != null) {
+                final PhyloTree graph = ((PhyloTree) graphView.getGraph());
 
-                                iTab.compute(taxa, distances);
-                            } catch (Exception e) {
-                                Basic.caught(e);
-                            } finally {
-                                iTab.setComputing(false);
+                group2Nodes.clear();
+                if (isPCoATab()) { // setup group 2 nodes in order that samples appear in table
+                    Map<String, Node> sample2node = new HashMap<>();
+                    for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                        sample2node.put(graphView.getNV(v).getLabel(), v);
+                    }
+                    for (String sample : getDir().getDocument().getSampleAttributeTable().getSampleOrder()) {
+                        String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(sample);
+                        if (groupId != null) {
+                            LinkedList<Node> nodes = group2Nodes.get(groupId);
+                            if (nodes == null) {
+                                nodes = new LinkedList<>();
+                                group2Nodes.put(groupId, nodes);
+                                }
+                            nodes.add(sample2node.get(sample));
                             }
-                            clusterAnalysisSearcher.updateMatrixSearcher();
-                            SwingUtilities.invokeLater(runnable);
                         }
-                    });
+                    }
+
+                if (frame.isActive())
+                    graphView.requestFocusInWindow();
+                final Set<String> selectedLabels = doc.getSampleSelection().getAll();
+                final NodeSet toSelect = new NodeSet(graphView.getGraph());
+                for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                    final NodeView nv = graphView.getNV(v);
+                    if (nv.getLabel() != null) {
+                        nv.setLabelVisible(showLabels);
+                        if (nv.getHeight() <= 3)
+                            nv.setHeight(nodeRadius);
+                        if (nv.getWidth() <= 3)
+                            nv.setWidth(nodeRadius);
+                        nv.setFixedSize(true);
+                        if (useColors) {
+                            String sample = graph.getLabel(v);
+                            Color color = dir.getDocument().getChartColorManager().getSampleColor(sample);
+                            if (nodeRadius > 1 || !showLabels) {
+                                nv.setBackgroundColor(color);
+                                nv.setLabelBackgroundColor(null);
+                            } else
+                                nv.setLabelBackgroundColor(color);
+                        } else
+                            nv.setBackgroundColor(null);
+
+                        if (selectedLabels.contains(nv.getLabel()))
+                            toSelect.add(v);
+                        }
+                    }
+                addFormatting(upgmaTab.getGraphView());
+                addFormatting(njTab.getGraphView());
+                addFormatting(nnetTab.getGraphView());
+                if (pcoaTab.isShowGroups())
+                    pcoaTab.computeConvexHullOfGroups(group2Nodes);
+                addFormatting(pcoaTab.getGraphView());
+                graphView.setSelected(toSelect, true);
+            }
+        }
+
+        if (graphView != null)
+            graphView.repaint();
+
+        final FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
+        if (findToolBar.isClosing()) {
+            showFindToolBar = false;
+            findToolBar.setClosing(false);
+        }
+        if (!findToolBar.isEnabled() && showFindToolBar) {
+            mainPanel.add(findToolBar, BorderLayout.NORTH);
+            findToolBar.setEnabled(true);
+            frame.getContentPane().validate();
+            getCommandManager().updateEnableState();
+        } else if (findToolBar.isEnabled() && !showFindToolBar) {
+            mainPanel.remove(findToolBar);
+            findToolBar.setEnabled(false);
+            frame.getContentPane().validate();
+            getCommandManager().updateEnableState();
+        }
+
+        if (tabbedPane.getSelectedComponent() instanceof ITab) {
+            try {
+                ((ITab) tabbedPane.getSelectedComponent()).updateView(what);
+            } catch (Exception e) {
+                Basic.caught(e);
                 }
             }
-        } else if (SwingUtilities.isEventDispatchThread())
-            runnable.run();
-        else
-            SwingUtilities.invokeLater(runnable);
+
+        legendPanel.updateView();
+        if (doc.getNumberOfSamples() <= 1)
+            splitPane.setDividerLocation(1.0);
+        legendPanel.repaint();
+
+        // enable applicable tabs
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            if (tabbedPane.getComponentAt(i) instanceof ITab) {
+                ITab tab = (ITab) tabbedPane.getComponentAt(i);
+                tabbedPane.setEnabledAt(i, tab.isApplicable());
+
+                }
+            }
     }
 
     /**
@@ -568,6 +522,17 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         getNnetTab().clear();
         getNJTab().clear();
         matrixTab.setData(taxa, distances);
+    }
+
+    /**
+     * update the graph
+     */
+    public void updateGraph() throws Exception {
+        if (tabbedPane.getSelectedComponent() instanceof ITab) {
+            final ITab iTab = (ITab) tabbedPane.getSelectedComponent();
+            iTab.compute(taxa, distances);
+            clusterAnalysisSearcher.updateMatrixSearcher();
+        }
     }
 
     /**
@@ -748,7 +713,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * gets the index of the showing tab
      *
-     * @return 0-2
+     * @return index
      */
     public int getTabbedIndex() {
         return tabbedPane.getSelectedIndex();
@@ -1069,7 +1034,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         Classification classification = ClassificationManager.get(parentViewer.getClassName(), false);
 
         if (getTabbedIndex() == PCoA_TAB_INDEX) {
-            PCoATab tab = (PCoATab) getPcoaTab();
+            PCoATab tab = getPcoaTab();
             GraphView graphView = getGraphView();
             for (Node v : graphView.getSelectedNodes()) {
                 if (tab.isBiplotNode(v)) {

@@ -40,8 +40,9 @@ public class SyncCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
-        ClusterViewer viewer = getViewer();
+        final ClusterViewer viewer = getViewer();
         viewer.updateDistances();
+        viewer.updateGraph();
     }
 
     public void actionPerformed(ActionEvent event) {

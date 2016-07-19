@@ -198,7 +198,7 @@ public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
     public static boolean isBinFile(File file) {
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
             int firstInt = dis.readInt();
-            return firstInt == MAGIC_NUMBER;
+            return firstInt == 0 || firstInt == MAGIC_NUMBER;
         } catch (Exception e) {
             return false;
         }

@@ -51,7 +51,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * tab that shows a PCoA plot of the data
@@ -102,8 +101,6 @@ public class PCoATab extends JPanel implements ITab {
     private final IObjectSearcher searcher;
 
     public long lastSynced = 0;
-
-    private boolean computing;
 
     /**
      * constructor
@@ -182,16 +179,6 @@ public class PCoATab extends JPanel implements ITab {
             }
 
             public void resetViews() {
-            }
-
-            @Override
-            public void paint(Graphics gc) {
-                if (isComputing()) {
-                    gc.setFont(getFont());
-                    gc.setColor(Color.LIGHT_GRAY);
-                    gc.drawString("Computing...", 20, 20);
-                } else
-                    super.paint(gc);
             }
         };
         graph = (PhyloGraph) graphView.getGraph();
@@ -423,9 +410,9 @@ public class PCoATab extends JPanel implements ITab {
                 runPCoA(pcoa);
             }
             if (!pcoa.isDone())
-                throw new Exception("PCoA calculation: failed");
+                throw new Exception("PCoA computation: failed");
             if (pcoa.getNumberOfPositiveEigenValues() < 2)
-                throw new Exception("PCoA calculation: too few positive eigenvalues");
+                throw new Exception("PCoA computation: too few positive eigenvalues");
 
             {
                 NodeSet selectedNodes = clusterViewer.getParentViewer().getSelectedNodes();
@@ -507,42 +494,12 @@ public class PCoATab extends JPanel implements ITab {
      *
      * @return items
      */
-    private void runPCoA(final PCoA pcoa) {
-
-        Runnable myRunnable = new Runnable() {
-            public void run() {
-                pcoa.calculateClassicMDS();
-            }
-        };
-        Thread t = new Thread(myRunnable); // myRunnable does the calculations
-        t.setPriority(Thread.currentThread().getPriority() - 1);
-
-        t.start(); // Kick off calculations
-
+    private void runPCoA(final PCoA pcoa) throws CanceledException {
         ProgressListener progressListener = clusterViewer.getDir().getDocument().getProgressListener();
         if (progressListener == null)
             progressListener = new ProgressSilent();
 
-        progressListener.setSubtask("Calculating PCoA");
-        progressListener.setMaximum(-1);
-        long endTime = System.currentTimeMillis() + ProgramProperties.get("PCoAMaxTimeSeconds", 120) * 1000;
-        try {
-            progressListener.setProgress(-1);
-            while (t.isAlive()) {
-                Thread.sleep(100L);  // Sleep 1/10 second
-                progressListener.checkForCancel();
-                if (System.currentTimeMillis() > endTime) {
-                    throw new TimeoutException("PCoA calculation timed out");
-                }
-            }
-        } catch (Exception ex) {
-            if (t.isAlive()) {
-                System.err.println("(Trying to cancel PCoA calculation)");
-                t.interrupt();
-                // t.stop();  // should never do this!
-                System.err.println("CANCELED PCoA calculation");
-            }
-        }
+        pcoa.calculateClassicMDS(progressListener);
     }
 
     public PCoA getPCoA() {
@@ -734,6 +691,9 @@ public class PCoATab extends JPanel implements ITab {
                 long b = 0;
 
                 for (Node v : nodes) {
+                    if (v == null)
+                        continue;
+
                     Point aPt = new Point((int) graphView.getLocation(v).getX(), (int) graphView.getLocation(v).getY());
                     points.add(aPt);
                     point2node.put(aPt, v);
@@ -1315,13 +1275,9 @@ public class PCoATab extends JPanel implements ITab {
         return true;
     }
 
-    @Override
-    public boolean isComputing() {
-        return computing;
+    public boolean needsUpdate() {
+        return graph.getNumberOfNodes() == 0;
     }
 
-    @Override
-    public void setComputing(boolean computing) {
-        this.computing = computing;
-    }
+
 }

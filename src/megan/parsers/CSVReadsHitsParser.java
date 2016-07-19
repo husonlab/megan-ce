@@ -32,9 +32,7 @@ import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -47,12 +45,15 @@ public class CSVReadsHitsParser {
     /**
      * apply the importer parser to the named file.
      * Format should be:   readname,taxon,score
-     *  @param fileName
+     *
+     * @param fileName
      * @param doc
      */
-    static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator) throws IOException {
-        System.err.println("Importing list of reads-to-CLASS hits from CSV file");
-        System.err.println("Expected line format: readname,CLASS,score     - CLASS must be one of: " + Basic.toString(cNames, " name,") + " name");
+    static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator) throws IOException, CanceledException {
+        final char separator = (tabSeparator ? '\t' : ',');
+
+        System.err.println("Importing list of read to CLASS-id hits from CSV file");
+        System.err.println("Line format: readname,CLASS-id,score     - for one of the following classificiatons: " + Basic.toString(cNames, " name,"));
 
         System.err.println("Using topPercent=" + doc.getTopPercent() + " minScore=" + doc.getMinScore() +
                 (doc.getMinSupportPercent() > 0 ? " minSupportPercent=" + doc.getMinSupportPercent() : "") +
@@ -85,55 +86,75 @@ public class CSVReadsHitsParser {
             readName2IdAndScore[i] = new HashMap<>();
         }
 
-        final BufferedReader r = new BufferedReader(new FileReader(fileName));
-        int numberOfErrors = 0;
-        int lineNo = 0;
-        String aLine;
         final int[] count = new int[parsers.length];
+        int numberOfErrors = 0;
+        int numberOfLines = 0;
 
-        while ((aLine = r.readLine()) != null) {
-            lineNo++;
-            aLine = aLine.trim();
-            if (aLine.length() == 0 || aLine.startsWith("#"))
-                continue;
-            try {
-                String[] tokens = aLine.split(tabSeparator ? "\t" : ",");
+        final ProgressListener progress = doc.getProgressListener();
+        progress.setTasks("Importing CSV file", "Reading " + fileName);
 
-                if (tokens.length != 3)
-                    throw new IOException("Line " + lineNo + ": incorrect number of columns, expected 3, got: " + tokens.length);
+        try (FileInputIterator it = new FileInputIterator(fileName)) {
+            progress.setMaximum(it.getMaximumProgress());
+            progress.setProgress(0);
 
+            boolean warnedNoScoreGiven = false;
 
-                String readName = tokens[0].trim();
-                boolean found = false;
-                for (int i = 0; !found && i < parsers.length; i++) {
-                    int id;
-                    if (i == taxonomyIndex && Basic.isInteger(tokens[1]))
-                        id = Basic.parseInt(tokens[1]);
-                    else
-                        id = parsers[i].getIdFromHeaderLine(tokens[1]);
-                    if (id != 0) {
-                        float score = Float.parseFloat(tokens[2].trim());
-                        List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].get(readName);
-                        if (taxonIdAndScore == null) {
-                            taxonIdAndScore = new LinkedList<>();
-                            readName2IdAndScore[i].put(readName, taxonIdAndScore);
+            while (it.hasNext()) {
+                String aLine = it.next();
+                numberOfLines++;
+                aLine = aLine.trim();
+                if (aLine.length() == 0 || aLine.startsWith("#"))
+                    continue;
+                try {
+                    String[] tokens = Basic.split(aLine, separator);
+
+                    if (tokens.length < 2 || tokens.length > 3)
+                        throw new IOException("Line " + numberOfLines + ": incorrect number of columns, expected 2 or 3, got: " + tokens.length);
+
+                    String readName = tokens[0].trim();
+                    boolean found = false;
+                    for (int i = 0; !found && i < parsers.length; i++) {
+                        final int id = (parsers.length == 1 && Basic.isInteger(tokens[1]) ?
+                                Basic.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
+                        if (id != 0) {
+                            float score;
+                            if (tokens.length < 3) {
+                                score = 50;
+                                if (!warnedNoScoreGiven) {
+                                    System.err.println("Setting score=50 for lines that only contained two tokens, such as line " + numberOfLines + ": '" + aLine + "'");
+                                    warnedNoScoreGiven = true;
+                                }
+                            } else
+                                score = Float.parseFloat(tokens[2].trim());
+                            List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].get(readName);
+                            if (taxonIdAndScore == null) {
+                                taxonIdAndScore = new LinkedList<>();
+                                readName2IdAndScore[i].put(readName, taxonIdAndScore);
+                            }
+                            taxonIdAndScore.add(new Pair<>(id, score));
+                            count[i]++;
+                            found = true;
                         }
-                        taxonIdAndScore.add(new Pair<>(id, score));
-                        count[i]++;
-                        found = true;
                     }
+                    if (!found)
+                        System.err.println("Unrecognized name: " + tokens[1]);
+                } catch (Exception ex) {
+                    System.err.println("Error: " + ex + ", skipping");
+                    numberOfErrors++;
                 }
-                if (!found)
-                    System.err.println("Unrecognized name: " + tokens[1]);
-            } catch (Exception ex) {
-                System.err.println("Error: " + ex + ", skipping");
-                numberOfErrors++;
+                progress.setProgress(it.getProgress());
             }
         }
+        if (progress instanceof ProgressPercentage)
+            ((ProgressPercentage) progress).reportTaskCompleted();
 
         final int totalReads = Basic.max(count);
 
         if (taxonomyIndex >= 0) {
+            progress.setSubtask("Running LCA");
+            progress.setProgress(0);
+            progress.setMaximum(readName2IdAndScore[taxonomyIndex].size());
+
             // run LCA algorithm to get assignment of reads
             Map<Integer, Integer[]> class2counts = new HashMap<>();
             Map<Integer, Integer> class2count = new HashMap<>();
@@ -155,7 +176,10 @@ public class CSVReadsHitsParser {
                     else
                         class2count.put(taxId, class2count.get(taxId) + 1);
                 }
+                progress.incrementProgress();
             }
+            if (progress instanceof ProgressPercentage)
+                ((ProgressPercentage) progress).reportTaskCompleted();
 
             // run the minsupport filter
             if (doc.getMinSupportPercent() > 0 || doc.getMinSupport() > 1) {
@@ -169,7 +193,7 @@ public class CSVReadsHitsParser {
                     System.err.println("MinSupport set to: " + doc.getMinSupport());
                 }
 
-                final MinSupportFilter minSupportFilter = new MinSupportFilter(Classification.Taxonomy, class2count, doc.getMinSupport(), new ProgressSilent());
+                final MinSupportFilter minSupportFilter = new MinSupportFilter(Classification.Taxonomy, class2count, doc.getMinSupport(), progress);
                 try {
                     Map<Integer, Integer> changes = minSupportFilter.apply();
                     for (Integer oldTaxId : changes.keySet()) {
@@ -197,27 +221,34 @@ public class CSVReadsHitsParser {
 
         for (int i = 0; i < cNames.length; i++) {
             if (i != taxonomyIndex) {
+                progress.setSubtask("Classifying " + cNames[i]);
+                progress.setProgress(0);
+                progress.setMaximum(readName2IdAndScore[i].size());
+
                 Map<Integer, Integer[]> class2counts = new HashMap<>();
                 Map<Integer, Integer> class2count = new HashMap<>();
 
                 for (String readName : readName2IdAndScore[i].keySet()) {
-                    final List<Pair<Integer, Float>> seedIdAndScore = readName2IdAndScore[i].get(readName);
-                    final int seedId = getBestId(seedIdAndScore);
+                    final List<Pair<Integer, Float>> classIdAndScore = readName2IdAndScore[i].get(readName);
+                    final int classId = getBestId(classIdAndScore);
 
-                    if (seedId != 0) {
-                        Integer[] counts = class2counts.get(seedId);
+                    if (classId != 0) {
+                        Integer[] counts = class2counts.get(classId);
                         if (counts == null) {
                             counts = new Integer[]{0};
-                            class2counts.put(seedId, counts);
+                            class2counts.put(classId, counts);
                         }
                         counts[0]++;
-                        if (class2count.get(seedId) == null)
-                            class2count.put(seedId, 1);
+                        if (class2count.get(classId) == null)
+                            class2count.put(classId, 1);
                         else
-                            class2count.put(seedId, class2count.get(seedId) + 1);
+                            class2count.put(classId, class2count.get(classId) + 1);
                     }
+                    progress.incrementProgress();
                 }
                 table.getClassification2Class2Counts().put(cNames[i], class2counts);
+                if (progress instanceof ProgressPercentage)
+                    ((ProgressPercentage) progress).reportTaskCompleted();
             }
         }
 
@@ -229,7 +260,7 @@ public class CSVReadsHitsParser {
                 doc.getActiveViewers().remove(cNames[i]);
         }
         if (numberOfErrors > 0)
-            NotificationsInSwing.showWarning(MainViewer.getLastActiveFrame(), "Lines skipped during import: " + numberOfErrors + " (of " + lineNo + ")");
+            NotificationsInSwing.showWarning(MainViewer.getLastActiveFrame(), "Lines skipped during import: " + numberOfErrors + " (of " + numberOfLines + ")");
         System.err.println("done (" + totalReads + " reads)");
     }
 

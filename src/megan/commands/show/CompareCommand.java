@@ -20,10 +20,7 @@ package megan.commands.show;
 
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.ProjectManager;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
@@ -53,6 +50,7 @@ public class CompareCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         final Director dir = getDir();
         final Document doc = dir.getDocument();
+        final ProgressListener progress = doc.getProgressListener();
 
         if (!doc.neverOpenedReads)
             throw new Exception("Internal error: document already used");
@@ -105,22 +103,23 @@ public class CompareCommand extends CommandBase implements ICommand {
                 }
                 np.matchIgnoreCase(";");
 
-                doc.getProgressListener().setTasks("Comparison", "Loading files");
-                doc.getProgressListener().setMaximum(files.size());
+                progress.setProgress(0);
+                progress.setMaximum(files.size());
                 for (String fileName : files) {
+                    progress.setTasks("Comparison", "Loading files");
                     final Director newDir = Director.newProject(false, true);
                     if (newDir != null) {
                         newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
                         comparer.addDirector(newDir);
                         toDelete.add(newDir);
                     }
-                    doc.getProgressListener().incrementProgress();
+                    progress.incrementProgress();
                 }
             }
             doc.getMeganFile().setFileName(ProjectManager.getUniqueName("Comparison.megan"));
 
             doc.clearReads();
-            comparer.computeComparison(doc.getSampleAttributeTable(), doc.getDataTable(), doc.getProgressListener());
+            comparer.computeComparison(doc.getSampleAttributeTable(), doc.getDataTable(), progress);
             doc.setNumberReads(doc.getDataTable().getTotalReads());
             doc.processReadHits();
             doc.setTopPercent(100);

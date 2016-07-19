@@ -80,7 +80,7 @@ public class Comparer {
      * @throws CanceledException
      */
     public void computeComparison(SampleAttributeTable sampleAttributeTable, final DataTable result, final ProgressListener progressListener) throws CanceledException {
-        progressListener.setTasks("Computing comparison", "Initialization");
+        progressListener.setTasks("Comparison", "Initialization");
         progressListener.setMaximum(-1);
 
         System.err.println("Computing comparison: ");
@@ -98,7 +98,6 @@ public class Comparer {
         // lock all unlocked projects involved in the comparison
         final List<Director> myLocked = new LinkedList<>();
         final Map<String, Object> sample2source = new HashMap<>();
-        final ArrayList<String> sampleOrder = new ArrayList<>(dirs.size());
         for (final Director dir : dirs) {
             if (!dir.isLocked()) {
                 dir.notifyLockInput();
@@ -119,7 +118,6 @@ public class Comparer {
                 uids[pos] = 0L;
             }
             sample2source.put(names[pos], dir.getDocument().getMeganFile().getFileName());
-            sampleOrder.add(names[pos]);
         }
 
         sampleAttributeTable.addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), sample2source, true, true);

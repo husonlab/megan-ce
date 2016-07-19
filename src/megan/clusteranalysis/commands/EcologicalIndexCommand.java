@@ -18,7 +18,6 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
@@ -52,12 +51,12 @@ public abstract class EcologicalIndexCommand extends CommandBase {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        ClusterViewer viewer = getViewer();
+        final ClusterViewer viewer = getViewer();
 
-        String method = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Set Ecological Index", "Set Ecological Index", JOptionPane.QUESTION_MESSAGE,
+        final String method = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Set Ecological Index", "Set Ecological Index", JOptionPane.QUESTION_MESSAGE,
                 ProgramProperties.getProgramIcon(), METHODS, viewer.getEcologicalIndex());
         if (method != null)
-            execute("set index=" + method + ";");
+            executeImmediately("set index=" + method + ";");
     }
 
     /**
@@ -92,11 +91,7 @@ public abstract class EcologicalIndexCommand extends CommandBase {
 
         ClusterViewer viewer = getViewer();
         viewer.setEcologicalIndex(method);
-        try {
-            viewer.updateDistances(); // todo: take out dependency on sync
-        } catch (Exception ex) {
-            Basic.caught(ex);
-        }
+        execute("sync;");
     }
 
     /**

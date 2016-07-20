@@ -24,7 +24,6 @@ import jloda.util.*;
 import malt.align.SimpleAligner4DNA;
 import megan.core.Director;
 import megan.data.IReadBlockIterator;
-import megan.util.BoyerMoore;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -192,7 +191,6 @@ public class ReadAssembler {
                 @Override
                 public void run() {
                     try {
-                        if (maxPercentIdentityAllowForSeparateContigs < 100) {
                             final byte[] iBytes = sortedContigs.get(i).getSecond().getBytes();
                             final byte[] iBytesReverseComplemented = Basic.getReverseComplement(sortedContigs.get(i).getSecond()).getBytes();
 
@@ -214,9 +212,10 @@ public class ReadAssembler {
 
                                         final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytesOriented, jBytes, overlap);
 
-                                        if (overlapType == SimpleAligner4DNA.OverlapType.Infix
-                                                || (overlapType == SimpleAligner4DNA.OverlapType.Prefix && (iBytesOriented.length - overlap.get()) < 100)
-                                                || (overlapType == SimpleAligner4DNA.OverlapType.Suffix && (iBytesOriented.length - overlap.get()) < 100)) {
+                                        // if contained or nearly contained, remove
+                                        if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef
+                                                || (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)
+                                                || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)) {
                                             if (verbose) {
                                                 System.err.println(String.format("Removed contig '%s', is %6.2f%% contained in '%s'",
                                                         Basic.skipFirstWord(sortedContigs.get(i).getFirst()), simpleAlignerDNA.getPercentIdentity(),
@@ -228,43 +227,38 @@ public class ReadAssembler {
                                             }
                                             return;
                                         }
-                                        /*
-                                        else if((overlapType == SimpleAligner4DNA.OverlapType.Prefix && overlap.get() > 100)
-                                        || (overlapType == SimpleAligner4DNA.OverlapType.Suffix && overlap.get() > 100)){
+                                        // if extension, extend
+                                        if ((overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50)
+                                                || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50)) {
                                             System.err.println(String.format("Contigs '%s' and '%s' overlap by %d, consider merging",
                                                     Basic.skipFirstWord(sortedContigs.get(i).getFirst()),
                                                     Basic.skipFirstWord(sortedContigs.get(j).getFirst()),overlap.get()));
+                                            System.err.println(overlapType);
+
+                                            System.err.println(simpleAlignerDNA.getAlignmentString());
 
                                             String merged;
-                                            if(overlapType == SimpleAligner4DNA.OverlapType.Prefix)
-                                                merged=Basic.toString(iBytesOriented,0,iBytesOriented.length-overlap.get())+ Basic.toString(jBytes);
-                                            else
-                                                merged=Basic.toString(jBytes)+Basic.toString(iBytesOriented,overlap.get(),iBytesOriented.length-overlap.get());
+                                            if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix) {
+                                                merged = Basic.toString(iBytesOriented, 0, iBytesOriented.length - overlap.get()) + Basic.toString(jBytes);
+                                            } else {
+                                                merged = Basic.toString(jBytes) + Basic.toString(iBytesOriented, overlap.get(), iBytesOriented.length - overlap.get());
+                                            }
 
-                                            System.err.println(">Merged length="+(iBytesOriented.length+jBytes.length-overlap.get())
-                                                    +Basic.skipFirstWord(sortedContigs.get(i).getFirst())+" merged with "
-                                                    +Basic.skipFirstWord(sortedContigs.get(j).getFirst()));
-                                            System.err.println(merged);
+                                            if (true) {
+                                                System.err.println(">Query");
+                                                System.err.println(Basic.toString(iBytesOriented));
+                                                System.err.println(">Reference");
+                                                System.err.println(Basic.toString(jBytes));
+
+                                                System.err.println(">Merged length=" + (iBytesOriented.length + jBytes.length - overlap.get()) + " ("
+                                                        + Basic.skipFirstWord(sortedContigs.get(i).getFirst()) + " merged with "
+                                                        + Basic.skipFirstWord(sortedContigs.get(j).getFirst()) + ")");
+                                                System.err.println(merged);
+                                            }
                                         }
-                                        */
                                     }
                                 }
                             }
-                        } else { // 100% contained, no need to align..., just check whether contained
-                            final String iSequence = sortedContigs.get(i).getSecond();
-                            final String iSequenceReverseComplemented = Basic.getReverseComplement(iSequence);
-
-                            final BoyerMoore boyerMoore = new BoyerMoore(iSequence); // make Boyer Moore for query
-                            final BoyerMoore boyerMooreReverseComplemented = new BoyerMoore(iSequenceReverseComplemented);
-                            for (int j = 0; j < i; j++) {
-                                final String jSequence = sortedContigs.get(j).getSecond();
-                                if (boyerMoore.search(jSequence) < jSequence.length() || boyerMooreReverseComplemented.search(jSequence) < jSequence.length()) {
-                                    containedContigs.set(i);
-                                    return;
-                                }
-                            }
-                        }
-
                     } finally {
                         countDownLatch.countDown();
                         try {

@@ -201,14 +201,12 @@ public class OverlapGraphBuilder {
                                 node2readName.set(w, jMatch.getRead().getName());
                             }
 
-                            Edge e = overlapGraph.getCommonEdge(v, w);
+                            final Edge e = overlapGraph.getCommonEdge(v, w);
                             if (e == null) {
                                 overlapGraph.newEdge(v, w, overlapLength);
                             } else if ((Integer) e.getInfo() < overlapLength) {
                                 e.setInfo(overlapLength);
-
                             }
-
                         }
                     }
                 }

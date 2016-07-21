@@ -28,9 +28,7 @@ import megan.data.IReadBlockIterator;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * assembler for all reads assigned to a particular class
@@ -293,6 +291,34 @@ public class ReadAssembler {
             ((ProgressPercentage) progress).reportTaskCompleted();
         System.err.println(String.format("Removed contigs:  %9d", containedContigs.cardinality()));
         return count;
+    }
+
+    public static int mergeOverlappingContigs(final ProgressListener progress, final float maxPercentIdentityAllowForSeparateContigs, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
+
+        final int numberOfComparisons = contigs.size() * (contigs.size() - 1) / 2;
+        final int numberOfThreads = Math.min(numberOfComparisons, Runtime.getRuntime().availableProcessors() - 1);
+        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        final CountDownLatch countDownLatch = new CountDownLatch(numberOfComparisons);
+        final BlockingQueue<Pair<String, String>> queue = new ArrayBlockingQueue<Pair<String, String>>(numberOfComparisons);
+
+/*
+        for(int i=0;i<numberOfThreads;i++) {
+                 service.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+
+                        }
+                        finally {
+                            countDownLatch.countDown();
+                        }
+
+                    });
+            }
+        }
+        */
+        return 0;
+
     }
 
     /**

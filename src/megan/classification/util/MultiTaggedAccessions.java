@@ -37,18 +37,17 @@ public class MultiTaggedAccessions {
      *
      * @param attemptFirstWord
      */
-    public MultiTaggedAccessions(boolean attemptFirstWord, String[] idTags) {
-        this(attemptFirstWord, idTags, true);
+    public MultiTaggedAccessions(boolean attemptFirstWord, String... idTags) {
+        this(attemptFirstWord, true, idTags);
     }
 
     /**
      * constructor
-     *
-     * @param attemptFirstWord
-     * @param idTags
+     *  @param attemptFirstWord
      * @param enabled
+     * @param idTags
      */
-    public MultiTaggedAccessions(boolean attemptFirstWord, String[] idTags, boolean enabled) {
+    public MultiTaggedAccessions(boolean attemptFirstWord, boolean enabled, String... idTags) {
         this.attemptFirstWord = attemptFirstWord;
         this.idTags = idTags;
         this.enabled = enabled && (attemptFirstWord || idTags.length > 0);
@@ -106,7 +105,6 @@ public class MultiTaggedAccessions {
                         pairs[count++][1] = b;
                     }
                 }
-
             }
         }
         return count;

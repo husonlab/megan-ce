@@ -51,7 +51,7 @@ public class CSVExportRefSeq {
     public static int exportReadName2Accession(MainViewer viewer, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
-            MultiTaggedAccessions multiTaggedAccessions = new MultiTaggedAccessions(true, new String[]{"gb|", "ref|" });
+            final MultiTaggedAccessions multiTaggedAccessions = new MultiTaggedAccessions(true, "gb|", "ref|");
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final Document doc = viewer.getDir().getDocument();
                 final IConnector connector = doc.getConnector();

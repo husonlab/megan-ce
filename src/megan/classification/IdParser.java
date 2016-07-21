@@ -77,8 +77,8 @@ public class IdParser {
 
         multiWords = new MultiWords();
         taggedIds = new MultiTaggedAccessions(false, idMapper.getIdTags());
-        giTaggedIds = new MultiTaggedAccessions(false, GI_TAGS, idMapper.isActiveMap(IdMapper.MapType.GI) && idMapper.isLoaded(IdMapper.MapType.GI));
-        accTaggedIds = new MultiTaggedAccessions(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS), idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession));
+        giTaggedIds = new MultiTaggedAccessions(false, idMapper.isActiveMap(IdMapper.MapType.GI) && idMapper.isLoaded(IdMapper.MapType.GI), GI_TAGS);
+        accTaggedIds = new MultiTaggedAccessions(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession), ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
     }
 
     /**

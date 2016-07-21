@@ -149,7 +149,11 @@ public class XIntArray {
      * @return value
      */
     public int get(long index) {
-        return segments[(int) (index >>> SEGMENT_BITS)][(int) (index & SEGMENT_MASK)];
+        final int segment = (int) (index >>> SEGMENT_BITS);
+        if (segment >= segments.length)
+            return 0;
+        else
+            return segments[segment][(int) (index & SEGMENT_MASK)];
     }
 
     /**

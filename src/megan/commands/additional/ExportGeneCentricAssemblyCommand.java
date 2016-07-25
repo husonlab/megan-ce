@@ -82,8 +82,9 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             minLength = 0;
 
         final float minAvCoverage;
-        if (np.peekMatchIgnoreCase("minAvCoverage")) {
-            np.matchIgnoreCase("minAvCoverage=");
+        if (np.peekMatchIgnoreCase("minAvCoverage") || np.peekMatchIgnoreCase("minCoverage")) { // allow minCoverage for legacy
+            np.matchAnyTokenIgnoreCase("minAvCoverage minCoverage");
+            np.matchIgnoreCase("=");
             minAvCoverage = (float) np.getDouble(0, 1000000);
         } else
             minAvCoverage = 0;

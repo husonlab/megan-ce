@@ -164,7 +164,7 @@ public class OverlapGraphBuilder {
      * @param ref2matches
      */
     private void buildOverlapGraph(ReadData[] reads, Map<String, SortedSet<MatchData>> ref2matches, int minOverlap) {
-        Node[] nodes = new Node[reads.length];
+        final Node[] nodes = new Node[reads.length];
 
         final BitSet containedReadIds = new BitSet();
 

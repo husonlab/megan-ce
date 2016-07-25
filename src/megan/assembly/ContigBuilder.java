@@ -22,7 +22,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.*;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 5.2015
  */
 public class ContigBuilder {
-    private final List<Pair<String, String>> result;
+    private final ArrayList<Pair<String, String>> result;
     private final Node[][] paths;
     private final List<Integer>[] readId2ContainedReads;
 
@@ -45,7 +45,7 @@ public class ContigBuilder {
     public ContigBuilder(Node[][] paths, List<Integer>[] readId2ContainedReads) {
         this.paths = paths;
         this.readId2ContainedReads = readId2ContainedReads;
-        result = new LinkedList<>();
+        result = new ArrayList<>();
     }
 
     /**
@@ -167,7 +167,7 @@ public class ContigBuilder {
      *
      * @return contigs
      */
-    public List<Pair<String, String>> getContigs() {
+    public ArrayList<Pair<String, String>> getContigs() {
         return result;
     }
 

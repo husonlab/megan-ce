@@ -23,14 +23,17 @@ import jloda.util.*;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * builds contigs from paths and data
  * Daniel Huson, 5.2015
  */
 public class ContigBuilder {
-    private final List<Pair<String, String>> result;
+    private final ArrayList<Pair<String, String>> result;
 
     private final Node[][] paths;
     private final Node[] singles;
@@ -49,7 +52,7 @@ public class ContigBuilder {
         this.paths = paths;
         this.singles = singles;
         this.readId2ContainedReads = readId2ContainedReads;
-        result = new LinkedList<>();
+        result = new ArrayList<>();
     }
 
     /**
@@ -140,7 +143,7 @@ public class ContigBuilder {
      *
      * @return contigs
      */
-    public List<Pair<String, String>> getContigs() {
+    public ArrayList<Pair<String, String>> getContigs() {
         return result;
     }
 

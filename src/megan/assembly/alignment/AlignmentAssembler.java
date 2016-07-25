@@ -27,6 +27,7 @@ import megan.core.Director;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,7 +41,7 @@ public class AlignmentAssembler {
     private Alignment alignment;
     private Node[][] paths;
     private NodeMap<String> node2readName;
-    private List<Pair<String, String>> contigs;
+    private ArrayList<Pair<String, String>> contigs;
     private List<Integer>[] readId2ContainedReads;
 
     /**
@@ -135,7 +136,7 @@ public class AlignmentAssembler {
         return contigBuilder.getCountContigs();
     }
 
-    public List<Pair<String, String>> getContigs() {
+    public ArrayList<Pair<String, String>> getContigs() {
         return contigs;
     }
 

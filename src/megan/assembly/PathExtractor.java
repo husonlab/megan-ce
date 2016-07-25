@@ -65,13 +65,13 @@ public class PathExtractor {
 
             NodeMap<Node> old2newNode = new NodeMap<>(this.overlapGraph);
             for (Node v = this.overlapGraph.getFirstNode(); v != null; v = this.overlapGraph.getNextNode(v)) {
-                Node w = overlapGraphWorkingCopy.newNode(v.getInfo());
+                final Node w = overlapGraphWorkingCopy.newNode(v.getInfo());
                 new2oldNode.set(w, v);
                 old2newNode.set(v, w);
                 progress.incrementProgress();
             }
             for (Edge e = this.overlapGraph.getFirstEdge(); e != null; e = this.overlapGraph.getNextEdge(e)) {
-                Edge f = overlapGraphWorkingCopy.newEdge(old2newNode.get(e.getSource()), old2newNode.get(e.getTarget()), e.getInfo());
+                final Edge f = overlapGraphWorkingCopy.newEdge(old2newNode.get(e.getSource()), old2newNode.get(e.getTarget()), e.getInfo());
                 new2oldEdge.set(f, e);
                 progress.incrementProgress();
             }
@@ -166,7 +166,7 @@ public class PathExtractor {
         final List<Node> singletonList = new ArrayList<>();
         for (Node v = overlapGraphWorkingCopy.getFirstNode(); v != null; v = overlapGraphWorkingCopy.getNextNode(v)) {
             int readId = (Integer) v.getInfo();
-            if (readId2ContainedReads != null && readId2ContainedReads[readId] != null && readId2ContainedReads[readId].size() > 0)
+            if (readId2ContainedReads != null && readId < readId2ContainedReads.length && readId2ContainedReads[readId] != null && readId2ContainedReads[readId].size() > 0)
                 pathsList.add(new Node[]{v});
             else
                 singletonList.add(new2oldNode.get(v));

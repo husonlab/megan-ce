@@ -66,6 +66,7 @@ public class PathExtractor {
             NodeMap<Node> old2newNode = new NodeMap<>(this.overlapGraph);
             for (Node v = this.overlapGraph.getFirstNode(); v != null; v = this.overlapGraph.getNextNode(v)) {
                 final Node w = overlapGraphWorkingCopy.newNode(v.getInfo());
+                w.setData(v.getData());
                 new2oldNode.set(w, v);
                 old2newNode.set(v, w);
                 progress.incrementProgress();

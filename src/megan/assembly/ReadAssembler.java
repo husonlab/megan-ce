@@ -28,7 +28,6 @@ import megan.data.IReadBlockIterator;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -150,7 +149,12 @@ public class ReadAssembler {
      * @return number of contigs removed
      * @throws CanceledException
      */
-    public static int removeContainedContigs(final ProgressListener progress, final float maxPercentIdentityAllowForSeparateContigs, List<Pair<String, String>> contigs) throws CanceledException {
+    public static int removeContainedContigs(final ProgressListener progress, final float maxPercentIdentityAllowForSeparateContigs, ArrayList<Pair<String, String>> contigs) throws CanceledException {
+
+        if (true) {
+            return mergeOverlappingContigs(progress, maxPercentIdentityAllowForSeparateContigs, contigs);
+        }
+
         progress.setSubtask("Removing contained contigs");
         progress.setMaximum(contigs.size());
         progress.setProgress(0);
@@ -163,7 +167,7 @@ public class ReadAssembler {
 
         final List<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
         sortedContigs.addAll(contigs);
-        sortedContigs.sort(new Comparator<Pair<String, String>>() {
+        sortedContigs.sort(new Comparator<Pair<String, String>>() { // decreasing length
             @Override
             public int compare(Pair<String, String> pair1, Pair<String, String> pair2) {
                 if (pair1.getSecond().length() > pair2.getSecond().length())
@@ -214,9 +218,7 @@ public class ReadAssembler {
                                     final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytesOriented, jBytes, overlap);
 
                                     // if contained or nearly contained, remove
-                                    if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef
-                                            || (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)
-                                            || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)) {
+                                    if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef) {
                                         if (verbose) {
                                             System.err.println(String.format("Removed contig '%s', is %6.2f%% contained in '%s'",
                                                     Basic.skipFirstWord(sortedContigs.get(i).getFirst()), simpleAlignerDNA.getPercentIdentity(),
@@ -227,35 +229,6 @@ public class ReadAssembler {
                                             containedContigs.set(i);
                                         }
                                         return;
-                                    }
-                                    // if extension, extend
-                                    if ((overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50)
-                                            || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50)) {
-                                        System.err.println(String.format("Contigs '%s' and '%s' overlap by %d, consider merging",
-                                                Basic.skipFirstWord(sortedContigs.get(i).getFirst()),
-                                                Basic.skipFirstWord(sortedContigs.get(j).getFirst()), overlap.get()));
-                                        System.err.println(overlapType);
-
-                                        System.err.println(simpleAlignerDNA.getAlignmentString());
-
-                                        String merged;
-                                        if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix) {
-                                            merged = Basic.toString(iBytesOriented, 0, iBytesOriented.length - overlap.get()) + Basic.toString(jBytes);
-                                        } else {
-                                            merged = Basic.toString(jBytes) + Basic.toString(iBytesOriented, overlap.get(), iBytesOriented.length - overlap.get());
-                                        }
-
-                                        if (true) {
-                                            System.err.println(">Query");
-                                            System.err.println(Basic.toString(iBytesOriented));
-                                            System.err.println(">Reference");
-                                            System.err.println(Basic.toString(jBytes));
-
-                                            System.err.println(">Merged length=" + (iBytesOriented.length + jBytes.length - overlap.get()) + " ("
-                                                    + Basic.skipFirstWord(sortedContigs.get(i).getFirst()) + " merged with "
-                                                    + Basic.skipFirstWord(sortedContigs.get(j).getFirst()) + ")");
-                                            System.err.println(merged);
-                                        }
                                     }
                                 }
                             }
@@ -300,148 +273,129 @@ public class ReadAssembler {
      * computes all pairwise overlaps between contigs and then merges contigs
      *
      * @param progress
-     * @param maxPercentIdentityAllowForSeparateContigs
-     * @param contigs                                   input list of contigs and output list of merged contigs
+     * @param minPercentIdentityToMergeContigs
+     * @param contigs                          input list of contigs and output list of merged contigs
      * @return number of resulting
      * @throws CanceledException
      */
-    public static int mergeOverlappingContigs(final ProgressListener progress, final float maxPercentIdentityAllowForSeparateContigs, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
+    public static int mergeOverlappingContigs(final ProgressListener progress, final float minPercentIdentityToMergeContigs, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
         progress.setSubtask("Overlapping contigs");
 
         final ArrayList<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
         sortedContigs.addAll(contigs);
-        sortedContigs.sort(new Comparator<Pair<String, String>>() {
-            @Override
-            public int compare(Pair<String, String> pair1, Pair<String, String> pair2) { // sorting in increasing order of length
-                if (pair1.getSecond().length() < pair2.getSecond().length())
-                    return -1;
-                else if (pair1.getSecond().length() > pair2.getSecond().length())
-                    return 1;
-                else
-                    return pair1.getFirst().compareTo(pair2.getFirst());
-            }
-        });
+        sortedContigs.sort(Basic.getComparatorDecreasingLengthOfSecond());
         contigs.clear();
 
-        final int numberOfComparisons = sortedContigs.size() * (sortedContigs.size() - 1) / 2;
-        final int numberOfThreads = Math.min(numberOfComparisons, Runtime.getRuntime().availableProcessors() - 1);
-        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        final ArrayBlockingQueue<Pair<Integer, Integer>> queue = new ArrayBlockingQueue<>(numberOfComparisons + numberOfThreads);
-        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-        final Single<Boolean> notCanceled = new Single<>(true);
-
-        progress.setMaximum(numberOfComparisons / numberOfThreads);
-        progress.setProgress(0);
-
         final Graph overlapGraph = new Graph();
-        final NodeSet forwardNodes = new NodeSet(overlapGraph);
-        final Map<Integer, Node> forwardContig2Node = new HashMap<>();
-        final Map<Integer, Node> reverseContig2Node = new HashMap<>();
-        final List<Integer>[] contigId2ContainedContigs = new List[contigs.size()];
+        final List<Integer>[] contigId2ContainedContigs = new List[sortedContigs.size()];
         final BitSet containedContigs = new BitSet();
 
-        for (int i = 0; i < sortedContigs.size(); i++) {
-            final Node v = overlapGraph.newNode(i);
-            forwardContig2Node.put(i, v);
-            forwardNodes.add(v);
-            final Node w = overlapGraph.newNode(i);
-            reverseContig2Node.put(i, w);
+        // main parallel computation:
+        {
+            final int numberOfThreads = Math.min(sortedContigs.size(), Runtime.getRuntime().availableProcessors() - 1);
+            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+            final Single<Boolean> notCanceled = new Single<>(true);
 
-            for (int j = i + 1; j < sortedContigs.size(); j++) {
-                queue.add(new Pair<>(i, j));
+            progress.setMaximum(sortedContigs.size() / numberOfThreads);
+            progress.setProgress(0);
+
+            final Map<Integer, Node> contig2Node = new HashMap<>();
+
+            for (int i = 0; i < sortedContigs.size(); i++) {
+                final Node v = overlapGraph.newNode(i);
+                contig2Node.put(i, v);
             }
-        }
 
-        final Pair<Integer, Integer> sentinel = new Pair<>(-1, -1);
+            for (int t = 0; t < numberOfThreads; t++) {
+                final int threadNumber = t;
+                service.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final SimpleAligner4DNA simpleAlignerDNA = new SimpleAligner4DNA();
+                            simpleAlignerDNA.setMinPercentIdentity(minPercentIdentityToMergeContigs);
+                            final Single<Integer> overlap = new Single<>(0);
 
-        for (int i = 0; i < numberOfThreads; i++) {
-            final int threadNumber = i;
-            queue.add(sentinel); // add one for each thread
+                            for (int i = threadNumber; i < sortedContigs.size(); i += numberOfThreads) {
+                                final String iContig = sortedContigs.get(i).getSecond();
+                                final byte[] iBytes = iContig.getBytes();
+                                for (int j = 0; j < i; j++) {
+                                    final byte[] jBytes = sortedContigs.get(j).getSecond().getBytes();
 
-            service.submit(new Runnable() {
-                               @Override
-                               public void run() {
-                                   try {
-                                       final SimpleAligner4DNA simpleAlignerDNA = new SimpleAligner4DNA();
-                                       simpleAlignerDNA.setMinPercentIdentity(maxPercentIdentityAllowForSeparateContigs);
-                                       final Single<Integer> overlap = new Single<>(0);
+                                    if (iBytes.length > jBytes.length)
+                                        throw new RuntimeException("Internal error: contig i is longer than contig j");
 
-                                       while (notCanceled.get()) {
-                                           final Pair<Integer, Integer> pair = queue.take();
-                                           if (pair == sentinel)
-                                               break;
-                                           final Integer i = pair.getFirst(); // the shorter of both
-                                           final String iContig = contigs.get(i).getSecond();
-                                           final Integer j = pair.getSecond(); // the longer of both
-                                           final byte[] jBytes = contigs.get(j).getSecond().getBytes();
+                                    final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytes, jBytes, overlap);
 
-                                           for (int orient = 0; orient <= 1; orient++) { // 0: forward strand, 1: backward strand
-                                               final byte[] iBytesOriented = (orient == 0 ? iContig.getBytes() : Basic.getReverseComplement(iContig).getBytes());
-
-                                               if (iBytesOriented.length > jBytes.length)
-                                                   throw new RuntimeException("Internal error: contig i is longer than contig j");
-
-                                               final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytesOriented, jBytes, overlap);
-
-                                               // if contained or nearly contained, remove
-                                               if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef
-                                                       || (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)
-                                                       || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50 && (iBytesOriented.length - overlap.get()) < 100)) {
-                                                   synchronized (contigId2ContainedContigs) {
-                                                       List<Integer> contained = contigId2ContainedContigs[j];
-                                                       if (contained == null) {
-                                                           contained = new ArrayList<>();
-                                                           contigId2ContainedContigs[j] = contained;
+                                    // if contained or nearly contained, remove
+                                    if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef
+                                            || (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50 && (iBytes.length - overlap.get()) < 100)
+                                            || (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50 && (iBytes.length - overlap.get()) < 100)) {
+                                        synchronized (contigId2ContainedContigs) {
+                                            List<Integer> contained = contigId2ContainedContigs[j];
+                                            if (contained == null) {
+                                                contained = new ArrayList<>();
+                                                contigId2ContainedContigs[j] = contained;
+                                            }
+                                            contained.add(i);
+                                            containedContigs.set(i);
                                                        }
-                                                       contained.add(i);
-                                                       containedContigs.set(i);
-                                                   }
-                                               } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50) {
-                                                   final Node v = (orient == 0 ? forwardContig2Node.get(i) : reverseContig2Node.get(i));
-                                                   final Node w = forwardContig2Node.get(j);
-                                                   synchronized (overlapGraph) {
-                                                       overlapGraph.newEdge(v, w, overlap.get());
-                                                   }
-                                               } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50) {
-                                                   final Node v = (orient == 0 ? forwardContig2Node.get(i) : reverseContig2Node.get(i));
-                                                   final Node w = forwardContig2Node.get(j);
-                                                   synchronized (overlapGraph) {
-                                                       overlapGraph.newEdge(w, v, overlap.get());
+                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50) {
+                                        final Node v = contig2Node.get(i);
+                                        final Node w = contig2Node.get(j);
+                                        synchronized (overlapGraph) {
+                                            overlapGraph.newEdge(v, w, overlap.get());
+                                        }
+                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50) {
+                                        final Node v = contig2Node.get(i);
+                                        final Node w = contig2Node.get(j);
+                                        synchronized (overlapGraph) {
+                                            overlapGraph.newEdge(w, v, overlap.get());
+                                        }
                                                    }
                                                }
                                            }
-                                           if (threadNumber == 0)
-                                               progress.incrementProgress();
-                                       }
-                                   } catch (InterruptedException e) {
-                                       Basic.caught(e);
-                                   } catch (CanceledException e) {
-                                       notCanceled.set(false);
-                                       while (countDownLatch.getCount() > 0)
+                            if (threadNumber == 0)
+                                progress.incrementProgress();
+                        } catch (CanceledException e) {
+                            notCanceled.set(false);
+                            while (countDownLatch.getCount() > 0)
+                                countDownLatch.countDown();
+                        } catch (Exception e) {
+                            Basic.caught(e);
+                        } finally {
                                            countDownLatch.countDown();
-                                   } finally {
-                                       countDownLatch.countDown();
+                        }
                                    }
                                }
-                           }
-            );
+                );
+            }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            } finally {
+                service.shutdownNow();
+            }
         }
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            Basic.caught(e);
-        } finally {
-            service.shutdownNow();
+        System.err.println(String.format("Contained contigs:%6d", containedContigs.cardinality()));
+        if (containedContigs.cardinality() > 0) // delete all contained contigs from graph
+        {
+            final NodeSet nodes = overlapGraph.getNodes();
+            for (Node v : nodes) {
+                if (containedContigs.get((Integer) v.getInfo())) {
+                    overlapGraph.deleteNode(v);
+                }
+            }
         }
-
-        System.err.println("Contig overlap graph: " + overlapGraph.getNumberOfNodes() + " nodes, " + overlapGraph.getNumberOfEdges() + " edges");
-        System.err.println("Contained contigs: " + containedContigs.cardinality());
+        System.err.println(String.format("Contig graph nodes:%5d", overlapGraph.getNumberOfNodes()));
+        System.err.println(String.format("Contig graph edges:%5d", overlapGraph.getNumberOfEdges()));
 
         final PathExtractor pathExtractor = new PathExtractor(overlapGraph, contigId2ContainedContigs);
         pathExtractor.apply(progress);
 
-        contigs.clear();
         final Node[][] paths = pathExtractor.getPaths();
         final BitSet used = new BitSet();
 
@@ -450,7 +404,7 @@ public class ReadAssembler {
         for (Node[] path : paths) {
             if (path.length == 1) {
                 final Node current = path[0];
-                if (forwardNodes.contains(current) && !containedContigs.get((Integer) current.getInfo())) {
+                if (!containedContigs.get((Integer) current.getInfo())) {
                     final int contigId = (Integer) current.getInfo(); // info is contig-Id (times -1, if reverse strand)
                     contigs.add(sortedContigs.get(contigId));
                 }
@@ -460,8 +414,7 @@ public class ReadAssembler {
                 final StringBuilder sequenceBuffer = new StringBuilder();
 
                 Node prev = path[0];
-                int contigId = Math.abs((Integer) prev.getInfo()) - 1; // info is contig-Id (times -1, if reverse strand)
-                boolean forwardStrand = ((Integer) prev.getInfo() > 0);
+                int contigId = Math.abs((Integer) prev.getInfo());
 
                 if (used.get(contigId))
                     continue;
@@ -470,37 +423,62 @@ public class ReadAssembler {
 
                 Pair<String, String> prevContig = sortedContigs.get(contigId);
 
-                headerBuffer.append(prevContig.getFirst()).append(forwardStrand ? "" : "(rev)");
-                headerBuffer.append(forwardStrand ? prevContig.getSecond() : Basic.getReverseComplement(prevContig.getSecond()));
+                headerBuffer.append("[").append(Basic.skipFirstWord(prevContig.getFirst()));
+                sequenceBuffer.append(prevContig.getSecond());
+
+                int length = prevContig.getSecond().length();
 
                 for (int i = 1; i < path.length; i++) { // start at 1
                     final Node current = path[i];
                     contigId = (Integer) current.getInfo();
-                    forwardStrand = forwardNodes.contains(current);
                     used.set(contigId);
 
                     final Pair<String, String> currentContig = sortedContigs.get(contigId);
-                    headerBuffer.append(" + ").append(currentContig.getFirst()).append(forwardStrand ? "" : "(rev)");
+                    headerBuffer.append(" + ").append(Basic.skipFirstWord(currentContig.getFirst()));
 
                     final int overlap = (Integer) overlapGraph.getCommonEdge(prev, current).getInfo();
-                    sequenceBuffer.append(forwardStrand ? currentContig.getSecond() : Basic.getReverseComplement(currentContig.getSecond())).substring(overlap);
+                    sequenceBuffer.append(currentContig.getSecond().substring(overlap));
+
+                    length += currentContig.getSecond().length() - overlap;
                     prev = current;
                 }
+                headerBuffer.append("]");
 
-                contigs.add(new Pair<>(headerBuffer.toString(), sequenceBuffer.toString()));
+                System.err.println("Input contigs:");
+                for (int i = 0; i < path.length; i++) {
+                    Node p = path[i];
+                    System.err.println(sortedContigs.get((Integer) p.getInfo()));
+                    if (i < path.length - 1) {
+                        System.err.println("Overlap to next: " + overlapGraph.getCommonEdge(path[i], path[i + 1]).getInfo());
+                    }
+                }
+
+                final Pair<String, String> pair = new Pair<>("length=" + length + " " + headerBuffer.toString(), sequenceBuffer.toString());
+                contigs.add(pair);
+
+                System.err.println("Output contig:");
+                System.err.println(pair);
+
                 countMergedContigs++;
             }
         }
 
         for (Node current : pathExtractor.getSingletons()) {
-            if (forwardNodes.contains(current) && !containedContigs.get((Integer) current.getInfo())) {
+            if (!containedContigs.get((Integer) current.getInfo())) {
                 final int contigId = (Integer) current.getInfo(); // info is contig-Id (times -1, if reverse strand)
                 contigs.add(sortedContigs.get(contigId));
             }
         }
 
-        System.err.println("Merged contigs: " + countMergedContigs);
+        System.err.println(String.format("Merged contigs:   %6d", countMergedContigs));
 
+
+        // sort and renumber contigs:
+        contigs.sort(Basic.getComparatorDecreasingLengthOfSecond());
+        int contigNumber = 1;
+        for (Pair<String, String> contig : contigs) {
+            contig.setFirst(String.format(">Contig-%06d %s", contigNumber++, (contig.getFirst().startsWith(">") ? Basic.skipFirstWord(contig.getFirst()) : contig.getFirst())));
+        }
         return contigs.size();
     }
 

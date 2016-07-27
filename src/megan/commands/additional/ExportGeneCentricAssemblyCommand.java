@@ -126,10 +126,10 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             alignmentAssembler.computeOverlapGraph(minOverlap, viewer.getAlignment(), progress);
             int count = alignmentAssembler.computeContigs(0, minReads, minAvCoverage, minLength, false, progress);
 
-            System.err.println(String.format("Number of contigs:%9d", count));
+            System.err.println(String.format("Number of contigs:%6d", count));
 
             count = ReadAssembler.removeContainedContigs(progress, maxPercentIdentity, alignmentAssembler.getContigs());
-            System.err.println(String.format("Remaining contigs:%9d", count));
+            System.err.println(String.format("Remaining contigs:%6d", count));
 
             try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
                 alignmentAssembler.writeContigs(w, progress);
@@ -149,10 +149,10 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     readAssembler.computeOverlapGraph(label, minOverlap, it, progress);
                     int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
-                    System.err.println(String.format("Number of contigs:%9d", count));
+                    System.err.println(String.format("Number of contigs:%6d", count));
 
                     count = ReadAssembler.removeContainedContigs(progress, maxPercentIdentity, readAssembler.getContigs());
-                    System.err.println(String.format("Remaining contigs:%9d", count));
+                    System.err.println(String.format("Remaining contigs:%6d", count));
 
                     if (ProgramProperties.get("verbose-assembly", false)) {
                         for (Pair<String, String> contig : readAssembler.getContigs()) {
@@ -168,8 +168,9 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     if (showGraph)
                         readAssembler.showOverlapGraph(dir, progress);
                 }
-            } else
-                message = "Nothing selected";
+            } else {
+                NotificationsInSwing.showWarning(getViewer().getFrame(), "Nothing selected");
+            }
         }
         if (message.length() > 0)
             NotificationsInSwing.showInformation(getViewer().getFrame(), message);

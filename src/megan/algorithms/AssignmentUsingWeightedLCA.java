@@ -206,6 +206,22 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     }
 
     /**
+     * get the LCA of two ids
+     * @param id1
+     * @param id2
+     * @return LCA of id1 and id2
+     */
+    @Override
+    public int getLCA(int id1, int id2) {
+        if (id1 == 0)
+            return id2;
+        else if (id2 == 0)
+            return id1;
+        else
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2));
+    }
+
+    /**
      * compute the address of the weighted LCA
      *
      * @param percentToCover

@@ -61,4 +61,17 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
         }
         return IdMapper.UNASSIGNED_ID;
     }
+
+    /**
+     * get the LCA of two ids
+     *
+     * @param id1
+     * @param id2
+     * @return LCA of id1 and id2
+     */
+    @Override
+    public int getLCA(int id1, int id2) {
+        throw new RuntimeException("getLCA() called for assignment using best hit");
+    }
+
 }

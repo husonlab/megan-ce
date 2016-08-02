@@ -135,6 +135,7 @@ public class DataProcessor {
                 final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
                 final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
 
+
                 while (it.hasNext()) {
                     IReadBlock readBlock = it.next();
 
@@ -158,13 +159,21 @@ public class DataProcessor {
                     if (doMatePairs && readBlock.getMateUId() > 0 && taxonomyIndex >= 0) {
                         mateReader.seek(readBlock.getMateUId());
                         mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                        ActiveMatches.restrictActiveMatchesToSameIds(readBlock, activeMatches, mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
                         taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                        if (taxId <= 0) {
-                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                            if (taxId > 0)
+                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                        int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                        if (mateTaxId > 0) {
+                            if (taxId <= 0) {
+                                taxId = mateTaxId;
                                 numberAssignedViaMatePair++;
+                            } else {
+                                int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
+                                if (bothId == taxId)
+                                    taxId = mateTaxId;
+                                    // else if(bothId==taxId) taxId=taxId; // i.e, no chnage
+                                else if (bothId != mateTaxId)
+                                    taxId = bothId;
+                            }
                         }
                     } else
                         taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);

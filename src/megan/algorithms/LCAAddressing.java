@@ -107,7 +107,7 @@ public class LCAAddressing {
     }
 
     /**
-     * given an array of addresses, returns the common prefix. Array may contain null entries
+     * given an array of addresses, returns the common prefix
      *
      * @param addresses
      * @return prefix
@@ -115,6 +115,8 @@ public class LCAAddressing {
     public static String getCommonPrefix(final String[] addresses, final int numberOfAddresses) {
         if (numberOfAddresses == 0)
             return "";
+        else if (numberOfAddresses == 1)
+            return addresses[0];
 
         final String first = addresses[0];
 
@@ -131,7 +133,7 @@ public class LCAAddressing {
                 }
             }
             if (!anotherAddressAlive)
-                break; // no need to increment pos any further
+                return first.substring(0, pos); // no need to increment pos any further
         }
         return first;
     }

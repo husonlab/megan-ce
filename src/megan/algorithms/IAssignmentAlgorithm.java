@@ -36,4 +36,6 @@ public interface IAssignmentAlgorithm {
      * @return id
      */
     int computeId(BitSet activeMatches, IReadBlock readBlock);
+
+    int getLCA(int id1, int id2);
 }

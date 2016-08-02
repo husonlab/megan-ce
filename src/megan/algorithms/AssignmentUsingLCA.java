@@ -37,14 +37,14 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     private final BitSet toRemove;
 
     private final String cName;
-    private final ClassificationFullTree tree;
+    private final ClassificationFullTree fullTree;
 
     /**
      * constructor
      */
     public AssignmentUsingLCA(String cName) {
         this.cName = cName;
-        tree = ClassificationManager.get(cName, true).getFullTree();
+        fullTree = ClassificationManager.get(cName, true).getFullTree();
         addresses = new String[1000];
         toRemove = new BitSet();
     }
@@ -71,7 +71,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                 final int id = matchBlock.getId(cName);
                 if (id > 0) {
-                    String address = tree.getAddress(id);
+                    String address = fullTree.getAddress(id);
                     if (address != null) {
                         if (numberOfAddresses >= addresses.length) {
                             String[] tmp = new String[2 * addresses.length];
@@ -90,7 +90,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                     final int id = matchBlock.getId(cName);
                     if (id > 0) {
-                        String address = tree.getAddress(id);
+                        String address = fullTree.getAddress(id);
                         if (address != null) {
                             if (numberOfAddresses >= addresses.length) {
                                 String[] tmp = new String[2 * addresses.length];
@@ -126,7 +126,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
                 final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
-                final int id = tree.getAddress2Id(address);
+                final int id = fullTree.getAddress2Id(address);
                 if (id > 0) {
                     return id;
                 }
@@ -134,6 +134,23 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
         }
         // although we had some hits, couldn't make an assignment
         return IdMapper.UNASSIGNED_ID;
+    }
+
+    /**
+     * get the LCA of two ids
+     *
+     * @param id1
+     * @param id2
+     * @return LCA of id1 and id2
+     */
+    @Override
+    public int getLCA(int id1, int id2) {
+        if (id1 == 0)
+            return id2;
+        else if (id2 == 0)
+            return id1;
+        else
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2));
     }
 }
 

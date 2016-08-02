@@ -28,6 +28,7 @@ import megan.data.IReadBlock;
 
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 
 /**
  * computes the taxon assignment for a read, using the LCA algorithm that covers a given percentage of all matches
@@ -151,6 +152,78 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         return IdMapper.UNASSIGNED_ID;
     }
 
+    /**
+     * returns the LCA of a set of taxon ids
+     *
+     * @param taxonIds
+     * @return id
+     */
+    public int computeNaiveLCA(Collection<Integer> taxonIds) {
+        if (taxonIds.size() == 0)
+            return IdMapper.NOHITS_ID;
+        else if (taxonIds.size() == 1)
+            return taxonIds.iterator().next();
+
+        if (taxonIds.size() > addresses.length) {  // grow, if necessary
+            addresses = new String[taxonIds.size()];
+        }
+
+        int numberOfAddresses = 0;
+
+        // compute addresses of all hit taxa:
+        for (Integer id : taxonIds) {
+            if (!idMapper.isDisabled(id)) {
+                final String address = fullTree.getAddress(id);
+                if (address != null) {
+                    addresses[numberOfAddresses++] = address;
+                }
+            }
+        }
+
+        if (true) { // todo: figure this out
+            Arrays.sort(addresses, 0, numberOfAddresses);
+            // determine nested addresses:
+            for (int i = 0; i < numberOfAddresses - 1; i++) {
+                if (addresses[i + 1].startsWith(addresses[i]))
+                    toRemove.set(i);
+            }
+            // remove them:
+            if (toRemove.cardinality() > 0) {
+                int pos = 0;
+                for (int i = 0; i < numberOfAddresses; i++) {
+                    if (!toRemove.get(i)) {
+                        addresses[pos++] = addresses[i];
+                    }
+                }
+                numberOfAddresses = pos;
+                toRemove.clear();
+            }
+        }
+
+        // compute LCA using addresses:
+        if (numberOfAddresses > 0) {
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+            return fullTree.getAddress2Id(address);
+        }
+        return IdMapper.UNASSIGNED_ID;
+    }
+
+    /**
+     * get the LCA of two ids
+     *
+     * @param id1
+     * @param id2
+     * @return LCA of id1 and id2
+     */
+    @Override
+    public int getLCA(int id1, int id2) {
+        if (id1 == 0)
+            return id2;
+        else if (id2 == 0)
+            return id1;
+        else
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2));
+    }
 
     /**
      * moves reads to higher taxa if the percent identity that they have is not high enough for the given taxonomic rank

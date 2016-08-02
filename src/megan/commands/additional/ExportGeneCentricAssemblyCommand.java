@@ -128,7 +128,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
             System.err.println(String.format("Number of contigs:%6d", count));
 
-            count = ReadAssembler.removeContainedContigs(progress, maxPercentIdentity, alignmentAssembler.getContigs());
+            count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, alignmentAssembler.getContigs());
             System.err.println(String.format("Remaining contigs:%6d", count));
 
             try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
@@ -151,7 +151,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
                     System.err.println(String.format("Number of contigs:%6d", count));
 
-                    count = ReadAssembler.removeContainedContigs(progress, maxPercentIdentity, readAssembler.getContigs());
+                    count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, readAssembler.getContigs());
                     System.err.println(String.format("Remaining contigs:%6d", count));
 
                     if (ProgramProperties.get("verbose-assembly", false)) {

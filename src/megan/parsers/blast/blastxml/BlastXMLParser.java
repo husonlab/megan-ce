@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * parser for BLAST XML files. Matches are posted to the given Queue
@@ -91,17 +92,10 @@ public class BlastXMLParser extends DefaultHandler {
      * @throws IOException
      */
     public void apply() throws CanceledException, IOException, ParserConfigurationException, SAXException {
-        try {
-            if (saxParserFactory == null)
-                saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            saxParser.parse(Basic.getInputStreamPossiblyZIPorGZIP(blastFile.getPath()), this);
-        } catch (Exception e) {
-            blockQueue.abort(new MatchesText());
-            throw e;
-        } finally {
-            blockQueue.setInputDone();
-        }
+        if (saxParserFactory == null)
+            saxParserFactory = SAXParserFactory.newInstance();
+        SAXParser saxParser = saxParserFactory.newSAXParser();
+        saxParser.parse(Basic.getInputStreamPossiblyZIPorGZIP(blastFile.getPath()), this);
     }
 
     /**

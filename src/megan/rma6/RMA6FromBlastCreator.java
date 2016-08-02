@@ -271,7 +271,7 @@ public class RMA6FromBlastCreator {
                     if (readBlock.getMateUId() > 0) {
                         if (readBlock.getMateUId() > readBlock.getUId())
                             throw new IOException("Mate uid=" + readBlock.getMateUId() + ": too big");
-                        raf.seek(readBlock.getMateUId());
+                        raf.seek(readBlock.getMateUId()); // if defined, mate UID is first number in record, so this is ok
                         raf.writeLong(readBlock.getUId());
                         count++;
                     }
@@ -282,7 +282,7 @@ public class RMA6FromBlastCreator {
         }
 
         // we need to run data processor to perform classification
-            doc.processReadHits();
+        doc.processReadHits();
 
         // update and then save auxiliary data:
         final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(rma6File), "");

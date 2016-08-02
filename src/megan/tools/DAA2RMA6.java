@@ -97,7 +97,8 @@ public class DAA2RMA6 {
         options.comment("Reads");
         final boolean hasMagnitudes = options.getOption("-mag", "magnitudes", "Reads are annotated with magnitudes", false);
         final boolean pairedReads = options.getOption("-p", "paired", "Reads are paired", false);
-        final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
+        final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name (i.e. first word in header) of read and its mate (use 0 if read and mate have same name)", 0);
+        final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
         options.comment("Parameters");
         final int maxMatchesPerRead = options.getOption("-m", "maxMatchesPerRead", "Max matches per read", 100);
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
@@ -148,6 +149,7 @@ public class DAA2RMA6 {
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
 
+
         final String propertiesFile;
         if (ProgramProperties.isMacOS())
             propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
@@ -167,27 +169,35 @@ public class DAA2RMA6 {
         for (String fileName : metaDataFiles) {
             Basic.checkFileReadableNonEmpty(fileName);
         }
+
+        final boolean processInPairs = (pairedReads && !pairsInSingleFile);
+
         if (outputFiles.length == 1) {
-            if (daaFiles.length == 1) {
+            if (daaFiles.length == 1 || (processInPairs && daaFiles.length == 2)) {
                 if ((new File(outputFiles[0]).isDirectory()))
                     outputFiles[0] = (new File(outputFiles[0], Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(Basic.getFileNameWithoutZipOrGZipSuffix(daaFiles[0])), ".rma6"))).getPath();
             } else if (daaFiles.length > 1) {
                 if (!(new File(outputFiles[0]).isDirectory()))
                     throw new IOException("Multiple files given, but given single output is not a directory");
                 String outputDirectory = (new File(outputFiles[0])).getParent();
-                outputFiles = new String[daaFiles.length];
-
-                for (int i = 0; i < daaFiles.length; i++)
-                    outputFiles[i] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
+                if (!processInPairs) {
+                    outputFiles = new String[daaFiles.length];
+                    for (int i = 0; i < daaFiles.length; i++)
+                        outputFiles[i] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
+                } else {
+                    outputFiles = new String[daaFiles.length / 2];
+                    for (int i = 0; i < daaFiles.length; i += 2)
+                        outputFiles[i / 2] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
+                }
             }
         } else // output.length >1
         {
-            if (daaFiles.length != outputFiles.length)
+            if ((!processInPairs && daaFiles.length != outputFiles.length) || (processInPairs && daaFiles.length != 2 * outputFiles.length))
                 throw new IOException("Number of input and output files do not match");
         }
 
-        if (metaDataFiles.length > 1 && metaDataFiles.length != daaFiles.length) {
-            throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
+        if (metaDataFiles.length > 1 && metaDataFiles.length != outputFiles.length) {
+            throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of output files (" + outputFiles.length + ")");
         }
 
         final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
@@ -226,8 +236,18 @@ public class DAA2RMA6 {
          * process each set of files:
          */
         for (int i = 0; i < daaFiles.length; i++) {
-            System.err.println("In DAA file:  " + daaFiles[i]);
-            System.err.println("Output file:  " + outputFiles[i]);
+            final int iOutput;
+            if (processInPairs) {
+                if ((i % 2) == 1)
+                    continue; // skip odd numbers
+                iOutput = i / 2;
+                System.err.println("In DAA files: " + daaFiles[i] + ", " + daaFiles[i + 1]);
+                System.err.println("Output file:  " + outputFiles[iOutput]);
+            } else {
+                iOutput = i;
+                System.err.println("In DAA file:  " + daaFiles[i]);
+                System.err.println("Output file:  " + outputFiles[i]);
+            }
 
             ProgressListener progressListener = new ProgressPercentage();
 
@@ -245,18 +265,21 @@ public class DAA2RMA6 {
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
 
-            createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[i], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+            if (!processInPairs)
+                createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+            else
+                createRMA6FileFromDAAPair("DAA2RMA6", daaFiles[i], daaFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
 
             progressListener.close();
 
-            final RMA6Connector connector = new RMA6Connector(outputFiles[i]);
+            final RMA6Connector connector = new RMA6Connector(outputFiles[iOutput]);
 
             if (metaDataFiles.length > 0) {
                 try {
                     System.err.println("Saving metadata:");
                     SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                    sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(i, metaDataFiles.length - 1)]),
-                            Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(outputFiles[i]))), false);
+                    sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(iOutput, metaDataFiles.length - 1)]),
+                            Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(outputFiles[iOutput]))), false);
                     Map<String, byte[]> label2data = new HashMap<>();
                     label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributeTable.getBytes());
                     connector.putAuxiliaryData(label2data);
@@ -281,6 +304,22 @@ public class DAA2RMA6 {
                                              int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
         final RMA6FromBlastCreator rma6Creator =
                 new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+        rma6Creator.parseFiles(progressListener);
+    }
+
+    /**
+     * create an RMA6 file from a pair of DAA files
+     *
+     * @param daaFile1
+     * @param daaFile2
+     * @param rma6FileName
+     * @param maxMatchesPerRead
+     * @param progressListener  @throws CanceledException
+     */
+    public static void createRMA6FileFromDAAPair(String creator, String daaFile1, String daaFile2, String rma6FileName, boolean useCompression, Document doc,
+                                                 int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
+        final RMA6FromBlastCreator rma6Creator =
+                new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile1, daaFile2}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
         rma6Creator.parseFiles(progressListener);
     }
 }

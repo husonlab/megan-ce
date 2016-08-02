@@ -436,12 +436,13 @@ public class Alignment {
                     if (debug)
                         System.err.println("col: " + col);
                     Map<Character, Integer> char2count = new HashMap<>();
-                    for (int row : activeRows) {
-                        char ch = getLane(row).charAt(col);
+                    for (final int row : activeRows) {
+                        final Lane lane = getLane(row);
+                        char ch = lane.charAt(col);
                         if (debug)
                             System.err.println("row: " + row + " ch=" + ch);
                         if (debug)
-                            System.err.println("row: " + getLane(row).getFirstNonGapPosition() + " - " + getLane(row).getLastNonGapPosition());
+                            System.err.println("row: " + lane.getFirstNonGapPosition() + " - " + lane.getLastNonGapPosition());
                         if (Character.isLetter(ch) || ch == ' ') {
                             Integer count = char2count.get(ch);
                             if (count == null)
@@ -496,7 +497,7 @@ public class Alignment {
         StringWriter w = new StringWriter();
 
         final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
-        Lane lane = getConsensus();
+        final Lane lane = getConsensus();
         int jc = 0;
         int jumped = 0;
         for (int layoutCol = minLayoutCol; layoutCol <= maxLayoutCol; layoutCol++) {

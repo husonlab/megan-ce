@@ -19,13 +19,15 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.blastxml.BlastXMLParser;
-import megan.parsers.blast.blastxml.BlockingQueue;
 import megan.parsers.blast.blastxml.MatchesText;
 import megan.util.BlastXMLFileFilter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,9 +39,12 @@ import java.util.concurrent.Executors;
 public class BlastXML2SAMIterator implements ISAMIterator {
     private final ExecutorService executorService;
     private final BlastXMLParser blastXMLParser;
-    private final BlockingQueue<MatchesText> blockingQueue;
+    private final BlockingQueue<MatchesText> queue;
 
-    private MatchesText matchesText;
+    private MatchesText currentMatches;
+    private MatchesText nextMatches;
+    private final MatchesText sentinel;
+    private boolean done = false;
 
     /**
      * constructor
@@ -53,9 +58,12 @@ public class BlastXML2SAMIterator implements ISAMIterator {
             throw new IOException("File not a BLAST file in XML format: " + fileName);
         }
 
-        blockingQueue = new BlockingQueue<>();
+        queue = new ArrayBlockingQueue<>(10000);
+        sentinel = new MatchesText();
+        currentMatches = null;
+        nextMatches = null;
 
-        blastXMLParser = new BlastXMLParser(new File(fileName), blockingQueue, maxNumberOfMatchesPerRead);
+        blastXMLParser = new BlastXMLParser(new File(fileName), queue, maxNumberOfMatchesPerRead);
 
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
@@ -64,12 +72,30 @@ public class BlastXML2SAMIterator implements ISAMIterator {
                     blastXMLParser.apply();
                 } catch (Exception e) {
                     Basic.caught(e);
+                    NotificationsInSwing.showError(Basic.getShortName(e.getClass()) + ": " + e.getMessage());
                 } finally {
+                    try {
+                        queue.put(sentinel);
+                    } catch (InterruptedException e) {
+                        done = true;
+                        Basic.caught(e);
+                    }
                     executorService.shutdownNow();
                 }
             }
         });
+    }
 
+    private MatchesText getNext() {
+        if (!done) {
+            try {
+                return queue.take();
+            } catch (InterruptedException e) {
+                done = true;
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
@@ -79,7 +105,16 @@ public class BlastXML2SAMIterator implements ISAMIterator {
      */
     @Override
     public boolean hasNext() {
-        return !blockingQueue.isOutputDone() || blockingQueue.size() > 1;
+        if (done)
+            return false;
+        if (nextMatches == null)
+            nextMatches = getNext();
+        if (nextMatches == sentinel) {
+            done = true;
+            nextMatches = null;
+        }
+        return !done;
+
     }
 
     /**
@@ -89,30 +124,31 @@ public class BlastXML2SAMIterator implements ISAMIterator {
      */
     public int next() {
         if (hasNext()) {
-            matchesText = blockingQueue.take();
-            return matchesText.getNumberOfMatches();
-        } else
-            return -1;
+            currentMatches = nextMatches;
+            nextMatches = null;
+            return currentMatches.getNumberOfMatches();
+        }
+        return -1;
     }
 
     /**
-     * gets the matches text
+     * gets the current matches text
      *
      * @return matches text
      */
     @Override
     public byte[] getMatchesText() {
-        return matchesText.getText();
+        return currentMatches.getText();
     }
 
     /**
-     * length of matches text
+     * get length of current matches text
      *
      * @return length of text
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesText.getLengthOfText();
+        return currentMatches.getLengthOfText();
     }
 
     @Override

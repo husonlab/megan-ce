@@ -98,6 +98,7 @@ public class BLAST2RMA6 {
         final boolean hasMagnitudes = options.getOption("-mag", "magnitudes", "Reads are annotated with magnitudes", false);
         final boolean pairedReads = options.getOption("-p", "paired", "Reads are paired", false);
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
+        final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
         options.comment("Parameters");
         final int maxMatchesPerRead = options.getOption("-m", "maxMatchesPerRead", "Max matches per read", 100);
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
@@ -166,27 +167,34 @@ public class BLAST2RMA6 {
             Basic.checkFileReadableNonEmpty(fileName);
         }
 
+        final boolean processInPairs = (pairedReads && !pairsInSingleFile);
+
         if (outputFiles.length == 1) {
-            if (blastFiles.length == 1) {
+            if (blastFiles.length == 1 || (processInPairs && blastFiles.length == 2)) {
                 if ((new File(outputFiles[0]).isDirectory()))
                     outputFiles[0] = (new File(outputFiles[0], Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(Basic.getFileNameWithoutZipOrGZipSuffix(blastFiles[0])), ".rma6"))).getPath();
             } else if (blastFiles.length > 1) {
                 if (!(new File(outputFiles[0]).isDirectory()))
                     throw new IOException("Multiple files given, but given single output is not a directory");
                 String outputDirectory = (new File(outputFiles[0])).getParent();
-                outputFiles = new String[blastFiles.length];
-
-                for (int i = 0; i < blastFiles.length; i++)
-                    outputFiles[i] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(blastFiles[i])), ".rma6")).getPath();
+                if (!processInPairs) {
+                    outputFiles = new String[blastFiles.length];
+                    for (int i = 0; i < blastFiles.length; i++)
+                        outputFiles[i] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(blastFiles[i])), ".rma6")).getPath();
+                } else {
+                    outputFiles = new String[blastFiles.length / 2];
+                    for (int i = 0; i < blastFiles.length; i += 2)
+                        outputFiles[i / 2] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(blastFiles[i])), ".rma6")).getPath();
+                }
             }
         } else // output.length >1
         {
-            if (blastFiles.length != outputFiles.length)
+            if ((!processInPairs && blastFiles.length != outputFiles.length) || (processInPairs && blastFiles.length != 2 * outputFiles.length))
                 throw new IOException("Number of input and output files do not match");
         }
 
-        if (metaDataFiles.length > 1 && metaDataFiles.length != blastFiles.length) {
-            throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of BLAST files (" + blastFiles.length + ")");
+        if (metaDataFiles.length > 1 && metaDataFiles.length != outputFiles.length) {
+            throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of output files (" + outputFiles.length + ")");
         }
 
         if (readsFiles.length == 0) {
@@ -232,10 +240,18 @@ public class BLAST2RMA6 {
          * process each set of files:
          */
         for (int i = 0; i < blastFiles.length; i++) {
-            System.err.println("Processing " + blastFormat + " file: " + blastFiles[i]);
-            if (i < readsFiles.length)
-                System.err.println("Reads file:  " + readsFiles[i]);
-            System.err.println("Output file: " + outputFiles[i]);
+            final int iOutput;
+            if (processInPairs) {
+                if ((i % 2) == 1)
+                    continue; // skip odd numbers
+                iOutput = i / 2;
+                System.err.println("Processing " + blastFormat + " files: " + blastFiles[i] + ", " + blastFiles[i + 1]);
+                System.err.println("Output file:  " + outputFiles[iOutput]);
+            } else {
+                iOutput = i;
+                System.err.println("Processing " + blastFormat + " file: " + blastFiles[i]);
+                System.err.println("Output file:  " + outputFiles[i]);
+            }
 
             ProgressListener progressListener = new ProgressPercentage();
 
@@ -253,7 +269,10 @@ public class BLAST2RMA6 {
             doc.setWeightedLCA(weightedLCA);
             doc.setWeightedLCAPercent(weightedLCAPercent);
 
-            createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[i], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+            if (!processInPairs)
+                createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+            else
+                createRMA6FileFromBLASTPair("BLAST2RMA6", blastFiles[i], blastFiles[i + 1], blastFormat, readsFiles[i], readsFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
 
             progressListener.close();
 
@@ -263,8 +282,8 @@ public class BLAST2RMA6 {
                 try {
                     System.err.println("Saving metadata:");
                     SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                    sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(i, metaDataFiles.length - 1)]),
-                            Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(outputFiles[i]))), false);
+                    sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(iOutput, metaDataFiles.length - 1)]),
+                            Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(outputFiles[iOutput]))), false);
                     Map<String, byte[]> label2data = new HashMap<>();
                     label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributeTable.getBytes());
                     connector.putAuxiliaryData(label2data);
@@ -279,15 +298,47 @@ public class BLAST2RMA6 {
 
     /**
      * create an RMA6 file from a BLAST file
-     *
+     * @param creator
      * @param blastFile
+     * @param format
+     * @param queryFile
      * @param rma6FileName
+     * @param useCompression
+     * @param doc
      * @param maxMatchesPerRead
-     * @param progressListener  @throws CanceledException
+     * @param hasMagnitudes
+     * @param progressListener
+     * @throws IOException
+     * @throws CanceledException
      */
     public static void createRMA6FileFromBLAST(String creator, String blastFile, BlastFileFormat format, String queryFile, String rma6FileName, boolean useCompression, Document doc,
                                                int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
         final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
         rma6Creator.parseFiles(progressListener);
     }
+
+    /**
+     * create an RMA6 file from a pair of BLAST files
+     *
+     * @param creator
+     * @param blastFile1
+     * @param blastFile2
+     * @param format
+     * @param queryFile1
+     * @param queryFile2
+     * @param rma6FileName
+     * @param useCompression
+     * @param doc
+     * @param maxMatchesPerRead
+     * @param hasMagnitudes
+     * @param progressListener
+     * @throws IOException
+     * @throws CanceledException
+     */
+    public static void createRMA6FileFromBLASTPair(String creator, String blastFile1, String blastFile2, BlastFileFormat format, String queryFile1, String queryFile2, String rma6FileName, boolean useCompression, Document doc,
+                                                   int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
+        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile1, blastFile2}, new String[]{queryFile1, queryFile2}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+        rma6Creator.parseFiles(progressListener);
+    }
+
 }

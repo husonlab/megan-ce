@@ -155,28 +155,30 @@ public class DataProcessor {
 
                     ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
-                    int taxId;
-                    if (doMatePairs && readBlock.getMateUId() > 0 && taxonomyIndex >= 0) {
-                        mateReader.seek(readBlock.getMateUId());
-                        mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                        taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                        int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                        if (mateTaxId > 0) {
-                            if (taxId <= 0) {
-                                taxId = mateTaxId;
-                                numberAssignedViaMatePair++;
-                            } else {
-                                int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
-                                if (bothId == taxId)
+                    int taxId = 0;
+                    if (taxonomyIndex >= 0) {
+                        if (doMatePairs && readBlock.getMateUId() > 0) {
+                            mateReader.seek(readBlock.getMateUId());
+                            mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
+                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                            int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                            if (mateTaxId > 0) {
+                                if (taxId <= 0) {
                                     taxId = mateTaxId;
-                                    // else if(bothId==taxId) taxId=taxId; // i.e, no chnage
-                                else if (bothId != mateTaxId)
-                                    taxId = bothId;
+                                    numberAssignedViaMatePair++;
+                                } else {
+                                    int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
+                                    if (bothId == taxId)
+                                        taxId = mateTaxId;
+                                        // else if(bothId==taxId) taxId=taxId; // i.e, no change
+                                    else if (bothId != mateTaxId)
+                                        taxId = bothId;
+                                }
                             }
-                        }
-                    } else
-                        taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                        } else
+                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                    }
 
                     if (activeMatches.cardinality() > 0)
                         numberOfReadsWithHits += readBlock.getReadWeight();

@@ -572,7 +572,7 @@ public class ClassificationFullTree extends PhyloTree {
             if (address != null)
                 addresses.add(address);
         }
-        String prefix = LCAAddressing.getCommonPrefix(addresses);
+        String prefix = LCAAddressing.getCommonPrefix(addresses, true);
         return address2Id.get(prefix);
     }
 

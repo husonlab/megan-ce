@@ -163,6 +163,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
                         readAssembler.writeContigs(w, progress);
                         System.err.println("Contigs written to: " + outputFile);
+                        readAssembler.reportContigStats();
                         message += "Wrote " + count + " contigs\n";
                     }
                     if (showGraph)

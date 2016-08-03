@@ -77,64 +77,78 @@ public class LCAAddressing {
      * given a set of addresses, returns the common prefix.
      *
      * @param addresses
+     * @param ignorePrefixes ignore prefixes of longer addresses
      * @return prefix
      */
-    public static String getCommonPrefix(final Collection<String> addresses) {
+    public static String getCommonPrefix(final Collection<String> addresses, boolean ignorePrefixes) {
         if (addresses.size() == 0)
             return "";
-        final String firstAddress = addresses.iterator().next();
+        else if (addresses.size() == 1)
+            return addresses.iterator().next();
 
-        for (int pos = 0; pos < firstAddress.length(); pos++) {
-            final char charAtPos = firstAddress.charAt(pos);
-            boolean anotherAddressAlive = false;
-            boolean first = true;
-            for (String address : addresses) {
-                if (first) {
-                    first = false; // don't compare the first address with itself...
+
+        String reference = null;
+        for (String other : addresses) {
+            if (other != null && other.length() > 0) {
+                if (reference == null) {
+                    reference = other;
                 } else {
-                    if (pos < address.length()) {
-                        if (address.charAt(pos) != charAtPos)
-                            return firstAddress.substring(0, pos);
-                        else
-                            anotherAddressAlive = true;
+                    // if most specific requested, use longest sequence as reference, else use shortest
+                    if (ignorePrefixes && other.length() > reference.length() || !ignorePrefixes && other.length() < reference.length()) {
+                        reference = other;
                     }
                 }
             }
-            if (!anotherAddressAlive)
-                break; // no need to increment pos any further
         }
-        return firstAddress;
+        if (reference == null)
+            return "";
+
+        for (int pos = 0; pos < reference.length(); pos++) {
+            final char charAtPos = reference.charAt(pos);
+            for (String other : addresses) {
+                if (other != null && pos < other.length() && other.charAt(pos) != charAtPos)
+                    return reference.substring(0, pos);
+            }
+        }
+        return reference;
     }
 
     /**
      * given an array of addresses, returns the common prefix
      *
      * @param addresses
+     * @param ignorePrefixes ignore prefixes of longer addresses
      * @return prefix
      */
-    public static String getCommonPrefix(final String[] addresses, final int numberOfAddresses) {
+    public static String getCommonPrefix(final String[] addresses, final int numberOfAddresses, boolean ignorePrefixes) {
         if (numberOfAddresses == 0)
             return "";
         else if (numberOfAddresses == 1)
             return addresses[0];
 
-        final String first = addresses[0];
-
-        for (int pos = 0; pos < first.length(); pos++) {
-            final char charAtPos = first.charAt(pos);
-            boolean anotherAddressAlive = false;
-            for (int i = 1; i < numberOfAddresses; i++) { // start at 1, because don't compare first address with itself
-                final String address = addresses[i];
-                if (pos < address.length()) {
-                    if (address.charAt(pos) != charAtPos)
-                        return first.substring(0, pos);
-                    else
-                        anotherAddressAlive = true;
+        String reference = null;
+        for (int i = 0; i < numberOfAddresses; i++) {
+            final String other = addresses[i];
+            if (other != null && other.length() > 0) {
+                if (reference == null)
+                    reference = other;
+                // if ignore prefixes, use longest sequence as reference, else use shortest
+                if (ignorePrefixes && other.length() > reference.length() || !ignorePrefixes && other.length() < reference.length()) {
+                    reference = other;
                 }
             }
-            if (!anotherAddressAlive)
-                return first.substring(0, pos); // no need to increment pos any further
         }
-        return first;
+        if (reference == null)
+            return "";
+
+        for (int pos = 0; pos < reference.length(); pos++) {
+            final char charAtPos = reference.charAt(pos);
+            for (int i = 0; i < numberOfAddresses; i++) {
+                final String other = addresses[i];
+                if (other != null && pos < other.length() && other.charAt(pos) != charAtPos)
+                    return reference.substring(0, pos);
+            }
+        }
+        return reference;
     }
 }

@@ -26,7 +26,6 @@ import megan.classification.data.Name2IdMap;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 
@@ -115,29 +114,9 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
                 }
             }
 
-            if (true) { // todo: fix this
-                Arrays.sort(addresses, 0, numberOfAddresses);
-                // determine nested addresses:
-                toRemove.clear();
-                for (int i = 0; i < numberOfAddresses - 1; i++) {
-                    if (addresses[i + 1].startsWith(addresses[i]))
-                        toRemove.set(i);
-                }
-                // remove them:
-                if (toRemove.cardinality() > 0) {
-                    int pos = 0;
-                    for (int i = 0; i < numberOfAddresses; i++) {
-                        if (!toRemove.get(i)) {
-                            addresses[pos++] = addresses[i];
-                        }
-                    }
-                    numberOfAddresses = pos;
-                }
-            }
-
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
-                final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+                final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
                 int taxId = fullTree.getAddress2Id(address);
                 if (taxId > 0) {
                     if (useIdentityFilter) {
@@ -180,36 +159,16 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
             }
         }
 
-        if (true) { // todo: figure this out
-            Arrays.sort(addresses, 0, numberOfAddresses);
-            // determine nested addresses:
-            for (int i = 0; i < numberOfAddresses - 1; i++) {
-                if (addresses[i + 1].startsWith(addresses[i]))
-                    toRemove.set(i);
-            }
-            // remove them:
-            if (toRemove.cardinality() > 0) {
-                int pos = 0;
-                for (int i = 0; i < numberOfAddresses; i++) {
-                    if (!toRemove.get(i)) {
-                        addresses[pos++] = addresses[i];
-                    }
-                }
-                numberOfAddresses = pos;
-                toRemove.clear();
-            }
-        }
-
         // compute LCA using addresses:
         if (numberOfAddresses > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
             return fullTree.getAddress2Id(address);
         }
         return IdMapper.UNASSIGNED_ID;
     }
 
     /**
-     * get the LCA of two ids
+     * get the LCA of two ids, not ignoring the case that one may be the lca of the other
      *
      * @param id1
      * @param id2
@@ -222,7 +181,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         else if (id2 == 0)
             return id1;
         else
-            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2));
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2, false));
     }
 
     /**

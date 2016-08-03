@@ -22,7 +22,10 @@ import jloda.util.Basic;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * implements the naive and weighted LCA algorithms
@@ -63,29 +66,9 @@ public class LCAAlgorithm {
             }
         }
 
-        if (true) { // todo: fix this
-            Arrays.sort(addresses, 0, numberOfAddresses);
-            // determine nested addresses:
-            for (int i = 0; i < numberOfAddresses - 1; i++) {
-                if (addresses[i + 1].startsWith(addresses[i]))
-                    toRemove.set(i);
-            }
-            // remove them:
-            if (toRemove.cardinality() > 0) {
-                int pos = 0;
-                for (int i = 0; i < numberOfAddresses; i++) {
-                    if (!toRemove.get(i)) {
-                        addresses[pos++] = addresses[i];
-                    }
-                }
-                numberOfAddresses = pos;
-                toRemove.clear();
-            }
-        }
-
         // compute LCA using addresses:
         if (numberOfAddresses > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
             return TaxonomyData.getAddress2Id(address);
         }
 
@@ -123,29 +106,9 @@ public class LCAAlgorithm {
             }
         }
 
-        if (true) { // todo: fix this
-            Arrays.sort(addresses, 0, numberOfAddresses);
-            // determine nested addresses:
-            for (int i = 0; i < numberOfAddresses - 1; i++) {
-                if (addresses[i + 1].startsWith(addresses[i]))
-                    toRemove.set(i);
-            }
-            // remove them:
-            if (toRemove.cardinality() > 0) {
-                int pos = 0;
-                for (int i = 0; i < numberOfAddresses; i++) {
-                    if (!toRemove.get(i)) {
-                        addresses[pos++] = addresses[i];
-                    }
-                }
-                numberOfAddresses = pos;
-                toRemove.clear();
-            }
-        }
-
         // compute LCA using addresses:
         if (numberOfAddresses > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
             return TaxonomyData.getAddress2Id(address);
         }
 

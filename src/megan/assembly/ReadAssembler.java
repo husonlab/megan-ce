@@ -164,6 +164,22 @@ public class ReadAssembler {
             ((ProgressPercentage) progress).reportTaskCompleted();
     }
 
+    /**
+     * report contigs stats
+     */
+    public void reportContigStats() {
+        final int[] sizes = new int[contigs.size()];
+        int pos = 0;
+        for (Pair<String, String> pair : contigs) {
+            sizes[pos++] = pair.getSecond().length();
+        }
+        Arrays.sort(sizes);
+        System.err.println(String.format("Contigs:%,9d", sizes.length));
+        System.err.println(String.format("Min len:%,9d", sizes[0]));
+        System.err.println(String.format("Med len:%,9d", sizes[sizes.length / 2]));
+        System.err.println(String.format("Max len:%,9d", sizes[sizes.length - 1]));
+    }
+
     public ArrayList<Pair<String, String>> getContigs() {
         return contigs;
     }

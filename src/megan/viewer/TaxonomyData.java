@@ -142,23 +142,9 @@ public class TaxonomyData {
             }
         }
 
-        if (removeAncestors) {
-            String[] array = addresses.toArray(new String[addresses.size()]);
-            for (int i = 0; i < array.length; i++) {
-                for (int j = 0; j < array.length; j++) {
-                    if (i != j) {
-                        if (array[i].length() < array[j].length() && array[j].startsWith(array[i])) {
-                            addresses.remove(array[i]);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
         // compute LCA using addresses:
         if (countKnownTaxa > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses);
+            final String address = LCAAddressing.getCommonPrefix(addresses, removeAncestors);
             return getAddress2Id(address);
         }
 

@@ -176,8 +176,9 @@ public class DataProcessor {
                                         taxId = bothId;
                                 }
                             }
-                        } else
+                        } else {
                             taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                        }
                     }
 
                     if (activeMatches.cardinality() > 0)

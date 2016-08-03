@@ -24,7 +24,6 @@ import megan.classification.data.ClassificationFullTree;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 
-import java.util.Arrays;
 import java.util.BitSet;
 
 /**
@@ -103,29 +102,9 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
                 }
             }
 
-            if (true) { // todo: fix this
-                Arrays.sort(addresses, 0, numberOfAddresses);
-                // determine nested addresses:
-                toRemove.clear();
-                for (int i = 0; i < numberOfAddresses - 1; i++) {
-                    if (addresses[i + 1].startsWith(addresses[i]))
-                        toRemove.set(i);
-                }
-                // remove them:
-                if (toRemove.cardinality() > 0) {
-                    int pos = 0;
-                    for (int i = 0; i < numberOfAddresses; i++) {
-                        if (!toRemove.get(i)) {
-                            addresses[pos++] = addresses[i];
-                        }
-                    }
-                    numberOfAddresses = pos;
-                }
-            }
-
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
-                final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses);
+                final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
                 final int id = fullTree.getAddress2Id(address);
                 if (id > 0) {
                     return id;
@@ -137,7 +116,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     }
 
     /**
-     * get the LCA of two ids
+     * get the LCA of two ids, not ignoring the fact that one may be the lca of the other
      *
      * @param id1
      * @param id2
@@ -150,7 +129,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
         else if (id2 == 0)
             return id1;
         else
-            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2));
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2, false));
     }
 }
 

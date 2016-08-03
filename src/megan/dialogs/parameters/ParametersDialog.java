@@ -408,7 +408,7 @@ public class ParametersDialog extends JDialog {
 
             try {
                 for (String cName : doc.getConnector().getAllClassificationNames()) {
-                    if (!ClassificationManager.getDefaultClassificationsList().contains(cName)) {
+                    if (!ClassificationManager.getDefaultClassificationsList().contains(cName) && ClassificationManager.getAllSupportedClassifications().contains(cName)) {
                         final JPanel bPanel = new JPanel();
                         bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.X_AXIS));
                         final ICommand useLCACommand = commandManager.getCommand(SetUseLCA4ViewerCommand.getAltName(cName));

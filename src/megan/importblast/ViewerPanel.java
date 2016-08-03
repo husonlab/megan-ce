@@ -129,7 +129,7 @@ public class ViewerPanel extends JPanel {
         useIdParsingButton.setEnabled(useIDParsingCommand.isApplicable());
         aPanel.add(useIdParsingButton);
 
-        if (!ClassificationManager.getDefaultClassificationsList().contains(cName)) {
+        if (!ClassificationManager.getDefaultClassificationsList().contains(cName) && ClassificationManager.getAllSupportedClassifications().contains(cName)) {
             final ICommand useLCACommand = commandManager.getCommand(SetUseLCA4ViewerCommand.getAltName(cName));
             final AbstractButton useLCAButton = commandManager.getButton(useLCACommand);
             if (useLCAButton instanceof ICheckBoxCommand)

@@ -19,6 +19,7 @@
 
 package megan.io;
 
+import jloda.util.Basic;
 import malt.util.MurmurHash3;
 
 import java.io.*;
@@ -31,10 +32,14 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
     public static int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 5;
 
     public static final byte[] MAGIC_NUMBER = {'S', 'I', '1'};
+    public static final byte[] MAGIC_NUMBERX = {'S', 'I', 'X'};
 
     private final ByteFileGetterMappedMemory dataByteBuffer;
 
+    private final long indexStartPos;
     private final long dataStartPos;
+
+    private final boolean extended;
 
     private final int size;
     private final int mask;
@@ -52,16 +57,26 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
      */
     public String2IntegerDiskBasedHashTable(String fileName) throws IOException {
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
-            for (int i = 0; i < 3; i++) {
-                int b = raf.read();
-                if (b != MAGIC_NUMBER[i])
+            {
+                final byte[] magicNumber = new byte[3];
+                raf.read(magicNumber);
+                if (Basic.equal(magicNumber, MAGIC_NUMBER))
+                    extended = false; // old version that uses int to address data
+                else if (Basic.equal(magicNumber, MAGIC_NUMBERX)) {
+                    extended = true; // uses long to address data
+                } else
                     throw new IOException("File has wrong magic number");
+
+                byte bits = (byte) raf.read(); // yes, read a single byte
+                if (bits <= 0 || bits >= 30)
+                    throw new IOException("Bits out of range: " + bits);
+                mask = (1 << bits) - 1;
+
+                indexStartPos = magicNumber.length + 1; //  header consists of 4 bytes: 3 for magic number plus mask byte
             }
-            byte bits = (byte) raf.read();
-            if (bits <= 0 || bits >= 30)
-                throw new IOException("Bits out of range: " + bits);
-            mask = (1 << bits) - 1;
-            dataStartPos = 4 * (mask + 2);
+
+
+            dataStartPos = indexStartPos + (extended ? 8 : 4) * (mask + 1); // This is where the data begins.
 
             dataByteBuffer = new ByteFileGetterMappedMemory(new File(fileName));
             size = dataByteBuffer.getInt(dataByteBuffer.limit() - 4);
@@ -70,10 +85,10 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
                 throw new IOException("Bad size: " + size);
 
             /*
-            for(int i=4;i< dataStartPos;i+=4) {
-                System.err.println("buf: "+i + " -> " + dataByteBuffer.getInt(i));
+            for(int i=8;i< dataStartPos && i<128;i+=8) {
+                System.err.println("buf: "+i + " -> " + dataByteBuffer.getLong(i));
                 raf.seek(i);
-                System.err.println("raf: "+i + " -> " + raf.readInt());
+                System.err.println("raf: "+i + " -> " + raf.readLong());
             }
             */
         }
@@ -89,44 +104,40 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
     public int get(String keyString) throws IOException {
         byte[] key = keyString.getBytes();
         final int keyHash = computeHash(key, 0, key.length, mask);
-        long dataOffset = dataByteBuffer.getInt(4 * (keyHash + 1));
+        long dataOffset = extended ? dataByteBuffer.getLong(8 * keyHash + indexStartPos) : dataByteBuffer.getInt(4 * keyHash + indexStartPos);
         if (dataOffset == 0)
             return 0;
         // cache:
         final int cacheIndex = (keyHash & cacheBits);
-        synchronized (cacheKeys)
-        {
+        synchronized (cacheKeys) {
             final byte[] cacheKey = cacheKeys[cacheIndex];
             if (cacheKey != null && equal(key, cacheKey))
                 return cacheValues[cacheIndex];
         }
 
-        if (dataOffset < 0) { // need to expand
+        if (dataOffset < 0) { // need to expand, should only happen when extended==false
             dataOffset = (long) Integer.MAX_VALUE + (dataOffset & (Integer.MAX_VALUE)) + 1;
         }
 
         dataOffset += dataStartPos;
 
-            while (true) {
-                final int numberOfBytes = readAndCompareBytes0Terminated(key, key.length, dataOffset, dataByteBuffer);
-                if (numberOfBytes == 0)
-                    break;
-                else if (numberOfBytes < 0)
-                    dataOffset += -numberOfBytes + 5; //  add 1 for terminating 0 and 4 for value
-                else {
-                    dataOffset += numberOfBytes + 1;    //  add 1 for terminating 0
-                    //System.err.println("saw: " + Basic.toString(bytes, 0, numberOfBytes) + " value=" + value);
-                    final int value = dataByteBuffer.getInt(dataOffset);
-                    // cache:
-                    synchronized (cacheKeys)
-                    {
-                        cacheKeys[cacheIndex] = key;
-                        cacheValues[cacheIndex] = value;
-                    }
-                    return value;
+        while (true) {
+            final int numberOfBytes = readAndCompareBytes0Terminated(key, key.length, dataOffset, dataByteBuffer);
+            if (numberOfBytes == 0)
+                break;
+            else if (numberOfBytes < 0) // negative means not a match to the query
+                dataOffset += -numberOfBytes + 5; //  add 1 for terminating 0 and 4 for value
+            else { // matches query
+                dataOffset += numberOfBytes + 1;    //  add 1 for terminating 0
+                final int value = dataByteBuffer.getInt(dataOffset);
+                // cache:
+                synchronized (cacheKeys) {
+                    cacheKeys[cacheIndex] = key;
+                    cacheValues[cacheIndex] = value;
                 }
+                return value;
             }
-
+        }
         return 0;
     }
 
@@ -206,8 +217,8 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
     }
 
     public static void main(String[] args) throws IOException {
-        try (String2IntegerDiskBasedHashTable table = new String2IntegerDiskBasedHashTable("/Users/huson/mapping/ncbi-March2016/nucl_acc2tax-March2016.abin")) {
-            String accession = "NC_009085";
+        try (String2IntegerDiskBasedHashTable table = new String2IntegerDiskBasedHashTable("/Users/huson/mapping/ncbi-June2016/prot_acc2tax-June2016.abin")) {
+            String accession = "NP_746135";
             System.err.println(accession + " -> " + table.get(accession));
         }
     }

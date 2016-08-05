@@ -894,14 +894,14 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             //System.err.println("Rotate Classes");
                             classesClusteringTree.rotateSelectedSubTree();
                             updateClassesJList();
-                            HeatMapDrawer.this.repaint();
+                            getJPanel().repaint();
                         } else if (seriesClusteringTree.hasSelectedSubTree()) {
                             // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
                             //System.err.println("Rotate Series");
                             seriesClusteringTree.rotateSelectedSubTree();
                             //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
                             updateSeriesJList();
-                            HeatMapDrawer.this.repaint();
+                            getJPanel().repaint();
                         }
                     }
                 });

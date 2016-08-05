@@ -46,7 +46,6 @@ import java.util.concurrent.ExecutorService;
  * Daniel Huson, 5.2012
  */
 public class ChartDrawerBase extends JPanel {
-
     protected double classLabelAngle = Math.PI / 4;
 
     protected final Map<String, Pair<Font, Color>> fonts = new HashMap<>();
@@ -90,23 +89,23 @@ public class ChartDrawerBase extends JPanel {
     }
 
     public void setViewer(ChartViewer viewer) {
-        this.viewer = viewer;
-        this.scalingType = getScalingTypePreference();
-        this.showXAxis = getShowXAxisPreference();
-        this.showYAxis = getShowYAxisPreference();
+        ChartDrawerBase.this.viewer = viewer;
+        ChartDrawerBase.this.scalingType = getScalingTypePreference();
+        ChartDrawerBase.this.showXAxis = getShowXAxisPreference();
+        ChartDrawerBase.this.showYAxis = getShowYAxisPreference();
     }
 
     public void setChartData(IData chartData) {
-        this.chartData = chartData;
+        ChartDrawerBase.this.chartData = chartData;
     }
 
 
     public void setClass2HigherClassMapper(Label2LabelMapper class2HigherClassMapper) {
-        this.class2HigherClassMapper = class2HigherClassMapper;
+        ChartDrawerBase.this.class2HigherClassMapper = class2HigherClassMapper;
     }
 
     public void setSeriesLabelGetter(ILabelGetter seriesLabelGetter) {
-        this.seriesLabelGetter = seriesLabelGetter;
+        ChartDrawerBase.this.seriesLabelGetter = seriesLabelGetter;
     }
 
     /**
@@ -224,7 +223,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setClassLabelAngle(double classLabelAngle) {
-        this.classLabelAngle = Geometry.moduloTwoPI(classLabelAngle);
+        ChartDrawerBase.this.classLabelAngle = Geometry.moduloTwoPI(classLabelAngle);
     }
 
     /**
@@ -259,7 +258,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setTranspose(boolean transpose) {
-        this.transpose = transpose;
+        ChartDrawerBase.this.transpose = transpose;
     }
 
     public ChartViewer.ScalingType getScalingType() {
@@ -267,7 +266,7 @@ public class ChartDrawerBase extends JPanel {
     }
 
     public void setScalingType(ChartViewer.ScalingType scalingType) {
-        this.scalingType = scalingType;
+        ChartDrawerBase.this.scalingType = scalingType;
     }
 
     public boolean isSupportedScalingType(ChartViewer.ScalingType scalingType) {
@@ -298,7 +297,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setShowValues(boolean showValues) {
-        this.showValues = showValues;
+        ChartDrawerBase.this.showValues = showValues;
     }
 
     public boolean canColorByRank() {
@@ -311,7 +310,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setChartTitle(String chartTitle) {
-        this.chartTitle = chartTitle;
+        ChartDrawerBase.this.chartTitle = chartTitle;
     }
 
 
@@ -326,7 +325,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setShowYAxis(boolean showYAxis) {
-        this.showYAxis = showYAxis;
+        ChartDrawerBase.this.showYAxis = showYAxis;
     }
 
 
@@ -341,7 +340,7 @@ public class ChartDrawerBase extends JPanel {
 
 
     public void setShowXAxis(boolean showXAxis) {
-        this.showXAxis = showXAxis;
+        ChartDrawerBase.this.showXAxis = showXAxis;
     }
 
     /**
@@ -382,7 +381,7 @@ public class ChartDrawerBase extends JPanel {
     }
 
     public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+        ChartDrawerBase.this.executorService = executorService;
     }
 
     public void drawChart(Graphics2D gc) {
@@ -447,15 +446,15 @@ public class ChartDrawerBase extends JPanel {
     }
 
     public void setScrollBackReferenceRect(Rectangle2D scrollBackReferenceRect) {
-        this.scrollBackReferenceRect = scrollBackReferenceRect;
+        ChartDrawerBase.this.scrollBackReferenceRect = scrollBackReferenceRect;
     }
 
     public void setScrollBackWindowPoint(Point2D scrollBackWindowPoint) {
-        this.scrollBackWindowPoint = scrollBackWindowPoint;
+        ChartDrawerBase.this.scrollBackWindowPoint = scrollBackWindowPoint;
     }
 
     public void setScrollBackReferencePoint(Point2D scrollBackReferencePoint) {
-        this.scrollBackReferencePoint = scrollBackReferencePoint;
+        ChartDrawerBase.this.scrollBackReferencePoint = scrollBackReferencePoint;
     }
 
     public Point2D getScrollBackWindowPoint() {
@@ -515,10 +514,10 @@ public class ChartDrawerBase extends JPanel {
         selectionGraphics.setShiftDown(mouseEvent.isShiftDown());
         selectionGraphics.setMouseClicks(mouseEvent.getClickCount());
         if (this instanceof BubbleChartDrawer) {
-            ((BubbleChartDrawer) this).drawYAxis(selectionGraphics, null);
+            ((BubbleChartDrawer) ChartDrawerBase.this).drawYAxis(selectionGraphics, null);
         }
         if (this instanceof HeatMapDrawer) {
-            ((HeatMapDrawer) this).drawYAxis(selectionGraphics, null);
+            ((HeatMapDrawer) ChartDrawerBase.this).drawYAxis(selectionGraphics, null);
         }
         if (transpose)
             drawChartTransposed(selectionGraphics);
@@ -563,10 +562,10 @@ public class ChartDrawerBase extends JPanel {
         selectionGraphics.setShiftDown(mouseEvent.isShiftDown());
         selectionGraphics.setMouseClicks(mouseEvent.getClickCount());
         if (this instanceof BubbleChartDrawer) {
-            ((BubbleChartDrawer) this).drawYAxis(selectionGraphics, null);
+            ((BubbleChartDrawer) ChartDrawerBase.this).drawYAxis(selectionGraphics, null);
         }
         if (this instanceof HeatMapDrawer) {
-            ((HeatMapDrawer) this).drawYAxis(selectionGraphics, null);
+            ((HeatMapDrawer) ChartDrawerBase.this).drawYAxis(selectionGraphics, null);
         }
         if (transpose)
             drawChartTransposed(selectionGraphics);
@@ -625,15 +624,11 @@ public class ChartDrawerBase extends JPanel {
         return true;
     }
 
-    public JPanel getJPanel() {
-        return this;
-    }
-
     public void setMargins(int leftMargin, int topMargin, int rightMargin, int bottomMargin) {
-        this.leftMargin = leftMargin;
-        this.topMargin = topMargin;
-        this.rightMargin = rightMargin;
-        this.bottomMargin = bottomMargin;
+        ChartDrawerBase.this.leftMargin = leftMargin;
+        ChartDrawerBase.this.topMargin = topMargin;
+        ChartDrawerBase.this.rightMargin = rightMargin;
+        ChartDrawerBase.this.bottomMargin = bottomMargin;
     }
 
     public ChartViewer getViewer() {
@@ -648,8 +643,7 @@ public class ChartDrawerBase extends JPanel {
         return null;
     }
 
-    public boolean isEnabled() {
-        return true;
+    public JPanel getJPanel() {
+        return this;
     }
-
 }

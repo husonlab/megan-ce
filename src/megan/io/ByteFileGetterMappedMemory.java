@@ -120,6 +120,66 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
             return 0;
     }
 
+    /**
+     * gets value for given index
+     *
+     * @param index
+     * @return value or 0
+     */
+    public long getLong(long index) {
+        if (index < limit()) {
+            // note that index equals filePos and so no conversion from index to filePos necessary
+
+            int whichBuffer = getWhichBuffer(index);
+            int indexBuffer = getIndexInBuffer(index);
+
+            try {
+                final ByteBuffer buf = buffers[whichBuffer];
+                return buf.getLong(indexBuffer);
+            } catch (Exception ex) { // exception is thrown when long goes over buffer boundary. In this case, we need to grab each byte separately
+                long result = ((long) buffers[whichBuffer].get(indexBuffer++) << 56);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 48);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 40);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 32);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 24);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 16);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer++) & 0xFF) << 8);
+                if (indexBuffer == BLOCK_SIZE) {
+                    indexBuffer = 0;
+                    whichBuffer++;
+                }
+                result += (((long) buffers[whichBuffer].get(indexBuffer) & 0xFF));
+                return result;
+            }
+        } else
+            return 0;
+    }
+
+
 
     /**
      * length of array

@@ -52,7 +52,6 @@ public class NotificationsInSwing {
 
     private static int maxLength = 150;
 
-
     private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
 
 
@@ -271,7 +270,7 @@ public class NotificationsInSwing {
      * @return
      */
     public static String getControlStylesheetURL() {
-        URL url = ResourceManager.getCssURL("notificationpopup.css");
+        final URL url = ResourceManager.getCssURL("notificationpopup.css");
         if (url != null) {
             return url.toExternalForm();
         }
@@ -296,8 +295,9 @@ public class NotificationsInSwing {
             try {
                 final JFrame jFrame = (initGraphics ? new JFrame("Not used") : null);
                 jFXPanel = new JFXPanel();
-                if (jFrame != null)
+                if (jFrame != null) {
                     jFrame.add(jFXPanel);
+                }
 
                 if (title == null)
                     title = ProgramProperties.getProgramName();

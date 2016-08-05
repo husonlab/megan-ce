@@ -542,7 +542,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                     public void call(CorrelationPlotDrawer.MODE choice) {
                         setMode(choice);
                         ProgramProperties.put("CorrelationPlotMode", choice.toString());
-                        CorrelationPlotDrawer.this.repaint();
+                        getJPanel().repaint();
                     }
                 };
                 PopupChoice.addToJMenu(menu, CorrelationPlotDrawer.MODE.values(), mode, callBack);

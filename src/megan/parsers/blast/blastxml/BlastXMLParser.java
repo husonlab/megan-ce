@@ -214,7 +214,15 @@ public class BlastXMLParser extends DefaultHandler {
                             int queryStart = (int) (hsp.queryFrame >= 0 ? hsp.queryFrom : hsp.queryTo);
                             int queryEnd = (int) (hsp.queryFrame >= 0 ? hsp.queryTo : hsp.queryFrom);
 
-                            match.samLine = makeSAM(iteration.queryDef, hit.def, hit.len, hsp.bitScore, (float) hsp.eValue,
+                            final String hitLabel;
+                            if (hit.id == null)
+                                hitLabel = hit.def;
+                            else if (hit.def == null)
+                                hitLabel = hit.id;
+                            else
+                                hitLabel = (hit.def + " " + hit.id).replaceAll("\\s+", " ");
+
+                            match.samLine = makeSAM(iteration.queryDef, hitLabel, hit.len, hsp.bitScore, (float) hsp.eValue,
                                     (int) hsp.score, hsp.identity, hsp.queryFrame, queryStart, queryEnd, (int) hsp.hitFrom, (int) hsp.hitTo, hsp.qSeq, hsp.hSeq);
                             matches.add(match);
                             if (matches.size() > maxMatchesPerRead)

@@ -47,6 +47,7 @@ public class IdMapper {
     static public final String UNCLASSIFIED_LABEL = "Unclassified";
 
     public static ILong2IntegerMapFactory giMapFactory = new GI2IdMapFactory();
+    public static IString2IntegerMapFactory accessionMapFactory = new Accession2IdMapFactory();
 
     /**
      * create tags for parsing header line
@@ -81,8 +82,8 @@ public class IdMapper {
     private final Set<Integer> disabledIds = new HashSet<>();
 
     protected ILong2IntegerMap giMap = null;
-    protected Accession2IdMap accessionMap = null;
-    protected LoadableString2IntegerMap synonymsMap = null;
+    protected IString2IntegerMap accessionMap = null;
+    protected String2IntegerMap synonymsMap = null;
 
     protected IdParser.Algorithm algorithm;
 
@@ -149,7 +150,7 @@ public class IdMapper {
                         }
                     }
                     try {
-                        this.accessionMap = new Accession2IdMap(fileName, progress);
+                        this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
@@ -170,9 +171,9 @@ public class IdMapper {
                             Basic.caught(e);
                         }
                     }
-                    final LoadableString2IntegerMap synonymsMap = new LoadableString2IntegerMap();
+                    final String2IntegerMap synonymsMap = new String2IntegerMap();
                     try {
-                        synonymsMap.loadFile(name2IdMap, fileName, false, progress);
+                        synonymsMap.loadFile(name2IdMap, fileName, progress);
                         this.synonymsMap = synonymsMap;
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
@@ -247,11 +248,11 @@ public class IdMapper {
         return giMap;
     }
 
-    public Accession2IdMap getAccessionMap() {
+    public IString2IntegerMap getAccessionMap() {
         return accessionMap;
     }
 
-    public LoadableString2IntegerMap getSynonymsMap() {
+    public String2IntegerMap getSynonymsMap() {
         return synonymsMap;
     }
 

@@ -20,16 +20,15 @@ package megan.classification.data;
 
 import jloda.util.*;
 import megan.data.IName2IdMap;
-import megan.viewer.TaxonomyData;
 
 import java.io.*;
 import java.util.HashMap;
 
 /**
  * a loadable string to integer map. Integers may have a prefix
- * Daniel Huson, 12.2012
+ * Daniel Huson, 7.2016
  */
-public class LoadableString2IntegerMap extends HashMap<String, Integer> implements Closeable {
+public class String2IntegerMap extends HashMap<String, Integer> implements Closeable {
 
     /**
      * load a file of synonyms
@@ -37,7 +36,7 @@ public class LoadableString2IntegerMap extends HashMap<String, Integer> implemen
      * @param fileName
      * @throws java.io.IOException
      */
-    public void loadFile(IName2IdMap label2id, String fileName, boolean taxonomy, ProgressListener progressListener) throws IOException, CanceledException {
+    public void loadFile(IName2IdMap label2id, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         System.err.println("Loading map from file: " + fileName);
         FileInputIterator it = new FileInputIterator(new InputStreamReader(ResourceManager.getFileAsStream(fileName)), fileName);
         it.setSkipCommentLines(true);
@@ -51,23 +50,14 @@ public class LoadableString2IntegerMap extends HashMap<String, Integer> implemen
                 String[] tokens = aLine.split("\t");
 
                 if (tokens.length >= 2) {
-                    String label = tokens[0];
-                    String token = Basic.skipToNumber(tokens[1]);
-                    Integer id = null;
-
-                    if (token != null) {
-                        if (label2id != null) {
-                            id = label2id.get(token);
-                        }
-                        if (id == null || id == 0) {
-                            if (Basic.isInteger(token))
-                                id = Integer.parseInt(token);
-                            else if (taxonomy)
-                                id = TaxonomyData.getName2IdMap().get(token);
-                        }
+                    final Integer id;
+                    if (Basic.isInteger(tokens[1])) {
+                        id = Basic.parseInt(tokens[1]);
+                    } else {
+                        id = label2id.get(tokens[1]);
                     }
-                    if (id != null && id != 0)
-                        put(label, id);
+                    if (id != 0)
+                        put(tokens[0], id);
                     else
                         System.err.println("Line " + it.getLineNumber() + ": invalid id: " + tokens[1]);
                 } else {

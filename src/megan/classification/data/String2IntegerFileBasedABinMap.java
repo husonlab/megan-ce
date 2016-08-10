@@ -17,10 +17,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package megan.io;
+package megan.classification.data;
 
 import jloda.util.Basic;
 import malt.util.MurmurHash3;
+import megan.io.ByteFileGetterMappedMemory;
 
 import java.io.*;
 
@@ -28,11 +29,9 @@ import java.io.*;
  * a disk-based string-to-int hash table
  * Daniel Huson, 3.2016
  */
-public class String2IntegerDiskBasedHashTable implements Closeable {
-    public static int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 5;
-
-    public static final byte[] MAGIC_NUMBER = {'S', 'I', '1'};
-    public static final byte[] MAGIC_NUMBERX = {'S', 'I', 'X'};
+public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Closeable {
+    public static String MAGIC_NUMBER = "SI1";
+    public static String MAGIC_NUMBERX = "SIX";
 
     private final ByteFileGetterMappedMemory dataByteBuffer;
 
@@ -55,14 +54,14 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
      * @param fileName
      * @throws FileNotFoundException
      */
-    public String2IntegerDiskBasedHashTable(String fileName) throws IOException {
+    public String2IntegerFileBasedABinMap(String fileName) throws IOException {
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
             {
                 final byte[] magicNumber = new byte[3];
                 raf.read(magicNumber);
-                if (Basic.equal(magicNumber, MAGIC_NUMBER))
+                if (Basic.toString(magicNumber).equals(MAGIC_NUMBER))
                     extended = false; // old version that uses int to address data
-                else if (Basic.equal(magicNumber, MAGIC_NUMBERX)) {
+                else if (Basic.toString(magicNumber).equals(MAGIC_NUMBERX)) {
                     extended = true; // uses long to address data
                 } else
                     throw new IOException("File has wrong magic number");
@@ -74,7 +73,6 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
 
                 indexStartPos = magicNumber.length + 1; //  header consists of 4 bytes: 3 for magic number plus mask byte
             }
-
 
             dataStartPos = indexStartPos + (extended ? 8 : 4) * (mask + 1); // This is where the data begins.
 
@@ -91,6 +89,25 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
                 System.err.println("raf: "+i + " -> " + raf.readLong());
             }
             */
+        }
+    }
+
+    /**
+     * is this an appropriate file?
+     *
+     * @param fileName
+     * @return true, if is table file
+     */
+    public static boolean isTableFile(String fileName) {
+        try {
+            try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
+                final byte[] magicNumber = new byte[3];
+                raf.read(magicNumber);
+                return Basic.toString(magicNumber).equals(MAGIC_NUMBER) ||
+                        Basic.toString(magicNumber).equals(MAGIC_NUMBERX);
+            }
+        } catch (Exception ex) {
+            return false;
         }
     }
 
@@ -217,7 +234,7 @@ public class String2IntegerDiskBasedHashTable implements Closeable {
     }
 
     public static void main(String[] args) throws IOException {
-        try (String2IntegerDiskBasedHashTable table = new String2IntegerDiskBasedHashTable("/Users/huson/mapping/ncbi-June2016/prot_acc2tax-June2016.abin")) {
+        try (String2IntegerFileBasedABinMap table = new String2IntegerFileBasedABinMap("/Users/huson/mapping/ncbi-June2016/prot_acc2tax-June2016.abin")) {
             String accession = "NP_746135";
             System.err.println(accession + " -> " + table.get(accession));
         }

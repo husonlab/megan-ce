@@ -193,9 +193,10 @@ public class IdParser {
             for (int i = 0; i < countLabels; i++) {
                 final String label = giTaggedIds.getWord(i);
                 try {
-                    Long giNumber = Long.parseLong(label);
+                    final long giNumber = Long.parseLong(label);
                     if (giNumber > 0) {
-                        int id = idMapper.getGiMap().get(giNumber);
+                        final int id = idMapper.getGiMap().get(giNumber);
+                        //System.err.println("gi="+giNumber+" -> "+id);
                         if (id != 0) {
                             if (disabledIds.contains(id))
                                 disabled.add(id);
@@ -231,11 +232,11 @@ public class IdParser {
             if (countSemiColons > 0 && countSemiColons >= (headerString.length() / 32)) // assume is taxonomy path e.g. Bacteria;Proteobacteria;
             {
                 // find last legal name
-                Integer taxId = 0;
+                int taxId = 0;
                 String[] tokens = headerString.split(";");
                 for (String token : tokens) {
                     token = token.trim();
-                    int newTaxId = idMapper.getName2IdMap().get(token);
+                    final int newTaxId = idMapper.getName2IdMap().get(token);
                     if (newTaxId != 0 && (taxId == 0 || idMapper.fullTree.isDescendant(taxId, newTaxId))) {
                         taxId = newTaxId;
                     }

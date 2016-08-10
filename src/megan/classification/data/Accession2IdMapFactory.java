@@ -21,20 +21,17 @@ package megan.classification.data;
 
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
 import megan.data.IName2IdMap;
-import megan.fx.NotificationsInSwing;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
- * factory for creating GI to ID mappings
+ * factory for creating Accession to ID mappings
  * Created by huson on 7/15/16.
  */
-public class GI2IdMapFactory implements ILong2IntegerMapFactory {
+public class Accession2IdMapFactory implements IString2IntegerMapFactory {
     /**
-     * create a long to integer map from the named file
+     * create an accession to integer map from the named file
      *
      * @param label2id option mapping of labels to ids
      * @param fileName file
@@ -42,14 +39,10 @@ public class GI2IdMapFactory implements ILong2IntegerMapFactory {
      * @return map or null
      */
     @Override
-    public ILong2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException {
-        final String name = (new File(fileName)).getName();
-        if (name.equals("gi_taxid-March2015X.bin") || name.equals("gi2kegg-Nov2015X.bin") || name.equals("gi2tax-Feb2016.bin") || name.equals("gi2tax-Feb2016X.bin"))
-            NotificationsInSwing.showWarning("The mapping file '" + name + "' is known to contain errors, please use latest file from the MEGAN6 download page");
-
-        if (Long2IntegerFileBasedBinMap.isBinFile(fileName))
-            return new Long2IntegerFileBasedBinMap(fileName);
+    public IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException {
+        if (String2IntegerFileBasedABinMap.isTableFile(fileName))
+            return new String2IntegerFileBasedABinMap(fileName);
         else
-            return new Long2IntegerMap(label2id, fileName, progress != null ? progress : new ProgressPercentage());
+            return new Accession2IdMap(label2id, fileName, progress);
     }
 }

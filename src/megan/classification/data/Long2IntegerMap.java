@@ -20,18 +20,17 @@ package megan.classification.data;
 
 import jloda.util.*;
 import megan.data.IName2IdMap;
-import megan.io.IIntGetter;
-import megan.io.IntFileGetterMappedMemory;
-import megan.io.IntFileGetterRandomAccess;
 import megan.io.OutputWriter;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * long to integer mapping that can be loaded from and saved to a file
  * Daniel Huson, 4.2010, 4.2015
  */
-public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
+public class Long2IntegerMap implements ILong2IntegerMap, Closeable {
     public static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
 
     private final static int BITS = 10; // 2^10=1024
@@ -40,42 +39,21 @@ public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
 
     private final IntIntMap[] maps;
 
-    private IIntGetter reader = null;
-
     /**
      * constructor
+     * @param label2id
+     * @param fileName
+     * @param progress
+     * @throws IOException
+     * @throws CanceledException
      */
-    public LoadableLong2IntegerMap() {
+    public Long2IntegerMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
         maps = new IntIntMap[SIZE];
         for (int i = 0; i < maps.length; i++) {
             maps[i] = new IntIntMap(2 ^ 20, 0.9f); // 2^20=1048576
         }
-    }
 
-    /**
-     * load a bin or map file
-     *
-     * @param fileName
-     * @param progressListener
-     * @throws IOException
-     * @throws CanceledException
-     */
-    public void loadFile(IName2IdMap label2id, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         File file = new File(fileName);
-        if (file.getName().endsWith(".bin"))
-            loadBinFile(file);
-        else
-            loadMapFile(label2id, file, progressListener);
-    }
-
-    /**
-     * load the map file
-     *
-     * @param label2id options mapping of labels to ids
-     * @param file
-     * @throws FileNotFoundException
-     */
-    public void loadMapFile(IName2IdMap label2id, File file, ProgressListener progress) throws IOException, CanceledException {
         System.err.println("Loading file: " + file.getName());
 
         int totalIn = 0;
@@ -94,7 +72,7 @@ public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
                                 put(giNumber, id);
                                 totalIn++;
                             }
-                        } else {
+                        } else if (label2id != null) {
                             int id = label2id.get(tokens[1]);
                             if (id != 0) {
                                 put(giNumber, id);
@@ -135,73 +113,12 @@ public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
         synchronized (maps) {
             final int whichArray = (int) (key & MASK);
             final int index = (int) (key >>> BITS);
-            int result = maps[whichArray].get(index);
-            if (reader != null) {
-                if (result == 0) {
-                    if (key < reader.limit()) {
-                        result = reader.get(key);
-                    }
-                    maps[whichArray].put(index, result != 0 ? result : Integer.MAX_VALUE);
-                    return result;
-                } else if (result == Integer.MAX_VALUE)
-                    return 0;
-            }
-            return result;
-        }
-    }
-
-    /**
-     * load the bin file
-     *
-     * @param file
-     * @throws FileNotFoundException
-     */
-    public void loadBinFile(File file) throws IOException {
-        if (reader != null)
-            closeBinFile();
-        if (!file.exists())
-            throw new IOException("No such file: " + file);
-        if (!file.canRead())
-            throw new IOException("Can't read file: " + file);
-        if (!isBinFile(file))
-            throw new IOException("Wrong magic number: " + file);
-        try {
-            reader = new IntFileGetterMappedMemory(file);
-        } catch (IOException ex) { // on 32-bit machine, memory mapping will fail... use Random access
-            System.err.println("Opening file: " + file);
-            reader = new IntFileGetterRandomAccess(file);
+            return maps[whichArray].get(index);
         }
     }
 
     @Override
     public void close() throws IOException {
-        closeBinFile();
-
-    }
-
-    /**
-     * close the bin file
-     */
-    public void closeBinFile() throws IOException {
-        if (reader != null) {
-            reader.close();
-            reader = null;
-        }
-    }
-
-    /**
-     * does this look like a valid bin file?
-     *
-     * @param file
-     * @return true, if this looks like a valid bin file
-     */
-    public static boolean isBinFile(File file) {
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
-            int firstInt = dis.readInt();
-            return firstInt == 0 || firstInt == MAGIC_NUMBER;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
@@ -211,7 +128,7 @@ public class LoadableLong2IntegerMap implements ILong2IntegerMap, Closeable {
      * @param binFile
      * @throws IOException
      */
-    public static void convert2bin(File dmpFile, File binFile) throws IOException {
+    public static void writeToFileBasedMap(File dmpFile, File binFile) throws IOException {
         System.err.println("Converting " + dmpFile.getName() + " to " + binFile.getName() + "...");
 
         long totalOut = 0;

@@ -84,4 +84,8 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
         else
             return 0;
     }
+
+    public Map<String, Integer> getMap() {
+        return map;
+    }
 }

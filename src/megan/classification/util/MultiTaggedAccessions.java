@@ -79,7 +79,8 @@ public class MultiTaggedAccessions {
             }
             int b = a + 1;
             while (b < line.length()) {
-                if (Character.isLetterOrDigit(line.charAt(b)) || line.charAt(b) == '_')
+                int ch = line.charAt(b);
+                if (Character.isLetterOrDigit(ch) || ch == ':' || ch == '_')
                     b++;
                 else
                     break;

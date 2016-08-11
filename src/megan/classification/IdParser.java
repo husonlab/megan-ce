@@ -41,7 +41,6 @@ public class IdParser {
     public static final String PROPERTIES_FIRST_WORD_IS_ACCESSION = "FirstWordIsAccession";
     public static final String PROPERTIES_ACCESSION_TAGS = "AccessionTags";
 
-
     public enum Algorithm {First_Hit, Majority, LCA}
 
     private final IdMapper idMapper;

@@ -26,15 +26,11 @@ import megan.io.IntFileGetterRandomAccess;
 import java.io.*;
 
 /**
- * long to integer mapping that can be loaded from and saved to a file
+ * long to integer mapping in binary file format
  * Daniel Huson, 4.2010, 4.2015
  */
-class Long2IntegerFileBasedBinMap implements ILong2IntegerMap, Closeable {
+class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     public static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
-
-    private final static int BITS = 10; // 2^10=1024
-    private final static int SIZE = (1 << BITS);
-    private final static int MASK = (SIZE - 1);
 
     private IIntGetter reader = null;
 
@@ -45,7 +41,7 @@ class Long2IntegerFileBasedBinMap implements ILong2IntegerMap, Closeable {
      * @throws IOException
      * @throws CanceledException
      */
-    public Long2IntegerFileBasedBinMap(String fileName) throws IOException, CanceledException {
+    public Long2IntegerBinMap(String fileName) throws IOException, CanceledException {
         final File file = new File(fileName);
         if (!file.exists())
             throw new IOException("No such file: " + file);

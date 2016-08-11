@@ -47,9 +47,9 @@ public class GI2IdMapFactory implements ILong2IntegerMapFactory {
         if (name.equals("gi_taxid-March2015X.bin") || name.equals("gi2kegg-Nov2015X.bin") || name.equals("gi2tax-Feb2016.bin") || name.equals("gi2tax-Feb2016X.bin"))
             NotificationsInSwing.showWarning("The mapping file '" + name + "' is known to contain errors, please use latest file from the MEGAN6 download page");
 
-        if (Long2IntegerFileBasedBinMap.isBinFile(fileName))
-            return new Long2IntegerFileBasedBinMap(fileName);
+        if (Long2IntegerBinMap.isBinFile(fileName))
+            return new Long2IntegerBinMap(fileName);
         else
-            return new Long2IntegerMap(label2id, fileName, progress != null ? progress : new ProgressPercentage());
+            return new Long2IntegerFileBasedMap(label2id, fileName, progress != null ? progress : new ProgressPercentage());
     }
 }

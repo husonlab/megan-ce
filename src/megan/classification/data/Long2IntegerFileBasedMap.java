@@ -30,7 +30,7 @@ import java.io.IOException;
  * long to integer mapping that can be loaded from and saved to a file
  * Daniel Huson, 4.2010, 4.2015
  */
-public class Long2IntegerMap implements ILong2IntegerMap, Closeable {
+public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     public static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
 
     private final static int BITS = 10; // 2^10=1024
@@ -47,7 +47,7 @@ public class Long2IntegerMap implements ILong2IntegerMap, Closeable {
      * @throws IOException
      * @throws CanceledException
      */
-    public Long2IntegerMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
+    public Long2IntegerFileBasedMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
         maps = new IntIntMap[SIZE];
         for (int i = 0; i < maps.length; i++) {
             maps[i] = new IntIntMap(2 ^ 20, 0.9f); // 2^20=1048576
@@ -128,7 +128,7 @@ public class Long2IntegerMap implements ILong2IntegerMap, Closeable {
      * @param binFile
      * @throws IOException
      */
-    public static void writeToFileBasedMap(File dmpFile, File binFile) throws IOException {
+    public static void writeToBinFile(File dmpFile, File binFile) throws IOException {
         System.err.println("Converting " + dmpFile.getName() + " to " + binFile.getName() + "...");
 
         long totalOut = 0;

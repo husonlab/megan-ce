@@ -47,7 +47,6 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
      * constructor
      */
     public BarChartDrawer() {
-        setBackground(Color.WHITE);
     }
 
     /**
@@ -90,6 +89,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 xAxisLabelHeight = (int) Math.round(computeXAxisLabelHeightTransposed(gc) + 15);
             else
                 xAxisLabelHeight = (int) Math.round(computeXAxisLabelHeight(gc) + 15);
+            xAxisLabelHeight = Math.min((int) (0.7 * getHeight()), xAxisLabelHeight);
 
             bottomMargin += xAxisLabelHeight;
 

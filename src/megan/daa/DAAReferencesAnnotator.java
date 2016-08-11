@@ -64,7 +64,7 @@ public class DAAReferencesAnnotator {
             cNames = fNamesList.toArray(new String[fNamesList.size()]);
         }
 
-        final int[][] fName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
+        final int[][] cName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
 
         final int numberOfThreads = 8;
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
@@ -90,7 +90,7 @@ public class DAAReferencesAnnotator {
                             String ref = Basic.toString(header.getReference(r, null));
                             for (int i = 0; i < idParsers.length; i++) {
                                 try {
-                                    fName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);
+                                    cName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);
                                 } catch (IOException e) {
                                     Basic.caught(e);
                                 }
@@ -114,8 +114,8 @@ public class DAAReferencesAnnotator {
         }
 
         // get all into bytes:
-        final byte[][] fName2Bytes = new byte[cNames.length][];
-        final int[] fName2Size = new int[cNames.length];
+        final byte[][] cName2Bytes = new byte[cNames.length][];
+        final int[] cName2Size = new int[cNames.length];
 
         final CountDownLatch countDownLatch2 = new CountDownLatch(cNames.length);
         for (int t = 0; t < cNames.length; t++) {
@@ -126,11 +126,11 @@ public class DAAReferencesAnnotator {
                         final ByteOutputStream outs = new ByteOutputStream();
                         final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
                         w.writeNullTerminatedString(cNames[task].getBytes());
-                        final int[] ref2class = fName2ref2class[task];
+                        final int[] ref2class = cName2ref2class[task];
                         for (int ref2clas : ref2class)
                             w.writeInt(ref2clas);
-                        fName2Bytes[task] = outs.getBytes();
-                        fName2Size[task] = outs.size();
+                        cName2Bytes[task] = outs.getBytes();
+                        cName2Size[task] = outs.size();
                         progress.incrementProgress();
                     } catch (Exception ex) {
                         Basic.caught(ex);
@@ -147,7 +147,7 @@ public class DAAReferencesAnnotator {
         }
         service.shutdownNow();
 
-        DAAModifier.appendBlocks(header, BlockType.megan_ref_annotations, fName2Bytes, fName2Size);
+        DAAModifier.appendBlocks(header, BlockType.megan_ref_annotations, cName2Bytes, cName2Size);
         if (progress instanceof ProgressPercentage) {
             ((ProgressPercentage) progress).reportTaskCompleted();
         }

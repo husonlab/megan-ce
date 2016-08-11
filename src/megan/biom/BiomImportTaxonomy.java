@@ -80,8 +80,17 @@ public class BiomImportTaxonomy {
                 }
             if (bestId == null) {
                 final String idStr = (String) row.get("id");
-                if (idStr != null && Basic.isInteger(idStr))
-                    bestId = Basic.parseInt(idStr);
+                if (idStr != null) {
+                    if (Basic.isInteger(idStr))
+                        bestId = Basic.parseInt(idStr);
+                    else {
+                        int newTaxId = TaxonomyData.getName2IdMap().get(idStr);
+                        if (newTaxId != 0) {
+                            bestId = newTaxId;
+                        }
+                    }
+
+                }
             }
 
             if (bestId != null)

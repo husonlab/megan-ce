@@ -321,8 +321,8 @@ public class PCoATab extends JPanel implements ITab {
             public void mouseReleased(MouseEvent e) {
                 super.mousePressed(e);
                 if (previousLocation.get() != null) {
-                    if (showGroups) {
-                        computeConvexHullOfGroups(clusterViewer.getGroup2Nodes());
+                    if (showGroups && !clusterViewer.isLocked()) {
+                        // computeConvexHullOfGroups(clusterViewer.getGroup2Nodes());
                         updateTransform(is3dMode);
                     }
                     previousLocation.set(null);
@@ -345,7 +345,7 @@ public class PCoATab extends JPanel implements ITab {
                     }
                     if (h != 0 || v != 0) {
                         updateTransform(is3dMode);
-                        if (showGroups) {
+                        if (showGroups && !clusterViewer.isLocked()) {
                             computeConvexHullOfGroups(clusterViewer.getGroup2Nodes());
                             // updateConvexHullOfGroups(clusterViewer.getGroup2Nodes());
                         }
@@ -653,79 +653,83 @@ public class PCoATab extends JPanel implements ITab {
      * @param group2Nodes
      */
     public void computeConvexHullOfGroups(final Map<String, LinkedList<Node>> group2Nodes) {
-        {
-            final Set<Edge> edgeToDelete = new HashSet<>();
-            for (final Iterator<Edge> it = graph.edgeIteratorIncludingHidden(); it.hasNext(); ) {
-                Edge e = it.next();
-                if (convexHullEdges.contains(e)) {
-                    edgeToDelete.add(e);
+        synchronized (convexHullEdges) {
+            {
+                final Set<Edge> edgeToDelete = new HashSet<>();
+                for (final Iterator<Edge> it = graph.edgeIteratorIncludingHidden(); it.hasNext(); ) {
+                    Edge e = it.next();
+                    if (convexHullEdges.contains(e)) {
+                        edgeToDelete.add(e);
+                    }
+                }
+
+                for (Edge e : edgeToDelete) {
+                    graph.deleteEdge(e);
+                }
+                for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
+                    try {
+                        graph.checkOwner(e);
+                    } catch (NotOwnerException ex) {
+                        Basic.caught(ex);
+                    }
                 }
             }
+            convexHullEdges.clear();
 
-            for (Edge e : edgeToDelete) {
-                graph.deleteEdge(e);
+            for (Node v : convexHullCenters) {
+                graph.deleteNode(v);
             }
-            for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
-                try {
-                    graph.checkOwner(e);
-                } catch (NotOwnerException ex) {
-                    Basic.caught(ex);
-                }
-            }
-        }
-        convexHullEdges.clear();
+            convexHullCenters.clear();
 
+            for (String joinId : group2Nodes.keySet()) {
+                final LinkedList<Node> nodes = group2Nodes.get(joinId);
+                if (nodes.size() > 1) {
+                    ArrayList<Point2D> points = new ArrayList<>(nodes.size());
+                    long r = 0;
+                    long g = 0;
+                    long b = 0;
 
-        for (Node v : convexHullCenters) {
-            graph.deleteNode(v);
-        }
-        convexHullCenters.clear();
+                    for (Node v : nodes) {
+                        if (v == null)
+                            continue;
 
-        for (String joinId : group2Nodes.keySet()) {
-            final LinkedList<Node> nodes = group2Nodes.get(joinId);
-            if (nodes.size() > 1) {
-                ArrayList<Point> points = new ArrayList<>(nodes.size());
-                final Map<Point, Node> point2node = new HashMap<>();
-                long r = 0;
-                long g = 0;
-                long b = 0;
+                        final Point2D aPt = new PointNode(Math.round(graphView.getLocation(v).getX()), Math.round(graphView.getLocation(v).getY()), v);
+                        points.add(aPt);
+                        String sample = graph.getLabel(v);
+                        Color color = graphView.getDocument().getChartColorManager().getSampleColor(sample);
+                        r += color.getRed();
+                        g += color.getGreen();
+                        b += color.getBlue();
+                    }
+                    if (points.size() > 1) {
+                        final Color color = new Color((int) (r / nodes.size()), (int) (g / nodes.size()), (int) (b / nodes.size()));
 
-                for (Node v : nodes) {
-                    if (v == null)
-                        continue;
+                        final ArrayList<Point2D> hull = ConvexHull.quickHull(points);
 
-                    Point aPt = new Point((int) graphView.getLocation(v).getX(), (int) graphView.getLocation(v).getY());
-                    points.add(aPt);
-                    point2node.put(aPt, v);
-                    String sample = graph.getLabel(v);
-                    Color color = graphView.getDocument().getChartColorManager().getSampleColor(sample);
-                    r += color.getRed();
-                    g += color.getGreen();
-                    b += color.getBlue();
-                }
-                final Color color = new Color((int) (r / nodes.size()), (int) (g / nodes.size()), (int) (b / nodes.size()));
-
-                final ArrayList<Point> hull = ConvexHull.quickHull(points);
-                for (int i = 0; i < hull.size(); i++) {
-                    final Node v = point2node.get(i > 0 ? hull.get(i - 1) : hull.get(hull.size() - 1));
-                    final Node w = point2node.get(hull.get(i));
-                    final Edge e = graph.newEdge(v, w, EdgeView.UNDIRECTED);
-                    graphView.setColor(e, color);
-                    graphView.setDirection(e, EdgeView.UNDIRECTED);
-                    convexHullEdges.add(e);
-                }
-                final Node center = graph.newNode();
-                convexHullCenters.add(center);
-                graphView.setLocation(center, computeCenter(points));
-                node2vector.set(center, new Vector3D(graphView.getLocation(center).getX(), graphView.getLocation(center).getY(), 0));
-                graphView.setWidth(center, 0);
-                graphView.setHeight(center, 0);
-                for (Node v : nodes) {
-                    Edge e = graph.newEdge(center, v);
-                    graphView.setDirection(e, EdgeView.UNDIRECTED);
-                    graphView.setLineWidth(e, 0);
-                    graphView.setColor(e, null);
-                    convexHullEdges.add(e);
+                        for (int i = 0; i < hull.size(); i++) {
+                            final Node v = ((PointNode) hull.get(i > 0 ? i - 1 : hull.size() - 1)).getNode(); // prev node in polygon
+                            final Node w = ((PointNode) hull.get(i)).getNode(); // current node in polygon
+                            if (v != w) {
+                                final Edge e = graph.newEdge(v, w, EdgeView.UNDIRECTED);
+                                graphView.setColor(e, color);
+                                graphView.setDirection(e, EdgeView.UNDIRECTED);
+                                convexHullEdges.add(e);
+                            }
+                        }
+                        final Node center = graph.newNode();
+                        convexHullCenters.add(center);
+                        graphView.setLocation(center, computeCenter(points));
+                        node2vector.set(center, new Vector3D(graphView.getLocation(center).getX(), graphView.getLocation(center).getY(), 0));
+                        graphView.setWidth(center, 0);
+                        graphView.setHeight(center, 0);
+                        for (Node v : nodes) {
+                            Edge e = graph.newEdge(center, v);
+                            graphView.setDirection(e, EdgeView.UNDIRECTED);
+                            graphView.setLineWidth(e, 0);
+                            graphView.setColor(e, null);
+                            convexHullEdges.add(e);
+                        }
+                    }
                 }
             }
         }
@@ -737,12 +741,12 @@ public class PCoATab extends JPanel implements ITab {
      * @param points
      * @return center
      */
-    private Point2D computeCenter(ArrayList<Point> points) {
+    private Point2D computeCenter(ArrayList<Point2D> points) {
         final Point center = new Point(0, 0);
         if (points.size() > 0) {
-            for (Point aPt : points) {
-                center.x += aPt.x;
-                center.y += aPt.y;
+            for (Point2D aPt : points) {
+                center.x += (int) aPt.getX();
+                center.y += (int) aPt.getY();
             }
             center.x /= points.size();
             center.y /= points.size();
@@ -1279,5 +1283,17 @@ public class PCoATab extends JPanel implements ITab {
         return graph.getNumberOfNodes() == 0;
     }
 
+    class PointNode extends Point2D.Double {
+        private final Node v;
+
+        public PointNode(double x, double y, Node v) {
+            super(x, y);
+            this.v = v;
+        }
+
+        public Node getNode() {
+            return v;
+        }
+    }
 
 }

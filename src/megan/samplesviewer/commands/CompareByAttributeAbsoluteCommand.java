@@ -55,7 +55,7 @@ public class CompareByAttributeAbsoluteCommand extends CommandBase implements IC
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedCols() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() == 1;
     }
 
     public String getName() {

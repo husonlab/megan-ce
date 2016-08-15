@@ -24,10 +24,7 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.core.DataTable;
-import megan.core.Director;
-import megan.core.Document;
-import megan.core.MeganFile;
+import megan.core.*;
 import megan.dialogs.compare.Comparer;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
@@ -66,6 +63,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
         np.matchIgnoreCase(";");
 
         final Document doc = ((Director) getDir()).getDocument();
+
         final SamplesSpreadSheet samplesTable = ((SamplesViewer) getViewer()).getSamplesTable();
 
         final BitSet samples = samplesTable.getSelectedSampleIndices();
@@ -81,7 +79,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
             if (obj != null) {
                 final String value = obj.toString().trim();
                 if (value.length() > 0) {
-                    final String tarSample = attribute + ":" + value;
+                    final String tarSample = (attribute.equals(SampleAttributeTable.SAMPLE_ID) ? value : attribute + ":" + value);
                     if (!tarSamplesOrder.contains(tarSample)) {
                         tarSamplesOrder.add(tarSample);
                         tarSample2SrcSamples.put(tarSample, new ArrayList<String>());
@@ -100,9 +98,12 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
             final Document newDocument = newDir.getDocument();
             newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
+            doc.getProgressListener().setMaximum(tarSamplesOrder.size());
+            doc.getProgressListener().setProgress(0);
 
             for (String tarSample : tarSamplesOrder) {
-                doc.getProgressListener().setSubtask(tarSample);
+                doc.getProgressListener().setTasks("Comparing samples", tarSample);
+
                 List<String> srcSamples = tarSample2SrcSamples.get(tarSample);
                 Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
 
@@ -111,6 +112,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
                 if (classification2class2counts.size() > 0) {
                     newDocument.addSample(tarSample, sampleSize, 0, doc.getBlastMode(), classification2class2counts);
                 }
+                doc.getProgressListener().incrementProgress();
             }
 
             // normalize:
@@ -146,6 +148,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
 
 
             newDocument.setNumberReads(newDocument.getDataTable().getTotalReads());
+            newDocument.setDirty(true);
 
             if (newDocument.getNumberOfSamples() > 1) {
                 newDir.getMainViewer().getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.PieChart);
@@ -168,7 +171,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedCols() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() == 1;
     }
 
     public String getName() {

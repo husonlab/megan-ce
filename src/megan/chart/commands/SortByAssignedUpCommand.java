@@ -60,7 +60,7 @@ public class SortByAssignedUpCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("SortNrHits16.gif");
+        return ResourceManager.getIcon("SortNrHitsBackward16.gif");
     }
 
     public boolean isCritical() {

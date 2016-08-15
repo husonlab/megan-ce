@@ -20,6 +20,8 @@
 package megan.chart.data;
 
 
+import jloda.util.Pair;
+
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -28,26 +30,26 @@ import java.util.TreeSet;
  * whisker plot data
  * Daniel Huson, 7.2016
  */
-public class WhiskerData {
-    private final SortedSet<Double> values = new TreeSet<>();
-    private Double[] array;
+public class WhiskerData implements Iterable<Pair<Double, String>> {
+    private final SortedSet<Pair<Double, String>> values = new TreeSet<>();
+    private double[] array;
 
     public void clear() {
         values.clear();
         array = null;
     }
 
-    public void add(Double a) {
-        values.add(a);
+    public void add(Double a, String label) {
+        values.add(new Pair<>(a, label));
         array = null;
     }
 
     public double getMin() {
-        return values.size() > 0 ? values.first() : 0;
+        return values.size() > 0 ? values.first().getFirst() : 0;
     }
 
     public double getMax() {
-        return values.size() > 0 ? values.last() : 0;
+        return values.size() > 0 ? values.last().getFirst() : 0;
     }
 
     public double getFirstQuarter() {
@@ -71,7 +73,7 @@ public class WhiskerData {
         return array[array.length / 2];
     }
 
-    public Iterator<Double> iterator() {
+    public Iterator<Pair<Double, String>> iterator() {
         return values.iterator();
     }
 
@@ -79,7 +81,11 @@ public class WhiskerData {
         if (array == null) {
             synchronized (values) {
                 if (array == null) {
-                    array = values.toArray(new Double[values.size()]);
+                    array = new double[values.size()];
+                    int i = 0;
+                    for (Pair<Double, String> pair : values) {
+                        array[i++] = pair.getFirst();
+                    }
                 }
             }
         }

@@ -30,7 +30,10 @@ import megan.core.Document;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * draws a box chart
@@ -38,7 +41,6 @@ import java.util.*;
  */
 public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
     public static final String NAME = "BoxChart";
-
 
     /**
      * constructor
@@ -89,8 +91,10 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         else {
             String prefix = null;
             final Document doc = getViewer().getDir().getDocument();
+            final boolean hasGroups = doc.getSampleAttributeTable().hasGroups();
+
             for (String sample : doc.getSampleAttributeTable().getSampleOrder()) {
-                String groupId = doc.getSampleAttributeTable().getGroupId(sample);
+                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(sample) : "all";
                 if (groupId != null) {
                     int pos = groupId.indexOf('=');
                     if (pos > 0) {
@@ -147,7 +151,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         for (String series : doc.getSampleAttributeTable().getSampleOrder()) {
             series = cleanSeriesName(series);
             if (chartData.getSeriesNames().contains(series)) {
-                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : series;
+                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : "all";
                 if (groupId != null) {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
@@ -193,7 +197,6 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 int xPos = (int) Math.round(x0 + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + (d * numberOfClasses + c) * xStep);
                 final boolean isSelected = getChartData().getChartSelection().isSelected(null, className);
 
-
                 if (isShowXAxis()) {
                     Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
                     Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
@@ -219,7 +222,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
 
                 for (String series : pair.getSecond()) {
                     double value = getChartData().getValueAsDouble(series, className);
-                    whiskerData.add(value);
+                    whiskerData.add(value, series);
                     switch (scalingType) { // modify if not linear scale:
                         case PERCENT: {
                             double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
@@ -243,7 +246,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                             break;
                         }
                     }
-                    whiskerDataTransformed.add(value);
+                    whiskerDataTransformed.add(value, series);
                 }
 
                 // draw whiskers:
@@ -251,17 +254,32 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 final Color color = getChartColors().getClassColor(class2HigherClassMapper.get(className));
                 final Color darkColor = color.darker();
 
-                if (sgc != null)
-                    sgc.setCurrentItem(new String[]{null, className});
+                for (final Pair<Double, String> p : whiskerDataTransformed) {
+                    boolean isSelected2 = isSelected;
 
-                for (Iterator<Double> iterator = whiskerDataTransformed.iterator(); iterator.hasNext(); ) {
-                    final double value = iterator.next();
+                    final double value = p.getFirst();
+                    final String series = p.getSecond();
+                    if (sgc != null) {
+                        sgc.setCurrentItem(new String[]{series, className});
+                    } else if (!isSelected2)
+                        isSelected2 = getChartData().getChartSelection().isSelected(series, null);
+
                     final int x = xPos + random.nextInt(6) - 3;
-                        int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
-                        gc.setColor(color);
+                    int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
+
+                    if (isSelected2) {
+                        gc.setColor(ProgramProperties.SELECTION_COLOR);
+                        gc.fillOval(x - 5, height - 5, 10, 10);
+                    }
+
+                    gc.setColor(color);
                     gc.fillOval(x - 1, height - 1, 2, 2);
-                        gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
+                    gc.setColor(darkColor);
                     gc.drawOval(x - 1, height - 1, 2, 2);
+
+                    if (sgc != null) {
+                        sgc.clearCurrentItem();
+                    }
                 }
 
                 gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
@@ -354,7 +372,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         for (String series : doc.getSampleAttributeTable().getSampleOrder()) {
             series = cleanSeriesName(series);
             if (chartData.getSeriesNames().contains(series)) {
-                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : series;
+                String groupId = hasGroups ? doc.getSampleAttributeTable().getGroupId(series) : "all";
                 if (groupId != null) {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
@@ -431,7 +449,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
 
                 for (String series : pair.getSecond()) {
                     double value = getChartData().getValueAsDouble(series, className);
-                    whiskerData.add(value);
+                    whiskerData.add(value, series);
                     switch (scalingType) { // modify if not linear scale:
                         case PERCENT: {
                             double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
@@ -455,7 +473,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                             break;
                         }
                     }
-                    whiskerDataTransformed.add(value);
+                    whiskerDataTransformed.add(value, series);
                 }
 
                 // draw whiskers:
@@ -463,17 +481,29 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 final Color color = getChartColors().getClassColor(class2HigherClassMapper.get(className));
                 final Color darkColor = color.darker();
 
-                if (sgc != null)
-                    sgc.setCurrentItem(new String[]{null, className});
+                for (final Pair<Double, String> p : whiskerDataTransformed) {
+                    final double value = p.getFirst();
+                    final String series = p.getSecond();
+                    boolean isSelected2 = isSelected;
+                    if (sgc != null) {
+                        sgc.setCurrentItem(new String[]{series, className});
+                    } else if (!isSelected2)
+                        isSelected2 = getChartData().getChartSelection().isSelected(series, null);
 
-                for (Iterator<Double> iterator = whiskerDataTransformed.iterator(); iterator.hasNext(); ) {
-                    final double value = iterator.next();
                     final int x = xPos + random.nextInt(6) - 3;
                     int height = (int) Math.round(y0 - Math.max(1, value * yFactor));
+
+                    if (isSelected2) {
+                        gc.setColor(ProgramProperties.SELECTION_COLOR);
+                        gc.fillOval(x - 5, height - 5, 10, 10);
+                    }
+
                     gc.setColor(color);
                     gc.fillOval(x - 1, height - 1, 2, 2);
-                    gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);
+                    gc.setColor(darkColor);
                     gc.drawOval(x - 1, height - 1, 2, 2);
+                    if (sgc != null)
+                        sgc.clearCurrentItem();
                 }
 
                 gc.setColor(isSelected ? ProgramProperties.SELECTION_COLOR : darkColor);

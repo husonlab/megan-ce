@@ -46,12 +46,11 @@ public class ComputeCoreBiome {
      * @param threshold                      number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
      * @param srcDoc
      * @param tarClassification2class2counts
-     * @param progressListener
+     * @param progress
      * @return sampleSize
      */
     public static int apply(Collection<String> samplesToUse, boolean asUpperBound, int threshold, Document srcDoc,
-                            Map<String, Map<Integer, Integer[]>> tarClassification2class2counts, ProgressListener progressListener) {
-
+                            Map<String, Map<Integer, Integer[]>> tarClassification2class2counts, ProgressListener progress) {
         BitSet sampleIds = srcDoc.getDataTable().getSampleIds(samplesToUse);
         int size = 0;
 

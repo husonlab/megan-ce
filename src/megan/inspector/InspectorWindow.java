@@ -198,8 +198,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 clear();
             }
         });
-        getCommandManager().updateEnableState();
-        frame.setVisible(true);
     }
 
     /**

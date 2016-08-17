@@ -107,9 +107,9 @@ public class Megan6 {
         options.done();
 
         if (silentMode) {
-            Basic.stopCollectingStdErr();
             Basic.hideSystemErr();
             Basic.hideSystemOut();
+            Basic.stopCollectingStdErr();
         }
 
         if (Basic.getDebugMode())
@@ -136,10 +136,10 @@ public class Megan6 {
                     }
                     if (showMessageWindow)
                         Director.showMessageWindow();
-                    else
-                        System.err.println(Basic.stopCollectingStdErr());
 
+                    Basic.restoreSystemOut(System.err); // send system out to system err
                     System.err.println(Basic.stopCollectingStdErr());
+
                     MeganProperties.notifyListChange("RecentFiles");
                     newDir.executeOpen(treeFile, meganFiles, null);
 

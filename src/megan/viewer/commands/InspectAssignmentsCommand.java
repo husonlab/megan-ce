@@ -47,10 +47,12 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
         final Director dir = ((ClassificationViewer) getViewer()).getDir();
         final ClassificationViewer classificationViewer = ((ClassificationViewer) getViewer());
 
-        executeImmediately("show window=inspector;");
+        final InspectorWindow inspectorWindow;
+        if (dir.getViewerByClass(InspectorWindow.class) != null)
+            inspectorWindow = (InspectorWindow) dir.getViewerByClass(InspectorWindow.class);
+        else
+            inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
 
-        final InspectorWindow inspectorWindow = (InspectorWindow) dir.getViewerByClass(InspectorWindow.class);
-        if (inspectorWindow != null) {
             final LinkedList<Triplet<String, Integer, Collection<Integer>>> name2Size2Ids = new LinkedList<>();
             for (Integer id : classificationViewer.getSelectedIds()) {
                 String name = classificationViewer.getClassification().getName2IdMap().get(id);
@@ -65,12 +67,19 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
                 }
             }
             if (name2Size2Ids.size() > 0)
-                inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
-        }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        inspectorWindow.getFrame().setVisible(true);
+                        inspectorWindow.getFrame().toFront();
+                        inspectorWindow.getFrame().setState(JFrame.NORMAL);
+                        inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
+                    }
+                });
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately(getSyntax());
+        execute(getSyntax());
     }
 
     public boolean isApplicable() {

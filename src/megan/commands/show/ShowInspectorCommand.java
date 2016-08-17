@@ -36,7 +36,7 @@ public class ShowInspectorCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 
-        Director dir = getDir();
+        final Director dir = getDir();
         InspectorWindow inspectorWindow = (InspectorWindow) dir.getViewerByClass(InspectorWindow.class);
         if (inspectorWindow == null)
             inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));

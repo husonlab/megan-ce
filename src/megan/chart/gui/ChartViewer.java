@@ -407,7 +407,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
                 downX = me.getXOnScreen();
                 downY = me.getYOnScreen();
                 scrollPane.setCursor(Cursors.getOpenHand());
-                scrollPane.grabFocus();
+                scrollPane.requestFocusInWindow();
             }
 
             public void mouseReleased(MouseEvent mouseEvent) {

@@ -168,16 +168,20 @@ public class ReadAssembler {
      * report contigs stats
      */
     public void reportContigStats() {
-        final int[] sizes = new int[contigs.size()];
-        int pos = 0;
-        for (Pair<String, String> pair : contigs) {
-            sizes[pos++] = pair.getSecond().length();
+        if (contigs.size() == 0) {
+            System.err.println(String.format("Contigs:%,9d", 0));
+        } else {
+            final int[] sizes = new int[contigs.size()];
+            int pos = 0;
+            for (Pair<String, String> pair : contigs) {
+                sizes[pos++] = pair.getSecond().length();
+            }
+            Arrays.sort(sizes);
+            System.err.println(String.format("Contigs:%,9d", sizes.length));
+            System.err.println(String.format("Min len:%,9d", sizes[0]));
+            System.err.println(String.format("Med len:%,9d", sizes[sizes.length / 2]));
+            System.err.println(String.format("Max len:%,9d", sizes[sizes.length - 1]));
         }
-        Arrays.sort(sizes);
-        System.err.println(String.format("Contigs:%,9d", sizes.length));
-        System.err.println(String.format("Min len:%,9d", sizes[0]));
-        System.err.println(String.format("Med len:%,9d", sizes[sizes.length / 2]));
-        System.err.println(String.format("Max len:%,9d", sizes[sizes.length - 1]));
     }
 
     public ArrayList<Pair<String, String>> getContigs() {
@@ -207,6 +211,7 @@ public class ReadAssembler {
         final BitSet containedContigs = new BitSet();
 
         // main parallel computation:
+        if (sortedContigs.size() > 0)
         {
             final int numberOfThreads = Math.min(sortedContigs.size(), Runtime.getRuntime().availableProcessors() - 1);
             final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);

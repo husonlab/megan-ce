@@ -117,7 +117,7 @@ public class MyGraphViewListener implements IGraphViewListener {
         current = 0;
         stillDownWithoutMoving = true;
 
-        viewer.grabFocus();
+        viewer.requestFocusInWindow();
 
         int magnifierHit = viewer.trans.getMagnifier().hit(downX, downY);
 

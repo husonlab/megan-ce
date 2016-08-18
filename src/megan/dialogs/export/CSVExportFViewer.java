@@ -65,8 +65,12 @@ public class CSVExportFViewer {
                 if (names.size() > 1) {
                     w.write("#Datasets");
                     for (String name : names) {
-                        if (separator == ',')
-                            name = name.replaceAll(",", "_");
+                        if (name == null)
+                            System.err.println("Internal error, sample name is null");
+                        else {
+                            if (separator == ',')
+                                name = name.replaceAll(",", "_");
+                        }
                         w.write(separator + " " + name);
                     }
                     w.write("\n");

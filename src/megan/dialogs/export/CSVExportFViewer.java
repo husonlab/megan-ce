@@ -21,6 +21,7 @@ package megan.dialogs.export;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
+import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
@@ -40,27 +41,27 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * methods for exporting fViewer data  in csv format
+ * methods for exporting FViewer data in csv format
  * Daniel Huson, 4.2010
  */
 public class CSVExportFViewer {
     /**
      * export name to counts
      *
-     * @param fViewer
+     * @param cViewer
      * @param file
      * @param separator
      * @param progressListener
      * @return lines written
      */
-    public static int exportName2Counts(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
+    public static int exportName2Counts(String format, ViewerBase cViewer, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
             final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
             final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                List<String> names = cViewer.getDocument().getSampleNames();
+                final List<String> names = cViewer.getDocument().getSampleNames();
                 if (names.size() > 1) {
                     w.write("#Datasets");
                     for (String name : names) {
@@ -80,13 +81,19 @@ public class CSVExportFViewer {
                     Integer id = (Integer) v.getInfo();
                     if (id != null && !seen.contains(id)) {
                         seen.add(id);
-                        NodeData data = cViewer.getNodeData(v);
-                        w.write(getLabelSource(shortName, classification, format, v));
-                        int[] summarized = data.getSummarized();
-                        for (int a : summarized)
-                            w.write(separator + " " + a);
-                        w.write("\n");
-                        totalLines++;
+                        final NodeData data = cViewer.getNodeData(v);
+                        final int[] counts = (reportSummarized && v.getOutDegree() > 0 ? data.getSummarized() : data.getAssigned());
+                        final String name = getLabelSource(shortName, classification, format, v);
+                        if (name != null) {
+                            if (counts.length == names.size()) {
+                                w.write(name);
+                                for (int a : counts)
+                                    w.write(separator + " " + a);
+                                w.write("\n");
+                                totalLines++;
+                            } else
+                                System.err.println("Skipped " + name + ", number of values: " + counts.length);
+                        }
                     }
                     progressListener.incrementProgress();
                 }
@@ -100,20 +107,20 @@ public class CSVExportFViewer {
     /**
      * export name to percentages
      *
-     * @param fViewer
+     * @param cViewer
      * @param file
      * @param separator
      * @param progressListener
      * @return lines written
      */
-    public static int exportName2Percent(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
+    public static int exportName2Percent(String format, ViewerBase cViewer, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
             final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
             final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                List<String> names = cViewer.getDocument().getSampleNames();
+                final List<String> names = cViewer.getDocument().getSampleNames();
                 if (names.size() > 1) {
                     w.write("#Datasets");
                     for (String name : names) {
@@ -136,11 +143,7 @@ public class CSVExportFViewer {
                         if (id != null && !seen.contains(id)) {
                             seen.add(id);
                             final NodeData data = cViewer.getNodeData(v);
-                            final int[] counts;
-                            if (v.getOutDegree() == 0)
-                                counts = data.getSummarized();
-                            else
-                                counts = data.getAssigned();
+                            final int[] counts = (reportSummarized && v.getOutDegree() > 0 ? data.getSummarized() : data.getAssigned());
                             for (int i = 0; i < counts.length; i++) {
                                 total[i] += counts[i];
                             }
@@ -156,18 +159,20 @@ public class CSVExportFViewer {
                         if (id != null && !seen.contains(id)) {
                             seen.add(id);
                             final NodeData data = cViewer.getNodeData(v);
-                            w.write(getLabelSource(shortName, classification, format, v));
-                            final int[] counts;
-                            if (v.getOutDegree() == 0)
-                                counts = data.getSummarized();
-                            else
-                                counts = data.getAssigned();
-                            for (int i = 0; i < counts.length; i++) {
-                                double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
-                                w.write(String.format("%c%f", separator, (float) value));
+                            final int[] counts = (reportSummarized && v.getOutDegree() > 0 ? data.getSummarized() : data.getAssigned());
+                            final String name = getLabelSource(shortName, classification, format, v);
+                            if (name != null) {
+                                if (counts.length == names.size()) {
+                                    w.write(name);
+                                    for (int i = 0; i < counts.length; i++) {
+                                        double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
+                                        w.write(String.format("%c%f", separator, (float) value));
+                                    }
+                                    w.write("\n");
+                                    totalLines++;
+                                } else
+                                    System.err.println("Skipped " + name + ", number of values: " + counts.length);
                             }
-                            w.write("\n");
-                            totalLines++;
                         }
                         progressListener.incrementProgress();
                     }
@@ -182,7 +187,7 @@ public class CSVExportFViewer {
     /**
      * export name to read length mapping
      *
-     * @param fViewer
+     * @param cViewer
      * @param file
      * @param separator
      * @param progressListener @return lines written
@@ -246,7 +251,7 @@ public class CSVExportFViewer {
     /**
      * export readid to  names mapping
      *
-     * @param fViewer
+     * @param cViewer
      * @param file
      * @param separator
      * @param progressListener
@@ -307,7 +312,7 @@ public class CSVExportFViewer {
     /**
      * export name to read-ids mapping
      *
-     * @param fViewer
+     * @param cViewer
      * @param file
      * @param separator
      * @param progressListener @return lines written
@@ -377,9 +382,9 @@ public class CSVExportFViewer {
      */
     private static String getLabelSource(String cName, Classification classification, String format, Node v) {
         if (format.startsWith(cName.toLowerCase() + "Name"))
-            return "\"" + classification.getName2IdMap().get((Integer) v.getInfo()) + "\"";
+            return Basic.getInQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.startsWith(cName.toLowerCase() + "Path")) {
-            return "\"" + getPath(classification, v) + "\"";
+            return Basic.getInQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }
@@ -393,9 +398,9 @@ public class CSVExportFViewer {
      */
     private static String getLabelTarget(Classification classification, String format, Node v) {
         if (format.endsWith("Name"))
-            return "\"" + classification.getName2IdMap().get((Integer) v.getInfo()) + "\"";
+            return Basic.getInQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.endsWith("Path")) {
-            return "\"" + getPath(classification, v) + "\"";
+            return Basic.getInQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }

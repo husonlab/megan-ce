@@ -42,6 +42,9 @@ import java.io.File;
 import java.util.List;
 
 public class ExportCSVCommand extends CommandBase implements ICommand {
+    public static final String COUNT_CHOICE = "CSVCount";
+
+    public enum Choice {assigned, summarized}
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=csv");
@@ -55,7 +58,6 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
             classificationName = viewer.getClassName();
         else
             classificationName = Classification.Taxonomy;
-
 
         final List<String> formats = CSVExporter.getFormats(classificationName, doc.getMeganFile().hasDataConnector());
 
@@ -71,7 +73,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         boolean reportSummarized = false;
         if (np.peekMatchIgnoreCase("counts")) {
             np.matchIgnoreCase("counts=");
-            if (np.getWordMatchesIgnoringCase("assigned summarized").equalsIgnoreCase("summarized"))
+            if (np.getWordMatchesIgnoringCase(Basic.toString(Choice.values(), " ")).equalsIgnoreCase(Choice.summarized.toString()))
                 reportSummarized = true;
         }
 
@@ -108,28 +110,29 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
             if (formatName == null)
                 return;
             if (formatName.contains("count")) {
-                String[] countNames = new String[]{"assigned", "summarized"};
-                String previous = ProgramProperties.get("CSVCount", "assigned");
+                final String[] countNames = new String[]{Choice.assigned.toString(), Choice.summarized.toString()};
+                final String previous = ProgramProperties.get(COUNT_CHOICE, Choice.summarized.toString());
                 countChoice = (String) JOptionPane.showInputDialog(getViewer().getFrame(),
                         "Choose count to use", "Export read assignments to CSV file",
                         JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), countNames, previous);
                 if (countChoice == null)
                     return;
-                ProgramProperties.put("CSVCount", countChoice);
+                ProgramProperties.put(COUNT_CHOICE, countChoice);
 
             }
         } else if (getViewer() instanceof ClassificationViewer) {
-            String classificationName = ((ClassificationViewer) getViewer()).getClassName();
-            List<String> formats = CSVExporter.getFormats(classificationName, getDoc().getMeganFile().hasDataConnector());
+            final String classificationName = getViewer().getClassName();
+            final List<String> formats = CSVExporter.getFormats(classificationName, getDoc().getMeganFile().hasDataConnector());
 
             formatName = CSVExporter.showFormatInputDialog(getViewer().getFrame(), formats);
             if (formatName == null)
                 return;
         }
-        String separator;
+
+        final String separator;
         {
-            String[] separatorNames = new String[]{"tab", "comma"};
-            String previousSeparator = ProgramProperties.get("CSVSeparator", "tab");
+            final String[] separatorNames = new String[]{"tab", "comma"};
+            final String previousSeparator = ProgramProperties.get("CSVSeparator", "tab");
             separator = (String) JOptionPane.showInputDialog(getViewer().getFrame(),
                     "Choose separator", "Export read assignments to CSV file",
                     JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), separatorNames, previousSeparator);
@@ -138,19 +141,18 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
             ProgramProperties.put("CSVSeparator", separator);
         }
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
+        final String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
 
         File lastOpenFile = new File(name);
-        String lastDir = ProgramProperties.get("CSVDirectory", "");
+        final String lastDir = ProgramProperties.get("CSVDirectory", "");
         if (lastDir.length() > 0) {
             lastOpenFile = new File(lastDir, name);
         }
 
-        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save as CSV (delimiter-separated values)", ".txt");
+        final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save as CSV (delimiter-separated values)", ".txt");
 
         if (file != null) {
-            String cmd;
-            cmd = ("export what=CSV format=" + formatName + " separator=" + separator
+            final String cmd = ("export what=CSV format=" + formatName + " separator=" + separator
                     + (countChoice == null ? "" : " counts=" + countChoice) + " file='" + file.getPath() + "';");
             execute(cmd);
             ProgramProperties.put("CSVDirectory", file.getParent());

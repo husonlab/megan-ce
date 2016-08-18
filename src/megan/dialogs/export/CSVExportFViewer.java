@@ -386,9 +386,9 @@ public class CSVExportFViewer {
      */
     private static String getLabelSource(String cName, Classification classification, String format, Node v) {
         if (format.startsWith(cName.toLowerCase() + "Name"))
-            return Basic.getInQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
+            return Basic.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.startsWith(cName.toLowerCase() + "Path")) {
-            return Basic.getInQuotes(getPath(classification, v));
+            return Basic.getInCleanQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }
@@ -402,9 +402,9 @@ public class CSVExportFViewer {
      */
     private static String getLabelTarget(Classification classification, String format, Node v) {
         if (format.endsWith("Name"))
-            return Basic.getInQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
+            return Basic.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.endsWith("Path")) {
-            return Basic.getInQuotes(getPath(classification, v));
+            return Basic.getInCleanQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }

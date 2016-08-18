@@ -475,15 +475,15 @@ public class CSVExportTaxonomy {
      */
     public static String getTaxonLabelSource(Director dir, String format, int taxonId) {
         if (format.startsWith("taxonName"))
-            return Basic.getInQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+            return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
-            return Basic.getInQuotes(getPath(dir, taxonId));
+            return Basic.getInCleanQuotes(getPath(dir, taxonId));
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
-                return rankName + ":" + Basic.getInQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+                return rankName + ":" + Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
             else
-                return "No_rank:" + Basic.getInQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+                return "No_rank:" + Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         } else
             return "" + taxonId;
     }
@@ -496,9 +496,9 @@ public class CSVExportTaxonomy {
      */
     public static String getTaxonLabelTarget(Director dir, String format, int taxonId) {
         if (format.endsWith("taxonName"))
-            return Basic.getInQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+            return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
-            return Basic.getInQuotes(getPath(dir, taxonId));
+            return Basic.getInCleanQuotes(getPath(dir, taxonId));
         else
             return "" + taxonId;
     }

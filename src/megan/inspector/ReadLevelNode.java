@@ -24,19 +24,21 @@ package megan.inspector;
  */
 public class ReadLevelNode extends NodeBase {
     protected long uId;
+    protected int readLength;
 
     /**
      * constructor for archive data
-     *
-     * @param name
+     *  @param name
      * @param numberOfMatches
      * @param uId
+     * @param readLength
      */
-    public ReadLevelNode(String name, int numberOfMatches, long uId) {
+    public ReadLevelNode(String name, int numberOfMatches, long uId, int readLength) {
         super(name);
 
         this.rank = numberOfMatches;
         this.uId = uId;
+        this.readLength = readLength;
     }
 
     public boolean isLeaf() {
@@ -44,7 +46,19 @@ public class ReadLevelNode extends NodeBase {
     }
 
     public String toString() {
-        return getName() + (rank > 0 ? " [" + (int) rank + "]" : "");
+        if (readLength <= 0) {
+            if (rank <= 0)
+                return getName();
+            else
+                return getName() + " [matches=" + (int) rank + "]";
+        } else // readLength>0
+        {
+            if (rank <= 0)
+                return getName() + " [length=" + readLength + "]";
+            else
+                return getName() + " [length=" + readLength + ", matches=" + (int) rank + "]";
+
+        }
     }
 
     public long getUId() {

@@ -79,8 +79,8 @@ public class ExportTaxa2NormalizedCounts {
 
                 for (int taxonId : taxonIds) {
                     int countMatchedReads = 0;
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
+                    final Set<Integer> allBelow;
+                    final Node v = viewer.getTaxId2Node(taxonId);
                     if (v.getOutDegree() == 0 || reportSummarized)
                         allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                     else {
@@ -89,14 +89,14 @@ public class ExportTaxa2NormalizedCounts {
                     }
                     IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(ClassificationType.Taxonomy.toString(), allBelow, doc.getMinScore(), doc.getMaxExpected(), false, true);
                     while (it.hasNext()) {
-                        IReadBlock readBlock = it.next();
+                        final IReadBlock readBlock = it.next();
 
                         final BitSet activeMatchesForTaxa = new BitSet();
 
-                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
                         for (int i = activeMatchesForTaxa.nextSetBit(0); i >= 0; i = activeMatchesForTaxa.nextSetBit(i + 1)) {
-                            IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                             String header = matchBlock.getText();
                             if (header != null) {
                                 int pos = matchBlock.getText().indexOf("\n");

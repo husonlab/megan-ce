@@ -219,8 +219,8 @@ public class Blast2LCA {
                             } else {
                                 if (topPercent == 0)
                                     topPercent = 0.0001f;
-                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-                                ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, readBlock, "KEGG", activeMatchesForGenes);
+                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                                ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, false, readBlock, "KEGG", activeMatchesForGenes);
 
                                 path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
                                 if (doKegg) {

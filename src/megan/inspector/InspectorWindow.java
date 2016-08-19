@@ -355,7 +355,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 return;
         }
 
-        final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId());
+        final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId(), readBlock.getReadLength());
 
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -387,12 +387,12 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
                     IConnector connector = dir.getDocument().getConnector();
 
-                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(parent.getClassificationName(), parent.getClassIds(), 0, 100000, true, false)) {
+                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(parent.getClassificationName(), parent.getClassIds(), 0, 100000, true, true)) {
                         while (it.hasNext()) {
                             IReadBlock readBlock = it.next();
                             if (readBlock != null) {
                                 final String readName = readBlock.getReadName();
-                                final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId());
+                                final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId(), readBlock.getReadLength());
 
                                 final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
                                 if (doRefresh) {
@@ -479,7 +479,8 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
                     final Document doc = dir.getDocument();
                     final BitSet activeMatches = new BitSet();
-                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
+                    final boolean isTaxonmomy = classificationName.equals(Classification.Taxonomy);
+                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), isTaxonmomy, readBlock, classificationName, activeMatches);
 
                     IMatchBlock[] matchBlocks = readBlock.getMatchBlocks();
                     for (int m = 0; m < matchBlocks.length; m++) {

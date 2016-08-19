@@ -118,7 +118,7 @@ public class Blast2Alignment {
 
                 boolean readUsed = false;
 
-                ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
+                ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), false, readBlock, classificationName, activeMatches);
 
                 if (activeMatches.cardinality() > 0) {
                     String readHeader = readBlock.getReadHeader().replaceAll("[\r\n]", "");

@@ -21,7 +21,7 @@ package megan.inspector;
 import jloda.util.Basic;
 
 /**
- * node to represent a read
+ * node to represent the data associated with a read
  * Daniel Huson, 2.2006
  */
 public class ReadDataLevelNode extends NodeBase {

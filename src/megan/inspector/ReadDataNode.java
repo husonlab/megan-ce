@@ -19,7 +19,7 @@
 package megan.inspector;
 
 /**
- * node to represent a read
+ * node to represent the alignment associated with a read
  * Daniel Huson, 2.2006
  */
 public class ReadDataNode extends NodeBase {

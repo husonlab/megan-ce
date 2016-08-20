@@ -46,6 +46,8 @@ public class ReadAssembler {
     private ArrayList<Pair<String, String>> contigs;
     private List<Integer>[] readId2ContainedReads;
 
+    private static boolean verboseMerging = false;
+
     /**
      * constructor
      */
@@ -328,7 +330,9 @@ public class ReadAssembler {
                     contigs.add(sortedContigs.get(contigId));
                 }
             } else if (path.length > 1) {
-                System.err.println("Merging " + path.length + " contigs...");
+                if (verboseMerging)
+                    System.err.println("Merging " + path.length + " contigs...");
+
                 final StringBuilder headerBuffer = new StringBuilder();
                 final StringBuilder sequenceBuffer = new StringBuilder();
 
@@ -364,20 +368,24 @@ public class ReadAssembler {
                 }
                 headerBuffer.append("]");
 
-                System.err.println("Input contigs:");
-                for (int i = 0; i < path.length; i++) {
-                    Node p = path[i];
-                    System.err.println(sortedContigs.get((Integer) p.getInfo()));
-                    if (i < path.length - 1) {
-                        System.err.println("Overlap to next: " + overlapGraph.getCommonEdge(path[i], path[i + 1]).getInfo());
+                if (verboseMerging) {
+                    System.err.println("Input contigs:");
+                    for (int i = 0; i < path.length; i++) {
+                        Node p = path[i];
+                        System.err.println(sortedContigs.get((Integer) p.getInfo()));
+                        if (i < path.length - 1) {
+                            System.err.println("Overlap to next: " + overlapGraph.getCommonEdge(path[i], path[i + 1]).getInfo());
+                        }
                     }
                 }
 
                 final Pair<String, String> pair = new Pair<>("length=" + length + " " + headerBuffer.toString(), sequenceBuffer.toString());
                 contigs.add(pair);
 
-                System.err.println("Output contig:");
-                System.err.println(pair);
+                if (verboseMerging) {
+                    System.err.println("Output contig:");
+                    System.err.println(pair);
+                }
 
                 countMergedContigs++;
             }

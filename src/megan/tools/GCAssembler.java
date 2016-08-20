@@ -81,7 +81,7 @@ public class GCAssembler {
         options.comment("Input and output");
         final String inputFile = options.getOptionMandatory("-i", "input", "Input DAA or RMA6 file", "");
         final String outputFileTemplate = options.getOption("-o", "output", "Output filename template, use %d or %s to represent class id or name, respectively",
-                Basic.replaceFileSuffix(inputFile, "-%i.fasta"));
+                Basic.replaceFileSuffix(inputFile.length() == 0 ? "input" : inputFile, "-%d.fasta"));
 
         options.comment("Classification");
 
@@ -90,11 +90,11 @@ public class GCAssembler {
 
         options.comment("Options");
 
+        final int minOverlap = options.getOption("-mov", "minOverlap", "Minimum overlap for two reads (or contigs)", 20);
         final int minLength = options.getOption("-len", "minLength", "Minimum contig length", 200);
-        final float maxPercentIdentity = (float) options.getOption("-mpi", "minPercentIdentity", "Mininum percent identity to merge contigs", 98.0);
         final int minReads = options.getOption("-reads", "minReads", "Minimum number of reads", 2);
-        final int minOverlap = options.getOption("-mov", "minOverlap", "Minimum overlap for two reads", 20);
         final int minAvCoverage = options.getOption("-mac", "minAvCoverage", "Minimum average coverage", 1);
+        final float maxPercentIdentity = (float) options.getOption("-mpi", "minPercentIdentity", "Mininum percent identity to merge contigs", 98.0);
 
         options.done();
 

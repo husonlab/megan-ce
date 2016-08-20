@@ -193,8 +193,8 @@ public class GCAssembler {
      */
     private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
         String outputFile = null;
-        if (outputFileTemplate.contains("%i"))
-            outputFile = outputFileTemplate.replaceAll("%i", "" + classId);
+        if (outputFileTemplate.contains("%d"))
+            outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
         if (outputFileTemplate.contains("%s"))
             outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", className);
         if (outputFile == null && numberOfIds > 1)

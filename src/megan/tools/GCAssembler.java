@@ -196,7 +196,7 @@ public class GCAssembler {
         if (outputFileTemplate.contains("%d"))
             outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
         if (outputFileTemplate.contains("%s"))
-            outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", className);
+            outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", Basic.toCleanName(className));
         if (outputFile == null && numberOfIds > 1)
             outputFile = Basic.replaceFileSuffix(outputFileTemplate, "-" + classId + ".fasta");
         if (outputFile == null)

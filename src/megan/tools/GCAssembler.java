@@ -32,6 +32,7 @@ import megan.main.MeganProperties;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -112,12 +113,12 @@ public class GCAssembler {
             throw new UsageException("--classification: Must be one of: " + Basic.toString(supportedClassifications, ","));
         }
 
+        System.err.println("Opening file: " + inputFile);
+
         final Document document = new Document();
         document.getMeganFile().setFileFromExistingFile(inputFile, true);
         if (!(document.getMeganFile().isDAAFile() || document.getMeganFile().isRMA6File()))
             throw new IOException("Input file has wrong type: must be meganized DAA file or RMA6 file");
-
-        document.loadMeganFile();
 
         final Classification classification = ClassificationManager.get(classificationName, true);
 
@@ -126,7 +127,17 @@ public class GCAssembler {
         final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
         final ArrayList<Integer> classIdsList;
         if (doAllClasses) {
-            classIdsList = new ArrayList<>(classificationBlock.getKeySet());
+            classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
+            for (Integer id : classificationBlock.getKeySet()) {
+                if (id > 0 && classificationBlock.getSum(id) > 0)
+                    classIdsList.add(id);
+                classIdsList.sort(new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer i, Integer j) {
+                        return i.compareTo(j);
+                    }
+                });
+            }
         } else {
             classIdsList = new ArrayList<>(selectedClassIds.length);
             for (String str : selectedClassIds) {

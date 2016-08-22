@@ -23,7 +23,6 @@ import jloda.graph.*;
 import jloda.util.*;
 import malt.align.SimpleAligner4DNA;
 import megan.core.Director;
-import megan.data.IReadBlockIterator;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -45,35 +44,38 @@ public class ReadAssembler {
     private String label;
     private ArrayList<Pair<String, String>> contigs;
     private List<Integer>[] readId2ContainedReads;
+    private final boolean verbose;
 
     private static boolean verboseMerging = false;
 
     /**
      * constructor
      */
-    public ReadAssembler() {
+    public ReadAssembler(boolean verbose) {
+        this.verbose = verbose;
     }
 
     /**
      * build the overlap graph
      *
      * @param minOverlap
-     * @param iterator
+     * @param readData
      * @param progress
      * @throws IOException
      * @throws CanceledException
      */
-    public void computeOverlapGraph(String label, int minOverlap, IReadBlockIterator iterator, ProgressListener progress) throws IOException, CanceledException {
+    public void computeOverlapGraph(String label, int minOverlap, List<ReadData> readData, ProgressListener progress) throws IOException, CanceledException {
         this.label = label;
-        final OverlapGraphBuilder overlapGraphBuilder = new OverlapGraphBuilder(minOverlap);
-        overlapGraphBuilder.apply(iterator, progress);
+        final OverlapGraphBuilder overlapGraphBuilder = new OverlapGraphBuilder(minOverlap, verbose);
+        overlapGraphBuilder.apply(readData, progress);
         overlapGraph = overlapGraphBuilder.getOverlapGraph();
 
-
         {
+            if (verbose)
+                System.err.print("Checking for cycles: ");
             final int edgesRemoved = DirectedCycleBreaker.apply(overlapGraph);
-            if (edgesRemoved > 0) {
-                System.err.println("Directed cycles detected, removed edges: " + edgesRemoved);
+            if (verbose) {
+                System.err.println(edgesRemoved + (edgesRemoved > 0 ? " removed" : ""));
             }
         }
 
@@ -199,10 +201,11 @@ public class ReadAssembler {
         return contigs;
     }
 
-
     /**
      * computes all pairwise overlaps between contigs and then merges contigs
      *
+     *
+     * @param maxNumberOfThreads
      * @param progress
      * @param minPercentIdentityToMergeContigs
      * @param minOverlap
@@ -210,7 +213,7 @@ public class ReadAssembler {
      * @return number of resulting
      * @throws CanceledException
      */
-    public static int mergeOverlappingContigs(final ProgressListener progress, final float minPercentIdentityToMergeContigs, final int minOverlap, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
+    public static int mergeOverlappingContigs(int maxNumberOfThreads, final ProgressListener progress, final float minPercentIdentityToMergeContigs, final int minOverlap, final ArrayList<Pair<String, String>> contigs, final boolean verbose) throws CanceledException {
         progress.setSubtask("Overlapping contigs");
 
         final ArrayList<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
@@ -223,9 +226,8 @@ public class ReadAssembler {
         final BitSet containedContigs = new BitSet();
 
         // main parallel computation:
-        if (sortedContigs.size() > 0)
-        {
-            final int numberOfThreads = Math.min(sortedContigs.size(), Runtime.getRuntime().availableProcessors() - 1);
+        if (sortedContigs.size() > 0) {
+            final int numberOfThreads = (Math.min(sortedContigs.size(), Math.min(Runtime.getRuntime().availableProcessors() - 1, maxNumberOfThreads)));
             final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
             final Single<Boolean> notCanceled = new Single<>(true);
@@ -311,7 +313,8 @@ public class ReadAssembler {
             }
         }
 
-        System.err.println(String.format("Contained contigs:%6d", containedContigs.cardinality()));
+        if (verbose)
+            System.err.println(String.format("Contained contigs:%6d", containedContigs.cardinality()));
         if (containedContigs.cardinality() > 0) // delete all contained contigs from graph
         {
             final NodeSet nodes = overlapGraph.getNodes();
@@ -323,15 +326,18 @@ public class ReadAssembler {
         }
 
         {
+            if (verbose)
+                System.err.print("Checking for cycles: ");
             final int edgesRemoved = DirectedCycleBreaker.apply(overlapGraph);
-            if (edgesRemoved > 0) {
-                System.err.println("Directed cycles detected, removed edges: " + edgesRemoved);
+            if (verbose) {
+                System.err.println(edgesRemoved + (edgesRemoved > 0 ? " removed" : ""));
             }
         }
 
-
-        System.err.println(String.format("Contig graph nodes:%5d", overlapGraph.getNumberOfNodes()));
-        System.err.println(String.format("Contig graph edges:%5d", overlapGraph.getNumberOfEdges()));
+        if (verbose) {
+            System.err.println(String.format("Contig graph nodes:%5d", overlapGraph.getNumberOfNodes()));
+            System.err.println(String.format("Contig graph edges:%5d", overlapGraph.getNumberOfEdges()));
+        }
 
         final PathExtractor pathExtractor = new PathExtractor(overlapGraph, contigId2ContainedContigs);
         pathExtractor.apply(progress);
@@ -417,8 +423,8 @@ public class ReadAssembler {
             }
         }
 
-        System.err.println(String.format("Merged contigs:   %6d", countMergedContigs));
-
+        if (verbose)
+            System.err.println(String.format("Merged contigs:   %6d", countMergedContigs));
 
         // sort and renumber contigs:
         contigs.sort(Basic.getComparatorDecreasingLengthOfSecond());

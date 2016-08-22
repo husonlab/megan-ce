@@ -22,20 +22,15 @@ import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeMap;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
-import megan.data.IMatchBlock;
-import megan.data.IReadBlock;
-import megan.data.IReadBlockIterator;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
- * assembles a set of readDatas that align to a specific class in some classification
- * <p/>
+ * assembles a set of reads that align to a specific class in some classification
+ * <p>
  * Daniel Huson, 5.2015
  */
 public class OverlapGraphBuilder {
@@ -44,45 +39,25 @@ public class OverlapGraphBuilder {
     private List<Integer>[] readId2ContainedReads;
     private ReadData[] readDatas;
     private int minOverlap;
+    private final boolean verbose;
 
     /**
      * constructor
      */
-    public OverlapGraphBuilder(int minOverlap) {
+    public OverlapGraphBuilder(int minOverlap, boolean verbose) {
         this.minOverlap = minOverlap;
+        this.verbose = verbose;
     }
 
     /**
-     * apply the assembler to the given readDatas
+     * apply
      *
+     * @param readData
      * @param progress
-     * @return list of contig names and contigs
+     * @throws CanceledException
      */
-    public void apply(final IReadBlockIterator iterator, final ProgressListener progress) throws IOException, CanceledException {
-        // collect all readDatas:
-        progress.setSubtask("Collecting reads");
-        {
-            final List<ReadData> list = new LinkedList<>();
-
-            int countReads = 0;
-            {
-                progress.setMaximum(iterator.getMaximumProgress());
-                progress.setProgress(0);
-                while (iterator.hasNext()) {
-                    IReadBlock readBlock = iterator.next();
-                    //System.err.println(readBlock.getReadName()+" -> "+countReads);
-                    list.add(createReadData(countReads++, readBlock));
-                    progress.setProgress(iterator.getProgress());
-                }
-            }
-            if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
-            readDatas = list.toArray(new ReadData[list.size()]);
-
-            System.err.println(String.format("Total reads:%,10d", countReads));
-        }
-
-
+    public void apply(final List<ReadData> readData, final ProgressListener progress) throws CanceledException {
+        readDatas = readData.toArray(new ReadData[readData.size()]);
         // collect all matches for each reference:
 
         progress.setSubtask("Sorting reads and matches by reference");
@@ -110,52 +85,12 @@ public class OverlapGraphBuilder {
         }
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
-        System.err.println(String.format("Overlaps:   %,10d", countPairs));
+        if (verbose)
+            System.err.println(String.format("Overlaps:   %,10d", countPairs));
 
         buildOverlapGraph(readDatas, ref2matches, minOverlap);
     }
 
-    /**
-     * creates the data object associated with a given read and its matches
-     *
-     * @param readBlock
-     * @return read data
-     * @throws IOException
-     */
-    private ReadData createReadData(int id, IReadBlock readBlock) throws IOException {
-        ReadData readData = new ReadData(id, readBlock.getReadName());
-
-        int best = -1;
-        float bestScore = 0;
-        for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-            if (readBlock.getMatchBlock(m).getBitScore() > bestScore) {
-                best = m;
-                bestScore = readBlock.getMatchBlock(m).getBitScore();
-            }
-        }
-        if (best >= 0) {
-            int[] bestCoordinates = getQueryCoordinates(readBlock.getMatchBlock(best));
-            if (bestCoordinates[0] < bestCoordinates[1])
-                readData.setSegment(readBlock.getReadSequence().substring(bestCoordinates[0] - 1, bestCoordinates[1]));
-            else
-                readData.setSegment(Basic.getReverseComplement(readBlock.getReadSequence().substring(bestCoordinates[1] - 1, bestCoordinates[0])));
-
-            final List<MatchData> matches = new LinkedList<>();
-
-            for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-                if (readBlock.getMatchBlock(m).getBitScore() == bestScore) {
-                    final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-                    final int[] queryCoordinates = getQueryCoordinates(matchBlock);
-                    if (queryCoordinates[0] == bestCoordinates[0] && queryCoordinates[1] == bestCoordinates[1]) { // must all reference same segment in same orientation
-                        int[] refCoordinates = getReferenceCoordinates(matchBlock);
-                        matches.add(new MatchData(readData, Basic.getFirstWord(matchBlock.getText()), refCoordinates[0], refCoordinates[1], matchBlock.getText(), matchBlock.getBitScore()));
-                    }
-                }
-            }
-            readData.setMatches(matches.toArray(new MatchData[matches.size()]));
-        }
-        return readData;
-    }
 
     /**
      * build the overlap graph
@@ -212,9 +147,11 @@ public class OverlapGraphBuilder {
                 }
             }
         }
-        System.err.println(String.format("Graph nodes:%,10d", overlapGraph.getNumberOfNodes()));
-        System.err.println(String.format("Graph edges:%,10d", overlapGraph.getNumberOfEdges()));
-        System.err.println(String.format("Cont. reads:%,10d", containedReadIds.cardinality()));
+        if (verbose) {
+            System.err.println(String.format("Graph nodes:%,10d", overlapGraph.getNumberOfNodes()));
+            System.err.println(String.format("Graph edges:%,10d", overlapGraph.getNumberOfEdges()));
+            System.err.println(String.format("Cont. reads:%,10d", containedReadIds.cardinality()));
+        }
     }
 
     /**
@@ -249,59 +186,6 @@ public class OverlapGraphBuilder {
         }
     }
 
-
-    /**
-     * get start and end query coordinates of a match
-     *
-     * @param matchBlock
-     * @return query coordinates
-     * @throws IOException
-     */
-    private int[] getQueryCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokens = getLineTokens("Query:", matchBlock.getText());
-        if (tokens == null)
-            tokens = getLineTokens("Query", matchBlock.getText());
-        if (tokens == null || tokens.length != 4) {
-            throw new IOException("Failed to parse query line for match:\n" + matchBlock.getText());
-        }
-        int a = Integer.parseInt(tokens[1]);
-        int b = Integer.parseInt(tokens[3]);
-        return new int[]{a, b};
-    }
-
-    /**
-     * get start and end reference coordinates of a match
-     *
-     * @param matchBlock
-     * @return reference coordinates
-     * @throws IOException
-     */
-    private int[] getReferenceCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokens = getLineTokens("Sbjct:", matchBlock.getText());
-        if (tokens == null)
-            tokens = getLineTokens("Sbjct", matchBlock.getText());
-        if (tokens == null || tokens.length != 4) {
-            throw new IOException("Failed to parse sbjct line for match:\n" + matchBlock.getText());
-        }
-        int a = Integer.parseInt(tokens[1]);
-        int b = Integer.parseInt(tokens[3]);
-        return new int[]{a, b};
-    }
-
-    /**
-     * get the tokens of the query line
-     *
-     * @param text
-     * @return query line tokens
-     */
-    private String[] getLineTokens(String start, String text) {
-        String[] lines = Basic.split(text, '\n');
-        for (String line : lines) {
-            if (line.startsWith(start))
-                return line.split("\\s+");
-        }
-        return null;
-    }
 
     /**
      * get the overlap graph

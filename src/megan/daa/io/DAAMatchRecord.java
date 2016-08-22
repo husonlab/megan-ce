@@ -33,7 +33,7 @@ public class DAAMatchRecord {
     private int subjectId, totalSubjectLen, score, queryBegin, subjectBegin, frame, translatedQueryBegin, translatedQueryLen, subjectLen, len, identities, mismatches, gapOpenings;
     private byte[] subjectName;
 
-    PackedTranscript transcript = new PackedTranscript();
+    private PackedTranscript transcript = new PackedTranscript();
 
     /**
      * constructor

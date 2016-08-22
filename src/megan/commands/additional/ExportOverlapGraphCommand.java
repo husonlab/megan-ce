@@ -23,6 +23,8 @@ import jloda.gui.commands.ICommand;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.assembly.ReadAssembler;
+import megan.assembly.ReadData;
+import megan.assembly.ReadDataCollector;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
@@ -37,6 +39,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.util.List;
 
 /**
  * assemble all reads associated with a selected node
@@ -75,11 +78,12 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
 
         String message = "";
         if (viewer.getSelectedIds().size() > 0) {
-            ReadAssembler readAssembler = new ReadAssembler();
+            final ReadAssembler readAssembler = new ReadAssembler(true);
 
             try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true)) {
                 final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedIds(), ", ");
-                readAssembler.computeOverlapGraph(label, minOverlap, it, doc.getProgressListener());
+                final List<ReadData> readData = ReadDataCollector.apply(it, doc.getProgressListener());
+                readAssembler.computeOverlapGraph(label, minOverlap, readData, doc.getProgressListener());
 
                 if (overlapGraphFile != null) {
                     try (final Writer w = new BufferedWriter(new FileWriter(overlapGraphFile))) {

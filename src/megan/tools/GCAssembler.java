@@ -21,10 +21,13 @@ package megan.tools;
 import jloda.gui.commands.CommandManager;
 import jloda.util.*;
 import megan.assembly.ReadAssembler;
+import megan.assembly.ReadData;
+import megan.assembly.ReadDataCollector;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Document;
+import megan.core.MeganFile;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
 import megan.data.IReadBlockIterator;
@@ -33,7 +36,9 @@ import megan.main.MeganProperties;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.*;
 
 /**
  * performs gene-centric assemblies
@@ -99,6 +104,11 @@ public class GCAssembler {
         final int minOverlapContigs = options.getOption("-moc", "minOverlapContigs", "Minimum overlap for two contigs", 20);
         final float minPercentIdentityContigs = (float) options.getOption("-mic", "minPercentIdentityContigs", "Mininum percent identity to merge contigs", 98.0);
 
+        options.comment(ArgsOptions.OTHER);
+
+        final int desiredNumberOfThreads = options.getOption("-t", "threads", "Number of worker threads", 4);
+        final boolean veryVerbose = options.getOption("-vv", "veryVerbose", "Report program is very verbose detail", false);
+
         options.done();
 
         final boolean doAllClasses = selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all");
@@ -115,19 +125,23 @@ public class GCAssembler {
             throw new UsageException("--classification: Must be one of: " + Basic.toString(supportedClassifications, ","));
         }
 
-        System.err.println("Opening file: " + inputFile);
+        if (options.isVerbose())
+            System.err.println("Opening file: " + inputFile);
+
+        final Classification classification = ClassificationManager.get(classificationName, true);
+
+        final ArrayList<Integer> classIdsList;
 
         final Document document = new Document();
         document.getMeganFile().setFileFromExistingFile(inputFile, true);
         if (!(document.getMeganFile().isDAAFile() || document.getMeganFile().isRMA6File()))
             throw new IOException("Input file has wrong type: must be meganized DAA file or RMA6 file");
-
-        final Classification classification = ClassificationManager.get(classificationName, true);
+        if (document.getMeganFile().isDAAFile() && document.getMeganFile().getDataConnector(true) == null)
+            throw new IOException("Input DAA file: Must first be meganized");
 
         final IConnector connector = document.getMeganFile().getDataConnector(true);
 
         final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
-        final ArrayList<Integer> classIdsList;
         if (doAllClasses) {
             classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
             for (Integer id : classificationBlock.getKeySet()) {
@@ -154,47 +168,117 @@ public class GCAssembler {
                 }
             }
         }
-        System.err.println("Number of classes to assemble: " + classIdsList.size());
 
-        final ProgressListener progress = new ProgressPercentage();
-        int numberOfFilesProduced = 0;
-        int totalContigs = 0;
-        for (Integer classId : classIdsList) {
-            final String className = classification.getName2IdMap().get(classId);
-            System.err.println("++++ Assembling class " + classId + ": " + className + ": ++++");
-            final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
+        if (options.isVerbose())
+            System.err.println("Number of classes to assemble: " + classIdsList.size());
 
-            final ReadAssembler readAssembler = new ReadAssembler();
+        final int numberOfThreads = Math.min(classIdsList.size(), desiredNumberOfThreads);
+        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        final Single<Boolean> notCanceled = new Single<>(true);
+        final BlockingQueue<Pair<Integer, List<ReadData>>> queue = new ArrayBlockingQueue<>(10 * numberOfThreads, true);
+        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+        final Pair<Integer, List<ReadData>> sentinel = new Pair<>(Integer.MAX_VALUE, null);
 
-            try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true)) {
-                final String label = classificationName + ". Id: " + classId;
-                readAssembler.computeOverlapGraph(label, minOverlapReads, it, progress);
-                int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+        final int[] numberOfFilesProduced = new int[numberOfThreads];
+        final int[] totalContigs = new int[numberOfThreads];
 
-                System.err.println(String.format("Number of contigs:%6d", count));
+        for (int t = 0; t < numberOfThreads; t++) {
+            final int threadNumber = t;
 
-                if (doOverlapContigs) {
-                    count = ReadAssembler.mergeOverlappingContigs(progress, minPercentIdentityContigs, 40, readAssembler.getContigs());
-                    System.err.println(String.format("Remaining contigs:%6d", count));
-                }
+            service.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final MeganFile meganFile = new MeganFile();
+                        meganFile.setFileFromExistingFile(inputFile, true);
+                        final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
+                        final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 
-                if (ProgramProperties.get("verbose-assembly", false)) {
-                    for (Pair<String, String> contig : readAssembler.getContigs()) {
-                        System.err.println(contig.getFirst());
+                        while (true) {
+                            final Pair<Integer, List<ReadData>> pair = queue.take();
+                            if (pair == sentinel)
+                                return;
+                            final Integer classId = pair.getFirst();
+                            final List<ReadData> readData = pair.getSecond();
+
+                            final String className = classification.getName2IdMap().get(classId);
+                            if (veryVerbose)
+                                System.err.println("++++ Assembling class " + classId + ": " + className + ": ++++");
+
+                            final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
+                            final String label = classificationName + ". Id: " + classId;
+
+                            readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
+
+                            int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+
+                            if (veryVerbose)
+                                System.err.println(String.format("Number of contigs:%6d", count));
+
+                            if (doOverlapContigs) {
+                                count = ReadAssembler.mergeOverlappingContigs(desiredNumberOfThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
+                                if (veryVerbose)
+                                    System.err.println(String.format("Remaining contigs:%6d", count));
+                            }
+
+                            try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
+                                readAssembler.writeContigs(w, progress);
+                                if (veryVerbose) {
+                                    System.err.println("Contigs written to: " + outputFile);
+                                    readAssembler.reportContigStats();
+                                }
+                                numberOfFilesProduced[threadNumber]++;
+                                totalContigs[threadNumber] += readAssembler.getContigs().size();
+                            }
+                        }
+                    } catch (Exception e) {
+                        Basic.caught(e);
+                        if (e instanceof CanceledException)
+                            notCanceled.set(false);
+                    } finally {
+                        countDownLatch.countDown();
                     }
                 }
+            });
+        }
 
-                try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
-                    readAssembler.writeContigs(w, progress);
-                    System.err.println("Contigs written to: " + outputFile);
-                    readAssembler.reportContigStats();
-                    numberOfFilesProduced++;
-                    totalContigs += readAssembler.getContigs().size();
-                }
+        // read all data and place in queue
+        final ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()));
+
+        for (Integer classId : classIdsList) {
+            final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
+            final List<ReadData> list = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+            try {
+                queue.put(new Pair<>(classId, list));
+                totalProgress.incrementProgress();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
             }
         }
-        System.err.println("Number of files produced: " + numberOfFilesProduced);
-        System.err.println("Total number of contigs:  " + totalContigs);
+        try {
+            for (int i = 0; i < numberOfThreads; i++)
+                queue.put(sentinel);
+        } catch (InterruptedException e) {
+            Basic.caught(e);
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            Basic.caught(e);
+        } finally {
+            service.shutdownNow();
+        }
+
+        if (!notCanceled.get())
+            throw new CanceledException();
+
+        totalProgress.close();
+
+        if (options.isVerbose()) {
+            System.err.println("Number of files produced: " + Basic.getSum(numberOfFilesProduced));
+            System.err.println("Total number of contigs:  " + Basic.getSum(totalContigs));
+        }
+
     }
 
     /**
@@ -218,5 +302,4 @@ public class GCAssembler {
             outputFile = outputFileTemplate;
         return outputFile;
     }
-
 }

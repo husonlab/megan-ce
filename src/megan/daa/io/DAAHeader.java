@@ -34,8 +34,8 @@ import java.util.List;
  * Daniel Huson, 8.2015
  */
 public class DAAHeader {
-    public final static long MAGIC_NUMBER = 4327487858190246763l;
-    public final static long DAA_VERSION = 0l;
+    public final static long MAGIC_NUMBER = 4327487858190246763L;
+    public final static long DAA_VERSION = 0L;
     public final static int MEGAN_VERSION = 6;
 
     protected final String fileName;
@@ -85,7 +85,6 @@ public class DAAHeader {
      */
     public DAAHeader(String fileName) {
         this.fileName = fileName;
-
     }
 
     /**
@@ -189,7 +188,7 @@ public class DAAHeader {
      */
     public void loadReferences(boolean loadOnDemand) throws IOException {
         if (references == null) {
-            // System.err.println("Loading DAA references...");
+            //System.err.println("Loading DAA references...");
 
             try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(fileName))) {
                 ins.skip(getLocationOfBlockInFile(getRefNamesBlockIndex()));

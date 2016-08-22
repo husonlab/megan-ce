@@ -24,6 +24,8 @@ import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.assembly.ReadAssembler;
+import megan.assembly.ReadData;
+import megan.assembly.ReadDataCollector;
 import megan.assembly.alignment.AlignmentAssembler;
 import megan.commands.CommandBase;
 import megan.core.Director;
@@ -152,7 +154,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             System.err.println(String.format("Number of contigs:%6d", count));
 
             if (doOverlapContigs) {
-                count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs());
+                count = ReadAssembler.mergeOverlappingContigs(8, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
                 System.err.println(String.format("Remaining contigs:%6d", count));
             }
 
@@ -166,18 +168,19 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
         } else {
             final ViewerBase viewer = (ViewerBase) getViewer();
             if (viewer.getSelectedIds().size() > 0) {
-                ReadAssembler readAssembler = new ReadAssembler();
+                final ReadAssembler readAssembler = new ReadAssembler(true);
 
                 final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true);
                 try (IReadBlockIterator it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
                     final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedIds(), ", ");
-                    readAssembler.computeOverlapGraph(label, minOverlap, it, progress);
+                    final java.util.List<ReadData> readData = ReadDataCollector.apply(it, progress);
+                    readAssembler.computeOverlapGraph(label, minOverlap, readData, progress);
                     int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
                     System.err.println(String.format("Number of contigs:%6d", count));
 
                     if (doOverlapContigs) {
-                        count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs());
+                        count = ReadAssembler.mergeOverlappingContigs(8, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
                         System.err.println(String.format("Remaining contigs:%6d", count));
                     }
 

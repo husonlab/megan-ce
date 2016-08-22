@@ -91,11 +91,13 @@ public class GCAssembler {
 
         options.comment("Options");
 
-        final int minOverlap = options.getOption("-mov", "minOverlap", "Minimum overlap for two reads (or contigs)", 20);
+        final int minOverlapReads = options.getOption("-mor", "minOverlapReads", "Minimum overlap for two reads", 20);
         final int minLength = options.getOption("-len", "minLength", "Minimum contig length", 200);
         final int minReads = options.getOption("-reads", "minReads", "Minimum number of reads", 2);
         final int minAvCoverage = options.getOption("-mac", "minAvCoverage", "Minimum average coverage", 1);
-        final float maxPercentIdentity = (float) options.getOption("-mpi", "minPercentIdentity", "Mininum percent identity to merge contigs", 98.0);
+        final boolean doOverlapContigs = options.getOption("-c", "overlapContigs", "Attempt to overlap contigs", true);
+        final int minOverlapContigs = options.getOption("-moc", "minOverlapContigs", "Minimum overlap for two contigs", 20);
+        final float minPercentIdentityContigs = (float) options.getOption("-mic", "minPercentIdentityContigs", "Mininum percent identity to merge contigs", 98.0);
 
         options.done();
 
@@ -166,13 +168,15 @@ public class GCAssembler {
 
             try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true)) {
                 final String label = classificationName + ". Id: " + classId;
-                readAssembler.computeOverlapGraph(label, minOverlap, it, progress);
+                readAssembler.computeOverlapGraph(label, minOverlapReads, it, progress);
                 int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
                 System.err.println(String.format("Number of contigs:%6d", count));
 
-                count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, readAssembler.getContigs());
-                System.err.println(String.format("Remaining contigs:%6d", count));
+                if (doOverlapContigs) {
+                    count = ReadAssembler.mergeOverlappingContigs(progress, minPercentIdentityContigs, 40, readAssembler.getContigs());
+                    System.err.println(String.format("Remaining contigs:%6d", count));
+                }
 
                 if (ProgramProperties.get("verbose-assembly", false)) {
                     for (Pair<String, String> contig : readAssembler.getContigs()) {

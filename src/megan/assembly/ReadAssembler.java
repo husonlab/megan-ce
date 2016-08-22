@@ -68,6 +68,15 @@ public class ReadAssembler {
         final OverlapGraphBuilder overlapGraphBuilder = new OverlapGraphBuilder(minOverlap);
         overlapGraphBuilder.apply(iterator, progress);
         overlapGraph = overlapGraphBuilder.getOverlapGraph();
+
+
+        {
+            final int edgesRemoved = DirectedCycleBreaker.apply(overlapGraph);
+            if (edgesRemoved > 0) {
+                System.err.println("Directed cycles detected, removed edges: " + edgesRemoved);
+            }
+        }
+
         readId2ReadData = overlapGraphBuilder.getReadId2ReadData();
         node2ReadNameMap = overlapGraphBuilder.getNode2ReadNameMap();
         readId2ContainedReads = overlapGraphBuilder.getReadId2ContainedReads();
@@ -196,11 +205,12 @@ public class ReadAssembler {
      *
      * @param progress
      * @param minPercentIdentityToMergeContigs
+     * @param minOverlap
      * @param contigs                          input list of contigs and output list of merged contigs
      * @return number of resulting
      * @throws CanceledException
      */
-    public static int mergeOverlappingContigs(final ProgressListener progress, final float minPercentIdentityToMergeContigs, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
+    public static int mergeOverlappingContigs(final ProgressListener progress, final float minPercentIdentityToMergeContigs, final int minOverlap, final ArrayList<Pair<String, String>> contigs) throws CanceledException {
         progress.setSubtask("Overlapping contigs");
 
         final ArrayList<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
@@ -262,13 +272,13 @@ public class ReadAssembler {
                                             contained.add(i);
                                             containedContigs.set(i);
                                                        }
-                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() > 50) {
+                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() >= minOverlap) {
                                         final Node v = contig2Node.get(i);
                                         final Node w = contig2Node.get(j);
                                         synchronized (overlapGraph) {
                                             overlapGraph.newEdge(v, w, overlap.get());
                                         }
-                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() > 50) {
+                                    } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() >= minOverlap) {
                                         final Node v = contig2Node.get(i);
                                         final Node w = contig2Node.get(j);
                                         synchronized (overlapGraph) {
@@ -311,6 +321,15 @@ public class ReadAssembler {
                 }
             }
         }
+
+        {
+            final int edgesRemoved = DirectedCycleBreaker.apply(overlapGraph);
+            if (edgesRemoved > 0) {
+                System.err.println("Directed cycles detected, removed edges: " + edgesRemoved);
+            }
+        }
+
+
         System.err.println(String.format("Contig graph nodes:%5d", overlapGraph.getNumberOfNodes()));
         System.err.println(String.format("Contig graph edges:%5d", overlapGraph.getNumberOfEdges()));
 

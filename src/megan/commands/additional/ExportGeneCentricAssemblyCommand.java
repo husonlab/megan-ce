@@ -50,7 +50,7 @@ import java.util.Set;
 public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [maxPercentIdentity=<number>] [maxNumberOfReads=<number>] [showGraph={false|true}];";
+        return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [minPercentIdentity=<number>] [maxNumberOfReads=<number>] [showGraph={false|true}];";
     }
 
     // nt minReads, double minCoverage, int minLength,
@@ -89,24 +89,47 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
         } else
             minAvCoverage = 0;
 
-        float maxPercentIdentity = 100;
-        if (np.peekMatchIgnoreCase("maxPercentIdentity")) {
-            np.matchIgnoreCase("maxPercentIdentity=");
-            maxPercentIdentity = (float) np.getDouble(0, 100);
-        }
+        final boolean doOverlapContigs;
+        if (np.peekMatchIgnoreCase("doOverlapContigs")) {
+            np.matchIgnoreCase("doOverlapContigs=");
+            doOverlapContigs = np.getBoolean();
+        } else
+            doOverlapContigs = true;
 
-        int maxNumberOfReads = -1;
+        final int minContigOverlap;
+        if (np.peekMatchIgnoreCase("minContigOverlap")) {
+            np.matchIgnoreCase("minContigOverlap=");
+            minContigOverlap = np.getInt(1, 1000000);
+        } else
+            minContigOverlap = 20;
+
+        final float maxPercentIdentity;
+        if (np.peekMatchIgnoreCase("minPercentIdentity")) {
+            np.matchIgnoreCase("minPercentIdentity=");
+            maxPercentIdentity = (float) np.getDouble(0, 100);
+        } else
+            maxPercentIdentity = 100;
+
+        final int maxNumberOfReads;
         if (np.peekMatchIgnoreCase("maxNumberOfReads")) {
             np.matchIgnoreCase("maxNumberOfReads=");
             maxNumberOfReads = np.getInt(-1, Integer.MAX_VALUE);
-        }
-        boolean showGraph = false;
+        } else
+            maxNumberOfReads = -1;
+
+        final boolean showGraph;
         if (np.peekMatchIgnoreCase("showGraph")) {
             np.matchIgnoreCase("showGraph=");
             showGraph = np.getBoolean();
-        }
+        } else
+            showGraph = false;
 
         np.matchIgnoreCase(";");
+
+        // test whether we can write the output file:
+        try (FileWriter w = new FileWriter(outputFile)) {
+            w.write("");
+        }
 
         final Director dir = getDir();
         final Document doc = dir.getDocument();
@@ -128,8 +151,10 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
             System.err.println(String.format("Number of contigs:%6d", count));
 
-            count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, alignmentAssembler.getContigs());
-            System.err.println(String.format("Remaining contigs:%6d", count));
+            if (doOverlapContigs) {
+                count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs());
+                System.err.println(String.format("Remaining contigs:%6d", count));
+            }
 
             try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
                 alignmentAssembler.writeContigs(w, progress);
@@ -151,8 +176,10 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
                     System.err.println(String.format("Number of contigs:%6d", count));
 
-                    count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, readAssembler.getContigs());
-                    System.err.println(String.format("Remaining contigs:%6d", count));
+                    if (doOverlapContigs) {
+                        count = ReadAssembler.mergeOverlappingContigs(progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs());
+                        System.err.println(String.format("Remaining contigs:%6d", count));
+                    }
 
                     if (ProgramProperties.get("verbose-assembly", false)) {
                         for (Pair<String, String> contig : readAssembler.getContigs()) {
@@ -185,10 +212,11 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
         final JDialog dialog = new JDialog(getViewer().getFrame());
         dialog.setModal(true);
         dialog.setLocationRelativeTo(getViewer().getFrame());
-        dialog.setSize(800, 350);
+        dialog.setSize(400, 400);
         dialog.getContentPane().setLayout(new BorderLayout());
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
         dialog.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
@@ -202,7 +230,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             if (getViewer() instanceof AlignmentViewer)
                 message = "Run 'gene-centric assembly' on current alignment";
             else
-                message = "Run 'gene-centric assembly' on selected node";
+                message = "Run 'gene-centric assembly' on selected node(s)";
 
             final JPanel messagePanel = newSingleLine(new JLabel(message), Box.createHorizontalGlue());
             messagePanel.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
@@ -254,49 +282,67 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
 
         final JPanel parametersPanel = new JPanel();
-        parametersPanel.setLayout(new GridLayout(7, 4));
+        parametersPanel.setLayout(new BoxLayout(parametersPanel, BoxLayout.Y_AXIS));
         mainPanel.add(parametersPanel, BorderLayout.CENTER);
+
+        final JPanel firstPanel = new JPanel();
+        firstPanel.setBorder(BorderFactory.createTitledBorder("Read overlapping: "));
+        firstPanel.setLayout(new GridLayout(4, 2));
+        parametersPanel.add(firstPanel);
 
         final JTextField minOverlapTextField = new JTextField(6);
         minOverlapTextField.setMaximumSize(new Dimension(100, 20));
         minOverlapTextField.setText("" + ProgramProperties.get("AssemblyMinOverlap", 20));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Min overlap: ")));
-        parametersPanel.add(newSingleLine(minOverlapTextField, Box.createHorizontalGlue()));
+        firstPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Mininum overlap: ")));
+        firstPanel.add(newSingleLine(minOverlapTextField, Box.createHorizontalGlue()));
         minOverlapTextField.setToolTipText("Minimum length of exact overlap between two reads");
-
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), Box.createHorizontalGlue()));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), Box.createHorizontalGlue()));
 
         final JTextField minReadsTextField = new JTextField(6);
         minReadsTextField.setMaximumSize(new Dimension(100, 20));
         minReadsTextField.setText("" + ProgramProperties.get("AssemblyMinReads", 5));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Minimum reads: ")));
-        parametersPanel.add(newSingleLine(minReadsTextField, Box.createHorizontalGlue()));
+        firstPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Minimum reads: ")));
+        firstPanel.add(newSingleLine(minReadsTextField, Box.createHorizontalGlue()));
         minReadsTextField.setToolTipText("Minimum number of reads in a contig");
 
         final JTextField minLengthTextField = new JTextField(6);
         minLengthTextField.setMaximumSize(new Dimension(100, 20));
         minLengthTextField.setText("" + ProgramProperties.get("AssemblyMinLength", 200));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Minimum length: ")));
-        parametersPanel.add(newSingleLine(minLengthTextField, Box.createHorizontalGlue()));
+        firstPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Minimum length: ")));
+        firstPanel.add(newSingleLine(minLengthTextField, Box.createHorizontalGlue()));
         minLengthTextField.setToolTipText("Minimum contig length");
 
         final JTextField minAvCoverageTextField = new JTextField(6);
         minAvCoverageTextField.setMaximumSize(new Dimension(100, 20));
         minAvCoverageTextField.setText("" + ProgramProperties.get("AssemblyMinAvCoverage", 2));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Min average coverage: ")));
-        parametersPanel.add(newSingleLine(minAvCoverageTextField, Box.createHorizontalGlue()));
+        firstPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Min average coverage: ")));
+        firstPanel.add(newSingleLine(minAvCoverageTextField, Box.createHorizontalGlue()));
         minAvCoverageTextField.setToolTipText("Minimum average coverage of a contig");
 
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), Box.createHorizontalGlue()));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), Box.createHorizontalGlue()));
+        final JPanel secondPanel = new JPanel();
+        secondPanel.setBorder(BorderFactory.createTitledBorder("Contig overlapping: "));
+        secondPanel.setLayout(new GridLayout(3, 2));
+        parametersPanel.add(secondPanel);
 
-        final JTextField maxPercentIdentityTextField = new JTextField(6);
-        maxPercentIdentityTextField.setMaximumSize(new Dimension(100, 20));
-        maxPercentIdentityTextField.setText("" + ProgramProperties.get("AssemblyMaxPercentIdentity", 98));
-        parametersPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Max percent identity: ")));
-        parametersPanel.add(newSingleLine(maxPercentIdentityTextField, Box.createHorizontalGlue()));
-        maxPercentIdentityTextField.setToolTipText("Maximum percent identity to consider two contigs different");
+        final JCheckBox doContigOverlappingCBOX = new JCheckBox();
+        doContigOverlappingCBOX.setToolTipText("Perfrom all pairwise alignments of contigs to detect overlaps");
+        doContigOverlappingCBOX.setSelected(ProgramProperties.get("AssemblyDoOverlapContigs", true));
+        secondPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Contig Overlapping:")));
+        secondPanel.add(newSingleLine(doContigOverlappingCBOX, Box.createHorizontalGlue()));
+
+        final JTextField minContigOverlapTextField = new JTextField(6);
+        minContigOverlapTextField.setMaximumSize(new Dimension(100, 20));
+        minContigOverlapTextField.setText("" + ProgramProperties.get("AssemblyMinContigOverlap", 20));
+        secondPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Min contig overlap:")));
+        secondPanel.add(newSingleLine(minContigOverlapTextField, Box.createHorizontalGlue()));
+        minContigOverlapTextField.setToolTipText("Minimum length overlap between two contigs");
+
+
+        final JTextField minPercentIdentityTextField = new JTextField(6);
+        minPercentIdentityTextField.setMaximumSize(new Dimension(100, 20));
+        minPercentIdentityTextField.setText("" + ProgramProperties.get("AssemblyMinPercentIdentity", 99));
+        secondPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Min percent identity:")));
+        secondPanel.add(newSingleLine(minPercentIdentityTextField, Box.createHorizontalGlue()));
+        minPercentIdentityTextField.setToolTipText("Minimum percent identity to overlap two contigs");
 
         middlePanel.add(parametersPanel);
         mainPanel.add(middlePanel, BorderLayout.NORTH);
@@ -306,6 +352,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
         bottomPanel.setLayout(new BorderLayout());
 
         JPanel b1 = new JPanel();
+        b1.setLayout(new BoxLayout(b1, BoxLayout.X_AXIS));
 
         b1.add(new JButton(new AbstractAction("Cancel") {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -313,7 +360,6 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             }
         }));
 
-        b1.setLayout(new BoxLayout(b1, BoxLayout.X_AXIS));
         final JButton applyButton = new JButton(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
 
@@ -339,14 +385,20 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     ProgramProperties.put("AssemblyMinReads", minReadsTextField.getText());
                     ProgramProperties.put("AssemblyMinLength", minLengthTextField.getText());
                     ProgramProperties.put("AssemblyMinAvCoverage", minAvCoverageTextField.getText());
-                    ProgramProperties.put("AssemblyMaxPercentIdentity", maxPercentIdentityTextField.getText());
+
+                    ProgramProperties.put("AssemblyDoOverlapContigs", doContigOverlappingCBOX.isSelected());
+                    ProgramProperties.put("AssemblyMinContigOverlap", minContigOverlapTextField.getText());
+
+                    ProgramProperties.put("AssemblyMinPercentIdentity", minPercentIdentityTextField.getText());
 
                     final String command = "export assembly file='" + fileName + "'"
                             + " minOverlap=" + minOverlapTextField.getText()
                             + " minReads=" + minReadsTextField.getText()
                             + " minLength=" + minLengthTextField.getText()
                             + " minAvCoverage=" + minAvCoverageTextField.getText()
-                            + " maxPercentIdentity=" + maxPercentIdentityTextField.getText()
+                            + " doOverlapContigs=" + doContigOverlappingCBOX.isSelected()
+                            + " minContigOverlap=" + minContigOverlapTextField.getText()
+                            + " minPercentIdentity=" + minPercentIdentityTextField.getText()
                             + " showGraph=false;";
 
                     execute(command);

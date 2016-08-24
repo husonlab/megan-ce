@@ -67,10 +67,6 @@ public class RemoteService implements IRemoteService {
             if (description == null || description.equals("No description provided")) {
                 description = name;
             }
-            if (!description.endsWith("reads)")) {
-                connector.setFile(name);
-                description += String.format(" (%,d reads)", connector.getNumberOfReads());
-            }
             fileName2Description.put(name, description);
 
         }

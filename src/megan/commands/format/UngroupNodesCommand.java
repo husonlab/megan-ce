@@ -67,7 +67,7 @@ public class UngroupNodesCommand extends CommandBase implements ICommand {
      */
     public boolean isApplicable() {
         if (getViewer() instanceof ClusterViewer) {
-            ClusterViewer clusterViewer = (ClusterViewer) getViewer();
+            final ClusterViewer clusterViewer = (ClusterViewer) getViewer();
             return clusterViewer.isPCoATab() && clusterViewer.getGraphView().getSelectedNodes().size() >= 1;
         } else
             return true;

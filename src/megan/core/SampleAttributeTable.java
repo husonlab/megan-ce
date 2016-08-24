@@ -893,7 +893,7 @@ public class SampleAttributeTable {
                                     {
                                         String attribute = pos2attribute[i - 1];
                                         if (attribute != null)
-                                            attribute2value.put(attribute, tokens[i]);
+                                            attribute2value.put(attribute, tokens[i].equals("NA") ? null : tokens[i]);
                                     }
                                 }
                                 addSample(sample, attribute2value, true, true);

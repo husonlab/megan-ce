@@ -33,23 +33,21 @@ import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "set sort=<up|down|alphabetically|alphaBackward>;";
+        return "set sort={up|down|alphabetically|alphaBackward|enabled};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set sort=");
-        String which = np.getWordMatchesIgnoringCase("up down alphabetically alphaBackward");
+        final String which = np.getWordMatchesIgnoringCase("up down alphabetically alphaBackward enabled");
         np.matchIgnoreCase(";");
-        ChartViewer chartViewer = (ChartViewer) getViewer();
-        LabelsJList list = chartViewer.getActiveLabelsJList();
-        LinkedList<String> disabled = new LinkedList<>();
+
+        final ChartViewer chartViewer = (ChartViewer) getViewer();
+        final LabelsJList list = chartViewer.getActiveLabelsJList();
+        final LinkedList<String> disabled = new LinkedList<>();
         disabled.addAll(list.getDisabledLabels());
 
         if (which.equalsIgnoreCase("up") || which.equalsIgnoreCase("down")) {
@@ -64,8 +62,6 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                     return pair1.get2().compareTo(pair2.get2());
                 }
             });
-
-
             if (list == chartViewer.getSeriesList()) {
                 IData chartData = chartViewer.getChartData();
                 for (String label : list.getAllLabels()) {
@@ -89,12 +85,31 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                     Number value = chartData.getTotalForClass(label);
                     sorted.add(new Pair<>(value, label));
                 }
-                LinkedList<String> labels = new LinkedList<>();
+                final LinkedList<String> labels = new LinkedList<>();
                 for (Pair<Number, String> pair : sorted) {
                     labels.add(pair.get2());
                 }
                 list.sync(labels, list.getLabel2ToolTips(), true);
             }
+        } else if (which.equalsIgnoreCase("enabled")) {
+            final List<String> allLabels = list.getAllLabels();
+            String[] array = allLabels.toArray(new String[allLabels.size()]);
+            final Set<String> disabledSet = new HashSet<>();
+            disabledSet.addAll(disabled);
+            Arrays.sort(array, new Comparator<String>() {
+                @Override
+                public int compare(String a, String b) {
+                    if (!disabledSet.contains(a) && disabledSet.contains(b))
+                        return -1;
+                    else if (disabledSet.contains(a) && !disabledSet.contains(b))
+                        return 1;
+                    else
+                        return 0;
+                }
+            });
+            final LinkedList<String> labels = new LinkedList<>();
+            labels.addAll(Arrays.asList(array));
+            list.sync(labels, list.getLabel2ToolTips(), true);
         } else {
             final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
 

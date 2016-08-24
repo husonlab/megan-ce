@@ -118,10 +118,10 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
      */
     public boolean isApplicable() {
         if (getViewer() instanceof ClusterViewer) {
-            ClusterViewer clusterViewer = (ClusterViewer) getViewer();
+            final ClusterViewer clusterViewer = (ClusterViewer) getViewer();
             return clusterViewer.isPCoATab() && clusterViewer.getGraphView().getSelectedNodes().size() >= 1;
         } else if (getViewer() instanceof SamplesViewer) {
-            SamplesViewer samplesViewer = (SamplesViewer) getViewer();
+            final SamplesViewer samplesViewer = (SamplesViewer) getViewer();
             return samplesViewer.getSamplesTable().getNumberOfSelectedSamples() > 0;
         } else
             return ((Director) getDir()).getDocument().getSampleSelection().size() >= 1;

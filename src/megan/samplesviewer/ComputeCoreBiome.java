@@ -20,6 +20,7 @@ package megan.samplesviewer;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
+import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -42,15 +43,15 @@ public class ComputeCoreBiome {
     /**
      * computes core biome for a given threshold
      *
-     * @param asUpperBound                   if true, keep rare taxa in which the threshold is an upper bound
-     * @param threshold                      number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
      * @param srcDoc
+     * @param asUpperBound                   if true, keep rare taxa in which the threshold is an upper bound
+     * @param samplesThreshold                      number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
      * @param tarClassification2class2counts
      * @param progress
      * @return sampleSize
      */
-    public static int apply(Collection<String> samplesToUse, boolean asUpperBound, int threshold, Document srcDoc,
-                            Map<String, Map<Integer, Integer[]>> tarClassification2class2counts, ProgressListener progress) {
+    public static int apply(Document srcDoc, Collection<String> samplesToUse, boolean asUpperBound, int samplesThreshold,
+                            float taxonDetectionThresholdPercent, Map<String, Map<Integer, Integer[]>> tarClassification2class2counts, ProgressListener progress) {
         BitSet sampleIds = srcDoc.getDataTable().getSampleIds(samplesToUse);
         int size = 0;
 
@@ -66,10 +67,12 @@ public class ComputeCoreBiome {
                     root = ClassificationManager.get(classificationName, true).getFullTree().getRoot();
 
                 }
-                Map<Integer, Integer[]> tarClass2counts = new HashMap<>();
+                final Map<Integer, Integer[]> tarClass2counts = new HashMap<>();
                 tarClassification2class2counts.put(classificationName, tarClass2counts);
 
-                computeCoreBiomeRec(sampleIds, asUpperBound, srcDoc.getNumberOfSamples(), threshold, root, srcClass2counts, tarClass2counts);
+                final int[] detectionThreshold = computeDetectionThreshold(srcDoc.getNumberOfSamples(), srcClass2counts, taxonDetectionThresholdPercent);
+
+                computeCoreBiomeRec(sampleIds, asUpperBound, srcDoc.getNumberOfSamples(), samplesThreshold, detectionThreshold, root, srcClass2counts, tarClass2counts);
                 // System.err.println(classificationName + ": " + tarClassification2class2counts.size());
             }
 
@@ -103,14 +106,46 @@ public class ComputeCoreBiome {
     }
 
     /**
-     * recursively compute the core biome
+     * determines the number of counts necessary for a taxon to be considered detected, for each sample
      *
-     * @param threshold
+     * @param numberOfSamples
+     * @param srcClass2counts
+     * @param detectionThresholdPercent
+     * @return thresholds
+     */
+    private static int[] computeDetectionThreshold(int numberOfSamples, Map<Integer, Integer[]> srcClass2counts, float detectionThresholdPercent) {
+        final int[] array = new int[numberOfSamples];
+        if (detectionThresholdPercent > 0) {
+            for (Integer id : srcClass2counts.keySet()) {
+                if (id > 0) {
+                    Integer[] counts = srcClass2counts.get(id);
+                    if (counts != null) {
+                        for (int i = 0; i < counts.length; i++) {
+                            array[i] += counts[i];
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < array.length; i++) {
+                array[i] *= detectionThresholdPercent / 100.0;
+            }
+            System.err.println("Read detection thresholds: " + Basic.toString(array, ", "));
+        }
+        for (int i = 0; i < array.length; i++) { // need at least 1 to detect
+            array[i] = Math.max(1, array[i]);
+        }
+        return array;
+    }
+
+    /**
+     * recursively compute the core biome
+     *  @param samplesThreshold
+     * @param detectionThreshold
      * @param v
      * @param srcClass2counts
      * @param tarClass2counts
      */
-    private static int[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int threshold, Node v, Map<Integer, Integer[]> srcClass2counts, Map<Integer, Integer[]> tarClass2counts) {
+    private static int[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold, Node v, Map<Integer, Integer[]> srcClass2counts, Map<Integer, Integer[]> tarClass2counts) {
         int[] summarized = new int[numberOfSamples];
 
         int classId = (Integer) v.getInfo();
@@ -128,7 +163,7 @@ public class ComputeCoreBiome {
 
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             Node w = e.getTarget();
-            int[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, threshold, w, srcClass2counts, tarClass2counts);
+            int[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, samplesThreshold, detectionThreshold, w, srcClass2counts, tarClass2counts);
             for (int i = 0; i < numberOfSamples; i++) {
                 if (sampleIds.get(i)) {
                     summarized[i] += countsBelow[i];
@@ -139,13 +174,14 @@ public class ComputeCoreBiome {
         int numberOfSamplesWithClass = 0;
         int value = 0;
         for (int i = 0; i < numberOfSamples; i++) {
-            if (summarized[i] > 0 && sampleIds.get(i)) {
-                numberOfSamplesWithClass++;
+            if (sampleIds.get(i)) {
+                if (summarized[i] >= detectionThreshold[i])
+                    numberOfSamplesWithClass++;
                 if (countsV != null && i < countsV.length && countsV[i] != null && sampleIds.get(i))
                     value += countsV[i];
             }
         }
-        if (countsV != null && ((!asUpperBound && numberOfSamplesWithClass >= threshold) || (asUpperBound && numberOfSamplesWithClass <= threshold))) {
+        if (countsV != null && ((!asUpperBound && numberOfSamplesWithClass >= samplesThreshold) || (asUpperBound && numberOfSamplesWithClass <= samplesThreshold))) {
             tarClass2counts.put(classId, new Integer[]{value});
         }
         return summarized;

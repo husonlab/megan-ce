@@ -91,7 +91,8 @@ public class GCAssembler {
 
         options.comment("Classification");
 
-        final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification", "");
+        final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
+                + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ")", "");
         final String[] selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
 
         options.comment("Options");

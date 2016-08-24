@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.samplesviewer.commands.algorithms;
+package megan.commands.algorithms;
 
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
@@ -45,7 +45,7 @@ import java.util.Set;
  */
 public class ComputeBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "compute biome={total|core|shared|rare} [threshold=<percentage>] samples=<name name...>;";
+        return "compute biome={core|total|rare} [classThreshold=<percentage>] [sampleThreshold=<percentage>] samples=<name name...>;";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -53,48 +53,57 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
         final Document doc = dir.getDocument();
 
         np.matchIgnoreCase("compute biome=");
+        final String what = np.getWordMatchesIgnoringCase("core total rare");
 
-        String what = np.getWordMatchesIgnoringCase("total core shared rare");
-        float threshold = 50.0f;
-        if (np.peekMatchIgnoreCase("threshold")) {
-            np.matchIgnoreCase("threshold=");
-            threshold = (float) np.getDouble(0, 99.99);
-        }
+        final float classThreshold;
+        if (np.peekMatchIgnoreCase("classThreshold")) {
+            np.matchIgnoreCase("classThreshold=");
+            classThreshold = (float) np.getDouble(0, 100);
+        } else
+            classThreshold = 1;
 
-        String legalSampleNames = "'" + Basic.toString(doc.getSampleNames(), "' '") + "'";
-        Set<String> selectedSamples = new HashSet<>();
+        final float samplesThreshold;
+        if (np.peekMatchIgnoreCase("sampleThreshold")) {
+            np.matchIgnoreCase("sampleThreshold=");
+            samplesThreshold = (float) np.getDouble(0, 100);
+        } else
+            samplesThreshold = 50;
+
+        final String legalSampleNames = "'" + Basic.toString(doc.getSampleNames(), "' '") + "' ALL";
+        final Set<String> selectedSamples = new HashSet<>();
         np.matchIgnoreCase("samples=");
         while (!np.peekMatchIgnoreCase(";")) {
             selectedSamples.add(np.getWordMatchesRespectingCase(legalSampleNames));
         }
         np.matchIgnoreCase(";");
 
+        if (selectedSamples.contains("ALL")) {
+            selectedSamples.addAll(doc.getSampleNames());
+        }
+
         System.err.println("Number of samples: " + selectedSamples.size());
 
-        Director newDir = Director.newProject();
+        final Director newDir = Director.newProject();
         newDir.getMainViewer().getFrame().setVisible(true);
         newDir.getMainViewer().setDoReInduce(true);
         newDir.getMainViewer().setDoReset(true);
-        Document newDocument = newDir.getDocument();
+        final Document newDocument = newDir.getDocument();
 
-        Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+        final Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
         int sampleSize = 0;
         String title = null;
 
         if (what.equalsIgnoreCase("core")) {
-            int minSamplesToHave = (int) Math.ceil((threshold / 100.0) * selectedSamples.size());
-            sampleSize = ComputeCoreBiome.apply(selectedSamples, false, minSamplesToHave, doc, classification2class2counts, doc.getProgressListener());
-            title = String.format("CoreBiome-%2.1f", threshold);
+            int minSamplesToHave = (int) Math.ceil((samplesThreshold / 100.0) * selectedSamples.size());
+            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, false, minSamplesToHave, classThreshold, classification2class2counts, doc.getProgressListener());
+            title = String.format("CoreBiome-%2.1f-%2.1f", samplesThreshold, classThreshold);
         } else if (what.equalsIgnoreCase("rare")) {
-            int minSamplesNotToHave = (int) Math.ceil((threshold / 100.0) * selectedSamples.size());
-            sampleSize = ComputeCoreBiome.apply(selectedSamples, true, minSamplesNotToHave, doc, classification2class2counts, doc.getProgressListener());
-            title = String.format("RareBiome-%2.1f", threshold);
+            int minSamplesNotToHave = (int) Math.ceil((samplesThreshold / 100.0) * selectedSamples.size());
+            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, true, minSamplesNotToHave, classThreshold, classification2class2counts, doc.getProgressListener());
+            title = String.format("RareBiome-%2.1f-%2.1f", samplesThreshold, classThreshold);
         } else if (what.equalsIgnoreCase("total")) {
-            sampleSize = ComputeCoreBiome.apply(selectedSamples, false, 0, doc, classification2class2counts, doc.getProgressListener());
+            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, false, 0, classThreshold, classification2class2counts, doc.getProgressListener());
             title = "TotalBiome";
-        } else if (what.equalsIgnoreCase("shared")) {
-            sampleSize = ComputeCoreBiome.apply(selectedSamples, false, selectedSamples.size() - 1, doc, classification2class2counts, doc.getProgressListener());
-            title = "SharedBiome";
         }
 
         if (classification2class2counts.size() > 0) {
@@ -109,6 +118,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
             newDocument.setMinScore(0);
             newDocument.setMaxExpected(10000);
             newDocument.setMinSupport(1);
+            newDocument.setMinSupportPercent(0);
             newDocument.setDirty(true);
             for (String classificationName : newDocument.getDataTable().getClassification2Class2Counts().keySet()) {
                 newDocument.getActiveViewers().add(classificationName);
@@ -145,7 +155,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Compute the core or rare biome for a set of samples";
+        return "Compute the core biome for a set of samples";
     }
 }
 

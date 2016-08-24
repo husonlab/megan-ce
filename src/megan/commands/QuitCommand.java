@@ -23,6 +23,7 @@ import jloda.gui.director.ProjectManager;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.chart.ChartColorManager;
 import megan.main.MeganProperties;
 import megan.viewer.TaxonomyData;
 
@@ -40,17 +41,26 @@ public class QuitCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("quit;");
         if (!ProgramProperties.isUseGUI()) // in non-gui mode,  ensure that the program terminates
+        {
+            ChartColorManager.store();
+            ProgramProperties.store();
             System.exit(0);
+        } else
         {    // todo: in non-gui mode, call the code below results in a deadlock...
-            /* save disabled taxa: */
-            StringBuilder buf = new StringBuilder();
-            Set<Integer> disabledTaxa = TaxonomyData.getDisabledTaxa();
-            if (disabledTaxa != null) {
-                for (Integer taxId : disabledTaxa)
-                    buf.append(" ").append(taxId);
-                ProgramProperties.put(MeganProperties.DISABLED_TAXA, buf.toString());
-            }
             ProjectManager.doQuit(new Runnable() {
+                                      public void run() {
+                                /* save disabled taxa: */
+                                          final StringBuilder buf = new StringBuilder();
+                                          final Set<Integer> disabledTaxa = TaxonomyData.getDisabledTaxa();
+                                          if (disabledTaxa != null) {
+                                              for (Integer taxId : disabledTaxa)
+                                                  buf.append(" ").append(taxId);
+                                              ProgramProperties.put(MeganProperties.DISABLED_TAXA, buf.toString());
+                                          }
+                                          ChartColorManager.store();
+                                      }
+                                  },
+                    new Runnable() {
                 public void run() {
                     NewCommand.makeNewDocument();
                 }

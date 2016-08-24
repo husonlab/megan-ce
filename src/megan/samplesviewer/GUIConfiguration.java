@@ -48,7 +48,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Attributes", getAttributeColumnHeaderPopupConfiguration());
 
-        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Core Biome...;Compute Total Biome...;|;Compute Rare Biome...;Compute Shared Biome...;|;Open RMA File...;");
+        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Open RMA File...;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;Groups Viewer...;|;");

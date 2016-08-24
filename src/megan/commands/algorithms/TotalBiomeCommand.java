@@ -16,15 +16,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.samplesviewer.commands.algorithms;
+
+package megan.commands.algorithms;
 
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
-import megan.fx.Dialogs;
 import megan.samplesviewer.SamplesViewer;
+import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,7 @@ import java.util.Collection;
  * compute biome
  * Daniel Huson, 2.2013
  */
-public class RareBiomeCommand extends CommandBase implements ICommand {
+public class TotalBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -43,20 +43,21 @@ public class RareBiomeCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        float threshold = (float) ProgramProperties.get("RareBiomeThreshold", 50.0);
-        String result = Dialogs.showInput(getViewer().getFrame(), "Rare biome input parameter", "Set maximum percentage", "" + threshold);
-        if (result != null && Basic.isFloat(result)) {
-            final Collection<String> samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
-            if (samples.size() > 1) {
-                threshold = Basic.parseInt(result);
-                ProgramProperties.put("RareBiomeThreshold", threshold);
-                execute("compute biome=rare threshold=" + result + " samples='" + Basic.toString(samples, "' '") + "';");
-            }
+        final Collection<String> samples;
+        if (getViewer() instanceof SamplesViewer)
+            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
+        else if (getViewer() instanceof MainViewer)
+            samples = ((MainViewer) getViewer()).getDocument().getSampleNames();
+        else
+            return;
+
+        if (samples.size() > 1) {
+            execute("compute biome=total samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
+        return getViewer() instanceof MainViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
     }
 
     public boolean isCritical() {
@@ -64,7 +65,7 @@ public class RareBiomeCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "Compute Rare Biome...";
+        return "Compute Total Biome...";
     }
 
     public ImageIcon getIcon() {
@@ -72,7 +73,7 @@ public class RareBiomeCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Determine taxa and functions that appear in a minority of samples";
+        return "Determine total (union) taxonomic and functional content";
     }
 }
 

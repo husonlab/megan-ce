@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,56 +16,66 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package megan.samplesviewer.commands;
 
-package megan.samplesviewer.commands.algorithms;
-
+import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
-import megan.commands.CommandBase;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
+import java.util.List;
 
 /**
- * compute biome
- * Daniel Huson, 2.2013
+ * * duplicate command
+ * * Daniel Huson, 9.2012
  */
-public class SharedBiomeCommand extends CommandBase implements ICommand {
+public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
 
+    /**
+     * parses the given command and executes it
+     *
+     * @param np
+     * @throws java.io.IOException
+     */
     public void apply(NexusStreamParser np) throws Exception {
     }
 
     public void actionPerformed(ActionEvent event) {
-        final Collection<String> samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
-        if (samples.size() > 1) {
-            execute("compute biome=shared samples='" + Basic.toString(samples, "' '") + "';");
+        SamplesViewer viewer = (SamplesViewer) getViewer();
+        List<String> samples = viewer.getSamplesTable().getSelectedSamplesInOrder();
+        if (samples.size() > 0) {
+            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
-    }
-
-    public boolean isCritical() {
-        return true;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 0;
     }
 
     public String getName() {
-        return "Compute Shared Biome...";
+        return "Extract Samples...";
+    }
+
+
+    public String getDescription() {
+        return "Extract selected samples to a new document";
     }
 
     public ImageIcon getIcon() {
         return null;
     }
 
-    public String getDescription() {
-        return "Determine shared (i.e. intersection) taxonomic and functional content of samples";
+    public boolean isCritical() {
+        return true;
+    }
+
+    public KeyStroke getAcceleratorKey() {
+        return null;
     }
 }
-

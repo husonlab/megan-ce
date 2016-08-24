@@ -87,7 +87,7 @@ public class OpenRemoteServerCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "openServer url=<url> [user=<user>] [hiddenPassword=<hiddenPassword>];";
+        return "openServer url=<url> [user=<user>] [password=<hiddenPassword>];";
     }
 
     /**

@@ -24,7 +24,6 @@ import jloda.gui.message.MessageWindow;
 import jloda.util.ArgsOptions;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import megan.chart.ChartColorManager;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
@@ -51,8 +50,6 @@ public class Megan6 {
             //its run() method is executed for sure as the VM shuts down
             Runnable finalizer = new Runnable() {
                 public void run() {
-                    ChartColorManager.store();
-                    ProgramProperties.store();
                 }
             };
             Runtime.getRuntime().addShutdownHook(new Thread(finalizer));

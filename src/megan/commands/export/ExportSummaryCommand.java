@@ -46,10 +46,10 @@ public class ExportSummaryCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         Director dir = getDir();
         if (dir.getDocument().getMeganFile().hasDataConnector()) {
-            File lastOpenFile = new File(ProgramProperties.getFile(MeganProperties.SAVEFILE), dir.getTitle());
-            lastOpenFile = Basic.replaceFileSuffix(lastOpenFile, ".megan");
-
-            File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN summary file", ".megan");
+            final File savedFile = ProgramProperties.getFile(MeganProperties.SAVEFILE);
+            final File directory = (savedFile != null ? savedFile.getParentFile() : null);
+            final File lastOpenFile = Basic.replaceFileSuffix(new File(directory, dir.getTitle()), ".megan");
+            final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN summary file", ".megan");
 
             if (file != null) {
                 ProgramProperties.put(MeganProperties.SAVEFILE, file);

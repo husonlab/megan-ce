@@ -68,9 +68,9 @@ public class CoreBiomeCommand extends CommandBase implements ICommand {
                 if (Basic.isFloat(result[0]) && Basic.isFloat(result[1])) {
 
                     sampleThresholdPercent = Basic.parseFloat(result[0]);
-                    ProgramProperties.put("CoreBiomeSampleThreshold", sampleThresholdPercent);
+                    ProgramProperties.put("CoreBiomeSampleThreshold", (double) sampleThresholdPercent);
                     classThresholdPercent = Basic.parseFloat(result[1]);
-                    ProgramProperties.put("CoreBiomeClassThreshold", classThresholdPercent);
+                    ProgramProperties.put("CoreBiomeClassThreshold", (double) classThresholdPercent);
 
                     execute("compute biome=core classThreshold=" + result[1] + " sampleThreshold=" + result[0] + " samples='" + Basic.toString(samples, "' '") + "';");
                 } else

@@ -47,7 +47,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     private final Graph graph;
     private final Rectangle2D boundingBox = new Rectangle2D.Double();
 
-    private double minThreshold = ProgramProperties.get("COMinThreshold", 0.01); // min percentage for class
+    private double minThreshold = ProgramProperties.get("COMinThreshold", 0.01d); // min percentage for class
     private int minProbability = ProgramProperties.get("COMinProbability", 70); // min co-occurrence probability in percent
     private int minPrevalence = ProgramProperties.get("COMinPrevalence", 10); // minimum prevalence in percent
     private int maxPrevalence = ProgramProperties.get("COMaxPrevalence", 90); // maximum prevalence in percent

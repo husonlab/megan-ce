@@ -54,7 +54,7 @@ public class ExtractToNewDocument {
         try { // user might cancel inside this block
             // determine the set of all positions to extract:
             try (IReadBlockIterator iterator = connector.getReadsIteratorForListOfClassIds(srcClassification, srcClassIds, 0, 10, true, true)) {
-                progress.setTasks("Extract to new Document", "Processing file: " + srcDoc.getMeganFile().getFileName());
+                progress.setTasks("Extracting", "Processing file: " + Basic.getFileNameWithoutPath(srcDoc.getMeganFile().getFileName()));
                 progress.setProgress(0);
                 progress.setMaximum(iterator.getMaximumProgress());
 

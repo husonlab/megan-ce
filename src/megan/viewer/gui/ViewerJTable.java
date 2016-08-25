@@ -216,8 +216,19 @@ public class ViewerJTable extends JTable {
                         removeRowSelectionInterval(row, row);
                 }
             }
-            if (first != -1)
-                scrollRectToVisible(new Rectangle(getCellRect(first, 0, true)));
+            if (first != -1) {
+                final int firstf = first;
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollRectToVisible(new Rectangle(getCellRect(firstf, 0, true)));
+                    }
+                };
+                if (SwingUtilities.isEventDispatchThread())
+                    runnable.run();
+                else
+                    SwingUtilities.invokeLater(runnable);
+            }
         }
         inSelection = false;
     }

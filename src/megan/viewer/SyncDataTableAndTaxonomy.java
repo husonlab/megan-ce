@@ -45,7 +45,7 @@ public class SyncDataTableAndTaxonomy {
     public static void syncFormattingFromSummary2Viewer(DataTable table, MainViewer viewer) {
         Document doc = viewer.getDir().getDocument();
         // can't use nexus parser here because it swallows the ' quotes
-        String nodeFormats = table.getNodeFormats(ClassificationType.Taxonomy.toString());
+        final String nodeFormats = table.getNodeFormats(ClassificationType.Taxonomy.toString());
         // System.err.println("Node Format: "+nodeFormats);
         if (nodeFormats != null) {
             int state = 0;
@@ -95,7 +95,7 @@ public class SyncDataTableAndTaxonomy {
             }
         }
 
-        String edgeFormats = table.getEdgeFormats(ClassificationType.Taxonomy.toString());
+        final String edgeFormats = table.getEdgeFormats(ClassificationType.Taxonomy.toString());
         //System.err.println("Edge Format: "+edgeFormats);
         if (edgeFormats != null) {
             int state = 0;

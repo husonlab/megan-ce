@@ -72,7 +72,7 @@ public class ExtractToNewDocumentRMA6 {
             final FooterSectionRMA6 footerSection = new FooterSectionRMA6();
 
             try { // user might cancel inside this block....
-                progressListener.setTasks("Extracting to new document", "");
+                progressListener.setTasks("Extracting", "");
                 progressListener.setProgress(0);
                 progressListener.setMaximum(list.size());
 

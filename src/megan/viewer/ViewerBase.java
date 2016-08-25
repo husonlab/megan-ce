@@ -572,16 +572,24 @@ abstract public class ViewerBase extends PhyloTreeView {
         }
     }
 
-    public void scrollToNode(Node v) {
-        Rectangle rect = getNV(v).getLabelRect(trans);
-        if (rect != null) {
-            rect.x -= 25;
-            rect.y -= 25;
-            rect.width += 50;
-            rect.height += 50;
-            scrollRectToVisible(rect);
-            repaint();
-        }
+    public void scrollToNode(final Node v) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final Rectangle rect = getNV(v).getLabelRect(trans);
+                if (rect != null) {
+                    rect.x -= 25;
+                    rect.y -= 25;
+                    rect.width += 50;
+                    rect.height += 50;
+                    scrollRectToVisible(rect);
+                    repaint();
+                }
+            }
+        };
+        if (SwingUtilities.isEventDispatchThread())
+            runnable.run();
+        else SwingUtilities.invokeLater(runnable);
     }
 
     public String getShowLegend() {

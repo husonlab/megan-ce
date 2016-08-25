@@ -59,7 +59,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
 
     public void apply(NexusStreamParser np) throws Exception {
         final Director srcDir = getDir();
-        MainViewer mainViewer = srcDir.getMainViewer();
+        final MainViewer mainViewer = srcDir.getMainViewer();
         final Document srcDoc = srcDir.getDocument();
 
         np.matchIgnoreCase("extract what=document");

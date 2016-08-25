@@ -19,14 +19,11 @@
 package megan.dialogs.export;
 
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 import megan.viewer.ClassificationViewer;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -38,7 +35,6 @@ import java.util.List;
  * Daniel Huson, 5.2015
  */
 public class CSVExporter {
-
     /**
      * constructor
      *
@@ -95,36 +91,13 @@ public class CSVExporter {
         return formats;
     }
 
-
-    /**
-     * asks the user to input the desired format
-     *
-     * @param parent
-     * @return format or null, if canceled
-     */
-    public static String showFormatInputDialog(Component parent, List<String> formats) {
-        String previousChoice = ProgramProperties.get("CSVExporterChoice", formats.get(0));
-        if (!formats.contains(previousChoice))
-            previousChoice = formats.get(0);
-
-        String choice = (String) JOptionPane.showInputDialog(parent, "Choose format", "Export read assignments to CSV file",
-                JOptionPane.INFORMATION_MESSAGE, ProgramProperties.getProgramIcon(), formats.toArray(), previousChoice);
-
-        if (choice != null)
-            ProgramProperties.put("CSVExporterChoice", choice);
-
-        return choice;
-    }
-
     /**
      * apply the desired exporter
-     *
-     * @param frame
-     * @param dir
+     *  @param dir
      * @param file
      * @param format
      */
-    public static int apply(Component frame, Director dir, ProgressListener progressListener, File file, String format, char separator, boolean reportSummarized) throws IOException {
+    public static int apply(Director dir, ProgressListener progressListener, File file, String format, char separator, boolean reportSummarized) throws IOException {
         progressListener.setTasks("Export in CSV format", "Initializing");
 
         final Collection<String> cNames = ClassificationManager.getAllSupportedClassifications();

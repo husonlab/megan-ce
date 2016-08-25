@@ -21,10 +21,7 @@ package megan.commands.export;
 import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.IDirectableViewer;
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
-import jloda.util.TextFileFilter;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.commands.CommandBase;
@@ -33,16 +30,18 @@ import megan.core.Document;
 import megan.dialogs.export.CSVExporter;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
-import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
 
 public class ExportCSVCommand extends CommandBase implements ICommand {
+    public static final String EXPORT_CHOICE = "CSVExportChoice";
     public static final String COUNT_CHOICE = "CSVCount";
+    public static final String SEPARATOR_CHOICE = "CSVSeperator";
 
     public enum Choice {assigned, summarized}
 
@@ -81,7 +80,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         String outputFile = np.getAbsoluteFileName();
         np.matchIgnoreCase(";");
 
-        int count = CSVExporter.apply(viewer.getFrame(), dir, doc.getProgressListener(), new File(outputFile), format, separator, reportSummarized);
+        int count = CSVExporter.apply(dir, doc.getProgressListener(), new File(outputFile), format, separator, reportSummarized);
 
         NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + count + " line(s) to file: " + outputFile);
     }
@@ -99,47 +98,14 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        Director dir = getDir();
-        String formatName = null;
-        String countChoice = null;
+        final Director dir = getDir();
 
-        if (getViewer() instanceof MainViewer) {
-            List<String> formats = CSVExporter.getFormats(Classification.Taxonomy, getDoc().getMeganFile().hasDataConnector());
-
-            formatName = CSVExporter.showFormatInputDialog(getViewer().getFrame(), formats);
-            if (formatName == null)
-                return;
-            if (formatName.contains("count")) {
-                final String[] countNames = new String[]{Choice.assigned.toString(), Choice.summarized.toString()};
-                final String previous = ProgramProperties.get(COUNT_CHOICE, Choice.summarized.toString());
-                countChoice = (String) JOptionPane.showInputDialog(getViewer().getFrame(),
-                        "Choose count to use", "Export read assignments to CSV file",
-                        JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), countNames, previous);
-                if (countChoice == null)
-                    return;
-                ProgramProperties.put(COUNT_CHOICE, countChoice);
-
-            }
-        } else if (getViewer() instanceof ClassificationViewer) {
-            final String classificationName = getViewer().getClassName();
-            final List<String> formats = CSVExporter.getFormats(classificationName, getDoc().getMeganFile().hasDataConnector());
-
-            formatName = CSVExporter.showFormatInputDialog(getViewer().getFrame(), formats);
-            if (formatName == null)
-                return;
-        }
-
-        final String separator;
-        {
-            final String[] separatorNames = new String[]{"tab", "comma"};
-            final String previousSeparator = ProgramProperties.get("CSVSeparator", "tab");
-            separator = (String) JOptionPane.showInputDialog(getViewer().getFrame(),
-                    "Choose separator", "Export read assignments to CSV file",
-                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), separatorNames, previousSeparator);
-            if (separator == null)
-                return;
-            ProgramProperties.put("CSVSeparator", separator);
-        }
+        final String[] choice = showChoices(getViewer().getFrame(), dir.getDocument(), getViewer().getClassName());
+        if (choice == null)
+            return;
+        final String formatName = choice[0];
+        final String countChoice = choice[1];
+        final String separator = choice[2];
 
         final String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
 
@@ -169,6 +135,71 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
 
     public String getDescription() {
         return "Export assignments of reads to nodes to a CSV (comma or tab-separated value) file";
+    }
+
+    /**
+     * show the choices dialog
+     *
+     * @param parent
+     * @param classification
+     * @return choices or null
+     */
+    private static String[] showChoices(Component parent, Document doc, String classification) {
+        final boolean doTaxonomy = classification.equalsIgnoreCase(Classification.Taxonomy);
+
+        final List<String> formats = CSVExporter.getFormats(classification, doc.getMeganFile().hasDataConnector());
+        final JLabel label0 = new JLabel("Choose data to export:  ");
+        label0.setToolTipText("Choose data to export");
+        final RememberingComboBox choice0 = new RememberingComboBox();
+        choice0.setEditable(false);
+        choice0.addItems(formats);
+        choice0.setToolTipText("Choose data to export");
+        if (choice0.getItemCount() > 0)
+            choice0.setSelectedItem(ProgramProperties.get(EXPORT_CHOICE, choice0.getItemAt(0)));
+
+        final JLabel label1 = new JLabel("Choose count to use:  ");
+        label1.setToolTipText("Choose count to use, summarized or assigned");
+        final RememberingComboBox choice1 = new RememberingComboBox();
+        choice1.setEditable(false);
+        choice1.addItem(Choice.assigned.toString());
+        choice1.addItem(Choice.summarized.toString());
+        choice1.setToolTipText("Choose count to use, summarized or assigned");
+        if (choice1.getItemCount() > 0)
+            choice1.setSelectedItem(ProgramProperties.get(COUNT_CHOICE, choice1.getItemAt(0)));
+
+        final JLabel label2 = new JLabel("Choose separator to use:  ");
+        label2.setToolTipText("Choose separator to use");
+        final RememberingComboBox choice2 = new RememberingComboBox();
+        choice2.setEditable(false);
+        choice2.addItem("tab");
+        choice2.addItem("comma");
+        choice2.setToolTipText("Choose separator to use");
+        if (choice2.getItemCount() > 0)
+            choice2.setSelectedItem(ProgramProperties.get(SEPARATOR_CHOICE, choice2.getItemAt(0)));
+
+        final JPanel myPanel = new JPanel();
+        myPanel.setLayout(new GridLayout((doTaxonomy ? 3 : 2), 2));
+        myPanel.add(label0);
+        myPanel.add(choice0);
+
+        if (doTaxonomy) {
+            myPanel.add(label1);
+            myPanel.add(choice1);
+        }
+
+        myPanel.add(label2);
+        myPanel.add(choice2);
+
+        final int result = JOptionPane.showConfirmDialog(parent, myPanel, "MEGAN - Export to CSV", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                ProgramProperties.getProgramIcon());
+        if (result == JOptionPane.OK_OPTION) {
+            ProgramProperties.put(EXPORT_CHOICE, choice0.getSelectedItem().toString());
+            ProgramProperties.put(COUNT_CHOICE, choice1.getSelectedItem().toString());
+            ProgramProperties.put(SEPARATOR_CHOICE, choice2.getSelectedItem().toString());
+
+            return new String[]{choice0.getCurrentText(false), choice1.getCurrentText(false), choice2.getCurrentText(false)};
+        }
+        return null;
     }
 }
 

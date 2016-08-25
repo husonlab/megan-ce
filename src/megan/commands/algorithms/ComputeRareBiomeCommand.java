@@ -26,7 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.fx.NotificationsInSwing;
 import megan.samplesviewer.SamplesViewer;
-import megan.viewer.MainViewer;
+import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -36,7 +36,7 @@ import java.util.Collection;
  * compute rea biome
  * Daniel Huson, 2.2013
  */
-public class RareBiomeCommand extends CommandBase implements ICommand {
+public class ComputeRareBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -48,8 +48,8 @@ public class RareBiomeCommand extends CommandBase implements ICommand {
         final Collection<String> samples;
         if (getViewer() instanceof SamplesViewer)
             samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
-        else if (getViewer() instanceof MainViewer)
-            samples = ((MainViewer) getViewer()).getDocument().getSampleNames();
+        else if (getViewer() instanceof ClassificationViewer)
+            samples = ((ClassificationViewer) getViewer()).getDocument().getSampleNames();
         else
             return;
 
@@ -77,7 +77,7 @@ public class RareBiomeCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof MainViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
+        return getViewer() instanceof ClassificationViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
     }
 
     public boolean isCritical() {

@@ -163,7 +163,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                             if (progress.isUserCancelled())
                                 break;
 
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, cName, activeMatches);
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cName, activeMatches);
 
                             int chosenId = 0; // species id, if there is one, otherwise taxon id
                             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
@@ -223,7 +223,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                 queue.put(it.next());
                 progress.setProgress(it.getProgress());
             }
-            for (int i = 0; i < numberOfThreads; i++) { // add one senitel for each thread
+            for (int i = 0; i < numberOfThreads; i++) { // add one sentinel for each thread
                 queue.put(sentinel);
             }
         } catch (Exception e) {

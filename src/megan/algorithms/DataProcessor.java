@@ -52,9 +52,9 @@ public class DataProcessor {
      */
     public static int apply(final Document doc) throws CanceledException {
         final ProgressListener progress = doc.getProgressListener();
-
-        progress.setTasks("Analyzing reads & alignments", "Initialization");
         try {
+            progress.setTasks("Analyzing reads & alignments", "Initialization");
+
             System.err.println("Analyzing...");
             if (doc.isUseIdentityFilter()) {
                 System.err.println("Using min percent-identity values for taxonomic assignment of 16S reads");
@@ -153,7 +153,7 @@ public class DataProcessor {
                     if (hasLowComplexity)
                         numberOfReadsWithLowComplexity += readBlock.getReadWeight();
 
-                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, Classification.Taxonomy, activeMatches);
+                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
                     int taxId = 0;
                     if (taxonomyIndex >= 0) {
@@ -161,7 +161,7 @@ public class DataProcessor {
                             mateReader.seek(readBlock.getMateUId());
                             mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
                             taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
                             int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
                             if (mateTaxId > 0) {
                                 if (taxId <= 0) {
@@ -191,7 +191,7 @@ public class DataProcessor {
                         } else if (i == taxonomyIndex) {
                             id = taxId;
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), false, readBlock, cNames[i], activeMatches);
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
                             id = assignmentAlgorithm[i].computeId(activeMatches, readBlock);
                         }
                         if (!knownIds[i].contains(id))

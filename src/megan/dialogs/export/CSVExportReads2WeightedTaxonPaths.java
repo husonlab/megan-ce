@@ -78,7 +78,7 @@ public class CSVExportReads2WeightedTaxonPaths {
                             Pair<Integer, Float> pair = new Pair<>(IdMapper.LOW_COMPLEXITY_ID, 100f);
                             path.add(pair);
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
                             path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
                         }
 

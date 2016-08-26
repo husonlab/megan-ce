@@ -93,7 +93,7 @@ public class ExportTaxa2NormalizedCounts {
 
                         final BitSet activeMatchesForTaxa = new BitSet();
 
-                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
                         for (int i = activeMatchesForTaxa.nextSetBit(0); i >= 0; i = activeMatchesForTaxa.nextSetBit(i + 1)) {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);

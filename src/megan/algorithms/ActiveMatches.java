@@ -32,15 +32,15 @@ import java.util.BitSet;
 public class ActiveMatches {
     /**
      * get the set of matches active for the given read
-     *  @param minScore
+     *
+     * @param minScore
      * @param topPercent
      * @param maxExpected
-     * @param useTopPercentFilter
-     *@param readBlock
+     * @param readBlock
      * @param activeMatchesForClassification
      * @throws IOException
      */
-    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, boolean useTopPercentFilter, IReadBlock readBlock, String classificationName, BitSet activeMatchesForClassification) throws IOException {
+    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String classificationName, BitSet activeMatchesForClassification) throws IOException {
         activeMatchesForClassification.clear();
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
@@ -51,19 +51,15 @@ public class ActiveMatches {
             }
         }
 
-        // For taxonomy-relevant matches: keep only hits within percentage of top one
-        if (useTopPercentFilter) {
-            // determine best score:
-            float bestScore = 0;
-            for (int i = activeMatchesForClassification.nextSetBit(0); i != -1; i = activeMatchesForClassification.nextSetBit(i + 1)) {
-                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                float score = matchBlock.getBitScore();
-                if (score > bestScore)
-                    bestScore = score;
-            }
-
-            applyTopPercentFilter(topPercent, bestScore, minPercentIdentity, readBlock, activeMatchesForClassification);
+        // determine best score:
+        float bestScore = 0;
+        for (int i = activeMatchesForClassification.nextSetBit(0); i != -1; i = activeMatchesForClassification.nextSetBit(i + 1)) {
+            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+            float score = matchBlock.getBitScore();
+            if (score > bestScore)
+                bestScore = score;
         }
+        applyTopPercentFilter(topPercent, bestScore, minPercentIdentity, readBlock, activeMatchesForClassification);
     }
 
     /**

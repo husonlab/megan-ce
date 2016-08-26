@@ -74,7 +74,7 @@ public class NaiveMatchBasedProfile {
                     Float rawValue = rawProfile.get(IdMapper.NOHITS_ID);
                     rawProfile.put(IdMapper.NOHITS_ID, rawValue == null ? 1f : rawValue + 1f);
                 } else {
-                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
                     activeTaxa.clear();
 

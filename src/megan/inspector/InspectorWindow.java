@@ -479,8 +479,8 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
                     final Document doc = dir.getDocument();
                     final BitSet activeMatches = new BitSet();
-                    final boolean isTaxonmomy = classificationName.equals(Classification.Taxonomy);
-                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), isTaxonmomy, readBlock, classificationName, activeMatches);
+                    final boolean UseTopPercent = classificationName.equalsIgnoreCase(Classification.Taxonomy) || ProgramProperties.get("UseTopPercentForAll", true);
+                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
 
                     IMatchBlock[] matchBlocks = readBlock.getMatchBlocks();
                     for (int m = 0; m < matchBlocks.length; m++) {

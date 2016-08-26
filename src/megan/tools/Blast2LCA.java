@@ -40,8 +40,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,23 +96,23 @@ public class Blast2LCA {
         String keggOutputFile = options.getOption("-ko", "keggOutput", "KEGG output file", Basic.getFileBaseName(Basic.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-kegg.txt");
 
         options.comment("Functional classification:");
-        boolean doKegg = options.getOption("-k", "kegg", "Map reads to KEGG KOs?", false);
+        final boolean doKegg = options.getOption("-k", "kegg", "Map reads to KEGG KOs?", false);
 
         options.comment("Output options:");
-        boolean showRank = options.getOption("-sr", "showRanks", "Show taxonomic ranks", true);
-        boolean useOfficialRanksOnly = options.getOption("-oro", "officialRanksOnly", "Report only taxa that have an official rank", true);
-        boolean showTaxonIds = options.getOption("-tid", "showTaxIds", "Report taxon ids rather than taxon names", false);
+        final boolean showRank = options.getOption("-sr", "showRanks", "Show taxonomic ranks", true);
+        final boolean useOfficialRanksOnly = options.getOption("-oro", "officialRanksOnly", "Report only taxa that have an official rank", true);
+        final boolean showTaxonIds = options.getOption("-tid", "showTaxIds", "Report taxon ids rather than taxon names", false);
 
         options.comment("Parameters");
-        float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
-        float maxExpected = options.getOption("-me", "maxExpected", "Max expected", 0.01f);
+        final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
+        final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", 0.01f);
         float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
-        float minPercentIdentity = options.getOption("-mid", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
+        final float minPercentIdentity = options.getOption("-mid", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
 
-        double minComplexity = 0; //options.getOption("-c","Minimum complexity (between 0 and 1)",0.0);
+        final double minComplexity = 0; //options.getOption("-c","Minimum complexity (between 0 and 1)",0.0);
 
-        int keggRanksToReport = options.getOption("-kr", "maxKeggPerRead", "Maximum number of KEGG assignments to report for a read", 4);
-        boolean applyTopPercentFilterToKEGGAnalysis = options.getOption("+ktp", "applyTopPercentKegg", "Apply top percent filter in KEGG KO analysis", true);
+        final int keggRanksToReport = options.getOption("-kr", "maxKeggPerRead", "Maximum number of KEGG assignments to report for a read", 4);
+        final boolean applyTopPercentFilterToKEGGAnalysis = options.getOption("+ktp", "applyTopPercentKegg", "Apply top percent filter in KEGG KO analysis", true);
 
         options.comment("Classification support:");
 
@@ -131,18 +129,6 @@ public class Blast2LCA {
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number", ProgramProperties.get(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, true)));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
-
-        if (false)
-        {
-            final ClassLoader cl = ClassLoader.getSystemClassLoader();
-
-            final URL[] urls = ((URLClassLoader) cl).getURLs();
-
-            System.err.println("classpath:");
-            for (URL url : urls) {
-                System.err.println("\t" + url.getFile());
-            }
-        }
 
         final String propertiesFile;
         if (ProgramProperties.isMacOS())
@@ -219,8 +205,9 @@ public class Blast2LCA {
                             } else {
                                 if (topPercent == 0)
                                     topPercent = 0.0001f;
-                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, true, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-                                ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, false, readBlock, "KEGG", activeMatchesForGenes);
+
+                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                                ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, readBlock, "KEGG", activeMatchesForGenes);
 
                                 path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
                                 if (doKegg) {

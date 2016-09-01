@@ -37,7 +37,6 @@ public class PathExtractor {
     private Node[] singletons;
     private final List<Integer>[] readId2ContainedReads;
 
-
     /**
      * constructor
      *

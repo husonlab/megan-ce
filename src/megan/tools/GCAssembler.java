@@ -92,7 +92,7 @@ public class GCAssembler {
         options.comment("Classification");
 
         final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
-                + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ")", "");
+                + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ", none)", "");
         final String[] selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
 
         options.comment("Options");
@@ -122,9 +122,12 @@ public class GCAssembler {
         MeganProperties.initializeProperties(propertiesFile);
 
         final Set<String> supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
-        if (!supportedClassifications.contains(classificationName)) {
-            throw new UsageException("--classification: Must be one of: " + Basic.toString(supportedClassifications, ","));
+        if (!supportedClassifications.contains(classificationName) && classificationName.equalsIgnoreCase("none")) {
+            throw new UsageException("--classification: Must be one of: " + Basic.toString(supportedClassifications, ",") + ", none");
         }
+
+        if (classificationName.equalsIgnoreCase("none") && !(selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all")))
+            throw new UsageException("--classification 'none': --ids must be 'all' ");
 
         if (options.isVerbose())
             System.err.println("Opening file: " + inputFile);
@@ -202,12 +205,12 @@ public class GCAssembler {
                             final Integer classId = pair.getFirst();
                             final List<ReadData> readData = pair.getSecond();
 
-                            final String className = classification.getName2IdMap().get(classId);
+                            final String className = (classId == Integer.MAX_VALUE ? "all" : classification.getName2IdMap().get(classId));
                             if (veryVerbose)
-                                System.err.println("++++ Assembling class " + classId + ": " + className + ": ++++");
+                                System.err.println("++++ Assembling class" + (classId == Integer.MAX_VALUE ? "" : " " + classId) + ": " + className + ": ++++");
 
                             final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
-                            final String label = classificationName + ". Id: " + classId;
+                            final String label = classificationName + (classId == Integer.MAX_VALUE ? "" : ". Id: " + classId);
 
                             readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
 
@@ -246,16 +249,28 @@ public class GCAssembler {
         // read all data and place in queue
         final ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()));
 
-        for (Integer classId : classIdsList) {
-            final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
+        if (classificationName.equalsIgnoreCase("none")) {
+            final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, true, true);
             final List<ReadData> list = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
             try {
-                queue.put(new Pair<>(classId, list));
+                queue.put(new Pair<>(Integer.MAX_VALUE, list));
                 totalProgress.incrementProgress();
             } catch (InterruptedException e) {
                 Basic.caught(e);
             }
+        } else {
+            for (Integer classId : classIdsList) {
+                final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
+                final List<ReadData> list = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+                try {
+                    queue.put(new Pair<>(classId, list));
+                    totalProgress.incrementProgress();
+                } catch (InterruptedException e) {
+                    Basic.caught(e);
+                }
+            }
         }
+
         try {
             for (int i = 0; i < numberOfThreads; i++)
                 queue.put(sentinel);
@@ -292,6 +307,8 @@ public class GCAssembler {
      * @return output file name
      */
     private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
+        if (classId == Integer.MAX_VALUE)
+            classId = 0;
         String outputFile = null;
         if (outputFileTemplate.contains("%d"))
             outputFile = outputFileTemplate.replaceAll("%d", "" + classId);

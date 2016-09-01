@@ -34,6 +34,7 @@ import megan.data.IReadBlockIterator;
 import megan.data.ReadBlockIteratorMaxCount;
 import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.BlastMode;
+import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
@@ -449,7 +450,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
     public boolean isApplicable() {
         final Document doc = getDir().getDocument();
         return (getViewer() instanceof AlignmentViewer && ((AlignmentViewer) getViewer()).getAlignment().getLength() > 0) ||
-                (getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getNumberSelectedNodes() > 0 && doc.getMeganFile().hasDataConnector() && doc.getBlastMode().equals(BlastMode.BlastX));
+                (getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0 && doc.getMeganFile().hasDataConnector() && doc.getBlastMode().equals(BlastMode.BlastX));
     }
 
     public String getName() {

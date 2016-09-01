@@ -462,7 +462,7 @@ public class CSVExportTaxonomy {
         StringBuilder buf = new StringBuilder();
         String[] array = path.toArray(new String[path.size()]);
         for (int i = array.length - 1; i >= 0; i--) {
-            buf.append(array[i]).append(";");
+            buf.append(array[i].replaceAll(";", "_")).append(";");
         }
         return buf.toString();
     }

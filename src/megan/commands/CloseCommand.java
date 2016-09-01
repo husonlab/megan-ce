@@ -95,6 +95,7 @@ public class CloseCommand extends CommandBase implements ICommand {
             what = np.getWordMatchesIgnoringCase("current others");
         } else
             what = "current";
+        np.matchIgnoreCase(";");
 
         if (what.equalsIgnoreCase("current")) {
             if (getViewer() instanceof MainViewer) {

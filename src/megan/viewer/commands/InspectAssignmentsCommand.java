@@ -79,7 +79,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute(getSyntax());
+        executeImmediately(getSyntax());
     }
 
     public boolean isApplicable() {

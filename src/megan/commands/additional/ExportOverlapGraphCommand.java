@@ -129,8 +129,8 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
 
     public boolean isApplicable() {
         final Document doc = getDir().getDocument();
-        final ClassificationViewer classificationViewer = (ClassificationViewer) getDir().getViewerByAssignableFrom(ClassificationViewer.class);
-        return classificationViewer != null && classificationViewer.getNumberSelectedNodes() > 0 && doc.getMeganFile().hasDataConnector() && doc.getBlastMode().equals(BlastMode.BlastX);
+
+        return getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0 && doc.getMeganFile().hasDataConnector() && doc.getBlastMode().equals(BlastMode.BlastX);
     }
 
     public String getName() {

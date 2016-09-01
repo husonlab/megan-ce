@@ -104,15 +104,15 @@ public class Blast2Alignment {
 
         final Map<String, Set<String>> reference2seen = new HashMap<>(100000);
         int count = 0;
+        boolean seenActiveMatch = false;
         try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getReadsIteratorForListOfClassIds(classificationName, classIds, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 
-            final BitSet activeMatches = new BitSet();
-
             while (it.hasNext()) // iterate over all reads
             {
-                IReadBlock readBlock = it.next();
+                final BitSet activeMatches = new BitSet();
+                final IReadBlock readBlock = it.next();
                 totalNumberOfReads++;
                 count++;
 
@@ -187,20 +187,22 @@ public class Blast2Alignment {
                         totalReadsUsed++;
                     }
                     matchesSeenForGivenRead.clear();
+                    if (!seenActiveMatch && activeMatches.cardinality() > 0)
+                        seenActiveMatch = true;
                 }
                 if ((count % 100) == 0) {
                     progressListener.setSubtask("Collecting data (" + count + " reads processed)");
                     progressListener.setProgress(count);
                 }
             }
-            if (activeMatches.cardinality() == 0) {
-                throw new IOException("No active matches found");
-            }
         } catch (CanceledException ex) {
             System.err.println("USER CANCELED EXECUTE, dataset may be incomplete");
         } finally {
             reference2seen.clear();
         }
+        if (!seenActiveMatch)
+            throw new IOException("No active matches found");
+
 
         final int minReads = ProgramProperties.get(MeganProperties.MININUM_READS_IN_ALIGNMENT, 10);
         if (minReads > 1) {

@@ -93,7 +93,7 @@ public class MatchBlockDAA implements IMatchBlock {
     }
 
     public int getId(String cName) {
-        Integer id = fName2Id.get(cName);
+        final Integer id = fName2Id.get(cName);
         return id != null ? id : 0;
     }
 

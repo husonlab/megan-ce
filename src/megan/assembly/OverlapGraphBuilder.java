@@ -71,6 +71,7 @@ public class OverlapGraphBuilder {
 
         for (int r = 0; r < readDatas.length; r++) {
             final ReadData read = readDatas[r];
+            if (read.getMatches() != null) {
             for (int m = 0; m < read.getMatches().length; m++) {
                 final MatchData match = read.getMatches()[m];
                 SortedSet<MatchData> set = ref2matches.get(match.getRefName());
@@ -80,6 +81,7 @@ public class OverlapGraphBuilder {
                 }
                 set.add(match);
                 countPairs++;
+            }
             }
             progress.setProgress(r);
         }

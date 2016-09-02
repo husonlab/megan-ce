@@ -34,10 +34,7 @@ import megan.data.IReadBlockIterator;
 import megan.main.MeganProperties;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -122,19 +119,18 @@ public class GCAssembler {
         MeganProperties.initializeProperties(propertiesFile);
 
         final Set<String> supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
-        if (!supportedClassifications.contains(classificationName) && classificationName.equalsIgnoreCase("none")) {
-            throw new UsageException("--classification: Must be one of: " + Basic.toString(supportedClassifications, ",") + ", none");
+        if (!supportedClassifications.contains(classificationName) && !classificationName.equalsIgnoreCase("none")) {
+            throw new UsageException("--function: Must be one of: " + Basic.toString(supportedClassifications, ",") + ", none");
         }
 
+        // todo; fun=none mode does not work
+
         if (classificationName.equalsIgnoreCase("none") && !(selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all")))
-            throw new UsageException("--classification 'none': --ids must be 'all' ");
+            throw new UsageException("--function 'none': --ids must be 'all' ");
 
         if (options.isVerbose())
             System.err.println("Opening file: " + inputFile);
 
-        final Classification classification = ClassificationManager.get(classificationName, true);
-
-        final ArrayList<Integer> classIdsList;
 
         final Document document = new Document();
         document.getMeganFile().setFileFromExistingFile(inputFile, true);
@@ -143,48 +139,65 @@ public class GCAssembler {
         if (document.getMeganFile().isDAAFile() && document.getMeganFile().getDataConnector(true) == null)
             throw new IOException("Input DAA file: Must first be meganized");
 
-        final IConnector connector = document.getMeganFile().getDataConnector(true);
-
-        final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
-        if (doAllClasses) {
-            classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
-            for (Integer id : classificationBlock.getKeySet()) {
-                if (id > 0 && classificationBlock.getSum(id) > 0)
-                    classIdsList.add(id);
-                classIdsList.sort(new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer i, Integer j) {
-                        return i.compareTo(j);
-                    }
-                });
-            }
+        final Classification classification;
+        final List<Integer> classIdsList;
+        if (classificationName.equalsIgnoreCase("none")) {
+            classification = null;
+            classIdsList = Collections.singletonList(0);
         } else {
-            classIdsList = new ArrayList<>(selectedClassIds.length);
-            for (String str : selectedClassIds) {
-                if (Basic.isInteger(str))
-                    classIdsList.add(Basic.parseInt(str));
-                else {
-                    int id = classification.getName2IdMap().get(str);
-                    if (id != 0)
+            final IClassificationBlock classificationBlock;
+            classification = ClassificationManager.get(classificationName, true);
+
+            final IConnector connector = document.getMeganFile().getDataConnector(true);
+            classificationBlock = connector.getClassificationBlock(classificationName);
+
+            if (doAllClasses) {
+                classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
+                for (Integer id : classificationBlock.getKeySet()) {
+                    if (id > 0 && classificationBlock.getSum(id) > 0)
+                        classIdsList.add(id);
+                    classIdsList.sort(new Comparator<Integer>() {
+                        @Override
+                        public int compare(Integer i, Integer j) {
+                            return i.compareTo(j);
+                        }
+                    });
+                }
+            } else {
+                classIdsList = new ArrayList<>(selectedClassIds.length);
+                for (String str : selectedClassIds) {
+                    if (Basic.isInteger(str))
                         classIdsList.add(Basic.parseInt(str));
-                    else
-                        System.err.println("Unknown class: " + str);
+                    else {
+                        if (classification != null) {
+                            int id = classification.getName2IdMap().get(str);
+                            if (id != 0)
+                                classIdsList.add(Basic.parseInt(str));
+                            else
+                                System.err.println("Unknown class: " + str);
+                        }
+                    }
                 }
             }
         }
-
         if (options.isVerbose())
             System.err.println("Number of classes to assemble: " + classIdsList.size());
 
+        if (classIdsList.size() == 0)
+            throw new UsageException("No valid classes specified");
+
         final int numberOfThreads = Math.min(classIdsList.size(), desiredNumberOfThreads);
+        final int remainingThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - numberOfThreads);
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        final Single<Boolean> notCanceled = new Single<>(true);
-        final BlockingQueue<Pair<Integer, List<ReadData>>> queue = new ArrayBlockingQueue<>(10 * numberOfThreads, true);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-        final Pair<Integer, List<ReadData>> sentinel = new Pair<>(Integer.MAX_VALUE, null);
+
+        final BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(classIdsList.size() + numberOfThreads, true);
+        final Integer sentinel = Integer.MAX_VALUE;
 
         final int[] numberOfFilesProduced = new int[numberOfThreads];
         final int[] totalContigs = new int[numberOfThreads];
+
+        final ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()));
 
         for (int t = 0; t < numberOfThreads; t++) {
             final int threadNumber = t;
@@ -193,52 +206,59 @@ public class GCAssembler {
                 @Override
                 public void run() {
                     try {
-                        final MeganFile meganFile = new MeganFile();
-                        meganFile.setFileFromExistingFile(inputFile, true);
-                        final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
                         final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 
+                        final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
+                        final MeganFile meganFile = new MeganFile();
+                        meganFile.setFileFromExistingFile(inputFile, true);
+                        final IConnector connector = meganFile.getDataConnector(true);
+                        meganFile.setFileFromExistingFile(inputFile, true);
+
                         while (true) {
-                            final Pair<Integer, List<ReadData>> pair = queue.take();
-                            if (pair == sentinel)
+                            Integer classId = queue.take();
+                            if (classId.equals(sentinel))
                                 return;
-                            final Integer classId = pair.getFirst();
-                            final List<ReadData> readData = pair.getSecond();
-
-                            final String className = (classId == Integer.MAX_VALUE ? "all" : classification.getName2IdMap().get(classId));
-                            if (veryVerbose)
-                                System.err.println("++++ Assembling class" + (classId == Integer.MAX_VALUE ? "" : " " + classId) + ": " + className + ": ++++");
-
-                            final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
-                            final String label = classificationName + (classId == Integer.MAX_VALUE ? "" : ". Id: " + classId);
-
-                            readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
-
-                            int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
-
-                            if (veryVerbose)
-                                System.err.println(String.format("Number of contigs:%6d", count));
-
-                            if (doOverlapContigs) {
-                                count = ReadAssembler.mergeOverlappingContigs(desiredNumberOfThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
+                            try (final IReadBlockIterator it = getIterator(connector, classificationName, classId)) {
+                                final List<ReadData> readData = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+                                final String className = classification != null ? classification.getName2IdMap().get(classId) : "none";
                                 if (veryVerbose)
-                                    System.err.println(String.format("Remaining contigs:%6d", count));
-                            }
+                                    System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
 
-                            try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
-                                readAssembler.writeContigs(w, progress);
-                                if (veryVerbose) {
-                                    System.err.println("Contigs written to: " + outputFile);
-                                    readAssembler.reportContigStats();
+                                final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
+                                final String label = classificationName + ". Id: " + classId;
+
+                                readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
+
+                                int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+
+                                if (veryVerbose)
+                                    System.err.println(String.format("Number of contigs:%6d", count));
+
+                                if (doOverlapContigs) {
+                                    count = ReadAssembler.mergeOverlappingContigs(remainingThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
+                                    if (veryVerbose)
+                                        System.err.println(String.format("Remaining contigs:%6d", count));
                                 }
-                                numberOfFilesProduced[threadNumber]++;
-                                totalContigs[threadNumber] += readAssembler.getContigs().size();
+
+                                try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
+                                    readAssembler.writeContigs(w, progress);
+                                    if (veryVerbose) {
+                                        System.err.println("Contigs written to: " + outputFile);
+                                        readAssembler.reportContigStats();
+                                    }
+                                    numberOfFilesProduced[threadNumber]++;
+                                    totalContigs[threadNumber] += readAssembler.getContigs().size();
+                                }
+                            }
+                            synchronized (totalProgress) {
+                                totalProgress.incrementProgress();
                             }
                         }
                     } catch (Exception e) {
                         Basic.caught(e);
-                        if (e instanceof CanceledException)
-                            notCanceled.set(false);
+                        if (e instanceof CanceledException) {
+                            System.exit(1);
+                        }
                     } finally {
                         countDownLatch.countDown();
                     }
@@ -246,28 +266,11 @@ public class GCAssembler {
             });
         }
 
-        // read all data and place in queue
-        final ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()));
-
-        if (classificationName.equalsIgnoreCase("none")) {
-            final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, true, true);
-            final List<ReadData> list = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+        for (Integer classId : classIdsList) {
             try {
-                queue.put(new Pair<>(Integer.MAX_VALUE, list));
-                totalProgress.incrementProgress();
+                queue.put(classId);
             } catch (InterruptedException e) {
                 Basic.caught(e);
-            }
-        } else {
-            for (Integer classId : classIdsList) {
-                final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
-                final List<ReadData> list = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
-                try {
-                    queue.put(new Pair<>(classId, list));
-                    totalProgress.incrementProgress();
-                } catch (InterruptedException e) {
-                    Basic.caught(e);
-                }
             }
         }
 
@@ -285,16 +288,12 @@ public class GCAssembler {
             service.shutdownNow();
         }
 
-        if (!notCanceled.get())
-            throw new CanceledException();
-
         totalProgress.close();
 
         if (options.isVerbose()) {
             System.err.println("Number of files produced: " + Basic.getSum(numberOfFilesProduced));
             System.err.println("Total number of contigs:  " + Basic.getSum(totalContigs));
         }
-
     }
 
     /**
@@ -307,8 +306,6 @@ public class GCAssembler {
      * @return output file name
      */
     private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
-        if (classId == Integer.MAX_VALUE)
-            classId = 0;
         String outputFile = null;
         if (outputFileTemplate.contains("%d"))
             outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
@@ -319,5 +316,21 @@ public class GCAssembler {
         if (outputFile == null)
             outputFile = outputFileTemplate;
         return outputFile;
+    }
+
+    /**
+     * get the iterator
+     *
+     * @param connector
+     * @param classificationName
+     * @param classId
+     * @return iterator
+     * @throws IOException
+     */
+    private IReadBlockIterator getIterator(IConnector connector, String classificationName, int classId) throws IOException {
+        if (classificationName.equalsIgnoreCase("none"))
+            return connector.getAllReadsIterator(0, 10, true, true);
+        else
+            return connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
     }
 }

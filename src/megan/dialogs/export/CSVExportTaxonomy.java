@@ -126,7 +126,6 @@ public class CSVExportTaxonomy {
                             if (separator == ',')
                                 name = name.replaceAll(",", "_");
                         }
-                        w.write(separator + " " + name);
                         w.write(separator + name);
                     }
                     w.write("\n");

@@ -837,27 +837,28 @@ public class SampleAttributeTable {
                 if (tokens.length < 1 || !tokens[0].startsWith(SAMPLE_ID)) {
                     throw new IOException(SAMPLE_ID + " tag not found, no sample-attributes data...");
                 }
-                int tokensPerLine = tokens.length;
-                Set<String> newAttributes = new HashSet<>();
-                List<String> attributesOrder = new LinkedList<>();
+                final int tokensPerLine = tokens.length;
+                final Set<String> newAttributes = new HashSet<>();
+                final List<String> attributesOrder = new LinkedList<>();
 
                 for (int i = 1; i < tokensPerLine; i++) // first token is SAMPLE_ID, not an attribute
                 {
                     String attribute = tokens[i];
+
                     if (!isSecretAttribute(attribute) && !isHiddenAttribute(attribute) && (newAttributes.contains(attribute) || getAttributeOrder().contains(attribute))) {
                         int count = 1;
                         while (newAttributes.contains(attribute + "." + count) || getAttributeOrder().contains(attribute + "." + count)) {
                             count++;
                         }
-                        System.err.println("Warning: Renamed imported " + attribute + " to " + attribute + "." + count);
+                        System.err.println("Attribute " + attribute + " already exists, renaming to: " + attribute + "." + count);
                         attribute += "." + count;
                     }
                     newAttributes.add(attribute);
                     attributesOrder.add(attribute);
                 }
 
-                String[] pos2attribute = attributesOrder.toArray(new String[attributesOrder.size()]);
-                getAttributeOrder().clear();
+                final String[] pos2attribute = attributesOrder.toArray(new String[attributesOrder.size()]);
+
                 for (int i = 0; i < pos2attribute.length; i++) {
                     if (isHiddenAttribute(pos2attribute[i])) // don't import hidden attributes
                         pos2attribute[i] = null;

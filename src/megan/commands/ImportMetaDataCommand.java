@@ -26,6 +26,7 @@ import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
+import megan.fx.NotificationsInSwing;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ import java.io.FileReader;
 
 public class ImportMetaDataCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "import metaData=<file> [format={metaDataMapping}];";
+        return "import metaData=<file> [clearExisting={true|false}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -43,51 +44,51 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
         final Document doc = dir.getDocument();
         final SamplesViewer samplesViewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
 
-
         np.matchIgnoreCase("import metaData=");
         String fileName = np.getAbsoluteFileName();
 
-        String format = "metaDataMapping";
-        if (np.peekMatchIgnoreCase("format")) {
-            np.matchIgnoreCase("format=");
-            format = np.getWordMatchesIgnoringCase("metaDataMapping");
-        }
+        final boolean clearExisting;
+        if (np.peekMatchIgnoreCase("clearExisting")) {
+            np.matchIgnoreCase("clearExisting=");
+            clearExisting = np.getBoolean();
+        } else
+            clearExisting = true;
 
         np.matchIgnoreCase(";");
 
-        if (false) { // todo: fix this
-            if (ProgramProperties.isUseGUI()) {
-                int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Overwrite existing metadata?", "Overwrite existing metadata?", JOptionPane.YES_NO_CANCEL_OPTION);
-                if (result == JOptionPane.CANCEL_OPTION)
-                    return;
-                else if (result == JOptionPane.YES_OPTION) {
-                    System.err.println("Existing metadata cleared");
-                    doc.getSampleAttributeTable().clear();
-                } else {
-                    System.err.println("Overwriting metadata");
-                }
-            } else
-                doc.getSampleAttributeTable().clear();
+        if (clearExisting) {
+            System.err.println("Cleared existing metadata");
+            if (samplesViewer != null)
+                samplesViewer.getSamplesTable().getDataGrid().clear();
+            doc.getSampleAttributeTable().clear();
+        } else {
+            System.err.println("Overwriting metadata");
         }
 
-        if (samplesViewer != null) {
+        if (samplesViewer != null)
             samplesViewer.getSamplesTable().getDataGrid().save(samplesViewer.getSampleAttributeTable(), null);
-        }
+
+        final int old = doc.getSampleAttributeTable().getNumberOfAttributes();
 
         doc.getSampleAttributeTable().read(new FileReader(fileName), doc.getSampleNames(), false);
+
 
         doc.setDirty(true);
         if (samplesViewer != null) {
             samplesViewer.getSamplesTable().syncFromDocument();
         }
+
+        NotificationsInSwing.showInformation(getViewer().getFrame(), "Number of attributes imported: " + (doc.getSampleAttributeTable().getNumberOfAttributes() - old));
     }
 
     public void actionPerformed(ActionEvent event) {
-        File lastOpenFile = ProgramProperties.getFile("MetaDataFilePath");
-
-        File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Open metadata mapping file");
+        final File lastOpenFile = ProgramProperties.getFile("MetaDataFilePath");
+        final File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(".csv"), new TextFileFilter(".csv"), event, "Open metadata mapping file");
         if (file != null && file.length() > 0) {
-            execute("import metadata='" + file.getPath() + "';show window=samplesViewer;");
+            int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Clear existing metadata?", "Clear existing metadata?", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (result == JOptionPane.CANCEL_OPTION)
+                return;
+            execute("import metadata='" + file.getPath() + "' clearExisting=" + (result == JOptionPane.YES_OPTION) + ";show window=samplesViewer;");
             ProgramProperties.put("MetaDataFilePath", file.getPath());
         }
     }

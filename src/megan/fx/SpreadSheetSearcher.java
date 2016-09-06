@@ -22,6 +22,7 @@ package megan.fx;
 import javafx.application.Platform;
 import javafx.scene.control.TablePosition;
 import jloda.gui.find.IObjectSearcher;
+import jloda.util.Basic;
 import jloda.util.Pair;
 import org.controlsfx.control.spreadsheet.SpreadsheetColumn;
 import org.controlsfx.control.spreadsheet.SpreadsheetView;
@@ -45,6 +46,8 @@ public class SpreadSheetSearcher implements IObjectSearcher {
     final Set<Pair<Integer, Integer>> toSelect;
     final Set<Pair<Integer, Integer>> toDeselect;
     public static final String SEARCHER_NAME = "SpreadsheetSearcher";
+
+    final Set<Pair<Integer, Integer>> selected;
 
     /**
      * constructor
@@ -77,6 +80,7 @@ public class SpreadSheetSearcher implements IObjectSearcher {
         this.table = table;
         toSelect = new HashSet<>();
         toDeselect = new HashSet<>();
+        selected = new HashSet<>();
     }
 
     /**
@@ -156,12 +160,7 @@ public class SpreadSheetSearcher implements IObjectSearcher {
      * @return true, if selected
      */
     public boolean isCurrentSelected() {
-        try {
-            TablePosition cell = (TablePosition) table.getGrid().getRows().get(current.get1()).get(current.get2());
-            return table.getSelectionModel().getSelectedCells().contains(cell);
-        } catch (Exception ex) {
-        }
-        return false;
+        return isCurrentSet() && selected.contains(current);
     }
 
     /**
@@ -199,6 +198,7 @@ public class SpreadSheetSearcher implements IObjectSearcher {
             if (isCurrentSet())
                 return table.getGrid().getRows().get(current.get1()).get(current.get2()).getItem().toString();
         } catch (Exception ex) {
+            Basic.caught(ex);
         }
         return null;
     }
@@ -208,7 +208,20 @@ public class SpreadSheetSearcher implements IObjectSearcher {
      *
      * @param newLabel
      */
-    public void setCurrentLabel(String newLabel) {
+    public void setCurrentLabel(final String newLabel) {
+        final Pair<Integer, Integer> cell = new Pair<>(current.getFirst(), current.getSecond());
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                table.getGrid().getRows().get(cell.getFirst()).get(cell.getSecond()).setItem(newLabel);
+            }
+        };
+        if (Platform.isFxApplicationThread())
+            runnable.run();
+        else
+            Platform.runLater(runnable);
+
     }
 
     /**
@@ -226,7 +239,7 @@ public class SpreadSheetSearcher implements IObjectSearcher {
      * @return true, if at least one object is selected
      */
     public boolean isSelectionFindable() {
-        return false;
+        return selected.size() > 0;  //table.getSelectionModel().getSelectedCells().size()>0;
     }
 
     /**
@@ -298,5 +311,9 @@ public class SpreadSheetSearcher implements IObjectSearcher {
     @Override
     public Collection<AbstractButton> getAdditionalButtons() {
         return null;
+    }
+
+    public Set<Pair<Integer, Integer>> getSelected() {
+        return selected;
     }
 }

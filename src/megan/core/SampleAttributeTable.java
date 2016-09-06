@@ -355,6 +355,40 @@ public class SampleAttributeTable {
     }
 
     /**
+     * expands an existing attribute
+     *
+     * @param attribute
+     * @return number of columns added
+     */
+    public int expandAttribute(String attribute, boolean allowReplaceAttribute) {
+        final Set<Object> values = new TreeSet<>();
+        values.addAll(getSamples2Values(attribute).values());
+
+        final ArrayList<String> newOrder = new ArrayList<>(getAttributeOrder().size() + values.size());
+        newOrder.addAll(getAttributeOrder());
+        int pos = newOrder.indexOf(attribute);
+
+        int count = 0;
+        for (Object value : values) {
+            final String attributeName = attribute + ":" + value;
+            if (!getAttributeOrder().contains(attributeName)) {
+                Map<String, Object> samples2values = new HashMap<>();
+                for (String sample : getSampleOrder()) {
+                    samples2values.put(sample, get(sample, attribute).equals(value) ? 1 : 0);
+                }
+                boolean result = addAttribute(attributeName, samples2values, allowReplaceAttribute, false);
+                if (result) {
+                    attribute2type.put(attributeName, Type.Integer);
+                    count++;
+                    newOrder.add(pos + count, attributeName);
+                }
+            }
+        }
+        setAttributeOrder(newOrder);
+        return count;
+    }
+
+    /**
      * removes all attributes for which no sample has a defined value
      *
      * @return true, if at least one attribute was removed

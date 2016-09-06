@@ -30,6 +30,7 @@ import jloda.gui.director.ProjectManager;
 import jloda.gui.find.FindToolBar;
 import jloda.gui.find.SearchManager;
 import jloda.util.CanceledException;
+import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
@@ -68,6 +69,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     final SelectionSet.SelectionListener selectionListener;
 
     private boolean showFindToolBar = false;
+    private boolean showReplaceToolBar = false;
+
     private final SearchManager searchManager;
 
     private final CommandManagerFX commandManager;
@@ -76,6 +79,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     private final Set<String> needToReselectSamples = new HashSet<>();
 
     private final SamplesSpreadSheet samplesSpreadSheet;
+
+    private final SpreadSheetSearcher spreadSheetSearcher;
 
     /**
      * constructor
@@ -113,7 +118,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
-        searchManager = new SearchManager(dir, this, new SpreadSheetSearcher(frame, samplesSpreadSheet.getSpreadsheetView()), false, true);
+        spreadSheetSearcher = new SpreadSheetSearcher(frame, samplesSpreadSheet.getSpreadsheetView());
+        searchManager = new SearchManager(dir, this, spreadSheetSearcher, false, true);
 
         this.menuBar = new MenuBar(menuConfig, getCommandManager());
         frame.setJMenuBar(menuBar);
@@ -178,6 +184,15 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
             @Override
             public void onChanged(Change<? extends TablePosition> c) {
                 samplesSpreadSheet.updateNumberOfSelectedRowsAndCols();
+                while (c.next()) {
+                    for (TablePosition pos : c.getRemoved()) {
+                        spreadSheetSearcher.getSelected().remove(new Pair<>(pos.getRow(), pos.getColumn()));
+                    }
+                    for (TablePosition pos : c.getAddedSubList()) {
+                        spreadSheetSearcher.getSelected().add(new Pair<>(pos.getRow(), pos.getColumn()));
+                    }
+                }
+
                 // change enabled state here
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -239,22 +254,29 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
             samplesSpreadSheet.syncFromDocument();
         }
 
-        FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
+        final FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
         if (findToolBar.isClosing()) {
             showFindToolBar = false;
+            showReplaceToolBar = false;
             findToolBar.setClosing(false);
         }
         if (!findToolBar.isEnabled() && showFindToolBar) {
             mainPanel.add(findToolBar, BorderLayout.NORTH);
             findToolBar.setEnabled(true);
+            if (showReplaceToolBar)
+                findToolBar.setShowReplaceBar(true);
             frame.getContentPane().validate();
         } else if (findToolBar.isEnabled() && !showFindToolBar) {
             mainPanel.remove(findToolBar);
             findToolBar.setEnabled(false);
             frame.getContentPane().validate();
         }
-        if (findToolBar.isEnabled())
+        if (findToolBar.isEnabled()) {
             findToolBar.clearMessage();
+            searchManager.updateView(Director.ENABLE_STATE);
+            if (findToolBar.isShowReplaceBar() != showReplaceToolBar)
+                findToolBar.setShowReplaceBar(showReplaceToolBar);
+        }
 
         if (!doc.isDirty() && samplesSpreadSheet.getDataGrid().isChanged(getSampleAttributeTable()))
             doc.setDirty(true);
@@ -351,6 +373,16 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
     public void setShowFindToolBar(boolean show) {
         showFindToolBar = show;
+    }
+
+    public boolean isShowReplaceToolBar() {
+        return showReplaceToolBar;
+    }
+
+    public void setShowReplaceToolBar(boolean showReplaceToolBar) {
+        this.showReplaceToolBar = showReplaceToolBar;
+        if (showReplaceToolBar)
+            showFindToolBar = true;
     }
 
     public SearchManager getSearchManager() {

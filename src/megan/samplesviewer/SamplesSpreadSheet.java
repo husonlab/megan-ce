@@ -1089,5 +1089,4 @@ public class SamplesSpreadSheet {
                 selectRow(row);
         }
     }
-
 }

@@ -26,9 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.Optional;
 
 /**
@@ -113,6 +111,6 @@ public class RenameAttributeCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return null;
     }
 }

@@ -33,6 +33,8 @@ import megan.util.PopupChoice;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
@@ -548,5 +550,23 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 PopupChoice.addToJMenu(menu, CorrelationPlotDrawer.MODE.values(), mode, callBack);
             }
         };
+    }
+
+    @Override
+    public void writeData(Writer w) throws IOException {
+        w.write("CorrelationPlot");
+        for (String className : classNames) {
+            w.write("\t" + className);
+        }
+        w.write("\n");
+
+        for (int a = 0; a < classNames.length; a++) {
+            w.write(classNames[a]);
+            for (int c = 0; c < classNames.length; c++) {
+                final double correlationCoefficient = correlationDataMatrix[c][a];
+                w.write(String.format("\t%.4g", correlationCoefficient));
+            }
+            w.write("\n");
+        }
     }
 }

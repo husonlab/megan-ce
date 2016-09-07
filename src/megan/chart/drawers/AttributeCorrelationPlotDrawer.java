@@ -32,6 +32,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -309,5 +311,24 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 menu.add(action);
             }
         };
+    }
+
+    @Override
+    public void writeData(Writer w) throws IOException {
+        final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
+        w.write("AttributeCorrelationPlot");
+        for (String className : classNames) {
+            w.write("\t" + className);
+        }
+        w.write("\n");
+
+        for (int a = 0; a < numberOfAttributes; a++) {
+            w.write(attributeNames[a]);
+            for (int c = 0; c < classNames.length; c++) {
+                final double correlationCoefficient = correlationDataMatrix[c][a];
+                w.write(String.format("\t%.4g", correlationCoefficient));
+            }
+            w.write("\n");
+        }
     }
 }

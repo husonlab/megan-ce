@@ -38,6 +38,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
@@ -645,5 +647,9 @@ public class ChartDrawerBase extends JPanel {
 
     public JPanel getJPanel() {
         return this;
+    }
+
+    public void writeData(Writer w) throws IOException {
+        chartData.write(w);
     }
 }

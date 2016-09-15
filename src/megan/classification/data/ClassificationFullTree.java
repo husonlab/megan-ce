@@ -60,6 +60,15 @@ public class ClassificationFullTree extends PhyloTree {
         setAllowMultiLabeledNodes(true);
     }
 
+    public void clear() {
+        super.clear();
+        id2Node.clear();
+        id2Nodes.clear();
+
+        id2Address.clear();
+        address2Id.clear();
+    }
+
     /**
      * load the tree from a file
      *
@@ -67,6 +76,8 @@ public class ClassificationFullTree extends PhyloTree {
      * @throws java.io.IOException
      */
     public void loadFromFile(String fileName) throws IOException {
+        clear();
+
         System.err.print("Loading " + Basic.getFileNameWithoutPath(fileName) + ": ");
         try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
             read(r, true);
@@ -80,14 +91,6 @@ public class ClassificationFullTree extends PhyloTree {
                     System.err.println("Reticulate node: " + id);
             } else
                 throw new IOException("Node has illegal label: " + getLabel(v));
-        }
-
-        // add special nodes:
-        if (false) {
-            if (getName().equals("KEGG"))
-                addMissingToTree("Unclassified", 3000000, "K%05d", 20000);
-            if (getName().equals("PFAM"))
-                addMissingToTree("Unclassified", 3000000, "PF%05d", 20000);
         }
 
         if (id2Node.get(IdMapper.UNASSIGNED_ID) == null) {
@@ -551,7 +554,7 @@ public class ClassificationFullTree extends PhyloTree {
         if (id2Node.get(id) == null) {
             id2Node.put(id, v);
         } else if (id2Nodes.get(id) == null) {
-            Set<Node> set = new HashSet<>();
+            final Set<Node> set = new HashSet<>();
             set.add(id2Node.get(id));
             set.add(v);
             id2Nodes.put(id, set);

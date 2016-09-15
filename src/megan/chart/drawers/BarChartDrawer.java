@@ -47,6 +47,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
      * constructor
      */
     public BarChartDrawer() {
+        setBackground(Color.WHITE);
     }
 
     /**
@@ -56,7 +57,6 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
      */
     public void paint(Graphics gc0) {
         super.paint(gc0);
-
         leftMargin = 90;
         rightMargin = 75;
         bottomMargin = 200;
@@ -67,7 +67,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         if (getChartData().getRange() == null || getChartData().getNumberOfClasses() == 0 || getChartData().getNumberOfSeries() == 0) {
             drawTitle(gc, null);
             gc.setColor(Color.LIGHT_GRAY);
-            String label = "No data to show: please select nodes in other viewer and then press 'sync'";
+            String label = "No data to show: please select nodes in main viewer and then press 'sync'";
             gc.setFont(getFont("Default"));
             Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
             gc.drawString(label, (getWidth() - labelSize.width) / 2, 50);

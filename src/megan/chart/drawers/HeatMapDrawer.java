@@ -208,7 +208,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    if (isGapBetweenBars()) {
+                    if (isGapBetweenBars() && rect[3] > 2) {
                         gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
                     } else
                         gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
@@ -235,13 +235,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 d++;
             }
         }
-        gc.setColor(Color.WHITE);
 
         if (valuesList.size() > 0) {
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
             DrawableValue.drawValues(gc, valuesList, true, true);
             valuesList.clear();
         }
+        gc.setColor(Color.WHITE);
     }
 
     /**
@@ -376,7 +376,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    if (isGapBetweenBars()) {
+                    if (isGapBetweenBars() && rect[3] > 2) {
                         gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
                     } else
                         gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);

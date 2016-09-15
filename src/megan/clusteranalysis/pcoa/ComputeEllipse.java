@@ -21,11 +21,8 @@ package megan.clusteranalysis.pcoa;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
-import jloda.util.Basic;
 import jloda.util.Geometry;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -40,7 +37,7 @@ public class ComputeEllipse {
      * This code is based on a numerically stable version
      * of this fit published by R. Halir and J. Flusser
      * <p>
-     * Input:  XY(n,2) is the array of coordinates of n points x(i)=XY(i,1), y(i)=XY(i,2)
+     * Input:  points) is the array of 2D coordinates of n points
      * <p>
      * Output: A = [a b c d e f]' is the vector of algebraic
      * parameters of the fitting ellipse:
@@ -53,8 +50,8 @@ public class ComputeEllipse {
      * better approximated by a hyperbola.
      * It is somewhat biased toward smaller ellipses.
      *
-     * @param points
-     * @return
+     * @param points input 2D points
+     * @return algebraic parameters of the fitting ellipse
      */
     public static double[] apply(final double[][] points) {
         final int nPoints = points.length;
@@ -76,16 +73,12 @@ public class ComputeEllipse {
             d2[i][1] = points[i][1] - yCenter;
             d2[i][2] = 1;
         }
+
         final Matrix D2 = new Matrix(d2);
-
         final Matrix S1 = D1.transpose().times(D1);
-
         final Matrix S2 = D1.transpose().times(D2);
-
         final Matrix S3 = D2.transpose().times(D2);
-
         final Matrix T = (S3.inverse().times(-1)).times(S2.transpose());
-
         final Matrix M = S1.plus(S2.times(T));
 
         final double[][] m = M.getArray();
@@ -93,7 +86,6 @@ public class ComputeEllipse {
                 {m[0][0] / 2, m[0][1] / 2, m[0][2] / 2}};
 
         final Matrix N = new Matrix(n);
-
         final EigenvalueDecomposition E = N.eig();
         final Matrix eVec = E.getV();
 
@@ -112,7 +104,7 @@ public class ComputeEllipse {
         }
         final Matrix A1 = eVec.getMatrix(0, 2, firstPositiveIndex, firstPositiveIndex);
 
-        Matrix A = new Matrix(6, 1);
+        final Matrix A = new Matrix(6, 1);
         A.setMatrix(0, 2, 0, 0, A1);
         A.setMatrix(3, 5, 0, 0, T.times(A1));
 
@@ -123,8 +115,9 @@ public class ComputeEllipse {
         A.set(3, 0, a4);
         A.set(4, 0, a5);
         A.set(5, 0, a6);
-        A = A.times(1 / A.normF());
-        return A.getColumnPackedCopy();
+
+        final Matrix Anorm = A.times(1 / A.normF());
+        return Anorm.getColumnPackedCopy();
     }
 
     /**
@@ -135,20 +128,18 @@ public class ComputeEllipse {
      */
     private static double[] getMean(final double[][] points) {
         final int dim = points[0].length;
-        final double[] mean = new double[dim];
-        final double[] sum = new double[dim];
+        final double[] result = new double[dim];
 
         for (double[] point : points) {
             for (int i = 0; i < dim; i++) {
-                sum[i] += point[i];
+                result[i] += point[i];
             }
         }
 
         for (int i = 0; i < dim; i++) {
-            mean[i] = sum[i] / points.length;
+            result[i] /= points.length;
         }
-
-        return mean;
+        return result;
     }
 
     /**
@@ -225,53 +216,5 @@ public class ComputeEllipse {
         javafx.scene.shape.Ellipse ellipse = new javafx.scene.shape.Ellipse(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
         ellipse.setRotate(Geometry.rad2deg(dimensions[4]));
         return ellipse;
-    }
-
-    /**
-     * compute an ellipse
-     *
-     * @param points
-     * @return ellipse
-     */
-    public static Ellipse computeEllipse(double[][] points) {
-        final double[] dimensions = convertVariablesToDimension(apply(points));
-        return new Ellipse(dimensions[0], dimensions[1], dimensions[2], dimensions[3], dimensions[4]);
-    }
-
-    public static void main(String[] args) {
-        final double[][] points = {{110, 110}, {130, 145}, {360, 120}, {330, 140}, {490, 200}};
-
-        final double[] result = apply(points);
-
-        System.err.println("Input:  ");
-        for (double[] p : points)
-            System.err.print(" " + Basic.toString(p, ", "));
-        System.err.println("\nOutput: " + Basic.toString(result, ", "));
-        final double[] dims = convertVariablesToDimension(result);
-
-        System.err.println("Center: (" + dims[0] + "," + dims[1] + ")");
-        System.err.println("x-axis: " + dims[2]);
-        System.err.println("y-axis: " + dims[3]);
-        System.err.println("angle: " + dims[4]);
-
-        final Ellipse ellipse = computeEllipse(points);
-
-        JFrame frame = new JFrame();
-        frame.setSize(500, 500);
-        JPanel panel = new JPanel() {
-            @Override
-            public void paint(Graphics g) {
-                super.paint(g);
-                for (double[] p : points) {
-                    g.drawOval((int) p[0] - 1, (int) p[1] - 1, 2, 2);
-                    ellipse.paint(g);
-                }
-            }
-        };
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-
-        frame.setVisible(true);
-
     }
 }

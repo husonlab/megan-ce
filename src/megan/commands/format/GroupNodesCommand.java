@@ -26,6 +26,7 @@ import jloda.util.Basic;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
+import megan.clusteranalysis.gui.PCoATab;
 import megan.core.Director;
 import megan.core.Document;
 import megan.groups.GroupsViewer;
@@ -48,7 +49,7 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
      */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set groupNodes=");
-        String choice = np.getWordMatchesIgnoringCase("none selected");
+        final String choice = np.getWordMatchesIgnoringCase("none selected");
         np.matchIgnoreCase(";");
 
         final Document doc = ((Director) getDir()).getDocument();
@@ -86,7 +87,12 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
 
         for (IDirectableViewer viewer : ((Director) getDir()).getViewers()) {
             if (viewer instanceof ClusterViewer) {
-                ((ClusterViewer) viewer).getPcoaTab().setShowGroups(true);
+                if (choice.equalsIgnoreCase("selected")) {
+                    final PCoATab pcoaTab = ((ClusterViewer) viewer).getPcoaTab();
+                    if (!pcoaTab.isShowGroupsAsEllipses() && !pcoaTab.isShowGroupsAsConvexHulls()) {
+                        pcoaTab.setShowGroupsAsEllipses(true);
+                    }
+                }
                 viewer.updateView(Director.ALL);
             }
         }

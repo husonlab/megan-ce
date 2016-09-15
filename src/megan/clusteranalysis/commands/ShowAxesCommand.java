@@ -55,7 +55,7 @@ public class ShowAxesCommand extends CommandBase implements ICheckBoxCommand {
         boolean show = np.getBoolean();
         np.matchIgnoreCase(";");
 
-        ClusterViewer viewer = getViewer();
+        final ClusterViewer viewer = getViewer();
         viewer.getPcoaTab().setShowAxes(show);
     }
 

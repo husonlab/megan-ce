@@ -439,8 +439,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 addFormatting(upgmaTab.getGraphView());
                 addFormatting(njTab.getGraphView());
                 addFormatting(nnetTab.getGraphView());
-                if (pcoaTab.isShowGroups())
-                    pcoaTab.computeConvexHullOfGroups(group2Nodes);
+                if (pcoaTab.isShowGroupsAsEllipses() || pcoaTab.isShowGroupsAsConvexHulls())
+                    pcoaTab.computeConvexHullsAndEllipsesForGroups(group2Nodes);
                 addFormatting(pcoaTab.getGraphView());
                 graphView.setSelected(toSelect, true);
             }

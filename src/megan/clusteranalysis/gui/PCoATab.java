@@ -32,6 +32,8 @@ import jloda.phylo.PhyloTree;
 import jloda.util.*;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.GUIConfiguration;
+import megan.clusteranalysis.pcoa.ComputeEllipse;
+import megan.clusteranalysis.pcoa.Ellipse;
 import megan.clusteranalysis.pcoa.PCoA;
 import megan.clusteranalysis.pcoa.Utilities;
 import megan.clusteranalysis.pcoa.geom3d.Matrix3D;
@@ -75,7 +77,8 @@ public class PCoATab extends JPanel implements ITab {
     private boolean showBiPlot = ProgramProperties.get("ShowBiPlot", false);
     private boolean showTriPlot = ProgramProperties.get("ShowTriPlot", false);
 
-    private boolean showGroups = ProgramProperties.get("ShowGroups", true);
+    private boolean showGroupsAsEllipses = ProgramProperties.get("ShowGroups", true);
+    private boolean showGroupsAsConvexHulls = ProgramProperties.get("ShowGroupsAsConvexHulls", true);
 
     private final NodeSet biplotNodes;
     private final EdgeSet biplotEdges;
@@ -85,6 +88,7 @@ public class PCoATab extends JPanel implements ITab {
 
     private final NodeSet convexHullCenters;
     private final EdgeSet convexHullEdges;
+    private final ArrayList<Ellipse> ellipses;
 
     private int biplotSize = ProgramProperties.get("BiplotSize", 3);
     private int triplotSize = ProgramProperties.get("TriplotSize", 3);
@@ -180,6 +184,16 @@ public class PCoATab extends JPanel implements ITab {
 
             public void resetViews() {
             }
+
+            public void paint(Graphics g) {
+                super.paint(g);
+
+                if (showGroupsAsEllipses) {
+                    for (Ellipse ellipse : ellipses) {
+                        ellipse.paint(g, trans);
+                    }
+                }
+            }
         };
         graph = (PhyloGraph) graphView.getGraph();
         graphView.setCanvasColor(Color.WHITE);
@@ -207,6 +221,7 @@ public class PCoATab extends JPanel implements ITab {
 
         convexHullCenters = new NodeSet(graph);
         convexHullEdges = new EdgeSet(graph);
+        ellipses = new ArrayList<>();
 
         transformation3D = new Matrix3D();
         node2vector = new NodeArray<>(graph);
@@ -293,6 +308,7 @@ public class PCoATab extends JPanel implements ITab {
                     graphView.setSelected(nodesToSelect, select);
                 }
             }
+
             public void doClickLabel(NodeSet nodes, int clicks) {
                 doClick(nodes, clicks);
             }
@@ -321,8 +337,8 @@ public class PCoATab extends JPanel implements ITab {
             public void mouseReleased(MouseEvent e) {
                 super.mousePressed(e);
                 if (previousLocation.get() != null) {
-                    if (showGroups && !clusterViewer.isLocked()) {
-                        // computeConvexHullOfGroups(clusterViewer.getGroup2Nodes());
+                    if (showGroupsAsConvexHulls && !clusterViewer.isLocked()) {
+                        // computeConvexHullsAndEllipsesForGroups(clusterViewer.getGroup2Nodes());
                         updateTransform(is3dMode);
                     }
                     previousLocation.set(null);
@@ -345,8 +361,8 @@ public class PCoATab extends JPanel implements ITab {
                     }
                     if (h != 0 || v != 0) {
                         updateTransform(is3dMode);
-                        if (showGroups && !clusterViewer.isLocked()) {
-                            computeConvexHullOfGroups(clusterViewer.getGroup2Nodes());
+                        if ((showGroupsAsConvexHulls || showGroupsAsEllipses) && !clusterViewer.isLocked()) {
+                            computeConvexHullsAndEllipsesForGroups(clusterViewer.getGroup2Nodes());
                             // updateConvexHullOfGroups(clusterViewer.getGroup2Nodes());
                         }
                     }
@@ -616,18 +632,27 @@ public class PCoATab extends JPanel implements ITab {
         return triplotSize;
     }
 
-    public void setShowGroups(boolean showGroups) {
-        this.showGroups = showGroups;
-        ProgramProperties.put("ShowGroups", showGroups);
+    public void setShowGroupsAsConvexHulls(boolean showGroupsAsConvexHulls) {
+        this.showGroupsAsConvexHulls = showGroupsAsConvexHulls;
+        ProgramProperties.put("ShowGroupsAsConvexHulls", showGroupsAsConvexHulls);
         for (Iterator<Edge> it = graph.edgeIteratorIncludingHidden(); it.hasNext(); ) {
             Edge e = it.next();
             if (convexHullEdges.contains(e))
-                graph.setHidden(e, !showGroups);
+                graph.setHidden(e, !showGroupsAsConvexHulls);
         }
     }
 
-    public boolean isShowGroups() {
-        return showGroups;
+    public boolean isShowGroupsAsEllipses() {
+        return showGroupsAsEllipses;
+    }
+
+    public void setShowGroupsAsEllipses(boolean showGroupsAsEllipses) {
+        this.showGroupsAsEllipses = showGroupsAsEllipses;
+        ProgramProperties.put("ShowGroups", showGroupsAsEllipses);
+    }
+
+    public boolean isShowGroupsAsConvexHulls() {
+        return showGroupsAsConvexHulls;
     }
 
     /**
@@ -648,11 +673,11 @@ public class PCoATab extends JPanel implements ITab {
     }
 
     /**
-     * computes the convex hulls of all groups of nodes
+     * computes the convex hulls and ellipses of all groups of nodes
      *
      * @param group2Nodes
      */
-    public void computeConvexHullOfGroups(final Map<String, LinkedList<Node>> group2Nodes) {
+    public void computeConvexHullsAndEllipsesForGroups(final Map<String, LinkedList<Node>> group2Nodes) {
         synchronized (convexHullEdges) {
             {
                 final Set<Edge> edgeToDelete = new HashSet<>();
@@ -675,6 +700,7 @@ public class PCoATab extends JPanel implements ITab {
                 }
             }
             convexHullEdges.clear();
+            ellipses.clear();
 
             for (Node v : convexHullCenters) {
                 graph.deleteNode(v);
@@ -695,16 +721,31 @@ public class PCoATab extends JPanel implements ITab {
 
                         final Point2D aPt = new PointNode(Math.round(graphView.getLocation(v).getX()), Math.round(graphView.getLocation(v).getY()), v);
                         points.add(aPt);
-                        String sample = graph.getLabel(v);
-                        Color color = graphView.getDocument().getChartColorManager().getSampleColor(sample);
+                        final String sample = graph.getLabel(v);
+                        final Color color = graphView.getDocument().getChartColorManager().getSampleColor(sample);
                         r += color.getRed();
                         g += color.getGreen();
                         b += color.getBlue();
                     }
                     if (points.size() > 1) {
                         final Color color = new Color((int) (r / nodes.size()), (int) (g / nodes.size()), (int) (b / nodes.size()));
-
                         final ArrayList<Point2D> hull = ConvexHull.quickHull(points);
+
+                        if (showGroupsAsEllipses) {
+                            final ArrayList<Point2D> points4 = new ArrayList<>(4 * points.size());
+                            for (Point2D p : points) {
+                                points4.add(new Point2D.Double(p.getX() - 8, p.getY() - 8));
+                                points4.add(new Point2D.Double(p.getX() - 8, p.getY() + 8));
+                                points4.add(new Point2D.Double(p.getX() + 8, p.getY() - 8));
+                                points4.add(new Point2D.Double(p.getX() + 8, p.getY() + 8));
+                            }
+                            final Ellipse ellipse = ComputeEllipse.computeEllipse(points4);
+                            ellipse.setColor(color);
+                            ellipses.add(ellipse);
+                        }
+
+                        if (!showGroupsAsConvexHulls)
+                            continue;
 
                         for (int i = 0; i < hull.size(); i++) {
                             final Node v = ((PointNode) hull.get(i > 0 ? i - 1 : hull.size() - 1)).getNode(); // prev node in polygon
@@ -1148,16 +1189,16 @@ public class PCoATab extends JPanel implements ITab {
         final Point diff = new Point(wp.x - vp.x, wp.y - vp.y);
         if (diff.x != 0 || diff.y != 0) {
             final int arrowLength = 5;
-        final double arrowAngle = 2.2;
+            final double arrowAngle = 2.2;
             double alpha = Geometry.computeAngle(diff);
-        Point a = new Point(arrowLength, 0);
-        a = Geometry.rotate(a, alpha + arrowAngle);
-        a.translate(wp.x, wp.y);
-        Point b = new Point(arrowLength, 0);
-        b = Geometry.rotate(b, alpha - arrowAngle);
-        b.translate(wp.x, wp.y);
-        gc.drawLine(a.x, a.y, wp.x, wp.y);
-        gc.drawLine(wp.x, wp.y, b.x, b.y);
+            Point a = new Point(arrowLength, 0);
+            a = Geometry.rotate(a, alpha + arrowAngle);
+            a.translate(wp.x, wp.y);
+            Point b = new Point(arrowLength, 0);
+            b = Geometry.rotate(b, alpha - arrowAngle);
+            b.translate(wp.x, wp.y);
+            gc.drawLine(a.x, a.y, wp.x, wp.y);
+            gc.drawLine(wp.x, wp.y, b.x, b.y);
         }
     }
 
@@ -1179,16 +1220,16 @@ public class PCoATab extends JPanel implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (graph.getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-                getGraphView().setAutoLayoutLabels(true);
-                setData(taxa, distances);
-                getGraphView().setFixedNodeSize(true);
-                getGraphView().resetViews();
-                getGraphView().getScrollPane().revalidate();
-                getGraphView().fitGraphToWindow();
-                getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
-                clusterViewer.addFormatting(getGraphView());
-                clusterViewer.updateConvexHulls = true;
-            }
+            getGraphView().setAutoLayoutLabels(true);
+            setData(taxa, distances);
+            getGraphView().setFixedNodeSize(true);
+            getGraphView().resetViews();
+            getGraphView().getScrollPane().revalidate();
+            getGraphView().fitGraphToWindow();
+            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
+            clusterViewer.addFormatting(getGraphView());
+            clusterViewer.updateConvexHulls = true;
+        }
     }
 
     /**
@@ -1272,7 +1313,7 @@ public class PCoATab extends JPanel implements ITab {
     public void setShowAxes(boolean showAxes) {
         this.showAxes = showAxes;
         ProgramProperties.put("ShowPCoAAxes", showAxes);
-        updateView(IDirector.ENABLE_STATE);
+        clusterViewer.updateView(IDirector.ENABLE_STATE);
     }
 
     public boolean isApplicable() {

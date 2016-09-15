@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Daniel H. Huson
+ *  Copyright (C) 2016 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,8 +19,6 @@
 package megan.clusteranalysis.commands;
 
 import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.director.IDirector;
-import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 
@@ -28,10 +26,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * show groups as ellipses
- * Daniel Huson, 9.2016
+ * show groups
+ * Daniel Huson, 7.2014
  */
-public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowGroupsAsConvexHullsCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *
@@ -39,7 +37,7 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getPcoaTab() != null && viewer.getPcoaTab().isShowGroupsAsEllipses();
+        return viewer.getPcoaTab() != null && viewer.getPcoaTab().isShowGroupsAsConvexHulls();
     }
 
     /**
@@ -50,28 +48,6 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("set showGroups=");
-        final boolean show = np.getBoolean();
-        final String style;
-        if (np.peekMatchIgnoreCase("style")) {
-            np.matchIgnoreCase("style=");
-            style = np.getWordMatchesIgnoringCase("ellipses convexHulls");
-        } else
-            style = "ellipses";
-        np.matchIgnoreCase(";");
-
-        final ClusterViewer viewer = getViewer();
-        if (style.equalsIgnoreCase("ellipses"))
-            viewer.getPcoaTab().setShowGroupsAsEllipses(show);
-        else
-            viewer.getPcoaTab().setShowGroupsAsConvexHulls(show);
-        try {
-            if (show)
-                viewer.getPcoaTab().computeConvexHullsAndEllipsesForGroups(viewer.getGroup2Nodes());
-            viewer.updateView(IDirector.ENABLE_STATE);
-        } catch (Exception ex) {
-            Basic.caught(ex);
-        }
     }
 
     /**
@@ -81,7 +57,7 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      */
     @Override
     public String getSyntax() {
-        return "set showGroups={false|true} [style={ellipses|convexHulls}];";
+        return null;
     }
 
     /**
@@ -108,7 +84,7 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      * @return name
      */
     public String getName() {
-        return "Show Groups";
+        return "Show Groups As Convex Hulls";
     }
 
     /**
@@ -117,7 +93,7 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      * @return description
      */
     public String getDescription() {
-        return "Show groups";
+        return "Show groups as convex hulls";
     }
 
     /**
@@ -144,7 +120,7 @@ public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        executeImmediately("set showGroups=" + (!isSelected()) + " style=ellipses;");
+        executeImmediately("set showGroups=" + (!isSelected()) + " style=convexHulls;");
     }
 
     /**

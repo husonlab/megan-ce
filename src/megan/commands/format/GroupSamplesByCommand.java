@@ -44,8 +44,10 @@ public class GroupSamplesByCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("groupBy attribute=");
-        String attribute = np.getWordRespectCase();
-        Document doc = ((Director) getDir()).getDocument();
+        final String attribute = np.getWordRespectCase();
+        np.matchIgnoreCase(";");
+
+        final Document doc = ((Director) getDir()).getDocument();
 
         java.util.Collection<String> samples;
         if (getViewer() instanceof SamplesViewer) {

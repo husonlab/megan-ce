@@ -72,8 +72,8 @@ public class RotateCommand extends CommandBase implements ICommand {
             matrix.rotateZ(angle);
         }
         viewer.getPcoaTab().updateTransform(true);
-        if (viewer.getPcoaTab().isShowGroups())
-            viewer.getPcoaTab().computeConvexHullOfGroups(viewer.getGroup2Nodes());
+        if (viewer.getPcoaTab().isShowGroupsAsConvexHulls())
+            viewer.getPcoaTab().computeConvexHullsAndEllipsesForGroups(viewer.getGroup2Nodes());
         np.matchIgnoreCase(";");
     }
 

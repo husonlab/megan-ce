@@ -57,7 +57,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
 
     public static final String NAME = "CorrelationPlot";
 
-    protected float[][] correlationDataMatrix = null;
+    protected float[][] dataMatrix = null;
 
     protected boolean inUpdateCoordinates = true;
     protected String[] classNames = null;
@@ -149,7 +149,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 int c = getChartData().getNumberOfClasses() - 1;
                 for (int j = 0; j < classNames.length; j++) {
                     final String classNameY = classNames[j];
-                    final double correlationCoefficient = correlationDataMatrix[i][j];
+                    final double correlationCoefficient = dataMatrix[i][j];
                     final double[] boundingBox = new double[]{x0 + d * xStep, y0 - (c + 1) * yStep, xStep, yStep};
 
                     // gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
@@ -401,7 +401,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
      * @return true, if coordinates need to be recomputed
      */
     private boolean mustUpdateCoordinates() {
-        boolean mustUpdate = (correlationDataMatrix == null);
+        boolean mustUpdate = (dataMatrix == null);
 
         final ArrayList<String> currentClasses = new ArrayList<>();
         currentClasses.addAll(getChartData().getClassNames());
@@ -425,7 +425,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
      */
     @Override
     public void forceUpdate() {
-        correlationDataMatrix = null;
+        dataMatrix = null;
         previousClasses.clear();
         previousSamples.clear();
     }
@@ -469,12 +469,12 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         System.err.println("Updating...");
         classNames = getChartData().getClassNames().toArray(new String[getChartData().getNumberOfClasses()]);
 
-        correlationDataMatrix = new float[classNames.length][classNames.length];
+        dataMatrix = new float[classNames.length][classNames.length];
 
         for (int i = 0; i < classNames.length; i++) {
-            correlationDataMatrix[i][i] = 1;
+            dataMatrix[i][i] = 1;
             for (int j = i + 1; j < classNames.length; j++) {
-                correlationDataMatrix[i][j] = correlationDataMatrix[j][i] = computeCorrelationCoefficent(classNames[i], classNames[j]);
+                dataMatrix[i][j] = dataMatrix[j][i] = computeCorrelationCoefficent(classNames[i], classNames[j]);
             }
         }
     }
@@ -563,7 +563,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         for (int a = 0; a < classNames.length; a++) {
             w.write(classNames[a]);
             for (int c = 0; c < classNames.length; c++) {
-                final double correlationCoefficient = correlationDataMatrix[c][a];
+                final double correlationCoefficient = dataMatrix[c][a];
                 w.write(String.format("\t%.4g", correlationCoefficient));
             }
             w.write("\n");

@@ -206,7 +206,7 @@ public class LabelsJList extends JList<String> {
      * @return all labels
      */
     public LinkedList<String> getAllLabels() {
-        LinkedList<String> result = new LinkedList<>();
+        final LinkedList<String> result = new LinkedList<>();
         for (int i = 0; i < getModel().getSize(); i++) {
             String label = getModel().getElementAt(i);
             result.add(label);
@@ -215,9 +215,8 @@ public class LabelsJList extends JList<String> {
     }
 
     public LinkedList<String> getSelectedLabels() {
-        LinkedList<String> result = new LinkedList<>();
-
-        DefaultListModel model = (DefaultListModel) getModel();
+        final LinkedList<String> result = new LinkedList<>();
+        final DefaultListModel model = (DefaultListModel) getModel();
         for (int i = 0; i < model.getSize(); i++) {
             if (isSelectedIndex(i)) {
                 result.add(model.getElementAt(i).toString());
@@ -227,7 +226,7 @@ public class LabelsJList extends JList<String> {
     }
 
     public void selectTop(int top) {
-        DefaultListModel model = (DefaultListModel) getModel();
+        final DefaultListModel model = (DefaultListModel) getModel();
         top = Math.min(top, model.getSize());
         clearSelection();
         if (top > 0)
@@ -240,7 +239,7 @@ public class LabelsJList extends JList<String> {
      * @return enabled labels
      */
     public LinkedList<String> getEnabledLabels() {
-        LinkedList<String> result = new LinkedList<>();
+        final LinkedList<String> result = new LinkedList<>();
         for (int i = 0; i < getModel().getSize(); i++) {
             String label = getModel().getElementAt(i);
             if (!disabledLabels.contains(label))
@@ -255,7 +254,7 @@ public class LabelsJList extends JList<String> {
      * @return disabled labels
      */
     public LinkedList<String> getDisabledLabels() {
-        LinkedList<String> result = new LinkedList<>();
+        final LinkedList<String> result = new LinkedList<>();
         result.addAll(disabledLabels);
         return result;
     }

@@ -50,6 +50,8 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
     private ColorTable colorTable;
 
+    protected float[][] dataMatrix = null;
+
     protected Table<String, String, Double> zScores = null;
     private double zScoreCutoff = 3;
 
@@ -111,7 +113,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         final Collection<String> seriesOrder;
         final Collection<String> classesOrder;
-        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+        if (scalingType == ChartViewer.ScalingType.ZSCORE && isDoClustering()) {
             x1 -= treeSpace;
             if (sgc == null)
                 drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
@@ -208,7 +210,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    if (isGapBetweenBars() && rect[3] > 2) {
+                    if (isGapBetweenBars() && rect[2] > 2 && rect[3] > 2) {
                         gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
                     } else
                         gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
@@ -279,7 +281,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final Collection<String> seriesOrder;
         final Collection<String> classesOrder;
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+        if (scalingType == ChartViewer.ScalingType.ZSCORE && isDoClustering()) {
             x1 -= treeSpace;
             if (sgc == null)
                 drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
@@ -376,7 +378,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                             (int) Math.round(xStep), (int) Math.round(yStep)};
                     if (sgc != null)
                         sgc.setCurrentItem(new String[]{series, className});
-                    if (isGapBetweenBars() && rect[3] > 2) {
+                    if (isGapBetweenBars() && rect[2] > 2 && rect[3] > 2) {
                         gc.fillRect(rect[0] + 1, rect[1] + 1, rect[2] - 2, rect[3] - 2);
                     } else
                         gc.fillRect(rect[0], rect[1], rect[2] + 1, rect[3] + 1);
@@ -450,7 +452,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final Collection<String> seriesOrder;
         final Collection<String> classesOrder;
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+        if (scalingType == ChartViewer.ScalingType.ZSCORE && isDoClustering()) {
             y1 += treeSpace;
             seriesOrder = seriesClusteringTree.getLabelOrder();
             classesOrder = classesClusteringTree.getLabelOrder();
@@ -570,7 +572,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         int xLabel = x0 + 15;
         int boxWidth = 10;
-        int boxHeight = Math.min(getScalingType() == ChartViewer.ScalingType.ZSCORE ? treeSpace - 12 : 150, height - 15);
+        int boxHeight = Math.min(getScalingType() == ChartViewer.ScalingType.ZSCORE && isDoClustering() ? treeSpace - 12 : 150, height - 15);
 
         int y0 = y;
 
@@ -641,7 +643,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
                 }
-                gc.drawString("Log", x0, y - 5);
+                gc.drawString("Count", x0, y - 5);
                 int tens = 1;
                 int factor = 1;
                 while (factor * tens < maxValue) {
@@ -675,7 +677,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
                 }
-                gc.drawString("Sqrt", x0, y - 5);
+                gc.drawString("Count", x0, y - 5);
                 int tens = 1;
                 int factor = 1;
                 while (factor * tens < maxValue) {
@@ -810,6 +812,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
      */
     @Override
     public void forceUpdate() {
+        System.err.println("Force update");
         zScores = null;
         previousClasses.clear();
         previousSamples.clear();
@@ -854,6 +857,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         seriesClusteringTree.updateClustering(zScores);
         classesClusteringTree.updateClustering(zScores);
+        // todo: check whether we always need to call this
         updateSeriesJList();
         updateClassesJList();
         //System.err.println("Order: " + Basic.toString(seriesClustering.getLabelOrder(), ","));
@@ -920,6 +924,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         ordered.addAll(others);
         viewer.getSeriesList().sync(ordered, viewer.getSeriesList().getLabel2ToolTips(), true);
         viewer.getChartSelection().setSelectedSeries(selected, true);
+        viewer.getSeriesList().setDisabledLabels(others);
     }
 
     private void updateClassesJList() {
@@ -931,5 +936,16 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         ordered.addAll(others);
         viewer.getClassesList().sync(ordered, viewer.getClassesList().getLabel2ToolTips(), true);
         viewer.getChartSelection().setSelectedClass(selected, true);
+        viewer.getClassesList().setDisabledLabels(others);
+
+    }
+
+    @Override
+    public boolean canCluster(ClusteringTree.TYPE type) {
+        return scalingType == ChartViewer.ScalingType.ZSCORE && (type == null || type == ClusteringTree.TYPE.SERIES || type == ClusteringTree.TYPE.CLASSES);
+    }
+
+    public boolean isDoClustering() {
+        return scalingType == ChartViewer.ScalingType.ZSCORE && super.isDoClustering();
     }
 }

@@ -47,7 +47,7 @@ public class GUIConfiguration {
                 "Hide Unselected;Hide Selected;|;Set Color...;|;Find...;Find Again;|;Colors...;");
 
         menuConfig.defineMenu("Options", "Set Title...;Set Series Label...;Set Classes Label...;Set Counts Label...;|;" +
-                "Linear Scale;Sqrt Scale;Log Scale;Percentage Scale;Z-Score Scale;|;Vertical Grid Lines;Gaps Between Bars;");
+                "Linear Scale;Sqrt Scale;Log Scale;Percentage Scale;Z-Score Scale;|;Cluster;|;Vertical Grid Lines;Gaps Between Bars;");
 
         menuConfig.defineMenu("Layout", "@Font;|;Show Legend;Show Values;|;Show x-Axis;Show y-Axis;|;Use Jitter;Rectangle Shape;Show Internal Labels;" +
                 "Set Max Radius...;|;Labels Standard;Labels Up 45o;Labels Down 45o;Labels Up 90o;Labels Down 90o;|;" +

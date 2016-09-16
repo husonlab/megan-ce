@@ -20,7 +20,7 @@ package megan.chart;
 
 import jloda.gui.ILabelGetter;
 import jloda.gui.IPopupMenuModifier;
-import jloda.util.Pair;
+import megan.chart.cluster.ClusteringTree;
 import megan.chart.data.IData;
 import megan.chart.gui.ChartSelection;
 import megan.chart.gui.ChartViewer;
@@ -122,7 +122,7 @@ public interface IChartDrawer {
 
     boolean selectOnRubberBand(Rectangle rectangle, MouseEvent mouseEvent, ChartSelection chartSelection);
 
-    Pair<String, String> getItemBelowMouse(MouseEvent mouseEvent, ChartSelection chartSelection);
+    String[] getItemBelowMouse(MouseEvent mouseEvent, ChartSelection chartSelection);
 
     Label2LabelMapper getClass2HigherClassMapper();
 
@@ -171,4 +171,10 @@ public interface IChartDrawer {
     boolean isEnabled();
 
     void writeData(Writer w) throws IOException;
+
+    void setDoClustering(boolean state);
+
+    boolean isDoClustering();
+
+    boolean canCluster(ClusteringTree.TYPE type);
 }

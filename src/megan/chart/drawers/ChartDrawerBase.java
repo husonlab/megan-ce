@@ -25,6 +25,7 @@ import jloda.util.Basic;
 import jloda.util.Geometry;
 import jloda.util.Pair;
 import megan.chart.ChartColorManager;
+import megan.chart.cluster.ClusteringTree;
 import megan.chart.data.IData;
 import megan.chart.gui.ChartSelection;
 import megan.chart.gui.ChartViewer;
@@ -86,6 +87,8 @@ public class ChartDrawerBase extends JPanel {
     protected ExecutorService executorService;
 
     boolean transposedHeightsAdditive = false;
+
+    boolean doClustering = true;
 
     public ChartDrawerBase() {
     }
@@ -486,6 +489,18 @@ public class ChartDrawerBase extends JPanel {
         return false;
     }
 
+    public void setDoClustering(boolean doClustering) {
+        this.doClustering = doClustering;
+    }
+
+    public boolean isDoClustering() {
+        return doClustering;
+    }
+
+    public boolean canCluster(ClusteringTree.TYPE type) {
+        return false;
+    }
+
     /**
      * select series and classes that contain given location
      *
@@ -493,7 +508,6 @@ public class ChartDrawerBase extends JPanel {
      * @param chartSelection
      * @return true if something selected
      */
-
     public boolean selectOnMouseDown(MouseEvent mouseEvent, ChartSelection chartSelection) {
         return selectOnRubberBand(new Rectangle(mouseEvent.getX() - 1, mouseEvent.getY() - 1, 2, 2), mouseEvent, chartSelection);
 
@@ -511,10 +525,11 @@ public class ChartDrawerBase extends JPanel {
         if (mouseEvent.isControlDown())
             return false;
 
-        SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
+        final SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
         selectionGraphics.setSelectionRectangle(rectangle);
         selectionGraphics.setShiftDown(mouseEvent.isShiftDown());
         selectionGraphics.setMouseClicks(mouseEvent.getClickCount());
+
         if (this instanceof BubbleChartDrawer) {
             ((BubbleChartDrawer) ChartDrawerBase.this).drawYAxis(selectionGraphics, null);
         }
@@ -525,29 +540,41 @@ public class ChartDrawerBase extends JPanel {
             drawChartTransposed(selectionGraphics);
         else
             drawChart(selectionGraphics);
-        Set<String> seriesToSelect = new HashSet<>();
-        Set<String> classesToSelect = new HashSet<>();
+
+        final Set<String> seriesToSelect = new HashSet<>();
+        final Set<String> classesToSelect = new HashSet<>();
+        final Set<String> attributesToSelect = new HashSet<>();
 
         int count = 0;
         int size = selectionGraphics.getSelectedItems().size();
-        for (String[] pair : selectionGraphics.getSelectedItems()) {
+        for (String[] seriesClassAttribute : selectionGraphics.getSelectedItems()) {
             if (selectionGraphics.getUseWhich() == SelectionGraphics.Which.Last && count++ < size - 1)
                 continue;
-            if (pair[0] != null) {
-                seriesToSelect.add(pair[0]);
+            if (seriesClassAttribute[0] != null) {
+                seriesToSelect.add(seriesClassAttribute[0]);
             }
-            if (pair[1] != null) {
-                classesToSelect.add(pair[1]);
+            if (seriesClassAttribute[1] != null) {
+                classesToSelect.add(seriesClassAttribute[1]);
             }
+            if (seriesClassAttribute.length >= 3 && seriesClassAttribute[2] != null) {
+                attributesToSelect.add(seriesClassAttribute[2]);
+            }
+
             if (selectionGraphics.getUseWhich() == SelectionGraphics.Which.First)
                 break;
         }
+
+        if (!mouseEvent.isShiftDown())
+            chartSelection.clearSelectionAttributes(); // todo: don't know why only need to do this for attributes
+
         if (seriesToSelect.size() > 0) {
             chartSelection.toggleSelectedSeries(seriesToSelect);
         }
         if (classesToSelect.size() > 0)
             chartSelection.toggleSelectedClasses(classesToSelect);
-        return seriesToSelect.size() > 0 || classesToSelect.size() > 0;
+        if (attributesToSelect.size() > 0)
+            chartSelection.toggleSelectedAttributes(attributesToSelect);
+        return seriesToSelect.size() > 0 || classesToSelect.size() > 0 || attributesToSelect.size() > 0;
     }
 
     /**
@@ -558,8 +585,8 @@ public class ChartDrawerBase extends JPanel {
      * @return label for item below mouse
      */
 
-    public Pair<String, String> getItemBelowMouse(MouseEvent mouseEvent, ChartSelection chartSelection) {
-        SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
+    public String[] getItemBelowMouse(MouseEvent mouseEvent, ChartSelection chartSelection) {
+        final SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
         selectionGraphics.setMouseLocation(mouseEvent.getPoint());
         selectionGraphics.setShiftDown(mouseEvent.isShiftDown());
         selectionGraphics.setMouseClicks(mouseEvent.getClickCount());
@@ -576,15 +603,10 @@ public class ChartDrawerBase extends JPanel {
 
         int count = 0;
         int size = selectionGraphics.getSelectedItems().size();
-        for (String[] pairs : selectionGraphics.getSelectedItems()) {
+        for (String[] seriesClassAttribute : selectionGraphics.getSelectedItems()) {
             if (selectionGraphics.getUseWhich() == SelectionGraphics.Which.Last && count++ < size - 1)
                 continue;
-            if (pairs[0] != null && chartSelection.isSelectedBasedOnSeries()) {
-                return new Pair<>(pairs[0], pairs[1]);
-            }
-            if (pairs[1] != null && !chartSelection.isSelectedBasedOnSeries()) {
-                return new Pair<>(pairs[0], pairs[1]);
-            }
+            return seriesClassAttribute;
         }
         return null;
     }

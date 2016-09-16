@@ -28,7 +28,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 /**
  * select all series
@@ -43,31 +42,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("deselect what=");
-        List<String> list = np.getTokensRespectCase(null, ";");
 
-        ChartViewer viewer = (ChartViewer) getViewer();
-        if (viewer.isSeriesTabSelected()) {
-            for (String name : list) {
-                if (name.equalsIgnoreCase("all"))
-                    viewer.getChartSelection().setSelectedSeries(viewer.getSeriesList().getAllLabels(), false);
-                else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().setSelectedSeries(viewer.getSeriesList().getAllLabels(), true);
-                else
-                    viewer.getChartSelection().setSelectedSeries(name, false);
-            }
-            viewer.repaint();
-        } else {
-            for (String name : list) {
-                if (name.equalsIgnoreCase("all"))
-                    viewer.getChartSelection().setSelectedClass(viewer.getClassesList().getAllLabels(), false);
-                else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().setSelectedClass(viewer.getClassesList().getAllLabels(), true);
-                else
-                    viewer.getChartSelection().setSelectedClass(name, false);
-            }
-            viewer.repaint();
-        }
     }
 
     /**
@@ -77,7 +52,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "deselect what={all|none|<name...>};";
+        return null;
     }
 
     /**
@@ -87,7 +62,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("deselect what=all;");
+        execute("select what=none;");
     }
 
     /**
@@ -144,6 +119,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
         ChartViewer viewer = (ChartViewer) getViewer();
         return (viewer.isSeriesTabSelected() && viewer.getChartSelection().getSelectedSeries().size() > 0)
                 || (!viewer.isSeriesTabSelected() && viewer.getChartData() instanceof IChartData
-                && (viewer.getChartSelection().getSelectedClasses().size()) > 0);
+                && viewer.getChartSelection().getSelectedClasses().size() > 0)
+                || (viewer.getChartData() instanceof IChartData && viewer.getChartSelection().getSelectedAttributes().size() > 0);
     }
 }

@@ -30,8 +30,10 @@ import java.util.Set;
 public class ChartSelection {
     private final Set<String> selectedSeries = new HashSet<>();
     private final Set<String> selectedClasses = new HashSet<>();
+    private final Set<String> selectedAttributes = new HashSet<>();
     private final LinkedList<IChartSelectionListener> seriesSelectionListeners = new LinkedList<>();
     private final LinkedList<IChartSelectionListener> classesSelectionListeners = new LinkedList<>();
+    private final LinkedList<IChartSelectionListener> attributesSelectionListeners = new LinkedList<>();
 
     private boolean isSelectedBasedOnSeries = true;
 
@@ -121,7 +123,6 @@ public class ChartSelection {
         fireClassesSelectionListeners();
     }
 
-
     public void setSelectedClass(java.util.Collection<String> classes, boolean select) {
         if (select)
             selectedClasses.addAll(classes);
@@ -133,6 +134,44 @@ public class ChartSelection {
     public void clearSelectionClasses() {
         selectedClasses.clear();
         fireClassesSelectionListeners();
+    }
+
+    public Set<String> getSelectedAttributes() {
+        return selectedAttributes;
+    }
+
+    public boolean isSelectedAttribute(String className) {
+        return selectedAttributes.contains(className);
+    }
+
+    public void setSelectedAttribute(String name, boolean select) {
+        if (select)
+            selectedAttributes.add(name);
+        else
+            selectedAttributes.remove(name);
+        fireAttributesSelectionListeners();
+    }
+
+    public void toggleSelectedAttributes(java.util.Collection<String> attributes) {
+        Collection<String> toSelect = new HashSet<>();
+        toSelect.addAll(attributes);
+        toSelect.removeAll(selectedAttributes);
+        selectedAttributes.removeAll(attributes);
+        selectedAttributes.addAll(toSelect);
+        fireAttributesSelectionListeners();
+    }
+
+    public void setSelectedAttribute(java.util.Collection<String> attributes, boolean select) {
+        if (select)
+            selectedAttributes.addAll(attributes);
+        else
+            selectedAttributes.removeAll(attributes);
+        fireAttributesSelectionListeners();
+    }
+
+    public void clearSelectionAttributes() {
+        selectedAttributes.clear();
+        fireAttributesSelectionListeners();
     }
 
     public void addSeriesSelectionListener(IChartSelectionListener listener) {
@@ -163,6 +202,19 @@ public class ChartSelection {
         }
     }
 
+    public void addAttributesSelectionListener(IChartSelectionListener listener) {
+        attributesSelectionListeners.add(listener);
+    }
+
+    public void removeAttributesSelectionListener(IChartSelectionListener listener) {
+        attributesSelectionListeners.remove(listener);
+    }
+
+    private void fireAttributesSelectionListeners() {
+        for (IChartSelectionListener selectionListener : attributesSelectionListeners) {
+            selectionListener.selectionChanged(this);
+        }
+    }
 }
 
 

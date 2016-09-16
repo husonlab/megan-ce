@@ -137,7 +137,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
      * @param chartData
      * @param useGUI
      */
-    public ChartViewer(ClassificationViewer parentViewer, final Director dir, ILabelGetter seriesLabelGetter, IData chartData, boolean useGUI) {
+    public ChartViewer(ClassificationViewer parentViewer, final Director dir, final ILabelGetter seriesLabelGetter, IData chartData, boolean useGUI) {
         this.parentViewer = parentViewer;
         this.dir = dir;
         this.seriesLabelGetter = seriesLabelGetter;
@@ -461,15 +461,17 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             }
 
             public void mouseMoved(MouseEvent mouseEvent) {
-                Pair<String, String> pair = getChartDrawer().getItemBelowMouse(mouseEvent, getChartSelection());
-                String label = null;
-                if (pair != null) {
-                    if (pair.get1() != null && pair.get2() != null)
-                        label = pair.get1() + ", " + pair.get2();
-                    else if (pair.get1() != null)
-                        label = pair.get1();
-                    else
-                        label = pair.get2();
+                final String[] seriesClassAttribute = getChartDrawer().getItemBelowMouse(mouseEvent, getChartSelection());
+                String label = "";
+                if (seriesClassAttribute != null) {
+                    for (String str : seriesClassAttribute) {
+                        if (str != null) {
+                            if (label.length() == 0)
+                                label = str;
+                            else
+                                label += ", " + str;
+                        }
+                    }
                 }
                 ChartViewer.this.getContentPanel().setToolTipText(label);
                 mainPanel.setToolTipText(label);
@@ -1297,6 +1299,10 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
     public void setPopupMenuModifier(IPopupMenuModifier popupMenuModifier) {
         this.popupMenuModifier = popupMenuModifier;
+    }
+
+    public Collection<String> getNumericalAttributes() {
+        return getDir().getDocument().getSampleAttributeTable().getNumericalAttributes();
     }
 
     public ClassificationViewer getParentViewer() {

@@ -45,37 +45,47 @@ public class SelectAllCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select what=");
-        List<String> list = new LinkedList<>();
+        final List<String> list = new LinkedList<>();
         if (np.peekMatchAnyTokenIgnoreCase("all none previous"))
             list.add(np.getWordMatchesIgnoringCase("all none previous"));
         else list.addAll(np.getTokensRespectCase(null, ";"));
 
-        ChartViewer viewer = (ChartViewer) getViewer();
+        final ChartViewer viewer = (ChartViewer) getViewer();
         if (viewer.isSeriesTabSelected()) {
             for (String name : list) {
                 if (name.equalsIgnoreCase("all"))
                     viewer.getChartSelection().setSelectedSeries(viewer.getSeriesList().getAllLabels(), true);
                 else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().setSelectedSeries(viewer.getSeriesList().getAllLabels(), false);
+                    viewer.getChartSelection().clearSelectionSeries();
                 else if (name.equals("previous"))
                     viewer.getChartSelection().setSelectedSeries(ProjectManager.getPreviouslySelectedNodeLabels(), true);
                 else
                     viewer.getChartSelection().setSelectedSeries(name, true);
             }
-            viewer.repaint();
         } else {
             for (String name : list) {
                 if (name.equalsIgnoreCase("all"))
                     viewer.getChartSelection().setSelectedClass(viewer.getClassesList().getAllLabels(), true);
                 else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().setSelectedClass(viewer.getClassesList().getAllLabels(), false);
+                    viewer.getChartSelection().clearSelectionClasses();
                 else if (name.equals("previous"))
                     viewer.getChartSelection().setSelectedClass(ProjectManager.getPreviouslySelectedNodeLabels(), true);
                 else
                     viewer.getChartSelection().setSelectedClass(name, true);
             }
-            viewer.repaint();
         }
+
+        for (String name : list) {
+            if (name.equalsIgnoreCase("all")) {
+                viewer.getChartSelection().setSelectedAttribute(viewer.getNumericalAttributes(), true);
+            } else if (name.equalsIgnoreCase("none")) {
+                viewer.getChartSelection().clearSelectionAttributes();
+            } else if (name.equals("previous"))
+                viewer.getChartSelection().setSelectedAttribute(ProjectManager.getPreviouslySelectedNodeLabels(), true);
+            else
+                viewer.getChartSelection().setSelectedAttribute(name, true);
+        }
+        viewer.repaint();
     }
 
     /**

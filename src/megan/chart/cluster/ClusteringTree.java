@@ -23,6 +23,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.phylo.PhyloTreeView;
+import jloda.util.Basic;
 import jloda.util.Correlation;
 import jloda.util.ProgramProperties;
 import megan.chart.gui.ChartSelection;
@@ -41,7 +42,8 @@ import java.util.*;
  * Created by huson on 3/9/16.
  */
 public class ClusteringTree {
-    public enum TYPE {SERIES, CLASSES}
+
+    public enum TYPE {SERIES, CLASSES, ATTRIBUTES}
 
     public enum SIDE {LEFT, RIGHT, BOTTOM, TOP}
 
@@ -95,32 +97,73 @@ public class ClusteringTree {
 
         final Taxa taxa;
         final Distances distances;
-        if (type == TYPE.SERIES) {
-            final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[seriesAndClass2Value.rowKeySet().size()]);
+        switch (type) {
+            case SERIES: {
+                final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[seriesAndClass2Value.rowKeySet().size()]);
 
-            taxa = new Taxa();
-            for (String seriesName : series)
-                taxa.add(seriesName);
-            distances = new Distances(taxa.size());
+                taxa = new Taxa();
+                for (String seriesName : series)
+                    taxa.add(seriesName);
+                distances = new Distances(taxa.size());
 
-            for (int i = 0; i < series.length; i++) {
-                for (int j = 0; j < series.length; j++) {
-                    distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenSeries(series[i], series[j], seriesAndClass2Value));
+                for (int i = 0; i < series.length; i++) {
+                    for (int j = 0; j < series.length; j++) {
+                        distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenSeries(series[i], series[j], seriesAndClass2Value));
+                    }
+                }
+                break;
+            }
+            case CLASSES: {
+                final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[seriesAndClass2Value.columnKeySet().size()]);
+
+                taxa = new Taxa();
+                for (String className : classes)
+                    taxa.add(className);
+                distances = new Distances(taxa.size());
+
+                for (int i = 0; i < classes.length; i++) {
+                    for (int j = 0; j < classes.length; j++) {
+                        distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenClasses(classes[i], classes[j], seriesAndClass2Value));
+                    }
+                }
+                break;
+            }
+            default:
+                throw new RuntimeException("Invalid case: " + type.toString());
+        }
+
+        treeView.getGraph().clear();
+        UPGMA.apply(taxa, distances, treeView);
+        flipCoordinates(treeView, rootSide);
+        labelOrder.addAll(getLabelOrder(treeView));
+        // if(rootSide==SIDE.RIGHT)
+        //   Basic.reverseList(labelOrder);
+    }
+
+    /**
+     * update clustering
+     *
+     * @param labels
+     * @param matrix
+     */
+    public void updateClustering(String[] labels, float[][] matrix) {
+        labelOrder.clear();
+        previousRectangle = null;
+
+        final Taxa taxa = new Taxa();
+        for (String label : labels)
+            taxa.add(label);
+
+        final Distances distances = new Distances(taxa.size());
+
+        try {
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix.length; j++) {
+                    distances.set(i + 1, j + 1, computeCorrelationDistances(matrix[0].length, matrix[i], matrix[j]));
                 }
             }
-        } else {
-            final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[seriesAndClass2Value.columnKeySet().size()]);
-
-            taxa = new Taxa();
-            for (String className : classes)
-                taxa.add(className);
-            distances = new Distances(taxa.size());
-
-            for (int i = 0; i < classes.length; i++) {
-                for (int j = 0; j < classes.length; j++) {
-                    distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenClasses(classes[i], classes[j], seriesAndClass2Value));
-                }
-            }
+        } catch (Exception ex) {
+            Basic.caught(ex);
         }
 
         UPGMA.apply(taxa, distances, treeView);
@@ -137,19 +180,21 @@ public class ClusteringTree {
      * @return labels as ordered in tree
      */
     private static ArrayList<String> getLabelOrder(PhyloTreeView treeView) {
-        final PhyloTree tree = treeView.getPhyloTree();
         final ArrayList<String> order = new ArrayList<>();
 
-        final Stack<Node> stack = new Stack<>();
-        stack.add(tree.getRoot());
-        while (stack.size() > 0) {
-            Node v = stack.pop();
-            if (v.getOutDegree() == 0)
-                order.add(treeView.getLabel(v));
-            else
-                for (Edge e = v.getLastOutEdge(); e != null; e = v.getPrevOutEdge(e)) {
-                    stack.push(e.getTarget());
-                }
+        final PhyloTree tree = treeView.getPhyloTree();
+        if (tree.getRoot() != null) {
+            final Stack<Node> stack = new Stack<>();
+            stack.add(tree.getRoot());
+            while (stack.size() > 0) {
+                Node v = stack.pop();
+                if (v.getOutDegree() == 0)
+                    order.add(treeView.getLabel(v));
+                else
+                    for (Edge e = v.getLastOutEdge(); e != null; e = v.getPrevOutEdge(e)) {
+                        stack.push(e.getTarget());
+                    }
+            }
         }
         return order;
     }
@@ -175,6 +220,17 @@ public class ClusteringTree {
     }
 
     /**
+     * compute correlation distance between two series
+     *
+     * @param seriesA
+     * @param seriesB
+     * @return distance
+     */
+    private static double computeCorrelationDistances(int n, float[] seriesA, float[] seriesB) {
+        return 1 - Correlation.computePersonsCorrelationCoefficent(n, seriesA, seriesB);
+    }
+
+    /**
      * compute correlation distance between two classes
      *
      * @param classA
@@ -196,7 +252,7 @@ public class ClusteringTree {
 
 
     public ArrayList<String> getLabelOrder() {
-        return labelOrder;
+        return (ArrayList) labelOrder.clone();
     }
 
     public PhyloTreeView getPanel() {
@@ -224,7 +280,7 @@ public class ClusteringTree {
      * @param rect
      */
     private void doPaint(Graphics2D gc, Rectangle rect) {
-        if (!(gc instanceof SelectionGraphics))
+        if (!(gc instanceof SelectionGraphics) && type != TYPE.ATTRIBUTES)
             selectEdgesAbove();
 
         if (previousRectangle == null || !rect.equals(previousRectangle)) {
@@ -290,7 +346,7 @@ public class ClusteringTree {
                 if (v.getOutDegree() == 0) {
                     if (type == TYPE.SERIES)
                         chartSelection.setSelectedSeries(treeView.getLabel(v), true);
-                    else
+                    else if (type == TYPE.CLASSES)
                         chartSelection.setSelectedClass(treeView.getLabel(v), true);
                 } else {
                     for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
@@ -340,6 +396,7 @@ public class ClusteringTree {
                 selectBelowRec(w, below, count);
                 if (countW == count)
                     return; // have seen all below
+                // System.err.println("Select "+e);
                 treeView.setSelected(e, true);
                 treeView.setSelected(v, true);
                 treeView.setSelected(w, true);

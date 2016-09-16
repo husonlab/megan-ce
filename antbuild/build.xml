@@ -12,6 +12,7 @@
     <!-- edit the following lines to your needs -->
     <property name="project_name" value="MEGAN"/>
     <property name="jlodaSrcDir" value="../../jloda/src"/>
+    <property name="maltSrcDir" value="../../malt/src"/>
     <property name="meganSrcDir" value="../src"/>
     <property name="srcDir" value="src"/>
     <property name="classDir" value="classes"/>
@@ -22,6 +23,7 @@
 
     <path id="build.classpath">
         <fileset dir="../../jloda/jars"  includes="*.jar"/>
+        <fileset dir="../../malt/jars"  includes="*.jar"/>
 	<fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
 
         <fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
@@ -50,6 +52,7 @@
     <target name="copy_sources" depends="copy_resources">
         <copy todir="${srcDir}">
             <fileset dir="${jlodaSrcDir}" excludes=""/>
+            <fileset dir="${maltSrcDir}" excludes=""/>
             <fileset dir="${meganSrcDir}" excludes=""/>
         </copy>
     </target>
@@ -72,7 +75,7 @@
     <target name="jar" depends="compile">
         <jar jarfile="${jar}"
              basedir="${classDir}"
-	     includes="jloda/** megan/** rma/** rusch/**">
+	     includes="jloda/** malt/** megan/** rma/** rusch/**">
         </jar>
     </target>
 

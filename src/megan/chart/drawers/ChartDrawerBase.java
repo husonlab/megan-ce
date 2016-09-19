@@ -88,8 +88,6 @@ public class ChartDrawerBase extends JPanel {
 
     boolean transposedHeightsAdditive = false;
 
-    boolean doClustering = true;
-
     public ChartDrawerBase() {
     }
 
@@ -489,14 +487,6 @@ public class ChartDrawerBase extends JPanel {
         return false;
     }
 
-    public void setDoClustering(boolean doClustering) {
-        this.doClustering = doClustering;
-    }
-
-    public boolean isDoClustering() {
-        return doClustering;
-    }
-
     public boolean canCluster(ClusteringTree.TYPE type) {
         return false;
     }
@@ -524,6 +514,9 @@ public class ChartDrawerBase extends JPanel {
     public boolean selectOnRubberBand(Rectangle rectangle, MouseEvent mouseEvent, ChartSelection chartSelection) {
         if (mouseEvent.isControlDown())
             return false;
+
+        if (!mouseEvent.isShiftDown())
+            chartSelection.clearSelectionAttributes(); // todo: don't know why only need to do this for attributes
 
         final SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
         selectionGraphics.setSelectionRectangle(rectangle);
@@ -563,9 +556,6 @@ public class ChartDrawerBase extends JPanel {
             if (selectionGraphics.getUseWhich() == SelectionGraphics.Which.First)
                 break;
         }
-
-        if (!mouseEvent.isShiftDown())
-            chartSelection.clearSelectionAttributes(); // todo: don't know why only need to do this for attributes
 
         if (seriesToSelect.size() > 0) {
             chartSelection.toggleSelectedSeries(seriesToSelect);
@@ -673,5 +663,9 @@ public class ChartDrawerBase extends JPanel {
 
     public void writeData(Writer w) throws IOException {
         chartData.write(w);
+    }
+
+    public boolean canAttributes() {
+        return false;
     }
 }

@@ -25,7 +25,6 @@ import jloda.gui.IPopupMenuModifier;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
-import megan.chart.gui.GreenGradient;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;
 

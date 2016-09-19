@@ -172,9 +172,7 @@ public interface IChartDrawer {
 
     void writeData(Writer w) throws IOException;
 
-    void setDoClustering(boolean state);
-
-    boolean isDoClustering();
-
     boolean canCluster(ClusteringTree.TYPE type);
+
+    boolean canAttributes();
 }

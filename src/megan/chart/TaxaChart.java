@@ -186,7 +186,7 @@ public class TaxaChart extends ChartViewer {
                 syncedNodes = mainViewer.getSelectedNodes();
                 LinkedList<String> taxonNames = new LinkedList<>();
                 for (Node v : syncedNodes) {
-                    String taxonName = TaxonomyData.getName2IdMap().get((Integer) v.getInfo());
+                    final String taxonName = TaxonomyData.getName2IdMap().get((Integer) v.getInfo());
 
                     taxonNames.add(taxonName);
                     if (numberOfSamples == 1) {

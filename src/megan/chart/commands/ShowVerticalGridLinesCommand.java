@@ -45,7 +45,7 @@ public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckB
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("show verticalGridLines=");
+        np.matchIgnoreCase("show gridLines=");
         boolean show = np.getBoolean();
         np.matchIgnoreCase(";");
         if (getViewer() instanceof ChartViewer) {
@@ -60,7 +60,7 @@ public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckB
      */
     @Override
     public String getSyntax() {
-        return "show verticalGridLines={true|false}";
+        return "show gridLines={true|false}";
     }
 
     /**
@@ -70,7 +70,7 @@ public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckB
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("show verticalGridLines=" + (!isSelected()) + ";");
+        execute("show gridLines=" + (!isSelected()) + ";");
     }
 
     /**
@@ -79,7 +79,7 @@ public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckB
      * @return name
      */
     public String getName() {
-        return "Vertical Grid Lines";
+        return "Grid Lines";
     }
 
     /**
@@ -88,7 +88,7 @@ public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckB
      * @return description
      */
     public String getDescription() {
-        return "Show vertical grid lines";
+        return "Show grid lines";
     }
 
     /**

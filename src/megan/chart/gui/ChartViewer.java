@@ -23,7 +23,6 @@ import jloda.gui.MenuBar;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.director.*;
 import jloda.gui.find.FindToolBar;
-import jloda.gui.find.JListSearcher;
 import jloda.gui.find.SearchManager;
 import jloda.util.CanceledException;
 import jloda.util.Cursors;
@@ -44,8 +43,6 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -77,11 +74,9 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     private final MenuBar jMenuBar;
 
     private final JTabbedPane listsTabbedPane;
-    private final LabelsJList seriesList;
-    private final LabelsJList classesList;
-
-    private final JListSearcher seriesSearcher;
-    private final JListSearcher classesSearcher;
+    private final SeriesList seriesList;
+    private final ClassesList classesList;
+    private final AttributesList attributesList;
 
     private final StatusBar statusbar;
 
@@ -194,155 +189,46 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             }
         });
 
-        SyncListener syncListenerClassesList = new SyncListener() {
-            public void syncList2Viewer(LinkedList<String> enabledNames) {
-                if (getChartData() instanceof IChartData) {
-                    ((IChartData) getChartData()).setEnabledClassNames(enabledNames);
-                }
-                if (getChartColorManager().isColorByPosition()) {
-                    getChartColorManager().setClassColorPositions(classesList.getEnabledLabels());
-                }
-            }
-        };
 
-        classesList = new LabelsJList(this, getDir().getDocument(), LabelsJList.WHAT.CLASS, syncListenerClassesList, new jloda.gui.PopupMenu(GUIConfiguration.getClassesListPopupConfiguration(), commandManager, false));
-
-        classesList.setDragEnabled(true);
-        classesList.setTransferHandler(new ListTransferHandler());
+        seriesList = new SeriesList(this);
         if (!(chartData instanceof IPlot2DData)) {
-            listsTabbedPane.addTab("Classes", new JScrollPane(classesList));
+            seriesList.setTabIndex(listsTabbedPane.getTabCount());
+            listsTabbedPane.addTab(seriesList.getName(), new JScrollPane(seriesList));
         }
-        classesList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!classesList.inSelection) {
-                    classesList.inSelection = true;
-                    try {
-                        getChartSelection().clearSelectionClasses();
-                        getChartSelection().setSelectedClass(classesList.getSelectedLabels(), true);
-                    } finally {
-                        classesList.inSelection = false;
-                    }
-                }
-            }
-        });
 
-        getChartSelection().addClassesSelectionListener(new IChartSelectionListener() {
-            public void selectionChanged(ChartSelection chartSelection) {
-                if (!classesList.inSelection) {
-                    classesList.inSelection = true;
-                    try {
-                        DefaultListModel model = (DefaultListModel) classesList.getModel();
-                        for (int i = 0; i < model.getSize(); i++) {
-                            String name = classesList.getModel().getElementAt(i);
-                            if (chartSelection.isSelectedClass(name))
-                                classesList.addSelectionInterval(i, i + 1);
-                            else
-                                classesList.removeSelectionInterval(i, i + 1);
-                        }
-                    } finally {
-                        classesList.inSelection = false;
-                    }
-                }
-            }
-        });
+        classesList = new ClassesList(this);
+        classesList.setTabIndex(listsTabbedPane.getTabCount());
+        listsTabbedPane.addTab(classesList.getName(), new JScrollPane(classesList));
 
-        SyncListener syncListenerSeriesList = new SyncListener() {
-            public void syncList2Viewer(LinkedList<String> enabledNames) {
-                getChartData().setEnabledSeries(enabledNames);
-            }
-        };
+        attributesList = new AttributesList(this);
+        if (!(chartData instanceof IPlot2DData)) {
+            attributesList.setTabIndex(listsTabbedPane.getTabCount());
+            listsTabbedPane.addTab(attributesList.getName(), new JScrollPane(attributesList));
+        }
 
-        seriesList = new LabelsJList(this, getDir().getDocument(), LabelsJList.WHAT.SERIES, syncListenerSeriesList, new jloda.gui.PopupMenu(GUIConfiguration.getSeriesListPopupConfiguration(), commandManager, false));
+        attributesList.setDragEnabled(true);
+        if (!(chartData instanceof IPlot2DData)) {
+            attributesList.setTransferHandler(new ListTransferHandler());
+        }
 
-        seriesList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!seriesList.inSelection) {
-                    seriesList.inSelection = true;
-                    try {
-                        getChartSelection().clearSelectionSeries();
-                        getChartSelection().setSelectedSeries(seriesList.getSelectedLabels(), true);
-                    } finally {
-                        seriesList.inSelection = false;
-                    }
-                }
-            }
-        });
-        seriesList.setDragEnabled(true);
-        seriesList.setTransferHandler(new ListTransferHandler());
-        getChartSelection().addSeriesSelectionListener(new IChartSelectionListener() {
-            public void selectionChanged(ChartSelection chartSelection) {
-                if (!seriesList.inSelection) {
-                    seriesList.inSelection = true;
-                    try {
-                        DefaultListModel model = (DefaultListModel) seriesList.getModel();
-                        for (int i = 0; i < model.getSize(); i++) {
-                            String name = seriesList.getModel().getElementAt(i);
-                            if (chartSelection.isSelectedSeries(name))
-                                seriesList.addSelectionInterval(i, i + 1);
-                            else
-                                seriesList.removeSelectionInterval(i, i + 1);
-                        }
-                    } finally {
-                        seriesList.inSelection = false;
-                    }
-                }
-            }
-        });
-
-        listsTabbedPane.addTab("Series", new JScrollPane(seriesList));
-
-        classesSearcher = new JListSearcher(classesList);
-        seriesSearcher = new JListSearcher(seriesList);
-        searchManager = new SearchManager(dir, this, seriesSearcher, false, true);
+        searchManager = new SearchManager(dir, this, seriesList.getSearcher(), false, true);
 
         listsTabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent changeEvent) {
-                if (!isSeriesTabSelected()) {
-                    searchManager.setSearcher(classesSearcher);
-                    searchManager.getFindDialogAsToolBar().clearMessage();
-                    if (!seriesList.inSelection) {
-                        seriesList.inSelection = true;
-                        try {
-                            getChartSelection().clearSelectionSeries();
-                            ChartViewer.this.repaint();
-                        } finally {
-                            seriesList.inSelection = false;
-                        }
-                        // sync classes selection
-                    }
-                    if (!classesList.inSelection) {
-                        classesList.inSelection = true;
-                        try {
-                            getChartSelection().clearSelectionClasses();
-                            getChartSelection().setSelectedClass(classesList.getSelectedLabels(), true);
-                            ChartViewer.this.repaint();
-                        } finally {
-                            classesList.inSelection = false;
-                        }
-                    }
-                } else {
-                    searchManager.setSearcher(seriesSearcher);
-                    searchManager.getFindDialogAsToolBar().clearMessage();
-                    if (!seriesList.inSelection) {
-                        seriesList.inSelection = true;
-                        try {
-                            getChartSelection().clearSelectionSeries();
-                            getChartSelection().setSelectedSeries(seriesList.getSelectedLabels(), true);
-                            ChartViewer.this.repaint();
-                        } finally {
-                            seriesList.inSelection = false;
-                        }
-                    }
-                    if (!classesList.inSelection) {
-                        try {
-                            classesList.inSelection = true;
-                            getChartSelection().clearSelectionClasses();
-                            ChartViewer.this.repaint();
-                        } finally {
-                            classesList.inSelection = false;
-                        }
-                    }
+                if (listsTabbedPane.getSelectedIndex() == classesList.getTabIndex()) {
+                    classesList.activate();
+                    seriesList.deactivate();
+                    attributesList.deactivate();
+                } else if (listsTabbedPane.getSelectedIndex() == seriesList.getTabIndex()) {
+                    seriesList.activate();
+                    classesList.deactivate();
+                    attributesList.deactivate();
+                } else if (listsTabbedPane.getSelectedIndex() == attributesList.getTabIndex()) {
+                    attributesList.activate();
+                    seriesList.deactivate();
+                    classesList.deactivate();
                 }
+                updateView(Director.ENABLE_STATE);
             }
         });
 
@@ -429,12 +315,9 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
                     changed = true;
                 if (changed) {
                     updateView(IDirector.ENABLE_STATE);
-                    if (seriesList.getSelectedIndices().length > 0) {
-                        seriesList.ensureIndexIsVisible(seriesList.getSelectedIndex());
-                    }
-                    if (classesList.getSelectedIndices().length > 0) {
-                        classesList.ensureIndexIsVisible(classesList.getSelectedIndex());
-                    }
+                    seriesList.ensureSelectedIsVisible();
+                    classesList.ensureSelectedIsVisible();
+                    attributesList.ensureSelectedIsVisible();
                 }
             }
         });
@@ -555,10 +438,14 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         addWindowListener(new WindowListenerAdapter() {
             public void windowDeactivated(WindowEvent event) {
                 ProjectManager.getPreviouslySelectedNodeLabels().clear();
-                if (isSeriesTabSelected())
+                final int i = listsTabbedPane.getSelectedIndex();
+                if (i == seriesList.getTabIndex()) {
                     ProjectManager.getPreviouslySelectedNodeLabels().addAll(getChartSelection().getSelectedSeries());
-                else
+                } else if (i == classesList.getTabIndex()) {
                     ProjectManager.getPreviouslySelectedNodeLabels().addAll(getChartSelection().getSelectedClasses());
+                } else if (i == attributesList.getTabIndex()) {
+                    ProjectManager.getPreviouslySelectedNodeLabels().addAll(getChartSelection().getSelectedAttributes());
+                }
             }
         });
 
@@ -719,12 +606,12 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             Set<String> visibleLabels = ((CoOccurrenceDrawer) chartDrawer).getAllVisibleLabels();
 
             if (transpose) {
-                Set<String> toDisable = new HashSet<>();
+                final Set<String> toDisable = new HashSet<>();
                 toDisable.addAll(seriesList.getAllLabels());
                 toDisable.removeAll(visibleLabels);
                 seriesList.disableLabels(toDisable);
             } else {
-                Set<String> toDisable = new HashSet<>();
+                final Set<String> toDisable = new HashSet<>();
                 toDisable.addAll(classesList.getAllLabels());
                 toDisable.removeAll(visibleLabels);
                 classesList.disableLabels(toDisable);
@@ -741,11 +628,12 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             }
         }
 
+        attributesList.setEnabled(chartDrawer.canAttributes());
+
         final FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
-        if (isSeriesTabSelected() && searchManager.getSearcher() != seriesSearcher)
-            searchManager.setSearcher(seriesSearcher);
-        else if (!isSeriesTabSelected() && searchManager.getSearcher() != classesSearcher)
-            searchManager.setSearcher(classesSearcher);
+        if (listsTabbedPane.getSelectedIndex() == seriesList.getTabIndex())
+            searchManager.setSearcher(seriesList.getSearcher());
+
 
         if (findToolBar.isClosing()) {
             showFindToolBar = false;
@@ -770,6 +658,10 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             getStatusbar().setText2("Series=" + chartData.getNumberOfSeries() + " Classes=" + ((IChartData) chartData).getNumberOfClasses());
         else
             getStatusbar().setText2("Series=" + chartData.getNumberOfSeries());
+
+        if (chartDrawer.canAttributes() && attributesList.getComponentCount() > 0)
+            getStatusbar().setText2(getStatusbar().getText2() + " Attributes=" + attributesList.getComponentCount());
+        // todo: change to use only enabled attributes
 
         if (getChartData().getNumberOfSeries() == 0 || getShowLegend().equals("none"))
             splitPane.setDividerLocation(1.0);
@@ -1088,6 +980,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             classesList.sync(((IChartData) getChartData()).getClassNames(), getChartData().getClassesTooltips(), false);
             classesList.fireSyncToViewer();
         }
+        attributesList.sync(getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(), null, false);
     }
 
     /**
@@ -1104,12 +997,16 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         return null;
     }
 
-    public LabelsJList getSeriesList() {
+    public SeriesList getSeriesList() {
         return seriesList;
     }
 
-    public LabelsJList getClassesList() {
+    public ClassesList getClassesList() {
         return classesList;
+    }
+
+    public AttributesList getAttributesList() {
+        return attributesList;
     }
 
     public boolean isShowXAxis() {
@@ -1148,10 +1045,6 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
     public ChartSelection getChartSelection() {
         return chartData.getChartSelection();
-    }
-
-    public boolean isSeriesTabSelected() {
-        return listsTabbedPane.getTabCount() == 1 || listsTabbedPane.getSelectedIndex() == 1;
     }
 
     public Label2LabelMapper getClass2HigherClassMapper() {
@@ -1301,11 +1194,11 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         this.popupMenuModifier = popupMenuModifier;
     }
 
-    public Collection<String> getNumericalAttributes() {
-        return getDir().getDocument().getSampleAttributeTable().getNumericalAttributes();
-    }
-
     public ClassificationViewer getParentViewer() {
         return parentViewer;
+    }
+
+    public boolean isSeriesTabSelected() {
+        return seriesList != null && listsTabbedPane.getSelectedIndex() == seriesList.getTabIndex();
     }
 }

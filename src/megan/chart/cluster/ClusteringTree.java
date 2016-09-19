@@ -148,29 +148,39 @@ public class ClusteringTree {
      */
     public void updateClustering(String[] labels, float[][] matrix) {
         labelOrder.clear();
+        treeView.getGraph().clear();
         previousRectangle = null;
 
-        final Taxa taxa = new Taxa();
-        for (String label : labels)
-            taxa.add(label);
+        if (labels.length > 0) {
+            final Taxa taxa = new Taxa();
+            for (String label : labels)
+                taxa.add(label);
 
-        final Distances distances = new Distances(taxa.size());
+            if (labels.length == 1) {
+                final Node root = treeView.getPhyloTree().newNode();
+                treeView.getPhyloTree().setRoot(root);
+                treeView.setLabel(root, labels[0]);
+                labelOrder.addAll(getLabelOrder(treeView));
+            } else {
+                final Distances distances = new Distances(taxa.size());
 
-        try {
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix.length; j++) {
-                    distances.set(i + 1, j + 1, computeCorrelationDistances(matrix[0].length, matrix[i], matrix[j]));
+                try {
+                    for (int i = 0; i < matrix.length; i++) {
+                        for (int j = 0; j < matrix.length; j++) {
+                            distances.set(i + 1, j + 1, computeCorrelationDistances(matrix[0].length, matrix[i], matrix[j]));
+                        }
+                    }
+                } catch (Exception ex) {
+                    Basic.caught(ex);
                 }
-            }
-        } catch (Exception ex) {
-            Basic.caught(ex);
-        }
 
-        UPGMA.apply(taxa, distances, treeView);
-        flipCoordinates(treeView, rootSide);
-        labelOrder.addAll(getLabelOrder(treeView));
-        // if(rootSide==SIDE.RIGHT)
-        //   Basic.reverseList(labelOrder);
+                UPGMA.apply(taxa, distances, treeView);
+                flipCoordinates(treeView, rootSide);
+                labelOrder.addAll(getLabelOrder(treeView));
+            }
+            // if(rootSide==SIDE.RIGHT)
+            //   Basic.reverseList(labelOrder);
+        }
     }
 
     /**
@@ -280,7 +290,7 @@ public class ClusteringTree {
      * @param rect
      */
     private void doPaint(Graphics2D gc, Rectangle rect) {
-        if (!(gc instanceof SelectionGraphics) && type != TYPE.ATTRIBUTES)
+        if (!(gc instanceof SelectionGraphics))
             selectEdgesAbove();
 
         if (previousRectangle == null || !rect.equals(previousRectangle)) {
@@ -299,17 +309,21 @@ public class ClusteringTree {
             if (gc instanceof SelectionGraphics)
                 ((SelectionGraphics) gc).setCurrentItem(e);
 
+            final int ax = (int) Math.round(a.getX());
+            final int ay = (int) Math.round(a.getY());
+            gc.fillOval(ax - 1, ay - 1, 3, 3);
+
             switch (rootSide) {
                 case BOTTOM:
                 case TOP:
-                    gc.drawLine((int) Math.round(a.getX()), (int) Math.round(a.getY()), (int) Math.round(b.getX()), (int) Math.round(a.getY()));
-                    gc.drawLine((int) Math.round(b.getX()), (int) Math.round(a.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
+                    gc.drawLine(ax, ay, (int) Math.round(b.getX()), ay);
+                    gc.drawLine((int) Math.round(b.getX()), ay, (int) Math.round(b.getX()), (int) Math.round(b.getY()));
                     break;
                 default:
                 case RIGHT:
                 case LEFT:
-                    gc.drawLine((int) Math.round(a.getX()), (int) Math.round(a.getY()), (int) Math.round(a.getX()), (int) Math.round(b.getY()));
-                    gc.drawLine((int) Math.round(a.getX()), (int) Math.round(b.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
+                    gc.drawLine(ax, ay, (int) Math.round(a.getX()), (int) Math.round(b.getY()));
+                    gc.drawLine(ax, (int) Math.round(b.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
                     break;
             }
             /*
@@ -342,12 +356,14 @@ public class ClusteringTree {
                 stack.add(e.getTarget());
             }
             while (stack.size() > 0) {
-                Node v = stack.pop();
+                final Node v = stack.pop();
                 if (v.getOutDegree() == 0) {
                     if (type == TYPE.SERIES)
                         chartSelection.setSelectedSeries(treeView.getLabel(v), true);
                     else if (type == TYPE.CLASSES)
                         chartSelection.setSelectedClass(treeView.getLabel(v), true);
+                    else if (type == TYPE.ATTRIBUTES)
+                        chartSelection.setSelectedAttribute(treeView.getLabel(v), true);
                 } else {
                     for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
                         if (!seen.contains(e.getTarget())) {
@@ -376,8 +392,10 @@ public class ClusteringTree {
         if (v.getOutDegree() == 0) {
             if (type == TYPE.SERIES)
                 below.put(v, chartSelection.isSelectedSeries(treeView.getLabel(v)) ? 1 : 0);
-            else
+            else if (type == TYPE.CLASSES)
                 below.put(v, chartSelection.isSelectedClass(treeView.getLabel(v)) ? 1 : 0);
+            else
+                below.put(v, chartSelection.isSelectedAttribute(treeView.getLabel(v)) ? 1 : 0);
         } else {
             int count = 0;
             for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
@@ -422,7 +440,7 @@ public class ClusteringTree {
                     treeView.setLocation(v, loc.getY(), -loc.getX());
                     break;
                 case RIGHT:
-                    treeView.setLocation(v, -loc.getX(), -loc.getY());
+                    treeView.setLocation(v, -loc.getX(), loc.getY());
                     break;
                 default:
                 case LEFT:

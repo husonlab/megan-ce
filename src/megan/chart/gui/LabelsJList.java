@@ -21,10 +21,10 @@ package megan.chart.gui;
 import jloda.gui.ListTransferHandler;
 import jloda.gui.director.IDirectableViewer;
 import jloda.gui.director.IDirector;
+import jloda.gui.find.JListSearcher;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
-import megan.core.Document;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -42,10 +42,11 @@ import java.util.List;
  * Daniel Huson, 6.2012
  */
 public class LabelsJList extends JList<String> {
-    public enum WHAT {CLASS, SERIES}
+    protected final IDirectableViewer viewer;
+    protected final JListSearcher searcher;
+    protected boolean doClustering;
+    private int tabIndex = -1;
 
-    private final Document doc;
-    private final WHAT what; // class or series
     private boolean inSync = false;
     private final JPopupMenu popupMenu;
     private final Set<String> disabledLabels = new HashSet<>();
@@ -55,15 +56,16 @@ public class LabelsJList extends JList<String> {
 
     /**
      * constructor
-     *  @param viewer
+     * @param viewer
      * @param popupMenu
      */
-    public LabelsJList(final IDirectableViewer viewer, Document doc, final WHAT what, final SyncListener syncListener, final JPopupMenu popupMenu) {
+    public LabelsJList(final IDirectableViewer viewer, final SyncListener syncListener, final JPopupMenu popupMenu) {
         super(new DefaultListModel<String>());
-        this.doc = doc;
-        this.what = what;
+        this.viewer = viewer;
         this.syncListener = syncListener;
         this.popupMenu = popupMenu;
+
+        searcher = new JListSearcher(this);
 
         setDragEnabled(true);
         setTransferHandler(new ListTransferHandler());
@@ -71,7 +73,6 @@ public class LabelsJList extends JList<String> {
         getModel().addListDataListener(new ListDataListener() {
             public void intervalAdded(ListDataEvent event) {
             }
-
             public void intervalRemoved(ListDataEvent event) {
                 if (!inSync) {
                     syncListener.syncList2Viewer(getEnabledLabels());
@@ -79,10 +80,8 @@ public class LabelsJList extends JList<String> {
 
                 }
             }
-
             public void contentsChanged(ListDataEvent event) {
             }
-
         });
 
         addListSelectionListener(new ListSelectionListener() {
@@ -198,6 +197,36 @@ public class LabelsJList extends JList<String> {
                 }
             }
         });
+        setDoClustering(ProgramProperties.get(getName() + "DoClustering", doClustering));
+    }
+
+    public void ensureSelectedIsVisible() {
+        if (getSelectedIndices().length > 0) {
+            ensureIndexIsVisible(getSelectedIndex());
+        }
+
+    }
+
+    /**
+     * gets the tab index
+     *
+     * @return tab index
+     */
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+    public void setTabIndex(int index) {
+        this.tabIndex = index;
+    }
+
+    /**
+     * get searcher
+     *
+     * @return
+     */
+    public JListSearcher getSearcher() {
+        return searcher;
     }
 
     /**
@@ -379,7 +408,7 @@ public class LabelsJList extends JList<String> {
         private final JLabel label = new JLabel();
 
         public MyCellRenderer() {
-            Dimension dim = new Dimension(10, 10);
+            final Dimension dim = new Dimension(10, 10);
             if (getColorGetter() != null) {
                 box.setMinimumSize(dim);
                 box.setMaximumSize(dim);
@@ -387,7 +416,7 @@ public class LabelsJList extends JList<String> {
                 add(box);
                 add(Box.createHorizontalStrut(2));
             }
-            //label.setFont(new Font("Arial", Font.PLAIN,12));
+            // label.setFont(new Font("Arial", Font.PLAIN,12));
             add(label);
 
             setOpaque(true);
@@ -404,7 +433,7 @@ public class LabelsJList extends JList<String> {
         @Override
         public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
             label.setText(value);
-            setEnabled(!disabledLabels.contains(value));
+            setEnabled(!disabledLabels.contains(value) && LabelsJList.this.isEnabled());
             if (isSelected) {
                 setBorder(BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER));
                 setBackground(ProgramProperties.SELECTION_COLOR);
@@ -435,9 +464,15 @@ public class LabelsJList extends JList<String> {
     }
 
     public ChartColorManager.ColorGetter getColorGetter() {
-        if (what == WHAT.CLASS)
-            return doc.getChartColorManager().getClassColorGetter();
-        else
-            return doc.getChartColorManager().getSeriesColorGetter();
+        return null;
+    }
+
+    public boolean isDoClustering() {
+        return doClustering;
+    }
+
+    public void setDoClustering(boolean doClustering) {
+        this.doClustering = doClustering;
+        ProgramProperties.put(getName() + "DoClustering",doClustering);
     }
 }

@@ -33,6 +33,7 @@ import megan.util.PopupChoice;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -63,7 +64,8 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     protected String[] classNames = null;
     private final ArrayList<String> previousSamples = new ArrayList<>();
     private final ArrayList<String> previousClasses = new ArrayList<>();
-    private Future future; // used in recompute
+    protected boolean previousTranspose;
+    protected Future future; // used in recompute
 
     private MODE mode;
 
@@ -252,14 +254,22 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 break;
             }
             case Colors: {
-                double width = boundingBox[2];
-                double height = boundingBox[3];
-                int x = (int) Math.round(centerX - width / 2.0); // left
-                int y = (int) Math.round(centerY - height / 2.0); // top
+                final double width = boundingBox[2];
+                final double height = boundingBox[3];
+                final double x = centerX - width / 2.0; // left
+                final double y = centerY - height / 2.0; // top
                 gc.setColor(color);
-                gc.fillRect(x, y, (int) Math.round(width), (int) Math.round(height));
-                gc.setColor(color.darker());
-                gc.drawRect(x, y, (int) Math.round(width), (int) Math.round(height));
+                if (isGapBetweenBars() && width > 3 && height > 3) {
+                    final Rectangle2D rect = new Rectangle2D.Double(x + 1, y + 1, width - 2, height - 2);
+                    gc.fill(rect);
+                } else {
+                    final Rectangle2D rect = new Rectangle2D.Double(x, y, width + 1, height + 1);
+                    gc.fill(rect);
+                    if (isShowVerticalGridLines()) {
+                        gc.setColor(color.darker());
+                        gc.draw(rect);
+                    }
+                }
                 break;
             }
             case Numbers: {
@@ -392,7 +402,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
 
     @Override
     public boolean canTranspose() {
-        return false;
+        return true;
     }
 
     /**

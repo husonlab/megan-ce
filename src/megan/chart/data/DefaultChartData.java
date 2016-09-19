@@ -160,7 +160,7 @@ public class DefaultChartData implements IChartData {
     }
 
     /**
-     * get the collection of class names in the order that they should appear
+     * get  the collection of class names in the order that they should appear
      *
      * @return
      */

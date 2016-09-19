@@ -77,7 +77,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
 
         for (String name : list) {
             if (name.equalsIgnoreCase("all")) {
-                viewer.getChartSelection().setSelectedAttribute(viewer.getNumericalAttributes(), true);
+                viewer.getChartSelection().setSelectedAttribute(viewer.getAttributesList().getEnabledLabels(), true);
             } else if (name.equalsIgnoreCase("none")) {
                 viewer.getChartSelection().clearSelectionAttributes();
             } else if (name.equals("previous"))

@@ -20,37 +20,80 @@ package megan.chart.commands;
 
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICheckBoxCommand;
+import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ShowClusteringCommand extends CommandBase implements ICheckBoxCommand {
+
+    @Override
     public boolean isSelected() {
+        if (!isApplicable())
+            return false;
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        return isApplicable() && chartViewer.getChartDrawer().isDoClustering();
+        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
+            case "series":
+                return chartViewer.getSeriesList().isDoClustering();
+            case "classes":
+                return chartViewer.getClassesList().isDoClustering();
+            case "attributes":
+                return chartViewer.getAttributesList().isDoClustering();
+        }
+        return false;
     }
 
     public String getSyntax() {
-        return "show clustering={true|false};";
+        return "cluster what={series|classes|attributes} state={true|false};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("show clustering=");
-        final boolean show = np.getBoolean();
+        np.matchIgnoreCase("cluster what=");
+        final String what = np.getWordMatchesIgnoringCase("series classes attributes");
+        np.matchIgnoreCase("state=");
+        final boolean state = np.getBoolean();
         np.matchIgnoreCase(";");
+
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        chartViewer.getChartDrawer().setDoClustering(show);
+        if (what.equalsIgnoreCase("series"))
+            chartViewer.getSeriesList().setDoClustering(state);
+        if (what.equalsIgnoreCase("classes"))
+            chartViewer.getClassesList().setDoClustering(state);
+        if (what.equalsIgnoreCase("attributes"))
+            chartViewer.getAttributesList().setDoClustering(state);
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute("show clustering=" + !isSelected() + ";");
+        final ChartViewer chartViewer = (ChartViewer) getViewer();
+        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
+            case "series":
+                execute("cluster what=series state=" + !chartViewer.getSeriesList().isDoClustering() + ";");
+                break;
+            case "classes":
+                execute("cluster what=classes state=" + !chartViewer.getClassesList().isDoClustering() + ";");
+                break;
+            case "attributes":
+                execute("cluster what=attributes state=" + !chartViewer.getAttributesList().isDoClustering() + ";");
+                break;
+        }
     }
 
     public boolean isApplicable() {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        return chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().canCluster(null);
+        if (chartViewer.getChartDrawer() == null)
+            return false;
+        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
+            case "series":
+                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.SERIES);
+            case "classes":
+                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.CLASSES);
+            case "attributes":
+                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.ATTRIBUTES);
+        }
+        return false;
     }
 
     public String getName() {
@@ -62,11 +105,11 @@ public class ShowClusteringCommand extends CommandBase implements ICheckBoxComma
     }
 
     public String getDescription() {
-        return "Cluster rows and columns";
+        return "Turn clustering on or off";
     }
 
     public ImageIcon getIcon() {
-        return null;
+        return ResourceManager.getIcon("Cluster16.gif");
     }
 
     public boolean isCritical() {

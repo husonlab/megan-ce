@@ -398,6 +398,14 @@ public class ChartColorManager {
         };
     }
 
+    public ColorGetter getAttributeColorGetter() {
+        return new ColorGetter() {
+            public Color get(String label) {
+                return Color.WHITE;
+            }
+        };
+    }
+
     public String getColorTableName() {
         return colorTable.getName();
     }

@@ -137,7 +137,8 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() != null;
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
     }
 
     public String getName() {

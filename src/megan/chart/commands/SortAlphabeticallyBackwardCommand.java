@@ -22,6 +22,7 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.chart.gui.ChartViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -39,7 +40,8 @@ public class SortAlphabeticallyBackwardCommand extends CommandBase implements IC
     }
 
     public boolean isApplicable() {
-        return getViewer() != null;
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
     }
 
     public String getName() {

@@ -734,10 +734,10 @@ public class PCoATab extends JPanel implements ITab {
                         if (showGroupsAsEllipses) {
                             final ArrayList<Point2D> points4 = new ArrayList<>(4 * points.size());
                             for (Point2D p : points) {
-                                points4.add(new Point2D.Double(p.getX() - 8, p.getY() - 8));
-                                points4.add(new Point2D.Double(p.getX() - 8, p.getY() + 8));
-                                points4.add(new Point2D.Double(p.getX() + 8, p.getY() - 8));
-                                points4.add(new Point2D.Double(p.getX() + 8, p.getY() + 8));
+                                points4.add(new Point2D.Double(p.getX() - 32, p.getY() - 32));
+                                points4.add(new Point2D.Double(p.getX() - 32, p.getY() + 32));
+                                points4.add(new Point2D.Double(p.getX() + 32, p.getY() - 32));
+                                points4.add(new Point2D.Double(p.getX() + 32, p.getY() + 32));
                             }
                             final Ellipse ellipse = ComputeEllipse.computeEllipse(points4);
                             ellipse.setColor(color);

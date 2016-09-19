@@ -47,7 +47,7 @@ public class GUIConfiguration {
                 "Hide Unselected;Hide Selected;|;Set Color...;|;Find...;Find Again;|;Colors...;");
 
         menuConfig.defineMenu("Options", "Set Title...;Set Series Label...;Set Classes Label...;Set Counts Label...;|;" +
-                "Linear Scale;Sqrt Scale;Log Scale;Percentage Scale;Z-Score Scale;|;Cluster;|;Vertical Grid Lines;Gaps Between Bars;");
+                "Linear Scale;Sqrt Scale;Log Scale;Percentage Scale;Z-Score Scale;|;Cluster Series;Cluster Classes;Cluster Attributes;|;Grid Lines;Gaps Between Bars;");
 
         menuConfig.defineMenu("Layout", "@Font;|;Show Legend;Show Values;|;Show x-Axis;Show y-Axis;|;Use Jitter;Rectangle Shape;Show Internal Labels;" +
                 "Set Max Radius...;|;Labels Standard;Labels Up 45o;Labels Down 45o;Labels Up 90o;Labels Down 90o;|;" +
@@ -84,7 +84,7 @@ public class GUIConfiguration {
      * @return toolbar configuration
      */
     public static String getToolBar4DomainListConfiguration() {
-        return "Sort Alphabetically;Sort Alphabetically Backward;|;Sort By Values (Down);Sort By Values (Up);|;Group Enabled Entries;";
+        return "Sort Alphabetically;Sort Alphabetically Backward;Sort By Values (Down);Sort By Values (Up);Group Enabled Entries;Cluster;";
     }
 
     public static String getMainPanelPopupConfiguration() {
@@ -101,6 +101,10 @@ public class GUIConfiguration {
     }
 
     public static String getClassesListPopupConfiguration() {
+        return "Copy Label;|;Select All;Select None;|;Show Selected;Hide Selected;|;Show All;Hide All;|;Set Color...;";
+    }
+
+    public static String getAttributesListPopupConfiguration() {
         return "Copy Label;|;Select All;Select None;|;Show Selected;Hide Selected;|;Show All;Hide All;|;Set Color...;";
     }
 }

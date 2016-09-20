@@ -286,13 +286,13 @@ public class SelectionGraphics<T> extends Graphics2D {
     }
 
     public void drawPolyline(int[] ints, int[] ints1, int i) {
-        if (currentItem != null) {
+        if (currentItem != null && gc != null) {
             gc.drawPolyline(ints, ints1, i);
         }
     }
 
     public void drawPolygon(Polygon polygon) {
-        if (currentItem != null) {
+        if (currentItem != null && gc != null) {
             gc.drawPolygon(polygon);
         }
     }
@@ -422,193 +422,227 @@ public class SelectionGraphics<T> extends Graphics2D {
     // todo: leave all below as is:
 
     public void rotate(double v, double v1, double v2) {
-        gc.rotate(v, v1, v2);
+        if (gc != null)
+            gc.rotate(v, v1, v2);
     }
 
     public void setComposite(Composite composite) {
-        gc.setComposite(composite);
+        if (gc != null) gc.setComposite(composite);
     }
 
     public void setRenderingHints(Map<?, ?> map) {
-        gc.setRenderingHints(map);
+        if (gc != null) gc.setRenderingHints(map);
     }
 
     public void shear(double v, double v1) {
-        gc.shear(v, v1);
+        if (gc != null) gc.shear(v, v1);
     }
 
     public void translate(double v, double v1) {
-        gc.translate(v, v1);
+        if (gc != null) gc.translate(v, v1);
     }
 
     public Stroke getStroke() {
-        return gc.getStroke();
+        if (gc != null)
+            return gc.getStroke();
+        else
+            return null;
     }
 
     public boolean hit(Rectangle rectangle, Shape shape, boolean b) {
-        return gc.hit(rectangle, shape, b);
+        if (gc != null)
+            return gc.hit(rectangle, shape, b);
+        else
+            return false;
     }
 
     public void setBackground(Color color) {
-        gc.setBackground(color);
+        if (gc != null) gc.setBackground(color);
     }
 
     public void transform(AffineTransform affineTransform) {
-        gc.transform(affineTransform);
+        if (gc != null) gc.transform(affineTransform);
     }
 
     public void setStroke(Stroke stroke) {
-        gc.setStroke(stroke);
+        if (gc != null) gc.setStroke(stroke);
     }
 
     public void setRenderingHint(RenderingHints.Key key, Object o) {
-        gc.setRenderingHint(key, o);
+        if (gc != null) gc.setRenderingHint(key, o);
     }
 
     public void rotate(double v) {
-        gc.rotate(v);
+        if (gc != null) gc.rotate(v);
     }
 
     public RenderingHints getRenderingHints() {
-        return gc.getRenderingHints();
+        if (gc != null) return gc.getRenderingHints();
+        else
+            return null;
     }
 
     public FontRenderContext getFontRenderContext() {
-        return gc.getFontRenderContext();
+        if (gc != null) return gc.getFontRenderContext();
+        else
+            return null;
     }
 
     public void setPaint(Paint paint) {
-        gc.setPaint(paint);
+        if (gc != null) gc.setPaint(paint);
     }
 
     public AffineTransform getTransform() {
-        return gc.getTransform();
+        if (gc != null) return gc.getTransform();
+        else return null;
     }
 
     public GraphicsConfiguration getDeviceConfiguration() {
-        return gc.getDeviceConfiguration();
+        if (gc != null) return gc.getDeviceConfiguration();
+        else return null;
     }
 
     public Object getRenderingHint(RenderingHints.Key key) {
-        return gc.getRenderingHint(key);
+        if (gc != null) return gc.getRenderingHint(key);
+        else return null;
     }
 
     public void setTransform(AffineTransform affineTransform) {
-        gc.setTransform(affineTransform);
+        if (gc != null) gc.setTransform(affineTransform);
     }
 
     public Composite getComposite() {
-        return gc.getComposite();
+        if (gc != null) return gc.getComposite();
+        else return null;
     }
 
     public Color getBackground() {
-        return gc.getBackground();
+        if (gc != null) return gc.getBackground();
+        else return null;
     }
 
     public Paint getPaint() {
-        return gc.getPaint();
+        if (gc != null) return gc.getPaint();
+        else return null;
     }
 
     public Graphics create() {
-        return gc.create();
+        if (gc != null) return gc.create();
+        else return null;
     }
 
     public void clipRect(int i, int i1, int i2, int i3) {
-        gc.clipRect(i, i1, i2, i3);
+        if (gc != null) gc.clipRect(i, i1, i2, i3);
     }
 
     public void dispose() {
-        gc.dispose();
+        if (gc != null)
+            gc.dispose();
     }
 
     public FontMetrics getFontMetrics() {
-        return gc.getFontMetrics();
+        if (gc != null) return gc.getFontMetrics();
+        else return null;
     }
 
     public Color getColor() {
-        return gc.getColor();
+        if (gc != null) return gc.getColor();
+        else return null;
     }
 
     public Rectangle getClipBounds(Rectangle rectangle) {
-        return gc.getClipBounds(rectangle);
+        if (gc != null)
+            return gc.getClipBounds(rectangle);
+        else return null;
     }
 
     public FontMetrics getFontMetrics(Font font) {
-        return gc.getFontMetrics(font);
+        if (gc != null) return gc.getFontMetrics(font);
+        else return null;
     }
 
     public void setClip(int i, int i1, int i2, int i3) {
-        gc.setClip(i, i1, i2, i3);
+        if (gc != null) gc.setClip(i, i1, i2, i3);
     }
 
     public Font getFont() {
-        return gc.getFont();
+        if (gc != null) return gc.getFont();
+        else return null;
     }
 
 
     public Graphics create(int i, int i1, int i2, int i3) {
-        return gc.create(i, i1, i2, i3);
+        if (gc != null) return gc.create(i, i1, i2, i3);
+        else return null;
     }
 
     public Shape getClip() {
-        return gc.getClip();
+        if (gc != null) return gc.getClip();
+        else return null;
     }
 
     public void setPaintMode() {
-        gc.setPaintMode();
+        if (gc != null) gc.setPaintMode();
     }
 
     public void translate(int i, int i1) {
-        gc.translate(i, i1);
+        if (gc != null) gc.translate(i, i1);
     }
 
     public boolean hitClip(int i, int i1, int i2, int i3) {
-        return gc.hitClip(i, i1, i2, i3);
+        if (gc != null) return gc.hitClip(i, i1, i2, i3);
+        else return false;
     }
 
     public void setColor(Color color) {
         if (gc != null)
-        gc.setColor(color);
+            gc.setColor(color);
     }
 
     public void clearRect(int i, int i1, int i2, int i3) {
-        gc.clearRect(i, i1, i2, i3);
+        if (gc != null) gc.clearRect(i, i1, i2, i3);
     }
 
     public void setClip(Shape shape) {
-        gc.setClip(shape);
+        if (gc != null) gc.setClip(shape);
     }
 
 
     public void setFont(Font font) {
-        gc.setFont(font);
+        if (gc != null) gc.setFont(font);
     }
 
     public boolean drawImage(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, ImageObserver imageObserver) {
-        return gc.drawImage(image, i, i1, i2, i3, i4, i5, i6, i7, imageObserver);
+        if (gc != null)
+            return gc.drawImage(image, i, i1, i2, i3, i4, i5, i6, i7, imageObserver);
+        else
+            return false;
     }
 
     public Rectangle getClipRect() {
-        return gc.getClipRect();
+        if (gc != null) return gc.getClipRect();
+        else return null;
     }
 
     public Rectangle getClipBounds() {
-        return gc.getClipBounds();
+        if (gc != null) return gc.getClipBounds();
+        else return null;
     }
 
     public void setXORMode(Color color) {
-        gc.setXORMode(color);
+        if (gc != null) gc.setXORMode(color);
     }
 
     public void addRenderingHints(Map<?, ?> map) {
-        gc.addRenderingHints(map);
+        if (gc != null)
+            gc.addRenderingHints(map);
     }
 
     public void scale(double v, double v1) {
-        gc.scale(v, v1);
+        if (gc != null) gc.scale(v, v1);
     }
 
     public void clip(Shape shape) {
-        gc.clip(shape);
+        if (gc != null) gc.clip(shape);
     }
 }

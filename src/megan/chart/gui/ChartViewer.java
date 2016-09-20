@@ -659,8 +659,8 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         else
             getStatusbar().setText2("Series=" + chartData.getNumberOfSeries());
 
-        if (chartDrawer.canAttributes() && attributesList.getComponentCount() > 0)
-            getStatusbar().setText2(getStatusbar().getText2() + " Attributes=" + attributesList.getComponentCount());
+        if (chartDrawer.canAttributes() && attributesList.getAllLabels().size() > 0)
+            getStatusbar().setText2(getStatusbar().getText2() + " Attributes=" + attributesList.getAllLabels().size());
         // todo: change to use only enabled attributes
 
         if (getChartData().getNumberOfSeries() == 0 || getShowLegend().equals("none"))

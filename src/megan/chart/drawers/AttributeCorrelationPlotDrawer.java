@@ -42,20 +42,16 @@ import java.util.*;
  * Daniel Huson, 11.2015
  */
 public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implements IChartDrawer {
-
     public static final String NAME = "AttributeCorrelationPlot";
 
     private String[] attributeNames;
 
-    protected boolean inUpdateCoordinates = true;
-    private final ArrayList<String> previousSamples = new ArrayList<>();
     private final Set<String> previousAttributes = new HashSet<>();
-    private final ArrayList<String> previousClasses = new ArrayList<>();
 
     private final ClusteringTree attributesClusteringTree;
     private final ClusteringTree classesClusteringTree;
 
-    private final int treeSpace = 100;
+    private boolean previousClusterAttributes = false;
 
     /**
      * constructor
@@ -64,6 +60,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         super();
         attributesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.ATTRIBUTES, ClusteringTree.SIDE.RIGHT);
         classesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.CLASSES, ClusteringTree.SIDE.TOP);
+        previousTranspose = isTranspose();
     }
 
     /**
@@ -72,11 +69,8 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      * @param gc
      */
     public void drawChart(Graphics2D gc) {
-        updateView();
-
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
 
         int y0 = getHeight() - bottomMargin;
@@ -101,29 +95,18 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             drawYAxis(gc, null); // need this for selection
         }
 
-        if (sgc == null) {
-            drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
-        }
-
         if (!getChartTitle().startsWith("Correlation plot: "))
             setChartTitle("Correlation plot: " + getChartTitle());
 
-        final int numberOfClasses = getChartData().getNumberOfClasses();
-
+        final int numberOfClasses = (classNames != null ? classNames.length : 0);
         final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
-
-        final Collection<String> classesOrder;
-        final Map<String, Integer> class2pos = new HashMap<>();
-        for (int i = 0; i < classNames.length; i++)
-            class2pos.put(classNames[i], i);
-
-        final Collection<String> attributesOrder;
-        final Map<String, Integer> attribute2pos = new HashMap<>();
-        for (int i = 0; i < attributeNames.length; i++)
-            attribute2pos.put(attributeNames[i], i);
 
         if (viewer.getClassesList().isDoClustering())
             y1 += treeSpace; // do this before other clustering
+
+        if (sgc == null) {
+            drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
+        }
 
         if (viewer.getAttributesList().isDoClustering()) {
             x1 -= treeSpace;
@@ -131,27 +114,22 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             int yStart = y0 + ((y1 - y0) - height) / 2;
             final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
             attributesClusteringTree.paint(gc, rect);
-            attributesOrder = attributesClusteringTree.getLabelOrder();
-        } else {
-            attributesOrder = Arrays.asList(attributeNames);
-        }
-        if (viewer.getClassesList().isDoClustering()) {
-                int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
-                int xStart = x0 + ((x1 - x0) - width) / 2;
-                final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
-                classesClusteringTree.paint(gc, rect);
-                classesOrder = classesClusteringTree.getLabelOrder();
-        } else {
-            classesOrder = getChartData().getClassNames();
         }
 
-        double xStep = (x1 - x0) / (double) numberOfClasses;
-        double yStep = (y0 - y1) / (double) numberOfAttributes;
+        if (viewer.getClassesList().isDoClustering()) {
+            int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
+            int xStart = x0 + ((x1 - x0) - width) / 2;
+            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            classesClusteringTree.paint(gc, rect);
+        }
 
         // main drawing loop:
-        if (classNames != null) {
+        if (numberOfClasses > 0 && numberOfAttributes > 0) {
+            double xStep = (x1 - x0) / (double) numberOfClasses;
+            double yStep = (y0 - y1) / (double) numberOfAttributes;
+
             int d = 0;
-            for (String classNameX : classesOrder) {
+            for (String classNameX : classNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 final Dimension labelSize = Basic.getStringSize(gc, classNameX, gc.getFont()).getSize();
@@ -172,37 +150,39 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 }
 
                 int c = numberOfAttributes - 1;
-                for (String attributeNameY : attributesOrder) {
-                    final double correlationCoefficient = dataMatrix[class2pos.get(classNameX)][attribute2pos.get(attributeNameY)];
-                    final double[] boundingBox = new double[]{x0 + d * xStep, y0 - (c + 1) * yStep, xStep, yStep};
+                for (String attributeNameY : attributeNames) {
+                    final Float correlationCoefficient = dataMatrix.get(classNameX, attributeNameY);
+                    if (correlationCoefficient != null) {
+                        final double[] boundingBox = new double[]{x0 + d * xStep, y0 - (c + 1) * yStep, xStep, yStep};
 
-                    // gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                    drawCell(gc, boundingBox, correlationCoefficient);
+                        // gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                        drawCell(gc, boundingBox, correlationCoefficient);
 
-                    if (sgc != null && !sgc.isShiftDown()) {
-                        sgc.setCurrentItem(new String[]{null, classNameX, attributeNameY});
-                        gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        sgc.clearCurrentItem();
-                        sgc.setCurrentItem(new String[]{null, null, attributeNameY});
-                        gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        sgc.clearCurrentItem();
-                    }
-                    boolean isSelected = false;
-                    if (getChartData().getChartSelection().isSelectedClass(classNameX)) {
-                        if (getChartData().getChartSelection().isSelectedAttribute(attributeNameY) || getChartData().getChartSelection().getSelectedAttributes().size() == 0)
+                        if (sgc != null && !sgc.isShiftDown()) {
+                            sgc.setCurrentItem(new String[]{null, classNameX, attributeNameY});
+                            gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            sgc.clearCurrentItem();
+                            sgc.setCurrentItem(new String[]{null, null, attributeNameY});
+                            gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            sgc.clearCurrentItem();
+                        }
+                        boolean isSelected = false;
+                        if (getChartData().getChartSelection().isSelectedClass(classNameX)) {
+                            if (getChartData().getChartSelection().isSelectedAttribute(attributeNameY) || getChartData().getChartSelection().getSelectedAttributes().size() == 0)
+                                isSelected = true;
+                        } else if (getChartData().getChartSelection().getSelectedClasses().size() == 0 && getChartData().getChartSelection().isSelectedAttribute(attributeNameY))
                             isSelected = true;
-                    } else if (getChartData().getChartSelection().getSelectedClasses().size() == 0 && getChartData().getChartSelection().isSelectedAttribute(attributeNameY))
-                        isSelected = true;
 
-                    if (isSelected) {
-                        gc.setStroke(HEAVY_STROKE);
-                        gc.setColor(ProgramProperties.SELECTION_COLOR);
-                        gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        gc.setStroke(NORMAL_STROKE);
-                    }
-                    if (showValues || isSelected) {
-                        String aLabel = String.format("%.3f", correlationCoefficient);
-                        valuesList.add(new DrawableValue(aLabel, (int) Math.round(boundingBox[0] + boundingBox[2] / 2), (int) Math.round(boundingBox[1] + boundingBox[3] / 2) - gc.getFont().getSize() / 2, isSelected));
+                        if (isSelected) {
+                            gc.setStroke(HEAVY_STROKE);
+                            gc.setColor(ProgramProperties.SELECTION_COLOR);
+                            gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            gc.setStroke(NORMAL_STROKE);
+                        }
+                        if (showValues || isSelected) {
+                            String aLabel = String.format("%.3f", correlationCoefficient);
+                            valuesList.add(new DrawableValue(aLabel, (int) Math.round(boundingBox[0] + boundingBox[2] / 2), (int) Math.round(boundingBox[1] + boundingBox[3] / 2) - gc.getFont().getSize() / 2, isSelected));
+                        }
                     }
                     c--;
                 }
@@ -223,12 +203,9 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      * @param gc
      */
     public void drawChartTransposed(Graphics2D gc) {
-        updateView();
-
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
@@ -255,19 +232,9 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         if (!getChartTitle().startsWith("Correlation plot: "))
             setChartTitle("Correlation plot: " + getChartTitle());
 
-        final int numberOfClasses = getChartData().getNumberOfClasses();
+        final int numberOfClasses = (classNames != null ? classNames.length : 0);
 
         final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
-
-        final Collection<String> classesOrder;
-        final Map<String, Integer> class2pos = new HashMap<>();
-        for (int i = 0; i < classNames.length; i++)
-            class2pos.put(classNames[i], i);
-
-        final Collection<String> attributesOrder;
-        final Map<String, Integer> attribute2pos = new HashMap<>();
-        for (int i = 0; i < attributeNames.length; i++)
-            attribute2pos.put(attributeNames[i], i);
 
         if (viewer.getAttributesList().isDoClustering())
             y1 += treeSpace; // do this before other clustering
@@ -275,34 +242,29 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         if (sgc == null) {
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
         }
-        
+
         if (viewer.getClassesList().isDoClustering()) {
             x1 -= treeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
             int yStart = y0 + ((y1 - y0) - height) / 2;
             final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
             classesClusteringTree.paint(gc, rect);
-            classesOrder = classesClusteringTree.getLabelOrder();
-        } else {
-            classesOrder = getChartData().getClassNames();
         }
+
         if (viewer.getAttributesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfAttributes + 1.0) * numberOfAttributes);
             int xStart = x0 + ((x1 - x0) - width) / 2;
             final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
             attributesClusteringTree.paint(gc, rect);
-            attributesOrder = attributesClusteringTree.getLabelOrder();
-        } else {
-            attributesOrder = Arrays.asList(attributeNames);
         }
 
         double xStep = (x1 - x0) / (double) numberOfAttributes;
         double yStep = (y0 - y1) / (double) numberOfClasses;
 
         // main drawing loop:
-        if (classNames != null) {
+        if (numberOfClasses > 0 && numberOfAttributes > 0) {
             int d = 0;
-            for (String attributeNameX : attributesOrder) {
+            for (String attributeNameX : attributeNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 final Dimension labelSize = Basic.getStringSize(gc, attributeNameX, gc.getFont()).getSize();
@@ -323,37 +285,39 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 }
 
                 int c = numberOfClasses - 1;
-                for (String classNameY : classesOrder) {
-                    final double correlationCoefficient = dataMatrix[class2pos.get(classNameY)][attribute2pos.get(attributeNameX)];
-                    final double[] boundingBox = new double[]{x0 + d * xStep, y0 - (c + 1) * yStep, xStep, yStep};
+                for (String classNameY : classNames) {
+                    final Float correlationCoefficient = dataMatrix.get(classNameY, attributeNameX);
+                    if (correlationCoefficient != null) {
+                        final double[] boundingBox = new double[]{x0 + d * xStep, y0 - (c + 1) * yStep, xStep, yStep};
 
-                    // gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                    drawCell(gc, boundingBox, correlationCoefficient);
+                        // gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                        drawCell(gc, boundingBox, correlationCoefficient);
 
-                    if (sgc != null && !sgc.isShiftDown()) {
-                        sgc.setCurrentItem(new String[]{null, classNameY, attributeNameX});
-                        gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        sgc.clearCurrentItem();
-                        sgc.setCurrentItem(new String[]{null, classNameY, attributeNameX});
-                        gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        sgc.clearCurrentItem();
-                    }
-                    boolean isSelected = false;
-                    if (getChartData().getChartSelection().isSelectedClass(classNameY)) {
-                        if (getChartData().getChartSelection().isSelectedAttribute(attributeNameX) || getChartData().getChartSelection().getSelectedAttributes().size() == 0)
+                        if (sgc != null && !sgc.isShiftDown()) {
+                            sgc.setCurrentItem(new String[]{null, classNameY, attributeNameX});
+                            gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            sgc.clearCurrentItem();
+                            sgc.setCurrentItem(new String[]{null, classNameY, attributeNameX});
+                            gc.fillRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            sgc.clearCurrentItem();
+                        }
+                        boolean isSelected = false;
+                        if (getChartData().getChartSelection().isSelectedClass(classNameY)) {
+                            if (getChartData().getChartSelection().isSelectedAttribute(attributeNameX) || getChartData().getChartSelection().getSelectedAttributes().size() == 0)
+                                isSelected = true;
+                        } else if (getChartData().getChartSelection().getSelectedClasses().size() == 0 && getChartData().getChartSelection().isSelectedAttribute(attributeNameX))
                             isSelected = true;
-                    } else if (getChartData().getChartSelection().getSelectedClasses().size() == 0 && getChartData().getChartSelection().isSelectedAttribute(attributeNameX))
-                        isSelected = true;
 
-                    if (isSelected) {
-                        gc.setStroke(HEAVY_STROKE);
-                        gc.setColor(ProgramProperties.SELECTION_COLOR);
-                        gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
-                        gc.setStroke(NORMAL_STROKE);
-                    }
-                    if (showValues || isSelected) {
-                        String aLabel = String.format("%.3f", correlationCoefficient);
-                        valuesList.add(new DrawableValue(aLabel, (int) Math.round(boundingBox[0] + boundingBox[2] / 2), (int) Math.round(boundingBox[1] + boundingBox[3] / 2) - gc.getFont().getSize() / 2, isSelected));
+                        if (isSelected) {
+                            gc.setStroke(HEAVY_STROKE);
+                            gc.setColor(ProgramProperties.SELECTION_COLOR);
+                            gc.drawRect((int) Math.round(boundingBox[0]), (int) Math.round(boundingBox[1]), (int) Math.round(boundingBox[2]), (int) Math.round(boundingBox[3]));
+                            gc.setStroke(NORMAL_STROKE);
+                        }
+                        if (showValues || isSelected) {
+                            String aLabel = String.format("%.3f", correlationCoefficient);
+                            valuesList.add(new DrawableValue(aLabel, (int) Math.round(boundingBox[0] + boundingBox[2] / 2), (int) Math.round(boundingBox[1] + boundingBox[3] / 2) - gc.getFont().getSize() / 2, isSelected));
+                        }
                     }
                     c--;
                 }
@@ -374,75 +338,69 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      * @param gc
      */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
+        if (inUpdateCoordinates)
+            return;
+
         if (isTranspose()) {
             drawYAxisTransposed(gc, size);
             return;
         }
-        final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
-        gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+        final int numberOfAttributes = (attributeNames == null ? 0 : attributeNames.length);
+        if (numberOfAttributes > 0) {
 
-        final boolean doDraw = (size == null);
-        Rectangle bbox = null;
+            final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+            gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
-        int x0 = leftMargin;
-        int x1 = getWidth() - rightMargin;
-        int y0 = getHeight() - bottomMargin;
-        int y1 = topMargin;
+            final boolean doDraw = (size == null);
+            Rectangle bbox = null;
 
-        if (viewer.getClassesList().isDoClustering())
-            y1 += treeSpace;
+            int x0 = leftMargin;
+            int x1 = getWidth() - rightMargin;
+            int y0 = getHeight() - bottomMargin;
+            int y1 = topMargin;
 
-        if (attributeNames == null)
-            return;
+            if (viewer.getClassesList().isDoClustering())
+                y1 += treeSpace;
 
-        final Collection<String> attributesOrder;
-        final int numberOfAttributes;
-        if (viewer.getAttributesList().isDoClustering()) {
-            attributesOrder = attributesClusteringTree.getLabelOrder();
-            numberOfAttributes = attributesOrder.size();
-        } else {
-            numberOfAttributes = attributeNames.length;
-            attributesOrder = Arrays.asList(attributeNames);
-        }
+            int longest = 0;
+            for (String attributeName : attributeNames) {
+                longest = Math.max(longest, Basic.getStringSize(gc, attributeName, gc.getFont()).getSize().width);
+            }
+            int right = Math.max(leftMargin, longest + 5);
 
-        int longest = 0;
-        for (String attributeName : attributeNames) {
-            longest = Math.max(longest, Basic.getStringSize(gc, attributeName, gc.getFont()).getSize().width);
-        }
-        int right = Math.max(leftMargin, longest + 5);
+            if (doDraw)
+                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
 
-        if (doDraw)
-            gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
-
-        double yStep = (y0 - y1) / (double) numberOfAttributes;
-        int d = numberOfAttributes - 1;
-        for (String attributeName : attributesOrder) {
-            Dimension labelSize = Basic.getStringSize(gc, attributeName, gc.getFont()).getSize();
-            int x = right - labelSize.width - 4;
-            int y = (int) Math.round(y0 - (d + 0.5) * yStep);
-            if (doDraw) {
-                if (getChartData().getChartSelection().isSelectedAttribute(attributeName)) {
-                    gc.setColor(ProgramProperties.SELECTION_COLOR);
-                    fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+            double yStep = (y0 - y1) / (double) numberOfAttributes;
+            int d = numberOfAttributes - 1;
+            for (String attributeName : attributeNames) {
+                Dimension labelSize = Basic.getStringSize(gc, attributeName, gc.getFont()).getSize();
+                int x = right - labelSize.width - 4;
+                int y = (int) Math.round(y0 - (d + 0.5) * yStep);
+                if (doDraw) {
+                    if (getChartData().getChartSelection().isSelectedAttribute(attributeName)) {
+                        gc.setColor(ProgramProperties.SELECTION_COLOR);
+                        fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+                    }
+                    gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.DARK_GRAY));
+                    gc.drawString(attributeName, x, y);
+                } else {
+                    Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
+                    if (bbox == null)
+                        bbox = rect;
+                    else
+                        bbox.add(rect);
                 }
-                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.DARK_GRAY));
-                gc.drawString(attributeName, x, y);
-            } else {
-                Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
-                if (bbox == null)
-                    bbox = rect;
-                else
-                    bbox.add(rect);
+                if (sgc != null) {
+                    sgc.setCurrentItem(new String[]{null, null, attributeName});
+                    drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
+                    sgc.clearCurrentItem();
+                }
+                d--;
             }
-            if (sgc != null) {
-                sgc.setCurrentItem(new String[]{null, null, attributeName});
-                drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
-                sgc.clearCurrentItem();
+            if (size != null && bbox != null) {
+                size.setSize(bbox.width + 3, bbox.height);
             }
-            d--;
-        }
-        if (size != null && bbox != null) {
-            size.setSize(bbox.width + 3, bbox.height);
         }
     }
 
@@ -452,71 +410,61 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      * @param gc
      */
     protected void drawYAxisTransposed(Graphics2D gc, Dimension size) {
-        final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
-        gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+        final int numberOfClasses = (classNames == null ? 0 : classNames.length);
+        if (numberOfClasses > 0) {
+            final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+            gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
-        final boolean doDraw = (size == null);
-        Rectangle bbox = null;
+            final boolean doDraw = (size == null);
+            Rectangle bbox = null;
 
-        int x0 = leftMargin;
-        int x1 = getWidth() - rightMargin;
-        int y0 = getHeight() - bottomMargin;
-        int y1 = topMargin;
+            int x0 = leftMargin;
+            int x1 = getWidth() - rightMargin;
+            int y0 = getHeight() - bottomMargin;
+            int y1 = topMargin;
 
-        if (viewer.getAttributesList().isDoClustering())
-            y1 += treeSpace;
+            if (viewer.getAttributesList().isDoClustering())
+                y1 += treeSpace;
 
-        if (classNames == null)
-            return;
+            int longest = 0;
+            for (String className : classNames) {
+                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+            }
+            int right = Math.max(leftMargin, longest + 5);
 
-        final Collection<String> classesOrder;
-        final int numberOfClasses;
-        if (viewer.getClassesList().isDoClustering()) {
-            classesOrder = classesClusteringTree.getLabelOrder();
-            numberOfClasses = classesOrder.size();
-        } else {
-            numberOfClasses = classNames.length;
-            classesOrder = Arrays.asList(classNames);
-        }
+            if (doDraw)
+                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
 
-        int longest = 0;
-        for (String className : classesOrder) {
-            longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
-        }
-        int right = Math.max(leftMargin, longest + 5);
-
-        if (doDraw)
-            gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
-
-        double yStep = (y0 - y1) / (double) numberOfClasses;
-        int c = numberOfClasses - 1;
-        for (String className : classesOrder) {
-            Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
-            int x = right - labelSize.width - 4;
-            int y = (int) Math.round(y0 - (c + 0.5) * yStep);
-            if (doDraw) {
-                if (getChartData().getChartSelection().isSelectedClass(className)) {
-                    gc.setColor(ProgramProperties.SELECTION_COLOR);
-                    fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+            double yStep = (y0 - y1) / (double) numberOfClasses;
+            int c = numberOfClasses - 1;
+            for (String className : classNames) {
+                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                int x = right - labelSize.width - 4;
+                int y = (int) Math.round(y0 - (c + 0.5) * yStep);
+                if (doDraw) {
+                    if (getChartData().getChartSelection().isSelectedClass(className)) {
+                        gc.setColor(ProgramProperties.SELECTION_COLOR);
+                        fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+                    }
+                    gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.DARK_GRAY));
+                    gc.drawString(className, x, y);
+                } else {
+                    Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
+                    if (bbox == null)
+                        bbox = rect;
+                    else
+                        bbox.add(rect);
                 }
-                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.DARK_GRAY));
-                gc.drawString(className, x, y);
-            } else {
-                Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
-                if (bbox == null)
-                    bbox = rect;
-                else
-                    bbox.add(rect);
+                if (sgc != null) {
+                    sgc.setCurrentItem(new String[]{null, className});
+                    drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
+                    sgc.clearCurrentItem();
+                }
+                c--;
             }
-            if (sgc != null) {
-                sgc.setCurrentItem(new String[]{null, className});
-                drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
-                sgc.clearCurrentItem();
+            if (size != null && bbox != null) {
+                size.setSize(bbox.width + 3, bbox.height);
             }
-            c--;
-        }
-        if (size != null && bbox != null) {
-            size.setSize(bbox.width + 3, bbox.height);
         }
     }
 
@@ -526,43 +474,70 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      * @return true, if coordinates need to be recomputed
      */
     private boolean mustUpdateCoordinates() {
-        boolean mustUpdate = (dataMatrix == null);
+        boolean mustUpdate = (dataMatrix.size() == 0);
 
         if (previousTranspose != isTranspose()) {
             mustUpdate = true;
+        }
+
+        if (scalingType != ChartViewer.ScalingType.LINEAR)
+            return mustUpdate;
+
+        if (previousTranspose != isTranspose()) {
             previousTranspose = isTranspose();
+            previousClusterAttributes = false;
+            previousClusterClasses = false;
         }
 
-        if (!mustUpdate && scalingType == ChartViewer.ScalingType.LINEAR && getChartData().getNumberOfClasses() > 0 &&
-                getChartData().getNumberOfSeries() > 0 && dataMatrix.length == 0) {
-            mustUpdate = true;
+        {
+            final ArrayList<String> currentClasses = new ArrayList<>();
+            currentClasses.addAll(getChartData().getClassNames());
+            if (!previousClasses.equals(currentClasses)) {
+                mustUpdate = true;
+                previousClasses.clear();
+                previousClasses.addAll(currentClasses);
+            }
         }
 
+        {
+            final ArrayList<String> currentSamples = new ArrayList<>();
+            currentSamples.addAll(getChartData().getSeriesNames());
+            if (!previousSamples.equals(currentSamples)) {
+                mustUpdate = true;
+                previousSamples.clear();
+                previousSamples.addAll(currentSamples);
 
-        final ArrayList<String> currentClasses = new ArrayList<>();
-        currentClasses.addAll(getChartData().getClassNames());
-        if (!previousClasses.equals(currentClasses)) {
-            mustUpdate = true;
-            previousClasses.clear();
-            previousClasses.addAll(currentClasses);
+            }
         }
 
-        final ArrayList<String> currentSamples = new ArrayList<>();
-        currentSamples.addAll(getChartData().getSeriesNames());
-        if (!previousSamples.equals(currentSamples)) {
-            mustUpdate = true;
-            previousSamples.clear();
-            previousSamples.addAll(currentSamples);
+        {
+            final Set<String> currentAttributes = new HashSet<>();
+            currentAttributes.addAll(getViewer().getAttributesList().getEnabledLabels());
+            if (!previousAttributes.equals(currentAttributes)) {
+                mustUpdate = true;
+                previousAttributes.clear();
+                previousAttributes.addAll(currentAttributes);
+            }
         }
 
-        final Set<String> currentAttributes = new HashSet<>();
-        currentAttributes.addAll(getViewer().getAttributesList().getEnabledLabels());
-        if (!previousAttributes.equals(currentAttributes)) {
-            mustUpdate = true;
-            previousAttributes.clear();
-            previousAttributes.addAll(currentAttributes);
+        {
+            if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                mustUpdate = true;
         }
 
+        {
+            if (!previousClusterAttributes && viewer.getAttributesList().isDoClustering())
+                mustUpdate = true;
+        }
+
+        if (!mustUpdate) {
+            final Set<String> currentAttributes = new HashSet<>();
+            currentAttributes.addAll(getViewer().getAttributesList().getAllLabels());
+            if (!currentAttributes.equals(viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes())) {
+                viewer.getAttributesList().sync(viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(), null, false);
+                mustUpdate = true;
+            }
+        }
         return mustUpdate;
     }
 
@@ -575,29 +550,41 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 future.cancel(true);
                 future = null;
             }
-            inUpdateCoordinates = true;
             future = executorService.submit(new Runnable() {
                 public void run() {
                     try {
+                        inUpdateCoordinates = true;
                         updateCoordinates();
-                        if (SwingUtilities.isEventDispatchThread()) {
-                            inUpdateCoordinates = false;
-                            viewer.repaint();
-                            future = null;
-                        } else {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                public void run() {
-                                    inUpdateCoordinates = false;
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            public void run() {
+                                try {
+                                    if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                                        updateClassesJList();
+                                    previousClusterClasses = viewer.getClassesList().isDoClustering();
+                                    if (!previousClusterAttributes && viewer.getAttributesList().isDoClustering())
+                                        updateAttributesJList();
+                                    previousClusterAttributes = viewer.getAttributesList().isDoClustering();
                                     viewer.repaint();
-                                    future = null;
+                                } catch (Exception e) {
+                                    Basic.caught(e);
                                 }
-                            });
-                        }
+                            }
+                        });
                     } catch (Exception e) {
+                        //Basic.caught(e);
+                    } finally {
+                        future = null;
                         inUpdateCoordinates = false;
                     }
                 }
             });
+        } else {
+            if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                updateClassesJList();
+            previousClusterClasses = viewer.getClassesList().isDoClustering();
+            if (!previousClusterAttributes && viewer.getAttributesList().isDoClustering())
+                updateAttributesJList();
+            previousClusterAttributes = viewer.getAttributesList().isDoClustering();
         }
     }
 
@@ -606,74 +593,86 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
      */
     @Override
     public void forceUpdate() {
-        System.err.println("Force update");
-
-        dataMatrix = null;
-        previousClasses.clear();
-        previousSamples.clear();
-        attributesClusteringTree.clear();
-        classesClusteringTree.clear();
+        dataMatrix.clear();
     }
 
     protected void updateCoordinates() {
         System.err.println("Updating...");
 
-        classesClusteringTree.setRootSide(ClusteringTree.SIDE.TOP);
+        dataMatrix.clear();
+        previousClasses.clear();
+        previousSamples.clear();
+        attributesClusteringTree.clear();
+        classesClusteringTree.clear();
+
         if (classesClusteringTree.getChartSelection() == null)
             classesClusteringTree.setChartSelection(viewer.getChartSelection());
 
-        attributesClusteringTree.setRootSide(ClusteringTree.SIDE.RIGHT);
         if (attributesClusteringTree.getChartSelection() == null)
             attributesClusteringTree.setChartSelection(viewer.getChartSelection());
 
-        classNames = getChartData().getClassNames().toArray(new String[getChartData().getNumberOfClasses()]);
+        final String[] currentClasses;
+        {
+            final Collection<String> list = getViewer().getClassesList().getEnabledLabels();
+            currentClasses = list.toArray(new String[list.size()]);
+        }
 
-        final Collection<String> list = getViewer().getAttributesList().getEnabledLabels();
-        attributeNames = list.toArray(new String[list.size()]);
+        final String[] currentAttributes;
+        {
+            final Collection<String> list = getViewer().getAttributesList().getEnabledLabels();
+            currentAttributes = list.toArray(new String[list.size()]);
+        }
 
-        dataMatrix = new float[classNames.length][attributeNames.length];
-
-        for (int i = 0; i < classNames.length; i++) {
-            for (int j = 0; j < attributeNames.length; j++) {
+        for (String className : currentClasses) {
+            for (String attributeName : currentAttributes) {
                 try {
-                    dataMatrix[i][j] = computeCorrelationCoefficent(classNames[i], attributeNames[j]);
+                    dataMatrix.put(className, attributeName, computeCorrelationCoefficent(className, attributeName));
                 } catch (Exception ex) {
                     Basic.caught(ex);
                 }
             }
         }
-        classesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.RIGHT : ClusteringTree.SIDE.TOP);
-        classesClusteringTree.updateClustering(classNames, dataMatrix);
-        attributesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.TOP : ClusteringTree.SIDE.RIGHT);
-        attributesClusteringTree.updateClustering(attributeNames, Basic.transposeMatrix(dataMatrix));
+        if (viewer.getClassesList().isDoClustering()) {
+            classesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.RIGHT : ClusteringTree.SIDE.TOP);
+            classesClusteringTree.updateClustering(currentClasses, dataMatrix.copy());
+            final Collection<String> list = classesClusteringTree.getLabelOrder();
+            classNames = list.toArray(new String[list.size()]);
+        } else
+            classNames = currentClasses;
 
-        // todo: check whether we always need to call this
-        updateClassesJList();
-        updateAttributesJList();
+        if (viewer.getAttributesList().isDoClustering()) {
+            attributesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.TOP : ClusteringTree.SIDE.RIGHT);
+            attributesClusteringTree.updateClustering(currentAttributes, dataMatrix.computeTransposedTable());
+            final Collection<String> list = attributesClusteringTree.getLabelOrder();
+            attributeNames = list.toArray(new String[list.size()]);
+        } else
+            attributeNames = currentAttributes;
+
+        chartData.setClassesLabel("");
     }
 
     private void updateClassesJList() {
         final Collection<String> selected = new ArrayList<>();
         selected.addAll(viewer.getChartSelection().getSelectedClasses());
-        final Collection<String> ordered = classesClusteringTree.getLabelOrder();
+        final Collection<String> ordered = new ArrayList<>(Arrays.asList(classNames));
         final Collection<String> others = viewer.getClassesList().getAllLabels();
         others.removeAll(ordered);
         ordered.addAll(others);
-        viewer.getChartSelection().setSelectedClass(selected, true);
         viewer.getClassesList().sync(ordered, viewer.getClassesList().getLabel2ToolTips(), true);
         viewer.getClassesList().setDisabledLabels(others);
+        viewer.getChartSelection().setSelectedClass(selected, true);
     }
 
     private void updateAttributesJList() {
         final Collection<String> selected = new ArrayList<>();
         selected.addAll(viewer.getChartSelection().getSelectedAttributes());
-        final Collection<String> ordered = attributesClusteringTree.getLabelOrder();
+        final Collection<String> ordered = new ArrayList<>(Arrays.asList(attributeNames));
         final Collection<String> others = viewer.getAttributesList().getAllLabels();
         others.removeAll(ordered);
         ordered.addAll(others);
-        viewer.getChartSelection().setSelectedAttribute(selected, true);
         viewer.getAttributesList().sync(ordered, null, true);
         viewer.getAttributesList().setDisabledLabels(others);
+        viewer.getChartSelection().setSelectedAttribute(selected, true);
     }
 
     /**
@@ -744,6 +743,8 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                             if (classesClusteringTree.hasSelectedSubTree()) {
                                 //System.err.println("Rotate Classes");
                                 classesClusteringTree.rotateSelectedSubTree();
+                                final Collection<String> list = classesClusteringTree.getLabelOrder();
+                                classNames = list.toArray(new String[list.size()]);
                                 updateClassesJList();
                                 getJPanel().repaint();
                             } else if (attributesClusteringTree.hasSelectedSubTree()) {
@@ -751,7 +752,9 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                                 //System.err.println("Rotate Series");
                                 attributesClusteringTree.rotateSelectedSubTree();
                                 //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
-                                //updateSeriesJList();
+                                final Collection<String> list = attributesClusteringTree.getLabelOrder();
+                                attributeNames = list.toArray(new String[list.size()]);
+                                updateAttributesJList();
                                 getJPanel().repaint();
                             }
                         }
@@ -765,17 +768,16 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
 
     @Override
     public void writeData(Writer w) throws IOException {
-        final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
         w.write("AttributeCorrelationPlot");
         for (String className : classNames) {
             w.write("\t" + className);
         }
         w.write("\n");
 
-        for (int a = 0; a < numberOfAttributes; a++) {
-            w.write(attributeNames[a]);
-            for (int c = 0; c < classNames.length; c++) {
-                final double correlationCoefficient = dataMatrix[c][a];
+        for (String attributeName : attributeNames) {
+            w.write(attributeName);
+            for (String className : classNames) {
+                final double correlationCoefficient = dataMatrix.get(className, attributeName);
                 w.write(String.format("\t%.4g", correlationCoefficient));
             }
             w.write("\n");

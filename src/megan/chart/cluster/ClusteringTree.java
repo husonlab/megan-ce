@@ -23,7 +23,6 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.phylo.PhyloTreeView;
-import jloda.util.Basic;
 import jloda.util.Correlation;
 import jloda.util.ProgramProperties;
 import megan.chart.gui.ChartSelection;
@@ -52,12 +51,14 @@ public class ClusteringTree {
     private final PhyloTreeView treeView;
     private Rectangle previousRectangle;
 
-    private final TYPE type;
+    private TYPE type;
     private SIDE rootSide;
 
     private ChartSelection chartSelection;
 
     private final SelectionGraphics<Edge> selectionGraphics;
+
+    private boolean inUpdate;
 
     /**
      * constructor
@@ -92,52 +93,60 @@ public class ClusteringTree {
      * @param seriesAndClass2Value
      */
     public void updateClustering(Table<String, String, Double> seriesAndClass2Value) {
-        labelOrder.clear();
-        previousRectangle = null;
+        if (!inUpdate) {
+            try {
+                inUpdate = true;
 
-        final Taxa taxa;
-        final Distances distances;
-        switch (type) {
-            case SERIES: {
-                final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[seriesAndClass2Value.rowKeySet().size()]);
+                labelOrder.clear();
+                previousRectangle = null;
 
-                taxa = new Taxa();
-                for (String seriesName : series)
-                    taxa.add(seriesName);
-                distances = new Distances(taxa.size());
+                final Taxa taxa;
+                final Distances distances;
+                switch (type) {
+                    case SERIES: {
+                        final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[seriesAndClass2Value.rowKeySet().size()]);
 
-                for (int i = 0; i < series.length; i++) {
-                    for (int j = 0; j < series.length; j++) {
-                        distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenSeries(series[i], series[j], seriesAndClass2Value));
+                        taxa = new Taxa();
+                        for (String seriesName : series)
+                            taxa.add(seriesName);
+                        distances = new Distances(taxa.size());
+
+                        for (int i = 0; i < series.length; i++) {
+                            for (int j = 0; j < series.length; j++) {
+                                distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenSeries(series[i], series[j], seriesAndClass2Value));
+                            }
+                        }
+                        break;
                     }
-                }
-                break;
-            }
-            case CLASSES: {
-                final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[seriesAndClass2Value.columnKeySet().size()]);
+                    case CLASSES: {
+                        final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[seriesAndClass2Value.columnKeySet().size()]);
 
-                taxa = new Taxa();
-                for (String className : classes)
-                    taxa.add(className);
-                distances = new Distances(taxa.size());
+                        taxa = new Taxa();
+                        for (String className : classes)
+                            taxa.add(className);
+                        distances = new Distances(taxa.size());
 
-                for (int i = 0; i < classes.length; i++) {
-                    for (int j = 0; j < classes.length; j++) {
-                        distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenClasses(classes[i], classes[j], seriesAndClass2Value));
+                        for (int i = 0; i < classes.length; i++) {
+                            for (int j = 0; j < classes.length; j++) {
+                                distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenClasses(classes[i], classes[j], seriesAndClass2Value));
+                            }
+                        }
+                        break;
                     }
+                    default:
+                        throw new RuntimeException("Invalid case: " + type.toString());
                 }
-                break;
+
+                treeView.getGraph().clear();
+                UPGMA.apply(taxa, distances, treeView);
+                flipCoordinates(treeView, rootSide);
+                labelOrder.addAll(getLabelOrder(treeView));
+                // if(rootSide==SIDE.RIGHT)
+                //   Basic.reverseList(labelOrder);
+            } finally {
+                inUpdate = false;
             }
-            default:
-                throw new RuntimeException("Invalid case: " + type.toString());
         }
-
-        treeView.getGraph().clear();
-        UPGMA.apply(taxa, distances, treeView);
-        flipCoordinates(treeView, rootSide);
-        labelOrder.addAll(getLabelOrder(treeView));
-        // if(rootSide==SIDE.RIGHT)
-        //   Basic.reverseList(labelOrder);
     }
 
     /**
@@ -146,41 +155,60 @@ public class ClusteringTree {
      * @param labels
      * @param matrix
      */
-    public void updateClustering(String[] labels, float[][] matrix) {
-        labelOrder.clear();
-        treeView.getGraph().clear();
-        previousRectangle = null;
+    public void updateClustering(String[] labels, Table<String, String, Float> matrix) {
+        if (!inUpdate) {
+            try {
+                inUpdate = true;
+                labelOrder.clear();
+                treeView.getGraph().clear();
+                previousRectangle = null;
 
-        if (labels.length > 0) {
-            final Taxa taxa = new Taxa();
-            for (String label : labels)
-                taxa.add(label);
+                if (labels.length > 0) {
+                    final Taxa taxa = new Taxa();
+                    for (String label : labels)
+                        taxa.add(label);
 
-            if (labels.length == 1) {
-                final Node root = treeView.getPhyloTree().newNode();
-                treeView.getPhyloTree().setRoot(root);
-                treeView.setLabel(root, labels[0]);
-                labelOrder.addAll(getLabelOrder(treeView));
-            } else {
-                final Distances distances = new Distances(taxa.size());
+                    if (labels.length == 1) {
+                        final Node root = treeView.getPhyloTree().newNode();
+                        treeView.getPhyloTree().setRoot(root);
+                        treeView.setLabel(root, labels[0]);
+                        labelOrder.addAll(getLabelOrder(treeView));
+                    } else {
+                        final Distances distances = new Distances(taxa.size());
 
-                try {
-                    for (int i = 0; i < matrix.length; i++) {
-                        for (int j = 0; j < matrix.length; j++) {
-                            distances.set(i + 1, j + 1, computeCorrelationDistances(matrix[0].length, matrix[i], matrix[j]));
+                        for (int i = 0; i < labels.length; i++) {
+                            final float[] iValues = getValuesRow(labels[i], matrix);
+                            for (int j = i + 1; j < labels.length; j++) {
+                                final float[] jValues = getValuesRow(labels[j], matrix);
+                                distances.set(i + 1, j + 1, computeCorrelationDistances(iValues.length, iValues, jValues));
+                            }
                         }
-                    }
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                }
 
-                UPGMA.apply(taxa, distances, treeView);
-                flipCoordinates(treeView, rootSide);
-                labelOrder.addAll(getLabelOrder(treeView));
+                        UPGMA.apply(taxa, distances, treeView);
+                        // treeView.topologicallySortTreeLexicographically();
+                        // UPGMA.embedTree(treeView);
+                        flipCoordinates(treeView, rootSide);
+                        labelOrder.addAll(getLabelOrder(treeView));
+                    }
+                    // if(rootSide==SIDE.RIGHT)
+                    //   Basic.reverseList(labelOrder);
+
+                }
+            } finally {
+                inUpdate = false;
             }
-            // if(rootSide==SIDE.RIGHT)
-            //   Basic.reverseList(labelOrder);
         }
+    }
+
+    private float[] getValuesRow(String rowKey, Table<String, String, Float> matrix) {
+        final float[] array = new float[matrix.columnKeySet().size()];
+        final Map<String, Float> row = matrix.row(rowKey);
+        int i = 0;
+        for (String colKey : row.keySet()) {
+            array[i++] = matrix.get(rowKey, colKey);
+        }
+        return array;
+
     }
 
     /**
@@ -276,11 +304,16 @@ public class ClusteringTree {
      * @param rect
      */
     public void paint(Graphics2D gc, Rectangle rect) {
-        if (gc instanceof SelectionGraphics) {
-            final SelectionGraphics sgc = (SelectionGraphics) gc;
-            select(rect, sgc.getSelectionRectangle(), sgc.getMouseClicks());
-        } else
-            doPaint(gc, rect);
+        if (!inUpdate) {
+            try {
+                if (gc instanceof SelectionGraphics) {
+                    final SelectionGraphics sgc = (SelectionGraphics) gc;
+                    select(rect, sgc.getSelectionRectangle(), sgc.getMouseClicks());
+                } else
+                    doPaint(gc, rect);
+            } catch (Exception ex) {
+            }
+        }
     }
 
     /**
@@ -293,45 +326,52 @@ public class ClusteringTree {
         if (!(gc instanceof SelectionGraphics))
             selectEdgesAbove();
 
+        gc.setStroke(new BasicStroke(1));
+
         if (previousRectangle == null || !rect.equals(previousRectangle)) {
             previousRectangle = rect;
             fitToRectangle(treeView, rect);
         }
         for (Edge e = tree.getFirstEdge(); e != null; e = tree.getNextEdge(e)) {
-            Point2D a = treeView.getLocation(e.getSource());
-            Point2D b = treeView.getLocation(e.getTarget());
-
-            if (treeView.getSelected(e))
-                gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
-            else
-                gc.setColor(Color.BLACK);
-
-            if (gc instanceof SelectionGraphics)
-                ((SelectionGraphics) gc).setCurrentItem(e);
-
-            final int ax = (int) Math.round(a.getX());
-            final int ay = (int) Math.round(a.getY());
-            gc.fillOval(ax - 1, ay - 1, 3, 3);
-
-            switch (rootSide) {
-                case BOTTOM:
-                case TOP:
-                    gc.drawLine(ax, ay, (int) Math.round(b.getX()), ay);
-                    gc.drawLine((int) Math.round(b.getX()), ay, (int) Math.round(b.getX()), (int) Math.round(b.getY()));
+            try {
+                if (inUpdate)
                     break;
-                default:
-                case RIGHT:
-                case LEFT:
-                    gc.drawLine(ax, ay, (int) Math.round(a.getX()), (int) Math.round(b.getY()));
-                    gc.drawLine(ax, (int) Math.round(b.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
-                    break;
-            }
+                Point2D a = treeView.getLocation(e.getSource());
+                Point2D b = treeView.getLocation(e.getTarget());
+
+                if (treeView.getSelected(e))
+                    gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+                else
+                    gc.setColor(Color.BLACK);
+
+                if (gc instanceof SelectionGraphics)
+                    ((SelectionGraphics) gc).setCurrentItem(e);
+
+                final int ax = (int) Math.round(a.getX());
+                final int ay = (int) Math.round(a.getY());
+                gc.fillOval(ax - 1, ay - 1, 3, 3);
+
+                switch (rootSide) {
+                    case BOTTOM:
+                    case TOP:
+                        gc.drawLine(ax, ay, (int) Math.round(b.getX()), ay);
+                        gc.drawLine((int) Math.round(b.getX()), ay, (int) Math.round(b.getX()), (int) Math.round(b.getY()));
+                        break;
+                    default:
+                    case RIGHT:
+                    case LEFT:
+                        gc.drawLine(ax, ay, (int) Math.round(a.getX()), (int) Math.round(b.getY()));
+                        gc.drawLine(ax, (int) Math.round(b.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
+                        break;
+                }
             /*
             if (e.getTarget().getOutDegree() == 0)
                 gc.drawString(treeView.getLabel(e.getTarget()), (int) b.getX(), (int) b.getY());
                 */
-            if (gc instanceof SelectionGraphics)
-                ((SelectionGraphics) gc).clearCurrentItem();
+            } finally {
+                if (gc instanceof SelectionGraphics)
+                    ((SelectionGraphics) gc).clearCurrentItem();
+            }
         }
     }
 
@@ -540,5 +580,9 @@ public class ClusteringTree {
             flipCoordinates(treeView, rootSide);
             previousRectangle = null;
         }
+    }
+
+    public void setType(TYPE type) {
+        this.type = type;
     }
 }

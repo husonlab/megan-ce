@@ -333,17 +333,17 @@ public class LabelsJList extends JList<String> {
                         if (clearOldOrder)
                             ((DefaultListModel) getModel()).removeAllElements();
 
-                        Set<String> labelsSet = new HashSet<>();
+                        final Set<String> labelsSet = new HashSet<>();
                         labelsSet.addAll(labels);
 
-                        Set<String> toDelete = new HashSet<>();
+                        final Set<String> toDelete = new HashSet<>();
                         for (String label : disabledLabels) {
                             if (!labelsSet.contains(label))
                                 toDelete.add(label);
                         }
                         disabledLabels.removeAll(toDelete);
 
-                        List<String> toKeep = new LinkedList<>();
+                        final List<String> toKeep = new LinkedList<>();
                         for (int i = 0; i < getModel().getSize(); i++) {
                             String label = getModel().getElementAt(i);
                             if (labelsSet.contains(label))
@@ -353,7 +353,7 @@ public class LabelsJList extends JList<String> {
                         for (String label : toKeep) {
                             ((DefaultListModel<String>) getModel()).addElement(label);
                         }
-                        Set<String> seen = new HashSet<>();
+                        final Set<String> seen = new HashSet<>();
                         seen.addAll(toKeep);
                         for (String label : labels) {
                             if (!seen.contains(label))

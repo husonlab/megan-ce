@@ -313,4 +313,28 @@ public class Table<R, C, V> {
         }
         return values;
     }
+
+    /**
+     * compute table with tranposed rows and cols
+     */
+    public Table<C, R, V> computeTransposedTable() {
+        final Table<C, R, V> transposed = new Table<>();
+        for (R row : rowKeySet())
+            for (C col : columnKeySet())
+                transposed.put(col, row, get(row, col));
+        return transposed;
+    }
+
+    /**
+     * returns a copy
+     *
+     * @return copy
+     */
+    public Table<R, C, V> copy() {
+        final Table<R, C, V> copy = new Table<>();
+        for (R row : rowKeySet())
+            for (C col : columnKeySet())
+                copy.put(row, col, get(row, col));
+        return copy;
+    }
 }

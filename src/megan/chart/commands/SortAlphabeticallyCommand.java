@@ -128,8 +128,7 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
             MultiChartDrawer multiChartDrawer = (MultiChartDrawer) chartViewer.getChartDrawer();
             if (multiChartDrawer.getBaseDrawer() instanceof BarChartDrawer)
                 multiChartDrawer.updateView();
-        } else
-            chartViewer.getChartDrawer().updateView();
+        }
     }
 
     public void actionPerformed(ActionEvent event) {

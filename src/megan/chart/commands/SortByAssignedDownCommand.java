@@ -23,6 +23,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,13 +42,13 @@ public class SortByAssignedDownCommand extends CommandBase implements ICommand {
         execute("set sort=down;");
     }
 
-    public boolean isApplicable() {
-        final ChartViewer viewer = (ChartViewer) getViewer();
-        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
-    }
-
     public String getName() {
         return "Sort By Values (Down)";
+    }
+
+    public boolean isApplicable() {
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.isEnabled() && !list.isDoClustering();
     }
 
     public KeyStroke getAcceleratorKey() {

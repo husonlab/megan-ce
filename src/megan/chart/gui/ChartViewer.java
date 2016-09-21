@@ -989,12 +989,24 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
      * @return active labels list
      */
     public LabelsJList getActiveLabelsJList() {
-        if (listsTabbedPane.getSelectedComponent() != null) {
+        if (listsTabbedPane != null && listsTabbedPane.getSelectedComponent() != null) {
             JViewport viewport = ((JViewport) ((JScrollPane) listsTabbedPane.getSelectedComponent()).getComponent(0));
             if (viewport != null)
                 return (LabelsJList) viewport.getComponent(0);
         }
-        return null;
+        return getSeriesList();
+    }
+
+    public LabelsJList getLabelsJList(String name) {
+        switch (name.toLowerCase()) {
+            case "attributes":
+                return getAttributesList();
+            case "classes":
+                return getClassesList();
+            default:
+            case "series":
+                return getSeriesList();
+        }
     }
 
     public SeriesList getSeriesList() {

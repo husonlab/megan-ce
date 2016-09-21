@@ -23,6 +23,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,13 +47,12 @@ public class SelectTopCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select top=");
         int number = np.getInt(0, Integer.MAX_VALUE);
+        np.matchIgnoreCase(";");
 
-        ChartViewer viewer = (ChartViewer) getViewer();
-        if (viewer.isSeriesTabSelected()) {
-            viewer.getSeriesList().selectTop(number);
-        } else {
-            viewer.getClassesList().selectTop(number);
-        }
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        final LabelsJList list = viewer.getActiveLabelsJList();
+
+        list.selectTop(number);
         viewer.repaint();
     }
 
@@ -73,9 +73,11 @@ public class SelectTopCommand extends CommandBase implements ICommand {
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ChartViewer viewer = (ChartViewer) getViewer();
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        final LabelsJList list = viewer.getActiveLabelsJList();
+        previousValue = Math.min(list.getAllLabels().size(), previousValue);
 
-        String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set number of top items to select", previousValue);
+        final String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set number of top items to select", previousValue);
         if (result != null && Basic.isInteger(result)) {
             execute("select top='" + result + "';");
             previousValue = Basic.parseInt(result);

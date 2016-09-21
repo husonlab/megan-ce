@@ -21,8 +21,8 @@ package megan.chart.commands;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
-import megan.chart.data.IChartData;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -45,53 +45,31 @@ public class HideAllCommand extends CommandBase implements ICommand {
         ChartViewer viewer = (ChartViewer) getViewer();
 
         np.matchIgnoreCase("hide what=");
-        String what = np.getWordMatchesIgnoringCase("all none selected unselected");
-        String target;
+        final String what = np.getWordMatchesIgnoringCase("all none selected unselected");
+        final LabelsJList list;
         if (np.peekMatchIgnoreCase("target=")) {
             np.matchIgnoreCase("target=");
-            target = np.getWordMatchesIgnoringCase("active series classes");
+            list = viewer.getLabelsJList(np.getWordMatchesIgnoringCase("series classes attributes"));
         } else {
-            if (viewer.isSeriesTabSelected())
-                target = "series";
-            else
-                target = "classes";
+            list = viewer.getActiveLabelsJList();
         }
         np.matchIgnoreCase(";");
 
-        if (target.equals("series")) {
             if (what.equalsIgnoreCase("none")) {
-                viewer.getSeriesList().enableLabels(viewer.getSeriesList().getAllLabels());
+                list.enableLabels(list.getAllLabels());
             } else if (what.equalsIgnoreCase("selected")) {
-                viewer.getSeriesList().disableLabels(viewer.getSeriesList().getSelectedLabels());
+                list.disableLabels(list.getSelectedLabels());
             } else if (what.equalsIgnoreCase("unselected")) {
-                Set<String> labels = new HashSet<>();
-                labels.addAll(viewer.getSeriesList().getAllLabels());
-                labels.removeAll(viewer.getSeriesList().getSelectedLabels());
-                viewer.getSeriesList().disableLabels(labels);
+                final Set<String> labels = new HashSet<>();
+                labels.addAll(list.getAllLabels());
+                labels.removeAll(list.getSelectedLabels());
+                list.disableLabels(labels);
             } else  // all
             {
-                viewer.getSeriesList().disableLabels(viewer.getSeriesList().getAllLabels());
+                list.disableLabels(list.getAllLabels());
             }
-            viewer.getChartData().setEnabledSeries(viewer.getSeriesList().getEnabledLabels());
-        } else // target equals classes
-        {
-            if (viewer.getChartData() instanceof IChartData) {
-                if (what.equalsIgnoreCase("none")) {
-                    viewer.getClassesList().enableLabels(viewer.getClassesList().getAllLabels());
-                } else if (what.equalsIgnoreCase("selected")) {
-                    viewer.getClassesList().disableLabels(viewer.getClassesList().getSelectedLabels());
-                } else if (what.equalsIgnoreCase("unselected")) {
-                    Set<String> labels = new HashSet<>();
-                    labels.addAll(viewer.getClassesList().getAllLabels());
-                    labels.removeAll(viewer.getClassesList().getSelectedLabels());
-                    viewer.getClassesList().disableLabels(labels);
-                } else  // all
-                {
-                    viewer.getClassesList().disableLabels(viewer.getClassesList().getAllLabels());
-                }
-                ((IChartData) viewer.getChartData()).setEnabledClassNames(viewer.getClassesList().getEnabledLabels());
-            }
-        }
+        if (list.getName().equalsIgnoreCase("series"))
+            viewer.getChartData().setEnabledSeries(list.getEnabledLabels());
     }
 
     /**
@@ -101,7 +79,7 @@ public class HideAllCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "hide what={all|none|selected} [target={active|series|classes}];";
+        return "hide what={all|none|selected} [target={series|classes|attributes}];";
     }
 
     /**

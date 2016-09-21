@@ -24,6 +24,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -67,31 +68,24 @@ public class ShowClusteringCommand extends CommandBase implements ICheckBoxComma
     }
 
     public void actionPerformed(ActionEvent event) {
-        final ChartViewer chartViewer = (ChartViewer) getViewer();
-        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
-            case "series":
-                execute("cluster what=series state=" + !chartViewer.getSeriesList().isDoClustering() + ";");
-                break;
-            case "classes":
-                execute("cluster what=classes state=" + !chartViewer.getClassesList().isDoClustering() + ";");
-                break;
-            case "attributes":
-                execute("cluster what=attributes state=" + !chartViewer.getAttributesList().isDoClustering() + ";");
-                break;
-        }
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        final LabelsJList list = viewer.getActiveLabelsJList();
+        execute("cluster what=" + list.getName() + " state=" + !list.isDoClustering() + ";");
     }
 
     public boolean isApplicable() {
-        final ChartViewer chartViewer = (ChartViewer) getViewer();
-        if (chartViewer.getChartDrawer() == null)
-            return false;
-        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
-            case "series":
-                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.SERIES);
-            case "classes":
-                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.CLASSES);
-            case "attributes":
-                return chartViewer.getChartDrawer().canCluster(ClusteringTree.TYPE.ATTRIBUTES);
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        final LabelsJList list = viewer.getActiveLabelsJList();
+
+        if (list != null && viewer.getChartDrawer() != null) {
+            switch (list.getName().toLowerCase()) {
+                case "series":
+                    return viewer.getChartDrawer().canCluster(ClusteringTree.TYPE.SERIES);
+                case "classes":
+                    return viewer.getChartDrawer().canCluster(ClusteringTree.TYPE.CLASSES);
+                case "attributes":
+                    return viewer.getChartDrawer().canCluster(ClusteringTree.TYPE.ATTRIBUTES);
+            }
         }
         return false;
     }

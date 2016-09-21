@@ -21,8 +21,8 @@ package megan.chart.commands;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
-import megan.chart.data.IChartData;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,41 +46,24 @@ public class ShowAllCommand extends CommandBase implements ICommand {
 
         np.matchIgnoreCase("show what=");
         String what = np.getWordMatchesIgnoringCase("all none selected");
-        String target;
+
+        final LabelsJList list;
         if (np.peekMatchIgnoreCase("target=")) {
             np.matchIgnoreCase("target=");
-            target = np.getWordMatchesIgnoringCase("active series classes");
+            list = viewer.getLabelsJList(np.getWordMatchesIgnoringCase("series classes attributes"));
         } else {
-            if (viewer.isSeriesTabSelected())
-                target = "series";
-            else
-                target = "classes";
+            list = viewer.getActiveLabelsJList();
         }
         np.matchIgnoreCase(";");
 
-        if (target.equals("series")) {
-            if (what.equalsIgnoreCase("none")) {
-                viewer.getSeriesList().disableLabels(viewer.getSeriesList().getAllLabels());
-            } else if (what.equalsIgnoreCase("selected")) {
-                viewer.getSeriesList().enableLabels(viewer.getSeriesList().getSelectedLabels());
-            } else  // all
-            {
-                viewer.getSeriesList().enableLabels(viewer.getSeriesList().getAllLabels());
-            }
-            viewer.getChartData().setEnabledSeries(viewer.getSeriesList().getEnabledLabels());
-        } else // target equals classes
+
+        if (what.equalsIgnoreCase("none")) {
+            list.disableLabels(list.getAllLabels());
+        } else if (what.equalsIgnoreCase("selected")) {
+            list.enableLabels(list.getSelectedLabels());
+        } else  // all
         {
-            if (viewer.getChartData() instanceof IChartData) {
-                if (what.equalsIgnoreCase("none")) {
-                    viewer.getClassesList().disableLabels(viewer.getClassesList().getAllLabels());
-                } else if (what.equalsIgnoreCase("selected")) {
-                    viewer.getClassesList().enableLabels(viewer.getClassesList().getSelectedLabels());
-                } else  // all
-                {
-                    viewer.getClassesList().enableLabels(viewer.getClassesList().getAllLabels());
-                }
-                ((IChartData) viewer.getChartData()).setEnabledClassNames(viewer.getClassesList().getEnabledLabels());
-            }
+            list.enableLabels(list.getAllLabels());
         }
     }
 
@@ -91,7 +74,7 @@ public class ShowAllCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "show what={all|none|selected} [target={active|series|classes}];";
+        return "show what={all|none|selected} [target={series|classes|attributes}];";
     }
 
     /**
@@ -155,8 +138,7 @@ public class ShowAllCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        ChartViewer viewer = (ChartViewer) getViewer();
-        return (viewer.isSeriesTabSelected() && viewer.getSeriesList() != null && viewer.getSeriesList().getDisabledLabels().size() > 0)
-                || (!viewer.isSeriesTabSelected() && viewer.getClassesList() != null && viewer.getClassesList().getDisabledLabels().size() > 0);
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.getDisabledLabels().size() > 0;
     }
 }

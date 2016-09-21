@@ -23,11 +23,13 @@ import jloda.gui.commands.ICommand;
 import jloda.gui.director.ProjectManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,46 +47,24 @@ public class SelectAllCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select what=");
-        final List<String> list = new LinkedList<>();
-        if (np.peekMatchAnyTokenIgnoreCase("all none previous"))
-            list.add(np.getWordMatchesIgnoringCase("all none previous"));
-        else list.addAll(np.getTokensRespectCase(null, ";"));
+        final List<String> labels = new LinkedList<>();
+        if (np.peekMatchAnyTokenIgnoreCase("all none previous")) {
+            labels.add(np.getWordMatchesIgnoringCase("all none previous"));
+            np.matchIgnoreCase(";");
+        } else labels.addAll(np.getTokensRespectCase(null, ";"));
 
         final ChartViewer viewer = (ChartViewer) getViewer();
-        if (viewer.isSeriesTabSelected()) {
-            for (String name : list) {
+        final LabelsJList list = viewer.getActiveLabelsJList();
+        for (String name : labels) {
                 if (name.equalsIgnoreCase("all"))
-                    viewer.getChartSelection().setSelectedSeries(viewer.getSeriesList().getAllLabels(), true);
+                    viewer.getChartSelection().setSelected(list.getName(), list.getAllLabels(), true);
                 else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().clearSelectionSeries();
+                    viewer.getChartSelection().clearSelection(list.getName());
                 else if (name.equals("previous"))
-                    viewer.getChartSelection().setSelectedSeries(ProjectManager.getPreviouslySelectedNodeLabels(), true);
+                    viewer.getChartSelection().setSelected(list.getName(), ProjectManager.getPreviouslySelectedNodeLabels(), true);
                 else
-                    viewer.getChartSelection().setSelectedSeries(name, true);
+                    viewer.getChartSelection().setSelected(list.getName(), Collections.singletonList(name), true);
             }
-        } else {
-            for (String name : list) {
-                if (name.equalsIgnoreCase("all"))
-                    viewer.getChartSelection().setSelectedClass(viewer.getClassesList().getAllLabels(), true);
-                else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().clearSelectionClasses();
-                else if (name.equals("previous"))
-                    viewer.getChartSelection().setSelectedClass(ProjectManager.getPreviouslySelectedNodeLabels(), true);
-                else
-                    viewer.getChartSelection().setSelectedClass(name, true);
-            }
-        }
-
-        for (String name : list) {
-            if (name.equalsIgnoreCase("all")) {
-                viewer.getChartSelection().setSelectedAttribute(viewer.getAttributesList().getEnabledLabels(), true);
-            } else if (name.equalsIgnoreCase("none")) {
-                viewer.getChartSelection().clearSelectionAttributes();
-            } else if (name.equals("previous"))
-                viewer.getChartSelection().setSelectedAttribute(ProjectManager.getPreviouslySelectedNodeLabels(), true);
-            else
-                viewer.getChartSelection().setSelectedAttribute(name, true);
-        }
         viewer.repaint();
     }
 

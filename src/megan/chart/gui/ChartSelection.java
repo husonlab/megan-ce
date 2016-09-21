@@ -215,6 +215,47 @@ public class ChartSelection {
             selectionListener.selectionChanged(this);
         }
     }
+
+    /**
+     * set selected
+     *
+     * @param target series, classes or attributes
+     * @param list
+     * @param select
+     */
+    public void setSelected(String target, java.util.Collection<String> list, boolean select) {
+        switch (target.toLowerCase()) {
+            case "series":
+                setSelectedSeries(list, select);
+                break;
+            case "classes":
+                setSelectedClass(list, select);
+                break;
+            case "attributes":
+                setSelectedAttribute(list, select);
+                break;
+        }
+    }
+
+    /**
+     * clear selection
+     *
+     * @param target series, classes or attributes
+     */
+    public void clearSelection(String target) {
+        switch (target.toLowerCase()) {
+            case "series":
+                clearSelectionSeries();
+                break;
+            case "classes":
+                clearSelectionClasses();
+                break;
+            case "attributes":
+                clearSelectionAttributes();
+                break;
+        }
+    }
+
 }
 
 

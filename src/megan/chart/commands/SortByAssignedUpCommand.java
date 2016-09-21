@@ -23,6 +23,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,8 +43,8 @@ public class SortByAssignedUpCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        final ChartViewer viewer = (ChartViewer) getViewer();
-        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.isEnabled() && !list.isDoClustering();
     }
 
     public String getName() {

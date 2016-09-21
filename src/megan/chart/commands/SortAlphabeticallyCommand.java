@@ -50,76 +50,80 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
         final LinkedList<String> disabled = new LinkedList<>();
         disabled.addAll(list.getDisabledLabels());
 
-        if (which.equalsIgnoreCase("up") || which.equalsIgnoreCase("down")) {
-            final int direction = (which.equalsIgnoreCase("up") ? -1 : 1);
+        switch (which.toLowerCase()) {
+            case "up":
+            case "down": {
+                final int direction = (which.equalsIgnoreCase("up") ? -1 : 1);
 
-            SortedSet<Pair<Number, String>> sorted = new TreeSet<>(new Comparator<Pair<Number, String>>() {
-                public int compare(Pair<Number, String> pair1, Pair<Number, String> pair2) {
-                    if (pair1.get1().doubleValue() > pair2.get1().doubleValue())
-                        return -direction;
-                    if (pair1.get1().doubleValue() < pair2.get1().doubleValue())
-                        return direction;
-                    return pair1.get2().compareTo(pair2.get2());
+                final SortedSet<Pair<Number, String>> sorted = new TreeSet<>(new Comparator<Pair<Number, String>>() {
+                    public int compare(Pair<Number, String> pair1, Pair<Number, String> pair2) {
+                        if (pair1.get1().doubleValue() > pair2.get1().doubleValue())
+                            return -direction;
+                        if (pair1.get1().doubleValue() < pair2.get1().doubleValue())
+                            return direction;
+                        return pair1.get2().compareTo(pair2.get2());
+                    }
+                });
+                if (list == chartViewer.getSeriesList()) {
+                    final IData chartData = chartViewer.getChartData();
+                    for (String label : list.getAllLabels()) {
+                        Number value;
+                        if (chartViewer.getChartData() instanceof IChartData)
+                            value = ((IChartData) chartData).getTotalForSeries(label);
+                        else
+                            value = ((IPlot2DData) chartData).getRangeX().get2();
+                        if (value == null)
+                            value = 0;
+                        sorted.add(new Pair<>(value, label));
+                    }
+                    final LinkedList<String> labels = new LinkedList<>();
+                    for (Pair<Number, String> pair : sorted) {
+                        labels.add(pair.get2());
+                    }
+                    list.sync(labels, list.getLabel2ToolTips(), true);
+                } else if (chartViewer.getChartData() instanceof IChartData) {
+                    final IChartData chartData = (IChartData) chartViewer.getChartData();
+                    for (String label : list.getAllLabels()) {
+                        Number value = chartData.getTotalForClass(label);
+                        sorted.add(new Pair<>(value, label));
+                    }
+                    final LinkedList<String> labels = new LinkedList<>();
+                    for (Pair<Number, String> pair : sorted) {
+                        labels.add(pair.get2());
+                    }
+                    list.sync(labels, list.getLabel2ToolTips(), true);
                 }
-            });
-            if (list == chartViewer.getSeriesList()) {
-                IData chartData = chartViewer.getChartData();
-                for (String label : list.getAllLabels()) {
-                    Number value;
-                    if (chartViewer.getChartData() instanceof IChartData)
-                        value = ((IChartData) chartData).getTotalForSeries(label);
-                    else
-                        value = ((IPlot2DData) chartData).getRangeX().get2();
-                    if (value == null)
-                        value = 0;
-                    sorted.add(new Pair<>(value, label));
-                }
-                LinkedList<String> labels = new LinkedList<>();
-                for (Pair<Number, String> pair : sorted) {
-                    labels.add(pair.get2());
-                }
-                list.sync(labels, list.getLabel2ToolTips(), true);
-            } else if (chartViewer.getChartData() instanceof IChartData) {
-                IChartData chartData = (IChartData) chartViewer.getChartData();
-                for (String label : list.getAllLabels()) {
-                    Number value = chartData.getTotalForClass(label);
-                    sorted.add(new Pair<>(value, label));
-                }
-                final LinkedList<String> labels = new LinkedList<>();
-                for (Pair<Number, String> pair : sorted) {
-                    labels.add(pair.get2());
-                }
-                list.sync(labels, list.getLabel2ToolTips(), true);
+                break;
             }
-        } else if (which.equalsIgnoreCase("enabled")) {
-            final List<String> allLabels = list.getAllLabels();
-            String[] array = allLabels.toArray(new String[allLabels.size()]);
-            final Set<String> disabledSet = new HashSet<>();
-            disabledSet.addAll(disabled);
-            Arrays.sort(array, new Comparator<String>() {
-                @Override
-                public int compare(String a, String b) {
-                    if (!disabledSet.contains(a) && disabledSet.contains(b))
-                        return -1;
-                    else if (disabledSet.contains(a) && !disabledSet.contains(b))
-                        return 1;
-                    else
-                        return 0;
-                }
-            });
-            final LinkedList<String> labels = new LinkedList<>();
-            labels.addAll(Arrays.asList(array));
-            list.sync(labels, list.getLabel2ToolTips(), true);
-        } else {
-            final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
-
-            SortedSet<String> sorted = new TreeSet<>(new Comparator<String>() {
-                public int compare(String s, String s1) {
-                    return direction * s.compareToIgnoreCase(s1);
-                }
-            });
-            sorted.addAll(list.getAllLabels());
-            list.sync(sorted, list.getLabel2ToolTips(), true);
+            case "alphabetically":
+            case "alphabackward": {
+                final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
+                final SortedSet<String> sorted = new TreeSet<>(new Comparator<String>() {
+                    public int compare(String s, String s1) {
+                        return direction * s.compareToIgnoreCase(s1);
+                    }
+                });
+                sorted.addAll(list.getAllLabels());
+                list.sync(sorted, list.getLabel2ToolTips(), true);
+                break;
+            }
+            case "enabled": {
+                final String[] array = list.getAllLabels().toArray(new String[list.getAllLabels().size()]);
+                final Set<String> disabledSet = new HashSet<>(disabled);
+                Arrays.sort(array, new Comparator<String>() {
+                    @Override
+                    public int compare(String a, String b) {
+                        if (!disabledSet.contains(a) && disabledSet.contains(b))
+                            return -1;
+                        else if (disabledSet.contains(a) && !disabledSet.contains(b))
+                            return 1;
+                        else
+                            return 0;
+                    }
+                });
+                list.sync(Arrays.asList(array), list.getLabel2ToolTips(), true);
+                break;
+            }
         }
         list.disableLabels(disabled);
         list.fireSyncToViewer();
@@ -136,8 +140,8 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        final ChartViewer viewer = (ChartViewer) getViewer();
-        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.isEnabled() && !list.isDoClustering();
     }
 
     public String getName() {

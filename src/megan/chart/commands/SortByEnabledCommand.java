@@ -55,8 +55,8 @@ public class SortByEnabledCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        final ChartViewer viewer = (ChartViewer) getViewer();
-        return viewer != null && viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().isEnabled();
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.isEnabled() && !list.isDoClustering() && list.getAllLabels().size() > list.getEnabledLabels().size();
     }
 
     public String getName() {

@@ -22,6 +22,7 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -114,8 +115,7 @@ public class ShowSelectedCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        ChartViewer viewer = (ChartViewer) getViewer();
-        return (viewer.isSeriesTabSelected() && viewer.getSeriesList() != null && viewer.getSeriesList().getSelectedIndex() != -1)
-                || (!viewer.isSeriesTabSelected() && viewer.getClassesList() != null && viewer.getClassesList().getSelectedIndex() != -1);
+        final LabelsJList list = ((ChartViewer) getViewer()).getActiveLabelsJList();
+        return list != null && list.getSelectedIndex() != -1;
     }
 }

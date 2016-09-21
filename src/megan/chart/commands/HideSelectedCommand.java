@@ -114,8 +114,7 @@ public class HideSelectedCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        ChartViewer viewer = (ChartViewer) getViewer();
-        return (viewer.isSeriesTabSelected() && viewer.getSeriesList() != null && viewer.getSeriesList().getSelectedIndex() != -1)
-                || (!viewer.isSeriesTabSelected() && viewer.getClassesList() != null && viewer.getClassesList().getSelectedIndex() != -1);
+        final ChartViewer viewer = (ChartViewer) getViewer();
+        return viewer.getActiveLabelsJList() != null && viewer.getActiveLabelsJList().getSelectedIndex() != -1;
     }
 }

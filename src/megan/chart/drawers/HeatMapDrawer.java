@@ -64,7 +64,8 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     private boolean previousClusterSeries;
     private boolean previousClusterClasses;
 
-    private final int treeSpace = 100;
+    protected final int topTreeSpace = ProgramProperties.get("topTreeSpace", 100);
+    protected final int rightTreeSpace = ProgramProperties.get("rightTreeSpace", 100);
 
     private Future future; // used in recompute
     protected boolean inUpdateCoordinates = true;
@@ -116,23 +117,23 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
-            y1 += treeSpace;
+            y1 += topTreeSpace;
 
         if (sgc == null)
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
                 int yStart = y0 + ((y1 - y0) - height) / 2;
-                final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
                 classesClusteringTree.paint(gc, rect);
         } 
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfSeries + 1.0) * numberOfSeries);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             seriesClusteringTree.paint(gc, rect);
         } 
         
@@ -277,23 +278,23 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
-            y1 += treeSpace;
+            y1 += topTreeSpace;
 
         if (sgc == null)
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
                 int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
                 int yStart = y0 + ((y1 - y0) - height) / 2;
-                final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
                 seriesClusteringTree.paint(gc, rect);
         } 
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             classesClusteringTree.paint(gc, rect);
         } 
 
@@ -452,7 +453,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         if (isTranspose()) {
             if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
             if (x0 >= x1)
                 return;
@@ -501,7 +502,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             }
         } else {
             if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
             final int numberOfClasses = (classNames == null ? 0 : classNames.length);
             if (numberOfClasses > 0) {

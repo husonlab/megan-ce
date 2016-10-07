@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-public class ExportCSVForAllLevels extends CommandBase implements ICommand {
+public class ExportCSVForAllLevelsCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
 
@@ -80,30 +80,6 @@ public class ExportCSVForAllLevels extends CommandBase implements ICommand {
             }
         }
 
-
-        //		RMA2Connector con = new RMA2Connector(rmaFile);
-        //		IClassificationBlock block = con.getClassificationBlock(ClassificationType.Taxonomy.toString());
-        //
-        //		List<String> levels = TaxonomicLevels.getInstance().getAllNames();
-        //		for(String level : levels){
-        //			BufferedWriter w = new BufferedWriter(new FileWriter(outputFile + "/"+new File(rmaFile).get()+"." +level+".txt"));;
-        //			try {
-        //
-        //				for(Object o : block.getKeySet()){
-        //					if(TaxonomyData.getTaxonomicRank((Integer)o) != TaxonomicLevels.get(level)){
-        //						continue;
-        //					}
-        //					if(block.getSum(o) == 0){
-        //						continue;
-        //					}
-        //					w.write("\"" + TaxonomyData.getName2IdMap().get((Integer)o) + "\"");
-        //					w.write(separator + "" + block.getSum(o));
-        //					w.write("\n");
-        //				}
-        //			} finally {
-        //				w.close();
-        //			}
-        //		}
     }
 
     public boolean isApplicable() {

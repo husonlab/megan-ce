@@ -102,24 +102,24 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
 
         if (viewer.getClassesList().isDoClustering())
-            y1 += treeSpace; // do this before other clustering
+            y1 += topTreeSpace; // do this before other clustering
 
         if (sgc == null) {
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
         }
 
         if (viewer.getAttributesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfAttributes + 1.0) * numberOfAttributes);
             int yStart = y0 + ((y1 - y0) - height) / 2;
-            final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
             attributesClusteringTree.paint(gc, rect);
         }
 
         if (viewer.getClassesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             classesClusteringTree.paint(gc, rect);
         }
 
@@ -237,24 +237,24 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         final int numberOfAttributes = (attributeNames != null ? attributeNames.length : 0);
 
         if (viewer.getAttributesList().isDoClustering())
-            y1 += treeSpace; // do this before other clustering
+            y1 += topTreeSpace; // do this before other clustering
 
         if (sgc == null) {
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
         }
 
         if (viewer.getClassesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
             int yStart = y0 + ((y1 - y0) - height) / 2;
-            final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
             classesClusteringTree.paint(gc, rect);
         }
 
         if (viewer.getAttributesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfAttributes + 1.0) * numberOfAttributes);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             attributesClusteringTree.paint(gc, rect);
         }
 
@@ -360,7 +360,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             int y1 = topMargin;
 
             if (viewer.getClassesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
             int longest = 0;
             for (String attributeName : attributeNames) {
@@ -424,7 +424,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             int y1 = topMargin;
 
             if (viewer.getAttributesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
             int longest = 0;
             for (String className : classNames) {

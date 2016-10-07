@@ -73,10 +73,13 @@ public class CSVExporter {
             if (shortName.equals("taxon"))
                 formats.add("readName_to_" + shortName + "Id");
             formats.add("readName_to_" + shortName + "Path");
-            formats.add("readName_to_" + shortName + "Count");
+            if (shortName.equals("taxon")) {
+                formats.add("readName_to_" + shortName + "PathPercent");
+            }
 
-            if (shortName.equals("taxon"))
+            if (shortName.equals("taxon")) {
                 formats.add("readName_to_taxonMatches");
+            }
 
             formats.add(shortName + "Name_to_readName");
             // formats.add("readName_to_gi");
@@ -113,7 +116,8 @@ public class CSVExporter {
             count = CSVExportTaxonomy.exportTaxon2TotalLength(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("taxonName_to_percent") || format.equalsIgnoreCase("taxonId_to_percent") || format.equalsIgnoreCase("taxonRank_to_count") || format.equalsIgnoreCase("taxonPath_to_percent")) {
             count = CSVExportFViewer.exportName2Percent(format, dir.getMainViewer(), file, separator, true, progressListener);
-        } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")) {
+        } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")
+                || format.equalsIgnoreCase("readName_to_taxonPathPercent")) {
             count = CSVExportTaxonomy.exportReadName2Taxon(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_taxonMatches")) {
             count = CSVExportTaxonomy.exportReadName2Matches(format, dir, file, separator, progressListener);

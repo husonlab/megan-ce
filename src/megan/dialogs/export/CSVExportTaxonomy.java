@@ -24,18 +24,19 @@ import jloda.graph.NodeSet;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
+import megan.algorithms.ActiveMatches;
+import megan.algorithms.TaxonPathAssignment;
+import megan.classification.Classification;
 import megan.core.ClassificationType;
 import megan.core.Director;
+import megan.core.Document;
 import megan.data.*;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * export taxonomy related stuff in CVS format
@@ -57,9 +58,9 @@ public class CSVExportTaxonomy {
             final MainViewer viewer = dir.getMainViewer();
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = viewer.getDir().getDocument().getConnector();
-                IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final IConnector connector = viewer.getDir().getDocument().getConnector();
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Taxa to total length");
                 progressListener.setMaximum(taxonIds.size());
@@ -136,11 +137,12 @@ public class CSVExportTaxonomy {
                 progressListener.setSubtask("Taxa to counts");
                 progressListener.setMaximum(selected.size());
                 progressListener.setProgress(0);
+
                 for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
                     Integer taxonId = (Integer) v.getInfo();
                     if (taxonId != null) {
                         final NodeData data = viewer.getNodeData(v);
-                        final int[] counts = (reportSummarized && v.getOutDegree() > 0 ? data.getSummarized() : data.getAssigned());
+                        final int[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                         final String name = getTaxonLabelSource(dir, format, taxonId);
                         if (name != null) {
                             if (counts.length == names.size()) {
@@ -178,13 +180,15 @@ public class CSVExportTaxonomy {
             final MainViewer viewer = dir.getMainViewer();
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = viewer.getDir().getDocument().getConnector();
-                IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final IConnector connector = viewer.getDir().getDocument().getConnector();
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Read names to taxa");
                 progressListener.setMaximum(taxonIds.size());
                 progressListener.setProgress(0);
+
+                final boolean wantMatches = (format.endsWith("PathPercent"));
 
                 for (int taxonId : taxonIds) {
                     Set<String> seen = new HashSet<>();
@@ -198,12 +202,13 @@ public class CSVExportTaxonomy {
                     }
                     for (int id : allBelow) {
                         if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, wantMatches)) {
                                 while (it.hasNext()) {
-                                    String readId = it.next().getReadName();
+                                    final IReadBlock readBlock = it.next();
+                                    final String readId = readBlock.getReadName();
                                     if (!seen.contains(readId)) {
                                         seen.add(readId);
-                                        w.write(readId + separator + getTaxonLabelTarget(dir, format, taxonId) + "\n");
+                                        w.write(readId + separator + getTaxonLabelTarget(dir, format, taxonId, readBlock) + "\n");
                                         totalLines++;
                                     }
                                 }
@@ -235,12 +240,12 @@ public class CSVExportTaxonomy {
             final MainViewer viewer = dir.getMainViewer();
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = viewer.getDir().getDocument().getConnector();
-                IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+                final IConnector connector = viewer.getDir().getDocument().getConnector();
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Read names to matches");
 
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
                 if (taxonIds.size() > 0) {
                     progressListener.setMaximum(taxonIds.size());
                     progressListener.setProgress(0);
@@ -337,9 +342,9 @@ public class CSVExportTaxonomy {
             final MainViewer viewer = dir.getMainViewer();
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = viewer.getDir().getDocument().getConnector();
-                IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final IConnector connector = viewer.getDir().getDocument().getConnector();
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Taxa to read names");
                 progressListener.setMaximum(taxonIds.size());
@@ -396,9 +401,9 @@ public class CSVExportTaxonomy {
             final MainViewer viewer = dir.getMainViewer();
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = viewer.getDir().getDocument().getConnector();
-                IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final IConnector connector = viewer.getDir().getDocument().getConnector();
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Taxa to read Ids");
                 progressListener.setMaximum(taxonIds.size());
@@ -440,33 +445,6 @@ public class CSVExportTaxonomy {
     }
 
     /**
-     * gets the full path to the named taxon
-     *
-     * @param dir
-     * @param taxonId
-     * @return
-     */
-    public static String getPath(Director dir, int taxonId) {
-        List<String> path = new LinkedList<>();
-        Node v = dir.getMainViewer().getTaxId2Node(taxonId);
-        while (v != null && v.getInfo() != null) {
-            taxonId = (Integer) v.getInfo();
-            String name = TaxonomyData.getName2IdMap().get(taxonId);
-            path.add(name);
-            if (v.getInDegree() > 0)
-                v = v.getFirstInEdge().getSource();
-            else
-                v = null;
-        }
-        StringBuilder buf = new StringBuilder();
-        String[] array = path.toArray(new String[path.size()]);
-        for (int i = array.length - 1; i >= 0; i--) {
-            buf.append(array[i].replaceAll(";", "_")).append(";");
-        }
-        return buf.toString();
-    }
-
-    /**
      * determines which type of label is desired
      *
      * @param format
@@ -493,12 +471,57 @@ public class CSVExportTaxonomy {
      * @param format
      * @return label type
      */
-    public static String getTaxonLabelTarget(Director dir, String format, int taxonId) {
+    public static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
         if (format.endsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
             return Basic.getInCleanQuotes(getPath(dir, taxonId));
+        else if (format.endsWith("taxonPathPercent"))
+            return getPathPecent(dir, readBlock);
         else
             return "" + taxonId;
+    }
+
+
+    /**
+     * gets the full path to the named taxon
+     *
+     * @param dir
+     * @param taxonId
+     * @return
+     */
+    public static String getPath(Director dir, int taxonId) {
+        final List<String> path = new LinkedList<>();
+        Node v = dir.getMainViewer().getTaxId2Node(taxonId);
+        while (v != null && v.getInfo() != null) {
+            taxonId = (Integer) v.getInfo();
+            String name = TaxonomyData.getName2IdMap().get(taxonId);
+            path.add(name);
+            if (v.getInDegree() > 0)
+                v = v.getFirstInEdge().getSource();
+            else
+                v = null;
+        }
+        final StringBuilder buf = new StringBuilder();
+        final String[] array = path.toArray(new String[path.size()]);
+        for (int i = array.length - 1; i >= 0; i--) {
+            buf.append(array[i].replaceAll(";", "_")).append(";");
+        }
+        return buf.toString();
+    }
+
+
+    /**
+     * gets the full path to the named taxon with percent
+     *
+     * @param dir
+     * @param readBlock
+     * @return path
+     */
+    public static String getPathPecent(Director dir, IReadBlock readBlock) {
+        final Document doc = dir.getDocument();
+        final BitSet activeMatchesForTaxa = new BitSet();
+        ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+        return TaxonPathAssignment.getPath(readBlock, activeMatchesForTaxa, false, true, true);
     }
 }

@@ -24,8 +24,10 @@ import jloda.util.Pair;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
+import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -129,5 +131,51 @@ public class TaxonPathAssignment {
         }
         return result;
     }
+
+    /**
+     * report the taxonomic path
+     *
+     * @param readBlock
+     * @param activeMatchesForTaxa
+     * @param showTaxonIds
+     * @param showRank
+     * @param useOfficialRanksOnly
+     * @throws IOException
+     */
+    public static String getPath(IReadBlock readBlock, BitSet activeMatchesForTaxa, boolean showTaxonIds, boolean showRank, boolean useOfficialRanksOnly) {
+        final StringBuilder buf = new StringBuilder();
+        final List<Pair<Integer, Float>> path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
+
+        for (Pair<Integer, Float> pair : path) {
+            final Integer taxId = pair.getFirst();
+            final String taxonName = (showTaxonIds ? "" + taxId : TaxonomyData.getName2IdMap().get(taxId)).replaceAll(";", "\\;");
+
+            if (taxonName.equals("root"))
+                continue;
+
+            final int rank = TaxonomyData.getTaxonomicRank(taxId);
+
+            String rankName;
+            if (rank != 0) {
+                rankName = TaxonomicLevels.getName(rank);
+                if (rankName == null)
+                    rankName = "?";
+            } else {
+                rankName = "?";
+            }
+            if (useOfficialRanksOnly && rankName.equals("?"))
+                continue;
+
+            if (showRank && !rankName.equals("?")) {
+                char letter = Character.toLowerCase(rankName.charAt(0));
+                if (rank == 127) // domain
+                    letter = 'd';
+                buf.append(String.format("%c__%s; %d;", letter, taxonName, (int) (float) pair.getSecond()));
+            } else
+                buf.append(" ").append(taxonName).append("; ").append((int) (float) pair.getSecond()).append(";");
+        }
+        return buf.toString();
+    }
 }
+
 

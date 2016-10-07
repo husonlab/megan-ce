@@ -46,7 +46,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         super(fileName, maxNumberOfMatchesPerRead);
         setSkipCommentLines(true);
         final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 2);
-        if (lines != null && lines.length == 2 && lines[1].split("\t").length < 11) {
+        if (lines != null && lines.length == 2 && lines[1] != null && lines[1].split("\t").length < 11) {
             close();
             throw new IOException("File not a BLAST file in tabular format: " + fileName);
         }

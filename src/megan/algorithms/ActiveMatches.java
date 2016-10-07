@@ -40,7 +40,7 @@ public class ActiveMatches {
      * @param activeMatchesForClassification
      * @throws IOException
      */
-    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String classificationName, BitSet activeMatchesForClassification) throws IOException {
+    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String classificationName, BitSet activeMatchesForClassification) {
         activeMatchesForClassification.clear();
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {

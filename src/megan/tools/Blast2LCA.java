@@ -33,16 +33,12 @@ import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
 import megan.rma6.BlastFileReadBlockIterator;
-import megan.viewer.TaxonomicLevels;
-import megan.viewer.TaxonomyData;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Program that parses Blast input and computes a taxonomy classification and also a KEGG mapping, if desired
@@ -130,6 +126,9 @@ public class Blast2LCA {
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
 
+        if (topPercent == 0)
+            topPercent = 0.0001f;
+
         final String propertiesFile;
         if (ProgramProperties.isMacOS())
             propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
@@ -182,75 +181,38 @@ public class Blast2LCA {
                 progressListener.setMaximum(it.getMaximumProgress());
 
                 try (BufferedWriter w = new BufferedWriter(new FileWriter(outputFile))) {
-                    BufferedWriter keggW = null;
+                    final BufferedWriter keggW;
                     if (doKegg) {
                         keggW = new BufferedWriter(new FileWriter(keggOutputFile));
                         System.err.println("Writing file: " + keggOutputFile);
-                    }
+                    } else
+                        keggW = null;
                     try {
                         while (it.hasNext()) {
-                            IReadBlock readBlock = it.next();
+                            final IReadBlock readBlock = it.next();
                             totalIn++;
 
                             final BitSet activeMatchesForTaxa = new BitSet();
-                            final BitSet activeMatchesForGenes = new BitSet();
+                            final BitSet activeMatchesForGenes = (keggW == null ? null : new BitSet());
 
                             boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < minComplexity;
 
-                            List<Pair<Integer, Float>> path;
                             if (hasLowComplexity) {
-                                path = new LinkedList<>();
-                                Pair<Integer, Float> pair = new Pair<>(IdMapper.LOW_COMPLEXITY_ID, 100f);
-                                path.add(pair);
+                                w.write(readBlock.getReadName() + "; ; " + IdMapper.LOW_COMPLEXITY_ID + " " + readBlock.getComplexity() + "\n");
                             } else {
-                                if (topPercent == 0)
-                                    topPercent = 0.0001f;
-
-                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-                                ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, readBlock, "KEGG", activeMatchesForGenes);
-
-                                path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
-                                if (doKegg) {
+                                if (keggW != null) {
+                                    ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, readBlock, "KEGG", activeMatchesForGenes);
                                     keggW.write(readBlock.getReadName() + "; ;" + KeggTopAssignment.compute(activeMatchesForGenes, readBlock, keggRanksToReport) + "\n");
                                 }
+
+                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                                w.write(readBlock.getReadName() + "; ;" + TaxonPathAssignment.getPath(readBlock, activeMatchesForTaxa, showTaxonIds, showRank, useOfficialRanksOnly) + "\n");
+                                totalOut++;
+                                progressListener.setProgress(it.getProgress());
                             }
-
-                            w.write(readBlock.getReadName() + "; ;");
-
-                            for (Pair<Integer, Float> pair : path) {
-                                final Integer taxId = pair.getFirst();
-                                final String taxonName = (showTaxonIds ? "" + taxId : TaxonomyData.getName2IdMap().get(taxId));
-
-                                if (taxonName.equals("root"))
-                                    continue;
-
-                                final int rank = TaxonomyData.getTaxonomicRank(taxId);
-
-                                String rankName;
-                                if (rank != 0) {
-                                    rankName = TaxonomicLevels.getName(rank);
-                                    if (rankName == null)
-                                        rankName = "?";
-                                } else {
-                                    rankName = "?";
-                                }
-                                if (useOfficialRanksOnly && rankName.equals("?"))
-                                    continue;
-
-                                if (showRank && !rankName.equals("?")) {
-                                    char letter = Character.toLowerCase(rankName.charAt(0));
-                                    if (rank == 127) // domain
-                                        letter = 'd';
-                                    w.write(String.format("%c__%s; %d;", letter, taxonName, (int) (float) pair.getSecond()));
-                                } else
-                                    w.write(" " + taxonName + "; " + (int) (float) pair.getSecond() + ";");
-                            }
-                            w.write("\n");
-                            totalOut++;
-                            progressListener.setProgress(it.getProgress());
                         }
                     } finally {
-                        if (doKegg)
+                        if (keggW != null)
                             keggW.close();
                     }
                 }

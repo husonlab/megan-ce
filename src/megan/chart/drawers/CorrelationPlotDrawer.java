@@ -80,7 +80,8 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     protected boolean previousTranspose;
     protected Future future; // used in recompute
 
-    protected final int treeSpace = 100;
+    protected final int topTreeSpace = ProgramProperties.get("topTreeHeight", 100);
+    protected final int rightTreeSpace = ProgramProperties.get("rightTreeWidth", 100);
 
     protected MODE mode;
 
@@ -136,24 +137,24 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
 
         if (viewer.getClassesList().isDoClustering())
-            y1 += treeSpace; // do this before other clustering
+            y1 += topTreeSpace; // do this before other clustering
 
         if (sgc == null) {
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
         }
 
         if (viewer.getClassesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
             int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             topClusteringTree.paint(gc, rect);
         }
 
         if (viewer.getClassesList().isDoClustering()) {
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
             int yStart = y0 + ((y1 - y0) - height) / 2;
-            final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
             rightClusteringTree.paint(gc, rect);
         }
 
@@ -267,24 +268,24 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
 
         if (viewer.getSeriesList().isDoClustering())
-            y1 += treeSpace; // do this before other clustering
+            y1 += topTreeSpace; // do this before other clustering
 
         if (sgc == null) {
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
         }
 
         if (viewer.getSeriesList().isDoClustering()) {
-            x1 -= treeSpace;
+            x1 -= rightTreeSpace;
             int width = (int) ((x1 - x0) / (numberOfSeries + 1.0) * numberOfSeries);
             int xStart = x0 + ((x1 - x0) - width) / 2;
-            final Rectangle rect = new Rectangle(xStart, y1 - treeSpace, width, treeSpace);
+            final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             topClusteringTree.paint(gc, rect);
         }
 
         if (viewer.getSeriesList().isDoClustering()) {
             int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
             int yStart = y0 + ((y1 - y0) - height) / 2;
-            final Rectangle rect = new Rectangle(x1, yStart, treeSpace, height);
+            final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
             rightClusteringTree.paint(gc, rect);
         }
 
@@ -518,7 +519,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         int y1 = topMargin;
 
             if (viewer.getClassesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
         int longest = 0;
             for (String className : classNames) {
@@ -582,7 +583,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             int y1 = topMargin;
 
             if (viewer.getSeriesList().isDoClustering())
-                y1 += treeSpace;
+                y1 += topTreeSpace;
 
             int longest = 0;
             for (String seriesName : seriesNames) {

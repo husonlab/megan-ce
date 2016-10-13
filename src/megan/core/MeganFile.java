@@ -54,8 +54,11 @@ public class MeganFile {
      * @param readOnly
      */
     public void setFileFromExistingFile(String fileName, boolean readOnly) {
+        if (this.fileName == null || !fileName.equals(this.fileName))
+            connector = null;
         this.fileName = fileName;
         this.readOnly = readOnly;
+
         if (fileName.contains("::")) {
             fileType = Type.MEGAN_SERVER_FILE;
             return;
@@ -97,6 +100,8 @@ public class MeganFile {
      * @param fileType
      */
     public void setFile(String fileName, Type fileType) {
+        if (this.fileName == null || fileName == null || !fileName.equals(this.fileName))
+            connector = null;
         this.fileName = fileName;
         this.fileType = fileType;
         readOnly = false;
@@ -147,6 +152,8 @@ public class MeganFile {
     }
 
     public void setFileName(String fileName) {
+        if (this.fileName == null || fileName == null || !fileName.equals(this.fileName))
+            connector = null;
         this.fileName = fileName;
     }
 

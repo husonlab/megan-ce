@@ -31,8 +31,8 @@ public class AssignmentUsingBestHitCreator implements IAssignmentAlgorithmCreato
      *
      * @param cName
      */
-    public AssignmentUsingBestHitCreator(String cName) {
-        assignmentUsingBestHit = new AssignmentUsingBestHit(cName); // only need one instance
+    public AssignmentUsingBestHitCreator(String cName, String fileName) {
+        assignmentUsingBestHit = new AssignmentUsingBestHit(cName, fileName); // only need one instance
     }
 
     /**

@@ -19,38 +19,55 @@
 
 package megan.algorithms;
 
+import jloda.util.Basic;
+import jloda.util.FileInputIterator;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * assignment using best hit
  * Created by huson on 1/22/16.
  */
 public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
-    final private String cName;
+    private final String cName;
+
+    private final Map<String, Integer> name2id;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingBestHit(String cName) {
+    public AssignmentUsingBestHit(String cName, String fileName) {
         this.cName = cName;
+
+        name2id = loadAssignmentFiles(cName, fileName);
+
         // System.err.println("Using 'best hit'  assignment on " + cName);
     }
-
     /**
      * computes the id for a read from its matches
      * matches
      *
      * @param activeMatches
      * @param readBlock
-     * @return COG id or 0
+     * @return id or 0
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
+        if (name2id != null) {
+            final String name = readBlock.getReadName();
+            final Integer id = name2id.get(name);
+            if (id != null && id > 0)
+                return id;
+        }
+
         if (activeMatches.cardinality() == 0)
             return IdMapper.NOHITS_ID;
         for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
@@ -74,4 +91,33 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
         throw new RuntimeException("getLCA() called for assignment using best hit");
     }
 
+
+    /**
+     * load all assignment files
+     *
+     * @param cName
+     * @param fileName
+     * @return all read to id assignments
+     */
+    private Map<String, Integer> loadAssignmentFiles(String cName, String fileName) {
+        File file = new File(Basic.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
+        if (file.exists()) {
+            System.err.println("External assignment file for " + cName + " detected: " + fileName);
+            final Map<String, Integer> map = new HashMap<>();
+            try (FileInputIterator it = new FileInputIterator(file, true)) {
+                while (it.hasNext()) {
+                    String[] tokens = Basic.split(it.next(), '\t');
+                    if (tokens.length == 2 && Basic.isInteger(tokens[1])) {
+                        map.put(tokens[0], Basic.parseInt(tokens[1]));
+
+                    }
+                }
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+            System.err.println("Count: " + map.size());
+            return map;
+        } else
+            return null;
+    }
 }

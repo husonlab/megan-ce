@@ -89,7 +89,7 @@ public class DataProcessor {
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
                     assignmentAlgorithmCreators[i] = new AssignmentUsingLCACreator(cNames[i]);
                 else
-                    assignmentAlgorithmCreators[i] = new AssignmentUsingBestHitCreator(cNames[i]);
+                    assignmentAlgorithmCreators[i] = new AssignmentUsingBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
             }
 
             // step 1:  stream through reads and assign classes

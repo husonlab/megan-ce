@@ -29,8 +29,8 @@ import java.util.NoSuchElementException;
 public class TaggedValueIterator implements Iterator<String> {
     private final String aLine;
     private final String[] tags;
-    private int tagNumber;
     private int tagPos;
+    private final boolean attemptFirstWord;
 
     private String nextResult;
 
@@ -59,15 +59,15 @@ public class TaggedValueIterator implements Iterator<String> {
      */
     public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final String... tags) {
         this.aLine = aLine;
+        this.attemptFirstWord = attemptFirstWord;
         this.tags = tags;
-        tagNumber = 0;
-        tagPos = -1;
+        tagPos = 0;
         nextResult = getNextResult();
 
         if (attemptFirstWord) {
             int a = 0;
             while (a < aLine.length()) {
-                if (aLine.charAt(a) == '>' || Character.isWhitespace(aLine.charAt(a)))
+                if (aLine.charAt(a) == '>' || aLine.charAt(a) == '@' || Character.isWhitespace(aLine.charAt(a)))
                     a++;
                 else
                     break;
@@ -82,6 +82,7 @@ public class TaggedValueIterator implements Iterator<String> {
             if (b - a > 4) {
                 nextResult = aLine.substring(a, b);
             }
+            tagPos = b;
         }
     }
 
@@ -105,26 +106,47 @@ public class TaggedValueIterator implements Iterator<String> {
      * @return next result or null
      */
     private String getNextResult() {
-        while (tagNumber < tags.length) {
-            if (tagPos == -1)
-                tagPos = aLine.indexOf(tags[tagNumber]);
-            else
-                tagPos = aLine.indexOf(tags[tagNumber], tagPos + 1);
-
-            if (tagPos != -1)
+        loop:
+        while (tagPos < aLine.length()) {
+            if (attemptFirstWord && aLine.charAt(tagPos) == 1) {
+                tagPos++;
                 break;
-            else {
-                tagNumber++;
             }
+            for (String tag : tags) {
+                if (match(aLine, tagPos, tag)) {
+                    tagPos += tag.length();
+                    break loop;
+                }
+            }
+            tagPos++;
         }
-        if (tagPos == -1 || tagNumber == tags.length)
+        if (tagPos >= aLine.length())
             return null;
-        else
-            tagPos += tags[tagNumber].length(); // assume that pos points to begin of tag, skip past tag
+
         int b = tagPos + 1;
         while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_'))
             b++;
-        return aLine.substring(tagPos, b);
+        String result = aLine.substring(tagPos, b);
+        tagPos = b;
+        return result;
+    }
+
+    /**
+     * does the query match the string starting at the offset
+     * @param string
+     * @param offset
+     * @param query
+     * @return true, if string starts with query at offset
+     */
+    public static boolean match(final String string, final int offset, final String query) {
+        if (string.length() - offset < query.length())
+            return false;
+
+        for (int i = 0; i < query.length(); i++) {
+            if (string.charAt(offset + i) != query.charAt(i))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -141,12 +163,22 @@ public class TaggedValueIterator implements Iterator<String> {
 
 
     public static void main(String[] args) {
-        final String aLine = "> HEllO gi|446150911|ref|WP_000228766.1| MULTISPECIES: DNA-directed RNA polymerase subunit beta' [Streptococcus]gi|41018114|sp|Q97NQ8.1|RPOC_STRPN RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|226699509|sp|B1I8R3.1|RPOC_STRPI RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|226699510|sp|B2IM39.1|RPOC_STRPS RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|254765335|sp|C1CA05.1|RPOC_STRP7 RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|254765338|sp|C1CGP3.1|RPOC_STRZJ RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|254765340|sp|C1CTL3.1|RPOC_STRZT RecName: Full=DNA-directed RNA polymerase subunit beta'; Short=RNAP subunit beta'; AltName: Full=RNA polymerase subunit beta'; AltName: Full=Transcriptase subunit beta'gi|14973466|gb|AAK76027.1| DNA-directed RNA polymerase, beta' subunit [Streptococcus pneumoniae TIGR4]gi|147755682|gb|EDK62728.1| DNA-directed RNA polymerase subunit beta' [Streptococcus pneumoniae SP11-BS70]gi|147761006|gb|EDK67975.1| DNA-directed RNA polymerase subunit beta' [Streptococcus pneumoniae SP18-BS74]gi|147922259|gb|EDK73380.1| DNA-directed RNA polymerase subunit beta' [Streptococcus pneumoniae SP3-BS71]gi|147924619";
+        final String aLine = ">NP_001320305.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]AAC64897.1 Contains similarity to TM021B04.11 gi|2191197 from A. thaliana BAC gb|AF007271 [Arabidopsis thaliana]ANM57823.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]\n";
 
         System.err.println("Line: " + aLine);
 
+        for (int i = 0; i < aLine.length(); i++) {
+            int ch = aLine.charAt(i);
+
+            if (ch >= 32)
+                System.err.print((char) ch);
+            else
+                System.err.print(String.format("%c<0x%s>", ch, Integer.toHexString(aLine.charAt(i))));
+        }
+        System.err.println();
+
         System.err.print("Values:");
-        for (Iterator<String> it = new TaggedValueIterator(aLine, false, "gi|", "ref|", "gb|"); it.hasNext(); ) {
+        for (Iterator<String> it = new TaggedValueIterator(aLine, true, "gi|", "ref|", "gb|"); it.hasNext(); ) {
             System.err.print(" " + it.next());
         }
         System.err.println();

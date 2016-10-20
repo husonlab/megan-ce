@@ -100,24 +100,24 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
      * @return all read to id assignments
      */
     private Map<String, Integer> loadAssignmentFiles(String cName, String fileName) {
-        File file = new File(Basic.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
-        if (file.exists()) {
+        final File file = new File(Basic.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
+        if (file.exists() && file.canRead()) {
             System.err.println("External assignment file for " + cName + " detected: " + fileName);
             final Map<String, Integer> map = new HashMap<>();
-            try (FileInputIterator it = new FileInputIterator(file, true)) {
+            try (final FileInputIterator it = new FileInputIterator(file, true)) {
                 while (it.hasNext()) {
-                    String[] tokens = Basic.split(it.next(), '\t');
+                    final String[] tokens = Basic.split(it.next(), '\t');
                     if (tokens.length == 2 && Basic.isInteger(tokens[1])) {
                         map.put(tokens[0], Basic.parseInt(tokens[1]));
-
                     }
                 }
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
             }
             System.err.println("Count: " + map.size());
-            return map;
-        } else
-            return null;
+            if (map.size() > 0)
+                return map;
+        }
+        return null;
     }
 }

@@ -30,15 +30,15 @@ import java.io.*;
  * Daniel Huson, 3.2016
  */
 public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Closeable {
-    public static String MAGIC_NUMBER = "SI1";
-    public static String MAGIC_NUMBERX = "SIX";
+    public static String MAGIC_NUMBER = "SI1"; // not final
+    public static String MAGIC_NUMBERX = "SIX"; // not final
 
     private final ByteFileGetterMappedMemory dataByteBuffer;
 
     private final long indexStartPos;
     private final long dataStartPos;
 
-    private final boolean extended;
+    private final boolean extended; // no extended uses four bytes to address table, extended uses 8 bytes
 
     private final int size;
     private final int mask;
@@ -66,7 +66,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
                 } else
                     throw new IOException("File has wrong magic number");
 
-                byte bits = (byte) raf.read(); // yes, read a single byte
+                final byte bits = (byte) raf.read(); // yes, read a single byte
                 if (bits <= 0 || bits >= 30)
                     throw new IOException("Bits out of range: " + bits);
                 mask = (1 << bits) - 1;
@@ -103,8 +103,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
             try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
                 final byte[] magicNumber = new byte[3];
                 raf.read(magicNumber);
-                return Basic.toString(magicNumber).equals(MAGIC_NUMBER) ||
-                        Basic.toString(magicNumber).equals(MAGIC_NUMBERX);
+                return Basic.toString(magicNumber).equals(MAGIC_NUMBER) || Basic.toString(magicNumber).equals(MAGIC_NUMBERX);
             }
         } catch (Exception ex) {
             return false;
@@ -143,7 +142,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
             if (numberOfBytes == 0)
                 break;
             else if (numberOfBytes < 0) // negative means not a match to the query
-                dataOffset += -numberOfBytes + 5; //  add 1 for terminating 0 and 4 for value
+                dataOffset += -numberOfBytes + 5; //  add 1 for terminating 0, and 4 for value
             else { // matches query
                 dataOffset += numberOfBytes + 1;    //  add 1 for terminating 0
                 final int value = dataByteBuffer.getInt(dataOffset);
@@ -159,7 +158,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     }
 
     /**
-     * equalOverShorterOfBoth keys?
+     * equal keys?
      *
      * @param key1
      * @param key2

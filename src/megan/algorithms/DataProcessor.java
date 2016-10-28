@@ -135,7 +135,6 @@ public class DataProcessor {
                 final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
                 final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
 
-
                 while (it.hasNext()) {
                     IReadBlock readBlock = it.next();
 

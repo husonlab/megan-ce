@@ -20,8 +20,8 @@ package megan.classification;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import megan.classification.util.MultiTaggedAccessions;
 import megan.classification.util.MultiWords;
+import megan.classification.util.TaggedValueIterator;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,9 +57,9 @@ public class IdParser {
     private final MultiWords multiWords;
     private final Map<Integer, int[]> id2segment = new HashMap<>();
 
-    private final MultiTaggedAccessions taggedIds;
-    private final MultiTaggedAccessions giTaggedIds;
-    private final MultiTaggedAccessions accTaggedIds;
+    private final TaggedValueIterator taggedIds;
+    private final TaggedValueIterator giTaggedIds;
+    private final TaggedValueIterator accTaggedIds;
 
     private int maxWarnings = 10;
 
@@ -75,9 +75,9 @@ public class IdParser {
         isTaxonomy = idMapper.getCName().equals(Classification.Taxonomy);
 
         multiWords = new MultiWords();
-        taggedIds = new MultiTaggedAccessions(false, idMapper.getIdTags());
-        giTaggedIds = new MultiTaggedAccessions(false, idMapper.isActiveMap(IdMapper.MapType.GI) && idMapper.isLoaded(IdMapper.MapType.GI), GI_TAGS);
-        accTaggedIds = new MultiTaggedAccessions(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession), ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
+        taggedIds = new TaggedValueIterator(false, true, idMapper.getIdTags());
+        giTaggedIds = new TaggedValueIterator(false, idMapper.isActiveMap(IdMapper.MapType.GI) && idMapper.isLoaded(IdMapper.MapType.GI), GI_TAGS);
+        accTaggedIds = new TaggedValueIterator(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession), ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
     }
 
     /**
@@ -97,9 +97,8 @@ public class IdParser {
 
         // look for ID tag:
         if (taggedIds.isEnabled()) {
-            int countLabels = taggedIds.compute(headerString);
-            for (int i = 0; i < countLabels; i++) {
-                final String label = taggedIds.getWord(i);
+            taggedIds.restart(headerString);
+            for (String label : taggedIds) {
                 try {
                     int id = Integer.parseInt(label);
                     if (id != 0) {
@@ -159,11 +158,9 @@ public class IdParser {
 
         // Look for accession mapping
         if (accTaggedIds.isEnabled()) {
-            final int countLabels = accTaggedIds.compute(headerString);
-            for (int i = 0; i < countLabels; i++) {
-                final String label = accTaggedIds.getWord(i);
-                if (label != null) {
-                    final int id = idMapper.getAccessionMap().get(label);
+            accTaggedIds.restart(headerString);
+            for (String label : accTaggedIds) {
+                final int id = idMapper.getAccessionMap().get(label);
                     if (id != 0) {
                         if (disabledIds.contains(id))
                             disabled.add(id);
@@ -182,15 +179,13 @@ public class IdParser {
                             }
                         }
                     }
-                }
             }
         }
 
         // look for GI mapping
         if (giTaggedIds.isEnabled()) {
-            final int countLabels = giTaggedIds.compute(headerString);
-            for (int i = 0; i < countLabels; i++) {
-                final String label = giTaggedIds.getWord(i);
+            giTaggedIds.restart(headerString);
+            for (String label : giTaggedIds) {
                 try {
                     final long giNumber = Long.parseLong(label);
                     if (giNumber > 0) {

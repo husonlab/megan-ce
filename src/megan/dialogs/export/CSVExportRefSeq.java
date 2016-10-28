@@ -21,7 +21,7 @@ package megan.dialogs.export;
 import jloda.graph.Node;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
-import megan.classification.util.MultiTaggedAccessions;
+import megan.classification.util.TaggedValueIterator;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.data.*;
@@ -51,7 +51,8 @@ public class CSVExportRefSeq {
     public static int exportReadName2Accession(MainViewer viewer, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
-            final MultiTaggedAccessions multiTaggedAccessions = new MultiTaggedAccessions(true, "gb|", "ref|");
+
+            final TaggedValueIterator iterator = new TaggedValueIterator(true, true, "gb|", "ref|");
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final Document doc = viewer.getDir().getDocument();
                 final IConnector connector = doc.getConnector();
@@ -80,9 +81,12 @@ public class CSVExportRefSeq {
                                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                                         IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                         if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
-                                            final String accessionId = multiTaggedAccessions.getFirst(matchBlock.getTextFirstWord());
-                                            if (accessionId != null && accessionId.length() > 0) {
-                                                w.write(" " + accessionId);
+                                            iterator.restart(matchBlock.getTextFirstWord());
+                                            if (iterator.hasNext()) {
+                                                final String accessionId = iterator.next();
+                                                if (accessionId != null && accessionId.length() > 0) {
+                                                    w.write(" " + accessionId);
+                                                }
                                             }
                                         }
                                     }

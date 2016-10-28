@@ -26,11 +26,12 @@ import java.util.NoSuchElementException;
  * iterator over all values following an occurrence of tag in aLine.
  * Created by huson on 7/21/16.
  */
-public class TaggedValueIterator implements Iterator<String> {
-    private final String aLine;
+public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable<String> {
+    private String aLine;
     private final String[] tags;
     private int tagPos;
     private final boolean attemptFirstWord;
+    private boolean enabled;
 
     private String nextResult;
 
@@ -39,12 +40,12 @@ public class TaggedValueIterator implements Iterator<String> {
      * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
      * Value consists of letters, digits or underscore
      *
-     * @param aLine
+     * @param attemptFirstWord
      * @param tags
      * @return iterator
      */
-    public TaggedValueIterator(final String aLine, final String... tags) {
-        this(aLine, false, tags);
+    public TaggedValueIterator(final boolean attemptFirstWord, final boolean enabled, final String... tags) {
+        this(null, attemptFirstWord, enabled, tags);
     }
 
     /**
@@ -58,9 +59,40 @@ public class TaggedValueIterator implements Iterator<String> {
      * @return iterator
      */
     public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final String... tags) {
-        this.aLine = aLine;
+        this(aLine, attemptFirstWord, true, tags);
+    }
+
+
+    /**
+     * iterator over all values following an occurrence of tag in aLine.
+     * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
+     * Value consists of letters, digits or underscore
+     *
+     * @param aLine
+     * @param attemptFirstWord if true, attempts to parse the first word in a fasta header string as a value
+     * @param enabled
+     * @param tags
+     * @return iterator
+     */
+    public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final boolean enabled, final String... tags) {
         this.attemptFirstWord = attemptFirstWord;
+        this.enabled = enabled;
         this.tags = tags;
+        if (aLine != null)
+            restart(aLine);
+    }
+
+    public TaggedValueIterator iterator() {
+        return this;
+    }
+
+    /**
+     * restart the iterator with a new string
+     *
+     * @param aLine
+     */
+    public void restart(String aLine) {
+        this.aLine = aLine;
         tagPos = 0;
         nextResult = getNextResult();
 
@@ -161,6 +193,13 @@ public class TaggedValueIterator implements Iterator<String> {
             return null;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public static void main(String[] args) {
         final String aLine = ">NP_001320305.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]AAC64897.1 Contains similarity to TM021B04.11 gi|2191197 from A. thaliana BAC gb|AF007271 [Arabidopsis thaliana]ANM57823.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]\n";

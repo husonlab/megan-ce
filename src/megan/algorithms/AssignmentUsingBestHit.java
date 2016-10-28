@@ -38,7 +38,7 @@ import java.util.Map;
 public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     private final String cName;
 
-    private final Map<String, Integer> name2id;
+    private final Map<String, Integer> externalName2IdMap;
 
     /**
      * constructor
@@ -48,7 +48,7 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     public AssignmentUsingBestHit(String cName, String fileName) {
         this.cName = cName;
 
-        name2id = loadAssignmentFiles(cName, fileName);
+        externalName2IdMap = loadAssignmentFiles(cName, fileName);
 
         // System.err.println("Using 'best hit'  assignment on " + cName);
     }
@@ -61,9 +61,9 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
      * @return id or 0
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
-        if (name2id != null) {
+        if (externalName2IdMap != null) {
             final String name = readBlock.getReadName();
-            final Integer id = name2id.get(name);
+            final Integer id = externalName2IdMap.get(name);
             if (id != null && id > 0)
                 return id;
         }
@@ -102,13 +102,14 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     private Map<String, Integer> loadAssignmentFiles(String cName, String fileName) {
         final File file = new File(Basic.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
         if (file.exists() && file.canRead()) {
-            System.err.println("External assignment file for " + cName + " detected: " + fileName);
+            System.err.println("External assignment file for " + cName + " detected: " + file);
             final Map<String, Integer> map = new HashMap<>();
             try (final FileInputIterator it = new FileInputIterator(file, true)) {
                 while (it.hasNext()) {
                     final String[] tokens = Basic.split(it.next(), '\t');
                     if (tokens.length == 2 && Basic.isInteger(tokens[1])) {
-                        map.put(tokens[0], Basic.parseInt(tokens[1]));
+                        int id = Basic.parseInt(tokens[1]);
+                        map.put(tokens[0], id);
                     }
                 }
             } catch (IOException ex) {

@@ -105,14 +105,14 @@ public class IncreaseFontCommand extends CommandBase implements ICommand {
 
         boolean changed = false;
 
-        GraphView viewer;
+        final GraphView viewer;
         if (getViewer() instanceof ClusterViewer)
             viewer = ((ClusterViewer) getViewer()).getGraphView();
         else if (getViewer() instanceof GraphView)
             viewer = (GraphView) getViewer();
         else return;
 
-        Set<Node> nodes = new HashSet<>();
+        final Set<Node> nodes = new HashSet<>();
         if (viewer.getSelectedNodes().size() == 0 && viewer.getSelectedEdges().size() == 0) {
             for (Node v = viewer.getGraph().getFirstNode(); v != null; v = v.getNext())
                 nodes.add(v);

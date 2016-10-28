@@ -1226,7 +1226,7 @@ public class PCoATab extends JPanel implements ITab {
             getGraphView().resetViews();
             getGraphView().getScrollPane().revalidate();
             getGraphView().fitGraphToWindow();
-            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
+            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getGraphView().getFont()));
             clusterViewer.addFormatting(getGraphView());
             clusterViewer.updateConvexHulls = true;
         }

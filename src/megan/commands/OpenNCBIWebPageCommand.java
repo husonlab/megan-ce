@@ -53,7 +53,7 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
 
         if (taxId > 0) {
             try {
-                Basic.openWebPage(new URL("http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
+                Basic.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
                 ok = true;
             } catch (Exception e1) {
                 Basic.caught(e1);
@@ -76,7 +76,7 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
             Integer taxId = (Integer) v.getInfo();
             if (taxId != null && taxId > 0) {
                 try {
-                    Basic.openWebPage(new URL("http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
+                    Basic.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
                     ok = true;
                 } catch (Exception e1) {
                     Basic.caught(e1);

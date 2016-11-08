@@ -73,6 +73,6 @@ public class BlastTabFileFilter extends FileFilterBase implements FilenameFilter
         if (!super.accept(directory, fileName))
             return false;
         String firstLine = Basic.getFirstLineFromFile(new File(fileName));
-        return firstLine != null && (firstLine.startsWith("# FORMAT.Blast") || firstLine.startsWith("# BLAST") || firstLine.split("\t").length == 12);
+        return firstLine != null && (firstLine.startsWith("# FORMAT.Blast") || firstLine.startsWith("# BLAST") || firstLine.split("\t").length == 12 || firstLine.split("\t").length == 13);
     }
 }

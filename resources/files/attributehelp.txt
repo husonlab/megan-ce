@@ -88,5 +88,5 @@
 <p>
 Definitions adapted from: <br>
 <em>http://web.ncbi.nlm.nih.gov/genomes/static/gprj_help.html#prok_attributes</em> and <br>
-<em>http://www.ncbi.nlm.nih.gov/genomes/lproks.cgi/<em>
+<em>https://www.ncbi.nlm.nih.gov/genomes/lproks.cgi/<em>
 </font>

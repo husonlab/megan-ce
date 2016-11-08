@@ -83,6 +83,9 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         // get all matches for given query:
         try {
             while (hasNextLine()) {
+                // expected format:
+                // queryId, subjectId, percIdentity, alnLength, mismatchCount, gapOpenCount, queryStart, queryEnd,
+                // subjectStart, subjectEnd, eVal, bitScore
                 // move to next match or next query:
                 line = nextLine();
 
@@ -103,38 +106,37 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                 if (tokens.length == 1)
                     continue;
 
-                final String refName = tokens[1];
-                if (!Basic.isFloat(tokens[2]))
+                final String refName = tokens[1]; // subjectId
+                if (!Basic.isFloat(tokens[2])) // percIdentity
                     throw new IOException("Expected float (percent identity), got: " + tokens[2]);
                 float identity = (Float.parseFloat(tokens[2]));
-                if (!Basic.isInteger(tokens[3]))
+                if (!Basic.isInteger(tokens[3])) // alnLength
                     throw new IOException("Expected integer (length), got: " + tokens[3]);
                 int alignmentLength = (Integer.parseInt(tokens[3]));
-                if (!Basic.isInteger(tokens[4]))
+                if (!Basic.isInteger(tokens[4])) // mismatchCount
                     throw new IOException("Expected integer (mismatches), got: " + tokens[4]);
                 int mismatches = (Integer.parseInt(tokens[4]));
-                if (!Basic.isInteger(tokens[5]))
+                if (!Basic.isInteger(tokens[5])) // gapOpenCount
                     throw new IOException("Expected integer (gap openings), got: " + tokens[5]);
                 int gapOpenings = (Integer.parseInt(tokens[5]));
-                if (!Basic.isInteger(tokens[6]))
+                if (!Basic.isInteger(tokens[6])) // queryStart
                     throw new IOException("Expected integer (query start), got: " + tokens[6]);
                 int queryStart = (Integer.parseInt(tokens[6]));
-                if (!Basic.isInteger(tokens[7]))
+                if (!Basic.isInteger(tokens[7])) // queryEnd
                     throw new IOException("Expected integer (query end), got: " + tokens[7]);
                 int queryEnd = (Integer.parseInt(tokens[7]));
-                if (!Basic.isInteger(tokens[8]))
+                if (!Basic.isInteger(tokens[8])) // subjectStart
                     throw new IOException("Expected integer (subject start), got: " + tokens[8]);
                 int subjStart = (Integer.parseInt(tokens[8]));
-                if (!Basic.isInteger(tokens[9]))
+                if (!Basic.isInteger(tokens[9])) // subjectEnd
                     throw new IOException("Expected integer (subject end), got: " + tokens[9]);
                 int subjEnd = (Integer.parseInt(tokens[9]));
-                if (!Basic.isFloat(tokens[10]))
+                if (!Basic.isFloat(tokens[10])) // eVal
                     throw new IOException("Expected float (expected), got: " + tokens[10]);
                 float expect = (Float.parseFloat(tokens[10]));
-                if (!Basic.isFloat(tokens[11]))
+                if (!Basic.isFloat(tokens[11])) // bitScore
                     throw new IOException("Expected float (bit score), got: " + tokens[11]);
                 float bitScore = (Float.parseFloat(tokens[11]));
-
 
                 if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
                     Match match = new Match();

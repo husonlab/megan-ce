@@ -389,7 +389,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             Integer taxId = (Integer) v.getInfo();
             if (taxId != null && taxId > 0) {
                 try {
-                    urls.add("http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId);
+                    urls.add("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId);
                 } catch (Exception e1) {
                     Basic.caught(e1);
                 }

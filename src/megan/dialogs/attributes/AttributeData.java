@@ -38,7 +38,7 @@ import java.util.*;
 
 /**
  * Objects of this class read in the official NCBI Microbial Attributes Table
- * (http://www.ncbi.nlm.nih.gov/genomes/lproks.cgi/) and assign these attributes
+ * (https://www.ncbi.nlm.nih.gov/genomes/lproks.cgi/) and assign these attributes
  * to taxa leaves (no inner nodes!) contained in the subtrees of Bacteria and Archeae
  * of the current dataset.
  *

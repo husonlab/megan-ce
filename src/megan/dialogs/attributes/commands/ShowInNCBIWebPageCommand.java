@@ -60,7 +60,7 @@ public class ShowInNCBIWebPageCommand extends CommandBase implements ICommand {
 
             if (taxId > 0) {
                 try {
-                    final URL url = new URL("http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId);
+                    final URL url = new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId);
                     Basic.openWebPage(url);
                     ok = true;
                 } catch (Exception e1) {

@@ -66,11 +66,12 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
         if (!hasNextLine())
             return -1;
 
-
         String line = nextLine();
+        /*
         while (hasNextLine() && !line.startsWith(">")) {
             line = nextLine();
         }
+        */
 
         if (line == null || !line.startsWith(">"))
             return -1;
@@ -86,6 +87,14 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
         }
         System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
         matchesTextLength += bytes.length;
+
+        while (hasNextLine()) {
+            line = nextLine();
+            if (line.startsWith(">")) {
+                pushBackLine(line);
+                break;
+            }
+        }
         return 1;
     }
 

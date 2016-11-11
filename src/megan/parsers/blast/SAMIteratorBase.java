@@ -192,7 +192,7 @@ public class SAMIteratorBase {
      */
     protected String nextLine() {
         if (pushedBackLine != null) {
-            String result = pushedBackLine;
+            final String result = pushedBackLine;
             pushedBackLine = null;
             return result;
         } else
@@ -207,7 +207,7 @@ public class SAMIteratorBase {
      */
     protected String getNextLineStartsWith(String prefix) {
         while (hasNextLine()) {
-            String line = nextLine();
+            final String line = nextLine();
             if (line.startsWith(prefix))
                 return line;
         }
@@ -222,7 +222,7 @@ public class SAMIteratorBase {
      */
     protected String getNextLineContains(String infix) {
         while (hasNextLine()) {
-            String line = nextLine();
+            final String line = nextLine();
             if (line.contains(infix))
                 return line;
         }
@@ -236,7 +236,7 @@ public class SAMIteratorBase {
      */
     protected String getNextLineStartsWith(String prefix1, String prefix2) {
         while (hasNextLine()) {
-            String line = nextLine();
+            final String line = nextLine();
             if (line.startsWith(prefix1) || line.startsWith(prefix2))
                 return line;
         }
@@ -251,7 +251,7 @@ public class SAMIteratorBase {
     protected String skipEmptyLines() {
         while (true) {
             if (hasNextLine()) {
-                String next = nextLine().trim();
+                final String next = nextLine().trim();
                 if (next.length() > 0)
                     return next;
             } else

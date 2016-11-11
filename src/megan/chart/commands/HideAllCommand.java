@@ -21,6 +21,7 @@ package megan.chart.commands;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
+import megan.chart.data.IChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.LabelsJList;
 
@@ -70,6 +71,8 @@ public class HideAllCommand extends CommandBase implements ICommand {
             }
         if (list.getName().equalsIgnoreCase("series"))
             viewer.getChartData().setEnabledSeries(list.getEnabledLabels());
+        else if (list.getName().equalsIgnoreCase("classes"))
+            ((IChartData) viewer.getChartData()).setEnabledClassNames(list.getEnabledLabels());
     }
 
     /**

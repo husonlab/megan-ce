@@ -53,10 +53,12 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
             maps[i] = new IntIntMap(2 ^ 20, 0.9f); // 2^20=1048576
         }
 
-        File file = new File(fileName);
+        final File file = new File(fileName);
         System.err.println("Loading file: " + file.getName());
 
         int totalIn = 0;
+        int totalSkipped = -100; // allow ourselves 100 skips more than totalIn before we give up...
+
         try (final FileInputIterator it = new FileInputIterator(file)) {
             progress.setTasks("Loading file", file.getName());
             progress.setProgress(0);
@@ -80,6 +82,9 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
                             }
                         }
                     }
+                } else {
+                    if (totalSkipped++ > totalIn)
+                        throw new IOException("Failed to parse too many lines, is this really a .map file: " + fileName);
                 }
                 progress.setProgress(it.getProgress());
             }

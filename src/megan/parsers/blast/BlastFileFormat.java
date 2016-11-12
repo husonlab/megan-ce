@@ -39,42 +39,42 @@ public enum BlastFileFormat {
      * Determine the file format of an alignment file
      *
      * @param owner
-     * @param filename
+     * @param fileName
      * @param ask
      * @return file format or null
      * @throws IOException
      */
-    public static BlastFileFormat detectFormat(Component owner, String filename, boolean ask) throws IOException {
+    public static BlastFileFormat detectFormat(Component owner, String fileName, boolean ask) throws IOException {
         BlastFileFormat result = null;
 
-        if (!(new File(filename)).canRead() || (new File(filename).isDirectory()))
-            throw new IOException("Can't open file to read: " + filename);
+        if (!(new File(fileName)).canRead() || (new File(fileName).isDirectory()))
+            throw new IOException("Can't open file to read: " + fileName);
 
-        if (SAMFileFilter.getInstance().accept(filename))
+        if (SAMFileFilter.getInstance().accept(fileName))
             result = SAM;
-        else if (DAAFileFilter.getInstance().accept(filename))
+        else if (DAAFileFilter.getInstance().accept(fileName))
             result = DAA;
-        else if (BlastXTextFileFilter.getInstance().accept(filename))
+        else if (BlastXTextFileFilter.getInstance().accept(fileName))
             result = BlastText;
-        else if (BlastNTextFileFilter.getInstance().accept(filename))
+        else if (BlastNTextFileFilter.getInstance().accept(fileName))
             result = BlastText;
-        else if (BlastPTextFileFilter.getInstance().accept(filename))
+        else if (BlastPTextFileFilter.getInstance().accept(fileName))
             result = BlastText;
-        else if (BlastTabFileFilter.getInstance().accept(filename))
+        else if (BlastTabFileFilter.getInstance().accept(fileName))
             result = BlastTab;
-        else if (BlastXMLFileFilter.getInstance().accept(filename))
+        else if (BlastXMLFileFilter.getInstance().accept(fileName))
             result = BlastXML;
-        else if (RAPSearch2AlnFileFilter.getInstance().accept(filename))
+        else if (RAPSearch2AlnFileFilter.getInstance().accept(fileName))
             result = RapSearch2Aln;
-        else if (RDPAssignmentDetailsFileFilter.getInstance().accept(filename))
+        else if (RDPAssignmentDetailsFileFilter.getInstance().accept(fileName))
             result = RDPAssignmentDetails;
-        else if (IlluminaReporterFileFilter.getInstance().accept(filename))
+        else if (IlluminaReporterFileFilter.getInstance().accept(fileName))
             result = IlluminaReporter;
-        else if (RDPStandaloneFileFilter.getInstance().accept(filename))
+        else if (RDPStandaloneFileFilter.getInstance().accept(fileName))
             result = RDPStandalone;
-        else if (FastaFileFilter.getInstance().accept(filename))
+        else if (FastaFileFilter.getInstance().accept(fileName))
             result = References_as_FastA;
-        else if (MothurFileFilter.getInstance().accept(filename))
+        else if (MothurFileFilter.getInstance().accept(fileName))
             result = Mothur;
 
         if (result == null && ProgramProperties.isUseGUI() && ask) {

@@ -69,6 +69,13 @@ public class CSVSummaryParser {
         doc.getActiveViewers().clear();
         doc.getActiveViewers().addAll(Arrays.asList(cNames));
 
+        if(!Arrays.asList(cNames).contains(Classification.Taxonomy)) {
+            final String[] tmp=new String[cNames.length+1];
+            System.arraycopy(cNames, 0, tmp, 0, cNames.length);
+            tmp[tmp.length-1]=Classification.Taxonomy;
+            cNames=tmp;
+        }
+
         IdParser[] idParsers = new IdParser[cNames.length];
         int taxonomyIndex = -1;
         for (int i = 0; i < cNames.length; i++) {
@@ -84,7 +91,6 @@ public class CSVSummaryParser {
         }
 
         String[] names = null;
-
 
         final Map<Integer, Integer[]>[] class2counts = new HashMap[cNames.length];
         for (int i = 0; i < class2counts.length; i++) {

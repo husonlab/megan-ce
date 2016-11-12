@@ -31,7 +31,6 @@ import java.io.IOException;
 public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     private byte[] matchesText = new byte[10000];
     private int matchesTextLength = 0;
-    private final Match match = new Match();
 
     /**
      * constructor
@@ -41,7 +40,7 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
      */
     public Fasta2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
-        if (!FastaFileFilter.getInstance().accept(fileName)) {
+        if (!FastaFileFilter.accept(fileName,true)) {
             close();
             throw new IOException("Not a FastA file: " + fileName);
         }

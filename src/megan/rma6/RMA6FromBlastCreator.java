@@ -180,7 +180,7 @@ public class RMA6FromBlastCreator {
                 final int matchesTextLength = iterator.getMatchesTextLength();
                 final int queryNameLength = Basic.getFirstWord(matchesText, queryName);
 
-                //System.err.println("Got: "+Basic.toString(matchesText,matchesTextLength));
+                //System.err.println("Got: "+Basic.toString(matchesText,Math.min(100,matchesTextLength)));
 
                 Long mateLocation = null;
 

@@ -144,8 +144,8 @@ public class Compressor {
             }
         }
         inflater.setInput(bytes, 0, numberOfBytes);
-        if (buffer.length < 10 * bytes.length)  // try to make sure the result buffer is long enough
-            buffer = new byte[10 * bytes.length];
+        if (buffer.length < 100 * bytes.length)  // try to make sure the result buffer is long enough
+            buffer = new byte[100 * bytes.length];
         int resultLength = inflater.inflate(buffer);
 
         String outputString;

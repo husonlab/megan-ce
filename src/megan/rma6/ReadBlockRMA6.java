@@ -288,11 +288,15 @@ public class ReadBlockRMA6 implements IReadBlock {
                 if (end == -1)
                     end = matchesText.length();
                 final String aLine = matchesText.substring(offset, end);
-                tmpSAMMatch.parse(aLine);
-                ((MatchBlockRMA6) matchBlocks[matchCount]).setFromSAM(tmpSAMMatch);
                 offset = end + 1;
-                if (matchBlocks[matchCount].getBitScore() >= minScore && matchBlocks[matchCount].getExpected() <= maxExpected)
-                    copies[matchCount++] = matchBlocks[i]; // this match is ok, keep it
+                try {
+                    tmpSAMMatch.parse(aLine);
+                    ((MatchBlockRMA6) matchBlocks[matchCount]).setFromSAM(tmpSAMMatch);
+                    if (matchBlocks[matchCount].getBitScore() >= minScore && matchBlocks[matchCount].getExpected() <= maxExpected)
+                        copies[matchCount++] = matchBlocks[i]; // this match is ok, keep it
+                } catch (IOException ex) {
+                    System.err.println("RMA6 Parse error: " + ex.getMessage() + ", numberOfMatches=" + numberOfMatches + ", i=" + i + " line=" + aLine);
+                }
             }
             if (matchCount < matchBlocks.length) { // some matches didn't meet the minScore or maxExpected criteria, resize
                 matchBlocks = new MatchBlockRMA6[matchCount];

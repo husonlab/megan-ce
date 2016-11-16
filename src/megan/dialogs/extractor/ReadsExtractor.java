@@ -72,7 +72,6 @@ public class ReadsExtractor {
 
         BufferedWriter w = null;
         try {
-            progressListener.setMaximum(10 * classIds.size());
             final boolean useMultipleFileNames = outFileName.contains("%t");
 
             for (Integer classId : classIds) {
@@ -91,6 +90,8 @@ public class ReadsExtractor {
                 for (Integer id : all) {
                     if (classificationBlock.getSum(id) > 0) {
                         try (IReadBlockIterator it = connector.getReadsIterator(classificationName, id, 0, 10000, true, false)) {
+                            progressListener.setMaximum(it.getMaximumProgress());
+                            progressListener.setProgress(0);
                             while (it.hasNext()) {
                                 if (w == null)
                                     w = new BufferedWriter(new FileWriter(outFile));
@@ -108,13 +109,11 @@ public class ReadsExtractor {
                                         w.write("\n");
                                 }
                                 numberOfReads++;
-                                progressListener.checkForCancel();
+                                progressListener.setProgress(it.getProgress());
                             }
                         }
-                        progressListener.checkForCancel();
                     }
                 }
-                progressListener.incrementProgress();
                 if (useMultipleFileNames && w != null) {
                     w.close();
                     w = null;

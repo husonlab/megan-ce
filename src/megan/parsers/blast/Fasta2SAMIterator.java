@@ -29,8 +29,7 @@ import java.io.IOException;
  * Daniel Huson, 4.2015
  */
 public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
-    private byte[] matchesText = new byte[10000];
-    private int matchesTextLength = 0;
+    private byte[] matchesText = new byte[0];
 
     /**
      * constructor
@@ -66,26 +65,13 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
             return -1;
 
         String line = nextLine();
-        /*
-        while (hasNextLine() && !line.startsWith(">")) {
-            line = nextLine();
-        }
-        */
 
         if (line == null || !line.startsWith(">"))
             return -1;
 
         final String queryName = Basic.getReadName(line);
 
-        matchesTextLength = 0;
-        byte[] bytes = makeSAM(queryName, Basic.replaceSpaces(line, ' ')).getBytes();
-        if (matchesTextLength + bytes.length >= matchesText.length) {
-            byte[] tmp = new byte[2 * (matchesTextLength + bytes.length)];
-            System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
-            matchesText = tmp;
-        }
-        System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
-        matchesTextLength += bytes.length;
+        matchesText = makeSAM(queryName, Basic.replaceSpaces(line, ' ')).getBytes();
 
         while (hasNextLine()) {
             line = nextLine();
@@ -114,7 +100,7 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesTextLength;
+        return matchesText.length;
     }
 
     /**

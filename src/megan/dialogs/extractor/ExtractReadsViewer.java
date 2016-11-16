@@ -19,12 +19,14 @@
 package megan.dialogs.extractor;
 
 import jloda.gui.MenuBar;
+import jloda.gui.StatusBar;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.director.IDirectableViewer;
 import jloda.gui.director.IDirector;
 import jloda.gui.director.ProjectManager;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
+import megan.commands.CloseCommand;
 import megan.core.ClassificationType;
 import megan.core.Director;
 import megan.dialogs.extractor.commands.ApplyCommand;
@@ -44,6 +46,8 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
     private boolean uptoDate;
     private boolean locked = false;
     private String mode = ClassificationType.Taxonomy.toString();
+
+    private final AbstractButton closeButton;
 
     private boolean includeSummarized = false;
 
@@ -71,6 +75,8 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         if (ProgramProperties.getProgramIcon() != null)
             setIconImage(ProgramProperties.getProgramIcon().getImage());
+
+        StatusBar statusBar = new StatusBar(false);
 
         menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);
@@ -123,9 +129,12 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         bottomPanel.setBorder(BorderFactory.createEtchedBorder());
         bottomPanel.setLayout(new BorderLayout());
 
+        bottomPanel.add(statusBar, BorderLayout.CENTER);
+
         JPanel b1 = new JPanel();
         b1.setLayout(new BoxLayout(b1, BoxLayout.X_AXIS));
-        b1.add(commandManager.getButton("Close"));
+        closeButton = commandManager.getButton(CloseCommand.NAME);
+        b1.add(closeButton);
         b1.add(commandManager.getButton(ApplyCommand.NAME));
 
         bottomPanel.add(b1, BorderLayout.EAST);
@@ -135,19 +144,6 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         getContentPane().add(mainPanel, BorderLayout.CENTER);
         getContentPane().validate();
 
-
-        // only enable "apply" when nodes are selected
-        /* // todo: this looks doggy, disabled in MEGAN6
-        dir.getMainViewer().addNodeActionListener(new NodeActionAdapter() {
-            public void doSelect(NodeSet nodes) {
-                commandManager.updateEnableState();
-            }
-
-            public void doDeselect(NodeSet nodes) {
-                commandManager.updateEnableState();
-            }
-        });
-        */
         commandManager.updateEnableState();
         getFrame().setLocationRelativeTo(parent);
     }
@@ -170,9 +166,11 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
     public void lockUserInput() {
         locked = true;
         commandManager.setEnableCritical(false);
+        closeButton.setEnabled(false);
     }
 
     public void unlockUserInput() {
+        closeButton.setEnabled(true);
         commandManager.setEnableCritical(true);
         locked = false;
     }

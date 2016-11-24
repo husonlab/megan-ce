@@ -25,9 +25,7 @@ import megan.chart.gui.ChartViewer;
 import megan.chart.gui.LabelsJList;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * show all
@@ -97,7 +95,7 @@ public class ShowSelectedCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return null;
     }
 
     /**

@@ -18,10 +18,9 @@
  */
 package megan.tools;
 
-import jloda.gui.commands.CommandManager;
 import jloda.util.*;
-import megan.classification.data.ClassificationCommandHelper;
 import megan.classification.data.Name2IdMap;
+import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAHeader;
 import megan.daa.io.DAAParser;
@@ -34,11 +33,11 @@ import java.util.*;
 
 /**
  * provides info on a DAA files
- * Daniel Huson, 8.2015
+ * Daniel Huson, 11.2016
  */
 public class DAA2Info {
     /**
-     * meganizes a DAA file
+     * DAA 2 info
      *
      * @param args
      * @throws UsageException
@@ -69,9 +68,7 @@ public class DAA2Info {
      * @throws ClassNotFoundException
      */
     public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
-        CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
-
-        final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND");
+        final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
@@ -82,6 +79,7 @@ public class DAA2Info {
 
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
+        final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
         final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s)", new ArrayList<String>()));
         final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s)", new ArrayList<String>()));
         final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
@@ -95,17 +93,25 @@ public class DAA2Info {
 
             if (listGeneralInfo) {
                 final DAAHeader daaHeader = new DAAHeader(daaFile, true);
-                outs.write(String.format("#Number of reads:  %,d\n", daaHeader.getQueryRecords()));
-                outs.write(String.format("#Alignment mode:   %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
-                outs.write(String.format("#Is meganized:     %s\n", isMeganized));
+                outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
+                outs.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
+                outs.write(String.format("# Is meganized:    %s\n", isMeganized));
 
                 if (isMeganized) {
-                    outs.write("#Classifications:");
+                    outs.write("# Classifications:");
                     final DAAConnector connector = new DAAConnector(daaFile);
                     for (String classification : connector.getAllClassificationNames()) {
                         outs.write(" " + classification);
                     }
                     outs.write("\n");
+
+                    if (listMoreStuff) {
+                        final Document doc = new Document();
+                        doc.getMeganFile().setFileFromExistingFile(daaFile, true);
+                        doc.loadMeganFile();
+                        outs.write("# Meganization summary:\n");
+                        outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
+                    }
                 }
             }
 
@@ -116,7 +122,7 @@ public class DAA2Info {
                 availableClassificationNames.addAll(Arrays.asList(connector.getAllClassificationNames()));
 
             for (String classification : listClass2Count) {
-                outs.write("#Class to count for '" + classification + "':\n");
+                outs.write("# Class to count for '" + classification + "':\n");
 
                 if (isMeganized) {
                     if (!availableClassificationNames.contains(classification))
@@ -147,7 +153,7 @@ public class DAA2Info {
             }
 
             for (String classification : listRead2Class) {
-                outs.write("#Reads to class for '" + classification + "':\n");
+                outs.write("# Reads to class for '" + classification + "':\n");
                 if (isMeganized) {
                     if (!availableClassificationNames.contains(classification))
                         throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));

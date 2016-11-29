@@ -294,9 +294,14 @@ public class NotificationsInSwing {
         if (isShowNotifications() && ProgramProperties.isUseGUI() && !isFXInitialized) {
             try {
                 final JFrame jFrame = (initGraphics ? new JFrame("Not used") : null);
-                jFXPanel = new JFXPanel();
-                if (jFrame != null) {
-                    jFrame.add(jFXPanel);
+
+                try {
+                    jFXPanel = new JFXPanel();
+                    if (jFrame != null) {
+                        jFrame.add(jFXPanel);
+                    }
+                } catch (RuntimeException ex) {
+                    throw new RuntimeException("Failed to initialize JavaFX. Please make sure that you are using a version of Java that contains JavaFX.", ex);
                 }
 
                 if (title == null)

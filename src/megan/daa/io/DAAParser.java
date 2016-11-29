@@ -43,7 +43,7 @@ public class DAAParser {
 
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
-    public final static Pair<DAAQueryRecord, DAAMatchRecord[]> SENTINEL_QUERY_MATCH_BLOCKS = new Pair<DAAQueryRecord, DAAMatchRecord[]>();
+    public final static Pair<DAAQueryRecord, DAAMatchRecord[]> SENTINEL_QUERY_MATCH_BLOCKS = new Pair<>();
 
     /**
      * constructor

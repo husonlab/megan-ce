@@ -96,8 +96,7 @@ public class Meganize {
             try {
                 System.err.println("Saving metadata:");
                 SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                sampleAttributeTable.read(new FileReader(metaDataFile),
-                        Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(daaFile))), false);
+                sampleAttributeTable.read(new FileReader(metaDataFile), Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(daaFile))), false);
                 Map<String, byte[]> label2data = new HashMap<>();
                 label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributeTable.getBytes());
                 connector.putAuxiliaryData(label2data);

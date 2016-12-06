@@ -485,28 +485,34 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     IMatchBlock[] matchBlocks = readBlock.getMatchBlocks();
                     for (int m = 0; m < matchBlocks.length; m++) {
                         IMatchBlock matchBlock = matchBlocks[m];
-                        int taxId = matchBlock.getTaxonId();
-                        String taxaAndFunctionNames = TaxonomyData.getName2IdMap().get(taxId);
-                        if (taxaAndFunctionNames == null)
-                            taxaAndFunctionNames = "?";
-                        taxaAndFunctionNames += ";";
-                        float score = matchBlock.getBitScore();
-                        boolean ignore = matchBlock.isIgnore();
+                        final StringBuilder buf = new StringBuilder();
+                        {
+                            int taxId = matchBlock.getTaxonId();
+                            String taxonName = TaxonomyData.getName2IdMap().get(taxId);
+                            if (taxonName == null) {
+                                if (taxId > 0)
+                                    buf.append(String.format("%d;", taxId));
+                                else
+                                    buf.append("?;");
+                            } else
+                                buf.append(taxonName).append(";");
+                        }
 
                         for (String cName : doc.getActiveViewers()) {
                             if (!cName.equals(Classification.Taxonomy)) {
-                                int id = matchBlock.getId(cName);
-                                if (id != 0) {
+                                final int id = matchBlock.getId(cName);
+                                if (id > 0) {
                                     String label = ClassificationManager.get(cName, true).getName2IdMap().get(id);
                                     if (label != null) {
                                         label = Basic.abbreviateDotDotDot(label, 50);
-                                        taxaAndFunctionNames += " " + label + ";";
+                                        buf.append(" ").append(label).append(";");
                                     }
                                 }
                             }
                         }
 
-                        final MatchLevelNode node = new MatchLevelNode(taxaAndFunctionNames, score, ignore, activeMatches.get(m), matchBlock.getUId(), matchBlock.getText());
+                        final MatchLevelNode node = new MatchLevelNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(),
+                                activeMatches.get(m), matchBlock.getUId(), matchBlock.getText());
                         // add match node
 
                         final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);

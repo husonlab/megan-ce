@@ -41,7 +41,7 @@ public class TaxonPathAssignment {
      * @param readBlock
      * @return id
      */
-    public static List<Pair<Integer, Float>> computeTaxPath(BitSet activeMatches, IReadBlock readBlock) {
+    public static List<Pair<Integer, Float>> computeTaxPath(IReadBlock readBlock, BitSet activeMatches) {
         List<Pair<Integer, Float>> result = new LinkedList<>();
 
         if (readBlock.getNumberOfMatches() == 0) {
@@ -133,7 +133,7 @@ public class TaxonPathAssignment {
     }
 
     /**
-     * report the taxonomic path
+     * report the taxonomic path and percent
      *
      * @param readBlock
      * @param activeMatchesForTaxa
@@ -142,9 +142,9 @@ public class TaxonPathAssignment {
      * @param useOfficialRanksOnly
      * @throws IOException
      */
-    public static String getPath(IReadBlock readBlock, BitSet activeMatchesForTaxa, boolean showTaxonIds, boolean showRank, boolean useOfficialRanksOnly) {
+    public static String getPathAndPercent(IReadBlock readBlock, BitSet activeMatchesForTaxa, boolean showTaxonIds, boolean showRank, boolean useOfficialRanksOnly) {
         final StringBuilder buf = new StringBuilder();
-        final List<Pair<Integer, Float>> path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
+        final List<Pair<Integer, Float>> path = TaxonPathAssignment.computeTaxPath(readBlock, activeMatchesForTaxa);
 
         for (Pair<Integer, Float> pair : path) {
             final Integer taxId = pair.getFirst();

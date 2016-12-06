@@ -425,10 +425,11 @@ public class CSVExportFViewer {
             else
                 v = null;
         }
-        String[] array = path.toArray(new String[path.size()]);
-        StringBuilder buf = new StringBuilder();
+        final String[] array = path.toArray(new String[path.size()]);
+        final StringBuilder buf = new StringBuilder();
         for (int i = array.length - 1; i >= 0; i--) {
-            buf.append(array[i].replaceAll(";", "_")).append(";");
+            if (array[i] != null)
+                buf.append(array[i].replaceAll(";", "_")).append(";");
         }
         return buf.toString();
     }

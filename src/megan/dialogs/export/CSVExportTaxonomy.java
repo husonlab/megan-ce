@@ -522,6 +522,6 @@ public class CSVExportTaxonomy {
         final Document doc = dir.getDocument();
         final BitSet activeMatchesForTaxa = new BitSet();
         ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-        return TaxonPathAssignment.getPath(readBlock, activeMatchesForTaxa, false, true, true);
+        return TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, false, true, true);
     }
 }

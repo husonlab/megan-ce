@@ -79,7 +79,7 @@ public class CSVExportReads2WeightedTaxonPaths {
                             path.add(pair);
                         } else {
                             ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-                            path = TaxonPathAssignment.computeTaxPath(activeMatchesForTaxa, readBlock);
+                            path = TaxonPathAssignment.computeTaxPath(readBlock, activeMatchesForTaxa);
                         }
 
                         w.write(readBlock.getReadName() + "; ;");

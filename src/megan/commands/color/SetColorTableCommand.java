@@ -20,13 +20,15 @@ package megan.commands.color;
 
 
 import jloda.gui.ColorTableManager;
+import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.commands.ColorByRankCommand;
 import megan.chart.gui.ChartViewer;
-import megan.commands.CommandBase;
+import megan.core.Director;
 import megan.core.Document;
+import megan.core.SampleAttributeTable;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.gui.NodeDrawer;
 
@@ -104,14 +106,24 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
             isHeatMap = false;
         np.matchIgnoreCase(";");
 
+        final Document doc = ((Director) getDir()).getDocument();
+
+        {
+            // erase colors set by attribute:
+            for (String sample : doc.getSampleNames()) {
+                doc.getSampleAttributeTable().put(sample, SampleAttributeTable.HiddenAttribute.Color, null);
+            }
+
+        }
+
         if (isHeatMap) {
-            getDir().getDocument().getChartColorManager().setHeatMapTable(name);
+            doc.getChartColorManager().setHeatMapTable(name);
             ColorTableManager.setDefaultColorTableHeatMap(name);
         } else {
-            getDir().getDocument().getChartColorManager().setColorTable(name);
+            doc.getChartColorManager().setColorTable(name);
             ColorTableManager.setDefaultColorTable(name);
         }
-        getDir().getDocument().setDirty(true);
+        doc.setDirty(true);
     }
 
     /**
@@ -125,14 +137,15 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
         final boolean isHeatMap = ((getViewer() instanceof ClassificationViewer) && ((ClassificationViewer) getViewer()).getNodeDrawer().getStyle() == NodeDrawer.Style.HeatMap)
                 || ((getViewer() instanceof ChartViewer) && ((ChartViewer) getViewer()).getChartDrawer().usesHeatMapColors());
 
-        final String current = isHeatMap ? getDir().getDocument().getChartColorManager().getHeatMapTable().getName() : getDir().getDocument().getChartColorManager().getColorTable().getName();
+        final Document doc = ((Director) getDir()).getDocument();
+
+        final String current = isHeatMap ? doc.getChartColorManager().getHeatMapTable().getName() : doc.getChartColorManager().getColorTable().getName();
 
         final JPopupMenu popMenu = new JPopupMenu();
         for (final String name : choices) {
             JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem();
             checkBoxMenuItem.setAction(new AbstractAction(name) {
                 public void actionPerformed(ActionEvent e) {
-                    final Document doc = getDoc();
                     if (doc.getChartColorManager().hasChangedColors()) {
                         switch (JOptionPane.showConfirmDialog(getViewer().getFrame(), "Clear all individually set colors?", "Question", JOptionPane.YES_NO_CANCEL_OPTION)) {
                             case JOptionPane.YES_OPTION:

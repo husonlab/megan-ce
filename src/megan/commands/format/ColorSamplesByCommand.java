@@ -61,7 +61,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
         if (doc.getChartColorManager().isColorByPosition()) {
             final ArrayList<String> states = new ArrayList<>();
             for (String sample : samples) {
-                Object value = doc.getSampleAttributeTable().get(sample, attribute);
+                final Object value = doc.getSampleAttributeTable().get(sample, attribute);
                 if (value != null && !value.equals("NA"))
                     states.add(value.toString());
             }
@@ -74,7 +74,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
             }
         } else {
             for (String sample : samples) {
-                Object value = doc.getSampleAttributeTable().get(sample, attribute);
+                final Object value = doc.getSampleAttributeTable().get(sample, attribute);
                 final Color color = doc.getChartColorManager().getAttributeStateColor(attribute, value.toString());
                 doc.getSampleAttributeTable().putSampleColor(sample, color);
             }
@@ -96,7 +96,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
                     if (!attributes.contains(defaultChoice))
                         defaultChoice = attributes.get(0);
 
-                    ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
+                    final ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
                     dialog.setTitle("MEGAN6 " + getViewer().getClassName() + " choice");
                     dialog.setHeaderText("Select attribute to color by");
                     dialog.setContentText("Choose attribute:");

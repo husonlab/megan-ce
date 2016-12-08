@@ -22,6 +22,8 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
+import megan.core.Document;
+import megan.core.SampleAttributeTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -41,7 +43,21 @@ public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand
         String colorBy = np.getWordMatchesRespectingCase("label position");
         np.matchIgnoreCase(";");
 
-        ((Director) getDir()).getDocument().getChartColorManager().setColorByPosition(colorBy.equalsIgnoreCase("position"));
+        final Document doc = ((Director) getDir()).getDocument();
+
+        doc.getChartColorManager().setColorByPosition(colorBy.equalsIgnoreCase("position"));
+        {
+            // erase colors set by attribute:
+            for (String sample : doc.getSampleNames()) {
+                doc.getSampleAttributeTable().put(sample, SampleAttributeTable.HiddenAttribute.Color, null);
+            }
+
+            // this fixes a bug that causes colors to come out wrong when first switching to color by position:
+
+            for (int i = 0; i < doc.getNumberOfSamples(); i++) {
+                doc.getColorsArray()[i] = doc.getChartColorManager().getSampleColor(doc.getSampleNames().get(i));
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent event) {

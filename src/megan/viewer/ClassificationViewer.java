@@ -922,8 +922,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         }
 
         int num;
-        if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Summarized
-                || (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned && v.getOutDegree() == 0))
+        if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Summarized || (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned && v.getOutDegree() == 0))
             num = (super.getNodeData(v)).getCountSummarized();
         else if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned)
             num = (super.getNodeData(v)).getCountAssigned();

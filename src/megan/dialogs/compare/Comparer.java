@@ -26,9 +26,11 @@ import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,7 +81,7 @@ public class Comparer {
      * @param progressListener
      * @throws CanceledException
      */
-    public void computeComparison(SampleAttributeTable sampleAttributeTable, final DataTable result, final ProgressListener progressListener) throws CanceledException {
+    public void computeComparison(SampleAttributeTable sampleAttributeTable, final DataTable result, final ProgressListener progressListener) throws IOException, CanceledException {
         progressListener.setTasks("Comparison", "Initialization");
         progressListener.setMaximum(-1);
 
@@ -133,7 +135,7 @@ public class Comparer {
                 if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
                     calculateNewSampleSize = numberOfReads;
             }
-                System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
+            System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
         }
         final long newSampleSize = calculateNewSampleSize;
 
@@ -147,27 +149,32 @@ public class Comparer {
         progressListener.setMaximum(dirs.size());
         progressListener.setProgress(0);
 
-        final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
-        final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size());
+        final int numberOfThreads = Math.min(Math.max(1, Runtime.getRuntime().availableProcessors() - 1), dirs.size());
+        final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
         final ExecutorService executor = Executors.newCachedThreadPool();
-
-        final Counter submittedJobs = new Counter();
-        final Counter completedJobs = new Counter();
 
         final long[] readCountPerThread = new long[numberOfThreads];
 
         final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
         final ProgressSilent progressSilent = new ProgressSilent();
 
+        final Single<Exception> exception = new Single<>();
+        final Director sentinel = new Director(null);
+
+        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+
         for (int i = 0; i < numberOfThreads; i++) {
             final int threadNumber = i;
             executor.execute(new Runnable() {
                 public void run() {
-                    while (true) {
-                        long readCount = 0;
-
-                        try {
+                    long readCount = 0;
+                    try {
+                        while (true) {
                             final Director dir = inputQueue.take();
+
+                            if (dir == sentinel)
+                                return;
+
                             final Document doc = dir.getDocument();
                             final int pos = pid2pos[dir.getID()];
                             readCount = 0;
@@ -237,8 +244,7 @@ public class Comparer {
                                             countsTarget[pos] = (int) Math.round(count * factor);
                                             if (countsTarget[pos] == 0 && isKeep1())
                                                 countsTarget[pos] = 1;
-                                        }
-                                        else
+                                        } else
                                             countsTarget[pos] = count;
                                         if (isTaxonomy)
                                             readCount += countsTarget[pos];
@@ -247,19 +253,20 @@ public class Comparer {
                             }
                             sizes[pos] = (int) readCount;
                             progress.incrementProgress();
-                        } catch (InterruptedException e) {
-                            // Basic.caught(e);
-                            return;    // this is the case when all jobs have been completed
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        } finally {
-                            synchronized (progressListenerThread) {
-                                if (progressListenerThread.get() == threadNumber)
-                                    progressListenerThread.set(-1);
-                            }
-                            readCountPerThread[threadNumber] += readCount;
-                            completedJobs.increment();
+                            throw new Exception("X");
                         }
+                    } catch (Exception ex) {
+                        exception.set(ex);
+                        while (countDownLatch.getCount() > 0)
+                            countDownLatch.countDown();
+                        executor.shutdownNow();
+                    } finally {
+                        synchronized (progressListenerThread) {
+                            if (progressListenerThread.get() == threadNumber)
+                                progressListenerThread.set(-1);
+                        }
+                        readCountPerThread[threadNumber] += readCount;
+                        countDownLatch.countDown();
                     }
                 }
             });
@@ -268,18 +275,24 @@ public class Comparer {
         progressListener.setTasks("Computing comparison", "Using " + mode.toString().toLowerCase() + " mode");
         progressListener.setProgress(0);
         progressListener.setMaximum(dirs.size());
-        for (Director dir : dirs) {
-            inputQueue.add(dir);
-            submittedJobs.increment();
+
+        try {
+            for (Director dir : dirs) {
+                inputQueue.put(dir);
+            }
+            for (int i = 0; i < numberOfThreads; i++) {
+                inputQueue.put(sentinel);
+            }
+            // wait until all jobs are done
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            if (exception.get() == null)
+                exception.set(new IOException("Comparison computation failed: " + e.getMessage(), e));
         }
 
-        // wait until all jobs are done
-        while (submittedJobs.get() > completedJobs.get()) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                Basic.caught(e);
-            }
+        if (exception.get() != null) {
+            throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
         }
         executor.shutdownNow();
 

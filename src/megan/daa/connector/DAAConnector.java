@@ -228,14 +228,23 @@ public class DAAConnector implements IConnector {
         final byte[] block = DAAParser.getBlock(daaHeader, BlockType.megan_aux_data);
         if (block != null) {
             try (final InputReaderLittleEndian ins = new InputReaderLittleEndian(new InputStreamAdapter(new ByteInputStream(block, block.length)))) {
-                int numberOfLabels = ins.readInt();
+                final int numberOfLabels = ins.readInt();
                 for (int i = 0; i < numberOfLabels; i++) {
-                    String label = ins.readNullTerminatedBytes();
-                    int size = ins.readInt();
-                    byte[] bytes = new byte[size];
-                    ins.read(bytes, 0, size);
+                    final String label = ins.readNullTerminatedBytes();
+                    final int size = ins.readInt();
+                    final byte[] bytes = new byte[size];
+                    final int length = ins.read_available(bytes, 0, size);
+                    if (length < size) {
+                        final byte[] tmp = new byte[length];
+                        System.arraycopy(bytes, 0, tmp, 0, length);
+                        label2data.put(label, tmp);
+                        throw new IOException("buffer underflow");
+                    }
                     label2data.put(label, bytes);
                 }
+            } catch (IOException ex) {
+                System.err.println("Incomplete aux block detected, will try to recover...");
+                // ignore any problems, megan should be able to recover from this
             }
         }
         return label2data;

@@ -81,6 +81,9 @@ public class CompareCommand extends CommandBase implements ICommand {
                     Director newDir = (Director) ProjectManager.getProject(pid);
                     if (newDir == null)
                         throw new IOException("No such project id: " + pid);
+                    if (newDir.getDocument().getNumberOfReads() == 0)
+                        throw new IOException("No reads found in file: '" + newDir.getDocument().getMeganFile().getFileName() + "' (id=" + pid + ")");
+
                     comparer.addDirector(newDir);
                     if (np.peekMatchIgnoreCase(",")) // for backward compatibility
                         np.matchAnyTokenIgnoreCase(",");
@@ -110,6 +113,9 @@ public class CompareCommand extends CommandBase implements ICommand {
                     final Director newDir = Director.newProject(false, true);
                     if (newDir != null) {
                         newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
+                        if (newDir.getDocument().getNumberOfReads() == 0) {
+                            throw new IOException("No reads found in file: '" + fileName + "'");
+                        }
                         comparer.addDirector(newDir);
                         toDelete.add(newDir);
                     }

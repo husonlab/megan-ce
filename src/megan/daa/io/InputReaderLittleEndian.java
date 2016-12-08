@@ -71,6 +71,19 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     }
 
     /**
+     * read bytes
+     *
+     * @param bytes
+     * @param offset
+     * @param len
+     * @return bytes
+     * @throws IOException
+     */
+    public int read_available(byte[] bytes, int offset, int len) throws IOException {
+        return ins.read(bytes, offset, len);
+    }
+
+    /**
      * read int little endian
      *
      * @return int

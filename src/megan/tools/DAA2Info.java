@@ -80,6 +80,7 @@ public class DAA2Info {
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
         final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
+
         final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s)", new ArrayList<String>()));
         final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s)", new ArrayList<String>()));
         final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
@@ -91,7 +92,7 @@ public class DAA2Info {
 
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
 
-            if (listGeneralInfo) {
+            if (listGeneralInfo || listMoreStuff) {
                 final DAAHeader daaHeader = new DAAHeader(daaFile, true);
                 outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
                 outs.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));

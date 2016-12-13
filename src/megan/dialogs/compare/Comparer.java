@@ -253,7 +253,6 @@ public class Comparer {
                             }
                             sizes[pos] = (int) readCount;
                             progress.incrementProgress();
-                            throw new Exception("X");
                         }
                     } catch (Exception ex) {
                         exception.set(ex);

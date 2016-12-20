@@ -196,7 +196,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         File lastOpenFile = new File(name);
 
         dir.notifyLockInput();
-        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new RMAFileFilter(), new RMAFileFilter(), event, "Extract selected data to document", ".rma");
+        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new RMAFileFilter(true), new RMAFileFilter(true), event, "Extract selected data to document", ".rma");
 
         if (file != null) {
             final String data = (getViewer() instanceof ClassificationViewer ? getViewer().getClassName() : ClassificationType.Taxonomy.toString());

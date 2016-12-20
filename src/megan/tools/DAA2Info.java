@@ -45,7 +45,7 @@ public class DAA2Info {
      */
     public static void main(String[] args) {
         try {
-            ProgramProperties.setProgramName("DAAInfo");
+            ProgramProperties.setProgramName("DAA2Info");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 
             PeakMemoryUsageMonitor.start();
@@ -119,11 +119,12 @@ public class DAA2Info {
             final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
             final DAAConnector connector = new DAAConnector(daaFile);
             final Set<String> availableClassificationNames = new HashSet<>();
-            if (isMeganized)
+            if (listGeneralInfo || listMoreStuff)
                 availableClassificationNames.addAll(Arrays.asList(connector.getAllClassificationNames()));
 
             for (String classification : listClass2Count) {
-                outs.write("# Class to count for '" + classification + "':\n");
+                if (listGeneralInfo || listMoreStuff)
+                    outs.write("# Class to count for '" + classification + "':\n");
 
                 if (isMeganized) {
                     if (!availableClassificationNames.contains(classification))
@@ -154,7 +155,8 @@ public class DAA2Info {
             }
 
             for (String classification : listRead2Class) {
-                outs.write("# Reads to class for '" + classification + "':\n");
+                if (listGeneralInfo || listMoreStuff)
+                    outs.write("# Reads to class for '" + classification + "':\n");
                 if (isMeganized) {
                     if (!availableClassificationNames.contains(classification))
                         throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));

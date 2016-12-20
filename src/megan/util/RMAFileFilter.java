@@ -28,10 +28,16 @@ import java.io.FilenameFilter;
  */
 public class RMAFileFilter extends FileFilterBase implements FilenameFilter {
     public RMAFileFilter() {
-        add("rma");
-        add("rma1");
-        add("rma2");
-        add("rma3");
+        this(false);
+    }
+
+    public RMAFileFilter(boolean latestOnly) {
+        if (!latestOnly) {
+            add("rma");
+            add("rma1");
+            add("rma2");
+            add("rma3");
+        }
         add("rma6");
     }
 

@@ -55,9 +55,9 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
 
     boolean searchInCollapsed = false;
 
-    public static final String SEARCHER_NAME = "Nodes";
-
     private int countCurrent = 0; // use this to cycle throug different instances of current node id
+
+    private AbstractButton uncollapseButton;
 
     /**
      * constructor
@@ -74,6 +74,19 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
         toDeselect = new NodeSet(graph);
         searchInCollapsed = ProgramProperties.get("FViewerSearchInCollapsed", searchInCollapsed);
 
+        uncollapseButton = new JCheckBox();
+        uncollapseButton.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchInCollapsed = uncollapseButton.isSelected();
+                currentId = null;
+                currentIterator = null;
+                ProgramProperties.put("FViewerSearchInCollapsed", searchInCollapsed);
+            }
+        });
+        uncollapseButton.setToolTipText("Search in collapsed nodes as well");
+        uncollapseButton.setText("Uncollapse");
+        uncollapseButton.setSelected(searchInCollapsed);
     }
 
     /**
@@ -355,19 +368,6 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
 
     @Override
     public Collection<AbstractButton> getAdditionalButtons() {
-        final JCheckBox but = new JCheckBox();
-        but.setAction(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchInCollapsed = but.isSelected();
-                currentId = null;
-                currentIterator = null;
-                ProgramProperties.put("FViewerSearchInCollapsed", searchInCollapsed);
-            }
-        });
-        but.setToolTipText("Search in collapsed nodes as well");
-        but.setText("Uncollapse");
-        but.setSelected(searchInCollapsed);
-        return Collections.singletonList((AbstractButton) but);
+        return Collections.singletonList(uncollapseButton);
     }
 }

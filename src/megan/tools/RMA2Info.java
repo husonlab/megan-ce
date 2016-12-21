@@ -88,7 +88,7 @@ public class RMA2Info {
 
         final Document doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(daaFile, true);
-        if (!doc.getMeganFile().isRMA2File() || !doc.getMeganFile().isRMA3File() || !doc.getMeganFile().isRMA6File())
+        if (!doc.getMeganFile().isRMA2File() && !doc.getMeganFile().isRMA3File() && !doc.getMeganFile().isRMA6File())
             throw new IOException("Incorrect file type: " + doc.getMeganFile().getFileType());
         doc.loadMeganFile();
         final IConnector connector = doc.getMeganFile().getDataConnector();

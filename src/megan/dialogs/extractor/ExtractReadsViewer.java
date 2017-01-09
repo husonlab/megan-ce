@@ -164,12 +164,14 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
     }
 
     public void lockUserInput() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         locked = true;
         commandManager.setEnableCritical(false);
         closeButton.setEnabled(false);
     }
 
     public void unlockUserInput() {
+        setCursor(Cursor.getDefaultCursor());
         closeButton.setEnabled(true);
         commandManager.setEnableCritical(true);
         locked = false;

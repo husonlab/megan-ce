@@ -43,7 +43,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
 
-        menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Select All;Select None;Select Top...;|;From Previous Window;|;Show All;Show Selected;|;" +
+        menuConfig.defineMenu("Edit", "Cut;Copy Label;Copy Image;Copy Legend;Paste;|;Select All;Select None;Select Top...;|;From Previous Window;|;Show All;Show Selected;|;" +
                 "Hide Unselected;Hide Selected;|;Set Color...;|;Find...;Find Again;|;Colors...;");
 
         menuConfig.defineMenu("Options", "Set Title...;Set Series Label...;Set Classes Label...;Set Counts Label...;|;" +

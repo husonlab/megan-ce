@@ -774,7 +774,7 @@ public class SamplesSpreadSheet {
                             try {
                                 doc.setProgressListener(new ProgressSilent());
                                 doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
-                                System.err.println("Order: " + Basic.toString(doc.getSampleAttributeTable().getSampleOrder(), ","));
+                                //System.err.println("Order: " + Basic.toString(doc.getSampleAttributeTable().getSampleOrder(), ","));
                                 doc.getDir().execute("update reinduce=true;", samplesViewer.getCommandManager());
                             } catch (Exception e) {
                                 e.printStackTrace();

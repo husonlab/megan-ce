@@ -57,10 +57,10 @@ public class ReadsExtractor {
      * @throws IOException
      * @throws CanceledException
      */
-    public static int extractReads(final ProgressListener progressListener, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
-                                   Map<Integer, Collection<Integer>> classId2Descendants,
-                                   final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
-        progressListener.setSubtask("Searching through classification by " + classificationName);
+    private static int extractReads(final ProgressListener progressListener, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
+                                    Map<Integer, Collection<Integer>> classId2Descendants,
+                                    final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
+        progressListener.setSubtask("Extracting by " + classificationName);
 
         final IConnector connector = doc.getConnector();
         int numberOfReads = 0;

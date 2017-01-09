@@ -62,6 +62,9 @@ public class MoveSamplesUpCommand extends CommandBase implements ICommand {
         if (samples.size() > 0) {
             final SamplesViewer viewer = ((SamplesViewer) getViewer());
             viewer.getSamplesTable().moveSamples(direction.equalsIgnoreCase("up"), samples.toArray(new String[samples.size()]));
+            getDir().execute("update reinduce=true;", getViewer().getCommandManager());
+
+
         }
     }
 

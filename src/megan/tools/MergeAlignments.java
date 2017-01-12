@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016 Daniel H. Huson
+ *  Copyright (C) 2017 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -103,7 +103,7 @@ public class MergeAlignments {
     public void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Merges reads-to-reference alignments using reference alignment");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2016 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2017 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String referencesAlignmentFile = options.getOptionMandatory("-ref", "refInput", "file containing multiple alignment of references", "");

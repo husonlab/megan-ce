@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016 Daniel H. Huson
+ *  Copyright (C) 2017 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -51,6 +51,8 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
 
     private TreeSet<Match> matches = new TreeSet<>(new Match());
 
+    private long numberOfReads = 0;
+
     /**
      * constructor
      *
@@ -98,7 +100,12 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         if (queryLine == null)
             return -1; // at end of file
 
-        final String queryName = getNextToken(queryLine, NEW_QUERY);
+        final String queryName;
+        {
+            numberOfReads++;
+            final String name = getNextToken(queryLine, NEW_QUERY).trim();
+            queryName = (name.length() == 0 ? "Read" + numberOfReads : name);
+        }
 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();

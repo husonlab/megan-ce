@@ -480,7 +480,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         }
 
         Font font = getFont(ChartViewer.FontKeys.LegendFont.toString());
-        gc.setFont(new Font(font.getFamily(), font.getStyle(), 10));
+        gc.setFont(new Font(font.getFamily(), font.getStyle(), 9));
         gc.setColor(Color.darkGray);
         ((Graphics2D) gc).setStroke(new BasicStroke(1));
 
@@ -491,7 +491,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
             final int top = boxBottomY - diameter - 14;
             // if(prevTop==-1 || top-prevTop>10)
             {
-                final String label = (scalingType == ChartViewer.ScalingType.PERCENT ? pair[1] + "%" : "" + pair[1]);
+                final String label = String.format("%,d", pair[1]) + (scalingType == ChartViewer.ScalingType.PERCENT ? "%" : "");
                 drawStringCentered(gc, label, boxMidX, top + 2, true);
                 gc.drawOval(boxMidX - diameter / 2, boxBottomY - diameter, diameter, diameter);
                 prevTop = top;

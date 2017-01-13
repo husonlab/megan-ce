@@ -53,13 +53,20 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
 
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
 
+
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
 
         int x0 = leftMargin;
         int x1 = getWidth() - rightMargin;
+
+        Rectangle scaleBox = new Rectangle(x1 - 2 * maxRadius, y1 + 40, 2 * maxRadius, 2 * maxRadius + 12);
+        x1 -= (scaleBox.width + maxRadius);
+
         if (x0 >= x1)
             return;
+        if (sgc == null)
+            drawScaleLegend(gc, scaleBox);
 
         int numberOfSeries = getChartData().getNumberOfSeries();
         int numberOfClasses = getChartData().getNumberOfClasses();
@@ -404,6 +411,103 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (size != null && bbox != null) {
             size.setSize(bbox.width + maxRadius / 2, bbox.height);
         }
+    }
+
+    public void drawScaleLegend(Graphics gc, Rectangle box) {
+        final int boxMidX = (int) Math.round(box.getX() + box.getWidth() / 2);
+        final int boxBottomY = (int) Math.round(box.getY() + box.getHeight());
+        final int roundedMaxValue = replaceAllButFirstDigitByZero((int) getMaxValue());
+
+        int[][] diameterAndNumber = new int[3][2];
+
+        switch (scalingType) {
+            case PERCENT: {
+                diameterAndNumber[0][0] = 2 * maxRadius;
+                diameterAndNumber[0][1] = 100;
+                diameterAndNumber[1][0] = maxRadius;
+                diameterAndNumber[1][1] = 50;
+                diameterAndNumber[2][0] = maxRadius / 5;
+                diameterAndNumber[2][1] = 10;
+                break;
+            }
+            case ZSCORE:
+                System.err.println("ZSCORE: not legal scaling for BubbleChart");
+            case LINEAR: {
+                diameterAndNumber[0][0] = 2 * maxRadius;
+                diameterAndNumber[0][1] = roundedMaxValue;
+                diameterAndNumber[1][0] = maxRadius;
+                diameterAndNumber[1][1] = roundedMaxValue / 2;
+                diameterAndNumber[2][0] = maxRadius / 5;
+                diameterAndNumber[2][1] = roundedMaxValue / 10;
+                break;
+            }
+            case LOG: {
+                final int maxLog = (int) Math.log(getMaxValue());
+                final int logRoundedMaxValue = (int) Math.log(roundedMaxValue);
+
+                diameterAndNumber[0][0] = 2 * (int) Math.round(logRoundedMaxValue * maxRadius / maxLog);
+                diameterAndNumber[0][1] = roundedMaxValue;
+                int number = replaceFirstDigitByOne(roundedMaxValue);
+                for (int i = 1; i <= 2; i++) {
+                    while (Math.abs((2 * Math.log(number) * maxRadius / maxLog) - diameterAndNumber[i - 1][0]) < 12 && number >= 1) {
+                        number /= 10;
+                    }
+                    if (number > 0) {
+                        diameterAndNumber[i][0] = 2 * (int) Math.round(Math.log(number) * maxRadius / maxLog);
+                        diameterAndNumber[i][1] = number;
+                    }
+                }
+                break;
+            }
+            case SQRT: {
+                final int maxSqrt = (int) Math.sqrt(getMaxValue());
+                final int sqrtRoundedMaxValue = (int) Math.sqrt(roundedMaxValue);
+
+                diameterAndNumber[0][0] = 2 * (int) Math.round(sqrtRoundedMaxValue * maxRadius / maxSqrt);
+                diameterAndNumber[0][1] = roundedMaxValue;
+                int number = replaceFirstDigitByOne(roundedMaxValue);
+                for (int i = 1; i <= 2; i++) {
+                    while (Math.abs((2 * Math.sqrt(number) * maxRadius / maxSqrt) - diameterAndNumber[i - 1][0]) < 12 && number >= 1) {
+                        number /= 10;
+                    }
+                    if (number > 0) {
+                        diameterAndNumber[i][0] = 2 * (int) Math.round(Math.sqrt(number) * maxRadius / maxSqrt);
+                        diameterAndNumber[i][1] = number;
+                    }
+                }
+                break;
+            }
+        }
+
+        Font font = getFont(ChartViewer.FontKeys.LegendFont.toString());
+        gc.setFont(new Font(font.getFamily(), font.getStyle(), 10));
+        gc.setColor(Color.darkGray);
+        ((Graphics2D) gc).setStroke(new BasicStroke(1));
+
+        // draw the circles:
+        int prevTop = -1;
+        for (int[] pair : diameterAndNumber) {
+            final int diameter = pair[0];
+            final int top = boxBottomY - diameter - 14;
+            // if(prevTop==-1 || top-prevTop>10)
+            {
+                final String label = (scalingType == ChartViewer.ScalingType.PERCENT ? pair[1] + "%" : "" + pair[1]);
+                drawStringCentered(gc, label, boxMidX, top + 2, true);
+                gc.drawOval(boxMidX - diameter / 2, boxBottomY - diameter, diameter, diameter);
+                prevTop = top;
+            }
+
+        }
+    }
+
+    private int replaceAllButFirstDigitByZero(int value) {
+        String str = "" + value;
+        return Integer.parseInt(str.charAt(0) + str.substring(1).replaceAll(".", "0")); // use, replace all digits by 0
+    }
+
+    private int replaceFirstDigitByOne(int value) {
+        String str = "" + value;
+        return Integer.parseInt("1" + str.substring(1));
     }
 
     public boolean canShowValues() {

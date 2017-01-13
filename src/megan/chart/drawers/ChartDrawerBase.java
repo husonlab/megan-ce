@@ -161,6 +161,20 @@ public class ChartDrawerBase extends JPanel {
     }
 
     /**
+     * draw string centered
+     *
+     * @param gc
+     * @param label
+     * @param x
+     * @param y
+     * @param addHeight if true, y is used as bottom coordinate, not top
+     */
+    public static void drawStringCentered(Graphics gc, String label, double x, double y, boolean addHeight) {
+        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+        gc.drawString(label, (int) Math.round(x - labelSize.getWidth() / 2), (int) Math.round(addHeight ? y + labelSize.getHeight() : y));
+    }
+
+    /**
      * draw a rectangle at the given anchor point at the given angle (in radiant)
      *
      * @param gc

@@ -43,11 +43,11 @@ public class SpreadSheetSearcher implements IObjectSearcher {
     final Frame frame;
     protected final Pair<Integer, Integer> current = new Pair<>(-1, -1); // row, col
 
-    final Set<Pair<Integer, Integer>> toSelect;
-    final Set<Pair<Integer, Integer>> toDeselect;
+    private final Set<Pair<Integer, Integer>> toSelect;
+    private final Set<Pair<Integer, Integer>> toDeselect;
     public static final String SEARCHER_NAME = "SpreadsheetSearcher";
 
-    final Set<Pair<Integer, Integer>> selected;
+    private final Set<Pair<Integer, Integer>> selected;
 
     /**
      * constructor

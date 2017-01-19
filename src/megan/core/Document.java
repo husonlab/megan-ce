@@ -790,15 +790,17 @@ public class Document {
                     IReadBlock readBlock = it.next();
                     if (readBlock.getNumberOfAvailableMatchBlocks() > 0) {
                         IMatchBlock matchBlock = readBlock.getMatchBlock(0);
-                        if (matchBlock.getText().contains("Frame")) {
-                            dataTable.setBlastMode(0, BlastMode.BlastX);
-                            break;
-                        } else if (matchBlock.getText().contains("Strand")) {
-                            dataTable.setBlastMode(0, BlastMode.BlastN);
-                            break;
-                        } else {
-                            dataTable.setBlastMode(0, BlastMode.Classifier);
-                            break;
+                        if (matchBlock.getText() != null) {
+                            if (matchBlock.getText().contains("Frame")) {
+                                dataTable.setBlastMode(0, BlastMode.BlastX);
+                                break;
+                            } else if (matchBlock.getText().contains("Strand")) {
+                                dataTable.setBlastMode(0, BlastMode.BlastN);
+                                break;
+                            } else {
+                                dataTable.setBlastMode(0, BlastMode.Classifier);
+                                break;
+                            }
                         }
                     }
                 }

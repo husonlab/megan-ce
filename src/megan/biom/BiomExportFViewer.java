@@ -32,10 +32,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * export a fviewer analysis in biom format
@@ -85,7 +82,7 @@ public class BiomExportFViewer {
         final LinkedList<Map> rowList = new LinkedList<>();
         final LinkedList<int[]> dataList = new LinkedList<>();
 
-        visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, progressListener);
+        visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, new HashSet<Integer>(), progressListener);
         int numberOfRows = rowList.size();
         biomData.setRows(rowList.toArray(new Map[numberOfRows]));
 
@@ -116,38 +113,44 @@ public class BiomExportFViewer {
      * @param dataList
      */
     private static void visitSelectedLeavesRec(ClassificationViewer viewer, Node v, NodeSet selected, Vector<String> path,
-                                               LinkedList<Map> rowList, LinkedList<int[]> dataList, ProgressListener progressListener) throws CanceledException {
+                                               LinkedList<Map> rowList, LinkedList<int[]> dataList, Set<Integer> seen, ProgressListener progressListener) throws CanceledException {
         if (v.getOutDegree() > 0 || selected.contains(v)) {
             Integer classId = (Integer) v.getInfo();
-            String className = v == viewer.getTree().getRoot() ? "Root" : viewer.getClassification().getName2IdMap().get(classId);
-            path.addElement(className);
 
-            if (selected.contains(v)) {
-                NodeData data = viewer.getNodeData(v);
-                if (data != null) {
-                    int[] values;
-                    if (v.getOutDegree() == 0)
-                        values = data.getSummarized();
-                    else
-                        values = data.getAssigned();
-                    Map rowItem = new StringMap();
-                    rowItem.put("id", "" + classId);
-                    Map metadata = new StringMap();
-                    ArrayList<String> classification = new ArrayList<>(path.size());
-                    classification.addAll(path);
-                    metadata.put("taxonomy", classification);
-                    rowItem.put("metadata", metadata);
-                    rowList.add(rowItem);
-                    dataList.add(values);
+            if (!seen.contains(classId)) {
+                seen.add(classId);
+
+                String className = v == viewer.getTree().getRoot() ? "Root" : viewer.getClassification().getName2IdMap().get(classId);
+                path.addElement(className);
+
+                if (selected.contains(v)) {
+                    NodeData data = viewer.getNodeData(v);
+                    if (data != null) {
+                        int[] values;
+                        if (v.getOutDegree() == 0)
+                            values = data.getSummarized();
+                        else
+                            values = data.getAssigned();
+                        final StringMap<Object> rowItem = new StringMap<>();
+
+                        rowItem.put("id", "" + classId);
+
+                        final StringMap<Object> metadata = new StringMap<>();
+                        ArrayList<String> classification = new ArrayList<>(path.size());
+                        classification.addAll(path);
+                        metadata.put("taxonomy", classification);
+                        rowItem.put("metadata", metadata);
+                        rowList.add(rowItem);
+                        dataList.add(values);
+                    }
+                    progressListener.incrementProgress();
                 }
-                progressListener.incrementProgress();
-            }
 
-
-            for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-                visitSelectedLeavesRec(viewer, e.getTarget(), selected, path, rowList, dataList, progressListener);
+                for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+                    visitSelectedLeavesRec(viewer, e.getTarget(), selected, path, rowList, dataList, seen, progressListener);
+                }
+                path.setSize(path.size() - 1);
             }
-            path.setSize(path.size() - 1);
         }
     }
 }

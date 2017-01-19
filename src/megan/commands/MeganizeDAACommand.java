@@ -242,7 +242,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 countFailed++;
             }
         }
-        NotificationsInSwing.showInformation("Finished meganzing " + daaFiles.size() + " files" + (countFailed > 0 ? ". ERRORS: " + countFailed : "."));
+        NotificationsInSwing.showInformation("Finished meganizing " + daaFiles.size() + " files" + (countFailed > 0 ? ". ERRORS: " + countFailed : "."));
     }
 
     /**

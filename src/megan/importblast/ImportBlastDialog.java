@@ -191,10 +191,6 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent event) {
-                blastFileNameField.setText(getBlastFileName());
-                readFileNameField.setText(getReadFileName());
-                meganFileNameField.setText(getMeganFileName());
-                shortDescriptionField.setText(getShortDescription());
                 tabNumber.setText("Tab " + (tabbedPane.getSelectedIndex() + 1) + " of " + tabbedPane.getTabCount());
             }
         });

@@ -118,9 +118,7 @@ public class DAA2Info {
 
             final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
             final DAAConnector connector = new DAAConnector(daaFile);
-            final Set<String> availableClassificationNames = new HashSet<>();
-            if (listGeneralInfo || listMoreStuff)
-                availableClassificationNames.addAll(Arrays.asList(connector.getAllClassificationNames()));
+            final Set<String> availableClassificationNames = new HashSet<>(Arrays.asList(connector.getAllClassificationNames()));
 
             for (String classification : listClass2Count) {
                 if (listGeneralInfo || listMoreStuff)

@@ -93,7 +93,6 @@ public class RMA2Info {
         doc.loadMeganFile();
         final IConnector connector = doc.getMeganFile().getDataConnector();
 
-
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
             if (listGeneralInfo || listMoreStuff) {
                 outs.write(String.format("# Number of reads:   %,d\n", doc.getNumberOfReads()));
@@ -113,8 +112,7 @@ public class RMA2Info {
             }
 
             final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
-            final Set<String> availableClassificationNames = new HashSet<>();
-            availableClassificationNames.addAll(Arrays.asList(connector.getAllClassificationNames()));
+            final Set<String> availableClassificationNames = new HashSet<>(Arrays.asList(connector.getAllClassificationNames()));
 
             for (String classification : listClass2Count) {
                 if (listGeneralInfo || listMoreStuff)

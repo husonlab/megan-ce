@@ -244,7 +244,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * make a SAM line
      */
-    private String makeSAM(String queryName, String queryDirection, String refName, int referenceLength, String refDirection, float bitScore, float expect, int rawScore, float percentIdentity, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String alignedQuery, String alignedReference) throws IOException {
+    public static String makeSAM(String queryName, String queryDirection, String refName, int referenceLength, String refDirection, float bitScore, float expect, int rawScore, float percentIdentity, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String alignedQuery, String alignedReference) throws IOException {
 
         final boolean reverseComplemented;
 

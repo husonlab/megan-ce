@@ -68,6 +68,8 @@ public enum BlastMode {
             return BlastP;
         else if (BlastTabFileFilter.getInstance().accept(fileName))
             return Unknown;
+        if (LastMAFFileFilter.getInstance().accept(fileName))
+            return Unknown;
         else if (BlastXMLFileFilter.getInstance().accept(fileName))
             return determineBlastModeXMLFile(fileName);
         else if (RAPSearch2AlnFileFilter.getInstance().accept(fileName))

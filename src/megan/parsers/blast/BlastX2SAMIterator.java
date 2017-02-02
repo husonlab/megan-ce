@@ -260,7 +260,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * make a SAM line
      */
-    private String makeSAM(String queryName, String refName, int referenceLength, float bitScore, float expect, int rawScore, float percentIdentity, int frame, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String alignedQuery, String alignedReference) {
+    public static String makeSAM(String queryName, String refName, int referenceLength, float bitScore, float expect, int rawScore, float percentIdentity, int frame, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String alignedQuery, String alignedReference) {
         final StringBuilder buffer = new StringBuilder();
         buffer.append(queryName).append("\t");
         buffer.append(0);

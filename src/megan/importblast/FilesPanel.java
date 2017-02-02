@@ -57,7 +57,6 @@ public class FilesPanel extends JPanel {
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
         innerPanel.setMaximumSize(new Dimension(400, 400));
 
-
         {
             dialog.getBlastFileNameField().setToolTipText("Add BLAST (or DAA or SAM or RDP or Silva) file(s) to import");
 

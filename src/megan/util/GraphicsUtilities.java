@@ -105,7 +105,7 @@ public class GraphicsUtilities {
 
         String shapeName = doc.getSampleAttributeTable().getSampleShape(sample);
         if (shapeName == null || !setShape)
-            shapeName = "circle";
+            shapeName = "square";
 
         switch (shapeName.toLowerCase()) {
             case "triangle":

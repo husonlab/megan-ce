@@ -54,6 +54,8 @@ public class IteratorManager {
             iterator = new BlastXML2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.BlastTab)
             iterator = new BlastTab2SAMIterator(blastFile, maxMatchesPerRead);
+        else if (format == BlastFileFormat.LastMAF)
+            iterator = new LastMAF2SAMIterator(blastFile, maxMatchesPerRead, blastMode);
         else if (format == BlastFileFormat.RapSearch2Aln && blastMode == BlastMode.BlastX)
             iterator = new RAPSearchAln2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.RDPAssignmentDetails)

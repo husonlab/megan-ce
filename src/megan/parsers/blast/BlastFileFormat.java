@@ -33,7 +33,7 @@ import java.io.IOException;
  * Daniel Huson. 4.2015
  */
 public enum BlastFileFormat {
-    Unknown, DAA, BlastText, BlastXML, BlastTab, RapSearch2Aln, IlluminaReporter, RDPAssignmentDetails, RDPStandalone, Mothur, SAM, References_as_FastA;
+    Unknown, DAA, BlastText, BlastXML, BlastTab, LastMAF, RapSearch2Aln, IlluminaReporter, RDPAssignmentDetails, RDPStandalone, Mothur, SAM, References_as_FastA;
 
     /**
      * Determine the file format of an alignment file
@@ -64,6 +64,8 @@ public enum BlastFileFormat {
             result = BlastTab;
         else if (BlastXMLFileFilter.getInstance().accept(fileName))
             result = BlastXML;
+        else if (LastMAFFileFilter.getInstance().accept(fileName))
+            result = LastMAF;
         else if (RAPSearch2AlnFileFilter.getInstance().accept(fileName))
             result = RapSearch2Aln;
         else if (RDPAssignmentDetailsFileFilter.getInstance().accept(fileName))

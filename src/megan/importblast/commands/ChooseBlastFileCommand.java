@@ -24,6 +24,7 @@ import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 import megan.main.MeganProperties;
+import megan.util.LastMAFFileFilter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -73,6 +74,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
         blastFileFilter.add("aln");
         blastFileFilter.add("m8");
         blastFileFilter.add("daa");
+        blastFileFilter.add(LastMAFFileFilter.getInstance());
         blastFileFilter.setAllowGZipped(true);
         blastFileFilter.setAllowZipped(true);
         java.util.List<File> files = ChooseFileDialog.chooseFilesToOpen(importBlastDialog, lastOpenFile, blastFileFilter, blastFileFilter, event, "Open BLAST (RDP, Silva or SAM) file(s)");

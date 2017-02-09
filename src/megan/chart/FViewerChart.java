@@ -140,9 +140,11 @@ public class FViewerChart extends ChartViewer {
 
             Document doc = ((Director) dir).getDocument();
             setChartTitle(cName + " profile for " + doc.getTitle());
-            int numberOfDatasets = doc.getNumberOfSamples();
-            if (numberOfDatasets > 0) {
-
+            int numberOfSamples = doc.getNumberOfSamples();
+            if (numberOfSamples > 0) {
+                if (parentViewer.getSelectedNodes().size() == 0) {
+                    parentViewer.selectAllLeaves();
+                }
                 chartData.setAllSeries(doc.getSampleNames());
                 String[] sampleNames = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
 

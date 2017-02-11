@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~  Copyright (C) 2015 Daniel H. Huson
+  ~
+  ~  (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
+            prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="megan.fxdialogs.matchlayout.MatchLayoutController">
+    <center>
+        <SplitPane dividerPositions="0.6426116838487973" style="-fx-box-border: transparent;"
+                   BorderPane.alignment="CENTER">
+            <items>
+                <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: transparent;">
+                    <center>
+                        <Pane fx:id="centerPane"
+                              style="-fx-border-color: lightgray; -fx-background-color: white; -fx-border-width: 1;"
+                              BorderPane.alignment="CENTER">
+                            <opaqueInsets>
+                                <Insets/>
+                            </opaqueInsets>
+                            <BorderPane.margin>
+                                <Insets bottom="5.0" left="10.0" right="20.0"/>
+                            </BorderPane.margin>
+                        </Pane>
+                    </center>
+                    <top>
+                        <GridPane BorderPane.alignment="CENTER">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            </rowConstraints>
+                            <children>
+                                <Pane prefHeight="30.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"
+                                      fx:id="xAxisPane"/>
+                                <TextField fx:id="queryNameTextField" editable="false"/>
+                            </children>
+                            <padding>
+                                <Insets left="10.0" right="20.0"/>
+                            </padding>
+                        </GridPane>
+                    </top>
+                </BorderPane>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <TableView fx:id="taxaTableView" prefWidth="100.0" GridPane.hgrow="ALWAYS"
+                                   GridPane.vgrow="ALWAYS">
+                            <padding>
+                                <Insets bottom="5.0" right="5.0"/>
+                            </padding>
+                            <opaqueInsets>
+                                <Insets/>
+                            </opaqueInsets>
+                            <GridPane.margin>
+                                <Insets bottom="10.0"/>
+                            </GridPane.margin>
+                        </TableView>
+                    </children>
+                </GridPane>
+            </items>
+        </SplitPane>
+    </center>
+    <left>
+        <GridPane prefWidth="56.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="136.0" minHeight="0.0" prefHeight="60.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="326.0" vgrow="ALWAYS"/>
+            </rowConstraints>
+            <children>
+                <Pane fx:id="yAxisPane" prefHeight="357.0" prefWidth="56.0" GridPane.rowIndex="1"
+                      GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                </Pane>
+            </children>
+        </GridPane>
+    </left>
+    <bottom>
+        <GridPane fx:id="assignedTaxonLabel" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints/>
+                <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+            </rowConstraints>
+            <children>
+                <Label text="assignedTaxon" visible="false" GridPane.rowIndex="1">
+                    <padding>
+                        <Insets left="5.0"/>
+                    </padding>
+                </Label>
+                <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.columnIndex="1"
+                        GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
+            </children>
+            <padding>
+                <Insets bottom="3.0" right="5.0"/>
+            </padding>
+        </GridPane>
+    </bottom>
+</BorderPane>

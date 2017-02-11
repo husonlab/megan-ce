@@ -77,15 +77,20 @@ public class DataProcessor {
             if (doMatePairs)
                 System.err.println("Using paired reads in taxonomic assignment...");
 
+            final boolean useLongReadLCA = ProgramProperties.get("use-long-read-lca", false);
+
             // step 0: set up classification algorithms
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int i = 0; i < numberOfClassifications; i++) {
                 if (i == taxonomyIndex) {
-                    if (doc.isWeightedLCA()) {
+                    if (useLongReadLCA) {
+                        assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForLongReadsCreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                    } else if (doc.isWeightedLCA()) {
                         assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.getWeightedLCAPercent());
-                    } else
+                    } else {
                         assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
+                    }
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
                     assignmentAlgorithmCreators[i] = new AssignmentUsingLCACreator(cNames[i]);
                 else
@@ -117,6 +122,8 @@ public class DataProcessor {
 
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
+
+            final float topPercent = (useLongReadLCA ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {
                 progress.setMaximum(it.getMaximumProgress());
@@ -152,7 +159,7 @@ public class DataProcessor {
                     if (hasLowComplexity)
                         numberOfReadsWithLowComplexity += readBlock.getReadWeight();
 
-                    ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
+                    ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
                     int taxId = 0;
                     if (taxonomyIndex >= 0) {
@@ -160,7 +167,7 @@ public class DataProcessor {
                             mateReader.seek(readBlock.getMateUId());
                             mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
                             taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
                             int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
                             if (mateTaxId > 0) {
                                 if (taxId <= 0) {

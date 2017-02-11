@@ -18,47 +18,45 @@
  */
 package megan.inspector;
 
+import jloda.util.MultiLineCellRenderer;
+
 /**
- * node to represent a read
+ * Node representing headline for match
  * Daniel Huson, 2.2006
  */
-public class ReadLevelNode extends NodeBase {
+public class MatchHeadLineNode extends NodeBase {
+    protected boolean ignore;
+    protected boolean isUsed;
     protected long uId;
-    protected int readLength;
+    protected String matchText;
 
-    /**
-     * constructor for archive data
-     *  @param name
-     * @param numberOfMatches
-     * @param uId
-     * @param readLength
-     */
-    public ReadLevelNode(String name, int numberOfMatches, long uId, int readLength) {
+    public MatchHeadLineNode(String name, float score, boolean ignore, boolean isUsed, long uId, String matchText) {
         super(name);
-
-        this.rank = numberOfMatches;
+        this.rank = -score;
+        this.ignore = ignore;
+        this.isUsed = isUsed;
         this.uId = uId;
-        this.readLength = readLength;
-    }
-
-    public boolean isLeaf() {
-        return uId == 0; // never leaf, because at least data node is contained below
+        this.matchText = matchText;
     }
 
     public String toString() {
-        if (readLength <= 0) {
-            if (rank <= 0)
-                return getName();
-            else
-                return getName() + " [matches=" + (int) rank + "]";
-        } else // readLength>0
-        {
-            if (rank <= 0)
-                return getName() + " [length=" + readLength + "]";
-            else
-                return getName() + " [length=" + readLength + ", matches=" + (int) rank + "]";
+        StringBuilder buf = new StringBuilder();
+        if (ignore)
+            buf.append(MultiLineCellRenderer.RED);
+        else if (!isUsed)
+            buf.append(MultiLineCellRenderer.GRAY);
+        buf.append(getName());
+        if (rank != 0)
+            buf.append(" score=").append(String.format("%.1f", -rank));
+        return buf.toString();
+    }
 
-        }
+    public boolean getIgnore() {
+        return ignore;
+    }
+
+    public boolean isUsed() {
+        return isUsed;
     }
 
     public long getUId() {

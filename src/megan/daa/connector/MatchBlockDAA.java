@@ -271,4 +271,14 @@ public class MatchBlockDAA implements IMatchBlock {
     public int getSubjectId() {
         return matchRecord.getSubjectId();
     }
+
+    @Override
+    public int getAlignedQueryStart() {
+        return matchRecord.getQueryBegin() + 1;
+    }
+
+    @Override
+    public int getAlignedQueryEnd() {
+        return matchRecord.getQueryEnd() + 1;
+    }
 }

@@ -139,5 +139,15 @@ public class MatchBlockWithLocationAdapter implements IMatchBlock, IMatchBlockWi
     public void setTextLocation(Location location) {
         this.location = location;
     }
+
+    @Override
+    public int getAlignedQueryStart() {
+        return matchBlock.getAlignedQueryStart();
+    }
+
+    @Override
+    public int getAlignedQueryEnd() {
+        return matchBlock.getAlignedQueryEnd();
+    }
 }
 

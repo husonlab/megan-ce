@@ -41,6 +41,8 @@ public class MatchBlockRMA6 implements IMatchBlock {
     private int length;
     private String text;
     private final Map<String, Integer> fName2Id = new HashMap<>();
+    private int alignedQueryStart;
+    private int alignedQueryEnd;
 
     /**
      * constructor
@@ -57,6 +59,9 @@ public class MatchBlockRMA6 implements IMatchBlock {
         bitScore = samMatch.getBitScore();
         expected = samMatch.getExpected();
         length = samMatch.getTLength();
+        alignedQueryStart = samMatch.getAlignedQueryStart();
+        alignedQueryEnd = samMatch.getAlignedQueryEnd();
+
         Single<Float> value = new Single<>(0f);
         text = samMatch.getBlastAlignmentText(value);
         percentIdentity = value.get();
@@ -264,5 +269,15 @@ public class MatchBlockRMA6 implements IMatchBlock {
                 return aLine.substring(start, end);
         }
         return null;
+    }
+
+    @Override
+    public int getAlignedQueryStart() {
+        return alignedQueryStart;
+    }
+
+    @Override
+    public int getAlignedQueryEnd() {
+        return alignedQueryEnd;
     }
 }

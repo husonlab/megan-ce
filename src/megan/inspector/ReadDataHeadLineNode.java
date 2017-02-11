@@ -21,14 +21,14 @@ package megan.inspector;
 import jloda.util.Basic;
 
 /**
- * node to represent the data associated with a read
+ * node representing head line for read
  * Daniel Huson, 2.2006
  */
-public class ReadDataLevelNode extends NodeBase {
-    String text;
-    String data;
+public class ReadDataHeadLineNode extends NodeBase {
+    private String text;
+    private String data;
 
-    public ReadDataLevelNode(String text, int readLength, float complexity, int weight, String data) {
+    public ReadDataHeadLineNode(String text, int readLength, float complexity, int weight, String data) {
         final StringBuilder builder = new StringBuilder();
         builder.append(text);
 

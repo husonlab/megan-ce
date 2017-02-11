@@ -62,6 +62,9 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
 
     private String queryName;
+    private int alignedQueryStart;
+    private int alignedQueryEnd;
+
     private int flag;
     private String refName;
     private int pos;
@@ -101,6 +104,8 @@ public class SAMMatch implements megan.rma3.IMatch {
     @Override
     public void clear() {
         queryName = null;
+        alignedQueryStart = 0;
+        alignedQueryEnd = 0;
         flag = 0;
         refName = null;
         pos = 0;
@@ -228,6 +233,44 @@ public class SAMMatch implements megan.rma3.IMatch {
             setQueryName(getQueryName() + pairedReadSuffix1);
         if (pairedReadSuffix2 != null && !theFlag.isLastFragment() && !getQueryName().endsWith(pairedReadSuffix2))
             setQueryName(getQueryName() + pairedReadSuffix2);
+
+        alignedQueryStart = determineQueryStart();
+
+        int alignedQueryLength = (mode == BlastMode.BlastX ? 3 : 1) * computeAlignedQuerySegmentLength(getSequence());
+        alignedQueryEnd = alignedQueryStart + alignedQueryLength;
+    }
+
+    /**
+     * determine the query start position
+     *
+     * @return query start
+     */
+    private int determineQueryStart() {
+        int queryStart = 1;
+        {
+            Object obj = optionalFields.get("ZS");
+            if (obj != null && obj instanceof Integer) {
+                queryStart = (Integer) obj;
+            } else {
+                // first need to trim:
+                if (mode != BlastMode.BlastX) {
+                    if (getCigar().getCigarElements().size() > 0) {
+                        CigarElement element = getCigar().getCigarElement(0);
+                        if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
+                            queryStart = element.getLength() + 1;
+                        }
+                    }
+                } else {
+                    if (getCigar().getCigarElements().size() > 0) {
+                        CigarElement element = getCigar().getCigarElement(0);
+                        if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
+                            queryStart = 3 * element.getLength() + 1;
+                        }
+                    }
+                }
+            }
+        }
+        return queryStart;
     }
 
     /**
@@ -307,25 +350,8 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @return
      */
     private String getBlastNAlignment(final Single<Float> percentIdentity) {
-        int editDistance = getEditDistance();
-
-        String query = getSequence();
-
-        // determine start of query
-        int queryStart = determineQueryStart();
-
-
-        // first need to trim:
-        if (getCigar().getCigarElements().size() > 0) {
-            final CigarElement element;
-            if (!isReverseComplemented()) {
-                element = getCigar().getCigarElement(0);
-            } else {
-                element = getCigar().getCigarElement(getCigar().getCigarElements().size() - 1);
-            }
-            if (element.getOperator() == CigarOperator.H || element.getOperator() == CigarOperator.S)
-                queryStart = element.getLength() + 1;
-        }
+        final int editDistance = getEditDistance();
+        final String query = getSequence();
 
         final String[] aligned = computeAlignment(query);
         if (aligned[0].equals("No alignment")) {
@@ -380,7 +406,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         buffer.append(String.format(" Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n", identities, alignmentLength, Math.round(pIdentity), gaps, alignmentLength, Math.round(100.0 * gaps / queryLength)));
 
         buffer.append(" Strand = Plus / ").append(isReverseComplemented() ? "Minus" : "Plus").append("\n");
-        int qStart = queryStart;
+        int qStart = getAlignedQueryStart();
         int qEnd = 0;
         int sStart = !isReverseComplemented() ? getPos() : (getPos() + refLength - 1);
         int sEnd = 0;
@@ -413,8 +439,8 @@ public class SAMMatch implements megan.rma3.IMatch {
                     sStart = sEnd - 1;
             }
         }
-        if (aligned[0] != null && qEnd > 0 && qEnd != (queryStart + queryLength - 1) && warnAboutProblems)
-            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (queryStart + queryLength - 1));
+        if (aligned[0] != null && qEnd > 0 && qEnd != (getAlignedQueryStart() + queryLength - 1) && warnAboutProblems)
+            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (getAlignedQueryStart() + queryLength - 1));
         if (aligned[2] != null) {
             int sEndShouldBe = (!isReverseComplemented() ? (getPos() + refLength - 1) : getPos());
             if (sEnd > 0 && sEnd != sEndShouldBe && warnAboutProblems)
@@ -423,37 +449,14 @@ public class SAMMatch implements megan.rma3.IMatch {
         return buffer.toString();
     }
 
-    private int determineQueryStart() {
-        int queryStart = 1;
-        {
-            Object obj = optionalFields.get("ZS");
-            if (obj != null && obj instanceof Integer) {
-                queryStart = (Integer) obj;
-            } else {
-                // first need to trim:
-                if (getCigar().getCigarElements().size() > 0) {
-                    CigarElement element = getCigar().getCigarElement(0);
-                    if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
-                        queryStart = element.getLength() + 1;
-                    }
-                }
-            }
-        }
-        return queryStart;
-    }
-
     /**
      * return a BlastPText alignment
      *
      * @return
      */
     private String getBlastPAlignment(final Single<Float> percentIdentity) {
-        int editDistance = getEditDistance();
-
-        String query = getSequence();
-
-        // determine start of query
-        int queryStart = determineQueryStart();
+        final int editDistance = getEditDistance();
+        final String query = getSequence();
 
         final String[] aligned = computeAlignment(query);
         if (aligned[0].equals("No alignment")) {
@@ -506,7 +509,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 numberOfPositives, alignmentLength, (100.0 * (numberOfPositives) / alignmentLength),
                 gaps, alignmentLength, Math.round(100.0 * gaps / queryLength)));
 
-        int qStart = queryStart;
+        int qStart = getAlignedQueryStart();
         int qEnd = 0;
         int sStart = getPos();
         int sEnd = 0;
@@ -533,8 +536,8 @@ public class SAMMatch implements megan.rma3.IMatch {
                     sStart = sEnd + 1;
             }
         }
-        if (aligned[0] != null && qEnd > 0 && qEnd != (queryStart + queryLength - 1) && warnAboutProblems)
-            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (queryStart + queryLength - 1));
+        if (aligned[0] != null && qEnd > 0 && qEnd != (qStart + queryLength - 1) && warnAboutProblems)
+            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (qStart + queryLength - 1));
         if (aligned[2] != null) {
             int sEndShouldBe = (getPos() + refLength - 1);
             if (sEnd > 0 && sEnd != sEndShouldBe && warnAboutProblems)
@@ -550,7 +553,6 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
     private String getBlastXAlignment(final Single<Float> percentIdentity) {
         final int editDistance = getEditDistance();
-
         final String query = getSequence();
 
         final String[] aligned = computeAlignment(query);
@@ -593,23 +595,6 @@ public class SAMMatch implements megan.rma3.IMatch {
         }
         final int qJump = (qFrame >= 0 ? 3 : -3);
 
-        // get start of query
-        int qStart = 1;
-        {
-            Object obj = optionalFields.get("ZS");
-            if (obj != null && obj instanceof Integer) {
-                qStart = (Integer) obj;
-            }
-        }
-
-        // first need to trim:
-        if (getCigar().getCigarElements().size() > 0) {
-            CigarElement element = getCigar().getCigarElement(0);
-            if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
-                qStart = 3 * element.getLength() + 1;
-            }
-        }
-
         if (optionalFields.get("AS") != null && optionalFields.get("AS") instanceof Integer) {
             if (optionalFields.get("ZR") != null && optionalFields.get("ZR") instanceof Integer && optionalFields.get("ZE") != null && optionalFields.get("ZE") instanceof Float) {
                 int bitScore = getBitScore();
@@ -640,7 +625,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         final int sStart = !isReverseComplemented() ? getPos() : (getPos() + refLength - 1);
         int sStartPart = sStart;
         int sEnd = 0;
-        int qStartPart = qStart;
+        int qStartPart = determineQueryStart();
         for (int pos = 0; pos < aligned[0].length(); pos += ALIGNMENT_FOLD) {
             if (getSequence() != null && aligned[0] != null) {
                 int qAdd = Math.min(ALIGNMENT_FOLD, aligned[0].length() - pos);
@@ -671,7 +656,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         }
 
-        if (aligned[0] != null && qEnd > 0 && Math.abs(qEnd - qStart) + 1 != 3 * query.length() && warnAboutProblems) {
+        if (aligned[0] != null && qEnd > 0 && Math.abs(qEnd - determineQueryStart()) + 1 != 3 * query.length() && warnAboutProblems) {
             // System.err.println(buffer.toString());
             System.err.println("Internal error writing BLAST format: query length is incorrect");
         }
@@ -682,7 +667,6 @@ public class SAMMatch implements megan.rma3.IMatch {
         }
         return buffer.toString();
     }
-
 
     /**
      * gets a short description of a match
@@ -958,6 +942,49 @@ public class SAMMatch implements megan.rma3.IMatch {
         return new String[]{gappedQuerySequence, gappedReferenceSequence};
     }
 
+    /**
+     * compute the aligned query segment length
+     *
+     * @param query query sequence
+     * @return aligned query length
+     */
+    public int computeAlignedQuerySegmentLength(String query) {
+        if (query.equals("*"))
+            return 0;
+        int length = 0;
+        for (CigarElement element : getCigar().getCigarElements()) {
+            for (int i = 0; i < element.getLength(); i++) {
+                switch (element.getOperator()) {
+                    case D:
+                        break;
+                    case M:
+                        length++;
+                        break;
+                    case I:
+                        length++;
+                        break;
+                    case N:
+                        break;
+                    case S:
+                        break;
+                    case H:
+                        break;
+                    case P:
+                        break;
+                    case EQ:
+                        length++;
+                        break;
+                    case X:
+                        length++;
+                        break;
+                }
+            }
+        }
+
+        return length;
+    }
+
+
     private boolean isGap(char c) {
         return c == '.' || c == '-';
     }
@@ -1076,5 +1103,13 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
     public boolean isMatch() {
         return !(refName == null || refName.equals("*"));
+    }
+
+    public int getAlignedQueryStart() {
+        return alignedQueryStart;
+    }
+
+    public int getAlignedQueryEnd() {
+        return alignedQueryEnd;
     }
 }

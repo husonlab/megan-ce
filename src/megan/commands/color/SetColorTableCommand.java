@@ -113,7 +113,6 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
             for (String sample : doc.getSampleNames()) {
                 doc.getSampleAttributeTable().put(sample, SampleAttributeTable.HiddenAttribute.Color, null);
             }
-
         }
 
         if (isHeatMap) {

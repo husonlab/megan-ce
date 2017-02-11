@@ -47,7 +47,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "load mapFile=<filename> mapType=<mapType> cName=<name> ;";
+        return "load mapFile=<filename> mapType=<mapType> cName=<name> [parseTaxonNames={false|true}];";
     }
 
     /**
@@ -64,10 +64,21 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
         final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(Basic.toString(IdMapper.MapType.values(), " ")));
         np.matchIgnoreCase("cName=");
         final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        final boolean parseTaxonName;
+        if (np.peekMatchIgnoreCase("parseTaxonNames")) {
+            np.matchIgnoreCase("parseTaxonNames=");
+            parseTaxonName = np.getBoolean();
+            if (parseTaxonName) {
+                if (!cName.equals(Classification.Taxonomy))
+                    System.err.println("Warning: load mapFile: cName=" + cName + " is not Taxonomy, ignoring 'parseTaxonNames=true'");
+            }
+        } else
+            parseTaxonName = false;
         np.matchIgnoreCase(";");
 
         try {
-            Classification classification = ClassificationManager.get(cName, true);
+            final Classification classification = ClassificationManager.get(cName, true);
+            classification.getIdMapper().setUseTextParsing(parseTaxonName);
             ProgressListener progressListener;
             if (ProgramProperties.isUseGUI())
                 progressListener = new ProgressDialog("Loading file", "", (Component) getParent());

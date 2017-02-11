@@ -126,4 +126,7 @@ public interface IMatchBlock {
 
     int[] getIds(String[] cNames);
 
+    int getAlignedQueryStart();
+
+    int getAlignedQueryEnd();
 }

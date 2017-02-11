@@ -165,4 +165,14 @@ public class MatchBlock implements IMatchBlock {
     public void setId(String cName, Integer id) {
         block.getClass2id().put(cName, id);
     }
+
+    @Override
+    public int getAlignedQueryStart() {
+        return 0;
+    }
+
+    @Override
+    public int getAlignedQueryEnd() {
+        return 0;
+    }
 }

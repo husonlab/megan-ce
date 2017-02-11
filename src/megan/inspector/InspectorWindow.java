@@ -355,7 +355,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 return;
         }
 
-        final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId(), readBlock.getReadLength());
+        final ReadHeadLineNode node = new ReadHeadLineNode(readBlock);
 
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -391,9 +391,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                         while (it.hasNext()) {
                             IReadBlock readBlock = it.next();
                             if (readBlock != null) {
-                                final String readName = readBlock.getReadName();
-                                final ReadLevelNode node = new ReadLevelNode(readName, readBlock.getNumberOfMatches(), readBlock.getUId(), readBlock.getReadLength());
-
+                                final ReadHeadLineNode node = new ReadHeadLineNode(readBlock);
                                 final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
                                 if (doRefresh) {
                                     if (diff == 10)
@@ -443,7 +441,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      *
      * @param parent
      */
-    public void addChildren(final ReadLevelNode parent, final String classificationName) {
+    public void addChildren(final ReadHeadLineNode parent, final String classificationName) {
         loader.execute(new LoaderTask() {
             public void run(ProgressListener progressListener) throws Exception {
                 boolean needsFinalRefresh = true; // true, because we add data node before entering loop
@@ -465,12 +463,12 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     if (length == 0 && sequence != null)
                         length = Basic.getNumberOfNonSpaceCharacters(sequence);
                     parent.setCompleted(true);
-                    final ReadDataLevelNode readDataLevelNode = new ReadDataLevelNode("DATA", length, readBlock.getComplexity(), readBlock.getReadWeight(), header + (sequence != null ? "\n" + sequence : ""));
+                    final ReadDataHeadLineNode readDataHeadLineNode = new ReadDataHeadLineNode("DATA", length, readBlock.getComplexity(), readBlock.getReadWeight(), header + (sequence != null ? "\n" + sequence : ""));
 
                     // add data node
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
-                            parent.add(readDataLevelNode);
+                            parent.add(readDataHeadLineNode);
                         }
                     });
 
@@ -511,7 +509,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                             }
                         }
 
-                        final MatchLevelNode node = new MatchLevelNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(),
+                        final MatchHeadLineNode node = new MatchHeadLineNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(),
                                 activeMatches.get(m), matchBlock.getUId(), matchBlock.getText());
                         // add match node
 
@@ -558,8 +556,8 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      *
      * @param parent
      */
-    public void addChildren(final ReadDataLevelNode parent) {
-        parent.add(new ReadDataNode(parent.getData()));
+    public void addChildren(final ReadDataHeadLineNode parent) {
+        parent.add(new ReadDataTextNode(parent.getData()));
     }
 
     /**
@@ -567,11 +565,11 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      *
      * @param parent
      */
-    public void addChildren(final MatchLevelNode parent) {
+    public void addChildren(final MatchHeadLineNode parent) {
         loader.execute(new LoaderTask() {
             public void run(ProgressListener progressListener) throws Exception {
                 progressListener.setMaximum(-1);
-                final MatchDataNode node = new MatchDataNode(parent.matchText == null ? "Unknown" : parent.matchText);
+                final MatchTextNode node = new MatchTextNode(parent.matchText == null ? "Unknown" : parent.matchText);
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         parent.add(node);
@@ -875,11 +873,11 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param path
      * @return readhitnode or null
      */
-    public MatchLevelNode getMatchLevelNodeFromPath(TreePath path) {
+    public MatchHeadLineNode getMatchLevelNodeFromPath(TreePath path) {
         Object[] components = path.getPath();
         for (Object component : components) {
-            if (component instanceof MatchLevelNode)
-                return (MatchLevelNode) component;
+            if (component instanceof MatchHeadLineNode)
+                return (MatchHeadLineNode) component;
         }
         return null;
     }
@@ -1096,13 +1094,13 @@ class MyTreeListener implements TreeWillExpandListener, TreeExpansionListener {
 
         if (node instanceof TopLevelNode) {
             inspectorWindow.addChildren((TopLevelNode) node);
-        } else if (node instanceof ReadLevelNode) {
-            inspectorWindow.addChildren((ReadLevelNode) node, path.getPathComponent(1).toString());
+        } else if (node instanceof ReadHeadLineNode) {
+            inspectorWindow.addChildren((ReadHeadLineNode) node, path.getPathComponent(1).toString());
         }
-        if (node instanceof ReadDataLevelNode) {
-            inspectorWindow.addChildren((ReadDataLevelNode) node);
-        } else if (node instanceof MatchLevelNode) {
-            inspectorWindow.addChildren((MatchLevelNode) node);
+        if (node instanceof ReadDataHeadLineNode) {
+            inspectorWindow.addChildren((ReadDataHeadLineNode) node);
+        } else if (node instanceof MatchHeadLineNode) {
+            inspectorWindow.addChildren((MatchHeadLineNode) node);
         }
     }
 }

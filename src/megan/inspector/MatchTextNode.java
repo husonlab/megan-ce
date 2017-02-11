@@ -19,25 +19,19 @@
 package megan.inspector;
 
 /**
- * node to represent the alignment associated with a read
+ * leaf node that represents the text of an alignment
  * Daniel Huson, 2.2006
  */
-public class ReadDataNode extends NodeBase {
+public class MatchTextNode extends NodeBase {
     private String text;
 
-    public ReadDataNode(String text) {
-        setText(text);
-    }
-
-    public void setText(String text) {
+    public MatchTextNode(String text) {
+        if (text == null)
+            text = "Null";
         if (text.endsWith("\n"))
             this.text = text;
         else
             this.text = text + "\n";
-    }
-
-    public String getText() {
-        return text;
     }
 
     public boolean isLeaf() {
@@ -45,6 +39,10 @@ public class ReadDataNode extends NodeBase {
     }
 
     public String toString() {
+        return text;
+    }
+
+    public String getText() {
         return text;
     }
 }

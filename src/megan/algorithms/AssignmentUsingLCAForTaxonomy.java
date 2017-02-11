@@ -30,20 +30,18 @@ import java.util.BitSet;
 import java.util.Collection;
 
 /**
- * computes the taxon assignment for a read, using the LCA algorithm that covers a given percentage of all matches
+ * computes the taxon assignment for a read, using the LCA algorithm
  * Daniel Huson, 7.2014
  * todo: merge with AssignmentUsingLCA
  */
 public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
-    private String[] addresses;
+    protected String[] addresses;
 
-    private final BitSet toRemove;
+    protected final boolean useIdentityFilter;
 
-    private final boolean useIdentityFilter;
-
-    private final ClassificationFullTree fullTree;
-    private final IdMapper idMapper;
-    private final Name2IdMap name2idMap;
+    protected final ClassificationFullTree fullTree;
+    protected final IdMapper idMapper;
+    protected final Name2IdMap name2idMap;
     /**
      * constructor
      */
@@ -53,8 +51,6 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         name2idMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();
 
         addresses = new String[1000];
-        toRemove = new BitSet();
-
         this.useIdentityFilter = useIdentityFilter;
     }
 

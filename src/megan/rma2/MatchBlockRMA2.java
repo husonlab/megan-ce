@@ -391,4 +391,24 @@ public class MatchBlockRMA2 implements IMatchBlock {
         w.write("text: " + text + "\n");
         return w.toString();
     }
+
+    /**
+     * get the start position of the alignment in the query
+     *
+     * @return query start position
+     */
+    @Override
+    public int getAlignedQueryStart() {
+        return 0;
+    }
+
+    /**
+     * get the end position of the alignment in the query
+     *
+     * @return
+     */
+    @Override
+    public int getAlignedQueryEnd() {
+        return 0;
+    }
 }

@@ -70,8 +70,8 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <TableView fx:id="taxaTableView" prefWidth="100.0" GridPane.hgrow="ALWAYS"
-                                   GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="taxaTableView" prefWidth="100.0" style="-fx-selection-bar: goldenrod;"
+                                   GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                             <padding>
                                 <Insets bottom="5.0" right="5.0"/>
                             </padding>

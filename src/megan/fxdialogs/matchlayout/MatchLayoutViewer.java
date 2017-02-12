@@ -28,13 +28,16 @@ import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.util.Callback;
 import jloda.gui.MenuBar;
 import jloda.gui.ToolBar;
 import jloda.gui.commands.CommandManager;
@@ -281,10 +284,9 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
         final DoubleProperty widthFactor = new SimpleDoubleProperty();
         widthFactor.bind(centerPane.widthProperty().divide(readBlock.getReadLength()));
 
-        if (minBitScore == maxBitScore) {
-            maxBitScore++;
-            minBitScore--;
-        }
+
+        maxBitScore *= 1.05;
+        minBitScore *= 0.95;
 
         final DoubleProperty heightFactor = new SimpleDoubleProperty();
         heightFactor.bind(centerPane.heightProperty().subtract(4).divide(maxBitScore - minBitScore));
@@ -301,7 +303,7 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
                 color = javafx.scene.paint.Color.DARKGRAY;
             } else {
                 String taxonName = ClassificationManager.get(Classification.Taxonomy, false).getName2IdMap().get(taxId);
-                color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(taxonName));
+                color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(taxonName), 0.6);
             }
 
             float[] values = taxon2SumScoreMaxScoreNumberHits.get(taxId);
@@ -353,6 +355,29 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
         final TableColumn<MatchItem, String> taxonCol = new TableColumn<>("Taxon");
         taxonCol.setCellValueFactory(new PropertyValueFactory<MatchItem, String>("taxonName"));
         controller.getTaxaTableView().getColumns().add(taxonCol);
+        taxonCol.setCellFactory(new Callback<TableColumn<MatchItem, String>, TableCell<MatchItem, String>>() {
+            @Override
+            public TableCell<MatchItem, String> call(TableColumn<MatchItem, String> column) {
+                return new TableCell<MatchItem, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item == null || empty) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item);
+                            javafx.scene.paint.Color color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(item)).darker();
+                            setTextFill(color);
+                            setEffect(new DropShadow(1.0, javafx.scene.paint.Color.DARKGRAY));
+                        }
+                    }
+                };
+            }
+        });
+
+
         final TableColumn<MatchItem, Integer> hitsCol = new TableColumn<>("#Hits");
         hitsCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Integer>("hits"));
         controller.getTaxaTableView().getColumns().add(hitsCol);
@@ -384,7 +409,7 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
                             for (Line line : list) {
                                 final javafx.scene.shape.Rectangle rectangle = new javafx.scene.shape.Rectangle(line.getStartX() - 5, line.getStartY() - 5, line.getEndX() - line.getStartX() + 10, 10);
                                 rectangle.setFill(javafx.scene.paint.Color.TRANSPARENT);
-                                rectangle.setStroke(javafx.scene.paint.Color.RED);
+                                rectangle.setStroke(new javafx.scene.paint.Color(1, 0, 0, 0.8));
                                 rectangle.xProperty().bind(line.startXProperty().subtract(5));
                                 rectangle.widthProperty().bind(line.endXProperty().subtract(line.startXProperty()).add(10));
                                 rectangle.yProperty().bind(line.startYProperty().subtract(5));

@@ -30,7 +30,7 @@ import java.util.*;
  * Daniel Huson, 2.2017
  */
 public class AssignmentUsingLCAForLongReads extends AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
-    private final IntervalTree<IMatchBlock> intervalTree;
+    private final IntervalTree<BitSet> intervalTree;
     private final Map<Integer, Float> totalTaxonId2BitScore;
     private final Map<Integer, Float> geneTaxonId2BitScore;
 
@@ -167,7 +167,14 @@ public class AssignmentUsingLCAForLongReads extends AssignmentUsingLCAForTaxonom
                     if (a < b - 10)
                         b -= 10;
                 }
-                intervalTree.put(a, b, matchBlock);
+                final IntervalTree.Node<BitSet> node = intervalTree.find(a, b);
+                BitSet matches;
+                if (node == null) {
+                    matches = new BitSet();
+                    intervalTree.put(a, b, matches);
+                } else
+                    matches = node.getValue();
+                matches.set(i);
             }
         }
         // if nothing found, try again without ignoring disabled taxa:
@@ -185,15 +192,23 @@ public class AssignmentUsingLCAForLongReads extends AssignmentUsingLCAForTaxonom
                     if (a < b - 10)
                         b -= 10;
                 }
-                intervalTree.put(a, b, matchBlock);
+                final IntervalTree.Node<BitSet> node = intervalTree.find(a, b);
+                BitSet matches;
+                if (node == null) {
+                    matches = new BitSet();
+                    intervalTree.put(a, b, matches);
+                } else
+                    matches = node.getValue();
+                matches.set(i);
             }
         }
 
         // set taxon to bit score on a gene-by-gene basis:
-        IntervalTree.Node<IMatchBlock> prev = null;
+        IntervalTree.Node<BitSet> prev = null;
         totalTaxonId2BitScore.clear();
         geneTaxonId2BitScore.clear();
-        for (IntervalTree.Node<IMatchBlock> node : intervalTree) {
+
+        for (IntervalTree.Node<BitSet> node : intervalTree) {
             // if we have just finished a gene, add all gene bit scores to total ones and then clear gene scores:
             if (prev != null && node.getStart() >= prev.getEnd()) {
                 for (Integer taxId : geneTaxonId2BitScore.keySet()) {
@@ -204,12 +219,17 @@ public class AssignmentUsingLCAForLongReads extends AssignmentUsingLCAForTaxonom
                 }
                 geneTaxonId2BitScore.clear();
             }
-            final IMatchBlock matchBlock = node.getValue();
-            final int taxonId = matchBlock.getTaxonId();
-            if (!geneTaxonId2BitScore.keySet().contains(taxonId) || matchBlock.getBitScore() > geneTaxonId2BitScore.get(taxonId))
-                geneTaxonId2BitScore.put(taxonId, matchBlock.getBitScore());
+            final BitSet matches = node.getValue();
+            for (int i = matches.nextSetBit(0); i != -1; i = matches.nextSetBit(i + 1)) {
+                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                final int taxonId = matchBlock.getTaxonId();
+                if (!geneTaxonId2BitScore.keySet().contains(taxonId) || matchBlock.getBitScore() > geneTaxonId2BitScore.get(taxonId)) {
+                    geneTaxonId2BitScore.put(taxonId, matchBlock.getBitScore());
+                }
+            }
             prev = node;
         }
+
         // process last gene:
         for (Integer taxId : geneTaxonId2BitScore.keySet()) {
             if (totalTaxonId2BitScore.keySet().contains(taxId))

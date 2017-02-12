@@ -611,10 +611,20 @@ public class Utilities {
      * @return AWT color
      */
     public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT) {
+        return getColorFX(colorAWT, 1);
+    }
+
+    /**
+     * convert to FX color
+     *
+     * @param colorAWT
+     * @return AWT color
+     */
+    public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT, double opacity) {
         if (colorAWT == null)
             return null;
         else
-        return new javafx.scene.paint.Color(colorAWT.getRed() / 255.0, colorAWT.getGreen() / 255.0, colorAWT.getBlue() / 255.0, 1.0);
+            return new javafx.scene.paint.Color(colorAWT.getRed() / 255.0, colorAWT.getGreen() / 255.0, colorAWT.getBlue() / 255.0, opacity);
     }
 
     public static java.awt.geom.Point2D asAWTPoint2D(Point2D center) {

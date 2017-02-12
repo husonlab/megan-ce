@@ -65,6 +65,9 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     final JTextField topPercentField = new JTextField(8);
     final JTextField minSupportField = new JTextField(8);
     final JTextField minSupportPercentField = new JTextField(8);
+
+    final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
+
     final JTextField weightedLCAPercentField = new JTextField(8);
     final JTextField minComplexityField = new JTextField(8);
 
@@ -77,7 +80,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     private boolean usePercentIdentityFilter = false;
 
-    private boolean weightedLCA = false;
+    private Document.LCAAlgorithm lcaAlgorithm = Document.DEFAULT_LCA_ALGORITHM;
 
     private final JTextArea blastFileNameField = new JTextArea();
 
@@ -140,7 +143,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinComplexity(doc.getMinComplexity());
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
-        setWeightedLCA(doc.isWeightedLCA());
+        setLcaAlgorithm(doc.getLcaAlgorithm());
 
         ArrayList<String> toDelete = new ArrayList<>();
         for (String cName : doc.getActiveViewers()) { // turn of classifications for which mappers have not been loaded
@@ -402,12 +405,12 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         this.usePercentIdentityFilter = usePercentIdentityFilter;
     }
 
-    public boolean isWeightedLCA() {
-        return weightedLCA;
+    public Document.LCAAlgorithm getLcaAlgorithm() {
+        return lcaAlgorithm;
     }
 
-    public void setWeightedLCA(boolean weightedLCA) {
-        this.weightedLCA = weightedLCA;
+    public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
+        this.lcaAlgorithm = lcaAlgorithm;
     }
 
     public double getWeightedLCAPercent() {
@@ -493,6 +496,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return useCompressionCBox;
     }
 
+    public JComboBox<String> getLcaAlgorithmComboBox() {
+        return lcaAlgorithmComboBox;
+    }
+
     /**
      * is viewer uptodate?
      *
@@ -522,6 +529,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         commandManager.updateEnableState();
         isUpToDate = true;
     }
+
 
     /**
      * ask view to prevent user input
@@ -727,8 +735,9 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         if (getMinSupportPercent() > 0)
             buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
-        buf.append(" weightedLCA=").append(isWeightedLCA());
-        buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+        buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
+        if (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted))
+            buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 

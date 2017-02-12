@@ -77,18 +77,20 @@ public class DataProcessor {
             if (doMatePairs)
                 System.err.println("Using paired reads in taxonomic assignment...");
 
-            final boolean useLongReadLCA = ProgramProperties.get("use-long-read-lca", false);
-
             // step 0: set up classification algorithms
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int i = 0; i < numberOfClassifications; i++) {
                 if (i == taxonomyIndex) {
-                    if (useLongReadLCA) {
-                        assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForLongReadsCreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
-                    } else if (doc.isWeightedLCA()) {
+                    switch (doc.getLcaAlgorithm()) {
+                        case MultiGene:
+                            assignmentAlgorithmCreators[i] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                            break;
+                        case Weighted:
                         assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.getWeightedLCAPercent());
-                    } else {
+                            break;
+                        default:
+                        case Naive:
                         assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
                     }
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
@@ -123,7 +125,7 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent = (useLongReadLCA ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
+            final float topPercent = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.MultiGene ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {
                 progress.setMaximum(it.getMaximumProgress());

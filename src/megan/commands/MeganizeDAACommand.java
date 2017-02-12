@@ -112,11 +112,17 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             minSupport = np.getInt(0, Integer.MAX_VALUE);
         }
 
-        boolean weightedLCA = Document.DEFAULT_WEIGHTED_LCA;
+        Document.LCAAlgorithm lcaAlgorithm = Document.DEFAULT_LCA_ALGORITHM;
         if (np.peekMatchIgnoreCase("weightedLCA")) {
             np.matchIgnoreCase("weightedLCA=");
-            weightedLCA = np.getBoolean();
-            ProgramProperties.put("weightedLCA", weightedLCA);
+            if (np.getBoolean())
+                lcaAlgorithm = Document.LCAAlgorithm.Weighted;
+            else
+                lcaAlgorithm = Document.LCAAlgorithm.Naive;
+            ProgramProperties.put("lcaAlgorithm", lcaAlgorithm.toString());
+        } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
+            np.matchIgnoreCase("lcaAlgorithm=");
+            lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase());
         }
         float weightedLCAPercent = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
         if (np.peekMatchAnyTokenIgnoreCase("weightedLCAPercent")) {
@@ -200,7 +206,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, weightedLCA, weightedLCAPercent);
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, weightedLCAPercent);
                 // todo: save the description
 
                 {

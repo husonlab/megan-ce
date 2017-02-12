@@ -35,8 +35,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 import jloda.gui.MenuBar;
 import jloda.gui.ToolBar;
@@ -45,7 +48,8 @@ import jloda.gui.director.IDirectableViewer;
 import jloda.gui.director.ProjectManager;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
-import megan.algorithms.AssignmentUsingLCAForLongReads;
+import megan.algorithms.AssignmentUsingLCAForTaxonomy;
+import megan.algorithms.AssignmentUsingMultiGeneLCA;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -56,10 +60,8 @@ import megan.main.MeganProperties;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.List;
 
 /**
  * match layout viewer
@@ -79,6 +81,10 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
     private final SwingPanel4FX<MatchLayoutController> swingPanel4FX;
 
     private Runnable runOnDestroy;
+
+    private final Group matchLinesGroup = new Group();
+    private final Group selectionGroup = new Group();
+    private final Group segmentsGroupe = new Group();
 
 
     /**
@@ -240,7 +246,7 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
     /**
      * setup all the controls
      */
-    private void setupControls(MatchLayoutController controller) {
+    private void setupControls(final MatchLayoutController controller) {
         controller.getCloseButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -252,6 +258,13 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
                 });
             }
         });
+        controller.getCenterPane().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent mouseEvent) {
+                controller.getCenterPane().requestFocus();
+                selectionGroup.getChildren().clear();
+            }
+        });
+        controller.getCenterPane().getChildren().addAll(segmentsGroupe, matchLinesGroup, selectionGroup);
     }
 
     /**
@@ -262,15 +275,12 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
      */
     private void setupScene(final MatchLayoutController controller, final IReadBlock readBlock) {
         final Pane centerPane = controller.getCenterPane();
-        centerPane.getChildren().clear();
         controller.getTaxaTableView().getItems().clear();
         controller.getTaxaTableView().getColumns().clear();
 
         if (readBlock == null)
             return;
 
-        final Group drawing = new Group();
-        final Group selection = new Group();
         controller.getQueryNameTextField().setText(readBlock.getReadHeader());
         int minBitScore = Integer.MAX_VALUE;
         int maxBitScore = 0;
@@ -291,16 +301,20 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
         final DoubleProperty heightFactor = new SimpleDoubleProperty();
         heightFactor.bind(centerPane.heightProperty().subtract(4).divide(maxBitScore - minBitScore));
 
-        final TreeMap<Integer, java.util.List<Line>> taxon2Lines = new TreeMap<>();
+        // setup lines that represent matches
+
+        matchLinesGroup.getChildren().clear();
+
+        final TreeMap<Integer, List<Line>> taxon2Lines = new TreeMap<>();
         final Map<Integer, float[]> taxon2SumScoreMaxScoreNumberHits = new HashMap<>();
 
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
             final int taxId = matchBlock.getTaxonId();
 
-            final javafx.scene.paint.Color color;
+            final Color color;
             if (taxId <= 0) {
-                color = javafx.scene.paint.Color.DARKGRAY;
+                color = Color.DARKGRAY;
             } else {
                 String taxonName = ClassificationManager.get(Classification.Taxonomy, false).getName2IdMap().get(taxId);
                 color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(taxonName), 0.6);
@@ -321,7 +335,7 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
             line.startYProperty().bind(heightFactor.multiply(maxBitScore - matchBlock.getBitScore()).add(2));
             line.endYProperty().bind(heightFactor.multiply(maxBitScore - matchBlock.getBitScore()).add(2));
             final Tooltip tooltip = new Tooltip(matchBlock.getText());
-            tooltip.setFont(new javafx.scene.text.Font("Courier", 11));
+            tooltip.setFont(new Font("Courier", 11));
             Tooltip.install(line, tooltip);
 
             line.setStroke(color);
@@ -331,6 +345,7 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
             line.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    controller.getCenterPane().requestFocus();
                     System.err.println(tooltip.getText());
                     for (MatchItem item : controller.getTaxaTableView().getItems()) {
                         if (taxId == item.getTaxonId()) {
@@ -338,17 +353,18 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
                             break;
                         }
                     }
+                    event.consume();
                 }
             });
 
-            java.util.List<Line> lines = taxon2Lines.get(taxId);
+            List<Line> lines = taxon2Lines.get(taxId);
             if (lines == null) {
                 lines = new ArrayList<>();
                 taxon2Lines.put(taxId, lines);
             }
             lines.add(line);
 
-            drawing.getChildren().add(line);
+            matchLinesGroup.getChildren().add(line);
         }
 
         // setup table:
@@ -368,32 +384,36 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
                             setStyle("");
                         } else {
                             setText(item);
-                            javafx.scene.paint.Color color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(item)).darker();
+                            Color color = Utilities.getColorFX(dir.getDocument().getChartColorManager().getClassColor(item)).darker();
                             setTextFill(color);
-                            setEffect(new DropShadow(1.0, javafx.scene.paint.Color.DARKGRAY));
+                            setEffect(new DropShadow(1.0, Color.DARKGRAY));
                         }
                     }
                 };
             }
         });
 
-
         final TableColumn<MatchItem, Integer> hitsCol = new TableColumn<>("#Hits");
         hitsCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Integer>("hits"));
         controller.getTaxaTableView().getColumns().add(hitsCol);
-        final TableColumn<MatchItem, Float> disjointScoreCol = new TableColumn<>("Disjoint score");
+        final TableColumn<MatchItem, Float> disjointScoreCol = new TableColumn<>("Multi-Gene Score");
         disjointScoreCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Float>("disjointBitScore"));
         controller.getTaxaTableView().getColumns().add(disjointScoreCol);
-        final TableColumn<MatchItem, Float> totalScoreCol = new TableColumn<>("Total score");
-        totalScoreCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Float>("totalBitScore"));
-        controller.getTaxaTableView().getColumns().add(totalScoreCol);
-        final TableColumn<MatchItem, Float> maxScoreCol = new TableColumn<>("Max score");
+        final TableColumn<MatchItem, Float> maxScoreCol = new TableColumn<>("Max Score");
         maxScoreCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Float>("maxBitScore"));
         controller.getTaxaTableView().getColumns().add(maxScoreCol);
+        final TableColumn<MatchItem, Float> totalScoreCol = new TableColumn<>("Total Score");
+        totalScoreCol.setCellValueFactory(new PropertyValueFactory<MatchItem, Float>("totalBitScore"));
+        controller.getTaxaTableView().getColumns().add(totalScoreCol);
 
         // compute the disjoint score
-        AssignmentUsingLCAForLongReads assignmentUsingLCAForLongReads = new AssignmentUsingLCAForLongReads(Classification.Taxonomy, false, 100);
-        final Map<Integer, Float> taxonId2disjointScore = assignmentUsingLCAForLongReads.computeTotalDisjointScore(null, readBlock);
+        final BitSet stopStartPositions = new BitSet();
+
+        final AssignmentUsingMultiGeneLCA assignmentUsingMultiGeneLCA = new AssignmentUsingMultiGeneLCA(Classification.Taxonomy, false, 100);
+        BitSet bits = new BitSet();
+        bits.set(0, getReadBlock().getNumberOfMatches());
+
+        final Map<Integer, Float> taxonId2disjointScore = assignmentUsingMultiGeneLCA.computeTaxonId2TotalDisjointBitScore(null, readBlock, stopStartPositions);
 
         for (Integer taxId : taxon2Lines.keySet()) {
             String taxonName = ClassificationManager.get(Classification.Taxonomy, false).getName2IdMap().get(taxId);
@@ -402,24 +422,68 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
             controller.getTaxaTableView().getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MatchItem>() {
                 @Override
                 public void changed(ObservableValue<? extends MatchItem> observable, MatchItem oldValue, MatchItem newValue) {
-                    selection.getChildren().clear();
+                    selectionGroup.getChildren().clear();
                     if (newValue != null) {
-                        java.util.List<Line> list = taxon2Lines.get(newValue.getTaxonId());
+                        List<Line> list = taxon2Lines.get(newValue.getTaxonId());
                         if (list != null && list.size() > 0) {
                             for (Line line : list) {
-                                final javafx.scene.shape.Rectangle rectangle = new javafx.scene.shape.Rectangle(line.getStartX() - 5, line.getStartY() - 5, line.getEndX() - line.getStartX() + 10, 10);
-                                rectangle.setFill(javafx.scene.paint.Color.TRANSPARENT);
-                                rectangle.setStroke(new javafx.scene.paint.Color(1, 0, 0, 0.8));
+                                final Rectangle rectangle = new Rectangle(line.getStartX() - 5, line.getStartY() - 5, line.getEndX() - line.getStartX() + 10, 10);
+                                rectangle.setFill(Color.TRANSPARENT);
+                                rectangle.setStroke(new Color(1, 0, 0, 0.8));
                                 rectangle.xProperty().bind(line.startXProperty().subtract(5));
                                 rectangle.widthProperty().bind(line.endXProperty().subtract(line.startXProperty()).add(10));
                                 rectangle.yProperty().bind(line.startYProperty().subtract(5));
                                 rectangle.heightProperty().set(10);
-                                selection.getChildren().add(rectangle);
+                                selectionGroup.getChildren().add(rectangle);
                             }
                         }
                     }
                 }
             });
+        }
+
+        controller.getBottomLeftTextField().setText("Naive LCA: '" + computeLCATaxon(readBlock)
+                + "'   Multi-Gene LCA: '" + computeMultiGeneLCATaxon(readBlock, assignmentUsingMultiGeneLCA)
+                + "'   (with minScore=" + dir.getDocument().getMinScore() + ", topPercent=" + assignmentUsingMultiGeneLCA.getTopPercent() + ")");
+
+
+        segmentsGroupe.getChildren().clear();
+        if (stopStartPositions.cardinality() > 1) {
+            int startPos = 0;
+            for (int pos = stopStartPositions.nextSetBit(0); pos != -1; pos = stopStartPositions.nextSetBit(pos + 1)) {
+                if (startPos == 0)
+                    startPos = pos;
+                else {
+                    Line line1 = new Line();
+                    line1.startXProperty().bind(widthFactor.multiply(startPos));
+                    line1.endXProperty().bind(widthFactor.multiply(pos));
+                    line1.setStartY(3);
+                    line1.setEndY(3);
+                    line1.setStroke(Color.DARKGRAY);
+                    line1.setStrokeWidth(5);
+                    line1.setStrokeLineCap(StrokeLineCap.BUTT);
+                    segmentsGroupe.getChildren().add(line1);
+                    Line line2 = new Line();
+                    line2.startXProperty().bind(widthFactor.multiply(startPos));
+                    line2.endXProperty().bind(widthFactor.multiply(startPos));
+                    line2.setStartY(1);
+                    line2.setEndY(9);
+                    line2.setStroke(Color.DARKGRAY);
+                    line2.setStrokeWidth(1);
+                    line2.setStrokeLineCap(StrokeLineCap.BUTT);
+                    segmentsGroupe.getChildren().add(line2);
+                    Line line3 = new Line();
+                    line3.startXProperty().bind(widthFactor.multiply(pos));
+                    line3.endXProperty().bind(widthFactor.multiply(pos));
+                    line3.setStartY(1);
+                    line3.setEndY(9);
+                    line3.setStroke(Color.DARKGRAY);
+                    line3.setStrokeWidth(1);
+                    line3.setStrokeLineCap(StrokeLineCap.BUTT);
+                    segmentsGroupe.getChildren().add(line3);
+                    startPos = 0;
+                }
+            }
         }
 
         final NumberAxis queryAxis = new NumberAxis();
@@ -454,8 +518,48 @@ public class MatchLayoutViewer extends JFrame implements IDirectableViewer {
         Tooltip.install(bitScoreAxis, new Tooltip("Bit Score"));
 
         controller.getTaxaTableView().getSortOrder().add(taxonCol);
+    }
 
-        controller.getCenterPane().getChildren().addAll(drawing, selection);
+    /**
+     * compute taxon using naive LCA
+     *
+     * @param readBlock
+     * @return taxon name
+     */
+    private String computeLCATaxon(IReadBlock readBlock) {
+        final AssignmentUsingLCAForTaxonomy assignmentUsingLCAForTaxonomy = new AssignmentUsingLCAForTaxonomy(Classification.Taxonomy, false);
+        final BitSet activeMatches = new BitSet();
+        float minScore = dir.getDocument().getMinScore();
+        for (int i = 0; i < readBlock.getNumberOfMatches(); i++) {
+            IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+            minScore = (float) Math.max(minScore, (((100.0 - dir.getDocument().getTopPercent()) / 100.0) * matchBlock.getBitScore()));
+        }
+        for (int i = 0; i < readBlock.getNumberOfMatches(); i++) {
+            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+            if (matchBlock.getBitScore() >= minScore)
+                activeMatches.set(i);
+        }
+        return ClassificationManager.get(Classification.Taxonomy, false).getName2IdMap().get(assignmentUsingLCAForTaxonomy.computeId(activeMatches, readBlock));
+
+    }
+
+    /**
+     * compute taxon using naive LCA
+     *
+     * @param readBlock
+     * @return taxon name
+     */
+    private String computeMultiGeneLCATaxon(IReadBlock readBlock, AssignmentUsingMultiGeneLCA assignmentUsingMultiGeneLCA) {
+        assignmentUsingMultiGeneLCA.setTopPercent(dir.getDocument().getTopPercent());
+        final BitSet activeMatches = new BitSet();
+        final float minScore = dir.getDocument().getMinScore();
+        for (int i = 0; i < readBlock.getNumberOfMatches(); i++) {
+            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+            if (matchBlock.getBitScore() >= minScore)
+                activeMatches.set(i);
+        }
+        return ClassificationManager.get(Classification.Taxonomy, false).getName2IdMap().get(assignmentUsingMultiGeneLCA.computeId(activeMatches, readBlock));
+
     }
 
     public void runOnDestroy(Runnable runnable) {

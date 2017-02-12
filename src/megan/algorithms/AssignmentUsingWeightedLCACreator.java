@@ -75,6 +75,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
         name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
         cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
+        System.err.println("Using Weighted LCA algorithm");
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 

@@ -48,6 +48,17 @@ import java.util.List;
  * Daniel Huson    11.2005
  */
 public class Document {
+    public enum LCAAlgorithm {
+        Naive, Weighted, MultiGene;
+
+        public static LCAAlgorithm valueOfIgnoreCase(String str) {
+            for (LCAAlgorithm lcaAlgorithm : values()) {
+                if (lcaAlgorithm.toString().equalsIgnoreCase(str))
+                    return lcaAlgorithm;
+            }
+            return null;
+        }
+    }
     final static Map<String, String> name2versionInfo = new HashMap<>(); // used to track versions of tree etc
 
     private long numberReads = 0;
@@ -65,7 +76,7 @@ public class Document {
     public final static float DEFAULT_TOPPERCENT = 10; // in percent
     public final static int DEFAULT_MINSUPPORT = 0;
     public final static float DEFAULT_MINSUPPORT_PERCENT = 0.01f; // in percent
-    public static final boolean DEFAULT_WEIGHTED_LCA = false;
+    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM = LCAAlgorithm.Naive;
     public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public static final boolean DEFAULT_USE_IDENTITY = false;
@@ -78,7 +89,7 @@ public class Document {
     private float minSupportPercent = DEFAULT_MINSUPPORT_PERCENT; // if this is !=0, overrides explicit minSupport value and uses percentage of assigned reads
     private int minSupport = DEFAULT_MINSUPPORT; // min summary count that a node needs to make it into the induced taxonomy
 
-    private boolean weightedLCA = DEFAULT_WEIGHTED_LCA;
+    private LCAAlgorithm lcaAlgorithm = DEFAULT_LCA_ALGORITHM;
     private float weightedLCAPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
@@ -231,9 +242,16 @@ public class Document {
                 setMinSupportPercent(np.findIgnoreCase(tokens, "minSupportPercent=", 0f));
                 setMinSupport((int) np.findIgnoreCase(tokens, "minSupport=", getMinSupport()));
                 if (np.findIgnoreCase(tokens, "weightedLCA=true", true, false))
-                    setWeightedLCA(true);
+                    setLcaAlgorithm(LCAAlgorithm.Weighted);
                 else if (np.findIgnoreCase(tokens, "weightedLCA=false", true, false))
-                    setWeightedLCA(false);
+                    setLcaAlgorithm(LCAAlgorithm.Naive);
+                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Naive.toString()))
+                    setLcaAlgorithm(LCAAlgorithm.Naive);
+                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Weighted.toString()))
+                    setLcaAlgorithm(LCAAlgorithm.Weighted);
+                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.MultiGene.toString()))
+                    setLcaAlgorithm(LCAAlgorithm.MultiGene);
+
                 setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
 
@@ -286,9 +304,9 @@ public class Document {
         buf.append(" topPercent=").append(getTopPercent());
         buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
-        if (isWeightedLCA())
-            buf.append(" weightedLCA=true");
-        buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+        buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
+        if (getLcaAlgorithm().equals(LCAAlgorithm.Weighted))
+            buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
         if (isPairedReads())
             buf.append(" pairedReads=true");
@@ -513,12 +531,12 @@ public class Document {
         this.minComplexity = minComplexity;
     }
 
-    public boolean isWeightedLCA() {
-        return weightedLCA;
+    public void setLcaAlgorithm(LCAAlgorithm lcaAlgorithm) {
+        this.lcaAlgorithm = lcaAlgorithm;
     }
 
-    public void setWeightedLCA(boolean weightedLCA) {
-        this.weightedLCA = weightedLCA;
+    public LCAAlgorithm getLcaAlgorithm() {
+        return lcaAlgorithm;
     }
 
     /**

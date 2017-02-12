@@ -167,8 +167,10 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 doc.setMinScore(1);
             if (np.peekMatchIgnoreCase("weightedLCA")) {
                 np.matchIgnoreCase("weightedLCA=");
-                getDoc().setWeightedLCA(np.getBoolean());
-                ProgramProperties.put("weightedLCA", doc.isWeightedLCA());
+                getDoc().setLcaAlgorithm(Document.LCAAlgorithm.Weighted);
+            } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
+                np.matchIgnoreCase("lcaAlgorithm=");
+                getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
             }
             if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
                 np.matchIgnoreCase("weightedLCAPercent=");

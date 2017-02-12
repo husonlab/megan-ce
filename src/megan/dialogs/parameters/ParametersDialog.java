@@ -32,7 +32,6 @@ import megan.core.Document;
 import megan.dialogs.parameters.commands.ApplyCommand;
 import megan.dialogs.parameters.commands.CancelCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
-import megan.importblast.commands.SetUseWeightedLCACommand;
 import megan.parsers.blast.BlastMode;
 import megan.util.ReadMagnitudeParser;
 
@@ -62,7 +61,8 @@ public class ParametersDialog extends JDialog {
     private final JTextField minComplexityField = new JTextField(8);
     private final JTextField weightedLCAPercentField = new JTextField(8);
 
-    private final JCheckBox useWeightedLCACBox = new JCheckBox("Use Weighted LCA");
+    private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
+
     private final JCheckBox useMagnitudesCBox = new JCheckBox("Use Read Magnitudes");
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
@@ -95,8 +95,13 @@ public class ParametersDialog extends JDialog {
         setMinSupportPercent(doc.getMinSupportPercent());
         setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
 
+        lcaAlgorithmComboBox.setEditable(false);
+        for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
+            lcaAlgorithmComboBox.addItem(algorithm.toString());
+        }
+        setLcaAlgorithm(doc.getLcaAlgorithm());
+
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
-        setWeightedLCA(doc.isWeightedLCA());
 
         setMinComplexity(doc.getMinComplexity());
         setPairedReads(doc.isPairedReads());
@@ -263,7 +268,6 @@ public class ParametersDialog extends JDialog {
                 }
             });
 
-
             aPanel.add(new JLabel("Min Support:"));
             aPanel.add(minSupportField);
             minSupportField.setToolTipText("Minimum number of reads that a taxon must obtain");
@@ -321,8 +325,8 @@ public class ParametersDialog extends JDialog {
             aPanel.add(weightLCALabel);
             weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
 
-            weightedLCAPercentField.setEnabled(isWeightedLCA());
-            weightLCALabel.setEnabled(isWeightedLCA());
+            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+            weightLCALabel.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
 
             aPanel.add(weightedLCAPercentField);
             weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA");
@@ -343,13 +347,14 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
-            aPanel.add(useWeightedLCACBox);
-            useWeightedLCACBox.setToolTipText(SetUseWeightedLCACommand.DESCRIPTION);
-            useWeightedLCACBox.addActionListener(new ActionListener() {
+            aPanel.add(lcaAlgorithmComboBox);
+            lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
+            lcaAlgorithmComboBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    weightedLCAPercentField.setEnabled(isWeightedLCA());
-                    weightLCALabel.setEnabled(isWeightedLCA());
+                    weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+                    weightLCALabel.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                 }
             });
 
@@ -559,12 +564,12 @@ public class ParametersDialog extends JDialog {
         useMagnitudesCBox.setSelected(use);
     }
 
-    public boolean isWeightedLCA() {
-        return useWeightedLCACBox.isSelected();
+    public Document.LCAAlgorithm getLcaAlgorithm() {
+        return Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem());
     }
 
-    public void setWeightedLCA(boolean use) {
-        useWeightedLCACBox.setSelected(use);
+    public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
+        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
     }
 
     public float getWeightedLCAPercent() {
@@ -585,7 +590,7 @@ public class ParametersDialog extends JDialog {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " weightedLCA=" + isWeightedLCA() + (isWeightedLCA() ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
+                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
                 " minComplexity=" + getMinComplexity() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");

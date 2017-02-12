@@ -107,8 +107,13 @@ public class DAA2RMA6 {
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
-        final boolean weightedLCA = options.getOption("-wlca", "weightedLCA", "Use the weighted LCA for taxonomic assignment", Document.DEFAULT_WEIGHTED_LCA);
-        final float weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
+        final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
+                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+        final float weightedLCAPercent;
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
+            weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
+        else
+            weightedLCAPercent = -1;
 
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
@@ -256,7 +261,7 @@ public class DAA2RMA6 {
             doc.getActiveViewers().addAll(Arrays.asList(cNames));
             doc.setMinScore(minScore);
             doc.setMaxExpected(maxExpected);
-            doc.setWeightedLCA(weightedLCA);
+            doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setWeightedLCAPercent(weightedLCAPercent);
             doc.setTopPercent(topPercent);
             doc.setMinSupportPercent(minSupportPercent);

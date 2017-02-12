@@ -19,10 +19,11 @@
 package megan.importblast;
 
 import jloda.gui.commands.CommandManager;
+import jloda.util.ProgramProperties;
+import megan.core.Document;
 import megan.importblast.commands.SetUseComplexityFilterCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
 import megan.importblast.commands.SetUseReadMagnitudesCommand;
-import megan.importblast.commands.SetUseWeightedLCACommand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,22 +79,36 @@ public class LCAParametersPanel extends JPanel {
         centerPanel.add(dialog.getMinSupportField());
         dialog.getMinSupportField().setToolTipText("Minimum number of reads that a taxon must obtain");
 
-        centerPanel.add(new JLabel(" "));
+        centerPanel.add(new JLabel("LCA Algorithm:"));
         centerPanel.add(new JLabel(" "));
 
         {
-            final AbstractButton button = commandManager.getButton(SetUseWeightedLCACommand.NAME);
-            button.setText(button.getText() + ":");
-            centerPanel.add(button);
-            dialog.getWeightedLCAPercentField().setEnabled(dialog.isWeightedLCA());
-            centerPanel.add(dialog.getWeightedLCAPercentField());
-            dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
-            button.addActionListener(new ActionListener() {
+            final JComboBox<String> lcaAlgorithmComboBox = dialog.getLcaAlgorithmComboBox();
+            lcaAlgorithmComboBox.setEditable(false);
+            for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
+                lcaAlgorithmComboBox.addItem(algorithm.toString());
+            }
+            lcaAlgorithmComboBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    dialog.getWeightedLCAPercentField().setEnabled(button.isSelected());
+                    if (lcaAlgorithmComboBox.getSelectedItem() != null)
+                        dialog.setLcaAlgorithm(Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem()));
+                    else
+                        dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM);
+                    dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+                    ProgramProperties.put("SelectedLCAAlgorithm", dialog.getLcaAlgorithm().toString());
                 }
             });
+            lcaAlgorithmComboBox.setSelectedItem(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM.toString()));
+            lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");
+
+
+            dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
+
+            centerPanel.add(lcaAlgorithmComboBox);
+            dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+            centerPanel.add(dialog.getWeightedLCAPercentField());
+            dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
 
             centerPanel.add(new JLabel(" "));
             centerPanel.add(new JLabel(" "));

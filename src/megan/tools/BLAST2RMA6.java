@@ -107,9 +107,13 @@ public class BLAST2RMA6 {
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
-        final boolean weightedLCA = options.getOption("-wlca", "weightedLCA", "Use the weighted LCA for taxonomic assignment", Document.DEFAULT_WEIGHTED_LCA);
-        final float weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
-
+        final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
+                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+        final float weightedLCAPercent;
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
+            weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
+        else
+            weightedLCAPercent = -1;
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
         String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
@@ -266,7 +270,7 @@ public class BLAST2RMA6 {
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(BlastMode.getBlastMode(blastFiles[0]));
-            doc.setWeightedLCA(weightedLCA);
+            doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setWeightedLCAPercent(weightedLCAPercent);
 
             if (!processInPairs)

@@ -29,8 +29,6 @@ import javafx.scene.layout.Pane;
  * controller class
  * Created by huson on 2/11/17.
  */
-
-
 public class MatchLayoutController {
 
     @FXML
@@ -47,6 +45,9 @@ public class MatchLayoutController {
 
     @FXML
     private Pane yAxisPane;
+
+    @FXML
+    private TextField bottomLeftTextField;
 
     @FXML
     private TableView<MatchItem> taxaTableView;
@@ -76,6 +77,8 @@ public class MatchLayoutController {
         return yAxisPane;
     }
 
-
+    public TextField getBottomLeftTextField() {
+        return bottomLeftTextField;
+    }
 }
 

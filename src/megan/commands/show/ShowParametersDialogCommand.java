@@ -72,7 +72,10 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
         }
         if (np.peekMatchIgnoreCase("weightedLCA")) {
             np.matchIgnoreCase("weightedLCA=");
-            getDoc().setWeightedLCA(np.getBoolean());
+            getDoc().setLcaAlgorithm(Document.LCAAlgorithm.Weighted);
+        } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
+            np.matchIgnoreCase("lcaAlgorithm=");
+            getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
         }
         if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
             np.matchIgnoreCase("weightedLCAPercent=");

@@ -25,6 +25,7 @@ import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
+import megan.core.Document;
 import megan.fx.NotificationsInSwing;
 import megan.importblast.ImportBlastDialog;
 import megan.main.MeganProperties;
@@ -93,8 +94,8 @@ public class MeganizeDAADialog extends ImportBlastDialog {
             if (getMinSupportPercent() > 0)
                 buf.append(" minSupportPercent=").append(getMinSupportPercent());
             buf.append(" minSupport=").append(getMinSupport());
-            buf.append(" weightedLCA=").append(isWeightedLCA());
-            if (isWeightedLCA())
+            buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
+            if (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted))
                 buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
             buf.append(" minComplexity=").append(getMinComplexity());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());

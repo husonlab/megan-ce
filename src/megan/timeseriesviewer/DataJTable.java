@@ -482,9 +482,9 @@ public class DataJTable {
         // show the header popup menu:
         if (e.getSource() instanceof JTableHeader) {
             columnPressed = jTable.getTableHeader().columnAtPoint(e.getPoint());
-            (new jloda.gui.PopupMenu(GUIConfiguration.getDataColumnHeaderPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
+            (new jloda.gui.PopupMenu(this, GUIConfiguration.getDataColumnHeaderPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
         } else if (e.getSource() instanceof JTable && e.getSource() == jTable) {
-            JPopupMenu popupMenu = (new jloda.gui.PopupMenu(GUIConfiguration.getDataPopupConfiguration(), dir.getCommandManager()));
+            JPopupMenu popupMenu = (new jloda.gui.PopupMenu(this, GUIConfiguration.getDataPopupConfiguration(), dir.getCommandManager()));
 
             popupMenu.addSeparator();
             popupMenu.add(new AbstractAction("Select Row") {

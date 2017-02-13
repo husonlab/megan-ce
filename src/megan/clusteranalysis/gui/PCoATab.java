@@ -314,7 +314,7 @@ public class PCoATab extends JPanel implements ITab {
             }
         });
 
-        final JPopupMenu panelPopupMenu = new PopupMenu(GUIConfiguration.getPanelPopupConfiguration(), parent.getCommandManager());
+        final JPopupMenu panelPopupMenu = new PopupMenu(this, GUIConfiguration.getPanelPopupConfiguration(), parent.getCommandManager());
 
         graphView.addPanelActionListener(new PanelActionListener() {
             @Override
@@ -483,7 +483,7 @@ public class PCoATab extends JPanel implements ITab {
                 nv.setHeight(clusterViewer.getNodeRadius());
                 nv.setColor(Color.BLACK);
                 nv.setBackgroundColor(Color.BLACK);
-                nv.setShape(NodeView.OVAL_NODE);
+                nv.setNodeShape(NodeShape.Oval);
             }
 
             // compute biplot arrows:
@@ -813,7 +813,7 @@ public class PCoATab extends JPanel implements ITab {
         if (top > 0) {
             final Node zero = graph.newNode();
             graphView.setLocation(zero, 0, 0);
-            graphView.setShape(zero, NodeView.NONE_NODE);
+            graphView.setNodeShape(zero, NodeShape.None);
             biplotNodes.add(zero);
 
             biplot = new Pair[getPCoA().getLoadingVectorsBiPlot().size()];
@@ -855,7 +855,7 @@ public class PCoATab extends JPanel implements ITab {
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
                 nv.setLabelColor(color);
-                nv.setShape(NodeView.NONE_NODE);
+                nv.setNodeShape(NodeShape.None);
                 final Edge e = graph.newEdge(zero, v);
                 biplotEdges.add(e);
                 final EdgeView ev = graphView.getEV(e);
@@ -886,7 +886,7 @@ public class PCoATab extends JPanel implements ITab {
         if (top > 0) {
             final Node zero = graph.newNode();
             graphView.setLocation(zero, 0, 0);
-            graphView.setShape(zero, NodeView.NONE_NODE);
+            graphView.setNodeShape(zero, NodeShape.None);
             triplotNodes.add(zero);
 
             triplot = new Pair[getPCoA().getLoadingVectorsTriPlot().size()];
@@ -930,7 +930,7 @@ public class PCoATab extends JPanel implements ITab {
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
                 nv.setLabelColor(color);
-                nv.setShape(NodeView.NONE_NODE);
+                nv.setNodeShape(NodeShape.None);
 
                 final Edge e = graph.newEdge(zero, v);
                 triplotEdges.add(e);

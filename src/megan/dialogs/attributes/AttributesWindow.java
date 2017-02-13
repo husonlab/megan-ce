@@ -99,7 +99,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
 
         frame = new JFrame();
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), commandManager);
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         frame.setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);

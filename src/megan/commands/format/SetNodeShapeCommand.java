@@ -18,16 +18,20 @@
  */
 package megan.commands.format;
 
+import jloda.graphview.NodeShape;
+import jloda.graphview.NodeShapeIcon;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
+import megan.util.CallBack;
+import megan.util.PopupChoice;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,8 +41,6 @@ import java.util.List;
  * Daniel Huson, 3.2013
  */
 public class SetNodeShapeCommand extends CommandBase implements ICommand {
-    public final static String[] SHAPES = {"circle", "square", "triangle", "diamond", "none"};
-
     /**
      * get command-line usage description
      *
@@ -46,7 +48,7 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "set nodeShape={" + Basic.toString(SHAPES, "|") + "} sample=<name name...>;";
+        return "set nodeShape={" + Basic.toString(NodeShape.values(), "|") + "} sample=<name name...>;";
     }
 
     /**
@@ -59,7 +61,7 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
         final Document doc = ((Director) getDir()).getDocument();
 
         np.matchIgnoreCase("set nodeShape=");
-        String shape = np.getWordMatchesIgnoringCase(Basic.toString(SHAPES, " "));
+        String shape = np.getWordMatchesIgnoringCase(Basic.toString(NodeShape.values(), " "));
         final List<String> samples = new LinkedList<>();
         if (np.peekMatchIgnoreCase("sample=")) {
             np.matchIgnoreCase("sample=");
@@ -86,9 +88,18 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        final Object choice = JOptionPane.showInputDialog(getViewer().getFrame(), "Choose node shape", "MEGAN - Choose", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), SHAPES, SHAPES[0]);
-        if (choice != null)
-            execute("set nodeShape=" + choice.toString() + ";");
+        final Icon[] icons = new Icon[NodeShape.values().length];
+        for (int i = 0; i < NodeShape.values().length; i++) {
+            icons[i] = new NodeShapeIcon(NodeShape.values()[i], 12, new Color(0, 174, 238));
+        }
+
+        PopupChoice<NodeShape> popupChoice = new PopupChoice<>(NodeShape.values(), null, icons, new CallBack<NodeShape>() {
+            @Override
+            public void call(NodeShape choice) {
+                execute("set nodeShape=" + choice.toString() + ";");
+            }
+        });
+        popupChoice.showAtCurrentMouseLocation(getViewer().getFrame());
     }
 
     /**

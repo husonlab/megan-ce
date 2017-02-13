@@ -135,6 +135,6 @@ public class SeriesList extends LabelsJList {
     }
 
     private static PopupMenu createPopupMenu(ChartViewer viewer) {
-        return new jloda.gui.PopupMenu(GUIConfiguration.getSeriesListPopupConfiguration(), viewer.getCommandManager(), false);
+        return new jloda.gui.PopupMenu(null, GUIConfiguration.getSeriesListPopupConfiguration(), viewer.getCommandManager(), false);
     }
 }

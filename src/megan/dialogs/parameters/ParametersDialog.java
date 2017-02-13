@@ -115,7 +115,7 @@ public class ParametersDialog extends JDialog {
         setLocationRelativeTo(parent);
         setTitle("Change LCA Parameters - MEGAN");
         setModal(true);
-        setSize(500, 650);
+        setSize(500, 700);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(makeLCAParametersPanel(doc), BorderLayout.CENTER);
@@ -159,7 +159,7 @@ public class ParametersDialog extends JDialog {
 
             final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
 
-            aPanel.setLayout(new GridLayout(15 + (cNames.length + 1) / 2, 2));
+            aPanel.setLayout(new GridLayout(17 + (cNames.length + 1) / 2, 2));
 
             aPanel.add(new JLabel("Min Score:"));
             aPanel.add(minScoreField);
@@ -321,12 +321,22 @@ public class ParametersDialog extends JDialog {
                 }
             });
 
-            final JLabel weightLCALabel = new JLabel("Weighted LCA %:");
-            aPanel.add(weightLCALabel);
-            weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
 
-            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
-            weightLCALabel.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+            aPanel.add(new JLabel(" "));
+            aPanel.add(new JLabel(" "));
+
+            aPanel.add(new JLabel("LCA Algorithm:"));
+            aPanel.add(new JLabel(" "));
+
+            aPanel.add(lcaAlgorithmComboBox);
+            lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
+            lcaAlgorithmComboBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
+                }
+            });
 
             aPanel.add(weightedLCAPercentField);
             weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA");
@@ -343,20 +353,12 @@ public class ParametersDialog extends JDialog {
                     commandManager.updateEnableState();
                 }
             });
+            weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
+            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
-            aPanel.add(lcaAlgorithmComboBox);
-            lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
-            lcaAlgorithmComboBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
-                    weightLCALabel.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
-                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
-                }
-            });
 
             aPanel.add(useMagnitudesCBox);
             useMagnitudesCBox.setToolTipText("Parse and use read magnitudes (given e.g. as magnitude|99 in read header line0");
@@ -367,6 +369,7 @@ public class ParametersDialog extends JDialog {
 
             aPanel.add(pairReadsCBox);
             pairReadsCBox.setToolTipText("Process paired reads together (will only work if reads were imported as pairs)");
+            aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));

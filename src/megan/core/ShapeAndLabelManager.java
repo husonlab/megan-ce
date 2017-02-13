@@ -18,7 +18,8 @@
  */
 package megan.core;
 
-import jloda.graphview.NodeView;
+import jloda.graphview.NodeShape;
+import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 public class ShapeAndLabelManager {
     private final Map<String, String> sample2label = new HashMap<>();
-    private final Map<String, Byte> sample2shape = new HashMap<>();
+    private final Map<String, NodeShape> sample2shape = new HashMap<>();
 
     /**
      * get the set label
@@ -81,10 +82,10 @@ public class ShapeAndLabelManager {
      * @param sample
      * @return shape
      */
-    public byte getShape(String sample) {
-        Byte shape = sample2shape.get(sample);
+    public NodeShape getShape(String sample) {
+        NodeShape shape = sample2shape.get(sample);
         if (shape == null)
-            return NodeView.OVAL_NODE;
+            return NodeShape.Oval;
         else
             return shape;
     }
@@ -95,7 +96,7 @@ public class ShapeAndLabelManager {
      * @param sample
      * @param shape
      */
-    public void setShape(String sample, byte shape) {
+    public void setShape(String sample, NodeShape shape) {
         sample2shape.put(sample, shape);
     }
 
@@ -137,7 +138,7 @@ public class ShapeAndLabelManager {
     public String getShapeMapAsLine() {
         StringBuilder buf = new StringBuilder();
         for (String sample : sample2shape.keySet()) {
-            buf.append(" '").append(sample).append("': '").append((int) sample2shape.get(sample)).append("'");
+            buf.append(" '").append(sample).append("': '").append(sample2shape.get(sample)).append("'");
         }
         buf.append(";");
         return buf.toString();
@@ -157,7 +158,8 @@ public class ShapeAndLabelManager {
                 String label = np.getWordRespectCase();
                 sample2label.put(sample, label);
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            Basic.caught(ex);
         }
     }
 
@@ -172,10 +174,12 @@ public class ShapeAndLabelManager {
             while (!np.peekMatchIgnoreCase(";")) {
                 String sample = np.getWordRespectCase();
                 np.matchIgnoreCase(":");
-                int shape = np.getInt();
-                sample2shape.put(sample, (byte) shape);
+                String shapeLabel = np.getWordRespectCase();
+                NodeShape shape = NodeShape.valueOfIgnoreCase(shapeLabel);
+                sample2shape.put(sample, shape);
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            Basic.caught(ex);
         }
     }
 

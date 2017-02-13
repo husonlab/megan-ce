@@ -84,7 +84,7 @@ public class ViewerJTable extends JTable {
         setShowGrid(false);
         setRowSorter(new TableRowSorter<TableModel>(model));
 
-        popupMenu = new jloda.gui.PopupMenu(GUIConfiguration.getJTablePopupConfiguration(), classificationViewer.getCommandManager(), false);
+        popupMenu = new jloda.gui.PopupMenu(this, GUIConfiguration.getJTablePopupConfiguration(), classificationViewer.getCommandManager(), false);
 
 
         // ToolTipManager.sharedInstance().unregisterComponent(this);

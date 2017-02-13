@@ -20,12 +20,12 @@ package megan.samplesviewer.commands.samples;
 
 import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
+import jloda.graphview.NodeShape;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.commands.format.SetNodeShapeCommand;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
@@ -118,27 +118,21 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
 
         if (selected.size() > 0) {
             String sample = selected.iterator().next();
-            String shape = viewer.getSampleAttributeTable().getSampleShape(sample);
-            int which = 0;
-            if (shape != null) {
-                for (int i = 0; i < SetNodeShapeCommand.SHAPES.length; i++) {
-                    if (SetNodeShapeCommand.SHAPES[i].equalsIgnoreCase(shape)) {
-                        which = i;
-                        break;
-                    }
-                }
-            }
-            final int whichFinal = which;
+            String shapeLabel = viewer.getSampleAttributeTable().getSampleShape(sample);
+            NodeShape nodeShape = NodeShape.valueOfIgnoreCase(shapeLabel);
+            if (nodeShape == null)
+                nodeShape = NodeShape.Oval;
+            final NodeShape nodeShape1 = nodeShape;
 
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    final ChoiceDialog<String> dialog = new ChoiceDialog<>(SetNodeShapeCommand.SHAPES[whichFinal], SetNodeShapeCommand.SHAPES);
+                    final ChoiceDialog<NodeShape> dialog = new ChoiceDialog<>(nodeShape1, NodeShape.values());
                     dialog.setTitle("MEGAN choice");
                     dialog.setHeaderText("Choose shape to represent sample(s)");
                     dialog.setContentText("Shape:");
 
-                    final Optional<String> result = dialog.showAndWait();
+                    final Optional<NodeShape> result = dialog.showAndWait();
                     if (result.isPresent()) {
                         execute("set nodeShape=" + result.get() + " sample='" + Basic.toString(selected, "' '") + "';");
                     }

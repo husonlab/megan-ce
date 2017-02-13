@@ -22,6 +22,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graphview.GraphView;
 import jloda.graphview.INodeDrawer;
+import jloda.graphview.NodeShape;
 import jloda.graphview.NodeView;
 import jloda.util.ProgramProperties;
 import megan.core.Document;
@@ -220,7 +221,7 @@ public class NodeDrawer implements INodeDrawer {
         if (selected)
             hilite(v);
 
-        if ((!drawLeavesOnly || v.getOutDegree() == 0) && scaleBy != ScaleBy.None && nv.getShape() != NodeView.NONE_NODE) {
+        if ((!drawLeavesOnly || v.getOutDegree() == 0) && scaleBy != ScaleBy.None && nv.getNodeShape() != NodeShape.None) {
             switch (style) {
                 case HeatMap:
                     drawAsHeatMap(v, nv, data);
@@ -241,7 +242,7 @@ public class NodeDrawer implements INodeDrawer {
                     break;
             }
         } else {
-            nv.setShape(NodeView.NONE_NODE);
+            nv.setNodeShape(NodeShape.None);
         }
     }
 
@@ -258,7 +259,7 @@ public class NodeDrawer implements INodeDrawer {
         {
             int scaledWidth;
             int scaledHeight;
-            if (nv.getShape() == NodeView.NONE_NODE) {
+            if (nv.getNodeShape() == NodeShape.None) {
                 scaledWidth = scaledHeight = 2;
             } else {
                 if (nv.getFixedSize()) {
@@ -372,7 +373,7 @@ public class NodeDrawer implements INodeDrawer {
         if (location == null)
             return; // no location, don't draw
 
-        nv.setShape(NodeView.OVAL_NODE);
+        nv.setNodeShape(NodeShape.Oval);
         long num;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0)
             num = data.getCountSummarized();
@@ -428,7 +429,7 @@ public class NodeDrawer implements INodeDrawer {
         if (location == null)
             return; // no location, don't draw
         Point apt = viewer.trans.w2d(location);
-        nv.setShape(NodeView.OVAL_NODE);
+        nv.setNodeShape(NodeShape.Oval);
 
         int[] array;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0) // must be collapsed node
@@ -490,7 +491,7 @@ public class NodeDrawer implements INodeDrawer {
         int height = nv.getHeight();
         apt.x -= (width >> 1);
         apt.y -= (height >> 1);
-        nv.setShape(NodeView.OVAL_NODE);
+        nv.setNodeShape(NodeShape.Oval);
 
         if (data.getUpPValue() >= 0) {
             gc.setColor(pvalueColor);
@@ -578,11 +579,11 @@ public class NodeDrawer implements INodeDrawer {
         Point apt = viewer.trans.w2d(location);
 
         if (v.getOutDegree() == 0 || count > 0) {
-            nv.setShape(NodeView.RECT_NODE);
+            nv.setNodeShape(NodeShape.Rectangle);
             nv.setWidth((int) Math.round(data.getAssigned().length * box.getWidth()));
             nv.setHeight((int) Math.round(box.getHeight()));
         } else {
-            nv.setShape(NodeView.OVAL_NODE);
+            nv.setNodeShape(NodeShape.Oval);
             nv.setWidth(1);
             nv.setHeight(1);
         }
@@ -674,11 +675,11 @@ public class NodeDrawer implements INodeDrawer {
         Point apt = viewer.trans.w2d(location);
 
         if (v.getOutDegree() == 0 || count > 0) {
-            nv.setShape(NodeView.RECT_NODE);
+            nv.setNodeShape(NodeShape.Rectangle);
             nv.setWidth((int) Math.round((array.length) * box.getWidth()));
             nv.setHeight((int) Math.round(box.getHeight()));
         } else {
-            nv.setShape(NodeView.OVAL_NODE);
+            nv.setNodeShape(NodeShape.Oval);
             nv.setWidth(1);
             nv.setHeight(1);
         }

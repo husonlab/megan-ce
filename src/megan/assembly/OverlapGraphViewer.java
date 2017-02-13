@@ -247,7 +247,7 @@ public class OverlapGraphViewer {
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
-        MenuBar menuBar = new jloda.gui.MenuBar(menuConfig, commandManager);
+        MenuBar menuBar = new jloda.gui.MenuBar(this, menuConfig, commandManager);
 
 
         frame.setJMenuBar(menuBar);

@@ -179,7 +179,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         getFrame().setIconImage(ProgramProperties.getProgramIcon().getImage());
 
-        this.menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), getCommandManager());
+        this.menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), getCommandManager());
         getFrame().setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
@@ -344,7 +344,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         SyncDataTableAndClassificationViewer.syncCollapsedFromSummary2Viewer(doc.getDataTable(), this);
 
-        legendPanel.setPopupMenu(new PopupMenu(megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
+        legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
 
         setupKeyListener();
         splitPane.setDividerLocation(1.0);

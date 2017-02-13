@@ -88,7 +88,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
             getFrame().setLocation(geometry[0] + (dir.getID() - 1) * 20, geometry[1] + (dir.getID() - 1) * 20);
         getFrame().setSize(geometry[2], geometry[3]);
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), commandManager);
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);
 
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());

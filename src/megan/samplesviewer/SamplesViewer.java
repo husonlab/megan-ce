@@ -121,7 +121,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         spreadSheetSearcher = new SpreadSheetSearcher(frame, samplesSpreadSheet.getSpreadsheetView());
         searchManager = new SearchManager(dir, this, spreadSheetSearcher, false, true);
 
-        this.menuBar = new MenuBar(menuConfig, getCommandManager());
+        this.menuBar = new MenuBar(this, menuConfig, getCommandManager());
         frame.setJMenuBar(menuBar);
 
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());

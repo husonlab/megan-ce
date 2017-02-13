@@ -98,7 +98,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         if (ProgramProperties.getProgramIcon() != null)
             setIconImage(ProgramProperties.getProgramIcon().getImage());
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), commandManager);
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);

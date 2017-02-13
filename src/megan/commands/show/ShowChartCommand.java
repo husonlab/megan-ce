@@ -114,7 +114,7 @@ public class ShowChartCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        final JPopupMenu popupMenu = new PopupMenu(ChartCommandHelper.getOpenChartMenuString(), getCommandManager());
+        final JPopupMenu popupMenu = new PopupMenu(this, ChartCommandHelper.getOpenChartMenuString(), getCommandManager());
         final Point location = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(location, getViewer().getFrame());
         popupMenu.show(getViewer().getFrame(), location.x, location.y);

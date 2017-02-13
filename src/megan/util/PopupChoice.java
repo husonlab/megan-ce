@@ -37,7 +37,19 @@ public class PopupChoice<T> extends JPopupMenu {
      * @param callBack
      */
     public static <T> void addToJMenu(JPopupMenu popupMenu, T[] choices, T initialChoice, final CallBack<T> callBack) {
-        add(popupMenu, choices, initialChoice, callBack);
+        add(popupMenu, choices, initialChoice, null, callBack);
+    }
+
+    /**
+     * add choices to an existing menu
+     *
+     * @param popupMenu
+     * @param choices
+     * @param initialChoice
+     * @param callBack
+     */
+    public static <T> void addToJMenu(JPopupMenu popupMenu, T[] choices, Icon[] icons, T initialChoice, final CallBack<T> callBack) {
+        add(popupMenu, choices, initialChoice, icons, callBack);
     }
     /**
      * constructor
@@ -46,7 +58,17 @@ public class PopupChoice<T> extends JPopupMenu {
      * @param initialChoice, can be null
      */
     public PopupChoice(T[] choices, T initialChoice, final CallBack<T> callBack) {
-        add(this, choices, initialChoice, callBack);
+        add(this, choices, initialChoice, null, callBack);
+    }
+
+    /**
+     * constructor
+     *
+     * @param choices        null entries are represented by separators
+     * @param initialChoice, can be null
+     */
+    public PopupChoice(T[] choices, T initialChoice, Icon[] icons, final CallBack<T> callBack) {
+        add(this, choices, initialChoice, icons, callBack);
     }
 
     /**
@@ -56,8 +78,9 @@ public class PopupChoice<T> extends JPopupMenu {
      * @param initialChoice
      * @param callBack
      */
-    private static <T> void add(JPopupMenu menu, T[] choices, T initialChoice, final CallBack<T> callBack) {
-        for (final T obj : choices) {
+    private static <T> void add(JPopupMenu menu, T[] choices, T initialChoice, Icon[] icons, final CallBack<T> callBack) {
+        for (int i = 0; i < choices.length; i++) {
+            final T obj = choices[i];
             if (obj != null) {
                 final String name = obj.toString();
                 JCheckBoxMenuItem checkBoxMenuItem = new JCheckBoxMenuItem(name);
@@ -68,6 +91,8 @@ public class PopupChoice<T> extends JPopupMenu {
                 });
                 if (initialChoice != null && obj.equals(initialChoice))
                     checkBoxMenuItem.setSelected(true);
+                if (icons != null && i < icons.length && icons[i] != null)
+                    checkBoxMenuItem.setIcon(icons[i]);
                 menu.add(checkBoxMenuItem);
             } else
                 menu.addSeparator();

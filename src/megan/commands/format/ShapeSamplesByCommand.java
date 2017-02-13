@@ -21,6 +21,7 @@ package megan.commands.format;
 
 import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
+import jloda.graphview.NodeShape;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Pair;
@@ -80,23 +81,10 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
             }
         });
 
-        Map<String, String> value2shape = new HashMap<>();
+        Map<String, NodeShape> value2shape = new HashMap<>();
         int count = 0;
         for (Pair<Integer, String> pair : pairs) {
-            switch (count++) {
-                case 0:
-                    value2shape.put(pair.get2(), "circle");
-                    break;
-                case 1:
-                    value2shape.put(pair.get2(), "square");
-                    break;
-                case 2:
-                    value2shape.put(pair.get2(), "diamond");
-                    break;
-                default:
-                    value2shape.put(pair.get2(), "triangle");
-                    break;
-            }
+            value2shape.put(pair.get2(), NodeShape.values()[Math.min(++count, NodeShape.values().length - 1)]);
         }
 
         StringBuilder buf = new StringBuilder();

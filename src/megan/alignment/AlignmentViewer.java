@@ -118,7 +118,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
 
         setTitle();
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), commandManager);
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);

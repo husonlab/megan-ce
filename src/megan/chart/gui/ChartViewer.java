@@ -167,7 +167,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         if (parentViewer == null)
             jMenuBar = null;
         else {
-            this.jMenuBar = new MenuBar(menuConfig, getCommandManager());
+            this.jMenuBar = new MenuBar(this, menuConfig, getCommandManager());
             setJMenuBar(jMenuBar);
             ProjectManager.addAnotherWindowWithWindowMenu(dir, jMenuBar.getWindowMenu());
         }
@@ -416,7 +416,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         contentPanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent me) {
                 if (me.isPopupTrigger()) {
-                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(GUIConfiguration.getMainPanelPopupConfiguration(), commandManager, false);
+                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager, false);
                     if (popupMenuModifier != null)
                         popupMenuModifier.apply(menu, commandManager);
                     menu.show(contentPanel, me.getX(), me.getY());
@@ -425,7 +425,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
             public void mouseReleased(MouseEvent me) {
                 if (me.isPopupTrigger()) {
-                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(GUIConfiguration.getMainPanelPopupConfiguration(), commandManager, false);
+                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager, false);
                     if (popupMenuModifier != null)
                         popupMenuModifier.apply(menu, commandManager);
                     menu.show(contentPanel, me.getX(), me.getY());
@@ -433,7 +433,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             }
         });
 
-        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
+        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
 
         addWindowListener(new WindowListenerAdapter() {
             public void windowDeactivated(WindowEvent event) {

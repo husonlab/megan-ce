@@ -105,13 +105,13 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
         frame.getContentPane().setLayout(new BorderLayout());
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), getCommandManager());
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), getCommandManager());
         frame.setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
-        popupMenu = new PopupMenu(GUIConfiguration.getPopupMenuConfiguration(), getCommandManager());
+        popupMenu = new PopupMenu(this, GUIConfiguration.getPopupMenuConfiguration(), getCommandManager());
 
         frame.add(new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
         statusBar = new StatusBar();

@@ -88,7 +88,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             }
         };
 
-        seriesList = new LabelsJList(this, syncListener1, new jloda.gui.PopupMenu(megan.viewer.GUIConfiguration.getSeriesListPopupConfiguration(), commandManager, false));
+        seriesList = new LabelsJList(this, syncListener1, new jloda.gui.PopupMenu(this, megan.viewer.GUIConfiguration.getSeriesListPopupConfiguration(), commandManager, false));
 
         seriesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {

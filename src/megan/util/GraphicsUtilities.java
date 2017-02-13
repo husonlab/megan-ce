@@ -16,13 +16,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package megan.util;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+import jloda.graphview.NodeShape;
+import jloda.graphview.NodeShapeIcon;
 import megan.core.Document;
-import megan.fx.Utilities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,58 +34,18 @@ import java.awt.image.BufferedImage;
  */
 public class GraphicsUtilities {
     /**
-     * creates an icon to use with this sample
+     * creates an icon to use with this sample for JavaFX
      *
      * @param doc
      * @param sample
      * @return icon
      */
     public static Node makeSampleIconFX(Document doc, String sample, boolean setColor, boolean setShape, int size) {
-        final javafx.scene.canvas.Canvas canvas = new javafx.scene.canvas.Canvas(size, size);
-
-        Color color = null;
-        if (setColor) {
-            color = doc.getSampleAttributeTable().getSampleColor(sample);
-            if (color == null)
-                color = doc.getChartColorManager().getSampleColor(sample);
-        }
-
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
-        if (color != null)
-            gc.setFill(Utilities.getColorFX(color));
-        gc.setStroke(javafx.scene.paint.Color.BLACK);
-
-        String shapeName = doc.getSampleAttributeTable().getSampleShape(sample);
-        if (shapeName == null || !setShape)
-            shapeName = "square";
-
-        switch (shapeName.toLowerCase()) {
-            case "triangle":
-                if (color != null)
-                    gc.fillPolygon(new double[]{1, size - 1, size / 2}, new double[]{size - 1, size - 1, 1}, 3);
-                gc.strokePolygon(new double[]{1, size - 1, size / 2}, new double[]{size - 1, size - 1, 1}, 3);
-                break;
-            case "diamond":
-                if (color != null)
-                    gc.fillPolygon(new double[]{1, size / 2, size - 1, size / 2}, new double[]{size / 2, size - 1, size / 2, 1}, 4);
-                gc.strokePolygon(new double[]{1, size / 2, size - 1, size / 2}, new double[]{size / 2, size - 1, size / 2, 1}, 4);
-                break;
-            case "circle":
-                if (color != null)
-                    gc.fillOval(1, 1, size - 2, size - 2);
-                gc.strokeOval(1, 1, size - 2, size - 2);
-                break;
-            default:
-            case "square":
-                if (color != null)
-                    gc.fillRect(1, 1, size - 2, size - 2);
-                gc.strokeRect(1, 1, size - 2, size - 2);
-        }
-        return canvas;
+        return new ImageView(SwingFXUtils.toFXImage(makeSampleIconSwing(doc, sample, setColor, setShape, size), null));
     }
 
     /**
-     * creates an icon to use with this sample
+     * creates an icon to use with this sample for Swing
      *
      * @param doc
      * @param sample
@@ -93,46 +54,17 @@ public class GraphicsUtilities {
      * @param size
      * @return
      */
-    public static Image makeSampleIconSwing(Document doc, String sample, boolean setColor, boolean setShape, int size) {
-        final BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D gc = image.createGraphics();
-
-        if (setColor && doc.getChartColorManager().getSampleColor(sample) == null)
-            setColor = false;
-
-        if (setColor)
-            gc.setColor(doc.getChartColorManager().getSampleColor(sample));
-
-        String shapeName = doc.getSampleAttributeTable().getSampleShape(sample);
-        if (shapeName == null || !setShape)
-            shapeName = "square";
-
-        switch (shapeName.toLowerCase()) {
-            case "triangle":
-                if (setColor)
-                    gc.fillPolygon(new int[]{1, size - 1, size / 2}, new int[]{size - 1, size - 1, 1}, 3);
-                gc.setColor(Color.BLACK);
-                gc.drawPolygon(new int[]{1, size - 1, size / 2}, new int[]{size - 1, size - 1, 1}, 3);
-                break;
-            case "diamond":
-                if (setColor)
-                    gc.fillPolygon(new int[]{1, size / 2, size - 1, size / 2}, new int[]{size / 2, size - 1, size / 2, 1}, 4);
-                gc.setColor(Color.BLACK);
-                gc.drawPolygon(new int[]{1, size / 2, size - 1, size / 2}, new int[]{size / 2, size - 1, size / 2, 1}, 4);
-                break;
-            case "circle":
-                if (setColor)
-                    gc.fillOval(1, 1, size - 2, size - 2);
-                gc.setColor(Color.BLACK);
-                gc.drawOval(1, 1, size - 2, size - 2);
-                break;
-            default:
-            case "square":
-                if (setColor)
-                    gc.fillRect(1, 1, size - 2, size - 2);
-                gc.setColor(Color.BLACK);
-                gc.drawRect(1, 1, size - 2, size - 2);
+    public static java.awt.image.BufferedImage makeSampleIconSwing(Document doc, String sample, boolean setColor, boolean setShape, int size) {
+        Color color = null;
+        if (setColor) {
+            color = doc.getSampleAttributeTable().getSampleColor(sample);
+            if (color == null)
+                color = doc.getChartColorManager().getSampleColor(sample);
         }
-        return image;
+
+        NodeShape shape = NodeShape.valueOfIgnoreCase(doc.getSampleAttributeTable().getSampleShape(sample));
+        if (!setShape || shape == null)
+            shape = NodeShape.Rectangle;
+        return (BufferedImage) new NodeShapeIcon(shape, size, color).getImage();
     }
 }

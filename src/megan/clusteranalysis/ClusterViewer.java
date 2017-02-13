@@ -23,6 +23,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.graphview.EdgeView;
 import jloda.graphview.GraphView;
+import jloda.graphview.NodeShape;
 import jloda.graphview.NodeView;
 import jloda.gui.MenuBar;
 import jloda.gui.StatusBar;
@@ -120,7 +121,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private boolean showLabels = true;
     private int nodeRadius = 10; // default node radius
 
-    private final HashMap<String, Byte> label2shape = new HashMap<>();
+    private final HashMap<String, NodeShape> label2shape = new HashMap<>();
 
     private final Map<String, LinkedList<Node>> group2Nodes = new HashMap<>(); // used in calc of convex hulls
 
@@ -154,7 +155,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.clusteranalysis.commands"}, !ProgramProperties.isUseGUI());
 
-        menuBar = new MenuBar(GUIConfiguration.getMenuConfiguration(), getCommandManager());
+        menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), getCommandManager());
 
         frame.setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
@@ -301,7 +302,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         };
         doc.getSampleSelection().addSampleSelectionListener(selectionListener);
 
-        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
+        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);
@@ -366,16 +367,13 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      */
     public void updateView(final String what) {
         for (String sample : doc.getSampleNames()) {
-            String shape = doc.getSampleAttributeTable().getSampleShape(sample);
-            if (shape == null || shape.equalsIgnoreCase("circle")) {
-                label2shape.put(sample, NodeView.OVAL_NODE);
-            } else if (shape.equalsIgnoreCase("triangle")) {
-                label2shape.put(sample, NodeView.TRIANGLE_NODE);
-            } else if (shape.equalsIgnoreCase("square")) {
-                label2shape.put(sample, NodeView.RECT_NODE);
-            } else if (shape.equalsIgnoreCase("diamond")) {
-                label2shape.put(sample, NodeView.DIAMOND_NODE);
-            }
+            String label = doc.getSampleAttributeTable().getSampleShape(sample);
+            NodeShape shape;
+            if (label == null || label.equalsIgnoreCase("circle"))
+                shape = NodeShape.Oval;
+            else
+                shape = NodeShape.valueOfIgnoreCase(label);
+            label2shape.put(sample, shape);
         }
         setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));
 
@@ -667,9 +665,9 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                         nv.setWidth(nodeRadius);
                     nv.setFixedSize(true);
 
-                    Byte shape = label2shape.get(sample);
+                    NodeShape shape = label2shape.get(sample);
                     if (shape != null) {
-                        nv.setShape(shape);
+                        nv.setNodeShape(shape);
                     }
                     graphView.setLabel(v, doc.getSampleLabelGetter().getLabel(sample));
                     if (useColors) {
@@ -683,7 +681,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                         nv.setBackgroundColor(null);
 
                 } else {
-                    nv.setShape(NodeView.NONE_NODE);
+                    nv.setNodeShape(NodeShape.None);
                 }
 
             }

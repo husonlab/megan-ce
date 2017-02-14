@@ -83,7 +83,7 @@ public class BiomExportTaxonomy {
         progressListener.setMaximum(selectedNodes.size());
         progressListener.setProgress(0);
         final LinkedList<Map> rowList = new LinkedList<>();
-        final LinkedList<int[]> dataList = new LinkedList<>();
+        final LinkedList<float[]> dataList = new LinkedList<>();
 
         visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, officialRanksOnly, progressListener);
 
@@ -92,9 +92,9 @@ public class BiomExportTaxonomy {
 
         biomData.setShape(new int[]{numberOfRows, numberOfCols});
 
-        final int[][] data = new int[numberOfRows][];
+        final float[][] data = new float[numberOfRows][];
         int j = 0;
-        for (int[] dataRow : dataList) {
+        for (float[] dataRow : dataList) {
             data[j++] = dataRow;
         }
         biomData.setData(data);
@@ -116,7 +116,7 @@ public class BiomExportTaxonomy {
      * @param dataList
      */
     private static void visitSelectedLeavesRec(MainViewer viewer, Node v, NodeSet selected, Vector<String> path,
-                                               LinkedList<Map> rowList, LinkedList<int[]> dataList, boolean officialRanksOnly, ProgressListener progressListener) throws CanceledException {
+                                               LinkedList<Map> rowList, LinkedList<float[]> dataList, boolean officialRanksOnly, ProgressListener progressListener) throws CanceledException {
 
         if (v.getOutDegree() > 0 || selected.contains(v)) {
             final Integer taxId = (Integer) v.getInfo();
@@ -141,7 +141,7 @@ public class BiomExportTaxonomy {
                 if (selected.contains(v)) {
                     NodeData nodeData = viewer.getNodeData(v);
                     if (nodeData != null) {
-                        int[] values;
+                        float[] values;
                         if (v.getOutDegree() == 0)
                             values = nodeData.getSummarized();
                         else

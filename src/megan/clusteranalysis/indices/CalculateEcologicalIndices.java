@@ -74,7 +74,7 @@ public class CalculateEcologicalIndices {
                 if (!seen.contains(id)) {
                     seen.add(id);
                     countNodesUsed++;
-                    final int[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
+                    final float[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
                     final Double[] numbers = new Double[counts.length];
                     for (int i = 0; i < counts.length; i++) {
                         numbers[i] = (double) counts[i];

@@ -36,7 +36,7 @@ import java.util.Set;
  * Created by huson on 5/16/14.
  */
 public class ClassificationBlockRMA6 implements IClassificationBlock {
-    private final Map<Integer, Integer> map2Weight = new HashMap<>();
+    private final Map<Integer, Float> map2Weight = new HashMap<>();
     private String classificationName;
 
     public ClassificationBlockRMA6(String classificationName) {
@@ -44,15 +44,15 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     }
 
     public int getSum(Integer key) {
-        Integer sum = map2Weight.get(key);
-        return sum != null ? sum : 0;
+        Float sum = map2Weight.get(key);
+        return (int) (sum != null ? sum : 0);
     }
 
-    public int getWeightedSum(Integer key) {
+    public float getWeightedSum(Integer key) {
         return map2Weight.get(key);
     }
 
-    public void setSum(Integer key, int num) {
+    public void setSum(Integer key, float num) {
         map2Weight.put(key, num);
     }
 
@@ -79,8 +79,8 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
         writer.writeInt(map2Weight.size());
         for (Object key : map2Weight.keySet()) {
             writer.writeInt((Integer) key); // class id
-            final Integer sum = map2Weight.get(key);
-            writer.writeInt(sum); //weight
+            final Float sum = map2Weight.get(key);
+            writer.writeInt(Math.round(sum)); //weight
             if (classId2locations != null) {
                 final ListOfLongs list = classId2locations.get(key);
                 writer.writeInt(list.size());
@@ -88,7 +88,6 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
                     writer.writeLong(list.get(i));
             } else
                 writer.writeInt(0);
-
         }
     }
 
@@ -109,7 +108,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
             final int weight = reader.readInt();
             final int count = reader.readInt();
             reader.skipBytes(count * 8); // skip all locations, 8 bytes each
-            map2Weight.put(classId, weight);
+            map2Weight.put(classId, (float) weight);
         }
         return map2Weight.size();
     }
@@ -132,7 +131,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
             final int count = reader.readInt();
             reader.skipBytes(count * 8); // skip all locations, 8 bytes each
             if (currentId == classId) {
-                map2Weight.put(currentId, weight);
+                map2Weight.put(currentId, (float) weight);
                 break;
             }
         }

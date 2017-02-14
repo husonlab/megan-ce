@@ -153,7 +153,7 @@ public class FViewerChart extends ChartViewer {
                 for (Integer id : ids) {
                     String className = parentViewer.getClassification().getName2IdMap().get(id);
                     classNames.add(className);
-                    int[] summarized = parentViewer.getSummarized(id);
+                    float[] summarized = parentViewer.getSummarized(id);
 
                     for (int i = 0; i < sampleNames.length; i++) {
                         chartData.putValue(sampleNames[i], className, summarized[i]);

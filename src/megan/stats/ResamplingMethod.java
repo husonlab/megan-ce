@@ -41,9 +41,9 @@ public class ResamplingMethod {
     /*
      * neu attributes for implements of the future interface
      */
-    private Map<Integer, Integer> input1;
-    private Map<Integer, Integer> input2;
-    private HashMap<Integer, int[]> unionOfInputs = new HashMap<>();
+    private Map<Integer, Float> input1;
+    private Map<Integer, Float> input2;
+    private HashMap<Integer, float[]> unionOfInputs = new HashMap<>();
     private HashMap<Integer, Double> resultOfScalevalue = new HashMap<>();
 
     /**
@@ -70,14 +70,14 @@ public class ResamplingMethod {
     * @param m2
     */
 
-    public void setInput(Map<Integer, Integer> input1, Map<Integer, Integer> input2) {
+    public void setInput(Map<Integer, Float> input1, Map<Integer, Float> input2) {
         this.input1 = input1;
 
         this.input2 = input2;
 
         //insert element in the order of keys in m1
         for (Integer key1 : this.input1.keySet()) {
-            int[] value1 = new int[2];
+            float[] value1 = new float[2];
             //int[0] saves value from m1, int[1] saves value from m2
             value1[0] = this.input1.get(key1);
             //wenn m2 has the same key, the associated value with this key in m2 should be saved right now in int[];
@@ -91,7 +91,7 @@ public class ResamplingMethod {
         //their associated values in m1 should be seen as zero
         for (Integer key2 : this.input2.keySet()) {
             if (!unionOfInputs.containsKey(key2)) {
-                int[] value2 = new int[2];
+                float[] value2 = new float[2];
                 value2[1] = this.input2.get(key2);
                 unionOfInputs.put(key2, value2);
             }
@@ -187,9 +187,9 @@ public class ResamplingMethod {
             System.err.println("Illegal empty dataset");
             return false;
         }
-        int sum = 0;
+        float sum = 0;
         if (input1 != null && useSecond) {
-            for (int i : input1.values()) {
+            for (float i : input1.values()) {
                 sum = sum + i;
             }
             if (sum == 0) {
@@ -201,7 +201,7 @@ public class ResamplingMethod {
                 return false;
             } else return true;
         } else if (input2 != null) {
-            for (int j : input2.values()) {
+            for (float j : input2.values()) {
                 sum = sum + j;
             }
             if (sum == 0) {
@@ -235,8 +235,8 @@ public class ResamplingMethod {
            * convert datatype of the input data in array
            */
         Set<Integer> genelist = unionOfInputs.keySet();
-        int[] sample1 = new int[unionOfInputs.size()];
-        int[] sample2 = new int[unionOfInputs.size()];
+        float[] sample1 = new float[unionOfInputs.size()];
+        float[] sample2 = new float[unionOfInputs.size()];
         int count1 = 0;
         for (Integer s1 : genelist) {
             //System.err.println("value of "+s1+" from Map m1 would be read: "+unionOfDataquelle.get(s1)[0]);
@@ -251,9 +251,9 @@ public class ResamplingMethod {
         /*
            * now goto the old process
            */
-        double[] median = computeMedians(sample1, sample2, resamplingSize, repeatitions);
+        float[] median = computeMedians(sample1, sample2, resamplingSize, repeatitions);
 
-        int[][] p05_95 = computePercentileLimits(useSecond ? sample2 : sample1, resamplingSize, repeatitions, p_left, p_right);
+        float[][] p05_95 = computePercentileLimits(useSecond ? sample2 : sample1, resamplingSize, repeatitions, p_left, p_right);
         System.err.println("########################");
         //check array of p05_95 and median
         for (int i = 0; i < median.length; i++) {
@@ -306,15 +306,15 @@ public class ResamplingMethod {
      */
     private void run() throws Exception {
 
-        int[] sample1 = readInput(inputFileName1);
-        int[] sample2 = readInput(inputFileName2);
+        float[] sample1 = readInput(inputFileName1);
+        float[] sample2 = readInput(inputFileName2);
 
         if (sample1.length != sample2.length)
             throw new Exception("Samples have different lengths: " + sample1.length + " vs " + sample2.length);
 
-        double[] median = computeMedians(sample1, sample2, resamplingSize, repeatitions);
+        float[] median = computeMedians(sample1, sample2, resamplingSize, repeatitions);
 
-        int[][] p05_95 = computePercentileLimits(useSecond ? sample2 : sample1, resamplingSize, repeatitions, p_left, p_right);
+        float[][] p05_95 = computePercentileLimits(useSecond ? sample2 : sample1, resamplingSize, repeatitions, p_left, p_right);
         System.err.println("########################");
         //check array of p05_95 and median
         for (int i = 0; i < median.length; i++) {
@@ -350,9 +350,9 @@ public class ResamplingMethod {
      * @param size
      * @return random sample
      */
-    private int[] getRandomSample(int[] sample, int size) {
-        int[] commulativeSum = new int[sample.length];
-        int[] result = new int[sample.length];
+    private float[] getRandomSample(float[] sample, int size) {
+        float[] commulativeSum = new float[sample.length];
+        float[] result = new float[sample.length];
         int sum = 0;
 
         for (int i = 0; i < sample.length; i++) {
@@ -412,11 +412,11 @@ public class ResamplingMethod {
      * @param N2
      * @return absolute differences
      */
-    private int[] getAbsoluteDifference(int[] N1, int[] N2) {
+    private float[] getAbsoluteDifference(float[] N1, float[] N2) {
 
         assert (N1.length == N2.length);
 
-        int[] result = new int[N1.length];
+        float[] result = new float[N1.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = Math.abs(N1[i] - N2[i]);
         }
@@ -431,11 +431,11 @@ public class ResamplingMethod {
      * @param r
      * @return r-th row
      */
-    private int[] extractRow(int[][] twoDimArray, int r) throws CanceledException {
+    private float[] extractRow(float[][] twoDimArray, int r) throws CanceledException {
 
         assert ((r >= 0) && (r < twoDimArray[0].length));
 
-        int[] row = new int[twoDimArray.length];
+        float[] row = new float[twoDimArray.length];
         progressListener.setMaximum(row.length);
 
         for (int i = 0; i < row.length; i++) {
@@ -452,7 +452,7 @@ public class ResamplingMethod {
      * @param row
      * @return median
      */
-    private double getMedian(int[] row) {
+    private float getMedian(float[] row) {
         /*
         int[] tmp = new int[row.length];
 
@@ -464,11 +464,11 @@ public class ResamplingMethod {
         */
 
         //10.30.2007 try to output average value
-        int sum = 0;
-        for (int p : row) {
+        float sum = 0;
+        for (float p : row) {
             sum += p;
         }
-        return ((double) (sum) / (double) (row.length));
+        return sum / row.length;
         //
     }
 
@@ -481,18 +481,18 @@ public class ResamplingMethod {
      * @param repeats
      * @return medians
      */
-    private double[] computeMedians(int[] sample1, int[] sample2, int resamplingSize, int repeats) throws CanceledException {
+    private float[] computeMedians(float[] sample1, float[] sample2, int resamplingSize, int repeats) throws CanceledException {
 
         assert (sample1.length == sample2.length);
 
         int length = sample1.length;
 
-        int[][] diff = new int[repeats][length];
+        final float[][] diff = new float[repeats][length];
 
         progressListener.setSubtask("random sampling");
         progressListener.setMaximum(repeats);
         for (int i = 0; i < repeats; i++) {
-            int[] N1 = getRandomSample(sample1, resamplingSize);
+            float[] N1 = getRandomSample(sample1, resamplingSize);
             /*
             //check N1 for median
             BufferedWriter RandomsampleN1ofMedian = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("RandomsampleN1ofMedian_rep"+(i+1)+".txt", false)));
@@ -502,7 +502,7 @@ public class ResamplingMethod {
             RandomsampleN1ofMedian.close();
             //
             */
-            int[] N2 = getRandomSample(sample2, resamplingSize);
+            float[] N2 = getRandomSample(sample2, resamplingSize);
             /*
             //check N2 for median
             BufferedWriter RandomsampleN2ofMedian = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("RandomsampleN2ofMedian_rep"+(i+1)+".txt", false)));
@@ -529,9 +529,9 @@ public class ResamplingMethod {
         progressListener.setMaximum(-1);
         progressListener.setProgress(-1);
 
-        double[] median = new double[length];
+        float[] median = new float[length];
         for (int j = 0; j < length; j++) {
-            int[] row = extractRow(diff, j);
+            float[] row = extractRow(diff, j);
             /*
             //check unsorted  median of Gene
             BufferedWriter UnsortedMedianofGene = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("UnsortedMedianofGene"+(j+1)+".txt", false)));
@@ -576,9 +576,9 @@ public class ResamplingMethod {
      * @param rightValue
      * @return leftlimit, rightlimit, middle value
      */
-    private int[] getPercentileInterval(int[] diff_i, double leftValue, double rightValue) {
+    private float[] getPercentileInterval(float[] diff_i, double leftValue, double rightValue) {
 
-        int[] sorted = new int[diff_i.length];
+        float[] sorted = new float[diff_i.length];
         System.arraycopy(diff_i, 0, sorted, 0, diff_i.length);
         Arrays.sort(sorted);
 
@@ -598,7 +598,7 @@ public class ResamplingMethod {
         /*
            * result[0]:leftlimit; result[1]:rightlimit; result[2]:middelvalue
            */
-        int[] result = new int[3];
+        float[] result = new float[3];
 
         result[0] = sorted[leftPer - 1];
         result[1] = sorted[rightPer - 1];
@@ -618,13 +618,13 @@ public class ResamplingMethod {
      * @param rightValue
      * @return left and right value for each class
      */
-    private int[][] computePercentileLimits(int[] sample, int resamplingSize, int repeats, double leftValue, double rightValue) throws CanceledException {
+    private float[][] computePercentileLimits(float[] sample, int resamplingSize, int repeats, double leftValue, double rightValue) throws CanceledException {
 
         int length = sample.length;
 
-        int[][] diff = new int[repeats][length];
+        float[][] diff = new float[repeats][length];
         for (int i = 0; i < repeats; i++) {
-            int[] N1 = getRandomSample(sample, resamplingSize);
+            float[] N1 = getRandomSample(sample, resamplingSize);
             /*
             //check N1 for percentile
             BufferedWriter RandomsampleN1ofPer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("RandomsampleN1ofPer_rep"+(i+1)+".txt", false)));
@@ -634,7 +634,7 @@ public class ResamplingMethod {
             RandomsampleN1ofPer.close();
             //
             */
-            int[] N2 = getRandomSample(sample, resamplingSize);
+            float[] N2 = getRandomSample(sample, resamplingSize);
             /*
             //check N2 for percentile
             BufferedWriter RandomsampleN2ofPer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("RandomsampleN2ofPer_rep"+(i+1)+".txt", false)));
@@ -656,9 +656,9 @@ public class ResamplingMethod {
             */
         }
 
-        int[][] p5_95 = new int[length][3];
+        float[][] p5_95 = new float[length][3];
         for (int i = 0; i < length; i++) {
-            int[] diff_i = extractRow(diff, i);
+            float[] diff_i = extractRow(diff, i);
             /*
            //check unsorted  percentile of Gene
             BufferedWriter UnsortedPerofGene = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("UnsortedPerofGene"+(i+1)+".txt", false)));
@@ -708,7 +708,7 @@ public class ResamplingMethod {
      * @param p5_95
      * @return for each bucket, how its median value compares to the 9-95 interval
      */
-    private Result[] compareMedianToPercentilslimits(double[] median, int[][] p5_95) throws CanceledException {
+    private Result[] compareMedianToPercentilslimits(float[] median, float[][] p5_95) throws CanceledException {
         assert (median.length == p5_95.length);
 
         int n = median.length;
@@ -724,10 +724,10 @@ public class ResamplingMethod {
 
 
         for (int i = 0; i < n; i++) {
-            int p05 = p5_95[i][0];
-            int p95 = p5_95[i][1];
-            int p50 = p5_95[i][2];
-            int lengthOfInterval = p95 - p05;
+            float p05 = p5_95[i][0];
+            float p95 = p5_95[i][1];
+            float p50 = p5_95[i][2];
+            float lengthOfInterval = p95 - p05;
             double scale;
             if (lengthOfInterval == 0) {
                 scale = median[i] - p50;
@@ -904,19 +904,19 @@ public class ResamplingMethod {
       * in plan.... read *.txt that contain more splits
       */
 
-    public int[] readInput(String fileName) {
+    public float[] readInput(String fileName) {
         try {
             BufferedReader r = new BufferedReader(new FileReader(new File(fileName)));
             String aLine;
-            LinkedList<Integer> input = new LinkedList<>();
+            LinkedList<Float> input = new LinkedList<>();
             //r.readLine(); //ignore the 1. line
             while ((aLine = r.readLine()) != null) {
                 if (aLine.length() > 0 && !aLine.startsWith("#"))
-                    input.addLast(new Integer(aLine));
+                    input.addLast(new Float(aLine));
             }
-            int[] result = new int[input.size()];
+            float[] result = new float[input.size()];
             int count = 0;
-            for (Integer anInput : input) {
+            for (Float anInput : input) {
                 result[count++] = anInput;
             }
             r.close();//written on 12.10.2007

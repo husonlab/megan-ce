@@ -357,7 +357,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param fId
      * @return summarized
      */
-    public int[] getSummarized(int fId) {
+    public float[] getSummarized(int fId) {
         Node v = getANode(fId);
         return getNodeData(v).getSummarized();
     }
@@ -855,10 +855,9 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             setLocation(v, location);
         }
 
-        int num;
-        NodeData nodeData = super.getNodeData(v);
-        if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Summarized
-                || (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned && v.getOutDegree() == 0))
+        final float num;
+        final NodeData nodeData = super.getNodeData(v);
+        if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Summarized || (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned && v.getOutDegree() == 0))
             num = (nodeData == null ? 0 : nodeData.getCountSummarized());
         else if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned)
             num = (nodeData == null ? 0 : nodeData.getCountAssigned());
@@ -921,7 +920,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             setLocation(v, location);
         }
 
-        int num;
+        final float num;
         if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Summarized || (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned && v.getOutDegree() == 0))
             num = (super.getNodeData(v)).getCountSummarized();
         else if (nodeDrawer.getScaleBy() == NodeDrawer.ScaleBy.Assigned)
@@ -1531,14 +1530,14 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (data.getCountAssigned() > 0) {
             writer.write("Assigned: ");
             int count = 0;
-            for (int value : data.getAssigned()) {
+            for (float value : data.getAssigned()) {
                 if (count > 0) {
                     if (count % 10 == 0)
                         writer.write(",<p>");
                     else
                         writer.write(", ");
                 }
-                writer.write("<b>" + value + "</b>");
+                writer.write("<b>" + Math.round(value) + "</b>");
                 count++;
             }
             writer.write("<p>");
@@ -1546,14 +1545,14 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (data.getCountSummarized() > data.getCountAssigned()) {
             writer.write("Summed: ");
             int count = 0;
-            for (int value : data.getSummarized()) {
+            for (float value : data.getSummarized()) {
                 if (count > 0) {
                     if (count % 10 == 0)
                         writer.write(",<p>");
                     else
                         writer.write(", ");
                 }
-                writer.write("<b>" + value + "</b>");
+                writer.write("<b>" + Math.round(value) + "</b>");
                 count++;
             }
         }

@@ -33,12 +33,12 @@ public class ModifyClassificationsDAA {
     /**
      * update the classifications
      *
-     * @param fNames
+     * @param cNames
      * @param fName2ClassId2Location
      * @param fName2ClassId2Weight
      * @throws IOException
      */
-    public static void saveClassifications(DAAHeader header, String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Integer>[] fName2ClassId2Weight) throws IOException {
+    public static void saveClassifications(DAAHeader header, String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Float>[] fName2ClassId2Weight) throws IOException {
 
         DAAModifier.removeMEGANClassificationData(header);
 
@@ -60,7 +60,8 @@ public class ModifyClassificationsDAA {
 
             for (int classId : id2locations.keySet()) {
                 wKey.writeInt(classId);
-                wKey.writeInt(fName2ClassId2Weight[f].get(classId));
+                float weight = fName2ClassId2Weight[f].get(classId);
+                wKey.writeInt((int) weight);
                 final ListOfLongs list = id2locations.get(classId);
                 wKey.writeInt(list.size());
                 wKey.writeLong(wDump.getPosition()); // offset

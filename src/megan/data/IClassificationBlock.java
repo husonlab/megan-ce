@@ -36,16 +36,15 @@ public interface IClassificationBlock {
      * @param key
      * @return number
      */
-    int getWeightedSum(Integer key);
+    float getWeightedSum(Integer key);
 
 
     /**
      * set the number associated with a key -> just set not write to disk
-     *
-     * @param key
+     *  @param key
      * @param num
      */
-    void setSum(Integer key, int num);
+    void setSum(Integer key, float num);
 
 
     /**

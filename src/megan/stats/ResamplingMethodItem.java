@@ -160,7 +160,7 @@ public class ResamplingMethodItem extends JButton implements IMethodItem {
      * @param m1
      * @param m2
      */
-    public void setInput(Map<Integer, Integer> m1, Map<Integer, Integer> m2) {
+    public void setInput(Map<Integer, Float> m1, Map<Integer, Float> m2) {
         resamplingMethod.setInput(m1, m2);
     }
 

@@ -67,7 +67,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
      * @param key
      * @return number
      */
-    public int getWeightedSum(Integer key) {
+    public float getWeightedSum(Integer key) {
         Integer value = id2WeightedSum.get(key);
         if (value == null)
             return 0;
@@ -88,17 +88,16 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
 
     /**
      * set the number associated with a key -> just set not written to disk
-     *
-     * @param key
+     *  @param key
      * @param sum
      */
-    public void setSum(Integer key, int sum) {
+    public void setSum(Integer key, float sum) {
         Pair<Integer, Long> pair = id2SumAndPos.get(key);
         if (pair == null) {
             pair = new Pair<>();
             id2SumAndPos.put(key, pair);
         }
-        pair.setFirst(sum);
+        pair.setFirst((int) sum);
     }
 
     public long getPos(Integer key) {

@@ -174,7 +174,7 @@ public class ComparisonPlot extends ChartViewer {
                 String name2 = sampleNames[j];
                 String name = name1 + " vs " + name2;
                 for (Node v : viewer.getSelectedNodes()) {
-                    int[] counts = ((NodeData) v.getData()).getAssigned();
+                    float[] counts = ((NodeData) v.getData()).getAssigned();
                     if (j < counts.length && counts[i] > 0 || counts[j] > 0) {
                         Collection<Pair<Number, Number>> pairs = plotName2Counts.get(name);
                         if (pairs == null) {

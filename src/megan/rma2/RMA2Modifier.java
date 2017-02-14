@@ -85,13 +85,13 @@ public class RMA2Modifier {
      * @param positions
      * @throws IOException
      */
-    public void addToClassification(Integer classId, int size, List<Long> positions) throws IOException {
+    public void addToClassification(Integer classId, float size, List<Long> positions) throws IOException {
         numberOfClasses++;
         classificationIndexTmpFileWriter.writeInt(classId);
         if (size == positions.size())
-            classificationIndexTmpFileWriter.writeInt(size);
+            classificationIndexTmpFileWriter.writeInt((int) size);
         else {
-            classificationIndexTmpFileWriter.writeInt(-size);
+            classificationIndexTmpFileWriter.writeInt(-(int) size);
             classificationIndexTmpFileWriter.writeInt(positions.size());
         }
 
@@ -124,32 +124,32 @@ public class RMA2Modifier {
             classificationIndexTmpFileWriter.close();
             // System.err.println("File size: " + rma2File.getClassificationIndexTmpFile().length());
 
-            InputReader r = new InputReader(rma2File.getClassificationIndexTmpFile(), null, null, true);
+            try (InputReader r = new InputReader(rma2File.getClassificationIndexTmpFile(), null, null, true)) {
+                // System.err.println("Channel: " + r.getChannel().size());
 
-            // System.err.println("Channel: " + r.getChannel().size());
+                final int bufferSize = 1000000;
+                long length = r.length();
+                int blocks = (int) (length / bufferSize);
+                byte[] buffer = new byte[bufferSize];
 
-            final int bufferSize = 1000000;
-            long length = r.length();
-            int blocks = (int) (length / bufferSize);
-            byte[] buffer = new byte[bufferSize];
+                long total = 0;
+                for (int i = 0; i < blocks; i++) {
+                    if (r.read(buffer, 0, bufferSize) < bufferSize)
+                        throw new IOException("Buffer underflow");
+                    io.write(buffer, 0, bufferSize);
+                    total += bufferSize;
+                }
+                int remainder = (int) (length - bufferSize * blocks);
+                if (remainder > 0) {
+                    if (r.read(buffer, 0, remainder) < remainder)
+                        throw new IOException("Buffer underflow");
+                    io.write(buffer, 0, remainder);
+                    total += remainder;
+                }
+                //System.err.println("Copied: " + total);
 
-            long total = 0;
-            for (int i = 0; i < blocks; i++) {
-                if (r.read(buffer, 0, bufferSize) < bufferSize)
-                    throw new IOException("Buffer underflow");
-                io.write(buffer, 0, bufferSize);
-                total += bufferSize;
+                io.seekToEnd();
             }
-            int remainder = (int) (length - bufferSize * blocks);
-            if (remainder > 0) {
-                if (r.read(buffer, 0, remainder) < remainder)
-                    throw new IOException("Buffer underflow");
-                io.write(buffer, 0, remainder);
-                total += remainder;
-            }
-            //System.err.println("Copied: " + total);
-
-            io.seekToEnd();
         }
         long indexEnd = io.getPosition();
 

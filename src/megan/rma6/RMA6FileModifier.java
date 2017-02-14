@@ -53,7 +53,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
      * @param fName2ClassId2Weight
      * @throws IOException
      */
-    public void updateClassifications(String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Integer>[] fName2ClassId2Weight) throws IOException {
+    public void updateClassifications(String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Float>[] fName2ClassId2Weight) throws IOException {
         io = new InputOutputReaderWriter(new File(fileName), READ_WRITE);
 
         io.seek(footerSectionRMA6.getStartClassificationsSection());
@@ -66,8 +66,8 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
             final ClassificationBlockRMA6 classification = new ClassificationBlockRMA6(cName);
             final Map<Integer, ListOfLongs> id2locations = fName2ClassId2Location[i];
             for (int id : id2locations.keySet()) {
-                final Integer weight = fName2ClassId2Weight[i].get(id);
-                classification.setSum(id, weight != null ? weight : 0);
+                final Float weight = fName2ClassId2Weight[i].get(id);
+                classification.setSum(id, weight != null ? weight : 0f);
             }
             footerSectionRMA6.getAvailableClassification2Position().put(cName, io.getPosition());
             classification.write(io, id2locations);

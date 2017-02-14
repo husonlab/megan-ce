@@ -66,8 +66,8 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
         final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + rank + "-projection.megan");
         final SampleAttributeTable sampleAttributeTable = doc.getSampleAttributeTable().copy();
 
-        final Map<Integer, Integer[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
-        final Map<Integer, Integer[]>[] sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
+        final Map<Integer, float[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
+        final Map<Integer, float[]>[] sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
 
         final Director newDir;
         final Document newDocument;
@@ -85,9 +85,9 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
         newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
         for (int i = 0; i < numberOfSamples; i++) {
-            Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+            Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
             classification2class2counts.put(ClassificationType.Taxonomy.toString(), sample2taxonMap[i]);
-            int sampleSize = computeSize(sample2taxonMap[i]);
+            float sampleSize = computeSize(sample2taxonMap[i]);
             newDocument.addSample(sampleNames[i], sampleSize, 0, BlastMode.Unknown, classification2class2counts);
         }
 
@@ -124,14 +124,12 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
      * @param integerMap
      * @return size
      */
-    private int computeSize(Map<Integer, Integer[]> integerMap) {
-        int count = 0;
+    private float computeSize(Map<Integer, float[]> integerMap) {
+        float size = 0;
         for (Integer taxonId : integerMap.keySet()) {
-            Integer value = integerMap.get(taxonId)[0];
-            if (value != null)
-                count += value;
+            size += integerMap.get(taxonId)[0];
         }
-        return count;
+        return size;
     }
 
     /**
@@ -141,15 +139,15 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
      * @param taxonMap
      * @return single sample tables
      */
-    private Map<Integer, Integer[]>[] sortBySample(int numberOfSamples, Map<Integer, Integer[]> taxonMap) {
-        Map<Integer, Integer[]>[] sample2TaxonMap = new HashMap[numberOfSamples];
+    private Map<Integer, float[]>[] sortBySample(int numberOfSamples, Map<Integer, float[]> taxonMap) {
+        Map<Integer, float[]>[] sample2TaxonMap = new HashMap[numberOfSamples];
         for (int i = 0; i < numberOfSamples; i++) {
             sample2TaxonMap[i] = new HashMap<>();
         }
         for (Integer taxId : taxonMap.keySet()) {
-            Integer[] counts = taxonMap.get(taxId);
+            float[] counts = taxonMap.get(taxId);
             for (int i = 0; i < numberOfSamples; i++) {
-                sample2TaxonMap[i].put(taxId, new Integer[]{counts[i]});
+                sample2TaxonMap[i].put(taxId, new float[]{counts[i]});
 
             }
         }

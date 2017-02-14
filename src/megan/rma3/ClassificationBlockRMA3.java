@@ -55,13 +55,13 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     }
 
     @Override
-    public int getWeightedSum(Integer key) {
+    public float getWeightedSum(Integer key) {
         return map.get(key);
     }
 
     @Override
-    public void setSum(Integer key, int num) {
-        map.put(key, num);
+    public void setSum(Integer key, float num) {
+        map.put(key, (int) num);
 
     }
 

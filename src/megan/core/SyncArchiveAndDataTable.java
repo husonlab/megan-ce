@@ -59,7 +59,7 @@ public class SyncArchiveAndDataTable {
         table.setTotalReads(connector.getNumberOfReads());
         table.setAdditionalReads(additionalReads);
 
-        table.setSamples(new String[]{dataSetName}, new Long[]{connector.getUId()}, new Integer[]{connector.getNumberOfReads()}, new BlastMode[]{blastMode});
+        table.setSamples(new String[]{dataSetName}, new Long[]{connector.getUId()}, new float[]{connector.getNumberOfReads()}, new BlastMode[]{blastMode});
         for (String classification : classifications) {
             IClassificationBlock block = connector.getClassificationBlock(classification);
             if (block != null)
@@ -117,30 +117,21 @@ public class SyncArchiveAndDataTable {
      * @param table
      */
     static public void syncClassificationBlock2Summary(int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
-        final Map<Integer, Integer[]> classId2count = new HashMap<>();
+        final Map<Integer, float[]> classId2count = new HashMap<>();
         table.setClass2Counts(classificationBlock.getName(), classId2count);
 
         for (Integer classId : classificationBlock.getKeySet()) {
-            int sum = classificationBlock.getWeightedSum(classId);
-
+            float sum = classificationBlock.getWeightedSum(classId);
             if (sum > 0) {
                 if (classId2count.get(classId) == null)
-                    classId2count.put(classId, new Integer[totalDataSets]);
-                Integer total = classId2count.get(classId)[dataSetId];
-                if (total != null)
-                    classId2count.get(classId)[dataSetId] = total + sum;
-                else
-                    classId2count.get(classId)[dataSetId] = sum;
+                    classId2count.put(classId, new float[totalDataSets]);
+                classId2count.get(classId)[dataSetId] += sum;
             }
         }
         if (table.getAdditionalReads() > 0) {
             if (classId2count.get(IdMapper.NOHITS_ID) == null)
-                classId2count.put(IdMapper.NOHITS_ID, new Integer[totalDataSets]);
-            Integer total = classId2count.get(IdMapper.NOHITS_ID)[dataSetId];
-            if (total != null)
-                classId2count.get(IdMapper.NOHITS_ID)[dataSetId] = total + (int) table.getAdditionalReads();
-            else
-                classId2count.get(IdMapper.NOHITS_ID)[dataSetId] = (int) table.getAdditionalReads();
+                classId2count.put(IdMapper.NOHITS_ID, new float[totalDataSets]);
+            classId2count.get(IdMapper.NOHITS_ID)[dataSetId] += (int) table.getAdditionalReads();
         }
     }
 

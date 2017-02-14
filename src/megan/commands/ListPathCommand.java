@@ -104,8 +104,11 @@ public class ListPathCommand extends CommandBase implements ICommand {
                 }
 
                 if (data != null) {
-                    int[] summarized = data.getSummarized();
-                    if (summarized == null)
+                    final float[] summarized;
+                    ;
+                    if (data.getSummarized() != null)
+                        summarized = data.getSummarized();
+                    else
                         summarized = data.getAssigned();
                     if (summarized != null && summarized.length >= 1) {
                         writer.write("\t" + Basic.toString(summarized, ", "));

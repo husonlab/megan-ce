@@ -71,9 +71,9 @@ public class PearsonDistance {
                 if (!seen.contains((Integer) v.getInfo())) {
                     seen.add((Integer) v.getInfo());
                     double[] row = new double[numberOfDataSets];
-                    final int[] counts = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
-                    for (int i = 0; i < counts.length; i++) {
-                        row[i] = counts[i];
+                    final float[] values = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
+                    for (int i = 0; i < values.length; i++) {
+                        row[i] = values[i];
                         total[i] += row[i];
                     }
                     rows.add(row);

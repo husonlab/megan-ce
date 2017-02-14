@@ -89,7 +89,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
         newDir.getMainViewer().setDoReset(true);
         final Document newDocument = newDir.getDocument();
 
-        final Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+        final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
         int sampleSize = 0;
         String title = null;
 

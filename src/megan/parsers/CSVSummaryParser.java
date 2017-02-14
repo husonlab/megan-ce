@@ -92,12 +92,12 @@ public class CSVSummaryParser {
 
         String[] names = null;
 
-        final Map<Integer, Integer[]>[] class2counts = new HashMap[cNames.length];
+        final Map<Integer, float[]>[] class2counts = new HashMap[cNames.length];
         for (int i = 0; i < class2counts.length; i++) {
             class2counts[i] = new HashMap<>();
         }
 
-        Integer[][] total = new Integer[cNames.length][];
+        float[][] total = new float[cNames.length][];
 
         int[] add = null;
 
@@ -144,7 +144,7 @@ public class CSVSummaryParser {
                         }
 
                         for (int i = 0; i < total.length; i++) {
-                            total[i] = newZeroedIntegerArray(names.length);
+                            total[i] = new float[names.length];
                         }
                         if (headerLinePresent)
                             continue; // don't try to parse numbers from header line
@@ -169,7 +169,7 @@ public class CSVSummaryParser {
                         else
                             id = idParsers[i].getIdFromHeaderLine(tokens[0]);
                         if (id != 0) {
-                            Integer[] counts = getOrCreate(class2counts[i], id, names.length);
+                            float[] counts = getOrCreate(class2counts[i], id, names.length);
                             addToArray(counts, add);
                             addToArray(total[i], add);
                             found = true;
@@ -178,7 +178,7 @@ public class CSVSummaryParser {
                     if (!found) {
                         System.err.println("Unrecognized name: " + tokens[0]);
                         for (int i = 0; i < idParsers.length; i++) {
-                            Integer[] counts = getOrCreate(class2counts[i], IdMapper.UNASSIGNED_ID, names.length);
+                            float[] counts = getOrCreate(class2counts[i], IdMapper.UNASSIGNED_ID, names.length);
                             addToArray(counts, add);
                             addToArray(total[i], add);
                         }
@@ -189,7 +189,7 @@ public class CSVSummaryParser {
                 }
             }
         }
-        Integer[] sizes = new Integer[names.length];
+        float[] sizes = new float[names.length];
         System.arraycopy(total[taxonomyIndex], 0, sizes, 0, sizes.length);
 
         table.setSamples(names, null, sizes, null);
@@ -198,7 +198,7 @@ public class CSVSummaryParser {
         }
 
         long totalReads = 0;
-        for (Integer size : sizes) {
+        for (float size : sizes) {
             totalReads += size;
         }
 
@@ -222,10 +222,10 @@ public class CSVSummaryParser {
      * @param size
      * @return entry
      */
-    private static Integer[] getOrCreate(Map<Integer, Integer[]> map, Integer id, int size) {
-        Integer[] result = map.get(id);
+    private static float[] getOrCreate(Map<Integer, float[]> map, Integer id, int size) {
+        float[] result = map.get(id);
         if (result == null) {
-            result = newZeroedIntegerArray(size);
+            result = new float[size];
             map.put(id, result);
         }
         return result;
@@ -237,23 +237,10 @@ public class CSVSummaryParser {
      * @param sum
      * @param add
      */
-    private static void addToArray(Integer[] sum, int[] add) {
+    private static void addToArray(float[] sum, int[] add) {
         for (int i = 0; i < add.length; i++) {
             sum[i] += add[i];
         }
-    }
-
-    /**
-     * create new array with zero entries
-     *
-     * @param size
-     * @return new array
-     */
-    private static Integer[] newZeroedIntegerArray(int size) {
-        Integer[] result = new Integer[size];
-        for (int i = 0; i < size; i++)
-            result[i] = 0;
-        return result;
     }
 
     /**

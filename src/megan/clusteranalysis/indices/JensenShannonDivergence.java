@@ -125,7 +125,7 @@ public class JensenShannonDivergence {
 
         for (Node v = graphView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
             if (graphView.getSelected(v)) {
-                int[] counts = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
+                float[] counts = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
                 for (int sampleCount = 0; sampleCount < totalSamples; sampleCount++) {
                     profiles[sampleCount][classCount] = counts[sampleCount];
                 }

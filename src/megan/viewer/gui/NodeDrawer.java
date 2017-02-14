@@ -314,15 +314,15 @@ public class NodeDrawer implements INodeDrawer {
             StringBuilder buf = new StringBuilder();
             if (data.getCountAssigned() > 0) {
                 buf.append("Ass=");
-                for (int value : data.getAssigned()) {
-                    buf.append(String.format("%,d  ", value));
+                for (float value : data.getAssigned()) {
+                    buf.append(String.format("%,.0f  ", value));
                 }
                 gc.drawString(buf.toString(), apt.x, apt.y += 14);
             }
             buf = new StringBuilder();
             buf.append("Sum=");
-            for (int value : data.getSummarized()) {
-                buf.append(String.format("%,d  ", value));
+            for (float value : data.getSummarized()) {
+                buf.append(String.format("%,.0f  ", value));
             }
             gc.drawString(buf.toString(), apt.x, apt.y += 12);
         }
@@ -374,7 +374,7 @@ public class NodeDrawer implements INodeDrawer {
             return; // no location, don't draw
 
         nv.setNodeShape(NodeShape.Oval);
-        long num;
+        float num;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0)
             num = data.getCountSummarized();
         else
@@ -431,18 +431,18 @@ public class NodeDrawer implements INodeDrawer {
         Point apt = viewer.trans.w2d(location);
         nv.setNodeShape(NodeShape.Oval);
 
-        int[] array;
+        final float[] values;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0) // must be collapsed node
         {
-            array = data.getSummarized();
+            values = data.getSummarized();
         } else {
-            array = data.getAssigned();
+            values = data.getAssigned();
         }
 
-        double delta = 360.0 / array.length;
+        double delta = 360.0 / values.length;
         int maxRadius = 0;
-        for (int i = 0; i < array.length; i++) {
-            double radius = Math.max(1.0, getScaledSize(array[i]));
+        for (int i = 0; i < values.length; i++) {
+            double radius = Math.max(1.0, getScaledSize(values[i]));
             // double radius = Math.sqrt((double)assigned[i] / count) *viewer.getMaxNodeRadius(); // we assume here that the largest value is 50% of total reads
             maxRadius = Math.max(maxRadius, (int) radius);
             Arc2D arc = new Arc2D.Double(apt.x - radius, apt.y - radius, 2 * radius, 2 * radius, i * delta + 45, delta, Arc2D.PIE);
@@ -510,8 +510,8 @@ public class NodeDrawer implements INodeDrawer {
             gc.setStroke(oldStroke);
         }
 
-        long count;
-        int[] array;
+        final double count;
+        final float[] array;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0) // must be collapsed node
         {
             count = data.getCountSummarized();
@@ -555,8 +555,8 @@ public class NodeDrawer implements INodeDrawer {
      * @param data
      */
     private void drawAsHeatMap(Node v, NodeView nv, NodeData data) {
-        long count;
-        int[] array;
+        final double count;
+        final float[] array;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0 && data.getCountSummarized() > data.getCountAssigned()) // must be collapsed node
         {
             count = data.getCountSummarized();
@@ -618,13 +618,13 @@ public class NodeDrawer implements INodeDrawer {
                 switch (scalingType) {
                     default:
                     case LINEAR:
-                        color = doc.getChartColorManager().getHeatMapTable().getColor(array[i], (int) maxValue);
+                        color = doc.getChartColorManager().getHeatMapTable().getColor((int) array[i], (int) maxValue);
                         break;
                     case SQRT:
-                        color = doc.getChartColorManager().getHeatMapTable().getColorSqrtScale(array[i], inverseSqrtMaxCount);
+                        color = doc.getChartColorManager().getHeatMapTable().getColorSqrtScale((int) array[i], inverseSqrtMaxCount);
                         break;
                     case LOG:
-                        color = doc.getChartColorManager().getHeatMapTable().getColorLogScale(array[i], inverseLogMaxCount);
+                        color = doc.getChartColorManager().getHeatMapTable().getColorLogScale((int) array[i], inverseLogMaxCount);
                         break;
                 }
                 gc.setColor(color);
@@ -648,8 +648,8 @@ public class NodeDrawer implements INodeDrawer {
      * @param data
      */
     private void drawAsBarChart(Node v, NodeView nv, NodeData data) {
-        long count;
-        int[] array;
+        final double count;
+        final float[] array;
         if (scaleBy == ScaleBy.Summarized || v.getOutDegree() == 0) // must be collapsed node
         {
             count = data.getCountSummarized();

@@ -30,7 +30,7 @@ import java.util.Set;
  * Created by huson on 5/16/14.
  */
 public class ClassificationBlockDAA implements IClassificationBlock {
-    private final Map<Integer, Integer> classId2Weight;
+    private final Map<Integer, Float> classId2Weight;
     private String classificationName;
 
     public ClassificationBlockDAA(String classificationName) {
@@ -39,15 +39,15 @@ public class ClassificationBlockDAA implements IClassificationBlock {
     }
 
     public int getSum(Integer key) {
-        Integer value = classId2Weight.get(key);
-        return value == null ? 0 : value;
+        Float value = classId2Weight.get(key);
+        return (int) (value == null ? 0 : value);
     }
 
-    public int getWeightedSum(Integer key) {
+    public float getWeightedSum(Integer key) {
         return classId2Weight.get(key);
     }
 
-    public void setSum(Integer key, int num) {
+    public void setSum(Integer key, float num) {
         classId2Weight.put(key, num);
     }
 

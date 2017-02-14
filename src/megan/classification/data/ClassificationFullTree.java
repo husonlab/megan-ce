@@ -48,7 +48,7 @@ public class ClassificationFullTree extends PhyloTree {
     private final Map<Integer, String> id2Address = new HashMap<>();
     private final Map<String, Integer> address2Id = new HashMap<>();
 
-    private final NodeData emptyData = new NodeData(new int[0], new int[0]);
+    private final NodeData emptyData = new NodeData(new float[0], new float[0]);
 
     /**
      * constructor
@@ -198,7 +198,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @param targetTree
      */
     public void extractInducedTree(Map<Integer, NodeData> id2data, Set<Integer> collapsedIds, PhyloTree targetTree, Map<Integer, Set<Node>> targetId2Nodes) {
-        final Map<Integer, Integer> id2count = new HashMap<>();
+        final Map<Integer, Float> id2count = new HashMap<>();
         for (Integer id : id2data.keySet()) {
             id2count.put(id, id2data.get(id).getCountAssigned());
         }
@@ -297,7 +297,7 @@ public class ClassificationFullTree extends PhyloTree {
                 if (nodeData != null)
                     wCpy.setData(nodeData);
                 else
-                    wCpy.setData(new NodeData(new int[0], new int[0]));
+                    wCpy.setData(new NodeData(new float[0], new float[0]));
 
                 treeCpy.newEdge(vCpy, wCpy);
 
@@ -338,7 +338,7 @@ public class ClassificationFullTree extends PhyloTree {
      *
      * @param id2counts
      */
-    public void computeId2Data(int numberOfDatasets, Map<Integer, Integer[]> id2counts, Map<Integer, NodeData> id2data) {
+    public void computeId2Data(int numberOfDatasets, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
         id2data.clear();
         if (id2counts != null) {
             if (ClassificationManager.isTaxonomy(getName()))
@@ -358,7 +358,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @param id2idsBelow
      * @return set of classification-ids on or below node v
      */
-    private Set<Integer> computeId2DataRec(int numberOfDataSets, Node v, Map<Integer, Integer[]> id2counts, Map<Integer, Set<Integer>> id2idsBelow, Map<Integer, NodeData> id2data) {
+    private Set<Integer> computeId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, Set<Integer>> id2idsBelow, Map<Integer, NodeData> id2data) {
         final int id = (Integer) v.getInfo();
 
         final Set<Integer> idsBelow = new HashSet<>();
@@ -372,30 +372,26 @@ public class ClassificationFullTree extends PhyloTree {
             idsBelow.addAll(allBelow);
         }
 
-        int[] assigned = new int[numberOfDataSets];
-        int[] summarized = new int[numberOfDataSets];
+        float[] assigned = new float[numberOfDataSets];
+        float[] summarized = new float[numberOfDataSets];
         long total = 0;
 
-        final Integer[] counts = id2counts.get(id);
+        final float[] counts = id2counts.get(id);
         if (counts != null) {
             int top = Math.min(assigned.length, counts.length);
             for (int i = 0; i < top; i++) {
-                if (counts[i] != null) {
                     assigned[i] = counts[i];
                     total += counts[i];
-                }
             }
         }
 
         for (Integer below : id2idsBelow.get(id)) {
-            Integer[] countBelow = id2counts.get(below);
+            float[] countBelow = id2counts.get(below);
             if (countBelow != null) {
                 int top = Math.min(summarized.length, countBelow.length);
                 for (int i = 0; i < top; i++) {
-                    if (countBelow[i] != null) {
                         summarized[i] += countBelow[i];
                         total += countBelow[i];
-                    }
                 }
             }
         }
@@ -416,7 +412,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @param id2counts
      * @return set of f-ids on or below node v
      */
-    private Set<Integer> computeTaxonomyId2DataRec(int numberOfDataSets, Node v, Map<Integer, Integer[]> id2counts, Map<Integer, NodeData> id2data) {
+    private Set<Integer> computeTaxonomyId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
         int taxonomyId = (Integer) v.getInfo();
 
         // first process all children
@@ -426,19 +422,17 @@ public class ClassificationFullTree extends PhyloTree {
         }
 
         // set up assigned:
-        int[] assigned = new int[numberOfDataSets];
-        int[] summarized = new int[numberOfDataSets];
+        float[] assigned = new float[numberOfDataSets];
+        float[] summarized = new float[numberOfDataSets];
         long total = 0;
 
-        Integer[] counts = id2counts.get(taxonomyId);
+        float[] counts = id2counts.get(taxonomyId);
         if (counts != null) {
             int top = Math.min(assigned.length, counts.length);
             for (int i = 0; i < top; i++) {
-                if (counts[i] != null) {
                     assigned[i] = counts[i];
                     summarized[i] = counts[i];
                     total += counts[i];
-                }
             }
         }
 
@@ -449,7 +443,7 @@ public class ClassificationFullTree extends PhyloTree {
             int wId = (Integer) w.getInfo();
             NodeData dataW = id2data.get(wId);
             if (dataW != null) {
-                int[] below = dataW.getSummarized();
+                float[] below = dataW.getSummarized();
                 int top = Math.min(summarized.length, below.length);
                 for (int i = 0; i < top; i++) {
                     summarized[i] += below[i];

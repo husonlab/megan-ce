@@ -65,12 +65,12 @@ public class ComputeTaxonomicProfileCommand extends CommandBase implements IComm
         final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-Profile-" + rank + "-" + method + ".megan");
         final SampleAttributeTable sampleAttributeTable = getDoc().getSampleAttributeTable().copy();
 
-        final Map<Integer, Integer[]>[] sample2taxonMap;
+        final Map<Integer, float[]>[] sample2taxonMap;
         if (method.equalsIgnoreCase(TaxonomicProfileDialog.ProfileMethod.Projection.toString())) {
-            final Map<Integer, Integer[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
+            final Map<Integer, float[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
             sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
         } else if (method.equalsIgnoreCase(TaxonomicProfileDialog.ProfileMethod.ReadSpreading.toString())) {
-            final Map<Integer, Integer[]> taxonMap = NaiveMatchBasedProfile.compute((ClassificationViewer) getViewer(), TaxonomicLevels.getId(rank), minPercent);
+            final Map<Integer, float[]> taxonMap = NaiveMatchBasedProfile.compute((ClassificationViewer) getViewer(), TaxonomicLevels.getId(rank), minPercent);
             sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
         } else {
             NotificationsInSwing.showWarning(getViewer().getFrame(), "Not implemented");
@@ -93,7 +93,7 @@ public class ComputeTaxonomicProfileCommand extends CommandBase implements IComm
         newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
         for (int i = 0; i < numberOfSamples; i++) {
-            Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+            Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
             classification2class2counts.put(ClassificationType.Taxonomy.toString(), sample2taxonMap[i]);
             int sampleSize = computeSize(sample2taxonMap[i]);
             newDocument.addSample(sampleNames[i], sampleSize, 0, BlastMode.Unknown, classification2class2counts);
@@ -132,11 +132,10 @@ public class ComputeTaxonomicProfileCommand extends CommandBase implements IComm
      * @param integerMap
      * @return size
      */
-    private int computeSize(Map<Integer, Integer[]> integerMap) {
+    private int computeSize(Map<Integer, float[]> integerMap) {
         int count = 0;
         for (Integer taxonId : integerMap.keySet()) {
-            Integer value = integerMap.get(taxonId)[0];
-            if (value != null)
+            float value = integerMap.get(taxonId)[0];
                 count += value;
         }
         return count;
@@ -149,15 +148,15 @@ public class ComputeTaxonomicProfileCommand extends CommandBase implements IComm
      * @param taxonMap
      * @return single sample tables
      */
-    private Map<Integer, Integer[]>[] sortBySample(int numberOfSamples, Map<Integer, Integer[]> taxonMap) {
-        Map<Integer, Integer[]>[] sample2TaxonMap = new HashMap[numberOfSamples];
+    private Map<Integer, float[]>[] sortBySample(int numberOfSamples, Map<Integer, float[]> taxonMap) {
+        Map<Integer, float[]>[] sample2TaxonMap = new HashMap[numberOfSamples];
         for (int i = 0; i < numberOfSamples; i++) {
             sample2TaxonMap[i] = new HashMap<>();
         }
         for (Integer taxId : taxonMap.keySet()) {
-            Integer[] counts = taxonMap.get(taxId);
+            float[] counts = taxonMap.get(taxId);
             for (int i = 0; i < numberOfSamples; i++) {
-                sample2TaxonMap[i].put(taxId, new Integer[]{counts[i]});
+                sample2TaxonMap[i].put(taxId, new float[]{counts[i]});
 
             }
         }

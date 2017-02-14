@@ -179,13 +179,13 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     private void drawRec(DrawWhat what, Graphics2D gc, PhyloTree tree, Point2D center, double radiusFactor, Node v, double level, double maxLevel, double angleV, double extentV, double barFactor, double maxValue) {
         if (v.getOutDegree() > 0) {
             // recursively visit all nodes below:
-            int countV = ((NodeData) v.getData()).getCountSummarized() - ((NodeData) v.getData()).getCountAssigned();
+            float countV = ((NodeData) v.getData()).getCountSummarized() - ((NodeData) v.getData()).getCountAssigned();
             if (countV > 0) {
                 double factor = extentV / countV;
                 double used = 0;
                 for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
                     Node w = e.getTarget();
-                    int countW = ((NodeData) w.getData()).getCountSummarized();
+                    float countW = ((NodeData) w.getData()).getCountSummarized();
                     double angleW = angleV + used;
                     double extentW = factor * countW;
                     drawRec(what, gc, tree, center, radiusFactor, w, level + 1, maxLevel, angleW, extentW, barFactor, maxValue);

@@ -114,13 +114,13 @@ public class ViewerJTable extends JTable {
             buildHeatMapRec(classificationViewer.getTree().getRoot(), new HashSet<Integer>());
         }
 
-        int[] maxCounts = new int[classificationViewer.getNumberOfDatasets()];
+        float[] maxCounts = new float[classificationViewer.getNumberOfDatasets()];
 
         for (Node v = classificationViewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
             if (v.getOutDegree() == 0) {
                 NodeData data = classificationViewer.getNodeData(v);
                 if (data != null) {
-                    int[] summarized = data.getSummarized();
+                    float[] summarized = data.getSummarized();
                     int top = Math.min(summarized.length, maxCounts.length);
                     for (int i = 0; i < top; i++) {
                         maxCounts[i] = Math.max(maxCounts[i], summarized[i]);
@@ -141,7 +141,7 @@ public class ViewerJTable extends JTable {
         if (v.getOutDegree() == 0) {
             NodeData data = classificationViewer.getNodeData(v);
             if (data != null) {
-                int[] summarized = data.getSummarized();
+                float[] summarized = data.getSummarized();
                 Comparable[] rowData = new Comparable[summarized.length + 1];
                 int id = (Integer) v.getInfo();
                 if (!seen.contains(id)) {
@@ -370,10 +370,10 @@ class MyCellRender implements TableCellRenderer {
         }
     }
 
-    public void setMaxCounts(int[] maxCounts) {
+    public void setMaxCounts(float[] maxCounts) {
         greenGradients = new GreenGradient[maxCounts.length];
         for (int i = 0; i < maxCounts.length; i++)
-            greenGradients[i] = new GreenGradient(maxCounts[i]);
+            greenGradients[i] = new GreenGradient(Math.round(maxCounts[i]));
     }
 
 }

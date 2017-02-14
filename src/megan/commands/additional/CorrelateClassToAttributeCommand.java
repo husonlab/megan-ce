@@ -65,7 +65,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
             if (id != 0) {
                 final Node v = viewer.getANode(id);
                 final NodeData nodeData = (NodeData) v.getData();
-                final int[] x = (v.getOutDegree() == 0 ? nodeData.getSummarized() : nodeData.getAssigned());
+                final float[] x = (v.getOutDegree() == 0 ? nodeData.getSummarized() : nodeData.getAssigned());
                 final double[] y = new double[n];
                 for (int i = 0; i < n; i++) {
                     Object obj = getDoc().getSampleAttributeTable().get(sampleNames[i], attribute);
@@ -76,7 +76,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
                 }
                 System.out.println("Sample\t'" + name + "'\t'" + attribute + "':");
                 for (int i = 0; i < n; i++) {
-                    System.err.println(String.format("%s\t%d\t%f", sampleNames[i], x[i], y[i]));
+                    System.err.println(String.format("%s\t%f\t%f", sampleNames[i], x[i], y[i]));
                 }
                 System.err.println("Correlation coefficient: " + computeCorrelationCoefficient(x, y, n));
             }
@@ -91,7 +91,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
      * @param n
      * @return
      */
-    private double computeCorrelationCoefficient(int[] x, double[] y, int n) {
+    private double computeCorrelationCoefficient(float[] x, double[] y, int n) {
         double sumX = 0;
         double sumY = 0;
         double sumXY = 0;

@@ -214,7 +214,8 @@ public class PCoA {
      *  @param numberOfSamples
      * @param class2counts
      */
-    public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, int[]> class2counts) {
+    public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float
+            []> class2counts) {
         loadingVectorsBiPlot.clear();
 
         final int numberOfClasses = (class2counts == null ? 0 : class2counts.size());
@@ -227,7 +228,7 @@ public class PCoA {
             classNames = class2counts.keySet().toArray(new String[numberOfClasses]);
             for (int classNumber = 0; classNumber < classNames.length; classNumber++) {
                 final String name = classNames[classNumber];
-                final int[] counts = class2counts.get(name);
+                final float[] counts = class2counts.get(name);
                 if (counts != null) {
                     for (int sampleNumber = 0; sampleNumber < counts.length; sampleNumber++) {
                         matrixM[sampleNumber][classNumber] += counts[sampleNumber];

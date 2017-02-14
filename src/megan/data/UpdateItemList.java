@@ -26,11 +26,10 @@ import java.util.*;
  * Daniel Huson, 1.2009
  */
 public class UpdateItemList extends LinkedList<UpdateItem> {
-    private final Map<Long, UpdateItem> readUid2UpdateItem;
     private final int numberOfClassifications;
     private final Map<Integer, UpdateItem>[] first;
     private final Map<Integer, UpdateItem>[] last;
-    private final Map<Integer, Integer>[] size;
+    private final Map<Integer, Float>[] size;
 
     /**
      * constructor
@@ -40,7 +39,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     @SuppressWarnings("unchecked")
     public UpdateItemList(int numberOfClassifications) {
         super();
-        readUid2UpdateItem = new HashMap<>(1000000);
         this.numberOfClassifications = numberOfClassifications;
         first = new HashMap[numberOfClassifications];
         last = new HashMap[numberOfClassifications];
@@ -52,29 +50,17 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
         }
     }
 
-
-    /**
-     * gets the rescan item for a given read uid
-     *
-     * @param readUid
-     * @return rescan item or null
-     */
-    public UpdateItem getUpdateItem(final long readUid) {
-        return readUid2UpdateItem.get(readUid);
-    }
-
     /**
      * add an item
      * @param readUid
      * @param classIds
      */
-    public UpdateItem addItem(final long readUid, int readWeight, final Integer[] classIds) throws IOException {
+    public UpdateItem addItem(final long readUid, float readWeight, final Integer[] classIds) throws IOException {
         if (classIds.length != numberOfClassifications)
             throw new IOException("classIds has wrong length: " + classIds.length + ", should be: " + numberOfClassifications);
-        UpdateItem item = new UpdateItem(numberOfClassifications);
+        final UpdateItem item = new UpdateItem(numberOfClassifications);
         item.setReadUId(readUid);
         add(item);
-        readUid2UpdateItem.put(readUid, item);
 
         if (readWeight == 0) {
             // throw new RuntimeException("Internal error: ReadWeight=0");
@@ -93,7 +79,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
                     last[i].put(id, item);
                     size[i].put(id, readWeight);
                 } else {
-                    lastInClass.setNextInClassifaction(i, readUid);
+                    lastInClass.setNextInClassifaction(i, item);
                     last[i].put(id, item);
                     size[i].put(id, size[i].get(id) + readWeight);
                 }
@@ -109,8 +95,8 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @return size of class
      */
-    public int getSize(int classificationId, int classId) {
-        Integer result = size[classificationId].get(classId);
+    public float getSize(int classificationId, int classId) {
+        Float result = size[classificationId].get(classId);
         if (result == null)
             return 0;
         else
@@ -123,12 +109,12 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classificationId
      * @return class-id to size map
      */
-    public Map<Integer, Integer> getClassIdToSizeMap(int classificationId) {
+    public Map<Integer, Float> getClassIdToSizeMap(int classificationId) {
         return size[classificationId];
     }
 
     /**
-     * get the first rescan item for a given classification and class
+     * get the first UpdateItem for a given classification and class
      *
      * @param classificationId
      * @param classId
@@ -139,7 +125,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     }
 
     /**
-     * set  the first rescan item for a given classification and class
+     * set  the first UpdateItem for a given classification and class
      *
      * @param classificationId
      * @param classId
@@ -150,7 +136,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     }
 
     /**
-     * get the last rescan item for a given classification and class
+     * get the last UpdateItem for a given classification and class
      *
      * @param classificationId
      * @param classId
@@ -162,7 +148,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
 
 
     /**
-     * set the last rescan item for a given classification and class
+     * set the last UpdateItem for a given classification and class
      *
      * @param classificationId
      * @param classId
@@ -179,7 +165,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @param value
      */
-    public void setSize(int classificationId, int classId, int value) {
+    public void setSize(int classificationId, int classId, float value) {
         size[classificationId].put(classId, value);
     }
 
@@ -216,7 +202,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param tarClassId
      */
     public void appendClass(int classificationId, int srcClassId, int tarClassId) {
-        int newSize = getSize(classificationId, srcClassId) + getSize(classificationId, tarClassId);
+        float newSize = getSize(classificationId, srcClassId) + getSize(classificationId, tarClassId);
 
         if (newSize > 0) {
             UpdateItem firstItemSrc = getFirst(classificationId, srcClassId);
@@ -227,11 +213,10 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
             }
 
             // replace class for all elements in src class:
-            long readUid = firstItemSrc.getReadUId();
-            while (readUid != 0) {
-                UpdateItem item = readUid2UpdateItem.get(readUid);
+            UpdateItem item = firstItemSrc;
+            while (item != null) {
                 item.setClassId(classificationId, tarClassId);
-                readUid = item.getNextInClassification(classificationId);
+                item = item.getNextInClassification(classificationId);
             }
 
             // rescan first and last items:
@@ -240,10 +225,9 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
             if (firstItemTar == null)
                 setFirst(classificationId, tarClassId, firstItemSrc);
 
-
             UpdateItem lastItemTar = getLast(classificationId, tarClassId);
             if (lastItemTar != null)
-                lastItemTar.setNextInClassifaction(classificationId, firstItemSrc.getReadUId());
+                lastItemTar.setNextInClassifaction(classificationId, firstItemSrc);
 
             UpdateItem lastItemSrc = getLast(classificationId, srcClassId);
             setLast(classificationId, tarClassId, lastItemSrc);
@@ -256,7 +240,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     }
 
     /**
-     * after appending a class to an existing class, sorts all rescan items so that they appear in the order in
+     * after appending a class to an existing class, sorts all UpdateItems so that they appear in the order in
      * which the reads occur in the file, for a given classId.
      * This is useful for when we extract all reads for a given classId, as then we go through the file sequentially
      *
@@ -264,17 +248,13 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      */
     private void sortChain(int classificationId, int classId) {
-        // sort all rescan items by readUid:
+        // sort all UpdateItems by readUid:
         SortedSet<UpdateItem> sorted = new TreeSet<>(new UpdateItem());
 
-        UpdateItem updateItem = getFirst(classificationId, classId);
-        while (updateItem != null) {
-            sorted.add(updateItem);
-            long nextReadUid = updateItem.getNextInClassification(classificationId);
-            if (nextReadUid != 0)
-                updateItem = readUid2UpdateItem.get(nextReadUid);
-            else
-                updateItem = null;
+        UpdateItem item = getFirst(classificationId, classId);
+        while (item != null) {
+            sorted.add(item);
+            item = item.getNextInClassification(classificationId);
         }
 
         // re-build chain:
@@ -286,7 +266,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
             if (first == null)
                 first = current;
             if (prev != null)
-                prev.setNextInClassifaction(classificationId, current.getReadUId());
+                prev.setNextInClassifaction(classificationId, current);
             prev = current;
             last = current;
         }
@@ -294,7 +274,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
             setFirst(classificationId, classId, first);
         if (last != null) {
             setLast(classificationId, classId, last);
-            last.setNextInClassifaction(classificationId, 0);
+            last.setNextInClassifaction(classificationId, null);
         }
     }
 }

@@ -80,7 +80,7 @@ public class BiomExportFViewer {
         progressListener.setProgress(0);
 
         final LinkedList<Map> rowList = new LinkedList<>();
-        final LinkedList<int[]> dataList = new LinkedList<>();
+        final LinkedList<float[]> dataList = new LinkedList<>();
 
         visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, new HashSet<Integer>(), progressListener);
         int numberOfRows = rowList.size();
@@ -88,9 +88,9 @@ public class BiomExportFViewer {
 
         biomData.setShape(new int[]{numberOfRows, numberOfCols});
 
-        int[][] data = new int[numberOfRows][];
+        float[][] data = new float[numberOfRows][];
         int j = 0;
-        for (int[] dataRow : dataList) {
+        for (float[] dataRow : dataList) {
             data[j++] = dataRow;
         }
         biomData.setData(data);
@@ -113,7 +113,7 @@ public class BiomExportFViewer {
      * @param dataList
      */
     private static void visitSelectedLeavesRec(ClassificationViewer viewer, Node v, NodeSet selected, Vector<String> path,
-                                               LinkedList<Map> rowList, LinkedList<int[]> dataList, Set<Integer> seen, ProgressListener progressListener) throws CanceledException {
+                                               LinkedList<Map> rowList, LinkedList<float[]> dataList, Set<Integer> seen, ProgressListener progressListener) throws CanceledException {
         if (v.getOutDegree() > 0 || selected.contains(v)) {
             Integer classId = (Integer) v.getInfo();
 
@@ -126,7 +126,7 @@ public class BiomExportFViewer {
                 if (selected.contains(v)) {
                     NodeData data = viewer.getNodeData(v);
                     if (data != null) {
-                        int[] values;
+                        final float[] values;
                         if (v.getOutDegree() == 0)
                             values = data.getSummarized();
                         else

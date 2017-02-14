@@ -63,10 +63,10 @@ public class ExportCSVForAllLevelsCommand extends CommandBase implements IComman
         List<String> levels = TaxonomicLevels.getAllNames();
         for (String level : levels) {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(outputFile + "/" + new File(rmaFile).getName() + "." + level + ".txt"))) {
-                Map<Integer, Integer[]> tab = table.getClass2Counts(ClassificationType.Taxonomy.toString());
-                for (Entry<Integer, Integer[]> taxid2count : tab.entrySet()) {
+                Map<Integer, float[]> tab = table.getClass2Counts(ClassificationType.Taxonomy.toString());
+                for (Entry<Integer, float[]> taxid2count : tab.entrySet()) {
                     Integer taxId = taxid2count.getKey();
-                    Integer count = taxid2count.getValue()[0];
+                    float count = taxid2count.getValue()[0];
                     if (TaxonomyData.getTaxonomicRank(taxId) != TaxonomicLevels.getId(level)) {
                         continue;
                     }

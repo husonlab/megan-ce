@@ -432,7 +432,7 @@ public class PCoATab extends JPanel implements ITab {
 
             {
                 NodeSet selectedNodes = clusterViewer.getParentViewer().getSelectedNodes();
-                HashMap<String, int[]> class2counts = new HashMap<>();
+                HashMap<String, float[]> class2counts = new HashMap<>();
                 for (Node v : selectedNodes) {
                     String className = clusterViewer.getParentViewer().getLabel(v); // todo: need to get proper name
                     NodeData nodeData = (NodeData) v.getData();

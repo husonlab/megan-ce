@@ -37,7 +37,7 @@ import java.util.Set;
  * Daniel Huson, 4.2010, 3.2016
  */
 public class MinSupportFilter {
-    private final Map<Integer, Integer> id2count;
+    private final Map<Integer, Float> id2count;
     private final int minSupport;
     private final ProgressListener progress;
     private final PhyloTree tree;
@@ -50,7 +50,7 @@ public class MinSupportFilter {
      * @param minSupport
      * @param progress
      */
-    public MinSupportFilter(String cName, Map<Integer, Integer> id2count, int minSupport, final ProgressListener progress) {
+    public MinSupportFilter(String cName, Map<Integer, Float> id2count, int minSupport, final ProgressListener progress) {
         this.id2count = id2count;
         this.minSupport = minSupport;
         this.progress = progress;
@@ -94,7 +94,7 @@ public class MinSupportFilter {
      * @param orphans                nodes that have too few reads
      * @return reads on or below this node
      */
-    private int computeOrphan2AncestorMappingRec(Node v, Map<Integer, Integer> orphan2AncestorMapping, Set<Integer> orphans) throws CanceledException {
+    private float computeOrphan2AncestorMappingRec(Node v, Map<Integer, Integer> orphan2AncestorMapping, Set<Integer> orphans) throws CanceledException {
         if (progress != null)
             progress.incrementProgress();
         int taxId = (Integer) v.getInfo();
@@ -102,7 +102,7 @@ public class MinSupportFilter {
         if (taxId < 0)
             return 0; // ignore nohits and unassigned
 
-        int below = 0;
+        float below = 0;
         Set<Integer> orphansBelow = new HashSet<>();
 
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
@@ -110,9 +110,9 @@ public class MinSupportFilter {
             below += computeOrphan2AncestorMappingRec(w, orphan2AncestorMapping, orphansBelow);
         }
 
-        Integer count = id2count.get(taxId);
+        Float count = id2count.get(taxId);
         if (count == null)
-            count = 0;
+            count = 0f;
 
         if (below + count >= minSupport && !idMapper.isDisabled(taxId))  // this is a strong node, map all orphans to here
         {

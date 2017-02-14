@@ -245,7 +245,7 @@ class MyJTreeCellRender implements TreeCellRenderer {
             final ViewerJTree.MyJTreeNode jNode = (ViewerJTree.MyJTreeNode) value;
             final Node v = jNode.getV(); // node in full tree tree
             final Integer classId = (Integer) v.getInfo();
-            int count = 0;
+            float count = 0;
             Set<Node> inducedNodes = id2NodesInInducedTree.get(classId);
             if (inducedNodes != null && inducedNodes.size() > 0) {
                 final NodeData nodeData = (NodeData) inducedNodes.iterator().next().getData();
@@ -256,7 +256,7 @@ class MyJTreeCellRender implements TreeCellRenderer {
             final String name = (classificationViewer.getClassification().getName2IdMap().get((Integer) v.getInfo()));
 
             if (count > 0) {
-                label.setText(String.format("<html>%s<font color=#a0a0a0> (%,d)</font>", name, count));
+                label.setText(String.format("<html>%s<font color=#a0a0a0> (%,.0f)</font>", name, count));
                 label.setForeground(Color.BLACK);
             } else {
                 label.setForeground(Color.LIGHT_GRAY);

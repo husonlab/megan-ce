@@ -125,7 +125,7 @@ data                : <list of lists>, counts of observations by sample
     public String matrix_type;
     public String matrix_element_type;
     public int[] shape;
-    public int[][] data;
+    public float[][] data;
 
     /**
      * default constructor
@@ -308,7 +308,7 @@ data                : <list of lists>, counts of observations by sample
         return shape;
     }
 
-    public int[][] getData() {
+    public float[][] getData() {
         return data;
     }
 
@@ -316,7 +316,7 @@ data                : <list of lists>, counts of observations by sample
         this.shape = shape;
     }
 
-    public void setData(int[][] data) {
+    public void setData(float[][] data) {
         this.data = data;
     }
 

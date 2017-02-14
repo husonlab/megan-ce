@@ -75,12 +75,12 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
 
 
         // use -3 for leaves, -2 and -1 for no hits and unassigned
-        final SortedMap<Integer, Integer> level2count = new TreeMap<>();
-        level2count.put(-3, 0);
-        level2count.put(-2, 0);
-        level2count.put(-1, 0);
+        final SortedMap<Integer, Float> level2count = new TreeMap<>();
+        level2count.put(-3, 0f);
+        level2count.put(-2, 0f);
+        level2count.put(-1, 0f);
 
-        final SortedMap<String, Integer> rank2count = new TreeMap<>();
+        final SortedMap<String, Float> rank2count = new TreeMap<>();
 
         final PhyloTree tree = getDir().getMainViewer().getTree();
         listAssignmentsRec(tree, tree.getRoot(), 0, level2count, rank2count);
@@ -131,13 +131,13 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
      * @param level
      * @param level2count
      */
-    private void listAssignmentsRec(PhyloTree tree, Node v, int level, SortedMap<Integer, Integer> level2count, Map<String, Integer> rank2count) {
+    private void listAssignmentsRec(PhyloTree tree, Node v, int level, SortedMap<Integer, Float> level2count, Map<String, Float> rank2count) {
         int taxonId = (Integer) (tree.getInfo(v));
         if (taxonId == IdMapper.UNASSIGNED_ID || taxonId == IdMapper.NOHITS_ID || taxonId == IdMapper.LOW_COMPLEXITY_ID) {
             level2count.put(taxonId, ((NodeData) v.getData()).getCountAssigned());
         } else // a true node in the taxonomy
         {
-            final Integer count = level2count.get(level);
+            final Float count = level2count.get(level);
             if (count == null)
                 level2count.put(level, ((NodeData) v.getData()).getCountAssigned());
             else
@@ -147,7 +147,7 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
             if (taxLevel != 0) {
                 String rank = TaxonomicLevels.getName(taxLevel);
                 if (rank != null) {
-                    final Integer rankCount = rank2count.get(rank);
+                    final Float rankCount = rank2count.get(rank);
                     if (rankCount == null)
                         rank2count.put(rank, ((NodeData) v.getData()).getCountAssigned());
                     else

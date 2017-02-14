@@ -66,12 +66,12 @@ public class
                 if (v.getInDegree() == 1 /*&& v.getFirstInEdge().getSource().getOutDegree() > 1*/) {
                     Node w = v.getFirstInEdge().getSource();
 
-                    int value1 = vd.getSummarized()[0];
-                    int value2 = vd.getSummarized()[1];
+                    float value1 = vd.getSummarized()[0];
+                    float value2 = vd.getSummarized()[1];
                     NodeData wd = (NodeData) w.getData();
 
-                    int up1 = wd.getSummarized()[0];
-                    int up2 = wd.getSummarized()[1];
+                    float up1 = wd.getSummarized()[0];
+                    float up2 = wd.getSummarized()[1];
 
                     double[] result = SignificanceTestForTwoDatasets.runProportionTest(value1, up1, value2, up2);
                     // System.err.println("value1: "+value1+" up1: "+up1+" value2: "+value2+" up2: "+up2+" result: "+result[0]+", "+result[1]);

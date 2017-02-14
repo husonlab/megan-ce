@@ -94,7 +94,7 @@ public class Comparer {
 
         final String[] names = new String[dirs.size()];
         final Long[] uids = new Long[dirs.size()];
-        final Integer[] sizes = new Integer[dirs.size()];
+        final float[] sizes = new float[dirs.size()];
         final BlastMode[] blastModes = new BlastMode[dirs.size()];
 
         // lock all unlocked projects involved in the comparison
@@ -185,7 +185,7 @@ public class Comparer {
 
                             if (isIgnoreUnassigned()) {
                                 numberOfReads = (int) doc.getNumberOfReads();
-                                Map<Integer, Integer[]> classificationBlock = table.getClassification2Class2Counts().get(ClassificationType.Taxonomy.toString());
+                                Map<Integer, float[]> classificationBlock = table.getClassification2Class2Counts().get(ClassificationType.Taxonomy.toString());
                                 if (classificationBlock != null) {
                                     for (Integer key : classificationBlock.keySet()) {
                                         if (key < 0)
@@ -208,8 +208,8 @@ public class Comparer {
                             for (String classificationName : table.getClassification2Class2Counts().keySet()) {
                                 boolean isTaxonomy = classificationName.equals(ClassificationType.Taxonomy.toString());
 
-                                Map<Integer, Integer[]> class2countsSrc = table.getClass2Counts(classificationName);
-                                Map<Integer, Integer[]> class2countsTarget = result.getClass2Counts(classificationName);
+                                Map<Integer, float[]> class2countsSrc = table.getClass2Counts(classificationName);
+                                Map<Integer, float[]> class2countsTarget = result.getClass2Counts(classificationName);
                                 if (class2countsTarget == null) {
                                     synchronized (result) {
                                         class2countsTarget = result.getClass2Counts(classificationName);
@@ -225,20 +225,20 @@ public class Comparer {
                                 for (Integer classId : class2countsSrc.keySet()) {
                                     // todo: here we assume that the nohits id is the same for all classifications...
                                     if (!isIgnoreUnassigned() || classId > 0) {
-                                        Integer[] countsTarget = class2countsTarget.get(classId);
+                                        float[] countsTarget = class2countsTarget.get(classId);
                                         if (countsTarget == null) {
                                             synchronized (result) {
                                                 countsTarget = class2countsTarget.get(classId);
                                                 if (countsTarget == null) {
-                                                    countsTarget = new Integer[dirs.size()];
+                                                    countsTarget = new float[dirs.size()];
                                                     for (int i = 0; i < countsTarget.length; i++)
                                                         countsTarget[i] = 0;
                                                     class2countsTarget.put(classId, countsTarget);
                                                 }
                                             }
                                         }
-                                        final Integer count = Basic.getSum(class2countsSrc.get(classId));
-                                        if (count == null || count == 0)
+                                        final float count = Basic.getSum(class2countsSrc.get(classId));
+                                        if (count == 0)
                                             countsTarget[pos] = 0;
                                         else if (useRelative) {
                                             countsTarget[pos] = (int) Math.round(count * factor);
@@ -297,11 +297,11 @@ public class Comparer {
 
         // if we have a taxonomy classification, then use it to get exact values:
         if (result.getClassification2Class2Counts().keySet().contains(Classification.Taxonomy)) {
-            Map<Integer, Integer[]> class2counts = result.getClass2Counts(Classification.Taxonomy);
+            Map<Integer, float[]> class2counts = result.getClass2Counts(Classification.Taxonomy);
             for (int i = 0; i < sizes.length; i++) {
                 sizes[i] = 0;
             }
-            for (Integer[] counts : class2counts.values()) {
+            for (float[] counts : class2counts.values()) {
                 for (int i = 0; i < counts.length; i++)
                     sizes[i] += counts[i];
             }

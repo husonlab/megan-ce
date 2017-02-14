@@ -51,14 +51,14 @@ public class ComputeCoreBiome {
      * @return sampleSize
      */
     public static int apply(Document srcDoc, Collection<String> samplesToUse, boolean asUpperBound, int samplesThreshold,
-                            float taxonDetectionThresholdPercent, Map<String, Map<Integer, Integer[]>> tarClassification2class2counts, ProgressListener progress) {
+                            float taxonDetectionThresholdPercent, Map<String, Map<Integer, float[]>> tarClassification2class2counts, ProgressListener progress) {
         final BitSet sampleIds = srcDoc.getDataTable().getSampleIds(samplesToUse);
         int size = 0;
 
         if (sampleIds.cardinality() > 0) {
             DataTable dataTable = srcDoc.getDataTable();
             for (String classificationName : dataTable.getClassification2Class2Counts().keySet()) {
-                final Map<Integer, Integer[]> srcClass2counts = srcDoc.getDataTable().getClass2Counts(classificationName);
+                final Map<Integer, float[]> srcClass2counts = srcDoc.getDataTable().getClass2Counts(classificationName);
                 final Node root;
 
                 if (classificationName.equals(Classification.Taxonomy))
@@ -67,7 +67,7 @@ public class ComputeCoreBiome {
                     root = ClassificationManager.get(classificationName, true).getFullTree().getRoot();
 
                 }
-                final Map<Integer, Integer[]> tarClass2counts = new HashMap<>();
+                final Map<Integer, float[]> tarClass2counts = new HashMap<>();
                 tarClassification2class2counts.put(classificationName, tarClass2counts);
 
                 final int[] detectionThreshold = computeDetectionThreshold(srcDoc.getNumberOfSamples(), srcClass2counts, taxonDetectionThresholdPercent);
@@ -76,11 +76,11 @@ public class ComputeCoreBiome {
                 // System.err.println(classificationName + ": " + tarClassification2class2counts.size());
             }
 
-            final Map<Integer, Integer[]> taxId2counts = tarClassification2class2counts.get(ClassificationType.Taxonomy.toString());
+            final Map<Integer, float[]> taxId2counts = tarClassification2class2counts.get(ClassificationType.Taxonomy.toString());
             if (taxId2counts != null) {
                 for (Integer taxId : taxId2counts.keySet()) {
                     if (taxId >= 0) {
-                        Integer[] values = taxId2counts.get(taxId);
+                        float[] values = taxId2counts.get(taxId);
                         size += values[0];
                     }
                 }
@@ -88,10 +88,10 @@ public class ComputeCoreBiome {
             if (size == 0) {
                 for (String classificationName : dataTable.getClassification2Class2Counts().keySet()) {
                     if (!classificationName.equals(ClassificationType.Taxonomy.toString())) {
-                        final Map<Integer, Integer[]> id2counts = tarClassification2class2counts.get(classificationName);
+                        final Map<Integer, float[]> id2counts = tarClassification2class2counts.get(classificationName);
                         if (id2counts != null) {
                             for (Integer ids : id2counts.keySet()) {
-                                final Integer[] values = id2counts.get(ids);
+                                final float[] values = id2counts.get(ids);
                                 if (ids >= 0)
                                     size += values[0];
                             }
@@ -113,12 +113,12 @@ public class ComputeCoreBiome {
      * @param detectionThresholdPercent
      * @return thresholds
      */
-    private static int[] computeDetectionThreshold(int numberOfSamples, Map<Integer, Integer[]> srcClass2counts, float detectionThresholdPercent) {
+    private static int[] computeDetectionThreshold(int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
         final int[] array = new int[numberOfSamples];
         if (detectionThresholdPercent > 0) {
             for (Integer id : srcClass2counts.keySet()) {
                 if (id > 0) {
-                    final Integer[] counts = srcClass2counts.get(id);
+                    final float[] counts = srcClass2counts.get(id);
                     if (counts != null) {
                         for (int i = 0; i < counts.length; i++) {
                             array[i] += counts[i];
@@ -145,25 +145,25 @@ public class ComputeCoreBiome {
      * @param srcClass2counts
      * @param tarClass2counts
      */
-    private static int[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold, Node v, Map<Integer, Integer[]> srcClass2counts, Map<Integer, Integer[]> tarClass2counts) {
-        final int[] summarized = new int[numberOfSamples];
+    private static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold, Node v, Map<Integer, float[]> srcClass2counts, Map<Integer, float[]> tarClass2counts) {
+        final float[] summarized = new float[numberOfSamples];
 
         final int classId = (Integer) v.getInfo();
 
         if (classId == -1 || classId == -2 || classId == -3)
             return summarized;  // ignore unassigned etc
 
-        final Integer[] countsV = srcClass2counts.get(classId);
+        final float[] countsV = srcClass2counts.get(classId);
         if (countsV != null) {
             for (int i = 0; i < countsV.length; i++) {
-                if (countsV[i] != null && sampleIds.get(i))
+                if (sampleIds.get(i))
                     summarized[i] = countsV[i];
             }
         }
 
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             final Node w = e.getTarget();
-            final int[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, samplesThreshold, detectionThreshold, w, srcClass2counts, tarClass2counts);
+            final float[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, samplesThreshold, detectionThreshold, w, srcClass2counts, tarClass2counts);
             for (int i = 0; i < numberOfSamples; i++) {
                 if (sampleIds.get(i)) {
                     summarized[i] += countsBelow[i];
@@ -177,12 +177,12 @@ public class ComputeCoreBiome {
             if (sampleIds.get(i)) {
                 if (summarized[i] >= detectionThreshold[i])
                     numberOfSamplesWithClass++;
-                if (countsV != null && i < countsV.length && countsV[i] != null && sampleIds.get(i))
+                if (countsV != null && i < countsV.length && sampleIds.get(i))
                     value += countsV[i];
             }
         }
         if (countsV != null && ((!asUpperBound && numberOfSamplesWithClass >= samplesThreshold) || (asUpperBound && numberOfSamplesWithClass <= samplesThreshold))) {
-            tarClass2counts.put(classId, new Integer[]{value});
+            tarClass2counts.put(classId, new float[]{value});
         }
         return summarized;
     }

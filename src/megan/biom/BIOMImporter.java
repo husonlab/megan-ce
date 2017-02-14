@@ -86,11 +86,11 @@ public class BIOMImporter {
 
         doc.getActiveViewers().add(classificationName);
 
-        final Map<Integer, Integer[]> targetClass2counts = new HashMap<>();
+        final Map<Integer, float[]> targetClass2counts = new HashMap<>();
 
         int totalReads = 0;
         int numberOfSeries = series2Classes2count.keySet().size();
-        final Integer[] sizes = new Integer[numberOfSeries];
+        final float[] sizes = new float[numberOfSeries];
         final Map<String, Integer> series2pid = new HashMap<>();
         final String[] columnIds = biomData.getColumnIds();
         for (int c = 0; c < columnIds.length; c++)
@@ -107,9 +107,9 @@ public class BIOMImporter {
                 if (count == null)
                     count = 0;
 
-                Integer[] counts = targetClass2counts.get(classId);
+                float[] counts = targetClass2counts.get(classId);
                 if (counts == null) {
-                    counts = new Integer[numberOfSeries];
+                    counts = new float[numberOfSeries];
                     targetClass2counts.put(classId, counts);
                 }
                 counts[seriesId] = count;
@@ -121,7 +121,7 @@ public class BIOMImporter {
         table.getClassification2Class2Counts().put(classificationName, targetClass2counts);
 
         if (!classificationName.equals(ClassificationType.Taxonomy.toString())) {
-            final Map<Integer, Integer[]> class2counts = new HashMap<Integer, Integer[]>();
+            final Map<Integer, float[]> class2counts = new HashMap<>();
             class2counts.put(IdMapper.UNASSIGNED_ID, sizes);
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
         }

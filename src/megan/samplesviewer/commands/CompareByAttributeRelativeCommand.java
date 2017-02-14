@@ -105,7 +105,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
                 doc.getProgressListener().setTasks("Comparing samples", tarSample);
 
                 List<String> srcSamples = tarSample2SrcSamples.get(tarSample);
-                Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+                Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
 
                 int sampleSize = ComputeCoreBiome.apply(doc, srcSamples, false, 0, 0, classification2class2counts, doc.getProgressListener());
 
@@ -117,8 +117,8 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
 
             // normalize:
             if (mode == Comparer.COMPARISON_MODE.RELATIVE) {
-                int newSize = Integer.MAX_VALUE;
-                int maxSize = 0;
+                float newSize = Float.MAX_VALUE;
+                float maxSize = 0;
                 for (String tarSample : tarSamplesOrder) {
                     newSize = Math.min(newSize, newDocument.getNumberOfReads(tarSample));
                     maxSize = Math.max(maxSize, newDocument.getNumberOfReads(tarSample));
@@ -131,9 +131,9 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
                     }
                     final DataTable dataTable = newDocument.getDataTable();
                     for (String classificationName : dataTable.getClassification2Class2Counts().keySet()) {
-                        Map<Integer, Integer[]> class2counts = dataTable.getClass2Counts(classificationName);
+                        Map<Integer, float[]> class2counts = dataTable.getClass2Counts(classificationName);
                         for (Integer classId : class2counts.keySet()) {
-                            Integer[] counts = class2counts.get(classId);
+                            float[] counts = class2counts.get(classId);
                             for (int i = 0; i < counts.length; i++) {
                                 counts[i] = (int) Math.round(factor[i] * counts[i]);
                             }

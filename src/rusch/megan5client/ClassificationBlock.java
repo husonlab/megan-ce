@@ -52,13 +52,13 @@ public class ClassificationBlock implements IClassificationBlock {
     }
 
     @Override
-    public int getWeightedSum(Integer key) {
+    public float getWeightedSum(Integer key) {
         return taxId2Count.get(key);
     }
 
     @Override
-    public void setSum(Integer key, int num) {
-        taxId2Count.put(key, num);
+    public void setSum(Integer key, float num) {
+        taxId2Count.put(key, (int) num);
     }
 
     @Override

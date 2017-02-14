@@ -643,7 +643,7 @@ public class Document {
         for (int i = 0; i < samples.size(); i++)
             id2sample[i] = samples.get(i);
 
-        final Map<Integer, Integer[]> class2counts = dataTable.getClassification2Class2Counts().get(ClassificationType.Taxonomy.toString());
+        final Map<Integer, float[]> class2counts = dataTable.getClassification2Class2Counts().get(ClassificationType.Taxonomy.toString());
         if (class2counts != null) {
             for (Integer taxId : class2counts.keySet()) {
                 String taxonName = TaxonomyData.getName2IdMap().get(taxId);
@@ -653,7 +653,7 @@ public class Document {
                         series2value = new TreeMap<>();
                         label2series2value.put(taxonName, series2value);
                     }
-                    Number[] counts = class2counts.get(taxId);
+                    float[] counts = class2counts.get(taxId);
                     if (counts != null) {
                         for (int i = 0; i < counts.length; i++) {
                             series2value.put(id2sample[i], counts[i]);
@@ -944,7 +944,7 @@ public class Document {
      * @param sample
      * @param classification2class2counts
      */
-    public void addSample(String sample, int sampleSize, int srcId, BlastMode blastMode, Map<String, Map<Integer, Integer[]>> classification2class2counts) {
+    public void addSample(String sample, float sampleSize, int srcId, BlastMode blastMode, Map<String, Map<Integer, float[]>> classification2class2counts) {
         getDataTable().addSample(sample, sampleSize, blastMode, srcId, classification2class2counts);
     }
 
@@ -960,7 +960,7 @@ public class Document {
         getDir().getMainViewer().setDoReInduce(true);
     }
 
-    public Integer getNumberOfReads(String sample) {
+    public float getNumberOfReads(String sample) {
         int i = Basic.getIndex(sample, getDataTable().getSampleNames());
         if (i == -1)
             return -1;

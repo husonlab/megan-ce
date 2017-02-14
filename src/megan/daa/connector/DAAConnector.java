@@ -156,7 +156,7 @@ public class DAAConnector implements IConnector {
         progressListener.setMaximum(maxProgress);
 
         final Map<Integer, ListOfLongs>[] fName2ClassId2Location = new HashMap[cNames.length];
-        final Map<Integer, Integer>[] fName2ClassId2Weight = new HashMap[cNames.length];
+        final Map<Integer, Float>[] fName2ClassId2Weight = new HashMap[cNames.length];
         for (int i = 0; i < cNames.length; i++) {
             fName2ClassId2Location[i] = new HashMap<>(10000);
             fName2ClassId2Weight[i] = new HashMap<>(10000);
@@ -164,15 +164,15 @@ public class DAAConnector implements IConnector {
 
         for (int i = 0; i < cNames.length; i++) {
             final Map<Integer, ListOfLongs> classId2Location = fName2ClassId2Location[i];
-            final Map<Integer, Integer> classId2weight = fName2ClassId2Weight[i];
+            final Map<Integer, Float> classId2weight = fName2ClassId2Weight[i];
 
             for (Integer classId : updateItems.getClassIds(i)) {
-                int weightedSize = updateItems.getSize(i, classId);
+                float weightedSize = updateItems.getSize(i, classId);
                 final ListOfLongs positions = new ListOfLongs();
                 classId2Location.put(classId, positions);
                 classId2weight.put(classId, weightedSize);
                 if (weightedSize > 0) {
-                    for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = updateItems.getUpdateItem(item.getNextInClassification(i))) {
+                    for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
                         positions.add(item.getReadUId());
                     }
                 }

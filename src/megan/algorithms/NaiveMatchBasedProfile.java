@@ -46,7 +46,7 @@ public class NaiveMatchBasedProfile {
      * @return mapping of each taxon to a count
      * todo: needs fixing
      */
-    public static Map<Integer, Integer[]> compute(final ClassificationViewer viewer, final int level, final float minPercent) throws IOException, CanceledException {
+    public static Map<Integer, float[]> compute(final ClassificationViewer viewer, final int level, final float minPercent) throws IOException, CanceledException {
 
         final Map<Integer, Float> rawProfile = new HashMap<>();
 
@@ -109,13 +109,13 @@ public class NaiveMatchBasedProfile {
         int minSupport = (int) (totalAssigned / 100.0 * minPercent);
 
         int totalReads = 0;
-        final Map<Integer, Integer[]> profile = new HashMap<>();
+        final Map<Integer, float[]> profile = new HashMap<>();
         for (Integer id : rawProfile.keySet()) {
             Float rawValue = rawProfile.get(id);
             if (rawValue != null) {
                 if (rawValue >= minSupport) {
                     int count = Math.round(rawValue);
-                    profile.put(id, new Integer[]{count});
+                    profile.put(id, new float[]{count});
                     totalReads += count;
                 }
             }
@@ -127,15 +127,15 @@ public class NaiveMatchBasedProfile {
             rawProfile.put(IdMapper.UNASSIGNED_ID, rawValue == null ? missing : rawValue + missing);
         }
 
-        int[] total = new int[1];
-        SortedMap<String, Integer[]> name2counts = new TreeMap<>();
+        float[] total = new float[1];
+        SortedMap<String, float[]> name2counts = new TreeMap<>();
         for (int id : profile.keySet()) {
             String name = TaxonomyData.getName2IdMap().get(id);
             name2counts.put(name, profile.get(id));
         }
         for (String name : name2counts.keySet()) {
-            final Integer[] counts = name2counts.get(name);
-            System.err.println(name + "\t" + Basic.toString(counts, ", "));
+            final float[] counts = name2counts.get(name);
+            System.err.println(name + "\t" + Basic.toString(counts, 0, counts.length, ", ", true));
             for (int i = 0; i < 1; i++)
                 total[i] += counts[i];
         }

@@ -156,8 +156,8 @@ public class CSVReadsHitsParser {
             progress.setMaximum(readName2IdAndScore[taxonomyIndex].size());
 
             // run LCA algorithm to get assignment of reads
-            Map<Integer, Integer[]> class2counts = new HashMap<>();
-            Map<Integer, Integer> class2count = new HashMap<>();
+            Map<Integer, float[]> class2counts = new HashMap<>();
+            Map<Integer, Float> class2count = new HashMap<>();
 
             for (String readName : readName2IdAndScore[taxonomyIndex].keySet()) {
                 List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[taxonomyIndex].get(readName);
@@ -165,14 +165,14 @@ public class CSVReadsHitsParser {
                 final int taxId = computeTaxonId(doc, taxonIdAndScore);
 
                 if (taxId != 0) {
-                    Integer[] counts = class2counts.get(taxId);
+                    float[] counts = class2counts.get(taxId);
                     if (counts == null) {
-                        counts = new Integer[]{0};
+                        counts = new float[]{0};
                         class2counts.put(taxId, counts);
                     }
                     counts[0]++;
                     if (class2count.get(taxId) == null)
-                        class2count.put(taxId, 1);
+                        class2count.put(taxId, 1f);
                     else
                         class2count.put(taxId, class2count.get(taxId) + 1);
                 }
@@ -198,11 +198,11 @@ public class CSVReadsHitsParser {
                     Map<Integer, Integer> changes = minSupportFilter.apply();
                     for (Integer oldTaxId : changes.keySet()) {
                         Integer newTaxId = changes.get(oldTaxId);
-                        Integer oldCount = class2counts.get(oldTaxId)[0];
+                        float oldCount = class2counts.get(oldTaxId)[0];
 
-                        Integer[] newCounts = class2counts.get(newTaxId);
-                        if (newCounts == null || newCounts[0] == null) {
-                            newCounts = new Integer[]{oldCount};
+                        float[] newCounts = class2counts.get(newTaxId);
+                        if (newCounts == null) {
+                            newCounts = new float[]{oldCount};
                             class2counts.put(newTaxId, newCounts);
                         } else {
                             newCounts[0] += oldCount;
@@ -214,8 +214,8 @@ public class CSVReadsHitsParser {
             }
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
         } else {
-            Map<Integer, Integer[]> class2counts = new HashMap<>();
-            class2counts.put(IdMapper.UNASSIGNED_ID, new Integer[]{totalReads});
+            Map<Integer, float[]> class2counts = new HashMap<>();
+            class2counts.put(IdMapper.UNASSIGNED_ID, new float[]{totalReads});
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
         }
 
@@ -225,22 +225,22 @@ public class CSVReadsHitsParser {
                 progress.setProgress(0);
                 progress.setMaximum(readName2IdAndScore[i].size());
 
-                Map<Integer, Integer[]> class2counts = new HashMap<>();
-                Map<Integer, Integer> class2count = new HashMap<>();
+                Map<Integer, float[]> class2counts = new HashMap<>();
+                Map<Integer, Float> class2count = new HashMap<>();
 
                 for (String readName : readName2IdAndScore[i].keySet()) {
                     final List<Pair<Integer, Float>> classIdAndScore = readName2IdAndScore[i].get(readName);
                     final int classId = getBestId(classIdAndScore);
 
                     if (classId != 0) {
-                        Integer[] counts = class2counts.get(classId);
+                        float[] counts = class2counts.get(classId);
                         if (counts == null) {
-                            counts = new Integer[]{0};
+                            counts = new float[]{0};
                             class2counts.put(classId, counts);
                         }
                         counts[0]++;
                         if (class2count.get(classId) == null)
-                            class2count.put(classId, 1);
+                            class2count.put(classId, 1f);
                         else
                             class2count.put(classId, class2count.get(classId) + 1);
                     }
@@ -252,7 +252,7 @@ public class CSVReadsHitsParser {
             }
         }
 
-        table.setSamples(new String[]{Basic.getFileBaseName(new File(fileName).getName())}, null, new Integer[]{totalReads}, new BlastMode[]{BlastMode.Unknown});
+        table.setSamples(new String[]{Basic.getFileBaseName(new File(fileName).getName())}, null, new float[]{totalReads}, new BlastMode[]{BlastMode.Unknown});
         table.setTotalReads(totalReads);
         doc.setNumberReads(totalReads);
         for (int i = 0; i < cNames.length; i++) {

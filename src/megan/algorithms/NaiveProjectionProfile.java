@@ -46,19 +46,21 @@ public class NaiveProjectionProfile {
      * @return mapping of each taxon to a count
      * todo: needs fixing
      */
-    public static Map<Integer, Integer[]> compute(final ClassificationViewer viewer, final String rankName, final float minPercent) {
+    public static Map<Integer, float[]> compute(final ClassificationViewer viewer, final String rankName, final float minPercent) {
 
         int rank = TaxonomicLevels.getId(rankName);
         final Set<Integer> nodeIdsAtGivenRank = ClassificationManager.get(Classification.Taxonomy, true).getFullTree().getNodeIdsAtGivenRank(rank, false);
 
         final int numberOfSamples = viewer.getDocument().getNumberOfSamples();
 
-        final Map<Integer, Integer[]> profile = new HashMap<>();
+        final Map<Integer, float[]> profile = new HashMap<>();
 
         final PhyloTree tree = viewer.getTree();
         final Node root = tree.getRoot();
 
-        final Integer[] rootAssigned = Basic.copyAsIntegerArray(((NodeData) root.getData()).getAssigned());
+        final float[] rootAssigned = new float[numberOfSamples];
+        for (int i = 0; i < numberOfSamples; i++)
+            rootAssigned[i] = ((NodeData) root.getData()).getAssigned(i);
 
         // recursively process the tree:
         computeRec(root, rootAssigned, profile, nodeIdsAtGivenRank, numberOfSamples);
@@ -67,30 +69,31 @@ public class NaiveProjectionProfile {
         for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
             Node w = e.getTarget();
             if (((Integer) w.getInfo()) <= 0) {
-                profile.put(((Integer) w.getInfo()), Basic.copyAsIntegerArray(((NodeData) w.getData()).getAssigned().clone()));
+                final float[] assigned = new float[numberOfSamples];
+                for (int i = 0; i < numberOfSamples; i++)
+                    assigned[i] = ((NodeData) w.getData()).getAssigned(i);
+                profile.put(((Integer) w.getInfo()), assigned);
             }
         }
 
         final int[] totalInitiallyAssigned = new int[numberOfSamples];
         for (Integer taxId : profile.keySet()) {
             if (taxId > 0) {
-                Integer[] counts = profile.get(taxId);
+                float[] counts = profile.get(taxId);
                 for (int i = 0; i < counts.length; i++) {
-                    if (counts[i] != null)
                         totalInitiallyAssigned[i] += counts[i];
                 }
             }
         }
-
 
         float[] minSupport = new float[numberOfSamples];
         for (int i = 0; i < numberOfSamples; i++) {
             minSupport[i] = (totalInitiallyAssigned[i] / 100.0f) * minPercent;
         }
 
-        Integer[] unassigned = profile.get(IdMapper.UNASSIGNED_ID);
+        float[] unassigned = profile.get(IdMapper.UNASSIGNED_ID);
         if (unassigned == null) {
-            unassigned = new Integer[numberOfSamples];
+            unassigned = new float[numberOfSamples];
             for (int i = 0; i < numberOfSamples; i++)
                 unassigned[i] = 0;
             profile.put(IdMapper.UNASSIGNED_ID, unassigned);
@@ -100,14 +103,11 @@ public class NaiveProjectionProfile {
             Set<Integer> toDelete = new HashSet<>();
             for (Integer taxonId : profile.keySet()) {
                 if (taxonId > 0) {
-                    Integer[] array = profile.get(taxonId);
+                    float[] array = profile.get(taxonId);
                     boolean hasEntry = false;
                     for (int i = 0; i < array.length; i++) {
-                        if (array[i] != null) {
+                        if (array[i] != 0) {
                             if (array[i] < minSupport[i]) {
-                                if (unassigned[i] == null)
-                                    unassigned[i] = array[i];
-                                else
                                     unassigned[i] += array[i];
                                 array[i] = 0;
                             } else {
@@ -130,9 +130,8 @@ public class NaiveProjectionProfile {
         {
             for (Integer taxId : profile.keySet()) {
                 if (taxId > 0) {
-                    Integer[] counts = profile.get(taxId);
+                    float[] counts = profile.get(taxId);
                     for (int i = 0; i < counts.length; i++) {
-                        if (counts[i] != null)
                             totalProjected[i] += counts[i];
                     }
                 }
@@ -142,7 +141,7 @@ public class NaiveProjectionProfile {
                 lostCount[i] = totalInitiallyAssigned[i] - totalProjected[i];
 
                 System.err.println("Sample " + i + ":");
-                System.err.println(String.format("Reads:    %,10d", viewer.getDocument().getDataTable().getSampleSizes()[i]));
+                System.err.println(String.format("Reads:    %,10f", viewer.getDocument().getDataTable().getSampleSizes()[i]));
                 System.err.println(String.format("Assigned: %,10d", totalInitiallyAssigned[i]));
                 System.err.println(String.format("Projected:%,10d", totalProjected[i]));
                 System.err.println(String.format("Lost:     %,10d", lostCount[i]));
@@ -167,12 +166,12 @@ public class NaiveProjectionProfile {
      * @param H
      * @param numberOfSamples
      */
-    private static void computeRec(Node v, Integer[] countFromAbove, Map<Integer, Integer[]> profile, Set<Integer> H, int numberOfSamples) {
+    private static void computeRec(Node v, float[] countFromAbove, Map<Integer, float[]> profile, Set<Integer> H, int numberOfSamples) {
         final int taxId = (Integer) v.getInfo();
         final NodeData vData = (NodeData) v.getData();
 
         if (H.contains(taxId)) { // is a node at the chosen rank, save profile
-            Integer[] counts = new Integer[numberOfSamples];
+            float[] counts = new float[numberOfSamples];
             for (int i = 0; i < counts.length; i++) {
                 counts[i] = countFromAbove[i] + (vData.getSummarized(i) - vData.getAssigned(i)); // below=summarized-assigned
             }
@@ -198,13 +197,12 @@ public class NaiveProjectionProfile {
                     Node w = e.getTarget();
                     if (((Integer) w.getInfo()) > 0) {
                         final NodeData wData = (NodeData) w.getData();
-                        Integer[] count = new Integer[numberOfSamples];
+                        float[] count = new float[numberOfSamples];
                         for (int i = 0; i < numberOfSamples; i++) {
                             if (belowV[i] > 0) {
                                 final double fraction = (double) wData.getSummarized(i) / (double) belowV[i];
                                 count[i] = wData.getAssigned(i) + (int) (countFromAbove[i] * fraction);
-                            } else
-                                count[i] = 0;
+                            }
                         }
                         computeRec(w, count, profile, H, numberOfSamples);
                     }

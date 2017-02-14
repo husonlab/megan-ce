@@ -75,9 +75,9 @@ public class ComparisonStats {
         if (item != null) {
             item.parseOptionString(options);
 
-            Map<Integer, Integer> input1 = computeInputMapFromLeaves(dir1, item.getOptionUseInternal(), item.getOptionUseUnassigned());
+            Map<Integer, Float> input1 = computeInputMapFromLeaves(dir1, item.getOptionUseInternal(), item.getOptionUseUnassigned());
             System.err.println("Input map for " + dir1.getTitle() + ": " + input1.keySet().size());
-            Map<Integer, Integer> input2 = computeInputMapFromLeaves(dir2, item.getOptionUseInternal(), item.getOptionUseUnassigned());
+            Map<Integer, Float> input2 = computeInputMapFromLeaves(dir2, item.getOptionUseInternal(), item.getOptionUseUnassigned());
             System.err.println("Input map for " + dir2.getTitle() + ": " + input2.keySet().size());
 
             item.setInput(input1, input2);
@@ -96,8 +96,8 @@ public class ComparisonStats {
      * @param dir
      * @return input map
      */
-    static Map<Integer, Integer> computeInputMapFromLeaves(Director dir, boolean useInternal, boolean useUnassigned) {
-        Map<Integer, Integer> map = new TreeMap<>();
+    static Map<Integer, Float> computeInputMapFromLeaves(Director dir, boolean useInternal, boolean useUnassigned) {
+        Map<Integer, Float> map = new TreeMap<>();
 
         PhyloTree tree = dir.getMainViewer().getTree();
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
@@ -107,7 +107,7 @@ public class ComparisonStats {
                 if (taxId != null && (useUnassigned ||
                         !(taxId.equals(IdMapper.NOHITS_ID)
                                 || taxId.equals(IdMapper.UNASSIGNED_ID) || taxId.equals(IdMapper.LOW_COMPLEXITY_ID)))) {
-                    int count = ((NodeData) v.getData()).getCountSummarized();
+                    float count = ((NodeData) v.getData()).getCountSummarized();
                     map.put(taxId, count);
                 }
             }

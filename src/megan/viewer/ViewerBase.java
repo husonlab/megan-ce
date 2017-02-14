@@ -143,8 +143,9 @@ abstract public class ViewerBase extends PhyloTreeView {
             int id = (Integer) v.getInfo();
             if (data != null && (id > 0 || id < -3)) {
                 maxTotalCount = Math.max(maxTotalCount, v.getOutDegree() > 0 ? data.getCountAssigned() : data.getCountSummarized());
-                int[] array = (v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                for (int a : array) maxSingleCount = Math.max(maxSingleCount, a);
+                float[] array = (v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                for (float a : array)
+                    maxSingleCount = Math.max(maxSingleCount, a);
 
             }
         }

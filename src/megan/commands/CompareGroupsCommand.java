@@ -124,7 +124,7 @@ public class CompareGroupsCommand extends jloda.gui.commands.CommandBase impleme
         // build document for each sample:
         {
             for (Pair<String, List<String>> group : groups) {
-                final Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+                final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
                 int sampleSize = ComputeCoreBiome.apply(doc, group.get2(), false, 0, 0, classification2class2counts, doc.getProgressListener());
 
                 final Director tmpDir = Director.newProject(false);

@@ -217,7 +217,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param name2Count2Ids
      * @param classificationName
      */
-    public void addTopLevelNode(final LinkedList<Triplet<String, Integer, Collection<Integer>>> name2Count2Ids, final String classificationName) {
+    public void addTopLevelNode(final LinkedList<Triplet<String, Float, Collection<Integer>>> name2Count2Ids, final String classificationName) {
         final NodeBase classificationRoot = classification2RootNode.get(classificationName);
         if (classificationRoot == null)
             return;
@@ -241,7 +241,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 boolean needsFinalRefresh = false;
 
                 try {
-                    for (final Triplet<String, Integer, Collection<Integer>> triplet : name2Count2Ids) {
+                    for (final Triplet<String, Float, Collection<Integer>> triplet : name2Count2Ids) {
                         final String name = triplet.getFirst();
                         boolean isPresent = false;
                         // first determine whether taxon already present as child of parent:
@@ -261,7 +261,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                             SwingUtilities.invokeAndWait(new Runnable() {
                                 public void run() {
                                     try {
-                                        final NodeBase node = new TopLevelNode(name, triplet.getSecond(), triplet.getThird(), classificationName);
+                                        final NodeBase node = new TopLevelNode(name, Math.round(triplet.getSecond()), triplet.getThird(), classificationName);
                                         classificationRoot.add(node);
                                         if (doRefresh) {
                                             ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);

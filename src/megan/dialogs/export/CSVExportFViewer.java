@@ -86,12 +86,12 @@ public class CSVExportFViewer {
                     if (id != null && !seen.contains(id)) {
                         seen.add(id);
                         final NodeData data = cViewer.getNodeData(v);
-                        final int[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                        final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                         final String name = getLabelSource(shortName, classification, format, v);
                         if (name != null) {
                             if (counts.length == names.size()) {
                                 w.write(name);
-                                for (int a : counts)
+                                for (float a : counts)
                                     w.write(separator + " " + a);
                                 w.write("\n");
                                 totalLines++;
@@ -147,9 +147,9 @@ public class CSVExportFViewer {
                         if (id != null && !seen.contains(id)) {
                             seen.add(id);
                             final NodeData data = cViewer.getNodeData(v);
-                            final int[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                            for (int i = 0; i < counts.length; i++) {
-                                total[i] += counts[i];
+                            final float[] values = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                            for (int i = 0; i < values.length; i++) {
+                                total[i] += values[i];
                             }
                         }
                         progressListener.incrementProgress();
@@ -163,7 +163,7 @@ public class CSVExportFViewer {
                         if (id != null && !seen.contains(id)) {
                             seen.add(id);
                             final NodeData data = cViewer.getNodeData(v);
-                            final int[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                            final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                             final String name = getLabelSource(shortName, classification, format, v);
                             if (name != null) {
                                 if (counts.length == names.size()) {

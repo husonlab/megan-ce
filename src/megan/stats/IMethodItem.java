@@ -42,7 +42,7 @@ public interface IMethodItem {
 
     void parseOptionString(String string) throws IOException;
 
-    void setInput(Map<Integer, Integer> m1, Map<Integer, Integer> m2);
+    void setInput(Map<Integer, Float> m1, Map<Integer, Float> m2);
 
     void apply(ProgressListener progressListener) throws CanceledException;
 

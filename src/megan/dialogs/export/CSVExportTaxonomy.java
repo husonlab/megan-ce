@@ -142,12 +142,12 @@ public class CSVExportTaxonomy {
                     Integer taxonId = (Integer) v.getInfo();
                     if (taxonId != null) {
                         final NodeData data = viewer.getNodeData(v);
-                        final int[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                        final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                         final String name = getTaxonLabelSource(dir, format, taxonId);
                         if (name != null) {
                             if (counts.length == names.size()) {
                                 w.write(name);
-                                for (int num : counts)
+                                for (float num : counts)
                                     w.write(separator + "" + num);
                                 w.write("\n");
                                 totalLines++;

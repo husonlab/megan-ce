@@ -66,7 +66,7 @@ public class DiversityIndex {
         double[] total = new double[numberOfDatasets];
 
         for (Node v : mainViewer.getSelectedNodes()) {
-            int[] summarized = mainViewer.getNodeData(v).getSummarized();
+            float[] summarized = mainViewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++)
                 total[i] += summarized[i];
             progressListener.incrementProgress();
@@ -77,7 +77,7 @@ public class DiversityIndex {
             result[0] = 0d;
 
         for (Node v : mainViewer.getSelectedNodes()) {
-            int[] summarized = mainViewer.getNodeData(v).getSummarized();
+            float[] summarized = mainViewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++) {
                 if (summarized[i] > 0) {
                     double p = summarized[i] / total[i];
@@ -105,7 +105,7 @@ public class DiversityIndex {
         double[] total = new double[numberOfDatasets];
 
         for (Node v : viewer.getSelectedNodes()) {
-            int[] summarized = viewer.getNodeData(v).getSummarized();
+            float[] summarized = viewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++)
                 total[i] += summarized[i];
             progressListener.incrementProgress();
@@ -116,7 +116,7 @@ public class DiversityIndex {
             result[0] = 0d;
 
         for (Node v : viewer.getSelectedNodes()) {
-            int[] summarized = viewer.getNodeData(v).getSummarized();
+            float[] summarized = viewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++) {
                 if (summarized[i] > 0) {
                     double p = summarized[i] / total[i];
@@ -159,14 +159,14 @@ public class DiversityIndex {
         double[] total = new double[numberOfDatasets];
 
         for (Node v : mainViewer.getSelectedNodes()) {
-            int[] summarized = mainViewer.getNodeData(v).getSummarized();
+            float[] summarized = mainViewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++)
                 total[i] += summarized[i];
             progressListener.incrementProgress();
         }
         double[] result = new double[numberOfDatasets];
         for (Node v : mainViewer.getSelectedNodes()) {
-            int[] summarized = mainViewer.getNodeData(v).getSummarized();
+            float[] summarized = mainViewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++) {
                 double p = summarized[i] / total[i];
                 result[i] += p * p;
@@ -192,14 +192,14 @@ public class DiversityIndex {
         double[] total = new double[numberOfDatasets];
 
         for (Node v : viewer.getSelectedNodes()) {
-            int[] summarized = viewer.getNodeData(v).getSummarized();
+            float[] summarized = viewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++)
                 total[i] += summarized[i];
             progressListener.incrementProgress();
         }
         double[] result = new double[numberOfDatasets];
         for (Node v : viewer.getSelectedNodes()) {
-            int[] summarized = viewer.getNodeData(v).getSummarized();
+            float[] summarized = viewer.getNodeData(v).getSummarized();
             for (int i = 0; i < summarized.length; i++) {
                 double p = summarized[i] / total[i];
                 result[i] += p * p;

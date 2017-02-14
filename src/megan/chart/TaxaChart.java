@@ -196,13 +196,13 @@ public class TaxaChart extends ChartViewer {
                             chartData.putValue(names[0], taxonName, ((NodeData) v.getData()).getCountAssigned());
 
                     } else {
-                        int[] summarized;
+                        float[] values;
                         if (v.getOutDegree() == 0)
-                            summarized = ((NodeData) v.getData()).getSummarized();
+                            values = ((NodeData) v.getData()).getSummarized();
                         else
-                            summarized = ((NodeData) v.getData()).getAssigned();
+                            values = ((NodeData) v.getData()).getAssigned();
                         for (int i = 0; i < names.length; i++) {
-                            chartData.putValue(names[i], taxonName, summarized[i]);
+                            chartData.putValue(names[i], taxonName, values[i]);
                         }
                     }
                 }

@@ -69,7 +69,7 @@ public class DataTable {
 
     private final Vector<String> sampleNames = new Vector<>();
     private final Vector<BlastMode> blastModes = new Vector<>();
-    private final Vector<Integer> sampleSizes = new Vector<>();
+    private final Vector<Float> sampleSizes = new Vector<>();
     private final Vector<Long> sampleUIds = new Vector<>();
 
     private final Set<String> disabledSamples = new HashSet<>();
@@ -90,7 +90,7 @@ public class DataTable {
 
     private String parameters;
 
-    private final Map<String, Map<Integer, Integer[]>> classification2class2counts = new HashMap<>();
+    private final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
 
     /**
      * constructor
@@ -192,7 +192,7 @@ public class DataTable {
                             break;
                         case SIZES:
                             for (int i = 1; i < tokens.length; i++)
-                                sampleSizes.add(Basic.parseInt(tokens[i]));
+                                sampleSizes.add(Basic.parseFloat(tokens[i]));
                             break;
                         case TOTAL_READS:
                             totalReads = (Integer.parseInt(tokens[1]));
@@ -280,18 +280,18 @@ public class DataTable {
                         String classification = ClassificationType.getFullName(tokens[0]);
                         Integer classId = Integer.parseInt(tokens[1]);
 
-                        Map<Integer, Integer[]> class2counts = classification2class2counts.get(classification);
+                        Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
                         if (class2counts == null) {
                             class2counts = new HashMap<>();
                             classification2class2counts.put(classification, class2counts);
                         }
-                        Integer[] counts = class2counts.get(classId);
+                        float[] counts = class2counts.get(classId);
                         if (counts == null) {
-                            counts = new Integer[Math.min(getNumberOfSamples(), tokens.length - 2)];
+                            counts = new float[Math.min(getNumberOfSamples(), tokens.length - 2)];
                             class2counts.put(classId, counts);
                         }
                         for (int i = 2; i < Math.min(tokens.length, counts.length + 2); i++) {
-                            counts[i - 2] = Integer.parseInt(tokens[i]);
+                            counts[i - 2] = Float.parseFloat(tokens[i]);
                         }
                     } else
                         System.err.println("Line " + lineNumber + ": Too few tokens in classification: " + aLine);
@@ -358,19 +358,19 @@ public class DataTable {
 
             // write the data:
             for (String classification : classification2class2counts.keySet()) {
-                Map<Integer, Integer[]> class2counts = classification2class2counts.get(classification);
+                Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
                 classification = ClassificationType.getShortName(classification);
                 for (Integer classId : class2counts.keySet()) {
-                    Integer[] counts = class2counts.get(classId);
+                    float[] counts = class2counts.get(classId);
                     if (counts != null) {
                         w.write(classification + "\t" + classId);
                         int last = Math.min(counts.length, getNumberOfSamples()) - 1;
-                        while (last > 0 && (counts[last] == null || counts[last] == 0))
+                        while (last > 0 && counts[last] == 0)
                             last--;
 
                         for (int i = 0; i <= last; i++) {
                             if (i < counts.length)
-                                w.write("\t" + (counts[i] != null ? counts[i] : 0));
+                                w.write("\t" + counts[i]);
                         }
                         w.write("\n");
                     }
@@ -408,7 +408,7 @@ public class DataTable {
         }
         if (sampleSizes.size() > 0) {
             w.write(SIZES);
-            for (Integer dataSize : sampleSizes) w.write("\t" + dataSize);
+            for (float dataSize : sampleSizes) w.write("\t" + dataSize);
             w.write("\n");
         }
 
@@ -489,7 +489,7 @@ public class DataTable {
         }
         if (sampleSizes.size() > 0) {
             w.write("<b>" + SIZES.substring(1) + ":</b>");
-            for (Integer dataSize : sampleSizes) w.write(" " + dataSize);
+            for (float dataSize : sampleSizes) w.write(" " + dataSize);
             w.write("<br>");
         }
 
@@ -500,7 +500,7 @@ public class DataTable {
 
         w.write("<b>Classifications:</b> ");
         for (String classification : classification2class2counts.keySet()) {
-            Map<Integer, Integer[]> class2counts = classification2class2counts.get(classification);
+            Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
             int size = class2counts != null ? class2counts.size() : 0;
             w.write(classification + " (" + size + " classes)");
         }
@@ -551,7 +551,7 @@ public class DataTable {
         }
         if (sampleSizes.size() > 0) {
             w.write(SIZES.substring(1) + ": ");
-            for (Integer dataSize : sampleSizes) w.write(" " + dataSize);
+            for (float dataSize : sampleSizes) w.write(" " + dataSize);
             w.write("\n");
         }
 
@@ -562,7 +562,7 @@ public class DataTable {
 
         w.write("Classifications:\n");
         for (String classification : classification2class2counts.keySet()) {
-            Map<Integer, Integer[]> class2counts = classification2class2counts.get(classification);
+            Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
             int size = class2counts != null ? class2counts.size() : 0;
             w.write(" " + classification + " (" + size + " classes)");
         }
@@ -674,20 +674,20 @@ public class DataTable {
      */
     private void determineSizesFromTaxonomyClassification() {
         // determine sizes:
-        Map<Integer, Integer[]> class2count = classification2class2counts.get(ClassificationType.Taxonomy.toString());
+        Map<Integer, float[]> class2count = classification2class2counts.get(ClassificationType.Taxonomy.toString());
         if (class2count != null) {
-            int[] sizes = new int[getNumberOfSamples()];
+            float[] sizes = new float[getNumberOfSamples()];
             for (Integer classId : class2count.keySet()) {
-                Integer[] counts = class2count.get(classId);
+                float[] counts = class2count.get(classId);
                 if (counts != null) {
                     for (int i = 0; i < getNumberOfSamples(); i++) {
-                        if (counts[i] != null)
+                        if (counts[i] > 0)
                             sizes[i] += counts[i];
                     }
                 }
             }
             sampleSizes.clear();
-            for (Integer size : sizes)
+            for (float size : sizes)
                 sampleSizes.add(size);
         }
     }
@@ -713,7 +713,7 @@ public class DataTable {
      *
      * @return mapping
      */
-    public Map<String, Map<Integer, Integer[]>> getClassification2Class2Counts() {
+    public Map<String, Map<Integer, float[]>> getClassification2Class2Counts() {
         return classification2class2counts;
     }
 
@@ -725,14 +725,14 @@ public class DataTable {
      * @param sampleId
      * @param count
      */
-    public void setClassification2Class2Count(String classification, int classId, int sampleId, int count) {
-        Map<Integer, Integer[]> class2count = classification2class2counts.get(classification);
+    public void setClassification2Class2Count(String classification, int classId, int sampleId, float count) {
+        Map<Integer, float[]> class2count = classification2class2counts.get(classification);
         if (class2count == null)
             class2count = new HashMap<>();
         classification2class2counts.put(classification, class2count);
-        Integer[] counts = class2count.get(classId);
+        float[] counts = class2count.get(classId);
         if (counts == null) {
-            counts = new Integer[getNumberOfSamples()];
+            counts = new float[getNumberOfSamples()];
             class2count.put(classId, counts);
         }
         counts[sampleId] = count;
@@ -788,7 +788,7 @@ public class DataTable {
      * @param sizes
      * @param modes
      */
-    public void setSamples(String[] names, Long[] uids, Integer[] sizes, BlastMode[] modes) {
+    public void setSamples(String[] names, Long[] uids, float[] sizes, BlastMode[] modes) {
         sampleNames.clear();
         if (names != null)
             sampleNames.addAll(Arrays.asList(names));
@@ -796,8 +796,10 @@ public class DataTable {
         if (uids != null)
             sampleUIds.addAll(Arrays.asList(uids));
         sampleSizes.clear();
-        if (sizes != null)
-            sampleSizes.addAll(Arrays.asList(sizes));
+        if (sizes != null) {
+            for (float size : sizes)
+                sampleSizes.add(size);
+        }
         blastModes.clear();
         if (modes != null)
             blastModes.addAll(Arrays.asList(modes));
@@ -807,8 +809,11 @@ public class DataTable {
         }
     }
 
-    public Integer[] getSampleSizes() {
-        return sampleSizes.toArray(new Integer[sampleSizes.size()]);
+    public float[] getSampleSizes() {
+        final float[] sizes = new float[sampleSizes.size()];
+        for (int i = 0; i < sizes.length; i++)
+            sizes[i] = sampleSizes.get(i);
+        return sizes;
     }
 
     public Long[] getSampleUIds() {
@@ -974,15 +979,15 @@ public class DataTable {
         this.contentType = contentType;
     }
 
-    public Map<Integer, Integer[]> getClass2Counts(ClassificationType classification) {
+    public Map<Integer, float[]> getClass2Counts(ClassificationType classification) {
         return classification2class2counts.get(classification.toString());
     }
 
-    public Map<Integer, Integer[]> getClass2Counts(String classification) {
+    public Map<Integer, float[]> getClass2Counts(String classification) {
         return classification2class2counts.get(classification);
     }
 
-    public void setClass2Counts(String classification, Map<Integer, Integer[]> classId2count) {
+    public void setClass2Counts(String classification, Map<Integer, float[]> classId2count) {
         classification2class2counts.put(classification, classId2count);
     }
 
@@ -1053,12 +1058,12 @@ public class DataTable {
             sampleUIds.add(System.currentTimeMillis());
 
             int tarId = Basic.getIndex(newName, sampleNames);
-            for (Map<Integer, Integer[]> class2counts : classification2class2counts.values()) {
+            for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
                 for (Integer classId : class2counts.keySet()) {
-                    Integer[] counts = class2counts.get(classId);
+                    float[] counts = class2counts.get(classId);
                     if (counts != null) {
                         int newLength = Math.max(counts.length + 1, tarId + 1);
-                        Integer[] newCounts = new Integer[newLength];
+                        float[] newCounts = new float[newLength];
                         System.arraycopy(counts, 0, newCounts, 0, counts.length);
                         newCounts[tarId] = counts[srcId];
                         class2counts.put(classId, newCounts);
@@ -1094,11 +1099,11 @@ public class DataTable {
         int alive = sampleNames.size();
         // System.err.println("Remaining sample name: "+Basic.toString(sampleNames,","));
 
-        for (Map<Integer, Integer[]> class2counts : classification2class2counts.values()) {
+        for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
             for (Integer classId : class2counts.keySet()) {
-                Integer[] counts = class2counts.get(classId);
+                float[] counts = class2counts.get(classId);
                 if (counts != null) {
-                    Integer[] newCounts = new Integer[alive];
+                    float[] newCounts = new float[alive];
                     int k = 0;
                     for (int i = 0; i < counts.length; i++) {
                         if (!dead.contains(i)) {
@@ -1110,8 +1115,7 @@ public class DataTable {
             }
         }
         totalReads = 0;
-        for (Integer size : sampleSizes) {
-            if (size != null)
+        for (float size : sampleSizes) {
                 totalReads += size;
         }
     }
@@ -1166,17 +1170,17 @@ public class DataTable {
             int tarId = Basic.getIndex(sample, target.sampleNames);
 
             for (String classification : source.classification2class2counts.keySet()) {
-                Map<Integer, Integer[]> sourceClass2counts = source.classification2class2counts.get(classification);
-                Map<Integer, Integer[]> targetClass2counts = target.classification2class2counts.get(classification);
+                Map<Integer, float[]> sourceClass2counts = source.classification2class2counts.get(classification);
+                Map<Integer, float[]> targetClass2counts = target.classification2class2counts.get(classification);
                 if (targetClass2counts == null) {
                     targetClass2counts = new HashMap<>();
                     target.classification2class2counts.put(classification, targetClass2counts);
                 }
                 for (Integer classId : sourceClass2counts.keySet()) {
-                    Integer[] sourceCounts = sourceClass2counts.get(classId);
-                    if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != null) {
-                        Integer[] targetCounts = targetClass2counts.get(classId);
-                        Integer[] newCounts = new Integer[tarId + 1];
+                    float[] sourceCounts = sourceClass2counts.get(classId);
+                    if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != 0) {
+                        float[] targetCounts = targetClass2counts.get(classId);
+                        float[] newCounts = new float[tarId + 1];
                         if (targetCounts != null) {
                             System.arraycopy(targetCounts, 0, newCounts, 0, targetCounts.length);
                         }
@@ -1185,10 +1189,7 @@ public class DataTable {
                     }
                 }
             }
-            if (target.totalReads > 0)
-                target.totalReads += source.sampleSizes.get(srcId);
-            else
-                target.totalReads = source.sampleSizes.get(srcId);
+            target.totalReads += source.sampleSizes.get(srcId);
         }
     }
 
@@ -1198,7 +1199,7 @@ public class DataTable {
      * @param sample
      * @param sourceClassification2class2counts
      */
-    public void addSample(String sample, int sampleSize, BlastMode mode, int srcId, Map<String, Map<Integer, Integer[]>> sourceClassification2class2counts) {
+    public void addSample(String sample, float sampleSize, BlastMode mode, int srcId, Map<String, Map<Integer, float[]>> sourceClassification2class2counts) {
         if (!Arrays.asList(this.getSampleNames()).contains(sample)) {
             this.sampleSizes.add(sampleSize);
             this.sampleNames.add(sample);
@@ -1208,17 +1209,17 @@ public class DataTable {
             int tarId = Basic.getIndex(sample, this.sampleNames);
 
             for (String classification : sourceClassification2class2counts.keySet()) {
-                Map<Integer, Integer[]> sourceClass2counts = sourceClassification2class2counts.get(classification);
-                Map<Integer, Integer[]> targetClass2counts = this.classification2class2counts.get(classification);
+                Map<Integer, float[]> sourceClass2counts = sourceClassification2class2counts.get(classification);
+                Map<Integer, float[]> targetClass2counts = this.classification2class2counts.get(classification);
                 if (targetClass2counts == null) {
                     targetClass2counts = new HashMap<>();
                     this.classification2class2counts.put(classification, targetClass2counts);
                 }
-                for (Integer classId : sourceClass2counts.keySet()) {
-                    Integer[] sourceCounts = sourceClass2counts.get(classId);
-                    if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != null) {
-                        Integer[] targetCounts = targetClass2counts.get(classId);
-                        Integer[] newCounts = new Integer[tarId + 1];
+                for (int classId : sourceClass2counts.keySet()) {
+                    float[] sourceCounts = sourceClass2counts.get(classId);
+                    if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != 0) {
+                        float[] targetCounts = targetClass2counts.get(classId);
+                        float[] newCounts = new float[tarId + 1];
                         if (targetCounts != null) {
                             System.arraycopy(targetCounts, 0, newCounts, 0, targetCounts.length);
                         }
@@ -1227,10 +1228,7 @@ public class DataTable {
                     }
                 }
             }
-            if (this.totalReads >= 0)
-                this.totalReads += sampleSize;
-            else
-                this.totalReads = sampleSize;
+            this.totalReads += sampleSize;
         }
     }
 
@@ -1273,7 +1271,7 @@ public class DataTable {
             } else if (mode != BlastMode.Unknown && blastModes.get(pid) != mode)
                 mode = BlastMode.Unknown;
         }
-        int reads = 0;
+        float reads = 0;
         for (int pid : pids) {
             reads += sampleSizes.get(pid);
         }
@@ -1284,16 +1282,16 @@ public class DataTable {
         blastModes.add(mode);
 
         int tarId = Basic.getIndex(newName, sampleNames);
-        for (Map<Integer, Integer[]> class2counts : classification2class2counts.values()) {
+        for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
             for (Integer classId : class2counts.keySet()) {
-                Integer[] counts = class2counts.get(classId);
+                float[] counts = class2counts.get(classId);
                 if (counts != null) {
                     int newLength = Math.max(counts.length + 1, tarId + 1);
-                    Integer[] newCounts = new Integer[newLength];
+                    float[] newCounts = new float[newLength];
                     System.arraycopy(counts, 0, newCounts, 0, counts.length);
                     int sum = 0;
                     for (int pid : pids) {
-                        if (pid < counts.length && counts[pid] != null)
+                        if (pid < counts.length && counts[pid] != 0)
                             sum += counts[pid];
                     }
                     newCounts[tarId] = sum;
@@ -1301,8 +1299,7 @@ public class DataTable {
                 }
             }
         }
-        for (Integer size : sampleSizes) {
-            if (size != null)
+        for (float size : sampleSizes) {
                 totalReads += size;
         }
     }
@@ -1326,17 +1323,17 @@ public class DataTable {
 
         final String[] datasetNames = modify(order, getSampleNames());
         final Long[] uids = modify(order, getSampleUIds());
-        final Integer[] sizes = modify(order, getSampleSizes());
+        final float[] sizes = modify(order, getSampleSizes());
         final BlastMode[] modes = modify(order, getBlastModes());
         setSamples(datasetNames, uids, sizes,modes);
 
-        final Map<String, Map<Integer, Integer[]>> classification2Class2Counts = getClassification2Class2Counts();
+        final Map<String, Map<Integer, float[]>> classification2Class2Counts = getClassification2Class2Counts();
         for (String classification : classification2Class2Counts.keySet()) {
-            final Map<Integer, Integer[]> class2Counts = classification2Class2Counts.get(classification);
+            final Map<Integer, float[]> class2Counts = classification2Class2Counts.get(classification);
             final Set<Integer> keys = new HashSet<>();
             keys.addAll(class2Counts.keySet());
             for (Integer classId : keys) {
-                Integer[] values = class2Counts.get(classId);
+                float[] values = class2Counts.get(classId);
                 if (values != null) {
                     values = modify(order, values);
                     class2Counts.put(classId, values);
@@ -1370,9 +1367,25 @@ public class DataTable {
      * @param array
      * @return modified array, possibly with changed length
      */
+    private static float[] modify(Integer[] order, float[] array) {
+        float[] tmp = new float[order.length];
+        int pos = 0;
+        for (Integer id : order) {
+            if (id < array.length)
+                tmp[pos++] = array[id];
+        }
+        return tmp;
+    }
+
+    /**
+     * modify an array according to the given order
+     *
+     * @param order
+     * @param array
+     * @return modified array, possibly with changed length
+     */
     private static Integer[] modify(Integer[] order, Integer[] array) {
         Integer[] tmp = new Integer[order.length];
-
         int pos = 0;
         for (Integer id : order) {
             if (id < array.length)
@@ -1500,7 +1513,7 @@ public class DataTable {
         }
 
         Long[] origSampleUIds = originalData.getSampleUIds();
-        Integer[] origSampleSizes = originalData.getSampleSizes();
+        float[] origSampleSizes = originalData.getSampleSizes();
         BlastMode[] origBlastModes = originalData.getBlastModes();
 
         sampleNames.clear();
@@ -1513,24 +1526,23 @@ public class DataTable {
                 if (origBlastModes != null && origBlastModes.length > origIndex)
                     blastModes.addElement(origBlastModes[origIndex]);
                 sampleSizes.addElement(origSampleSizes[origIndex]);
-                if (origSampleSizes[origIndex] != null)
-                    totalReads += origSampleSizes[origIndex];
+                totalReads += origSampleSizes[origIndex];
             }
         }
         setTotalReads(totalReads);
 
         // write the data:
         for (String classification : originalData.classification2class2counts.keySet()) {
-            Map<Integer, Integer[]> origClass2counts = originalData.classification2class2counts.get(classification);
-            Map<Integer, Integer[]> class2counts = classification2class2counts.get(classification);
+            Map<Integer, float[]> origClass2counts = originalData.classification2class2counts.get(classification);
+            Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
             if (class2counts == null) {
                 class2counts = new HashMap<>();
                 classification2class2counts.put(classification, class2counts);
             }
 
             for (Integer classId : origClass2counts.keySet()) {
-                Integer[] origCounts = origClass2counts.get(classId);
-                Integer[] counts = new Integer[activeIndices.cardinality()];
+                float[] origCounts = origClass2counts.get(classId);
+                float[] counts = new float[activeIndices.cardinality()];
                 int index = 0;
                 for (int origIndex = 0; origIndex < origCounts.length; origIndex++) {
                     if (activeIndices.get(origIndex)) {

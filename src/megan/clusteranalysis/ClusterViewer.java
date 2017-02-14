@@ -119,7 +119,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
     private boolean useColors = true;
     private boolean showLabels = true;
-    private int nodeRadius = 16; // default node radius
+    private int nodeRadius = 12; // default node radius
 
     private final HashMap<String, NodeShape> label2shape = new HashMap<>();
 

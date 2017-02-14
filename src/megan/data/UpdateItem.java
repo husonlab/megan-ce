@@ -26,7 +26,7 @@ import java.util.Comparator;
  */
 public class UpdateItem implements Comparator<UpdateItem> {
     private long readUId; // position of read
-    private long[] nextInClass; // next item in each classification
+    private UpdateItem[] nextInClass; // next item in each classification
     private int[] classId; // class id
 
     /**
@@ -42,7 +42,7 @@ public class UpdateItem implements Comparator<UpdateItem> {
      * @param numberClassifications
      */
     public UpdateItem(int numberClassifications) {
-        nextInClass = new long[numberClassifications];
+        nextInClass = new UpdateItem[numberClassifications];
         classId = new int[numberClassifications];
     }
 
@@ -55,12 +55,12 @@ public class UpdateItem implements Comparator<UpdateItem> {
         return classId;
     }
 
-    public long getNextInClassification(int classificationId) {
+    public UpdateItem getNextInClassification(int classificationId) {
         return nextInClass[classificationId];
     }
 
-    public void setNextInClassifaction(int classificationId, long pos) {
-        nextInClass[classificationId] = pos;
+    public void setNextInClassifaction(int classificationId, UpdateItem item) {
+        nextInClass[classificationId] = item;
     }
 
     public long getReadUId() {
@@ -88,16 +88,23 @@ public class UpdateItem implements Comparator<UpdateItem> {
         buf.append("readUid= ").append(readUId).append(", classIds=");
         for (int id : classId) buf.append(" ").append(id);
         buf.append(" nextInClass=");
-        for (long nextInClas : nextInClass) buf.append(" ").append(nextInClas);
+        for (UpdateItem nextInClas : nextInClass) buf.append(" ").append(nextInClas.getReadUId());
         return buf.toString();
     }
 
-    public int compare(UpdateItem updateItem1, UpdateItem updateItem2) {
-        if (updateItem1.readUId < updateItem2.readUId)
+    public int compare(UpdateItem a, UpdateItem b) {
+        if (a.readUId < b.readUId)
             return -1;
-        else if (updateItem1.readUId > updateItem2.readUId)
+        else if (a.readUId > b.readUId)
             return 1;
-        else
-            return 0;
+        else {
+            for (int i = 0; i < a.classId.length; i++) { // we are assuming here that update items always have the same number of classifications
+                if (a.classId[i] < b.classId[i])
+                    return -1;
+                else if (a.classId[i] > b.classId[i])
+                    return 1;
+            }
+        }
+        return 0;
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,30 +19,20 @@
 
 package megan.algorithms;
 
+import java.util.ArrayList;
+
 /**
- * create a LCA assignment algorithm
- * Daniel Huson, 3.2016
+ * Assignment algorithm
+ * Daniel Huson, 1.2016
  */
-public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
-    private final String cName;
-
+public interface IMultiAssignmentAlgorithm extends IAssignmentAlgorithm {
     /**
-     * constructor
+     * get all additional assignments
      *
-     * @param cName
+     * @param i                       the classification number to use in class ids entry
+     * @param numberOfClassifications the total length of a class ids entry
+     * @param classIds                all additional assignments returned here
+     * @return the total number of gene segments detected
      */
-    public AssignmentUsingLCACreator(String cName) {
-        this.cName = cName;
-        System.err.println("Using LCA algorithm for binning: " + cName);
-    }
-
-    /**
-     * creates an assignment algorithm
-     *
-     * @return assignment algorithm
-     */
-    @Override
-    public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingLCA(cName);
-    }
+    int getOtherClassIds(int i, int numberOfClassifications, ArrayList<int[]> classIds);
 }

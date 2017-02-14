@@ -217,7 +217,7 @@ public class ApplyMajorityVoteCommand extends CommandBase implements ICommand {
 
         UpdateItemList list = new UpdateItemList(1);
         for (Entry<Long, Integer> rk2taxid : readKey2TaxId.entrySet()) {
-            list.addItem(rk2taxid.getKey(), 1, new Integer[]{rk2taxid.getValue()});
+            list.addItem(rk2taxid.getKey(), 1, new int[]{rk2taxid.getValue()});
         }
         System.out.println("Done retrieving reads. Took " + TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis() - now)) + " seconds.");
         now = System.currentTimeMillis();

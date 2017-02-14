@@ -37,7 +37,7 @@ public class AssignmentUsingMultiGeneLCACreator implements IAssignmentAlgorithmC
         this.cName = cName;
         this.usePercentIdentityFilter = usePercentIdentityFilter;
         this.topPercent = topPercent;
-        System.err.println("Using Multi-Gene LCA algorithm");
+        System.err.println("Using Multi-Gene LCA algorithm for binning: " + cName);
     }
 
     /**

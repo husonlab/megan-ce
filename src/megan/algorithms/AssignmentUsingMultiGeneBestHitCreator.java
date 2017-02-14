@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -20,20 +20,20 @@
 package megan.algorithms;
 
 /**
- * create a LCA assignment algorithm
+ * create a best hit assignment algorithm
  * Daniel Huson, 3.2016
  */
-public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
-    private final String cName;
+public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgorithmCreator {
+    private final AssignmentUsingMultiGeneBestHit algorithm;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingLCACreator(String cName) {
-        this.cName = cName;
-        System.err.println("Using LCA algorithm for binning: " + cName);
+    public AssignmentUsingMultiGeneBestHitCreator(String cName, String fileName) {
+        algorithm = new AssignmentUsingMultiGeneBestHit(cName, fileName);
+        System.err.println("Using Multi-Gene Best-Hit algorithm for binning: " + cName);
     }
 
     /**
@@ -42,7 +42,7 @@ public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
      * @return assignment algorithm
      */
     @Override
-    public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingLCA(cName);
+    public IMultiAssignmentAlgorithm createAssignmentAlgorithm() {
+        return algorithm;
     }
 }

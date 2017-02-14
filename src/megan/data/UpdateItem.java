@@ -24,7 +24,7 @@ import java.util.Comparator;
  * records necessary updates to data
  * Daniel Huson, 1.2009
  */
-public class UpdateItem implements Comparator<UpdateItem> {
+public class UpdateItem {
     private long readUId; // position of read
     private UpdateItem[] nextInClass; // next item in each classification
     private int[] classId; // class id
@@ -92,19 +92,24 @@ public class UpdateItem implements Comparator<UpdateItem> {
         return buf.toString();
     }
 
-    public int compare(UpdateItem a, UpdateItem b) {
-        if (a.readUId < b.readUId)
-            return -1;
-        else if (a.readUId > b.readUId)
-            return 1;
-        else {
-            for (int i = 0; i < a.classId.length; i++) { // we are assuming here that update items always have the same number of classifications
-                if (a.classId[i] < b.classId[i])
+    public static Comparator<UpdateItem> getComparator() {
+        return new Comparator<UpdateItem>() {
+            @Override
+            public int compare(UpdateItem a, UpdateItem b) {
+                if (a.readUId < b.readUId)
                     return -1;
-                else if (a.classId[i] > b.classId[i])
+                else if (a.readUId > b.readUId)
                     return 1;
+                else {
+                    for (int i = 0; i < a.classId.length; i++) {
+                        if (a.classId[i] < b.classId[i])
+                            return -1;
+                        else if (a.classId[i] > b.classId[i])
+                            return 1;
+                    }
+                }
+                return 0;
             }
-        }
-        return 0;
+        };
     }
 }

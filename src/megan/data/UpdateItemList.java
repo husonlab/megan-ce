@@ -55,7 +55,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param readUid
      * @param classIds
      */
-    public UpdateItem addItem(final long readUid, float readWeight, final Integer[] classIds) throws IOException {
+    public UpdateItem addItem(final long readUid, float readWeight, final int[] classIds) throws IOException {
         if (classIds.length != numberOfClassifications)
             throw new IOException("classIds has wrong length: " + classIds.length + ", should be: " + numberOfClassifications);
         final UpdateItem item = new UpdateItem(numberOfClassifications);
@@ -69,7 +69,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
 
         for (int i = 0; i < numberOfClassifications; i++) {
             final int id = classIds[i];
-
             if (id != 0) {
                 item.setClassId(i, id);
                 UpdateItem lastInClass = last[i].get(id);
@@ -249,13 +248,14 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      */
     private void sortChain(int classificationId, int classId) {
         // sort all UpdateItems by readUid:
-        SortedSet<UpdateItem> sorted = new TreeSet<>(new UpdateItem());
+        final ArrayList<UpdateItem> sorted = new ArrayList<>(100000);
 
         UpdateItem item = getFirst(classificationId, classId);
         while (item != null) {
             sorted.add(item);
             item = item.getNextInClassification(classificationId);
         }
+        sorted.sort(UpdateItem.getComparator());
 
         // re-build chain:
         UpdateItem first = null;

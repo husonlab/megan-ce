@@ -35,7 +35,7 @@ public class AssignmentUsingLCAForTaxonomyCreator implements IAssignmentAlgorith
     public AssignmentUsingLCAForTaxonomyCreator(String cName, boolean usePercentIdentityFilter) {
         this.cName = cName;
         this.usePercentIdentityFilter = usePercentIdentityFilter;
-        System.err.println("Using Naive LCA algorithm");
+        System.err.println("Using Naive LCA algorithm for binning: " + cName);
     }
 
     /**

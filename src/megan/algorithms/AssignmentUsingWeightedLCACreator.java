@@ -69,13 +69,13 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
     /**
      * constructor
      */
-    public AssignmentUsingWeightedLCACreator(final Document doc, final String cName, final float percentToCover) throws IOException, CanceledException {
+    public AssignmentUsingWeightedLCACreator(final Document doc, final String cName, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
         this.cName = cName;
-        this.useIdentityFilter = doc.isUseIdentityFilter();
+        this.useIdentityFilter = usingIdentityFilter;
         ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
         name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
         cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
-        System.err.println("Using Weighted LCA algorithm");
+        System.err.println("Using Weighted LCA algorithm for binning: " + cName);
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 

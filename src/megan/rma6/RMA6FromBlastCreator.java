@@ -55,6 +55,7 @@ public class RMA6FromBlastCreator {
     private final IdParser[] parsers;
     private final String[] cNames;
     private final boolean pairedReads;
+    private final boolean longReads;
     private final int pairedReadSuffixLength;
 
     private final RMA6FileCreator rma6FileCreator;
@@ -105,6 +106,7 @@ public class RMA6FromBlastCreator {
 
         ReadMagnitudeParser.setEnabled(hasMagnitudes);
 
+        this.longReads = doc.isLongReads();
         this.pairedReads = doc.isPairedReads();
         this.pairedReadSuffixLength = doc.getPairedReadSuffixLength();
 
@@ -136,12 +138,12 @@ public class RMA6FromBlastCreator {
 
         final byte[] queryName = new byte[100000];
         final Single<byte[]> fastAText = new Single<>(new byte[1000]);
-        final MatchLineRMA6[] matchLineRMA6s = new MatchLineRMA6[maxMatchesPerRead];
+        MatchLineRMA6[] matchLineRMA6s = new MatchLineRMA6[maxMatchesPerRead];
         for (int i = 0; i < matchLineRMA6s.length; i++) {
             matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
         }
 
-        final int[][] match2classification2id = new int[maxMatchesPerRead][cNames.length];
+        int[][] match2classification2id = new int[maxMatchesPerRead][cNames.length];
 
         rma6FileCreator.startAddingQueries();
 
@@ -154,7 +156,7 @@ public class RMA6FromBlastCreator {
             progress.setTasks("Parsing file:", Basic.getFileNameWithoutPath(blastFile));
             System.err.println("Parsing file: " + blastFile);
 
-            final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead);
+            final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);
 
             progress.setProgress(0);
             progress.setMaximum(iterator.getMaximumProgress());
@@ -225,10 +227,23 @@ public class RMA6FromBlastCreator {
                 for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
                     final String refName = Utilities.getToken(2, matchesText, offset);
 
+                    if (matchCount == matchLineRMA6s.length) { // double the array...
+                        MatchLineRMA6[] tmp = new MatchLineRMA6[2 * matchCount];
+                        System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchCount);
+                        matchLineRMA6s = tmp;
+                        for (int i = matchCount; i < matchLineRMA6s.length; i++)
+                            matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
+                    }
+
                     final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
                     matchLineRMA6.parse(matchesText, offset);
                     for (int i = 0; i < parsers.length; i++) {
                         final int id = parsers[i].getIdFromHeaderLine(refName);
+                        if (matchCount == match2classification2id.length) {
+                            int[][] tmp = new int[2 * matchCount][cNames.length];
+                            System.arraycopy(match2classification2id, 0, tmp, 0, matchCount);
+                            match2classification2id = tmp;
+                        }
                         match2classification2id[matchCount][i] = id;
                         matchLineRMA6.setFId(i, id);
                     }

@@ -71,7 +71,7 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
         final int old = doc.getSampleAttributeTable().getNumberOfAttributes();
 
         doc.getSampleAttributeTable().read(new FileReader(fileName), doc.getSampleNames(), false);
-
+        doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
 
         doc.setDirty(true);
         if (samplesViewer != null) {

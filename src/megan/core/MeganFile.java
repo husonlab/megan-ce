@@ -218,8 +218,8 @@ public class MeganFile {
      * @return data connector
      * @throws IOException
      */
-    public IConnector getDataConnector() throws IOException {
-        return getDataConnector(true);
+    public IConnector getConnector() throws IOException {
+        return getConnector(true);
     }
 
     /**
@@ -228,7 +228,7 @@ public class MeganFile {
      * @return data connector
      * @throws IOException
      */
-    public IConnector getDataConnector(boolean openDAAFileOnlyIfMeganized) throws IOException {
+    IConnector getConnector(boolean openDAAFileOnlyIfMeganized) throws IOException {
         if (connector == null) {
             switch (fileType) {
                 case MEGAN_SERVER_FILE: {

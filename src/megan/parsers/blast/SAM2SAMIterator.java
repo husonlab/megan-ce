@@ -39,6 +39,8 @@ public class SAM2SAMIterator implements ISAMIterator {
     private int length = 0;
     private int matchesInResult = 0;
 
+    private boolean parseLongReads;
+
     /**
      * constructor
      *
@@ -192,5 +194,15 @@ public class SAM2SAMIterator implements ISAMIterator {
                 break;
         }
         it.close();
+    }
+
+    @Override
+    public void setParseLongReads(boolean longReads) {
+        this.parseLongReads = longReads;
+    }
+
+    @Override
+    public boolean isParseLongReads() {
+        return parseLongReads;
     }
 }

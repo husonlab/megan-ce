@@ -91,7 +91,7 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
      * @return histogram of counts of matches to different sequences
      */
     private int[] computeHistogram(int classId, Document doc) throws IOException {
-        IConnector connector = doc.getMeganFile().getDataConnector();
+        IConnector connector = doc.getConnector();
 
         Map<String, Integer> matched2count = new HashMap<>();
 

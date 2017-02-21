@@ -136,7 +136,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         Single<Long> totalReadsExtracted = new Single<>(0L);
         try {
             tarDir.notifyLockInput();
-            tarDoc.getActiveViewers().addAll(Arrays.asList(srcDoc.getMeganFile().getDataConnector().getAllClassificationNames()));
+            tarDoc.getActiveViewers().addAll(Arrays.asList(srcDoc.getMeganFile().getConnector().getAllClassificationNames()));
             tarDoc.parseParameterString(srcDoc.getParameterString());
             tarDoc.setBlastMode(srcDoc.getBlastMode());
             tarDoc.setPairedReads(srcDoc.isPairedReads());

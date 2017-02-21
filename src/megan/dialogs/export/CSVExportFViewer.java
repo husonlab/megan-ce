@@ -26,9 +26,8 @@ import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.data.IClassificationBlock;
-import megan.data.IConnector;
-import megan.data.IReadBlockIterator;
+import megan.data.*;
+import megan.parsers.blast.BlastMode;
 import megan.viewer.ViewerBase;
 
 import java.io.BufferedWriter;
@@ -239,6 +238,73 @@ public class CSVExportFViewer {
                         }
                         if (hasSome) {
                             w.write(separator + " " + length + "\n");
+                            totalLines++;
+                        }
+                        progressListener.incrementProgress();
+                    }
+                }
+            }
+        } catch (CanceledException canceled) {
+            System.err.println("USER CANCELED");
+        }
+        return totalLines;
+    }
+
+
+    /**
+     * export name to count per KB of reference sequence
+     *
+     * @param cViewer
+     * @param file
+     * @param separator
+     * @param progressListener
+     * @return lines written
+     */
+    public static int exportName2CountPerKB(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
+        int totalLines = 0;
+        try {
+            final int lengthFactor = (cViewer.getDocument().getBlastMode().equals(BlastMode.BlastX) ? 3 : 1);
+
+            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
+            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                IConnector connector = cViewer.getDocument().getConnector();
+                java.util.Collection<Integer> classIds = cViewer.getSelectedIds();
+                progressListener.setSubtask(shortName + " to normalized counts");
+                progressListener.setMaximum(classIds.size());
+                progressListener.setProgress(0);
+
+                final IClassificationBlock classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
+
+                if (classificationBlock != null) {
+                    for (int classId : classIds) {
+                        final Set<Integer> allBelow = classification.getFullTree().getAllDescendants(classId);
+                        boolean hasSome = false;
+                        long length = 0L;
+                        long count = 0L;
+                        for (int belowId : allBelow) {
+                            if (classificationBlock.getSum(belowId) > 0) {
+                                if (!hasSome) {
+                                    w.write(getLabelSource(shortName, classification, format, classification.getFullTree().getANode(classId)));
+                                    hasSome = true;
+                                }
+                                try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), belowId, 0, 10000, true, true)) {
+                                    final IReadBlock readBlock = it.next();
+                                    for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
+                                        final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                                        if (matchBlock.getId(cViewer.getClassName()) == belowId) {
+                                            length += matchBlock.getRefLength();
+                                            count++;
+                                            break;
+                                        }
+                                    }
+                                }
+                                progressListener.checkForCancel();
+                            }
+                        }
+                        if (hasSome) {
+                            w.write(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length))));
                             totalLines++;
                         }
                         progressListener.incrementProgress();

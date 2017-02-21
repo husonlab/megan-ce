@@ -75,12 +75,12 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     private String pairedReadSuffix1 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX1, "");
     private String pairedReadSuffix2 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX2, "");
 
+    private boolean longReads = false;
+
     private boolean useReadMagnitudes = false;
     private boolean parseTaxonNames = ProgramProperties.get(MeganProperties.PARSE_TAXON_NAMES, true);
 
     private boolean usePercentIdentityFilter = false;
-
-    private Document.LCAAlgorithm lcaAlgorithm = Document.DEFAULT_LCA_ALGORITHM;
 
     private final JTextArea blastFileNameField = new JTextArea();
 
@@ -144,6 +144,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
         setLcaAlgorithm(doc.getLcaAlgorithm());
+
+        setLongReads(doc.isLongReads());
 
         ArrayList<String> toDelete = new ArrayList<>();
         for (String cName : doc.getActiveViewers()) { // turn of classifications for which mappers have not been loaded
@@ -406,11 +408,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     }
 
     public Document.LCAAlgorithm getLcaAlgorithm() {
-        return lcaAlgorithm;
+        return Document.LCAAlgorithm.valueOfIgnoreCase((String) lcaAlgorithmComboBox.getSelectedItem());
     }
 
     public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
-        this.lcaAlgorithm = lcaAlgorithm;
+        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
     }
 
     public double getWeightedLCAPercent() {
@@ -622,6 +624,14 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return pairedReadSuffix2;
     }
 
+    public boolean isLongReads() {
+        return longReads;
+    }
+
+    public void setLongReads(boolean longReads) {
+        this.longReads = longReads;
+    }
+
     /**
      * apply import from blast
      */
@@ -743,7 +753,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
 
-        buf.append(" paired=").append(isUsePairedReads());
+        if (isLongReads())
+            buf.append(" longReads=").append(isLongReads());
+
+        if (isUsePairedReads())
+            buf.append(" paired=").append(isUsePairedReads());
 
         if (isUsePairedReads()) {
             String pattern1 = getPairedReadSuffix1();

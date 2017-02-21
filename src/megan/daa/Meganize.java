@@ -60,7 +60,7 @@ public class Meganize {
      * @throws CanceledException
      */
     public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final String[] cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
-                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, float weightedLCAPercent) throws IOException, CanceledException {
+                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, float weightedLCAPercent, boolean longReads) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
@@ -81,6 +81,7 @@ public class Meganize {
         doc.setBlastMode(DAAParser.getBlastMode(daaFile));
         doc.setLcaAlgorithm(lcaAlgorithm);
         doc.setWeightedLCAPercent(weightedLCAPercent);
+        doc.setLongReads(longReads);
 
         doc.setProgressListener(progress);
 

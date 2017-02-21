@@ -84,7 +84,7 @@ public class AlignmentExporter {
         Set<String> matchesSeenForGivenRead = new HashSet<>();
         progressListener.setSubtask("Processing total dataset");
 
-        try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), true, true)) {
+        try (IReadBlockIterator it = doc.getConnector().getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), true, true)) {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 
@@ -139,7 +139,7 @@ public class AlignmentExporter {
         Set<String> matchesSeenForGivenRead = new HashSet<>();
         progressListener.setSubtask("Processing '" + name + "'");
 
-        try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getReadsIterator(classificationName, classId, 0, 10, true, true)) {
+        try (IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, 0, 10, true, true)) {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 

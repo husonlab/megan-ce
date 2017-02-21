@@ -74,7 +74,7 @@ public class ApplyCommand extends CommandBase implements ICommand {
 
             int numberOfMatches = 0;
             try {
-                final IConnector connector = dir.getDocument().getMeganFile().getDataConnector();
+                final IConnector connector = dir.getDocument().getConnector();
                 numberOfMatches = connector.getNumberOfMatches();
             } catch (IOException e) {
                 Basic.caught(e);

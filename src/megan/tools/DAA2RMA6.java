@@ -100,6 +100,8 @@ public class DAA2RMA6 {
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name (i.e. first word in header) of read and its mate (use 0 if read and mate have same name)", 0);
         final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
         options.comment("Parameters");
+        boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+
         final int maxMatchesPerRead = options.getOption("-m", "maxMatchesPerRead", "Max matches per read", 100);
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
@@ -108,7 +110,7 @@ public class DAA2RMA6 {
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveLongReads.toString() : Document.LCAAlgorithm.Naive.toString()));
         final float weightedLCAPercent;
         if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
@@ -269,6 +271,7 @@ public class DAA2RMA6 {
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
+            doc.setLongReads(longReads);
 
             if (!processInPairs)
                 createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
@@ -307,8 +310,7 @@ public class DAA2RMA6 {
      */
     public static void createRMA6FileFromDAA(String creator, String daaFile, String rma6FileName, boolean useCompression, Document doc,
                                              int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
-        final RMA6FromBlastCreator rma6Creator =
-                new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
         rma6Creator.parseFiles(progressListener);
     }
 

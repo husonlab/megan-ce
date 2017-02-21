@@ -90,6 +90,10 @@ public class DAA2Info {
 
         final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, false);
 
+        final Document doc = new Document();
+        doc.getMeganFile().setFileFromExistingFile(daaFile, true);
+        doc.loadMeganFile();
+
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
 
             if (listGeneralInfo || listMoreStuff) {
@@ -107,9 +111,6 @@ public class DAA2Info {
                     outs.write("\n");
 
                     if (listMoreStuff) {
-                        final Document doc = new Document();
-                        doc.getMeganFile().setFileFromExistingFile(daaFile, true);
-                        doc.loadMeganFile();
                         outs.write("# Meganization summary:\n");
                         outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                     }
@@ -117,7 +118,8 @@ public class DAA2Info {
             }
 
             final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
-            final DAAConnector connector = new DAAConnector(daaFile);
+            doc.setOpenDAAFileOnlyIfMeganized(false);
+            final DAAConnector connector = (DAAConnector) doc.getConnector();
             final Set<String> availableClassificationNames = new HashSet<>(Arrays.asList(connector.getAllClassificationNames()));
 
             for (String classification : listClass2Count) {

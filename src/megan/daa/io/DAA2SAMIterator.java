@@ -32,6 +32,8 @@ public class DAA2SAMIterator implements ISAMIterator {
 
     private Pair<byte[], byte[]> next;
 
+    private boolean parseLongReads;
+
     /**
      * constructor
      *
@@ -39,7 +41,7 @@ public class DAA2SAMIterator implements ISAMIterator {
      * @throws IOException
      */
     public DAA2SAMIterator(String fileName, int maxMatchesPerRead) throws IOException {
-        this.daa2QuerySAMIterator = new DAA2QuerySAMIterator(fileName, maxMatchesPerRead);
+        this.daa2QuerySAMIterator = new DAA2QuerySAMIterator(fileName, maxMatchesPerRead, isParseLongReads());
     }
 
     /**
@@ -110,5 +112,16 @@ public class DAA2SAMIterator implements ISAMIterator {
                 count++;
         }
         return count;
+    }
+
+
+    @Override
+    public void setParseLongReads(boolean longReads) {
+        parseLongReads = longReads;
+    }
+
+    @Override
+    public boolean isParseLongReads() {
+        return parseLongReads;
     }
 }

@@ -99,9 +99,14 @@ public class LCAParametersPanel extends JPanel {
                     ProgramProperties.put("SelectedLCAAlgorithm", dialog.getLcaAlgorithm().toString());
                 }
             });
-            lcaAlgorithmComboBox.setSelectedItem(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM.toString()));
-            lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");
+            Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM.toString()));
+            if (algorithm == null || (!dialog.isLongReads() && algorithm == Document.LCAAlgorithm.NaiveLongReads))
+                algorithm = Document.LCAAlgorithm.Naive;
+            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveLongReads)
+                algorithm = Document.LCAAlgorithm.NaiveLongReads;
 
+            lcaAlgorithmComboBox.setSelectedItem(algorithm.toString());
+            lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");
 
             dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
 

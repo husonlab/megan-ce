@@ -44,6 +44,8 @@ public class DAAConnector implements IConnector {
     public static boolean openDAAFileOnlyIfMeganized = true; // only allow DAA files that have been Meganized
     public static final Object syncObject = new Object(); // use for changing openDAAFileOnlyIfMeganized
 
+    private boolean longReads = false;
+
     /**
      * constructor
      *
@@ -75,7 +77,7 @@ public class DAAConnector implements IConnector {
 
     @Override
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, false));
+        return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, false, longReads));
     }
 
     /**
@@ -90,7 +92,7 @@ public class DAAConnector implements IConnector {
      * @throws IOException
      */
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches, boolean reuseReadBlockObject) throws IOException {
-        return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, reuseReadBlockObject));
+        return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, reuseReadBlockObject, longReads));
     }
 
     @Override
@@ -111,7 +113,7 @@ public class DAAConnector implements IConnector {
 
     @Override
     public IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        return new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, false, true);
+        return new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, false, true, longReads);
     }
 
     @Override
@@ -252,5 +254,13 @@ public class DAAConnector implements IConnector {
 
     public DAAHeader getDAAHeader() {
         return daaHeader;
+    }
+
+    public boolean isLongReads() {
+        return longReads;
+    }
+
+    public void setLongReads(boolean longReads) {
+        this.longReads = longReads;
     }
 }

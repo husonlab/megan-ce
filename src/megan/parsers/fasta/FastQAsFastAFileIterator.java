@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * an getLetterCodeIterator over a multi-fastQ file   returning fastA records
+ * an iterator over a multi-fastQ file   returning fastA records
  * Daniel Huson, 10.2011
  */
 public class FastQAsFastAFileIterator implements IFastAIterator {

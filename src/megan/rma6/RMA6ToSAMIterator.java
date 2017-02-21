@@ -44,6 +44,8 @@ public class RMA6ToSAMIterator implements ISAMIterator {
     private byte[] matchesText;
     private int matchesTextLength;
 
+    private boolean parseLongReads;
+
     /**
      * constructor
      * @param classificationName
@@ -148,5 +150,15 @@ public class RMA6ToSAMIterator implements ISAMIterator {
     @Override
     public byte[] getQueryText() {
         return readText.getBytes();
+    }
+
+    @Override
+    public void setParseLongReads(boolean longReads) {
+        parseLongReads = longReads;
+    }
+
+    @Override
+    public boolean isParseLongReads() {
+        return parseLongReads;
     }
 }

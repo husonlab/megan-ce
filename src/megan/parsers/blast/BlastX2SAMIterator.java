@@ -19,7 +19,10 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import jloda.util.Pair;
 import megan.util.BlastXTextFileFilter;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,14 +45,14 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     public final static String FRAME = "Frame";
     public final static String EQUALS = "=";
 
-    private byte[] matchesText = new byte[10000];
-    private int matchesTextLength = 0;
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
     private final boolean blastPMode;
 
     private final ArrayList<String> refHeaderLines = new ArrayList<>(1000);
 
     private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     private long numberOfReads = 0;
 
@@ -94,7 +97,6 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
      * @return number of matches
      */
     public int next() {
-        matchesTextLength = 0;
 
         String queryLine = getNextLineStartsWith(NEW_QUERY);
         if (queryLine == null)
@@ -107,8 +109,11 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
             queryName = (name.length() == 0 ? "Read" + numberOfReads : name);
         }
 
-        int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
+        matchesIntervalTree.clear();
+        matchesTextAndLength.setSecond(0);
+
+        int matchId = 0; // used to distinguish between matches when sorting
 
         // get all matches for given query:
         try {
@@ -197,7 +202,13 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                     }
                 }
 
-                if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
+                if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
+                    Match match = new Match();
+                    match.bitScore = bitScore;
+                    match.id = matchId++;
+                    match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
+                    matchesIntervalTree.add(new Interval<>(queryStart, queryEnd, match));
+                } else if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
                     Match match = new Match();
                     match.bitScore = bitScore;
                     match.id = matchId++;
@@ -213,29 +224,9 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 throw new RuntimeException("Too many errors");
         }
 
-        if (matches.size() == 0) { // no matches, so return query name only
-            if (queryName.length() > matchesText.length) {
-                matchesText = new byte[2 * queryName.length()];
-            }
-            for (int i = 0; i < queryName.length(); i++)
-                matchesText[matchesTextLength++] = (byte) queryName.charAt(i);
-            matchesText[matchesTextLength++] = '\n';
-            return 0;
-        } else {
-            for (Match match : matches) {
-                byte[] bytes = match.samLine.getBytes();
-                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
-                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
-                    System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
-                    matchesText = tmp;
-                }
-                System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
-                matchesTextLength += bytes.length;
-                matchesText[matchesTextLength++] = '\n';
-            }
-            return matches.size();
-        }
+        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
+
 
     /**
      * gets the matches text
@@ -244,7 +235,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
      */
     @Override
     public byte[] getMatchesText() {
-        return matchesText;
+        return matchesTextAndLength.getFirst();
     }
 
     /**
@@ -254,7 +245,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesTextLength;
+        return matchesTextAndLength.getSecond();
     }
 
     /**

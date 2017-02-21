@@ -20,10 +20,7 @@ package megan.importblast;
 
 import jloda.gui.commands.CommandManager;
 import jloda.util.ProgramProperties;
-import megan.importblast.commands.ChooseBlastFileCommand;
-import megan.importblast.commands.ChooseMeganFileCommand;
-import megan.importblast.commands.ChooseReadsFileCommand;
-import megan.importblast.commands.SetPairedReadsCommand;
+import megan.importblast.commands.*;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
 
@@ -134,6 +131,8 @@ public class FilesPanel extends JPanel {
             oneLine.setLayout(new BoxLayout(oneLine, BoxLayout.X_AXIS));
             oneLine.add(Box.createHorizontalGlue());
             oneLine.add(commandManager.getButton(SetPairedReadsCommand.NAME));
+            oneLine.add(Box.createHorizontalGlue());
+            oneLine.add(commandManager.getButton(SetLongReadsCommand.NAME));
             oneLine.add(Box.createHorizontalGlue());
 
             JPanel twoLines = new JPanel();

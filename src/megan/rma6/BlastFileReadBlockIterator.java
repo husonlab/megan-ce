@@ -63,7 +63,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
      * @param maxMatchesPerRead
      * @throws IOException
      */
-    public BlastFileReadBlockIterator(String blastFile, String readsFile, BlastFileFormat format, BlastMode blastMode, String[] cNames, int maxMatchesPerRead, boolean hasMagnitudes) throws IOException {
+    public BlastFileReadBlockIterator(String blastFile, String readsFile, BlastFileFormat format, BlastMode blastMode, String[] cNames, int maxMatchesPerRead, boolean hasMagnitudes, boolean longReads) throws IOException {
         this.readsFile = readsFile;
         this.cNames = cNames;
         parsers = new IdParser[cNames.length];
@@ -79,7 +79,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
         }
         this.blastMode = blastMode;
 
-        iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead);
+        iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);
         if (readsFile != null) {
             fastaIterator = new FileIterator(readsFile);
             isFasta = (fastaIterator.peekNextByte() == '>');

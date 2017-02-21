@@ -95,7 +95,7 @@ public enum BlastFileFormat {
      * @param formatName
      * @return value or null
      */
-    public static BlastFileFormat valueOfIgnoringCase(String formatName) {
+    public static BlastFileFormat valueOfIgnoreCase(String formatName) {
         if (formatName != null) {
             for (BlastFileFormat format : values()) {
                 if (format.toString().equalsIgnoreCase(formatName))

@@ -63,7 +63,7 @@ public class ExportTaxa2NormalizedCounts {
         try {
             final Document doc = dir.getDocument();
             final MainViewer viewer = dir.getMainViewer();
-            final IConnector connector = doc.getMeganFile().getDataConnector();
+            final IConnector connector = doc.getConnector();
 
             int numberOfTaxa = viewer.getSelectedNodes().size();
 

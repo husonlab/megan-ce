@@ -87,7 +87,8 @@ public class BLAST2RMA6 {
 
         options.comment("Input");
         final String[] blastFiles = options.getOptionMandatory("-i", "in", "Input BLAST file[s] (gzipped ok)", new String[0]);
-        final BlastFileFormat blastFormat = BlastFileFormat.valueOf(options.getOptionMandatory("-f", "format", "Input file format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString()));
+        final BlastFileFormat blastFormat = BlastFileFormat.valueOfIgnoreCase(options.getOptionMandatory("-f", "format", "Input file format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString()));
+        final BlastMode blastMode = BlastMode.valueOfIgnoreCase(options.getOption("-bm", "blastMode", "Blast mode", BlastMode.values(), BlastMode.Unknown.toString()));
         String[] readsFiles = options.getOption("-r", "reads", "Reads file(s) (fasta or fastq, gzipped ok)", new String[0]);
         final String[] metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in RMA6 files", new String[0]);
 
@@ -100,6 +101,8 @@ public class BLAST2RMA6 {
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
         final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
         options.comment("Parameters");
+        boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+
         final int maxMatchesPerRead = options.getOption("-m", "maxMatchesPerRead", "Max matches per read", 100);
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
@@ -108,7 +111,7 @@ public class BLAST2RMA6 {
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveLongReads.toString() : Document.LCAAlgorithm.Naive.toString()));
         final float weightedLCAPercent;
         if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
@@ -269,9 +272,13 @@ public class BLAST2RMA6 {
             doc.setMinSupport(minSupport);
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
-            doc.setBlastMode(BlastMode.getBlastMode(blastFiles[0]));
+            if (blastMode == BlastMode.Unknown)
+                doc.setBlastMode(BlastMode.getBlastMode(blastFiles[0]));
+            else
+                doc.setBlastMode(blastMode);
             doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setWeightedLCAPercent(weightedLCAPercent);
+            doc.setLongReads(longReads);
 
             if (!processInPairs)
                 createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);

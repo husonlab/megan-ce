@@ -206,7 +206,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, weightedLCAPercent);
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, weightedLCAPercent, doc.isLongReads());
                 // todo: save the description
 
                 {

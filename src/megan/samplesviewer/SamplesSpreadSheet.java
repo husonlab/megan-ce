@@ -41,9 +41,9 @@ import jloda.util.Pair;
 import jloda.util.ProgressSilent;
 import jloda.util.ResourceManager;
 import megan.core.Document;
+import megan.fx.FXSwingUtilities;
 import megan.fx.NotificationsInSwing;
 import megan.fx.PopupMenuFX;
-import megan.fx.Utilities;
 import megan.util.GraphicsUtilities;
 import org.controlsfx.control.spreadsheet.*;
 
@@ -178,7 +178,7 @@ public class SamplesSpreadSheet {
                             rowContextMenu.getItems().remove(rowContextMenu.getItems().size() - 1);
                         }
 
-                        final Color color = Utilities.getColorFX(samplesViewer.getDocument().getChartColorManager().getSampleColor(sample));
+                        final Color color = FXSwingUtilities.getColorFX(samplesViewer.getDocument().getChartColorManager().getSampleColor(sample));
 
                         final ColorPicker colorPicker = new ColorPicker(color);
                         colorPicker.setStyle("-fx-background-color: white;");
@@ -194,7 +194,7 @@ public class SamplesSpreadSheet {
 
                                 final Color color = colorPicker.getValue();
                                 System.out.println("New Color's RGB = " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
-                                final java.awt.Color colorAWT = Utilities.getColorAWT(color);
+                                final java.awt.Color colorAWT = FXSwingUtilities.getColorAWT(color);
                                 for (int sr = selectedRows.nextSetBit(0); sr != -1; sr = selectedRows.nextSetBit(sr + 1)) {
                                     final String sample = dataGrid.getRowName(sr);
                                     samplesViewer.getDocument().getSampleAttributeTable().putSampleColor(sample, colorAWT);
@@ -549,7 +549,7 @@ public class SamplesSpreadSheet {
             String attribute = dataGrid.getColumnName(col);
             String value = dataGrid.getValue(row, col);
 
-            samplesViewer.getDocument().getChartColorManager().setAttributeStateColor(attribute, value, Utilities.getColorAWT(color));
+            samplesViewer.getDocument().getChartColorManager().setAttributeStateColor(attribute, value, FXSwingUtilities.getColorAWT(color));
         }
     }
 

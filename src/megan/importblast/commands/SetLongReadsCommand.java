@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -21,17 +21,18 @@ package megan.importblast.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.Document;
 import megan.importblast.ImportBlastDialog;
-import megan.importblast.ReadPairingDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetPairedReadsCommand extends CommandBase implements ICheckBoxCommand {
+public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand {
+
     public boolean isSelected() {
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
 
-        return importBlastDialog != null && importBlastDialog.isUsePairedReads();
+        return importBlastDialog != null && importBlastDialog.isLongReads();
     }
 
     public String getSyntax() {
@@ -42,33 +43,26 @@ public class SetPairedReadsCommand extends CommandBase implements ICheckBoxComma
     }
 
     public void actionPerformed(ActionEvent event) {
-        final ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        if (isSelected())
-            importBlastDialog.setUsePairedReads(false);
-        else {
-            String readsFileName = importBlastDialog.getReadFileName();
-            if (readsFileName.contains("\n"))
-                readsFileName = readsFileName.substring(0, readsFileName.indexOf("\n"));
-            ReadPairingDialog readPairingDialog = new ReadPairingDialog(importBlastDialog, readsFileName);
-            if (readPairingDialog.showDialog()) {
-                importBlastDialog.setUsePairedReads(true);
-            } else
-                importBlastDialog.setUsePairedReads(false);
-        }
+        ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
+        importBlastDialog.setLongReads(!isSelected());
+        if (importBlastDialog.isLongReads()) {
+            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.NaiveLongReads);
+        } else
+            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.Naive);
     }
 
     public boolean isApplicable() {
         return true;
     }
 
-    public static final String NAME = "Paired Reads";
+    public static final String NAME = "Long Reads";
 
     public String getName() {
         return NAME;
     }
 
     public String getDescription() {
-        return "Paired-read data. Identify paired reads and assign to intersection of the matched taxa";
+        return "Input consists of long reads (more than 500bp) or contigs\nThis effects how alignments are parsed and how binning is performed.";
     }
 
     public ImageIcon getIcon() {

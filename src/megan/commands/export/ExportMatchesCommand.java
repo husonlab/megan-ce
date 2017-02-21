@@ -78,9 +78,9 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
 
         long count;
         if (classIds.size() == 0)
-            count = MatchesExporter.exportAll(doc.getBlastMode(), doc.getMeganFile().getDataConnector(), outputFile, doc.getProgressListener());
+            count = MatchesExporter.exportAll(doc.getBlastMode(), doc.getConnector(), outputFile, doc.getProgressListener());
         else
-            count = MatchesExporter.export(classificationName, classIds, doc.getBlastMode(), doc.getMeganFile().getDataConnector(), outputFile, doc.getProgressListener());
+            count = MatchesExporter.export(classificationName, classIds, doc.getBlastMode(), doc.getConnector(), outputFile, doc.getProgressListener());
 
         NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + count + " matches to file: " + outputFile);
 

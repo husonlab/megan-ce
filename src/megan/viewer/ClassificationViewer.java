@@ -25,10 +25,7 @@ import jloda.gui.*;
 import jloda.gui.MenuBar;
 import jloda.gui.PopupMenu;
 import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IViewerWithFindToolBar;
-import jloda.gui.director.IViewerWithLegend;
-import jloda.gui.director.ProjectManager;
+import jloda.gui.director.*;
 import jloda.gui.find.FindToolBar;
 import jloda.gui.find.SearchManager;
 import jloda.gui.format.Formatter;
@@ -62,7 +59,7 @@ import java.util.List;
  *
  * @author Daniel Huson, 4.2015
  */
-public class ClassificationViewer extends ViewerBase implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend {
+public class ClassificationViewer extends ViewerBase implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, IUsesHeatMapColors {
     static public final int XSTEP = 50;
     static public final int YSTEP = 50;
     static final int HLEAFBOX = 200; // horizontal length of leaf box, needed for picking
@@ -1697,6 +1694,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public StatusBar getStatusBar() {
         return statusBar;
+    }
+
+    @Override
+    public boolean useHeatMapColors() {
+        return getNodeDrawer().getStyle() == NodeDrawer.Style.HeatMap;
     }
 }
 

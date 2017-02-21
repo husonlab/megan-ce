@@ -126,7 +126,24 @@ public interface IMatchBlock {
 
     int[] getIds(String[] cNames);
 
+    /**
+     * get the start position of the alignment in the query
+     *
+     * @return query start position
+     */
     int getAlignedQueryStart();
 
+    /**
+     * get the end position of the alignment in the query
+     *
+     * @return query end position
+     */
     int getAlignedQueryEnd();
+
+    /**
+     * get the length of the reference sequence
+     *
+     * @return reference sequence length
+     */
+    int getRefLength();
 }

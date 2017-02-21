@@ -281,4 +281,9 @@ public class MatchBlockDAA implements IMatchBlock {
     public int getAlignedQueryEnd() {
         return matchRecord.getQueryEnd() + 1;
     }
+
+    @Override
+    public int getRefLength() {
+        return matchRecord.getTotalSubjectLen();
+    }
 }

@@ -20,20 +20,24 @@
 package megan.algorithms;
 
 /**
- * create a best hit assignment algorithm
+ * create an LCA assignment algorithm for taxonomy
  * Daniel Huson, 3.2016
  */
-public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgorithmCreator {
-    private final AssignmentUsingMultiGeneBestHit algorithm;
+public class AssignmentUsingLongReadLCACreator implements IAssignmentAlgorithmCreator {
+    private final String cName;
+    private final boolean usePercentIdentityFilter;
+    private final float topPercent;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingMultiGeneBestHitCreator(String cName, String fileName) {
-        algorithm = new AssignmentUsingMultiGeneBestHit(cName, fileName);
-        System.err.println("Using Multi-Gene Best-Hit algorithm for binning: " + cName);
+    public AssignmentUsingLongReadLCACreator(String cName, boolean usePercentIdentityFilter, float topPercent) {
+        this.cName = cName;
+        this.usePercentIdentityFilter = usePercentIdentityFilter;
+        this.topPercent = topPercent;
+        System.err.println("Using Multi-Gene LCA algorithm for binning: " + cName);
     }
 
     /**
@@ -42,7 +46,7 @@ public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgori
      * @return assignment algorithm
      */
     @Override
-    public IMultiAssignmentAlgorithm createAssignmentAlgorithm() {
-        return algorithm;
+    public IAssignmentAlgorithm createAssignmentAlgorithm() {
+        return new AssignmentUsingLongReadLCA(cName, usePercentIdentityFilter, topPercent);
     }
 }

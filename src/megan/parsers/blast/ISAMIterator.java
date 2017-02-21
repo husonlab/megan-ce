@@ -60,4 +60,13 @@ public interface ISAMIterator {
     long getProgress();
 
     void close() throws IOException;
+
+    /**
+     * are we parsing long reads?
+     *
+     * @param longReads
+     */
+    void setParseLongReads(boolean longReads);
+
+    boolean isParseLongReads();
 }

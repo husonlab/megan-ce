@@ -237,7 +237,19 @@ public class SAMMatch implements megan.rma3.IMatch {
         alignedQueryStart = determineQueryStart();
 
         int alignedQueryLength = (mode == BlastMode.BlastX ? 3 : 1) * computeAlignedQuerySegmentLength(getSequence());
-        alignedQueryEnd = alignedQueryStart + alignedQueryLength;
+        alignedQueryStart = determineQueryStart();
+
+        final boolean reverse;
+        if (mode == BlastMode.BlastX) {
+            final Object obj = optionalFields.get("ZF");
+            reverse = (obj != null && obj instanceof Integer && ((Integer) obj) < 0);
+        } else
+            reverse = ((mode == BlastMode.BlastN) && isReverseComplemented());
+
+        if (reverse) {
+            alignedQueryEnd = alignedQueryStart - alignedQueryLength;
+        } else
+            alignedQueryEnd = alignedQueryStart + alignedQueryLength;
     }
 
     /**
@@ -1111,5 +1123,14 @@ public class SAMMatch implements megan.rma3.IMatch {
 
     public int getAlignedQueryEnd() {
         return alignedQueryEnd;
+    }
+
+    public int getRefLength() {
+        Object obj = optionalFields.get("ZL");
+        if (obj != null && obj instanceof Integer)
+            return (Integer) optionalFields.get("ZL");
+        else
+            return 0;
+
     }
 }

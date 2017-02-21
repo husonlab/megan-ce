@@ -24,6 +24,7 @@ import jloda.graphview.NodeView;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.IDirectableViewer;
 import jloda.util.Basic;
+import jloda.util.IViewerWithJComponent;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
@@ -48,7 +49,7 @@ public class ExportImageCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         if (getViewer() != null) {
-            IDirectableViewer viewer = getViewer();
+            final IDirectableViewer viewer = getViewer();
 
             np.matchIgnoreCase("exportImage file=");
 
@@ -114,6 +115,15 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                     GraphView graphView = ((ClusterViewer) viewer).getGraphView();
                     if (graphView != null)
                         scrollPane = graphView.getScrollPane();
+                } else if (viewer instanceof IViewerWithJComponent) {
+                    final JComponent component = ((IViewerWithJComponent) viewer).getComponent();
+                    System.err.println("Size: " + component.getSize());
+                    panel = new JPanel() {
+                        public void paint(Graphics gc) {
+                            component.paint(gc);
+                        }
+                    };
+                    panel.setSize(component.getSize());
                 } else {
                     final JFrame frame = viewer.getFrame();
                     panel = new JPanel() {
@@ -157,7 +167,7 @@ public class ExportImageCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        IDirectableViewer viewer = getViewer();
+        final IDirectableViewer viewer = getViewer();
 
         // setup a good default name: the file name plus .eps:
         String fileName = "Untitled";

@@ -50,7 +50,9 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
     private final InputReaderLittleEndian refReader;
 
     private final ByteInputBuffer inputBuffer = new ByteInputBuffer();
-    private final DAAMatchRecord[] daaMatchRecords = new DAAMatchRecord[1000];
+    private final DAAMatchRecord[] daaMatchRecords = new DAAMatchRecord[50000]; // when parsing long reads the number can be quite big
+
+    private final boolean longReads;
 
     /**
      * constructor
@@ -61,7 +63,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
      * @param reuseReadBlockObject
      * @throws IOException
      */
-    public ReadBlockGetterDAA(DAAHeader daaHeader, boolean wantReadSequences, boolean wantMatches, float minScore, float maxExpected, boolean streamOnly, boolean reuseReadBlockObject) throws IOException {
+    public ReadBlockGetterDAA(DAAHeader daaHeader, boolean wantReadSequences, boolean wantMatches, float minScore, float maxExpected, boolean streamOnly, boolean reuseReadBlockObject, boolean longReads) throws IOException {
         this.daaParser = new DAAParser(daaHeader);
         daaParser.getHeader().loadReferences(!streamOnly || !wantMatches);
         daaParser.getHeader().loadRefAnnotations();
@@ -78,7 +80,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
         reader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
         refReader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
 
-        // todo: stream only doesn't work when need to grab reference headers
+        // todo: 'stream only' doesn't work when need to grab reference headers
         //reader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
 
         if (streamOnly)
@@ -88,6 +90,8 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
             reuseableReadBlock = new ReadBlockDAA();
         else
             reuseableReadBlock = null;
+
+        this.longReads = longReads;
     }
 
     /**
@@ -116,7 +120,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
             }
             final ReadBlockDAA readBlock = (reuseableReadBlock == null ? new ReadBlockDAA() : reuseableReadBlock);
 
-            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, refReader, daaMatchRecords.length, inputBuffer, daaMatchRecords);
+            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, refReader, daaMatchRecords.length, inputBuffer, daaMatchRecords, longReads);
             readBlock.setFromQueryAndMatchRecords(pair.get1(), pair.get2(), wantReadSequences, wantMatches, minScore, maxExpected);
             return readBlock;
         }

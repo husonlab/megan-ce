@@ -61,7 +61,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
-                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
+                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[hasMagnitudes={false|true}] [description=<text>];";
     }
 
@@ -128,7 +128,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             }
 
             np.matchIgnoreCase("format=");
-            final BlastFileFormat format = BlastFileFormat.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastFileFormat.valuesExceptUnknown(), " ")));
+            final BlastFileFormat format = BlastFileFormat.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastFileFormat.valuesExceptUnknown(), " ")));
 
             np.matchIgnoreCase("mode=");
             doc.setBlastMode(BlastMode.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastMode.valuesExceptUnknown(), " "))));
@@ -200,6 +200,11 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                     doc.getActiveViewers().add(token);
                 }
                 doc.getActiveViewers().add(Classification.Taxonomy);
+            }
+
+            if (np.peekMatchIgnoreCase("longReads")) {
+                np.matchIgnoreCase("longReads=");
+                doc.setLongReads(np.getBoolean());
             }
 
             if (np.peekMatchIgnoreCase("paired")) {

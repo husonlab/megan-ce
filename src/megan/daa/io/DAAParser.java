@@ -24,9 +24,12 @@ import jloda.util.Pair;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileRandomAccessReadOnlyAdapter;
 import megan.parsers.blast.BlastMode;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -44,6 +47,9 @@ public class DAAParser {
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
     public final static Pair<DAAQueryRecord, DAAMatchRecord[]> SENTINEL_QUERY_MATCH_BLOCKS = new Pair<>();
+
+    final IntervalTree<DAAMatchRecord> intervalTree = new IntervalTree<>(); // used in parsing of long reads
+    final ArrayList<DAAMatchRecord> list = new ArrayList<>();
 
     /**
      * constructor
@@ -126,13 +132,15 @@ public class DAAParser {
 
     /**
      * get all alignments in SAM format
+     *
      * @param maxMatchesPerRead
      * @param outputQueue
      * @throws IOException
      */
-    void getAllAlignmentsSAMFormat(int maxMatchesPerRead, BlockingQueue<Pair<byte[], byte[]>> outputQueue) throws IOException {
+    void getAllAlignmentsSAMFormat(int maxMatchesPerRead, BlockingQueue<Pair<byte[], byte[]>> outputQueue, boolean parseLongReads) throws IOException {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
         final ByteOutputBuffer outputBuffer = new ByteOutputBuffer(100000);
+
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
              InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
@@ -145,13 +153,39 @@ public class DAAParser {
                 queryRecord.setLocation(ins.getPosition());
                 ins.readSizePrefixedBytes(inputBuffer);
                 queryRecord.parseBuffer(inputBuffer);
-                int numberOfMatches = 0;
-                while (inputBuffer.getPosition() < inputBuffer.size()) {
-                    if (++numberOfMatches > maxMatchesPerRead)
-                        break;
-                    matchRecord.parseBuffer(inputBuffer, refIns);
-                    SAMUtilities.createSAM(this, matchRecord, outputBuffer, alignmentAlphabet);
+                if (!parseLongReads) {
+                    int numberOfMatches = 0;
+                    while (inputBuffer.getPosition() < inputBuffer.size()) {
+                        if (++numberOfMatches > maxMatchesPerRead)
+                            break;
+                        matchRecord.parseBuffer(inputBuffer, refIns);
+                        SAMUtilities.createSAM(this, matchRecord, outputBuffer, alignmentAlphabet);
+                    }
+                } else // parse long reads
+                {
+                    intervalTree.clear();
+                    while (inputBuffer.getPosition() < inputBuffer.size()) {
+                        DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
+                        aMatchRecord.parseBuffer(inputBuffer, refIns);
+                        intervalTree.add(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
+                    }
+                    list.clear();
+                    for (Interval<DAAMatchRecord> interval : intervalTree) {
+                        boolean covered = false;
+                        for (Interval<DAAMatchRecord> other : intervalTree.getIntervals(interval)) {
+                            if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().getScore() < 0.95 * other.getData().getScore()) {
+                                covered = true;
+                                break;
+                            }
+                        }
+                        if (!covered)
+                            list.add(interval.getData());
+                    }
+                    for (DAAMatchRecord aMatchRecord : list) {
+                        SAMUtilities.createSAM(this, aMatchRecord, outputBuffer, alignmentAlphabet);
+                    }
                 }
+
                 if (outputBuffer.size() > 0) {
                     outputQueue.put(new Pair<>(queryRecord.getQueryFastA(sourceAlphabet), outputBuffer.copyBytes()));
                     outputBuffer.rewind();
@@ -175,7 +209,7 @@ public class DAAParser {
      * @param outputQueue
      * @throws IOException
      */
-    void getAllQueriesAndMatches(int maxMatchesPerRead, BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> outputQueue) throws IOException {
+    void getAllQueriesAndMatches(int maxMatchesPerRead, BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> outputQueue, boolean longReads) throws IOException {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
@@ -185,7 +219,7 @@ public class DAAParser {
             DAAMatchRecord[] matchRecords = new DAAMatchRecord[maxMatchesPerRead];
 
             for (int a = 0; a < header.getQueryRecords(); a++) {
-                final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = readQueryAndMatches(ins, refIns, maxMatchesPerRead, inputBuffer, matchRecords);
+                final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = readQueryAndMatches(ins, refIns, maxMatchesPerRead, inputBuffer, matchRecords, longReads);
                 outputQueue.put(pair);
             }
             outputQueue.put(SENTINEL_QUERY_MATCH_BLOCKS);
@@ -204,8 +238,7 @@ public class DAAParser {
      * @return query and matches
      * @throws IOException
      */
-    public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, int maxMatchesPerRead,
-                                                                      ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords) throws IOException {
+    public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, int maxMatchesPerRead, ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords, boolean longReads) throws IOException {
         final DAAQueryRecord queryRecord = new DAAQueryRecord(this);
         if (inputBuffer == null)
             inputBuffer = new ByteInputBuffer();
@@ -217,14 +250,40 @@ public class DAAParser {
         queryRecord.setLocation(ins.getPosition());
         ins.readSizePrefixedBytes(inputBuffer);
         queryRecord.parseBuffer(inputBuffer);
+
         int numberOfMatches = 0;
-        while (inputBuffer.getPosition() < inputBuffer.size()) {
-            DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
-            matchRecord.parseBuffer(inputBuffer, refIns);
-            if (numberOfMatches < maxMatchesPerRead)
-                matchRecords[numberOfMatches++] = matchRecord;
-            else
-                break;
+        if (!longReads) {
+            while (inputBuffer.getPosition() < inputBuffer.size()) {
+                DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
+                matchRecord.parseBuffer(inputBuffer, refIns);
+                if (numberOfMatches < maxMatchesPerRead)
+                    matchRecords[numberOfMatches++] = matchRecord;
+                else
+                    break;
+            }
+        } else {
+            intervalTree.clear();
+            while (inputBuffer.getPosition() < inputBuffer.size()) {
+                DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
+                aMatchRecord.parseBuffer(inputBuffer, refIns);
+                intervalTree.add(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
+            }
+            for (Interval<DAAMatchRecord> interval : intervalTree) {
+                boolean covered = false;
+                for (Interval<DAAMatchRecord> other : intervalTree.getIntervals(interval)) {
+                    if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().getScore() < 0.95 * other.getData().getScore()) {
+                        covered = true;
+                        break;
+                    }
+                }
+                if (!covered)
+                    if (numberOfMatches == matchRecords.length) {
+                        final DAAMatchRecord[] tmp = new DAAMatchRecord[2 * numberOfMatches];
+                        System.arraycopy(matchRecords, 0, tmp, 0, matchRecords.length);
+                        matchRecords = tmp;
+                    }
+                matchRecords[numberOfMatches++] = interval.getData();
+            }
         }
 
         if (numberOfMatches > 0) {
@@ -258,6 +317,7 @@ public class DAAParser {
 
     /**
      * gets a block as a string of bytes
+     *
      * @param header
      * @param blockType
      * @return block

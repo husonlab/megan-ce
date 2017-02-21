@@ -72,7 +72,7 @@ public class SetNumberOfReadsCommand extends CommandBase implements ICommand {
                 if (getDoc().getMeganFile().hasDataConnector()) {
                     int numberOfMatches = 0;
                     try {
-                        IConnector connector = getDoc().getMeganFile().getDataConnector();
+                        IConnector connector = getDoc().getConnector();
                         numberOfMatches = connector.getNumberOfMatches();
                     } catch (IOException e) {
                         Basic.caught(e);

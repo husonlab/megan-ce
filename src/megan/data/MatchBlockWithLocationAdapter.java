@@ -149,5 +149,10 @@ public class MatchBlockWithLocationAdapter implements IMatchBlock, IMatchBlockWi
     public int getAlignedQueryEnd() {
         return matchBlock.getAlignedQueryEnd();
     }
+
+    @Override
+    public int getRefLength() {
+        return matchBlock.getRefLength();
+    }
 }
 

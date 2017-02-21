@@ -70,9 +70,9 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
 
         int count;
         if (classIds.size() == 0)
-            count = ReadsExporter.exportAll(doc.getMeganFile().getDataConnector(), outputFile, doc.getProgressListener());
+            count = ReadsExporter.exportAll(doc.getConnector(), outputFile, doc.getProgressListener());
         else
-            count = ReadsExporter.export(data, classIds, doc.getMeganFile().getDataConnector(), outputFile, doc.getProgressListener());
+            count = ReadsExporter.export(data, classIds, doc.getConnector(), outputFile, doc.getProgressListener());
 
         NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + count + " reads to file: " + outputFile);
     }

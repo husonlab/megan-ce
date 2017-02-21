@@ -76,14 +76,14 @@ public class DataProcessor {
 
             // step 0: set up classification algorithms
 
-            final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.MultiGene);
+            final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongReads);
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int i = 0; i < numberOfClassifications; i++) {
                 if (i == taxonomyIndex) {
                     switch (doc.getLcaAlgorithm()) {
-                        case MultiGene:
-                            assignmentAlgorithmCreators[i] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                        case NaiveLongReads:
+                            assignmentAlgorithmCreators[i] = new AssignmentUsingLongReadLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
                             break;
                         case Weighted:
                             assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
@@ -95,7 +95,7 @@ public class DataProcessor {
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
                     assignmentAlgorithmCreators[i] = new AssignmentUsingLCACreator(cNames[i]);
                 else if (usingMultiGeneAnalysis)
-                    assignmentAlgorithmCreators[i] = new AssignmentUsingMultiGeneBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
+                    assignmentAlgorithmCreators[i] = new AssignmentUsingLongReadBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
                 else
                     assignmentAlgorithmCreators[i] = new AssignmentUsingBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
             }
@@ -126,7 +126,7 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.MultiGene ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
+            final float topPercent = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongReads ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
 
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;

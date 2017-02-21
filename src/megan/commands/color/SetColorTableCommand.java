@@ -22,15 +22,13 @@ package megan.commands.color;
 import jloda.gui.ColorTableManager;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
+import jloda.gui.director.IUsesHeatMapColors;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.commands.ColorByRankCommand;
-import megan.chart.gui.ChartViewer;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.viewer.ClassificationViewer;
-import megan.viewer.gui.NodeDrawer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,8 +131,7 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         final String[] choices = ColorTableManager.getNamesOrdered();
 
-        final boolean isHeatMap = ((getViewer() instanceof ClassificationViewer) && ((ClassificationViewer) getViewer()).getNodeDrawer().getStyle() == NodeDrawer.Style.HeatMap)
-                || ((getViewer() instanceof ChartViewer) && ((ChartViewer) getViewer()).getChartDrawer().usesHeatMapColors());
+        final boolean isHeatMap = (getViewer() instanceof IUsesHeatMapColors) && ((IUsesHeatMapColors) getViewer()).useHeatMapColors();
 
         final Document doc = ((Director) getDir()).getDocument();
 

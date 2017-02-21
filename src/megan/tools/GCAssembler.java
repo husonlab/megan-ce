@@ -27,7 +27,6 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Document;
-import megan.core.MeganFile;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
 import megan.data.IReadBlockIterator;
@@ -136,7 +135,7 @@ public class GCAssembler {
         document.getMeganFile().setFileFromExistingFile(inputFile, true);
         if (!(document.getMeganFile().isDAAFile() || document.getMeganFile().isRMA6File()))
             throw new IOException("Input file has wrong type: must be meganized DAA file or RMA6 file");
-        if (document.getMeganFile().isDAAFile() && document.getMeganFile().getDataConnector(true) == null)
+        if (document.getMeganFile().isDAAFile() && document.getConnector() == null)
             throw new IOException("Input DAA file: Must first be meganized");
 
         final Classification classification;
@@ -148,7 +147,7 @@ public class GCAssembler {
             final IClassificationBlock classificationBlock;
             classification = ClassificationManager.get(classificationName, true);
 
-            final IConnector connector = document.getMeganFile().getDataConnector(true);
+            final IConnector connector = document.getConnector();
             classificationBlock = connector.getClassificationBlock(classificationName);
 
             if (doAllClasses) {
@@ -209,10 +208,10 @@ public class GCAssembler {
                         final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 
                         final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
-                        final MeganFile meganFile = new MeganFile();
-                        meganFile.setFileFromExistingFile(inputFile, true);
-                        final IConnector connector = meganFile.getDataConnector(true);
-                        meganFile.setFileFromExistingFile(inputFile, true);
+                        final Document doc = new Document();
+                        doc.getMeganFile().setFileFromExistingFile(inputFile, true);
+                        doc.loadMeganFile();
+                        final IConnector connector = doc.getConnector();
 
                         while (true) {
                             Integer classId = queue.take();

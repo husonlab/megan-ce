@@ -18,6 +18,7 @@
  */
 package rusch.megan5client;
 
+import jloda.util.Basic;
 import megan.data.IMatchBlock;
 
 import java.util.HashMap;
@@ -42,6 +43,10 @@ public class MatchBlockServer {
     private String text;
     private Map<String, Integer> class2id;
 
+    private int alignedQueryStart;
+    private int alignedQueryEnd;
+    private int refLength;
+
     public MatchBlockServer() {
 
     }
@@ -59,6 +64,9 @@ public class MatchBlockServer {
         this.length = mb.getLength();
         this.ignore = mb.isIgnore();
         this.text = mb.getText();
+        this.alignedQueryStart = mb.getAlignedQueryStart();
+        this.alignedQueryEnd = mb.getAlignedQueryEnd();
+        this.refLength = mb.getRefLength();
     }
 
     public long getMatchUid() {
@@ -131,5 +139,48 @@ public class MatchBlockServer {
 
     public void setText(String text) {
         this.text = text;
+
+        // todo: have server serve these values rather than parsing them from text:
+        if (true) {
+            if (text.length() > 0) {
+                String word;
+
+                word = Basic.getWordAfter("Query:", text);
+                if (word != null && Basic.isInteger(word))
+                    alignedQueryStart = Basic.parseInt(word);
+
+                word = Basic.getLastWord(Basic.getLastLineStartingWith("Query:", text));
+                if (word != null && Basic.isInteger(word))
+                    alignedQueryEnd = Basic.parseInt(word);
+
+                word = Basic.getWordAfter("Length =", Basic.skipFirstLine(text));
+                if (word != null && Basic.isInteger(word))
+                    refLength = Basic.parseInt(word);
+            }
+        }
+    }
+
+    public int getAlignedQueryStart() {
+        return alignedQueryStart;
+    }
+
+    public void setAlignedQueryStart(int alignedQueryStart) {
+        this.alignedQueryStart = alignedQueryStart;
+    }
+
+    public int getAlignedQueryEnd() {
+        return alignedQueryEnd;
+    }
+
+    public void setAlignedQueryEnd(int alignedQueryEnd) {
+        this.alignedQueryEnd = alignedQueryEnd;
+    }
+
+    public int getRefLength() {
+        return refLength;
+    }
+
+    public void setRefLength(int refLength) {
+        this.refLength = refLength;
     }
 }

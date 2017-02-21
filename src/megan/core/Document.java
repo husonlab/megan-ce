@@ -27,6 +27,7 @@ import megan.chart.ChartColorManager;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.SyncDataTableAndClassificationViewer;
+import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAParser;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
@@ -49,7 +50,7 @@ import java.util.List;
  */
 public class Document {
     public enum LCAAlgorithm {
-        Naive, Weighted, MultiGene;
+        Naive, Weighted, NaiveLongReads;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             for (LCAAlgorithm lcaAlgorithm : values()) {
@@ -80,6 +81,7 @@ public class Document {
     public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public static final boolean DEFAULT_USE_IDENTITY = false;
+    public static final boolean DEFAULT_LONG_READS = false;
 
 
     private float minScore = DEFAULT_MINSCORE;
@@ -95,6 +97,8 @@ public class Document {
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
+
+    private boolean longReads = DEFAULT_LONG_READS;
 
     private long lastRecomputeTime = 0;
 
@@ -184,7 +188,7 @@ public class Document {
         clearReads();
         getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
         if (getMeganFile().hasDataConnector()) {
-            IConnector connector = getMeganFile().getDataConnector();
+            final IConnector connector = getConnector();
             SyncArchiveAndDataTable.syncArchive2Summary(meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
 
             if (dataTable.getTotalReads() == 0 && connector.getNumberOfReads() > 0) {
@@ -249,11 +253,16 @@ public class Document {
                     setLcaAlgorithm(LCAAlgorithm.Naive);
                 else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Weighted.toString()))
                     setLcaAlgorithm(LCAAlgorithm.Weighted);
-                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.MultiGene.toString()))
-                    setLcaAlgorithm(LCAAlgorithm.MultiGene);
+                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.NaiveLongReads.toString()))
+                    setLcaAlgorithm(LCAAlgorithm.NaiveLongReads);
 
                 setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
+
+                if (np.findIgnoreCase(tokens, "longReads=true", true, false))
+                    setLongReads(true);
+                else if (np.findIgnoreCase(tokens, "longReads=false", true, false))
+                    setLongReads(false);
 
                 if (np.findIgnoreCase(tokens, "pairedReads=true", true, false))
                     setPairedReads(true);
@@ -308,6 +317,8 @@ public class Document {
         if (getLcaAlgorithm().equals(LCAAlgorithm.Weighted))
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
+        if (isLongReads())
+            buf.append(" longReads=true");
         if (isPairedReads())
             buf.append(" pairedReads=true");
         if (isUseIdentityFilter())
@@ -410,6 +421,14 @@ public class Document {
         this.topPercent = topPercent;
     }
 
+    public boolean isLongReads() {
+        return longReads;
+    }
+
+    public void setLongReads(boolean longReads) {
+        this.longReads = longReads;
+    }
+
     /**
      * process the given reads
      */
@@ -472,7 +491,7 @@ public class Document {
             Map<String, byte[]> label2data = new HashMap<>();
             label2data.put(SampleAttributeTable.USER_STATE, userState);
             label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributes);
-            getMeganFile().getDataConnector().putAuxiliaryData(label2data);
+            getMeganFile().getConnector().putAuxiliaryData(label2data);
         }
     }
 
@@ -803,7 +822,7 @@ public class Document {
             dataTable.setBlastMode(0, DAAParser.getBlastMode(meganFile.getFileName()));
         }
         if (blastMode == BlastMode.Unknown && meganFile.hasDataConnector()) {
-            try (IReadBlockIterator it = meganFile.getDataConnector().getAllReadsIterator(1, 10, true, true)) {
+            try (IReadBlockIterator it = meganFile.getConnector().getAllReadsIterator(1, 10, true, true)) {
                 while (it.hasNext()) {
                     IReadBlock readBlock = it.next();
                     if (readBlock.getNumberOfAvailableMatchBlocks() > 0) {
@@ -984,7 +1003,11 @@ public class Document {
 
     public IConnector getConnector() {
         try {
-            return getMeganFile().getDataConnector(isOpenDAAFileOnlyIfMeganized());
+            IConnector connector = getMeganFile().getConnector(isOpenDAAFileOnlyIfMeganized());
+            if (connector instanceof DAAConnector) {
+                ((DAAConnector) connector).setLongReads(isLongReads());
+            }
+            return connector;
         } catch (IOException e) {
             Basic.caught(e);
         }
@@ -1013,7 +1036,7 @@ public class Document {
                         saveAuxiliaryData();
                     }
                 }
-                MeganFile.removeUIdFromSetOfOpenFiles(getMeganFile().getName(), getMeganFile().getDataConnector().getUId());
+                MeganFile.removeUIdFromSetOfOpenFiles(getMeganFile().getName(), getMeganFile().getConnector().getUId());
                 getMeganFile().setFileName("");
             } catch (IOException e) {
                 Basic.caught(e);

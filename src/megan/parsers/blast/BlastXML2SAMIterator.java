@@ -46,6 +46,8 @@ public class BlastXML2SAMIterator implements ISAMIterator {
     private final MatchesText sentinel;
     private boolean done = false;
 
+    private boolean parseLongReads;
+
     /**
      * constructor
      *
@@ -168,5 +170,15 @@ public class BlastXML2SAMIterator implements ISAMIterator {
     @Override
     public byte[] getQueryText() {
         return null;
+    }
+
+    @Override
+    public void setParseLongReads(boolean longReads) {
+        this.parseLongReads = longReads;
+    }
+
+    @Override
+    public boolean isParseLongReads() {
+        return parseLongReads;
     }
 }

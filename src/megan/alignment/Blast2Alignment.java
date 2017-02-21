@@ -105,7 +105,7 @@ public class Blast2Alignment {
         final Map<String, Set<String>> reference2seen = new HashMap<>(100000);
         int count = 0;
         boolean seenActiveMatch = false;
-        try (IReadBlockIterator it = doc.getMeganFile().getDataConnector().getReadsIteratorForListOfClassIds(classificationName, classIds, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
+        try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(classificationName, classIds, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 

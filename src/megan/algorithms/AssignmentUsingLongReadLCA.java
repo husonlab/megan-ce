@@ -21,6 +21,8 @@ package megan.algorithms;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.util.*;
 
@@ -28,11 +30,9 @@ import java.util.*;
  * computes the taxon assignment for a read, using the LCA algorithm for long reads
  * Daniel Huson, 2.2017
  */
-public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
-    private final ArrayList<ListItem> intervalList;
-
-    private final Map<Integer, Float> taxonId2TotalDisjointBitScore;
-    private final Map<Integer, Float> geneTaxonId2BitScore;
+public class AssignmentUsingLongReadLCA extends AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
+    private final Map<Integer, IntervalTree<IMatchBlock>> taxonId2Intervals;
+    private final Map<Integer, Float> taxonId2BitScore;
 
     private float topPercent;
 
@@ -47,11 +47,12 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
      * @param useIdentityFilter
      * @param topPercent        this only works if matches are not already prefiltered by top percent
      */
-    public AssignmentUsingMultiGeneLCA(String cName, boolean useIdentityFilter, float topPercent) {
+    public AssignmentUsingLongReadLCA(String cName, boolean useIdentityFilter, float topPercent) {
         super(cName, useIdentityFilter);
-        intervalList = new ArrayList<>();
-        taxonId2TotalDisjointBitScore = new HashMap<>();
-        geneTaxonId2BitScore = new HashMap<>();
+
+        taxonId2Intervals = new HashMap<>();
+        taxonId2BitScore = new HashMap<>();
+
         this.topPercent = topPercent;
         array = new int[1000][2];
     }
@@ -70,20 +71,20 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
 
         // compute addresses of all hit taxa:
         if (activeMatches.cardinality() > 0) {
-            computeTaxonId2TotalDisjointBitScore(activeMatches, readBlock, null);
+            computeTaxonId2MultiGeneScore(activeMatches, readBlock);
 
             int numberOfAddresses = 0;
-            if (taxonId2TotalDisjointBitScore.size() > 0) {
+            if (taxonId2BitScore.size() > 0) {
                 int arrayLength = 0;
                 {
-                    for (Integer taxId : taxonId2TotalDisjointBitScore.keySet()) {
+                    for (Integer taxId : taxonId2BitScore.keySet()) {
                         if (arrayLength == array.length) // need to grow array
                         {
                             final int[][] tmp = new int[2 * arrayLength][2];
                             System.arraycopy(array, 0, tmp, 0, array.length);
                             array = tmp;
                         }
-                        array[arrayLength][0] = Math.round(taxonId2TotalDisjointBitScore.get(taxId));
+                        array[arrayLength][0] = Math.round(taxonId2BitScore.get(taxId));
                         array[arrayLength][1] = taxId;
                         arrayLength++;
                     }
@@ -135,85 +136,114 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
     }
 
     /**
-     * computes the mapping of taxon ids to total disjoint bit score
-     *
+     * computes multi-gene score
      * @param activeMatches
      * @param readBlock
-     * @param stopStartPositions if no null, is filled with all stop and start positions of disjoint regions
-     * @return mapping
+     * @return
      */
-    public Map<Integer, Float> computeTaxonId2TotalDisjointBitScore(BitSet activeMatches, IReadBlock readBlock, BitSet stopStartPositions) {
+    public Map<Integer, Float> computeTaxonId2MultiGeneScore(BitSet activeMatches, IReadBlock readBlock) {
         if (activeMatches == null) {
             activeMatches = new BitSet();
             for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++)
                 activeMatches.set(i);
         }
-        // 1. separate alignments by query coordinates into bins
-        // 2. for each taxon present, compute sum of bitscores across bins
-        // 3. do lca on this
+
+        if (readBlock.getReadHeader().contains("R1.94")) {
+            System.err.println(readBlock.getReadName());
+        }
 
         // 1. separate alignments by query coordinates into bins
-        intervalList.clear();
+        taxonId2Intervals.clear();
+        taxonId2BitScore.clear();
+
         // first ignore disabled taxa:
         for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            int id = matchBlock.getTaxonId();
+            final int id = matchBlock.getTaxonId();
             if (!idMapper.isDisabled(id)) {
-                intervalList.add(new ListItem(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock));
+                IntervalTree<IMatchBlock> intervals = taxonId2Intervals.get(id);
+                if (intervals == null) {
+                    intervals = new IntervalTree<>();
+                    taxonId2Intervals.put(id, intervals);
+                }
+                intervals.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
             }
         }
         // if nothing found, try again without ignoring disabled taxa:
-        if (intervalList.size() == 0) {
+        if (taxonId2Intervals.size() == 0) {
             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                intervalList.add(new ListItem(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock));
+                final int id = matchBlock.getTaxonId();
+                IntervalTree<IMatchBlock> intervals = taxonId2Intervals.get(id);
+                if (intervals == null) {
+                    intervals = new IntervalTree<>();
+                    taxonId2Intervals.put(id, intervals);
+                }
+                intervals.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
             }
         }
 
-        intervalList.sort(ListItem.comparator());
-
-        // set taxon to bit score on a gene-by-gene basis:
-        int lengthSoFar = 0;
-
-        taxonId2TotalDisjointBitScore.clear();
-        geneTaxonId2BitScore.clear();
-
-        for (ListItem item : intervalList) {
-            // if we have just finished a gene, add all gene bit scores to total ones and then clear gene scores:
-            if (item.getStart() > lengthSoFar - minOverlap) {
-                if (stopStartPositions != null) {
-                    if (lengthSoFar > 0)
-                        stopStartPositions.set(lengthSoFar);
-                    stopStartPositions.set(item.getStart());
+        // delete all contained matches
+        for (IntervalTree<IMatchBlock> intervals : taxonId2Intervals.values()) {
+            // delete any contained matches of lesser score:
+            final Set<Interval<IMatchBlock>> toDelete = new HashSet<>();
+            for (Interval<IMatchBlock> interval : intervals) {
+                final List<Interval<IMatchBlock>> overlappers = intervals.getIntervals(interval);
+                final IMatchBlock match = interval.getData();
+                for (Interval<IMatchBlock> intervalOther : overlappers) {
+                    final IMatchBlock other = intervalOther.getData();
+                    if (intervalOther.contains(interval) && (other.getBitScore() > match.getBitScore() || (other.getBitScore() == match.getBitScore()) && other.getUId() < match.getUId()))
+                        toDelete.add(interval);
                 }
+            }
+            if (toDelete.size() > 0)
+                intervals.removeAll(toDelete);
+        }
 
-                for (Integer taxId : geneTaxonId2BitScore.keySet()) {
-                    if (taxonId2TotalDisjointBitScore.keySet().contains(taxId))
-                        taxonId2TotalDisjointBitScore.put(taxId, taxonId2TotalDisjointBitScore.get(taxId) + geneTaxonId2BitScore.get(taxId));
+        for (Integer taxonId : taxonId2Intervals.keySet()) {
+            final IntervalTree<IMatchBlock> intervals = taxonId2Intervals.get(taxonId);
+            int segmentStart = -1;
+            int segmentEnd = 0;
+            int sumOfLengths = 0;
+            float sumOfScores = 0;
+
+            for (Interval<IMatchBlock> interval : intervals) {
+                // this is the first item, initialize:
+                if (segmentStart == -1) {
+                    segmentStart = interval.getStart();
+                    segmentEnd = interval.getEnd();
+                    sumOfLengths = interval.length();
+                    sumOfScores = interval.getData().getBitScore();
+                }
+                // if we have just finished a gene-segment, add all gene bit scores to total ones and then clear gene scores:
+                else if (interval.getStart() > segmentEnd) {
+                    final float bitScore = sumOfScores / sumOfLengths * (segmentEnd - segmentStart);
+                    if (taxonId2BitScore.get(taxonId) == null)
+                        taxonId2BitScore.put(taxonId, bitScore);
                     else
-                        taxonId2TotalDisjointBitScore.put(taxId, geneTaxonId2BitScore.get(taxId));
+                        taxonId2BitScore.put(taxonId, bitScore + taxonId2BitScore.get(taxonId));
+                    segmentStart = interval.getStart();
+                    segmentEnd = interval.getEnd();
+                    sumOfLengths = interval.length();
+                    sumOfScores = interval.getData().getBitScore();
+                } else // another overlapping alignment
+                {
+                    segmentEnd = interval.getEnd();
+                    sumOfLengths += interval.length();
+                    sumOfScores += interval.getData().getBitScore();
                 }
-                geneTaxonId2BitScore.clear();
             }
-            final IMatchBlock matchBlock = item.getMatchBlock();
-            final int taxonId = matchBlock.getTaxonId();
-            if (!geneTaxonId2BitScore.keySet().contains(taxonId) || matchBlock.getBitScore() > geneTaxonId2BitScore.get(taxonId)) {
-                geneTaxonId2BitScore.put(taxonId, matchBlock.getBitScore());
+            // do the last segment:
+            if (sumOfScores > 0) {
+                final float bitScore = sumOfScores / sumOfLengths * (segmentEnd - segmentStart);
+                if (taxonId2BitScore.get(taxonId) == null)
+                    taxonId2BitScore.put(taxonId, bitScore);
+                else
+                    taxonId2BitScore.put(taxonId, bitScore + taxonId2BitScore.get(taxonId));
             }
-            lengthSoFar = Math.max(lengthSoFar, item.getEnd());
-        }
 
-        if (stopStartPositions != null && lengthSoFar > 0)
-            stopStartPositions.set(lengthSoFar);
-
-        // process last gene:
-        for (Integer taxId : geneTaxonId2BitScore.keySet()) {
-            if (taxonId2TotalDisjointBitScore.keySet().contains(taxId))
-                taxonId2TotalDisjointBitScore.put(taxId, taxonId2TotalDisjointBitScore.get(taxId) + geneTaxonId2BitScore.get(taxId));
-            else
-                taxonId2TotalDisjointBitScore.put(taxId, geneTaxonId2BitScore.get(taxId));
         }
-        return taxonId2TotalDisjointBitScore;
+        return taxonId2BitScore;
     }
 
     public float getTopPercent() {
@@ -233,49 +263,4 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
     }
 }
 
-class ListItem {
-    private final int start;
-    private final int end;
-    private final IMatchBlock matchBlock;
-
-    public ListItem(int a, int b, IMatchBlock matchBlock) {
-        start = Math.min(a, b);
-        end = Math.max(a, b);
-        this.matchBlock = matchBlock;
-    }
-
-    public final int getStart() {
-        return start;
-    }
-
-    public final int getEnd() {
-        return end;
-    }
-
-    public final IMatchBlock getMatchBlock() {
-        return matchBlock;
-    }
-
-    public static Comparator<ListItem> comparator() {
-        return new Comparator<ListItem>() {
-            @Override
-            public int compare(ListItem a, ListItem b) {
-                if (a.start < b.start)
-                    return -1;
-                else if (a.start > b.start)
-                    return 1;
-                else if (a.end < b.end)
-                    return -1;
-                else if (a.end > b.end)
-                    return 1;
-                else if (a.matchBlock.getUId() < b.matchBlock.getUId())
-                    return -1;
-                else if (a.matchBlock.getUId() > b.matchBlock.getUId())
-                    return 1;
-                else
-                    return 0;
-            }
-        };
-    }
-}
 

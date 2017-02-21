@@ -168,11 +168,16 @@ public class MatchBlock implements IMatchBlock {
 
     @Override
     public int getAlignedQueryStart() {
-        return 0;
+        return block.getAlignedQueryStart();
     }
 
     @Override
     public int getAlignedQueryEnd() {
-        return 0;
+        return block.getAlignedQueryEnd();
+    }
+
+    @Override
+    public int getRefLength() {
+        return block.getRefLength();
     }
 }

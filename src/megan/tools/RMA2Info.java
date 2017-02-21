@@ -91,7 +91,7 @@ public class RMA2Info {
         if (!doc.getMeganFile().isRMA2File() && !doc.getMeganFile().isRMA3File() && !doc.getMeganFile().isRMA6File())
             throw new IOException("Incorrect file type: " + doc.getMeganFile().getFileType());
         doc.loadMeganFile();
-        final IConnector connector = doc.getMeganFile().getDataConnector();
+        final IConnector connector = doc.getConnector();
 
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
             if (listGeneralInfo || listMoreStuff) {

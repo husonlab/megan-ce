@@ -25,7 +25,7 @@ import javafx.scene.input.KeyCode;
 /**
  * some Utilities to help integrate Swing and JavaFX
  */
-public class Utilities {
+public class FXSwingUtilities {
     /**
      * convert awt key code to KeyCode
      *

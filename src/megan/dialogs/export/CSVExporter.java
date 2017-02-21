@@ -40,7 +40,7 @@ public class CSVExporter {
      *
      * @param classificationName
      */
-    public static List<String> getFormats(String classificationName, boolean hasReads) {
+    public static List<String> getFormats(String classificationName, boolean hasDataConnector) {
         final List<String> formats = new LinkedList<>();
 
         String shortName = classificationName.toLowerCase();
@@ -68,7 +68,7 @@ public class CSVExporter {
         }
         formats.add(shortName + "Path_to_length");
 
-        if (hasReads) {
+        if (hasDataConnector) {
             formats.add("readName_to_" + shortName + "Name");
             if (shortName.equals("taxon"))
                 formats.add("readName_to_" + shortName + "Id");
@@ -85,6 +85,12 @@ public class CSVExporter {
             // formats.add("readName_to_gi");
             formats.add("readName_to_refSeqIds");
             formats.add("readName_to_headers");
+
+            if (!shortName.equals("taxon")) {
+                formats.add(shortName + "Name_to_RPK");
+                formats.add(shortName + "Id_to_RPK");
+                formats.add(shortName + "Path_to_RPK");
+            }
         }
 
         if (shortName.equals("taxon"))
@@ -150,8 +156,11 @@ public class CSVExporter {
                     } else if (Basic.endsWithIgnoreCase(format, "Name_to_length") || Basic.endsWithIgnoreCase(format, "Path_to_length")) {
                         count = CSVExportFViewer.exportName2TotalLength(format, viewer, file, separator, progressListener);
                         break;
+                    } else if (Basic.endsWithIgnoreCase(format, "Name_to_RPK") || Basic.endsWithIgnoreCase(format, "Id_to_RPK") || Basic.endsWithIgnoreCase(format, "Path_to_RKB")) {
+                        count = CSVExportFViewer.exportName2CountPerKB(format, viewer, file, separator, progressListener);
+                        break;
                     }
-                    if (Basic.endsWithIgnoreCase(format, "Name_to_percent") || Basic.endsWithIgnoreCase(format, "Id_to_percent") || Basic.endsWithIgnoreCase(format, "Path_to_perecent")) {
+                    if (Basic.endsWithIgnoreCase(format, "Name_to_percent") || Basic.endsWithIgnoreCase(format, "Id_to_percent") || Basic.endsWithIgnoreCase(format, "Path_to_percent")) {
                         count = CSVExportFViewer.exportName2Percent(format, viewer, file, separator, true, progressListener);
                         break;
                     }

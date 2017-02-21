@@ -34,6 +34,7 @@ public class SAMIteratorBase {
     private int maxNumberOfErrors = 1000;
     private int numberOfErrors = 0;
     private String pushedBackLine;
+    private boolean parseLongReads;
 
     /**
      * constructor
@@ -333,5 +334,13 @@ public class SAMIteratorBase {
 
     public byte[] getQueryText() {
         return null;
+    }
+
+    public boolean isParseLongReads() {
+        return parseLongReads;
+    }
+
+    public void setParseLongReads(boolean parseLongReads) {
+        this.parseLongReads = parseLongReads;
     }
 }

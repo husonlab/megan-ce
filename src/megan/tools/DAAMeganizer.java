@@ -86,6 +86,8 @@ public class DAAMeganizer {
         final boolean pairedReads = options.getOption("-pr", "paired", "Reads are paired", false);
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
         options.comment("Parameters");
+        boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
         final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", Document.DEFAULT_MAXEXPECTED);
@@ -94,7 +96,7 @@ public class DAAMeganizer {
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveLongReads.toString() : Document.LCAAlgorithm.Naive.toString()));
         final float weightedLCAPercent;
         if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
@@ -211,7 +213,7 @@ public class DAAMeganizer {
         for (int i = 0; i < daaFiles.length; i++) {
             final String daaFile = daaFiles[i];
             final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
-            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, weightedLCAPercent);
+            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, weightedLCAPercent, longReads);
         }
     }
 }

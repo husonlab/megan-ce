@@ -65,7 +65,7 @@ public class ExportKO2TaxaTable {
         try {
             final Document doc = dir.getDocument();
             final MainViewer mainViewer = dir.getMainViewer();
-            final IConnector connector = doc.getMeganFile().getDataConnector();
+            final IConnector connector = doc.getConnector();
 
             ClassificationManager.ensureTreeIsLoaded("KEGG");
 

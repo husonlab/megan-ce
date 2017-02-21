@@ -411,4 +411,9 @@ public class MatchBlockRMA2 implements IMatchBlock {
     public int getAlignedQueryEnd() {
         return 0;
     }
+
+    @Override
+    public int getRefLength() {
+        return 0;
+    }
 }

@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * chart viewer
  * Daniel Huson, 5.2012
  */
-public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, Printable {
+public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, IUsesHeatMapColors, Printable {
     protected final ClassificationViewer parentViewer;
     protected final Director dir;
     private final IData chartData;
@@ -1212,5 +1212,10 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
     public boolean isSeriesTabSelected() {
         return seriesList != null && listsTabbedPane.getSelectedIndex() == seriesList.getTabIndex();
+    }
+
+    @Override
+    public boolean useHeatMapColors() {
+        return getChartDrawer().usesHeatMapColors();
     }
 }

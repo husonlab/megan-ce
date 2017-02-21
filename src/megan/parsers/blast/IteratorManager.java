@@ -37,7 +37,7 @@ public class IteratorManager {
      * @return iterator
      * @throws IOException
      */
-    public static ISAMIterator getIterator(String blastFile, BlastFileFormat format, BlastMode blastMode, int maxMatchesPerRead) throws IOException {
+    public static ISAMIterator getIterator(String blastFile, BlastFileFormat format, BlastMode blastMode, int maxMatchesPerRead, boolean longReads) throws IOException {
         final ISAMIterator iterator;
         if (format == BlastFileFormat.SAM)
             iterator = new SAM2SAMIterator(blastFile, maxMatchesPerRead);
@@ -70,6 +70,7 @@ public class IteratorManager {
             iterator = new Mothur2SAMIterator(blastFile, maxMatchesPerRead);
         else
             throw new IOException("Unsupported combination of file format: " + format + " and alignment mode: " + blastMode);
+        iterator.setParseLongReads(longReads);
         return iterator;
     }
 }

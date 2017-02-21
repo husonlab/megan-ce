@@ -29,6 +29,7 @@ import megan.classification.commandtemplates.SetUseLCA4ViewerCommand;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
 import megan.core.Document;
+import megan.daa.connector.DAAConnector;
 import megan.dialogs.parameters.commands.ApplyCommand;
 import megan.dialogs.parameters.commands.CancelCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
@@ -63,9 +64,11 @@ public class ParametersDialog extends JDialog {
 
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
 
+    private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
+    private final JCheckBox longReadsCBox = new JCheckBox("Parsed as Long Reads");
+
     private final JCheckBox useMagnitudesCBox = new JCheckBox("Use Read Magnitudes");
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
-    private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
 
     private final Set<String> activeFNames = new HashSet<>();
     private boolean canceled = true;
@@ -104,6 +107,7 @@ public class ParametersDialog extends JDialog {
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
 
         setMinComplexity(doc.getMinComplexity());
+        setLongReads(doc.isLongReads());
         setPairedReads(doc.isPairedReads());
         setUsePercentIdentity(doc.isUseIdentityFilter());
 
@@ -359,6 +363,12 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
+            aPanel.add(pairReadsCBox);
+            pairReadsCBox.setToolTipText("Process paired reads together (will only work if reads were imported as pairs)");
+
+            aPanel.add(longReadsCBox);
+            longReadsCBox.setToolTipText("Reads were parsed as 'long reads'");
+            longReadsCBox.setEnabled(doc.getConnector() instanceof DAAConnector); // can only change this if is DAA file because reads are sorted during
 
             aPanel.add(useMagnitudesCBox);
             useMagnitudesCBox.setToolTipText("Parse and use read magnitudes (given e.g. as magnitude|99 in read header line0");
@@ -366,10 +376,6 @@ public class ParametersDialog extends JDialog {
             aPanel.add(usePercentIdentityCBox);
             usePercentIdentityCBox.setToolTipText(SetUseIdentityFilterCommand.DESCRIPTION);
             usePercentIdentityCBox.setEnabled(doc.getBlastMode().equals(BlastMode.BlastN));
-
-            aPanel.add(pairReadsCBox);
-            pairReadsCBox.setToolTipText("Process paired reads together (will only work if reads were imported as pairs)");
-            aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
@@ -542,6 +548,13 @@ public class ParametersDialog extends JDialog {
         minPercentIdentityField.setText("" + (float) value);
     }
 
+    public boolean isLongReads() {
+        return longReadsCBox.isSelected();
+    }
+
+    public void setLongReads(boolean longReads) {
+        longReadsCBox.setSelected(longReads);
+    }
 
     public boolean isPairedReads() {
         return pairReadsCBox.isSelected();
@@ -594,7 +607,7 @@ public class ParametersDialog extends JDialog {
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
                 " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
-                " minComplexity=" + getMinComplexity() +
+                " minComplexity=" + getMinComplexity() + "longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }

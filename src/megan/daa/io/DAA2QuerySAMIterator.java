@@ -46,7 +46,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
      * @param daaFile
      * @throws IOException
      */
-    public DAA2QuerySAMIterator(String daaFile, final int maxMatchesPerRead) throws IOException {
+    public DAA2QuerySAMIterator(String daaFile, final int maxMatchesPerRead, final boolean parseLongReads) throws IOException {
         this.daaParser = new DAAParser(daaFile);
         daaParser.getHeader().loadReferences(true);
 
@@ -57,7 +57,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
         executorService.submit(new Runnable() {
             public void run() {
                 try {
-                    daaParser.getAllAlignmentsSAMFormat(maxMatchesPerRead, queue);
+                    daaParser.getAllAlignmentsSAMFormat(maxMatchesPerRead, queue, parseLongReads);
                 } catch (IOException e) {
                     Basic.caught(e);
                 }
@@ -111,17 +111,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
         }
     }
 
-
-    /*
-    public static void main(String[] args) throws IOException {
-        String fileName = "/Users/huson/data/daa/reads.daa";
-        try (ICloseableIterator<Pair<byte[], byte[]>> it = new DAA2QuerySAMIterator(fileName, 100)) {
-            while (it.hasNext()) {
-                Pair<byte[], byte[]> pair = it.next();
-                System.err.print(Basic.toString(pair.get1()));
-                System.err.print(Basic.toString(pair.get2()));
-            }
-        }
+    @Override
+    public void remove() {
     }
-    */
 }

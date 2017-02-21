@@ -122,7 +122,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (meganFile.hasDataConnector()) {
                     if (meganFile.isMeganServerFile())
                         meganFile.setReadOnly(true);
-                    if (!meganFile.isReadOnly() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getDataConnector().getUId())) {
+                    if (!meganFile.isReadOnly() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId())) {
                         NotificationsInSwing.showWarning(viewer.getFrame(), "File already open: " + meganFile.getFileName() + "\nWill open read-only");
                         meganFile.setReadOnly(true);
                     }
@@ -167,7 +167,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                     MeganProperties.addRecentFile(meganFile.getFileName());
                 doc.setDirty(false);
                 if (meganFile.hasDataConnector())
-                    MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getDataConnector().getUId());
+                    MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
                     NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()), 5000);
                 }

@@ -302,7 +302,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         };
         doc.getSampleSelection().addSampleSelectionListener(selectionListener);
 
-        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
+        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);

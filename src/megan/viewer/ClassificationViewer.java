@@ -341,7 +341,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         SyncDataTableAndClassificationViewer.syncCollapsedFromSummary2Viewer(doc.getDataTable(), this);
 
-        legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager, false));
+        legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         setupKeyListener();
         splitPane.setDividerLocation(1.0);

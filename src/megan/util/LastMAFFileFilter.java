@@ -45,6 +45,7 @@ public class LastMAFFileFilter extends FileFilterBase implements FilenameFilter 
         add("lastout");
         add("last");
         add("out");
+        add("maf");
     }
 
     /**

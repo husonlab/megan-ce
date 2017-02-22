@@ -135,6 +135,6 @@ public class AttributesList extends LabelsJList {
     }
 
     private static PopupMenu createPopupMenu(ChartViewer viewer) {
-        return new PopupMenu(null, GUIConfiguration.getAttributesListPopupConfiguration(), viewer.getCommandManager(), false);
+        return new PopupMenu(null, GUIConfiguration.getAttributesListPopupConfiguration(), viewer.getCommandManager());
     }
 }

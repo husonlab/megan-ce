@@ -25,7 +25,10 @@ import megan.data.IReadBlock;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * assignment using best hit
@@ -139,10 +142,8 @@ public class AssignmentUsingLongReadBestHit implements IMultiAssignmentAlgorithm
             final ArrayList<Interval<IMatchBlock>> toDelete = new ArrayList<>();
             for (Interval<IMatchBlock> interval : matches) {
                 final IMatchBlock match = interval.getData();
-                final List<Interval<IMatchBlock>> overlappers = matches.getIntervals(interval);
-                for (Interval<IMatchBlock> otherInterval : overlappers) {
+                for (Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
                     final IMatchBlock other = otherInterval.getData();
-
                     if (otherInterval.overlap(interval) > 0.2 * interval.length() &&
                             (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId()))
                         toDelete.add(interval);

@@ -73,7 +73,7 @@ public class ViewerJTree extends JTree {
         addTreeExpansionListener(treeListener);
         addMouseListener(new MyMouseListener());
 
-        popupMenu = new jloda.gui.PopupMenu(this, GUIConfiguration.getJTreePopupConfiguration(), classificationViewer.getCommandManager(), false);
+        popupMenu = new jloda.gui.PopupMenu(this, GUIConfiguration.getJTreePopupConfiguration(), classificationViewer.getCommandManager());
     }
 
     /**

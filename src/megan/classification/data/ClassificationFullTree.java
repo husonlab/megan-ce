@@ -581,7 +581,9 @@ public class ClassificationFullTree extends PhyloTree {
      * @return true, if idAbove an ancestor of idBelow
      */
     public boolean isDescendant(Integer idAbove, Integer idBelow) {
-        return id2Address.get(idBelow).startsWith(id2Address.get(idAbove));
+        String addressAbove = id2Address.get(idAbove);
+        String addressBelow = id2Address.get(idBelow);
+        return addressAbove != null && addressBelow != null && id2Address.get(idBelow).startsWith(id2Address.get(idAbove));
     }
 
     /**

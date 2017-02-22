@@ -266,7 +266,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                                         if (doRefresh) {
                                             ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
                                             statusBar.setText2("Rows: " + countVisibleNodes());
-                                            frame.toFront();
                                         }
                                     } catch (Exception ex) {
                                         // Basic.caught(ex);
@@ -282,7 +281,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                                frame.toFront();
                             }
                         });
                     }
@@ -333,7 +331,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                         public void run() {
                             classificationRoot.add(new TopLevelNode(name, size, classId, classificationName));
                             ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                            frame.toFront();
                         }
                     });
                 }
@@ -365,7 +362,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 public void run() {
                     classificationRoot.add(node);
                     ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                    frame.toFront();
                 }
             });
         } catch (InterruptedException | InvocationTargetException e) {
@@ -412,7 +408,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                                             ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
                                             statusBar.setText2("Rows: " + countVisibleNodes());
                                         }
-                                        frame.toFront();
                                     }
                                 });
                                 if (doRefresh)
@@ -474,7 +469,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
                             parent.add(readDataHeadLineNode);
-                            frame.toFront();
                         }
                     });
 
@@ -533,7 +527,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                                     ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
                                     statusBar.setText2("Rows: " + countVisibleNodes());
                                 }
-                                frame.toFront();
                             }
                         });
                         if (doRefresh)
@@ -581,7 +574,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     public void run() {
                         parent.add(node);
                         ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                        frame.toFront();
                     }
                 });
             }

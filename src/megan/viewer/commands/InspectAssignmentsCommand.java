@@ -66,7 +66,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
                     name2Size2Ids.add(new Triplet<>(name, size, ids));
                 }
             }
-            if (name2Size2Ids.size() > 0)
+        if (name2Size2Ids.size() > 0) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -74,8 +74,28 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
                         inspectorWindow.getFrame().toFront();
                         inspectorWindow.getFrame().setState(JFrame.NORMAL);
                         inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
+                        final Runnable job = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        inspectorWindow.getFrame().toFront();
+                                    }
+                                });
+                            }
+                        };
+                        Thread thread = new Thread(job);
+                        thread.setDaemon(true);
+                        thread.start();
                     }
                 });
+        }
     }
 
     public void actionPerformed(ActionEvent event) {

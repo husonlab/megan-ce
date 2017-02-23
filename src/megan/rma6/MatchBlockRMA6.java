@@ -34,6 +34,9 @@ import java.util.Map;
  * Daniel Huson, 6.2015
  */
 public class MatchBlockRMA6 implements IMatchBlock {
+    private static long countUids = 0;
+    private static final Object sync = new Object();
+
     private long uid;
     private float bitScore;
     private float percentIdentity;
@@ -67,7 +70,9 @@ public class MatchBlockRMA6 implements IMatchBlock {
         text = samMatch.getBlastAlignmentText(value);
         percentIdentity = value.get();
         refLength = samMatch.getRefLength();
-
+        synchronized (sync) {
+            uid = countUids++;
+        }
     }
 
     /**

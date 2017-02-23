@@ -78,7 +78,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
         this.end = start + daaParser.getHeader().getBlockSize(daaParser.getHeader().getAlignmentsBlockIndex());
 
         reader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
-        refReader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
+        refReader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
 
         // todo: 'stream only' doesn't work when need to grab reference headers
         //reader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));

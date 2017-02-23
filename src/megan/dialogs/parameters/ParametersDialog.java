@@ -607,7 +607,7 @@ public class ParametersDialog extends JDialog {
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
                 " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
-                " minComplexity=" + getMinComplexity() + "longReads=" + isLongReads() +
+                " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }

@@ -33,6 +33,9 @@ import java.util.Map;
  * Daniel Huson, 6.2015
  */
 public class MatchBlockDAA implements IMatchBlock {
+    private static long countUids = 0;
+    private static final Object sync = new Object();
+
     private DAAParser daaParser;
     private DAAMatchRecord matchRecord;
 
@@ -53,6 +56,10 @@ public class MatchBlockDAA implements IMatchBlock {
             fName2Id.put(header.getRefAnnotationName(f), header.getRefAnnotation(f, matchRecord.getSubjectId()));
         }
         taxonId = header.getRefAnnotation(header.getRefAnnotationIndexForTaxonomy(), matchRecord.getSubjectId());
+
+        synchronized (sync) {
+            uid = countUids++;
+        }
     }
 
     /**

@@ -82,7 +82,7 @@ public class OpenGooglePageCommand extends CommandBase implements ICommand {
         boolean ok = false;
         for (String id : selectedIds) {
             try {
-                URL url = new URL("http://www.google.com/search?q=" + name.trim().replaceAll(" ", "+") + "+" + id.trim().replaceAll(" ", "+"));
+                URL url = new URL("http://www.google.com/search?q=" + name.trim().replaceAll("\\s+", "+") + "+" + id.trim().replaceAll("\\s+", "+"));
                 System.err.println(url);
                 Basic.openWebPage(url);
                 ok = true;

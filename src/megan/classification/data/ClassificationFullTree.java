@@ -583,7 +583,24 @@ public class ClassificationFullTree extends PhyloTree {
     public boolean isDescendant(Integer idAbove, Integer idBelow) {
         String addressAbove = id2Address.get(idAbove);
         String addressBelow = id2Address.get(idBelow);
-        return addressAbove != null && addressBelow != null && id2Address.get(idBelow).startsWith(id2Address.get(idAbove));
+        if (addressAbove != null && addressBelow != null)
+            return id2Address.get(idBelow).startsWith(id2Address.get(idAbove));
+        else {
+            Set<Node> nodesAbove = id2Nodes.get(idAbove);
+            Set<Node> nodesBelow = id2Nodes.get(idBelow);
+            if (nodesAbove != null && nodesBelow != null) {
+                for (Node w : nodesBelow) {
+                    while (true) {
+                        if (nodesAbove.contains(w))
+                            return true;
+                        if (w.getInDegree() == 0)
+                            break;
+                        w = w.getFirstInEdge().getSource();
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     /**

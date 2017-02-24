@@ -68,17 +68,18 @@ public class CSVReadsHitsParser {
         doc.getActiveViewers().clear();
         doc.getActiveViewers().addAll(Arrays.asList(cNames));
 
-        IdParser[] parsers = new IdParser[cNames.length];
+        final IdParser[] parsers = new IdParser[cNames.length];
         int taxonomyIndex = -1;
         for (int i = 0; i < cNames.length; i++) {
-            String cName = cNames[i];
-            if (!cName.equals(Classification.Taxonomy)) {
-                parsers[i] = ClassificationManager.get(cName, true).getIdMapper().createIdParser();
+            final String cName = cNames[i];
+            parsers[i] = ClassificationManager.get(cName, true).getIdMapper().createIdParser();
                 ClassificationManager.ensureTreeIsLoaded(cName);
+            if (!cName.equals(Classification.Taxonomy)) {
                 doc.getActiveViewers().add(cName);
             } else {
                 taxonomyIndex = i;
             }
+            parsers[i].setUseTextParsing(true);
         }
 
         final Map<String, List<Pair<Integer, Float>>>[] readName2IdAndScore = new HashMap[cNames.length];
@@ -114,8 +115,7 @@ public class CSVReadsHitsParser {
                     String readName = tokens[0].trim();
                     boolean found = false;
                     for (int i = 0; !found && i < parsers.length; i++) {
-                        final int id = (parsers.length == 1 && Basic.isInteger(tokens[1]) ?
-                                Basic.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
+                        final int id = (parsers.length == 1 && Basic.isInteger(tokens[1]) ? Basic.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
                         if (id != 0) {
                             float score;
                             if (tokens.length < 3) {

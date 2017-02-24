@@ -44,6 +44,8 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
+import static megan.chart.ChartColorManager.SAMPLE_ID;
+
 /**
  * The main document
  * Daniel Huson    11.2005
@@ -203,14 +205,13 @@ public class Document {
                 parseParameterString(parameters);
             }
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);
+            loadColorTableFromDataTable();
         } else if (getMeganFile().isMeganSummaryFile()) {
             loadMeganSummaryFile();
         } else
             throw new IOException("File format not (or no longer) supported");
-        loadColorTableFromDataTable();
 
         lastRecomputeTime = System.currentTimeMillis();
-        colorsArray = new Color[getNumberOfSamples()];
     }
 
     /**
@@ -224,6 +225,7 @@ public class Document {
                 getDataTable().setColorTableHeatMap(getChartColorManager().getHeatMapTable().getName()); // this ensures that we save a valid name back to the file
             }
         }
+        getChartColorManager().setAttributeStateColorPositions(SAMPLE_ID, getSampleNames());
         if (!getChartColorManager().isUsingProgramColors())
             getChartColorManager().loadColorEdits(getDataTable().getColorEdits());
     }

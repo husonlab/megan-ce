@@ -46,7 +46,7 @@ public class ChartColorManager {
 
     private ColorTable colorTable;
     private ColorTable colorTableHeatMap;
-    private boolean colorByPosition = false;
+    private boolean colorByPosition;
 
     private ColorGetter seriesOverrideColorGetter = null;
 
@@ -59,7 +59,7 @@ public class ChartColorManager {
      */
     public ChartColorManager(ColorTable colorTable) {
         this.colorTable = colorTable;
-        this.colorByPosition = ProgramProperties.get("ColorByPosition", false);
+        setColorByPosition(ProgramProperties.get("ColorByPosition", false));
     }
 
     /**
@@ -420,7 +420,7 @@ public class ChartColorManager {
 
     public void setColorTable(String name, boolean colorByPosition) {
         this.colorTable = ColorTableManager.getColorTable(name);
-        this.colorByPosition = colorByPosition;
+        setColorByPosition(colorByPosition);
     }
 
     public ColorTable getColorTable() {

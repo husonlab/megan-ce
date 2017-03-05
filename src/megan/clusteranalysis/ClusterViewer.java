@@ -894,7 +894,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         if (tab instanceof MatrixTab) {
             return ((MatrixTab) tab);
         }
-        return null;
+        return (JPanel) tab;
     }
 
     public boolean isShowFindToolBar() {
@@ -1043,5 +1043,15 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             }
         }
         return set;
+    }
+
+    /**
+     * is the currently selected tab a Swing panel? Needed for export image dialog
+     *
+     * @return true. if swing panel
+     */
+    public boolean isSwingPanel() {
+        return getSelectedComponent() == getPcoaTab() || getSelectedComponent() == getPcoaTab() || getSelectedComponent() == getNJTab() ||
+                getSelectedComponent() == getNnetTab() || getSelectedComponent() == getUpgmaTab();
     }
 }

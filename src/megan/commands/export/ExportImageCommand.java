@@ -82,7 +82,7 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                 throw new IOException("File exists: " + cname + ", use REPLACE=true to overwrite");
 
             try {
-                ExportGraphicType graphicsType;
+                final ExportGraphicType graphicsType;
                 if (format.equalsIgnoreCase("eps")) {
                     graphicsType = new EPSExportType();
                     ((EPSExportType) graphicsType).setDrawTextAsOutlines(!text2shapes);
@@ -133,9 +133,25 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                     };
                     panel.setSize(frame.getContentPane().getSize());
                 }
-                if (!visibleOnly && scrollPane != null) {
+                if (!visibleOnly && scrollPane != null) { // need to adjust bounds and color background
                     if (!panel.getBounds().contains(scrollPane.getBounds())) {
-                        visibleOnly = true;
+                        final JPanel fpanel = panel;
+                        final JScrollPane fScrollPane = scrollPane;
+
+                        panel = new JPanel() {
+                            @Override
+                            public void paint(Graphics g) {
+                                Rectangle rectangle = new Rectangle(getBounds());
+                                final Point apt = fScrollPane.getViewport().getViewPosition();
+                                rectangle.x += apt.x;
+                                rectangle.y += apt.y;
+                                g.setColor(Color.WHITE);
+                                ((Graphics2D) g).fill(rectangle);
+                                fpanel.paint(g);
+                            }
+                        };
+                        panel.setBounds(fpanel.getBounds().x, fpanel.getBounds().y, Math.max(fpanel.getBounds().width, scrollPane.getBounds().width),
+                                Math.max(fpanel.getBounds().height, scrollPane.getBounds().height));
                     }
                 }
 
@@ -174,13 +190,11 @@ public class ExportImageCommand extends CommandBase implements ICommand {
         Document doc = getDir().getDocument();
         if (doc.getMeganFile().getFileName() != null)
             fileName = doc.getMeganFile().getFileName();
-        ExportImageDialog saveImageDialog;
-        if (viewer instanceof ViewerBase || viewer instanceof ChartViewer) {
-            saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, true, true, true, event);
-        } else {
-            saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, true, false, true, event);
-        }
-        String command = saveImageDialog.displayDialog();
+
+        final boolean allowWhole = (viewer instanceof ViewerBase || viewer instanceof ChartViewer || (viewer instanceof ClusterViewer && ((ClusterViewer) viewer).isSwingPanel()));
+
+        final ExportImageDialog saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, true, allowWhole, true, event);
+        final String command = saveImageDialog.displayDialog();
         if (command != null)
             executeImmediately(command);
     }

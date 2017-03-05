@@ -18,7 +18,6 @@
  */
 package megan.chart.drawers;
 
-import gnu.jpdf.PDFGraphics;
 import jloda.gui.ILabelGetter;
 import jloda.gui.IPopupMenuModifier;
 import jloda.util.Basic;
@@ -125,18 +124,6 @@ public class ChartDrawerBase extends JPanel {
         Point2D apt = new Point2D.Float((float) x, (float) y);
         Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
 
-        if (gc instanceof PDFGraphics) {
-            //double dx = 0.5 * Math.sin(labelAngle) * labelSize.height;
-            //double dy = 0.5 * Math.cos(labelAngle) * labelSize.height;
-            double dx = 0;  // can't use offsets unless drawRect is adjusted accordingly
-            double dy = 0;
-            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                ((PDFGraphics) gc).drawString(label, (float) (x + dx), (float) (y - dy), (float) (labelAngle - Math.PI));
-            } else {
-                ((PDFGraphics) gc).drawString(label, (float) (apt.getX() - dx), (float) (apt.getY() + dy), (float) labelAngle);
-            }
-        } else {
-
             // save current transform:
             final AffineTransform saveTransform = gc.getTransform();
             // rotate label to desired angle
@@ -157,7 +144,6 @@ public class ChartDrawerBase extends JPanel {
 
             gc.setColor(Color.BLACK);
             gc.setTransform(saveTransform);
-        }
     }
 
     /**

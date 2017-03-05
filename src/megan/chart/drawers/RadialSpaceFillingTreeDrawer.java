@@ -270,13 +270,13 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                                 value = getChartData().getValueAsDouble(series, className);
 
                             double radius = (level - 1) * radiusFactor + value * barFactor;
-                            Rectangle2D rect = new Rectangle2D.Double(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
-                            Arc2D arc = new Arc2D.Double(rect, modulo360(angleV + used + angleOffset), part, Arc2D.PIE);
+                            final Rectangle2D rect = new Rectangle2D.Double(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius);
+                            final Arc2D arc = new Arc2D.Double(rect, modulo360(angleV + used + angleOffset), part, Arc2D.PIE);
                             used += part;
                             if (colorBySeries) {
                                 gc.setColor(getChartColors().getSampleColor(series));
                             } else {
-                                Color color = getChartColors().getClassColor(class2HigherClassMapper.get(className));
+                                final Color color = getChartColors().getClassColor(class2HigherClassMapper.get(className));
                                 gc.setColor(color.brighter());
                             }
                             if (sgc != null)

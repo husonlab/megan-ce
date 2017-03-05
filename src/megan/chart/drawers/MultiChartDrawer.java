@@ -18,7 +18,6 @@
  */
 package megan.chart.drawers;
 
-import gnu.jpdf.PDFGraphics;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
@@ -78,18 +77,12 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
         panelSize.setSize(getWidth() / cols, (y0 - y1) / rows - 14);
 
         Font labelFont = getFont("Default");
-        boolean isPDFGraphics = (gc instanceof PDFGraphics);
         AffineTransform transform = gc.getTransform();
 
         int panel = 0;
         for (String series : getChartData().getSeriesNames()) {
-            int h = (panel % cols) * panelSize.width;
-            int v;
-            if (!isPDFGraphics) {
-                v = (panel / cols) * (panelSize.height + 14) + y1;
-            } else {
-                v = (rows - (panel / cols)) * (panelSize.height + 14) - y0;
-            }
+            final int h = (panel % cols) * panelSize.width;
+            final int v = (panel / cols) * (panelSize.height + 14) + y1;
 
             final IMultiChartDrawable chartDrawer = label2drawer.get(series);
             if (chartDrawer == null)
@@ -184,19 +177,13 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
         panelSize.setSize(getWidth() / cols, (y0 - y1) / rows - 14);
 
         Font labelFont = getFont("Default");
-        boolean isPDFGraphics = (gc instanceof PDFGraphics);
         AffineTransform transform = gc.getTransform();
 
         int panel = 0;
 
         for (String className : getChartData().getClassNames()) {
-            int h = (panel % cols) * panelSize.width;
-            int v;
-            if (!isPDFGraphics) {
-                v = (panel / cols) * (panelSize.height + 14) + y1;
-            } else {
-                v = (rows - (panel / cols)) * (panelSize.height + 14) - y0;
-            }
+            final int h = (panel % cols) * panelSize.width;
+            final int v = (panel / cols) * (panelSize.height + 14) + y1;
 
             final IMultiChartDrawable chartDrawer = label2drawer.get(className);
             if (chartDrawer == null)

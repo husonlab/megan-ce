@@ -30,11 +30,10 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * panel for setting a functional-viewer related stuff
+ * panel for setting functional-viewer related stuff
  * Daniel Huson, 12.2012, 4.2015
  */
 public class ViewerPanel extends JPanel {
-
     /**
      * construct the  panel
      *

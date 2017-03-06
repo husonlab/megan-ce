@@ -54,7 +54,7 @@ import java.util.Collection;
  * Daniel Huson, 8.2008
  */
 public class ImportBlastDialog extends JDialog implements IDirectableViewer {
-    private final Director dir;
+    protected final Director dir;
     private boolean isLocked = false;
     private boolean isUpToDate = true;
 
@@ -113,7 +113,20 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
      * @param dir
      */
     public ImportBlastDialog(Component parent, Director dir, final String title) {
+        this(parent, dir, ClassificationManager.getAllSupportedClassifications(), title);
+    }
+
+    /**
+     * constructor
+     *
+     * @param parent
+     * @param dir
+     * @param cNames
+     * @param title
+     */
+    public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames, final String title) {
         this.dir = dir;
+        this.cNames.addAll(cNames);
         dir.addViewer(this);
 
         if (ProgramProperties.getProgramIcon() != null)
@@ -167,12 +180,14 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         addFilesTab(tabbedPane);
 
-        tabbedPane.addTab("Taxonomy", new ViewerPanel(commandManager, Classification.Taxonomy));
-        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            cNames.add(cName);
-            tabbedPane.addTab(cName, new ViewerPanel(commandManager, cName));
+        if (cNames.contains(Classification.Taxonomy))
+            tabbedPane.addTab(Classification.Taxonomy, new ViewerPanel(commandManager, Classification.Taxonomy));
+        for (String fName : cNames) {
+            if (!fName.equalsIgnoreCase(Classification.Taxonomy))
+                tabbedPane.addTab(fName, new ViewerPanel(commandManager, fName));
         }
-        tabbedPane.addTab("LCA Params", new LCAParametersPanel(this));
+
+        addLCATab(tabbedPane);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -206,6 +221,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public void addFilesTab(JTabbedPane tabbedPane) {
         tabbedPane.addTab("Files", new FilesPanel(this));
     }
+
+    public void addLCATab(JTabbedPane tabbedPane) {
+        tabbedPane.addTab("LCA Params", new LCAParametersPanel(this));
+    }
+
 
     /**
      * show the dialog and return the entered command string, or null
@@ -582,14 +602,14 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     }
 
     /**
-     * gets the list of selected fNames
+     * gets the list of selected cNames
      *
      * @return all selected fnames
      */
     public Collection<String> getSelectedFNames() {
-        ArrayList<String> result = new ArrayList<>();
+        final ArrayList<String> result = new ArrayList<>();
         for (String cName : cNames) {
-            ICheckBoxCommand command = (ICheckBoxCommand) commandManager.getCommand(SetAnalyse4ViewerCommand.getName(cName));
+            final ICheckBoxCommand command = (ICheckBoxCommand) commandManager.getCommand(SetAnalyse4ViewerCommand.getName(cName));
             if (command.isSelected())
                 result.add(cName);
         }
@@ -631,6 +651,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public void setLongReads(boolean longReads) {
         this.longReads = longReads;
     }
+
+
 
     /**
      * apply import from blast
@@ -731,13 +753,15 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" mode=").append(blastMode);
 
         int maxNumberOfMatchesPerRead;
-        try {
-            maxNumberOfMatchesPerRead = Integer.parseInt(getMaxNumberOfMatchesPerReadField().getText());
-            ProgramProperties.put("MaxNumberMatchesPerRead", maxNumberOfMatchesPerRead);
-        } catch (NumberFormatException ex) {
-            maxNumberOfMatchesPerRead = ProgramProperties.get("MaxNumberMatchesPerRead", 50);
+        if (!isLongReads()) {
+            try {
+                maxNumberOfMatchesPerRead = Integer.parseInt(getMaxNumberOfMatchesPerReadField().getText());
+                ProgramProperties.put("MaxNumberMatchesPerRead", maxNumberOfMatchesPerRead);
+            } catch (NumberFormatException ex) {
+                maxNumberOfMatchesPerRead = ProgramProperties.get("MaxNumberMatchesPerRead", 50);
+            }
+            buf.append(" maxMatches=").append(maxNumberOfMatchesPerRead);
         }
-        buf.append(" maxMatches=").append(maxNumberOfMatchesPerRead);
         buf.append(" minScore=").append(getMinScore());
         buf.append(" maxExpected=").append(getMaxExpected());
         buf.append(" minPercentIdentity=").append(getMinPercentIdentity());

@@ -20,6 +20,8 @@ package megan.commands.show;
 
 
 import jloda.gui.commands.ICheckBoxCommand;
+import jloda.gui.director.IDirectableViewer;
+import jloda.gui.director.IDirector;
 import jloda.gui.director.IViewerWithLegend;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
@@ -52,6 +54,9 @@ public class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
         if (getViewer() instanceof IViewerWithLegend) {
             IViewerWithLegend viewer = (IViewerWithLegend) getViewer();
             viewer.setShowLegend(which);
+            if (getViewer() instanceof IDirectableViewer) {
+                ((IDirectableViewer) getViewer()).updateView(IDirector.ENABLE_STATE);
+            }
         }
     }
 

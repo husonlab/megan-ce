@@ -102,7 +102,6 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 np.matchIgnoreCase("minSupport=");
                 minSupport = np.getInt();
             }
-
             np.matchIgnoreCase(";");
 
             if (!ProgramProperties.isUseGUI() || doc.neverOpenedReads) {
@@ -136,7 +135,8 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 newDir.getMainViewer().getFrame().setVisible(true);
                 newDir.getMainViewer().setDoReInduce(true);
                 newDir.getMainViewer().setDoReset(true);
-                newDir.execute("import csv=reads separator=" + (tabSeparator ? "tab" : "comma") + " file='" + fileName + "' fNames=" + Basic.toString(cNames, " ")
+                newDir.execute("import csv=reads separator=" + (tabSeparator ? "tab" : "comma") + " file='"
+                                + fileName + "' fNames=" + Basic.toString(cNames, " ")
                                 + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent
                                 + " minSupport=" + minSupport + ";update;",
                         newDir.getMainViewer().getCommandManager());
@@ -158,9 +158,6 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
                 viewer.getCollapsedIds().clear();
                 doc.getMeganFile().setFileName(Basic.getFileBaseName(fileName) + ".megan");
-                doc.getActiveViewers().clear();
-                doc.getActiveViewers().addAll(cNames);
-                doc.processReadHits();
                 doc.setDirty(true);
                 if (doc.getNumberOfSamples() > 0)
                     viewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.PieChart);
@@ -172,7 +169,8 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 newDir.getMainViewer().getFrame().setVisible(true);
                 newDir.getMainViewer().setDoReInduce(true);
                 newDir.getMainViewer().setDoReset(true);
-                newDir.executeImmediately("import csv=summary separator=" + (tabSeparator ? "tab" : "comma") + " file='" + fileName + "' fNames=" + Basic.toString(cNames, " ")
+                newDir.executeImmediately("import csv=summary separator=" + (tabSeparator ? "tab" : "comma") + " file='"
+                        + fileName + "' fNames=" + Basic.toString(cNames, " ")
                         + " multiplier=" + multiplier + ";update;", newDir.getMainViewer().getCommandManager());
             }
         }
@@ -186,7 +184,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
         if (files != null && files.size() > 0) {
 
             File file = files.get(0);
-            ImportCSVWindow importCSVWindow = new ImportCSVWindow(getViewer().getFrame());
+            ImportCSVWindow importCSVWindow = new ImportCSVWindow(getViewer(), getDir());
             importCSVWindow.setTabSeparator(CSVSummaryParser.guessTabSeparator(file));
             importCSVWindow.setDoReadsHits(CSVSummaryParser.getTokensPerLine(file, importCSVWindow.isTabSeparator() ? "\t" : ",") == 3);
             if (importCSVWindow.apply()) {
@@ -201,11 +199,11 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                     float minSupportPercent = dialog.getMinSupportPercent();
 
                     template = ("import csv=reads separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
-                            + Basic.toString(importCSVWindow.getSelectedFNames(), " ")
+                            + Basic.toString(importCSVWindow.getSelectedCNames(), " ")
                             + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent + " minSupport=" + minSupport + ";\n");
                 } else {
                     template = ("import csv=summary separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
-                            + Basic.toString(importCSVWindow.getSelectedFNames(), " ")
+                            + Basic.toString(importCSVWindow.getSelectedCNames(), " ")
                             + (importCSVWindow.getMultiplier() != 1 ? " multiplier=" + importCSVWindow.getMultiplier() : "") + ";\n");
                 }
                 StringBuilder buf = new StringBuilder();

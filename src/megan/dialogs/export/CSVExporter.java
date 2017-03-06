@@ -156,7 +156,7 @@ public class CSVExporter {
                     } else if (Basic.endsWithIgnoreCase(format, "Name_to_length") || Basic.endsWithIgnoreCase(format, "Path_to_length")) {
                         count = CSVExportFViewer.exportName2TotalLength(format, viewer, file, separator, progressListener);
                         break;
-                    } else if (Basic.endsWithIgnoreCase(format, "Name_to_RPK") || Basic.endsWithIgnoreCase(format, "Id_to_RPK") || Basic.endsWithIgnoreCase(format, "Path_to_RKB")) {
+                    } else if (Basic.endsWithIgnoreCase(format, "Name_to_RPK") || Basic.endsWithIgnoreCase(format, "Id_to_RPK") || Basic.endsWithIgnoreCase(format, "Path_to_RPK")) {
                         count = CSVExportFViewer.exportName2CountPerKB(format, viewer, file, separator, progressListener);
                         break;
                     }

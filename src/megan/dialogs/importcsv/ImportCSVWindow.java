@@ -18,10 +18,11 @@
  */
 package megan.dialogs.importcsv;
 
+import jloda.gui.director.IDirectableViewer;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
+import megan.core.Director;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,19 +46,21 @@ public class ImportCSVWindow extends JDialog {
     private boolean tabSeparator = false;
 
     private final Set<String> selectedCNames = new HashSet<>();
-    private boolean doAccessionIds;
+    private boolean parseAccessions;
 
     private AbstractAction applyAction;
+
+    private final IDirectableViewer viewer;
+    private final Director dir;
 
     /**
      * setup and display the import csv window
      */
-    public ImportCSVWindow(JFrame parent) {
+    public ImportCSVWindow(IDirectableViewer viewer, Director dir) {
         super();
-        if (parent != null)
-            setLocationRelativeTo(parent);
-        else
-            setLocation(300, 300);
+        this.viewer = viewer;
+        this.dir = dir;
+        setLocationRelativeTo(viewer.getFrame());
         setSize(330, 450);
 
         setModal(true);
@@ -183,21 +186,19 @@ public class ImportCSVWindow extends JDialog {
         final JPanel line2 = new JPanel();
         line2.setLayout(new BoxLayout(line2, BoxLayout.X_AXIS));
 
-        final JCheckBox useRefSeq = new JCheckBox();
+        final JCheckBox useAccessionIds = new JCheckBox();
 
-        final Set<String> functions = new HashSet<>();
-        functions.addAll(Arrays.asList(cNames));
-        functions.remove(Classification.Taxonomy);
+        final Set<String> classifications = new HashSet<>();
+        classifications.addAll(Arrays.asList(cNames));
 
-
-        useRefSeq.setAction(new AbstractAction("Use Accession Ids for " + Basic.toString(functions, ", ")) {
+        useAccessionIds.setAction(new AbstractAction("Parse accessions ids") {
             public void actionPerformed(ActionEvent e) {
-                doAccessionIds = useRefSeq.isSelected();
+                parseAccessions = useAccessionIds.isSelected();
             }
         });
-        useRefSeq.setSelected(doAccessionIds);
-        useRefSeq.setToolTipText("Accession ids are given instead of " + Basic.toString(functions, ", ") + " ids");
-        line2.add(useRefSeq);
+        useAccessionIds.setSelected(parseAccessions);
+        useAccessionIds.setToolTipText("Use accession number parsing for " + Basic.toString(classifications, ", ") + " ids");
+        line2.add(useAccessionIds);
 
         dPanel.add(line2);
 
@@ -243,7 +244,18 @@ public class ImportCSVWindow extends JDialog {
         applyAction = new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                ok = true;
+                if (getSelectedCNames().size() > 0) {
+                    for (String cName : getSelectedCNames()) {
+                        ProgramProperties.get("Use" + cName, true);
+                    }
+
+                    if (parseAccessions) {
+                        final ParsersDialog parsersDialog = new ParsersDialog(viewer.getFrame(), dir, getSelectedCNames());
+                        parsersDialog.setVisible(true);
+                        ok = parsersDialog.isPressedApply();
+                    } else
+                        ok = true;
+                }
             }
         };
         applyAction.setEnabled(false);
@@ -251,7 +263,7 @@ public class ImportCSVWindow extends JDialog {
         getContentPane().add(bottom, BorderLayout.SOUTH);
     }
 
-    public Set<String> getSelectedFNames() {
+    public Set<String> getSelectedCNames() {
         return selectedCNames;
     }
 
@@ -291,11 +303,11 @@ public class ImportCSVWindow extends JDialog {
         this.tabSeparator = tabSeparator;
     }
 
-    public boolean isDoAccessionIds() {
-        return doAccessionIds;
+    public boolean isParseAccessions() {
+        return parseAccessions;
     }
 
-    public void setDoAccessionIds(boolean doAccessionIds) {
-        this.doAccessionIds = doAccessionIds;
+    public void setParseAccessions(boolean parseAccessions) {
+        this.parseAccessions = parseAccessions;
     }
 }

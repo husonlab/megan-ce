@@ -36,10 +36,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * parses a CVS file containing a summary of one or multiple taxonomic dataset
@@ -51,13 +48,13 @@ public class CSVSummaryParser {
      * apply the importer parser to the named file.
      * Format should be:   taxid,count[,count,...]
      * If the first line contains non-number tokens, then these are interpreted as the names of the datasets
-     *  @param fileName
+     * @param fileName
      * @param doc
      * @param multiplier
      */
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator, long multiplier) throws IOException {
         String separator = (tabSeparator ? "\t" : ",");
-        System.err.println("Importing summary of" + Basic.toString(cNames, ", ") + " assignments from CSV file");
+        System.err.println("Importing summary of " + Basic.toString(cNames, ", ") + " assignments from CSV file");
         System.err.println("Specified line format: classname" + separator + "count{" + separator + "count" + separator + "count...}");
 
         DataTable table = doc.getDataTable();
@@ -69,11 +66,10 @@ public class CSVSummaryParser {
         doc.getActiveViewers().clear();
         doc.getActiveViewers().addAll(Arrays.asList(cNames));
 
-        if(!Arrays.asList(cNames).contains(Classification.Taxonomy)) {
-            final String[] tmp=new String[cNames.length+1];
-            System.arraycopy(cNames, 0, tmp, 0, cNames.length);
-            tmp[tmp.length-1]=Classification.Taxonomy;
-            cNames=tmp;
+        final Set<Integer>[] knownIds = new HashSet[cNames.length];
+        for (int i = 0; i < cNames.length; i++) {
+            knownIds[i] = new HashSet<>();
+            knownIds[i].addAll(ClassificationManager.get(cNames[i], true).getName2IdMap().getIds());
         }
 
         IdParser[] idParsers = new IdParser[cNames.length];
@@ -105,6 +101,12 @@ public class CSVSummaryParser {
 
         int numberOfErrors = 0;
         boolean first = true;
+
+        String[] firstLineCommentTokens = null;
+
+        int warningUnrecognizedName = 0;
+        int[] warnings = new int[cNames.length];
+
         int numberOfLines = 0;
         try (FileInputIterator it = new FileInputIterator(fileName)) {
             while (it.hasNext()) {
@@ -125,8 +127,10 @@ public class CSVSummaryParser {
                         if (tokens.length < 2)
                             throw new IOException("Line " + it.getLineNumber() + ": incorrect number of columns, expected at least 2, got: " + tokens.length + " (" + aLine + ")");
 
-                        if (tokens[0].startsWith("#"))
+                        if (tokens[0].startsWith("#")) {
                             tokens[0] = tokens[0].substring(1).trim();
+                            firstLineCommentTokens = tokens;
+                        }
 
                         if (tokens[0].equalsIgnoreCase("name") || tokens[0].equalsIgnoreCase("names") || tokens[0].equalsIgnoreCase("samples")
                                 || tokens[0].equalsIgnoreCase("SampleID") || tokens[0].equalsIgnoreCase(SampleAttributeTable.SAMPLE_ID)
@@ -162,21 +166,35 @@ public class CSVSummaryParser {
                     }
 
                     boolean found = false;
-                    for (int i = 0; !found && i < idParsers.length; i++) {
+                    for (int i = 0; i < idParsers.length; i++) {
                         int id;
                         if (i == taxonomyIndex && Basic.isInteger(tokens[0]))
                             id = Basic.parseInt(tokens[1]);
                         else
                             id = idParsers[i].getIdFromHeaderLine(tokens[0]);
                         if (id != 0) {
-                            float[] counts = getOrCreate(class2counts[i], id, names.length);
-                            addToArray(counts, add);
-                            addToArray(total[i], add);
                             found = true;
+                            if (knownIds[i].contains(id)) {
+                                float[] counts = getOrCreate(class2counts[i], id, names.length);
+                                addToArray(counts, add);
+                                addToArray(total[i], add);
+                            } else {
+                                if (warnings[i] < 50) {
+                                    System.err.println("Warning: " + cNames[i] + " Unclassified item: " + tokens[0]);
+                                    warnings[i]++;
+                                    if (warnings[i] == 50)
+                                        System.err.println("No further warnings");
+                                }
+                            }
                         }
                     }
                     if (!found) {
-                        System.err.println("Unrecognized name: " + tokens[0]);
+                        if (warningUnrecognizedName < 50) {
+                            System.err.println("Unrecognized name: " + tokens[0]);
+                            warningUnrecognizedName++;
+                            if (warningUnrecognizedName == 50)
+                                System.err.println("No further warnings");
+                        }
                         for (int i = 0; i < idParsers.length; i++) {
                             float[] counts = getOrCreate(class2counts[i], IdMapper.UNASSIGNED_ID, names.length);
                             addToArray(counts, add);
@@ -189,8 +207,20 @@ public class CSVSummaryParser {
                 }
             }
         }
+        // try to use top comments as names
+        if (firstLineCommentTokens != null && firstLineCommentTokens.length - 1 == names.length) {
+            System.arraycopy(firstLineCommentTokens, 1, names, 0, firstLineCommentTokens.length - 1);
+        }
+
         float[] sizes = new float[names.length];
-        System.arraycopy(total[taxonomyIndex], 0, sizes, 0, sizes.length);
+        if (taxonomyIndex == -1) {
+            System.arraycopy(total[0], 0, sizes, 0, sizes.length);
+            final Map<Integer, float[]> unassigned = new HashMap<>();
+            unassigned.put(IdMapper.UNASSIGNED_ID, sizes);
+            doc.getActiveViewers().add(Classification.Taxonomy);
+            table.getClassification2Class2Counts().put(Classification.Taxonomy, unassigned);
+        } else
+            System.arraycopy(total[taxonomyIndex], 0, sizes, 0, sizes.length);
 
         table.setSamples(names, null, sizes, null);
         for (int i = 0; i < cNames.length; i++) {

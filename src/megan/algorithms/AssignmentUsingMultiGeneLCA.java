@@ -30,7 +30,7 @@ import java.util.*;
  * computes the taxon assignment for a read, using the LCA algorithm for long reads
  * Daniel Huson, 2.2017
  */
-public class AssignmentUsingLongReadLCA extends AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
+public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     private final Map<Integer, IntervalTree<IMatchBlock>> taxonId2Intervals;
     private final Map<Integer, Float> taxonId2BitScore;
 
@@ -47,7 +47,7 @@ public class AssignmentUsingLongReadLCA extends AssignmentUsingLCAForTaxonomy im
      * @param useIdentityFilter
      * @param topPercent        this only works if matches are not already prefiltered by top percent
      */
-    public AssignmentUsingLongReadLCA(String cName, boolean useIdentityFilter, float topPercent) {
+    public AssignmentUsingMultiGeneLCA(String cName, boolean useIdentityFilter, float topPercent) {
         super(cName, useIdentityFilter);
 
         taxonId2Intervals = new HashMap<>();

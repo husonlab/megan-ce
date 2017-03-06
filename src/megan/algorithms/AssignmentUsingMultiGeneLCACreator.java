@@ -23,7 +23,7 @@ package megan.algorithms;
  * create an LCA assignment algorithm for taxonomy
  * Daniel Huson, 3.2016
  */
-public class AssignmentUsingLongReadLCACreator implements IAssignmentAlgorithmCreator {
+public class AssignmentUsingMultiGeneLCACreator implements IAssignmentAlgorithmCreator {
     private final String cName;
     private final boolean usePercentIdentityFilter;
     private final float topPercent;
@@ -33,7 +33,7 @@ public class AssignmentUsingLongReadLCACreator implements IAssignmentAlgorithmCr
      *
      * @param cName
      */
-    public AssignmentUsingLongReadLCACreator(String cName, boolean usePercentIdentityFilter, float topPercent) {
+    public AssignmentUsingMultiGeneLCACreator(String cName, boolean usePercentIdentityFilter, float topPercent) {
         this.cName = cName;
         this.usePercentIdentityFilter = usePercentIdentityFilter;
         this.topPercent = topPercent;
@@ -47,6 +47,6 @@ public class AssignmentUsingLongReadLCACreator implements IAssignmentAlgorithmCr
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingLongReadLCA(cName, usePercentIdentityFilter, topPercent);
+        return new AssignmentUsingMultiGeneLCA(cName, usePercentIdentityFilter, topPercent);
     }
 }

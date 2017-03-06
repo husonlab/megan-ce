@@ -96,7 +96,7 @@ public class DAAMeganizer {
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveLongReads.toString() : Document.LCAAlgorithm.Naive.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveMultiGene.toString() : Document.LCAAlgorithm.Naive.toString()));
         final float weightedLCAPercent;
         if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);

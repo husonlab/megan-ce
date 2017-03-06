@@ -960,7 +960,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             splitPane.validate();
             legendPanel.setSize(splitPane.getWidth(), 50);
             legendPanel.draw((Graphics2D) legendPanel.getGraphics(), size);
-            int height = (int) size.getHeight() + 10;
+            int height = (int) size.getHeight() + 30;
             legendPanel.setPreferredSize(new Dimension(splitPane.getWidth(), height));
             legendPanel.validate();
             splitPane.setDividerLocation(splitPane.getSize().height - splitPane.getInsets().right - splitPane.getDividerSize() - height);

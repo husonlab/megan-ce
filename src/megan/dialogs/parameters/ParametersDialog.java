@@ -101,7 +101,7 @@ public class ParametersDialog extends JDialog {
         lcaAlgorithmComboBox.setEditable(false);
         for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
             // todo: what this item to be present, but disabled
-            if (algorithm != Document.LCAAlgorithm.NaiveLongReads || doc.isLongReads())
+            if (algorithm != Document.LCAAlgorithm.NaiveMultiGene || doc.isLongReads())
                 lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());

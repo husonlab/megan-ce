@@ -236,20 +236,7 @@ public class SAMMatch implements megan.rma3.IMatch {
 
         alignedQueryStart = determineQueryStart();
 
-        int alignedQueryLength = (mode == BlastMode.BlastX ? 3 : 1) * computeAlignedQuerySegmentLength(getSequence());
-        alignedQueryStart = determineQueryStart();
-
-        final boolean reverse;
-        if (mode == BlastMode.BlastX) {
-            final Object obj = optionalFields.get("ZF");
-            reverse = (obj != null && obj instanceof Integer && ((Integer) obj) < 0);
-        } else
-            reverse = ((mode == BlastMode.BlastN) && isReverseComplemented());
-
-        if (reverse) {
-            alignedQueryEnd = alignedQueryStart - alignedQueryLength;
-        } else
-            alignedQueryEnd = alignedQueryStart + alignedQueryLength;
+        alignedQueryEnd = determineQueryEnd(alignedQueryStart);
     }
 
     /**
@@ -259,7 +246,6 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
     private int determineQueryStart() {
         int queryStart = 1;
-        {
             Object obj = optionalFields.get("ZS");
             if (obj != null && obj instanceof Integer) {
                 queryStart = (Integer) obj;
@@ -281,8 +267,32 @@ public class SAMMatch implements megan.rma3.IMatch {
                     }
                 }
             }
-        }
         return queryStart;
+    }
+
+    /**
+     * determine the query end position
+     *
+     * @return query end
+     */
+    private int determineQueryEnd(int alignedQueryStart) {
+        final Object zq = optionalFields.get("ZQ");
+        if (zq != null && zq instanceof Integer) {
+            return (Integer) zq;
+        }
+
+        int alignedQueryLength = (mode == BlastMode.BlastX ? 3 : 1) * computeAlignedQuerySegmentLength(getSequence());
+        final boolean reverse;
+        if (mode == BlastMode.BlastX) {
+            final Object df = optionalFields.get("ZF");
+            reverse = (df != null && df instanceof Integer && ((Integer) df) < 0);
+        } else
+            reverse = ((mode == BlastMode.BlastN) && isReverseComplemented());
+
+        if (reverse) {
+            return alignedQueryStart - alignedQueryLength;
+        } else
+            return alignedQueryStart + alignedQueryLength;
     }
 
     /**

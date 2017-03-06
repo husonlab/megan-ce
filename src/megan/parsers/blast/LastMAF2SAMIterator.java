@@ -115,27 +115,23 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                         s WP_005682092.1                       18 33 + 516 SAEANENERRWNDDKIDRKNQDSTNNYDKTRMK
                         s HISEQ:457:C5366ACXX:2:1101:2641:2226  1 99 + 100 TAEANENERHWNDDKIERKNQDPTNHYDKSRMR
                      */
+
+
                     final String queryAligned = queryTokens[6];
                     int queryStart = Basic.parseInt(queryTokens[2]) + 1;
-                    boolean queryReversed = !queryTokens[4].equals("+");
-                    int queryAlignmentLength = Basic.parseInt(queryTokens[3]);
+                    final int queryAlignmentLength = Basic.parseInt(queryTokens[3]);
+                    final boolean queryReversed = !queryTokens[4].equals("+");
+                    final int queryLength = Basic.parseInt(queryTokens[5]);
                     int queryEnd;
+
+                    final int frame = (queryReversed ? -1 : 1) * ((queryStart - 1) % 3 + 1); // do this before changing start to reflect reversed sequence
+
                     if (queryReversed) {
-                        queryEnd = queryStart;
-                        queryStart = queryStart + queryAlignmentLength - 1;
+                        queryStart = queryLength - queryStart;
+                        queryEnd = queryStart - queryAlignmentLength + 1;
                     } else {
                         queryEnd = queryStart + queryAlignmentLength - 1;
                     }
-
-                    final int frame;
-                    if (blastMode == BlastMode.BlastX) {
-                        if (queryReversed) {
-                            int queryLength = Basic.parseInt(queryTokens[5]);
-                            frame = -((queryLength - queryStart) % 3 + 1);
-                        } else
-                            frame = ((queryStart - 1) % 3 + 1);
-                    } else
-                        frame = 0;
 
                     final String scoreLine = mafMatch[0];
                     final int rawScore = Basic.parseInt(getNextToken(scoreLine, "score="));
@@ -147,14 +143,16 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                     final String subjName = subjTokens[1];
                     final String subjAligned = subjTokens[6];
                     int subjStart = Basic.parseInt(subjTokens[2]) + 1;
-                    int subjAlignmentLength = Basic.parseInt(subjTokens[3]);
-                    boolean subjReversed = !subjTokens[4].equals("+");
+                    final int subjAlignmentLength = Basic.parseInt(subjTokens[3]);
+                    final boolean subjReversed = !subjTokens[4].equals("+");
+                    final int subjLength = Basic.parseInt(subjTokens[5]);
                     int subjEnd;
-                    if (!subjReversed) {
-                        subjEnd = subjStart + subjAlignmentLength - 1;
+
+                    if (subjReversed) {
+                        subjStart = subjLength - subjStart;
+                        subjEnd = subjStart - subjAlignmentLength + 1;
                     } else {
-                        subjEnd = subjStart;
-                        subjStart = subjStart + subjAlignmentLength - 1;
+                        subjEnd = subjStart + subjAlignmentLength - 1;
                     }
 
                     final float percentIdentities;
@@ -169,7 +167,6 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                         } else
                             percentIdentities = 0;
                     }
-                    int subjLength = Basic.parseInt(subjTokens[5]);
 
                     if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
                         Match match = new Match();

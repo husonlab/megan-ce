@@ -19,6 +19,9 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import jloda.util.Pair;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,11 +33,10 @@ import java.util.TreeSet;
  * Daniel Huson, 4.2015
  */
 public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterator {
-
-    private byte[] matchesText = new byte[10000];
-    private int matchesTextLength = 0;
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
     private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     /**
      * constructor
@@ -71,14 +73,14 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         if (!hasNextLine())
             return -1;
 
-        matchesTextLength = 0;
-
         String line = nextLine();
         final String queryName = Basic.getReadName(line);
         pushBackLine(line);
 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
+        matchesTextAndLength.setSecond(0);
+        matchesIntervalTree.clear();
 
         // get all matches for given query:
         try {
@@ -138,14 +140,22 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                     throw new IOException("Expected float (bit score), got: " + tokens[11]);
                 float bitScore = (Float.parseFloat(tokens[11]));
 
-                if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
+                if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
                     Match match = new Match();
                     match.bitScore = bitScore;
                     match.id = matchId++;
-                    match.samLine = makeSAM(queryName, refName, bitScore, expect, identity, queryStart, subjStart, subjEnd, line);
-                    matches.add(match);
-                    if (matches.size() > getMaxNumberOfMatchesPerRead())
-                        matches.remove(matches.last());
+                    match.samLine = makeSAM(queryName, refName, bitScore, expect, identity, queryStart, queryEnd, subjStart, subjEnd, line);
+                    matchesIntervalTree.add(new Interval<>(queryStart, queryEnd, match));
+                } else {
+                    if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
+                        Match match = new Match();
+                        match.bitScore = bitScore;
+                        match.id = matchId++;
+                        match.samLine = makeSAM(queryName, refName, bitScore, expect, identity, queryStart, queryEnd, subjStart, subjEnd, line);
+                        matches.add(match);
+                        if (matches.size() > getMaxNumberOfMatchesPerRead())
+                            matches.remove(matches.last());
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -154,29 +164,9 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                 throw new RuntimeException("Too many errors");
         }
 
-        if (matches.size() == 0) { // no matches, so return query name only
-            if (queryName.length() > matchesText.length) {
-                matchesText = new byte[2 * queryName.length()];
-            }
-            for (int i = 0; i < queryName.length(); i++)
-                matchesText[matchesTextLength++] = (byte) queryName.charAt(i);
-            matchesText[matchesTextLength++] = '\n';
-            return 0;
-        } else {
-            for (Match match : matches) {
-                byte[] bytes = match.samLine.getBytes();
-                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
-                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
-                    System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
-                    matchesText = tmp;
-                }
-                System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
-                matchesTextLength += bytes.length;
-                matchesText[matchesTextLength++] = '\n';
-            }
-            return matches.size();
-        }
+        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
+
 
     /**
      * gets the matches text
@@ -185,7 +175,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
      */
     @Override
     public byte[] getMatchesText() {
-        return matchesText;
+        return matchesTextAndLength.getFirst();
     }
 
     /**
@@ -195,13 +185,13 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesTextLength;
+        return matchesTextAndLength.getSecond();
     }
 
     /**
      * make a SAM line
      */
-    private String makeSAM(String queryName, String refName, float bitScore, float expect, float percentIdentity, int queryStart, int referenceStart, int referenceEnd, String line) throws IOException {
+    private String makeSAM(String queryName, String refName, float bitScore, float expect, float percentIdentity, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String line) throws IOException {
         final StringBuilder buffer = new StringBuilder();
 
         buffer.append(queryName).append("\t");
@@ -229,6 +219,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         buffer.append(String.format("ZE:f:%g\t", expect));
         buffer.append(String.format("ZI:i:%d\t", (int) Math.round(percentIdentity)));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
+        buffer.append(String.format("ZQ:i:%s\t", queryEnd));
         buffer.append(String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' ')));
 
         return buffer.toString();

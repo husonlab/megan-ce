@@ -23,16 +23,16 @@ package megan.algorithms;
  * create a best hit assignment algorithm
  * Daniel Huson, 3.2016
  */
-public class AssignmentUsingLongReadBestHitCreator implements IAssignmentAlgorithmCreator {
-    private final AssignmentUsingLongReadBestHit algorithm;
+public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgorithmCreator {
+    private final AssignmentUsingMultiGeneBestHit algorithm;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingLongReadBestHitCreator(String cName, String fileName) {
-        algorithm = new AssignmentUsingLongReadBestHit(cName);
+    public AssignmentUsingMultiGeneBestHitCreator(String cName, String fileName) {
+        algorithm = new AssignmentUsingMultiGeneBestHit(cName);
         System.err.println("Using Multi-Gene Best-Hit algorithm for binning: " + cName);
     }
 

@@ -34,7 +34,7 @@ import java.util.Set;
  * assignment using best hit
  * Created by huson on 1/22/16.
  */
-public class AssignmentUsingLongReadBestHit implements IMultiAssignmentAlgorithm {
+public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorithm {
     private final IntervalTree<IMatchBlock> allMatches;
     private final IntervalTree<IMatchBlock> reverseMatches;
     private final Set<Integer> classIds = new HashSet<>();
@@ -48,7 +48,7 @@ public class AssignmentUsingLongReadBestHit implements IMultiAssignmentAlgorithm
      *
      * @param cName
      */
-    public AssignmentUsingLongReadBestHit(String cName) {
+    public AssignmentUsingMultiGeneBestHit(String cName) {
         this.cName = cName;
         allMatches = new IntervalTree<>();
         reverseMatches = new IntervalTree<>();

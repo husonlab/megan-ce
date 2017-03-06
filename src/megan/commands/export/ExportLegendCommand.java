@@ -25,10 +25,8 @@ import jloda.gui.director.IViewerWithLegend;
 import jloda.util.Basic;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.chart.gui.ChartViewer;
 import megan.commands.CommandBase;
 import megan.core.Document;
-import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -114,8 +112,8 @@ public class ExportLegendCommand extends CommandBase implements ICommand {
             fileName = doc.getMeganFile().getFileName();
         fileName = Basic.replaceFileSuffix(fileName, "-legend.pdf");
         ExportImageDialog saveImageDialog;
-        if (viewer instanceof ViewerBase || viewer instanceof ChartViewer) {
-            saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, true, true, true, event);
+        if (viewer instanceof IViewerWithLegend) {
+            saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, false, true, true, event);
             String command = saveImageDialog.displayDialog();
             if (command != null) {
                 command = command.replaceAll("(?i)exportimage", "exportLegend");

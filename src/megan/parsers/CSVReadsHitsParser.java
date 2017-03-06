@@ -45,8 +45,7 @@ public class CSVReadsHitsParser {
     /**
      * apply the importer parser to the named file.
      * Format should be:   readname,taxon,score
-     *
-     * @param fileName
+     *  @param fileName
      * @param doc
      */
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator) throws IOException, CanceledException {

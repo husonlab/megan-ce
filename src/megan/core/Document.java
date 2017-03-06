@@ -52,7 +52,7 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
  */
 public class Document {
     public enum LCAAlgorithm {
-        Naive, Weighted, NaiveLongReads;
+        Naive, Weighted, NaiveMultiGene;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             for (LCAAlgorithm lcaAlgorithm : values()) {
@@ -255,8 +255,8 @@ public class Document {
                     setLcaAlgorithm(LCAAlgorithm.Naive);
                 else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Weighted.toString()))
                     setLcaAlgorithm(LCAAlgorithm.Weighted);
-                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.NaiveLongReads.toString()))
-                    setLcaAlgorithm(LCAAlgorithm.NaiveLongReads);
+                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.NaiveMultiGene.toString()))
+                    setLcaAlgorithm(LCAAlgorithm.NaiveMultiGene);
 
                 setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));

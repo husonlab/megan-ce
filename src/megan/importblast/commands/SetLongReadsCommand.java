@@ -46,9 +46,12 @@ public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
         importBlastDialog.setLongReads(!isSelected());
         if (importBlastDialog.isLongReads()) {
-            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.NaiveLongReads);
-        } else
+            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.NaiveMultiGene);
+            importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(false);
+        } else {
             importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.Naive);
+            importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(true);
+        }
     }
 
     public boolean isApplicable() {

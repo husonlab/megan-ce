@@ -179,10 +179,10 @@ public class FilesPanel extends JPanel {
         });
 
         {
-            JPanel panel3 = new JPanel();
+            final JPanel panel3 = new JPanel();
             panel3.setLayout(new BorderLayout());
             panel3.setBorder(BorderFactory.createTitledBorder("3. Specify a new MEGAN file"));
-            JPanel line3 = new JPanel();
+            final JPanel line3 = new JPanel();
             line3.setLayout(new BoxLayout(line3, BoxLayout.X_AXIS));
             final JTextField meganFileNameField = dialog.getMeganFileNameField();
 
@@ -207,9 +207,9 @@ public class FilesPanel extends JPanel {
             line3.add(commandManager.getButton(ChooseMeganFileCommand.ALTNAME));
             panel3.add(line3, BorderLayout.CENTER);
 
-            JPanel below3 = new JPanel();
+            final JPanel below3 = new JPanel();
             below3.setLayout(new BoxLayout(below3, BoxLayout.LINE_AXIS));
-            below3.add(new JLabel("Max number of matches per read:"));
+            below3.add(dialog.getMaxNumberOfMatchesPerReadLabel());
             dialog.getMaxNumberOfMatchesPerReadField().setMinimumSize(new Dimension(70, 30));
             dialog.getMaxNumberOfMatchesPerReadField().setMaximumSize(new Dimension(400, 30));
             dialog.getMaxNumberOfMatchesPerReadField().setText("" + ProgramProperties.get("MaxNumberMatchesPerRead", 100));
@@ -236,7 +236,7 @@ public class FilesPanel extends JPanel {
         }
 
         {
-            JPanel panel4 = new JPanel();
+            final JPanel panel4 = new JPanel();
             panel4.setLayout(new BorderLayout());
             panel4.setBorder(BorderFactory.createTitledBorder("4. Short description of sample"));
             JPanel line4 = new JPanel();

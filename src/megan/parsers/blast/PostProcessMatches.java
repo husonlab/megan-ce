@@ -45,16 +45,19 @@ public class PostProcessMatches {
         if (parseLongReads) {
             matches.clear();
             for (Interval<SAMIteratorBase.Match> interval : matchesIntervalTree) {
+                final SAMIteratorBase.Match match = interval.getData();
                 boolean covered = false;
                 for (Interval<SAMIteratorBase.Match> other : matchesIntervalTree.getIntervals(interval)) {
-                    if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().bitScore < 0.95 * other.getData().bitScore) {
+                    final SAMIteratorBase.Match otherMatch = other.getData();
+
+                    if ((other.contains(interval) && 0.90 * otherMatch.bitScore > match.bitScore)) {
+                        //   || (other.equals(interval) && (otherMatch.bitScore>match.bitScore || (otherMatch.bitScore==match.bitScore && otherMatch.samLine.compareTo(match.samLine)<0)))){
                         covered = true;
                         break;
                     }
                 }
                 if (!covered)
                     matches.add(interval.getData());
-                // else remove from interval tree
             }
         }
 

@@ -94,11 +94,12 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     private final JTextField meganFileNameField = new JTextField();
 
-    final JTextField maxNumberOfMatchesPerReadField = new JTextField(8);
+    private final JTextField maxNumberOfMatchesPerReadField = new JTextField(8);
+    private final JLabel maxNumberOfMatchesPerReadLabel = new JLabel("Max number of matches per read:");
 
-    final JCheckBox useCompressionCBox = new JCheckBox();
+    private final JCheckBox useCompressionCBox = new JCheckBox();
 
-    final JTabbedPane tabbedPane = new JTabbedPane();
+    private final JTabbedPane tabbedPane = new JTabbedPane();
 
     private String result = null;
 
@@ -118,7 +119,6 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     /**
      * constructor
-     *
      * @param parent
      * @param dir
      * @param cNames
@@ -457,6 +457,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return maxNumberOfMatchesPerReadField;
     }
 
+    public JLabel getMaxNumberOfMatchesPerReadLabel() {
+        return maxNumberOfMatchesPerReadLabel;
+    }
+
     public CommandManager getCommandManager() {
         return commandManager;
     }
@@ -651,8 +655,6 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public void setLongReads(boolean longReads) {
         this.longReads = longReads;
     }
-
-
 
     /**
      * apply import from blast

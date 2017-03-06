@@ -290,9 +290,9 @@ public class SAMMatch implements megan.rma3.IMatch {
             reverse = ((mode == BlastMode.BlastN) && isReverseComplemented());
 
         if (reverse) {
-            return alignedQueryStart - alignedQueryLength;
+            return alignedQueryStart - alignedQueryLength + 1;
         } else
-            return alignedQueryStart + alignedQueryLength;
+            return alignedQueryStart + alignedQueryLength - 1;
     }
 
     /**

@@ -126,7 +126,14 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
      */
     public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames, final String title) {
         this.dir = dir;
+        final boolean showTaxonomyPane;
+        if (cNames.contains(Classification.Taxonomy)) {
+            showTaxonomyPane = true;
+            cNames.remove(Classification.Taxonomy);
+        } else
+            showTaxonomyPane = false;
         this.cNames.addAll(cNames);
+
         dir.addViewer(this);
 
         if (ProgramProperties.getProgramIcon() != null)
@@ -180,11 +187,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         addFilesTab(tabbedPane);
 
-        if (cNames.contains(Classification.Taxonomy))
+        if (showTaxonomyPane)
             tabbedPane.addTab(Classification.Taxonomy, new ViewerPanel(commandManager, Classification.Taxonomy));
         for (String fName : cNames) {
-            if (!fName.equalsIgnoreCase(Classification.Taxonomy))
-                tabbedPane.addTab(fName, new ViewerPanel(commandManager, fName));
+            tabbedPane.addTab(fName, new ViewerPanel(commandManager, fName));
         }
 
         addLCATab(tabbedPane);

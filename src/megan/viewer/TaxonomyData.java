@@ -116,6 +116,12 @@ public class TaxonomyData {
         return taxonomyClassification.getFullTree().getAddress2Id(address);
     }
 
+    public static boolean isAncestor(int higherTaxonId, int lowerTaxonId) {
+        String higherAddress = getAddress(higherTaxonId);
+        String lowerAddress = getAddress(lowerTaxonId);
+        return higherAddress != null && (lowerAddress == null || lowerAddress.startsWith(higherAddress));
+    }
+
     /**
      * returns the LCA of a set of taxon ids
      *

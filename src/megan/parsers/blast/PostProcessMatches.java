@@ -50,8 +50,8 @@ public class PostProcessMatches {
                 for (Interval<SAMIteratorBase.Match> other : matchesIntervalTree.getIntervals(interval)) {
                     final SAMIteratorBase.Match otherMatch = other.getData();
 
-                    if ((other.contains(interval) && 0.90 * otherMatch.bitScore > match.bitScore)) {
-                        //   || (other.equals(interval) && (otherMatch.bitScore>match.bitScore || (otherMatch.bitScore==match.bitScore && otherMatch.samLine.compareTo(match.samLine)<0)))){
+                    if ((other.overlap(interval) > 0.9 * interval.length() && 0.90 * otherMatch.bitScore > match.bitScore)
+                            || (other.equals(interval) && (otherMatch.bitScore > match.bitScore || (otherMatch.bitScore == match.bitScore && otherMatch.samLine.compareTo(match.samLine) < 0)))) {
                         covered = true;
                         break;
                     }

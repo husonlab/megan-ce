@@ -20,6 +20,7 @@ package megan.dialogs.meganize;
 
 import jloda.gui.commands.CommandManager;
 import megan.dialogs.meganize.commands.ChooseDAAFilesCommand;
+import megan.importblast.commands.SetLongReadsCommand;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
 
@@ -53,6 +54,8 @@ public class FilesPanel extends JPanel {
         innerPanel.setLayout(new BorderLayout());
         innerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
+        final JPanel aPanel = new JPanel();
+        aPanel.setLayout(new BoxLayout(aPanel, BoxLayout.Y_AXIS));
         {
             dialog.getBlastFileNameField().setToolTipText("Add Diamond DAA file(s) to meganize");
 
@@ -91,8 +94,18 @@ public class FilesPanel extends JPanel {
             twoLines.add(Box.createVerticalStrut(12));
             panel1.add(twoLines, BorderLayout.SOUTH);
 
-            innerPanel.add(panel1, BorderLayout.NORTH);
+            aPanel.add(panel1);
         }
+        {
+            final JPanel oneLine = new JPanel();
+            oneLine.setLayout(new BoxLayout(oneLine, BoxLayout.X_AXIS));
+            oneLine.add(Box.createHorizontalGlue());
+            oneLine.add(commandManager.getButton(SetLongReadsCommand.NAME));
+            oneLine.add(Box.createHorizontalGlue());
+            aPanel.add(oneLine);
+        }
+        innerPanel.add(aPanel, BorderLayout.NORTH);
+
 
         dialog.getBlastFileNameField().getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent event) {

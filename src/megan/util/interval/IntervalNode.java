@@ -21,11 +21,14 @@ import java.util.Map.Entry;
  *         Modified by Daniel Huson, 2.2017
  */
 public class IntervalNode<Type> {
-    private SortedMap<Interval<Type>, List<Interval<Type>>> intervals;
-    private int center;
+    private final SortedMap<Interval<Type>, List<Interval<Type>>> intervals;
+    private final int center;
     private IntervalNode<Type> leftNode;
     private IntervalNode<Type> rightNode;
 
+    /**
+     * create new empty node
+     */
     IntervalNode() {
         intervals = new TreeMap<>();
         center = 0;
@@ -33,41 +36,99 @@ public class IntervalNode<Type> {
         rightNode = null;
     }
 
-    IntervalNode(List<Interval<Type>> intervalList) {
-        intervals = new TreeMap<>();
+    /**
+     * create node for a collection of intervals
+     *
+     * @param intervals
+     */
+    IntervalNode(Collection<Interval<Type>> intervals) {
+        if (intervals.size() == 0) {
+            this.intervals = new TreeMap<>();
+            center = 0;
+            leftNode = null;
+            rightNode = null;
+        } else {
+            this.intervals = new TreeMap<>();
 
-        SortedSet<Integer> endpoints = new TreeSet<>();
+            // set center to median:
+            if (intervals.size() == 1) {
+                final Interval<Type> interval = intervals.iterator().next();
+                center = (interval.getStart() + interval.getEnd()) / 2;
+            } else {
+                final int[] endPoints = new int[2 * intervals.size()];
 
-        for (Interval<Type> interval : intervalList) {
-            endpoints.add(interval.getStart());
-            endpoints.add(interval.getEnd());
-        }
-
-        int median = getMedian(endpoints);
-        center = median;
-
-        final List<Interval<Type>> left = new ArrayList<>();
-        final List<Interval<Type>> right = new ArrayList<>();
-
-        for (final Interval<Type> interval : intervalList) {
-            if (interval.getEnd() < median)
-                left.add(interval);
-            else if (interval.getStart() > median)
-                right.add(interval);
-            else {
-                List<Interval<Type>> posting = intervals.get(interval);
-                if (posting == null) {
-                    posting = new ArrayList<>();
-                    intervals.put(interval, posting);
+                int z = 0;
+                for (Interval<Type> interval : intervals) {
+                    endPoints[z++] = interval.getStart();
+                    endPoints[z++] = interval.getEnd();
                 }
-                posting.add(interval);
+                Arrays.sort(endPoints);
+                center = endPoints[endPoints.length >>> 1]; // median, not interpolated
             }
-        }
 
-        if (left.size() > 0)
-            leftNode = new IntervalNode<>(left);
-        if (right.size() > 0)
-            rightNode = new IntervalNode<>(right);
+            final List<Interval<Type>> left = new ArrayList<>();
+            final List<Interval<Type>> right = new ArrayList<>();
+
+            for (final Interval<Type> interval : intervals) {
+                if (interval.getEnd() < center)
+                    left.add(interval);
+                else if (interval.getStart() > center)
+                    right.add(interval);
+                else {
+                    List<Interval<Type>> posting = this.intervals.get(interval);
+                    if (posting == null) {
+                        posting = new ArrayList<>();
+                        this.intervals.put(interval, posting);
+                    }
+                    posting.add(interval);
+                }
+            }
+
+            if (left.size() > 0)
+                leftNode = new IntervalNode<>(left);
+            if (right.size() > 0)
+                rightNode = new IntervalNode<>(right);
+        }
+    }
+
+    /**
+     * create node with single interval
+     *
+     * @param interval
+     */
+    IntervalNode(Interval<Type> interval) {
+        intervals = new TreeMap<>();
+        center = (interval.getStart() + interval.getEnd()) / 2;
+
+        final List<Interval<Type>> posting = new ArrayList<>();
+        posting.add(interval);
+        intervals.put(interval, posting);
+    }
+
+    /**
+     * add a node to an existing tree
+     *
+     * @param interval
+     */
+    void add(Interval<Type> interval) {
+        if (interval.getEnd() < center) {
+            if (leftNode == null)
+                leftNode = new IntervalNode<>(interval);
+            else
+                leftNode.add(interval);
+        } else if (interval.getStart() > center) {
+            if (rightNode == null)
+                rightNode = new IntervalNode<>(interval);
+            else
+                rightNode.add(interval);
+        } else {
+            List<Interval<Type>> posting = intervals.get(interval);
+            if (posting == null) {
+                posting = new ArrayList<>();
+                intervals.put(interval, posting);
+            }
+            posting.add(interval);
+        }
     }
 
     /**
@@ -76,8 +137,8 @@ public class IntervalNode<Type> {
      * @param pos the pos to query at
      * @return all intervals containing pos
      */
-    List<Interval<Type>> stab(int pos) {
-        final List<Interval<Type>> result = new ArrayList<>();
+    ArrayList<Interval<Type>> stab(int pos) {
+        final ArrayList<Interval<Type>> result = new ArrayList<>();
 
         for (Entry<Interval<Type>, List<Interval<Type>>> entry : intervals.entrySet()) {
             if (entry.getKey().contains(pos))
@@ -100,8 +161,8 @@ public class IntervalNode<Type> {
      * @param target the interval to intersect
      * @return all intervals containing time
      */
-    List<Interval<Type>> query(Interval<?> target) {
-        final List<Interval<Type>> result = new ArrayList<>();
+    ArrayList<Interval<Type>> query(Interval<?> target) {
+        final ArrayList<Interval<Type>> result = new ArrayList<>();
 
         for (Entry<Interval<Type>, List<Interval<Type>>> entry : intervals.entrySet()) {
             if (entry.getKey().intersects(target))
@@ -118,45 +179,6 @@ public class IntervalNode<Type> {
         return result;
     }
 
-    int getCenter() {
-        return center;
-    }
-
-    void setCenter(int center) {
-        this.center = center;
-    }
-
-    IntervalNode<Type> getLeft() {
-        return leftNode;
-    }
-
-    void setLeft(IntervalNode<Type> left) {
-        this.leftNode = left;
-    }
-
-    IntervalNode<Type> getRight() {
-        return rightNode;
-    }
-
-    void setRight(IntervalNode<Type> right) {
-        this.rightNode = right;
-    }
-
-    /**
-     * @param set the set to look on
-     * @return the median of the set, not interpolated
-     */
-    private int getMedian(SortedSet<Integer> set) {
-        int i = 0;
-        int middle = set.size() / 2;
-        for (int point : set) {
-            if (i == middle)
-                return point;
-            i++;
-        }
-        return 0;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -171,4 +193,21 @@ public class IntervalNode<Type> {
         return sb.toString();
     }
 
+    /**
+     * recursively creates string that describes this node and subtree below
+     *
+     * @param level
+     * @return string
+     */
+    public String toStringRec(int level) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++)
+            sb.append("\t");
+        sb.append(toString()).append("\n");
+        if (leftNode != null)
+            sb.append(leftNode.toStringRec(level + 1));
+        if (rightNode != null)
+            sb.append(rightNode.toStringRec(level + 1));
+        return sb.toString();
+    }
 }

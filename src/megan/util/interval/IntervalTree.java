@@ -46,7 +46,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      *
      * @param intervalList the list of intervals to use
      */
-    public IntervalTree(List<Interval<T>> intervalList) {
+    public IntervalTree(Collection<Interval<T>> intervalList) {
         this.head = new IntervalNode<>(intervalList);
         this.intervalList = new ArrayList<>(intervalList);
         this.inSync = true;
@@ -66,15 +66,24 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
+     * @return the number of entries in the interval list, equal to .currentSize() if inSync()
+     */
+    public int size() {
+        return intervalList.size();
+    }
+
+    /**
      * Perform a stabbing query, returning the associated data
      * Will rebuild the tree if out of sync
      *
      * @param pos the pos to stab
      * @return the data associated with all intervals that contain pos
      */
-    public List<T> get(int pos) {
-        final List<T> result = new ArrayList<>();
-        for (Interval<T> interval : getIntervals(pos))
+    public ArrayList<T> get(int pos) {
+        buildTree();
+        final ArrayList<Interval<T>> intervals = head.stab(pos);
+        final ArrayList<T> result = new ArrayList<>(intervals.size());
+        for (Interval<T> interval : intervals)
             result.add(interval.getData());
         return result;
     }
@@ -86,7 +95,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @param pos the pos to stab
      * @return all intervals that contain pos
      */
-    public List<Interval<T>> getIntervals(int pos) {
+    public ArrayList<Interval<T>> getIntervals(int pos) {
         buildTree();
         return head.stab(pos);
     }
@@ -99,9 +108,22 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @param end   the end of the interval to check
      * @return the data associated with all intervals that intersect target
      */
-    public List<T> get(int start, int end) {
-        final List<T> result = new ArrayList<>();
-        for (Interval<T> interval : getIntervals(start, end))
+    public ArrayList<T> get(int start, int end) {
+        return get(new Interval<T>(start, end, null));
+    }
+
+    /**
+     * Perform an interval query, returning the associated data
+     * Will rebuild the tree if out of sync
+     *
+     * @param target the interval to check
+     * @return the data associated with all intervals that intersect target
+     */
+    public ArrayList<T> get(Interval<T> target) {
+        buildTree();
+        final ArrayList<Interval<T>> intervals = head.query(target);
+        final ArrayList<T> result = new ArrayList<>(intervals.size());
+        for (Interval<T> interval : intervals)
             result.add(interval.getData());
         return result;
     }
@@ -113,7 +135,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @param target the interval to check
      * @return all intervals that intersect target
      */
-    public List<Interval<T>> getIntervals(Interval<T> target) {
+    public ArrayList<Interval<T>> getIntervals(Interval<T> target) {
         buildTree();
         return head.query(target);
     }
@@ -126,37 +148,52 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @param end   the end of the interval to check
      * @return all intervals that intersect target
      */
-    public List<Interval<T>> getIntervals(int start, int end) {
+    public ArrayList<Interval<T>> getIntervals(int start, int end) {
         return getIntervals(new Interval<T>(start, end, null));
     }
 
     /**
-     * Add an interval object to the interval tree's list
-     * Will not rebuild the tree until the next query or call to build
+     * Add an interval object to the interval tree's list.
+     * Interval is added directly, does not trigger a complete rebuild
      *
      * @param interval the interval object to add
      */
     public void add(Interval<T> interval) {
         intervalList.add(interval);
-        inSync = false;
+        if (head != null)
+            head.add(interval);
+        else
+            inSync = false;
         sorted = false;
     }
 
     /**
+     * Add an interval object to the interval tree's list
+     * Interval is added directly, does not trigger a complete rebuild
+     *
+     * @param begin the beginning of the interval
+     * @param end   the end of the interval
+     * @param data  the data to associate
+     */
+    public void add(int begin, int end, T data) {
+        add(new Interval<>(begin, end, data));
+    }
+
+    /**
      * adds a list of intervals
-     * Will not rebuild the next query or call to build
+     * Will not rebuild until the next query or call to build
      *
      * @param intervals
      */
     public void addAll(Collection<Interval<T>> intervals) {
-        intervalList.addAll(intervals);
+        intervalList.addAll(intervals); // don't add one by one as this will lead to an unbalanced tree
         inSync = false;
         sorted = false;
     }
 
     /**
      * sets a list of intervals
-     * Will not rebuild the next query or call to build
+     * Will not rebuild until the next query or call to build
      *
      * @param intervals
      */
@@ -169,7 +206,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
 
     /**
      * remove an interval
-     *
+     * Will not rebuild until the next query or call to build
      * @param interval
      * @return true, if was contained
      */
@@ -182,7 +219,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
 
     /**
      * remove a collection of intervals
-     *
+     * Will not rebuild until the next query or call to build
      * @param intervals
      * @return true, if something was contained
      */
@@ -191,29 +228,6 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         if (removed)
             inSync = false;
         return removed;
-    }
-
-    /**
-     * Add an interval object to the interval tree's list
-     * Will not rebuild the tree until the next query or call to build
-     *
-     * @param begin the beginning of the interval
-     * @param end   the end of the interval
-     * @param data  the data to associate
-     */
-    public void add(int begin, int end, T data) {
-        intervalList.add(new Interval<>(begin, end, data));
-        inSync = false;
-        sorted = false;
-    }
-
-    /**
-     * Determine whether this interval tree is currently a reflection of all intervals in the interval list
-     *
-     * @return true if no changes have been made since the last build
-     */
-    public boolean inSync() {
-        return inSync;
     }
 
     /**
@@ -232,7 +246,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      *
      * @return intervals
      */
-    public Collection<Interval<T>> values() {
+    public ArrayList<Interval<T>> values() {
         sortList();
         return new ArrayList<>(intervalList);
     }
@@ -262,45 +276,8 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         }
     }
 
-
-    /**
-     * returns an iterator overall all members in the order they were inserted
-     *
-     * @return members
-     */
-    public Iterator<Interval<T>> insertionOrderIterator() {
-        return intervalList.iterator();
-    }
-
-    /**
-     * @return the number of entries in the currently built interval tree
-     */
-    public int currentSize() {
-        return size;
-    }
-
-    /**
-     * @return the number of entries in the interval list, equal to .currentSize() if inSync()
-     */
-    public int size() {
-        return intervalList.size();
-    }
-
     @Override
     public String toString() {
-        return nodeString(head, 0);
+        return head.toStringRec(0);
     }
-
-    private String nodeString(IntervalNode<T> node, int level) {
-        if (node == null)
-            return "";
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++)
-            sb.append("\t");
-        sb.append(node).append("\n");
-        sb.append(nodeString(node.getLeft(), level + 1));
-        sb.append(nodeString(node.getRight(), level + 1));
-        return sb.toString();
-    }
-
 }

@@ -127,6 +127,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames, final String title) {
         this.dir = dir;
         final boolean showTaxonomyPane;
+        cNames = new ArrayList<>(cNames);
         if (cNames.contains(Classification.Taxonomy)) {
             showTaxonomyPane = true;
             cNames.remove(Classification.Taxonomy);

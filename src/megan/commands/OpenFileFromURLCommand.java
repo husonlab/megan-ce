@@ -24,7 +24,10 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * command
@@ -64,6 +67,8 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
         if (result != null) {
             if (!result.endsWith(";"))
                 result += ";";
+
+            result = result.replaceAll("'", "");
 
             String[] tokens = result.split(";");
 
@@ -113,7 +118,7 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return null;
+        return KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | InputEvent.SHIFT_MASK);
     }
 
     /**

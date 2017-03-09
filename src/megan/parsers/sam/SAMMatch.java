@@ -1002,6 +1002,15 @@ public class SAMMatch implements megan.rma3.IMatch {
                 }
             }
         }
+        if (mode == BlastMode.BlastX) {
+            for (int i = 0; i < query.length(); i++) {
+                char ch = query.charAt(i);
+                if (ch == '/')
+                    length -= 2;
+                else if (ch == '\\')
+                    length -= 1;
+            }
+        }
 
         return length;
     }

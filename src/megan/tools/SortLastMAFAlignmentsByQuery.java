@@ -20,6 +20,7 @@ package megan.tools;
 
 import jloda.util.*;
 import megan.parsers.fasta.FastAFileIterator;
+import megan.parsers.fasta.IFastAIterator;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -78,7 +79,7 @@ public class SortLastMAFAlignmentsByQuery {
         final boolean orderSetFromReadsFile;
 
         if (readsFile.length() > 0) {
-            try (FastAFileIterator iterator = new FastAFileIterator(readsFile); ProgressPercentage progress = new ProgressPercentage("Processing file: " + readsFile)) {
+            try (IFastAIterator iterator = FastAFileIterator.getFastAOrFastQAsFastAIterator(readsFile); ProgressPercentage progress = new ProgressPercentage("Processing file: " + readsFile)) {
                 progress.setMaximum(iterator.getMaximumProgress());
                 while (iterator.hasNext()) {
                     readNamesOrder.add(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(iterator.next().get1())));

@@ -157,7 +157,7 @@ public class OverlapGraphBuilder {
     }
 
     /**
-     * if readDatas are identical for the matched sequence, gets the number of matching letters, else returns 0
+     *computess the number of matching letters, else returns 0
      *
      * @param iMatch
      * @param jMatch

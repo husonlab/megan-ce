@@ -78,7 +78,8 @@ public class MatchSignaturesExporter {
             double useMinScore = -1;
             for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                 IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected && matchBlock.getPercentIdentity() >= minPercentIdentity) {
+                if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+                        (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
                     {
                         if (useMinScore == -1)
                             useMinScore = Math.max(minScore, (1f - topPercent) * matchBlock.getBitScore());

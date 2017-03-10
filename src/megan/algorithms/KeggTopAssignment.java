@@ -105,7 +105,7 @@ public class KeggTopAssignment {
 
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             IMatchBlock match = readBlock.getMatchBlock(i);
-            if (match.getBitScore() >= minScore && match.getExpected() <= maxExpected && match.getPercentIdentity() >= minPercentIdentity) {
+            if (match.getBitScore() >= minScore && match.getExpected() <= maxExpected && (minPercentIdentity == 0 || match.getPercentIdentity() >= minPercentIdentity)) {
                 int id = match.getId(cName);
                 if (id != 0)
                     return id;

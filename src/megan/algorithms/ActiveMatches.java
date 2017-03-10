@@ -45,7 +45,8 @@ public class ActiveMatches {
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            if (!matchBlock.isIgnore() && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected && matchBlock.getPercentIdentity() >= minPercentIdentity) {
+            if (!matchBlock.isIgnore() && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+                    (minPercentIdentity == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
                 if (matchBlock.getId(classificationName) > 0)
                     activeMatchesForClassification.set(i);
             }
@@ -75,7 +76,7 @@ public class ActiveMatches {
             if (bestScore == 0) {
                 for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                    if (matchBlock.getPercentIdentity() >= minPercentIdentity) {
+                    if (minPercentIdentity == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity) {
                         bestScore = Math.max(bestScore, matchBlock.getBitScore());
                     }
                 }
@@ -85,7 +86,7 @@ public class ActiveMatches {
 
             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                if (matchBlock.getBitScore() < threshold && matchBlock.getPercentIdentity() >= minPercentIdentity)
+                if (matchBlock.getBitScore() < threshold && (minPercentIdentity == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity))
                     activeMatches.set(i, false);
             }
         }

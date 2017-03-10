@@ -99,7 +99,8 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
             IReadBlock readBlock = it.next();
             for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                 IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
+                if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                        (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                     String firstLine = matchBlock.getText().split("\n")[0];
 
                     Integer count = matched2count.get(firstLine);

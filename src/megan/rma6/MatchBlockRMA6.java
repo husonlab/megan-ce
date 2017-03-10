@@ -38,15 +38,11 @@ public class MatchBlockRMA6 implements IMatchBlock {
     private static final Object sync = new Object();
 
     private long uid;
-    private float bitScore;
     private float percentIdentity;
-    private float expected;
-    private int length;
     private String text;
     private final Map<String, Integer> fName2Id = new HashMap<>();
-    private int alignedQueryStart;
-    private int alignedQueryEnd;
-    private int refLength;
+
+    private SAMMatch samMatch; // major update: we now keep the sam match and only compute text if necessary
 
     /**
      * constructor
@@ -60,16 +56,11 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @param samMatch
      */
     public void setFromSAM(SAMMatch samMatch) {
-        bitScore = samMatch.getBitScore();
-        expected = samMatch.getExpected();
-        length = samMatch.getTLength();
-        alignedQueryStart = samMatch.getAlignedQueryStart();
-        alignedQueryEnd = samMatch.getAlignedQueryEnd();
+        text = null;
+        percentIdentity = 0;
 
-        final Single<Float> value = new Single<>(0f);
-        text = samMatch.getBlastAlignmentText(value);
-        percentIdentity = value.get();
-        refLength = samMatch.getRefLength();
+        this.samMatch = samMatch;
+
         synchronized (sync) {
             uid = countUids++;
         }
@@ -79,11 +70,9 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * erase the block (for reuse)
      */
     public void clear() {
+        samMatch = null;
         uid = 0;
-        bitScore = 0;
         percentIdentity = 0;
-        expected = 0;
-        length = 0;
         text = null;
         fName2Id.clear();
     }
@@ -144,11 +133,11 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @return
      */
     public float getBitScore() {
-        return bitScore;
+        return samMatch.getBitScore();
     }
 
     public void setBitScore(float bitScore) {
-        this.bitScore = bitScore;
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -157,6 +146,8 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @return
      */
     public float getPercentIdentity() {
+        if (text == null)
+            getText(); // percent identity is calculated while creating text
         return percentIdentity;
     }
 
@@ -183,11 +174,11 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @throws java.io.IOException
      */
     public void setExpected(float expected) {
-        this.expected = expected;
+        throw new RuntimeException("Not implemented");
     }
 
     public float getExpected() {
-        return expected;
+        return samMatch.getExpected();
     }
 
     /**
@@ -197,11 +188,11 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @throws java.io.IOException
      */
     public void setLength(int length) {
-        this.length = length;
+        throw new RuntimeException("Not implemented");
     }
 
     public int getLength() {
-        return length;
+        return samMatch.getTLength();
     }
 
     /**
@@ -229,16 +220,22 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @return
      */
     public String getText() {
+        if (text == null) {
+            final Single<Float> value = new Single<>(0f);
+            text = samMatch.getBlastAlignmentText(value);
+            percentIdentity = value.get();
+
+        }
         return text;
     }
 
     @Override
     public String getTextFirstWord() {
-        return text != null ? Basic.getFirstWord(text) : null;
+        return getText() != null ? Basic.getFirstWord(getText()) : null;
     }
 
     public void setText(String text) {
-        this.text = text;
+        throw new RuntimeException("Not implemented");
     }
 
     public String toString() {
@@ -248,14 +245,14 @@ public class MatchBlockRMA6 implements IMatchBlock {
         for (String cName : fName2Id.keySet())
             w.write(String.format(" %s: ", cName) + fName2Id.get(cName));
         w.write("\n");
-        if (bitScore != 0)
-            w.write("bitScore: " + bitScore + "\n");
+        if (getBitScore() != 0)
+            w.write("bitScore: " + getBitScore() + "\n");
         if (percentIdentity != 0)
-            w.write("percentIdentity: " + percentIdentity + "\n");
-        if (expected != 0)
-            w.write("expected: " + expected + "\n");
-        if (length != 0)
-            w.write("length: " + length + "\n");
+            w.write("percentIdentity: " + getPercentIdentity() + "\n");
+        if (getExpected() != 0)
+            w.write("expected: " + getExpected() + "\n");
+        if (getLength() != 0)
+            w.write("length: " + getLength() + "\n");
         w.write("text: " + text + "\n");
         return w.toString();
     }
@@ -281,16 +278,16 @@ public class MatchBlockRMA6 implements IMatchBlock {
 
     @Override
     public int getAlignedQueryStart() {
-        return alignedQueryStart;
+        return samMatch.getAlignedQueryStart();
     }
 
     @Override
     public int getAlignedQueryEnd() {
-        return alignedQueryEnd;
+        return samMatch.getAlignedQueryEnd();
     }
 
     @Override
     public int getRefLength() {
-        return refLength;
+        return samMatch.getRefLength();
     }
 }

@@ -80,7 +80,8 @@ public class CSVExportRefSeq {
                                     w.write(readBlock.getReadName() + separator);
                                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                                         IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                        if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
+                                        if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                                                (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                                             iterator.restart(matchBlock.getTextFirstWord());
                                             if (iterator.hasNext()) {
                                                 final String accessionId = iterator.next();

@@ -281,7 +281,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             return (Integer) zq;
         }
 
-        int alignedQueryLength = (mode == BlastMode.BlastX ? 3 : 1) * computeAlignedQuerySegmentLength(getSequence());
+        int alignedQueryLength = computeAlignedQuerySegmentLength(getSequence());
         final boolean reverse;
         if (mode == BlastMode.BlastX) {
             final Object df = optionalFields.get("ZF");
@@ -589,11 +589,10 @@ public class SAMMatch implements megan.rma3.IMatch {
         }
         final int alignmentLength = aligned[1].length();
 
-        final String alignedQuery = getUngappedSequence(aligned[0]);
-        final int queryLength = alignedQuery.length();
+        final int queryLengthForGapCalculation = getUngappedSequence(aligned[0]).length(); // query length as required for gaps calculation, this differs from actual length that must take frame shifts into account
         final int refLength = getUngappedLength(aligned[2]);
 
-        final int gaps = 2 * aligned[0].length() - queryLength - getUngappedLength(aligned[2]);
+        final int gaps = 2 * aligned[0].length() - queryLengthForGapCalculation - getUngappedLength(aligned[2]);
 
         final StringBuilder buffer = new StringBuilder();
         buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
@@ -639,7 +638,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         buffer.append(String.format(" Identities = %d/%d (%d%%), Positives = %d/%d (%.0f%%), Gaps = %d/%d (%d%%)\n",
                 identities, alignmentLength, Math.round(pIdentity),
                 numberOfPositives, alignmentLength, (100.0 * (numberOfPositives) / alignmentLength),
-                gaps, alignmentLength, Math.round((100.0 * gaps / queryLength))));
+                gaps, alignmentLength, Math.round((100.0 * gaps / queryLengthForGapCalculation))));
         if (qFrame != 0)
             buffer.append(String.format(" Frame = %+d\n", qFrame));
 
@@ -653,7 +652,9 @@ public class SAMMatch implements megan.rma3.IMatch {
                 int qAdd = Math.min(ALIGNMENT_FOLD, aligned[0].length() - pos);
                 String qPart = aligned[0].substring(pos, pos + qAdd);
                 int qGaps = countGapsDashDot(qPart);
-                qEnd = qStartPart + qJump * (qAdd - qGaps) + (qFrame > 0 ? -1 : 1);
+                int qFrameShiftChange = countFrameShiftChange(qPart);
+
+                qEnd = qStartPart + qJump * (qAdd - qGaps) + (qFrame > 0 ? qFrameShiftChange : -qFrameShiftChange) + (qFrame > 0 ? -1 : 1);
                 buffer.append(String.format("\nQuery:%9d  %s  %d\n", qStartPart, qPart, qEnd));
                 qStartPart = qEnd + (qFrame < 0 ? -1 : 1);
             }
@@ -678,7 +679,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         }
 
-        if (aligned[0] != null && qEnd > 0 && Math.abs(qEnd - determineQueryStart()) + 1 != 3 * query.length() && warnAboutProblems) {
+        if (aligned[0] != null && qEnd > 0 && qEnd != alignedQueryEnd && warnAboutProblems) {
             // System.err.println(buffer.toString());
             System.err.println("Internal error writing BLAST format: query length is incorrect");
         }
@@ -688,6 +689,17 @@ public class SAMMatch implements megan.rma3.IMatch {
                 System.err.println("Internal error writing BLAST format: sEnd=" + sEnd + ", should be: " + sEndShouldBe);
         }
         return buffer.toString();
+    }
+
+    private int countFrameShiftChange(String qPart) {
+        int count = 0;
+        for (int i = 0; i < qPart.length(); i++) {
+            if (qPart.charAt(i) == '\\') // forward shift
+                count -= 2;
+            else if (qPart.charAt(i) == '/') // reverse shift
+                count -= 4;
+        }
+        return count;
     }
 
     /**
@@ -1003,18 +1015,18 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         }
         if (mode == BlastMode.BlastX) {
+            length *= 3;
             for (int i = 0; i < query.length(); i++) {
                 char ch = query.charAt(i);
-                if (ch == '/')
-                    length -= 2;
-                else if (ch == '\\')
-                    length -= 1;
+                if (ch == '/') // reverse shift by 1
+                    length -= 4; // single letter is counted above as 3 nucleotides, but this is  a rervse shift by 1, so above we overcounted by 4
+                else if (ch == '\\') // forward shift by 1
+                    length -= 2; // a single letter is counted above as 3 nucleotides, but this is only a forward shift by 1, so above we overcounted by 2
             }
         }
 
         return length;
     }
-
 
     private boolean isGap(char c) {
         return c == '.' || c == '-';

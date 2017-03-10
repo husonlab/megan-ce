@@ -94,7 +94,8 @@ public class AlignmentExporter {
                 boolean readUsed = false;
 
                 for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
-                    if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
+                    if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                            (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                             String key = Basic.getFirstLine(matchBlock.getText());
                             if (!matchesSeenForGivenRead.contains(key)) {
                                 matchesSeenForGivenRead.add(key);
@@ -149,7 +150,8 @@ public class AlignmentExporter {
                 boolean readUsed = false;
 
                 for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
-                    if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
+                    if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                            (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                         if (!refSeqOnly || (matchBlock.getRefSeqId() != null && matchBlock.getRefSeqId().length() > 0)) {
                             String key = Basic.getFirstLine(matchBlock.getText());
                             if (!matchesSeenForGivenRead.contains(key)) {

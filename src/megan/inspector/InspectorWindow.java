@@ -479,9 +479,8 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     final BitSet activeMatches = new BitSet();
                     ActiveMatches.compute(doc.getMinScore(), doc.isLongReads() ? 100 : doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
 
-                    IMatchBlock[] matchBlocks = readBlock.getMatchBlocks();
-                    for (int m = 0; m < matchBlocks.length; m++) {
-                        IMatchBlock matchBlock = matchBlocks[m];
+                    for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+                        IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                         final StringBuilder buf = new StringBuilder();
                         {
                             int taxId = matchBlock.getTaxonId();

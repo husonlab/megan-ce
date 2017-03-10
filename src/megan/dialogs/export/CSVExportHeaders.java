@@ -78,7 +78,8 @@ public class CSVExportHeaders {
                                     w.write(readBlock.getReadName() + separator);
                                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                                         IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                        if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()
+                                        if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                                                (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())
                                                 && matchBlock.getText() != null) {
                                             w.write(" " + Basic.swallowLeadingGreaterSign(Basic.getFirstWord(matchBlock.getText())));
                                         }

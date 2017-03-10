@@ -75,7 +75,8 @@ public class CSVExportReference2Read {
                         IReadBlock readBlock = it.next();
                         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                             IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                            if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
+                            if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                                    (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                                 String reference = Basic.getFirstLine(matchBlock.getText());
                                 List<String> list = reference2reads.get(reference);
                                 if (list == null) {

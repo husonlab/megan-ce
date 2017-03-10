@@ -33,7 +33,7 @@ import java.io.IOException;
  * Daniel Huson, 6.2015
  */
 public class ReadBlockRMA6 implements IReadBlock {
-    private final SAMMatch tmpSAMMatch; // sam match is used for converting from SAM to MatchBlock
+    private final BlastMode blastMode;
     private final boolean pairedReads;
 
     private String[] cNames;
@@ -54,7 +54,7 @@ public class ReadBlockRMA6 implements IReadBlock {
      * @param blastMode
      */
     public ReadBlockRMA6(BlastMode blastMode, boolean pairedReads, String[] cNames) {
-        tmpSAMMatch = new SAMMatch(blastMode);
+        this.blastMode = blastMode;
         this.pairedReads = pairedReads;
         this.cNames = cNames;
 
@@ -290,8 +290,9 @@ public class ReadBlockRMA6 implements IReadBlock {
                 final String aLine = matchesText.substring(offset, end);
                 offset = end + 1;
                 try {
-                    tmpSAMMatch.parse(aLine);
-                    ((MatchBlockRMA6) matchBlocks[matchCount]).setFromSAM(tmpSAMMatch);
+                    final SAMMatch samMatch = new SAMMatch(blastMode);
+                    samMatch.parse(aLine);
+                    ((MatchBlockRMA6) matchBlocks[matchCount]).setFromSAM(samMatch);
                     if (matchBlocks[matchCount].getBitScore() >= minScore && matchBlocks[matchCount].getExpected() <= maxExpected)
                         copies[matchCount++] = matchBlocks[i]; // this match is ok, keep it
                 } catch (IOException ex) {

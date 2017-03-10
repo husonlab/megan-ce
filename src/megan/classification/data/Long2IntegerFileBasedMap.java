@@ -84,7 +84,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
                     }
                 } else {
                     if (totalSkipped++ > totalIn)
-                        throw new IOException("Failed to parse too many lines, is this really a .map file: " + fileName);
+                        throw new IOException("Failed to parse too many lines, is this really a .map or .abin file? " + fileName);
                 }
                 progress.setProgress(it.getProgress());
             }

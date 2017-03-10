@@ -115,7 +115,11 @@ public class BiomImportTaxonomy {
         if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.dense.toString())) {
             int row = 0;
             for (Object obj : biomData.getData()) {
-                int[] array = (int[]) obj;
+                final int[] array = createIntArray(obj);
+                if (array == null)
+                    continue;
+                ;
+
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];
                     Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
@@ -134,7 +138,10 @@ public class BiomImportTaxonomy {
             }
         } else if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.sparse.toString())) {
             for (Object obj : biomData.getData()) {
-                int[] array3 = (int[]) obj;
+                final int[] array3 = createIntArray(obj);
+                if (array3 == null)
+                    continue;
+
                 int row = array3[0];
                 int col = array3[1];
                 int value = array3[2];
@@ -154,5 +161,36 @@ public class BiomImportTaxonomy {
             }
         }
         return series2Classes2count;
+    }
+
+    /**
+     * creates an int array from an object, if possible
+     *
+     * @param obj
+     * @return array or null
+     */
+    public static int[] createIntArray(Object obj) {
+        if (obj instanceof int[])
+            return (int[]) obj;
+        else if (obj instanceof float[]) {
+            float[] that = (float[]) obj;
+            int[] array = new int[that.length];
+            for (int i = 0; i < that.length; i++)
+                array[i] = Math.round(that[i]);
+            return array;
+        } else if (obj instanceof Integer[]) {
+            final Integer[] that = (Integer[]) obj;
+            int[] array = new int[that.length];
+            for (int i = 0; i < that.length; i++)
+                array[i] = Math.round(that[i]);
+            return array;
+        } else if (obj instanceof Float[]) {
+            final Float[] that = (Float[]) obj;
+            int[] array = new int[that.length];
+            for (int i = 0; i < that.length; i++)
+                array[i] = Math.round(that[i]);
+            return array;
+        } else
+            return null;
     }
 }

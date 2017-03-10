@@ -51,9 +51,9 @@ public class BIOMImporter {
         byte[] bytes = Basic.getFirstBytesFromFile(new File(fileName), 4);
         if (bytes == null)
             throw new IOException("Failed read file: " + fileName);
-        System.err.println(Basic.toString(bytes));
+        //System.err.println(Basic.toString(bytes));
         if (Basic.toString(bytes).contains("ﾉHDF")) {
-            throw new IOException("File is in BIOM2 format, not supported, please first convert to BIOM1 format");
+            throw new IOException("File is in BIOM2 format (not supported), please first convert to BIOM1 format");
         }
 
         System.err.println("Importing data from BIOM file");

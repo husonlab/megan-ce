@@ -35,7 +35,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
     private final Map<String, Integer> map;
 
     /**
-     * constructor. If fileName ends on .abin, assumes is disk-based hash table, else assumes is text file containing tab-separated accession id pairs
+     * constructor
      *
      * @param fileName
      * @throws IOException

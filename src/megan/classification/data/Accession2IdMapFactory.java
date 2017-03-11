@@ -22,6 +22,7 @@ package megan.classification.data;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
+import megan.fx.NotificationsInSwing;
 
 import java.io.IOException;
 
@@ -42,7 +43,10 @@ public class Accession2IdMapFactory implements IString2IntegerMapFactory {
     public IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException {
         if (String2IntegerFileBasedABinMap.isTableFile(fileName))
             return new String2IntegerFileBasedABinMap(fileName);
-        else
+        else if (String2IntegerFileBasedABinMap.isIncompatibleTableFile(fileName)) {
+            NotificationsInSwing.showError("Incompatible mapping file (UE?): " + fileName);
+            throw new IOException("Incompatible mapping file (UE?): " + fileName);
+        } else
             return new Accession2IdMap(label2id, fileName, progress);
     }
 }

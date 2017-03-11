@@ -402,9 +402,9 @@ public class SAMMatch implements megan.rma3.IMatch {
         StringBuilder buffer = new StringBuilder();
         buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
         {
-            Object obj = optionalFields.get("ZL");
-            if (obj != null && obj instanceof Integer && (Integer) obj >= refLength)
-                buffer.append(String.format("\tLength = %d\n\n", (Integer) obj));
+            final int len = getRefLength();
+            if (len >= refLength)
+                buffer.append(String.format("\tLength = %d\n\n", len));
             else
                 buffer.append(String.format("\tLength >= %d\n\n", (getPos() + refLength - 1)));
         }
@@ -501,9 +501,9 @@ public class SAMMatch implements megan.rma3.IMatch {
         StringBuilder buffer = new StringBuilder();
         buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
         {
-            Object obj = optionalFields.get("ZL");
-            if (obj != null && obj instanceof Integer && (Integer) obj >= refLength)
-                buffer.append(String.format("\tLength = %d\n\n", (Integer) obj));
+            final int len = getRefLength();
+            if (len >= refLength)
+                buffer.append(String.format("\tLength = %d\n\n", len));
             else
                 buffer.append(String.format("\tLength >= %d\n\n", (getPos() + refLength - 1)));
         }
@@ -598,9 +598,9 @@ public class SAMMatch implements megan.rma3.IMatch {
         buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
 
         {
-            final Object obj = optionalFields.get("ZL");
-            if (obj != null && obj instanceof Integer && (Integer) obj >= refLength)
-                buffer.append(String.format("\tLength = %d\n\n", (Integer) obj));
+            final int len = getRefLength();
+            if (len >= refLength)
+                buffer.append(String.format("\tLength = %d\n\n", len));
             else
                 buffer.append(String.format("\tLength >= %d\n\n", (getPos() + refLength - 1)));
         }
@@ -713,8 +713,8 @@ public class SAMMatch implements megan.rma3.IMatch {
         if (refName.length() > 0)
             buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
         {
-            if (optionalFields.get("ZL") != null)
-                buffer.append(String.format("\tLength = %s\n\n", optionalFields.get("ZL").toString()));
+            if (getRefLength() > 9)
+                buffer.append(String.format("\tLength = %d\n\n", getRefLength()));
             else
                 buffer.append("\n");
         }
@@ -1162,6 +1162,5 @@ public class SAMMatch implements megan.rma3.IMatch {
             return (Integer) optionalFields.get("ZL");
         else
             return 0;
-
     }
 }

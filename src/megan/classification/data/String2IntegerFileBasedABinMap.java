@@ -110,6 +110,24 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
         }
     }
 
+    /**
+     * is this an appropriate file?
+     *
+     * @param fileName
+     * @return true, if is table file
+     */
+    public static boolean isIncompatibleTableFile(String fileName) {
+        try {
+            try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
+                final byte[] magicNumber = new byte[3];
+                raf.read(magicNumber);
+                return Basic.toString(magicNumber).equals(MAGIC_NUMBER.toLowerCase()) || Basic.toString(magicNumber).equals(MAGIC_NUMBERX.toLowerCase());
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
     public int size() {
         return size;
     }

@@ -341,7 +341,7 @@ class MyCellRender implements TableCellRenderer {
             int number;
 
             try {
-                number = Integer.parseInt(String.valueOf(value));
+                number = (int) Math.round(Float.parseFloat(String.valueOf(value)));
             } catch (NumberFormatException nfe) {
                 return new JLabel("?");
             }

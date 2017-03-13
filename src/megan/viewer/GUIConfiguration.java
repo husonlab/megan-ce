@@ -47,7 +47,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Edit Node Label;Edit Edge Label;Description...;|;Format...;|;Find...;Find Again;|;Colors...;|;@Preferences;");
 
-        menuConfig.defineMenu("Preferences", "Show Notifications;|;@Accession Parsing;@Fix Taxon Mapping;@Taxon Disabling;|;Use Alternative Taxonomy...;Use Default NCBI Taxonomy;");
+        menuConfig.defineMenu("Preferences", "Show Notifications;|;@Accession Parsing;@Fix Taxon Mapping;@Taxon Disabling;|;Use Alternative Taxonomy...;Use Default NCBI Taxonomy;|;Set Search URL...;");
 
         menuConfig.defineMenu("Accession Parsing", "First Word Is Accession;Set Accession Tags;");
         menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;");

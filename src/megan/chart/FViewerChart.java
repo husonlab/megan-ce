@@ -26,7 +26,7 @@ import megan.chart.data.IChartData;
 import megan.chart.drawers.BarChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.classification.data.Name2IdMap;
-import megan.commands.OpenGooglePageCommand;
+import megan.commands.OpenWebPageCommand;
 import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.input.InputDialog;
@@ -86,9 +86,9 @@ public class FViewerChart extends ChartViewer {
 
         getClassesList().getPopupMenu().addSeparator();
         {
-            final OpenGooglePageCommand command = new OpenGooglePageCommand();
+            final OpenWebPageCommand command = new OpenWebPageCommand();
             command.setViewer(this);
-            Action action = new AbstractAction(OpenGooglePageCommand.NAME) {
+            Action action = new AbstractAction(OpenWebPageCommand.NAME) {
                 public void actionPerformed(ActionEvent actionEvent) {
                     java.util.Collection<String> selectedIds = getClassesList().getSelectedLabels();
                     if (selectedIds.size() > 0) {

@@ -20,6 +20,7 @@ package megan.commands;
 
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.FViewerChart;
@@ -33,7 +34,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 
-public class OpenGooglePageCommand extends CommandBase implements ICommand {
+public class OpenWebPageCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show webpage classification=<name> id=<id>;";
     }
@@ -47,7 +48,8 @@ public class OpenGooglePageCommand extends CommandBase implements ICommand {
 
         boolean ok = false;
         try {
-            URL url = new URL("http://www.google.com/search?q=" + name.trim().replaceAll(" ", "+") + "+" + id.trim().replaceAll(" ", "+"));
+            final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
+            final URL url = new URL(String.format(searchURL, name.trim().replaceAll(" ", "+") + "+" + id.trim().replaceAll(" ", "+")));
             System.err.println(url);
             Basic.openWebPage(url);
             ok = true;
@@ -82,7 +84,8 @@ public class OpenGooglePageCommand extends CommandBase implements ICommand {
         boolean ok = false;
         for (String id : selectedIds) {
             try {
-                URL url = new URL("http://www.google.com/search?q=" + name.trim().replaceAll("\\s+", "+") + "+" + id.trim().replaceAll("\\s+", "+"));
+                final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
+                final URL url = new URL(String.format(searchURL, name.trim().replaceAll("\\s+", "+") + "+" + id.trim().replaceAll("\\s+", "+")));
                 System.err.println(url);
                 Basic.openWebPage(url);
                 ok = true;

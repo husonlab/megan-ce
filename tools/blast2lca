@@ -39,6 +39,6 @@ else
 	classpath="$jars_dir/MEGAN.jar:../$jars_idr/MALT.jar:$jars_dir/data.jar:"
 fi
 
-java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
+java_flags="-server -Duser.language=en -Duser.region=US -Djava.awt.headless=true $vmOptions"
 
 $java $java_flags -cp "$classpath" megan.tools.Blast2LCA  $options

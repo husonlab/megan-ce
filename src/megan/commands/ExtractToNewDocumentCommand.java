@@ -68,6 +68,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         final String tarFileName = np.getAbsoluteFileName();
         if (srcDir.getDocument().getMeganFile().getFileName().equals(tarFileName))
             throw new IOException("Target file name equals source file name");
+        ProgramProperties.put("ExtractToNewFile", tarFileName);
 
         String classificationName = ClassificationType.Taxonomy.toString();
         if (np.peekMatchIgnoreCase("data")) {
@@ -193,7 +194,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         if (!dir.getDocument().getMeganFile().hasDataConnector())
             return;
         String name = ProjectManager.getUniqueName(Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-Extraction.rma"));
-        File lastOpenFile = new File(name);
+        File lastOpenFile = new File(ProgramProperties.get("ExtractToNewFile", name));
 
         dir.notifyLockInput();
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new RMAFileFilter(true), new RMAFileFilter(true), event, "Extract selected data to document", ".rma");

@@ -37,6 +37,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.data.*;
 import megan.main.MeganProperties;
+import megan.util.IReadsProvider;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
@@ -58,7 +59,7 @@ import java.util.*;
  * the  inspector window
  * Daniel Huson , 3.2006 ,  rewrote 10.2009
  */
-public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBar, Printable {
+public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBar, Printable, IReadsProvider {
     boolean uptodate = true;
     final JFrame frame;
     private final JPanel mainPanel;
@@ -1020,6 +1021,36 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
     public Map<String, NodeBase> getClassification2RootNode() {
         return classification2RootNode;
+    }
+
+    @Override
+    public boolean isReadsAvailable() {
+        return getReads(1).size() > 0;
+    }
+
+    @Override
+    public Collection<Pair<String, String>> getReads(int maxNumber) {
+        ArrayList<Pair<String, String>> list = new ArrayList<>(Math.min(1000, maxNumber));
+        if (dataTree != null) {
+            final TreePath[] selectedPaths = dataTree.getSelectionPaths();
+            if (selectedPaths != null) {
+                for (TreePath selectedPath : selectedPaths) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+                    if (node instanceof ReadHeadLineNode) {
+                        final ReadHeadLineNode readHeadLineNode = (ReadHeadLineNode) node;
+                        if (readHeadLineNode.getReadBlock() != null) {
+                            final IReadBlock readBlock = readHeadLineNode.getReadBlock();
+                            if (readBlock.getReadSequence() != null) {
+                                list.add(new Pair<>(readBlock.getReadHeader(), readBlock.getReadSequence()));
+                                if (list.size() >= maxNumber)
+                                    return list;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return list;
     }
 }
 

@@ -27,6 +27,7 @@ import megan.assembly.ReadAssembler;
 import megan.assembly.ReadData;
 import megan.assembly.ReadDataCollector;
 import megan.assembly.alignment.AlignmentAssembler;
+import megan.blastclient.RemoteBlastDialog;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
@@ -164,6 +165,18 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                 System.err.println("Contigs written to: " + outputFile);
                 message += "Wrote " + count + " contigs\n";
             }
+            if (ProgramProperties.isUseGUI()) {
+                if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
+                    final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), null, outputFile, "contig");
+                    if (commandString != null) {
+                        final Director newDir = Director.newProject();
+                        newDir.getMainViewer().getFrame().setVisible(true);
+                        newDir.getMainViewer().setDoReInduce(true);
+                        newDir.getMainViewer().setDoReset(true);
+                        newDir.executeImmediately(commandString, newDir.getMainViewer().getCommandManager());
+                    }
+                }
+            }
             if (showGraph)
                 alignmentAssembler.showOverlapGraph(dir, dir.getDocument().getProgressListener());
         } else {
@@ -199,6 +212,14 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     }
                     if (showGraph)
                         readAssembler.showOverlapGraph(dir, progress);
+
+                    if (ProgramProperties.isUseGUI()) {
+                        if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
+                            final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), null, outputFile, "contig");
+                            if (commandString != null)
+                                executeImmediately(commandString);
+                        }
+                    }
                 }
             } else {
                 NotificationsInSwing.showWarning(getViewer().getFrame(), "Nothing selected");
@@ -328,7 +349,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
         parametersPanel.add(secondPanel);
 
         final JCheckBox doContigOverlappingCBOX = new JCheckBox();
-        doContigOverlappingCBOX.setToolTipText("Perfrom all pairwise alignments of contigs to detect overlaps");
+        doContigOverlappingCBOX.setToolTipText("Perform all pairwise alignments of contigs to detect overlaps");
         doContigOverlappingCBOX.setSelected(ProgramProperties.get("AssemblyDoOverlapContigs", true));
         secondPanel.add(newSingleLine(Box.createHorizontalGlue(), new JLabel("Contig Overlapping:")));
         secondPanel.add(newSingleLine(doContigOverlappingCBOX, Box.createHorizontalGlue()));

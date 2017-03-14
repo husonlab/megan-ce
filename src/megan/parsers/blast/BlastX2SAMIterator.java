@@ -152,70 +152,80 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 }
                 while (hasNext());
 
-                float bitScore = Basic.parseFloat(getNextToken(line, SCORE, EQUALS));
-                int rawScore = Basic.parseInt(getNextToken(line, "("));
-                float expect = Basic.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
-                line = nextLine();
-                float percentIdentities = Basic.parseFloat(getNextToken(line, IDENTITIES, "("));
-                int frame;
-                if (blastPMode) {
-                    frame = 0;
-                } else {
+
+                boolean hasAnotherAlignmentAgainstReference = true;
+                while (hasAnotherAlignmentAgainstReference) {
+                    hasAnotherAlignmentAgainstReference = false;
+
+                    float bitScore = Basic.parseFloat(getNextToken(line, SCORE, EQUALS));
+                    int rawScore = Basic.parseInt(getNextToken(line, "("));
+                    float expect = Basic.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
                     line = nextLine();
-                    frame = Basic.parseInt(getNextToken(line, FRAME, EQUALS));
-                }
-                String[] queryLineTokens = getNextLineStartsWith(QUERY).split("\\s+"); // split on white space
-                int queryStart = Basic.parseInt(queryLineTokens[1]);
-                StringBuilder queryBuf = new StringBuilder();
-                queryBuf.append(queryLineTokens[2]);
-                int queryEnd = Basic.parseInt(queryLineTokens[3]);
-
-                if (!hasNextLine())
-                    break;
-                nextLine(); // skip middle line
-                String[] subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
-                int subjStart = Basic.parseInt(subjectLineTokens[1]);
-                StringBuilder subjBuf = new StringBuilder();
-                subjBuf.append(subjectLineTokens[2]);
-                int subjEnd = Basic.parseInt(subjectLineTokens[3]);
-
-                // if match is broken over multiple lines, collect all parts of match
-                while (hasNextLine()) {
-                    line = skipEmptyLines();
-                    if (line == null)
-                        break; // at EOF...
-                    if (line.startsWith(NEW_QUERY)) { // at new query
-                        pushBackLine(line);
-                        break;
-                    } else if (line.startsWith(NEW_MATCH)) { // start of new match
-                        pushBackLine(line);
-                        break;
-                    } else if (line.startsWith(SCORE)) { // there is another match to the same query, skip it
-                        pushBackLine(getNextLineStartsWith(NEW_QUERY));
-                    } else if (line.startsWith(QUERY)) { // match continues...
-                        queryLineTokens = line.split("\\s+");
-                        queryBuf.append(queryLineTokens[2]);
-                        queryEnd = Basic.parseInt(queryLineTokens[3]);
-                        subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
-                        subjBuf.append(subjectLineTokens[2]);
-                        subjEnd = Basic.parseInt(subjectLineTokens[3]);
+                    float percentIdentities = Basic.parseFloat(getNextToken(line, IDENTITIES, "("));
+                    int frame;
+                    if (blastPMode) {
+                        frame = 0;
+                    } else {
+                        line = nextLine();
+                        frame = Basic.parseInt(getNextToken(line, FRAME, EQUALS));
                     }
-                }
+                    String[] queryLineTokens = getNextLineStartsWith(QUERY).split("\\s+"); // split on white space
+                    int queryStart = Basic.parseInt(queryLineTokens[1]);
+                    StringBuilder queryBuf = new StringBuilder();
+                    queryBuf.append(queryLineTokens[2]);
+                    int queryEnd = Basic.parseInt(queryLineTokens[3]);
 
-                if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
-                    Match match = new Match();
-                    match.bitScore = bitScore;
-                    match.id = matchId++;
-                    match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
-                    matchesIntervalTree.add(new Interval<>(queryStart, queryEnd, match));
-                } else if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
-                    Match match = new Match();
-                    match.bitScore = bitScore;
-                    match.id = matchId++;
-                    match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
-                    matches.add(match);
-                    if (matches.size() > getMaxNumberOfMatchesPerRead())
-                        matches.remove(matches.last());
+                    if (!hasNextLine())
+                        break;
+                    nextLine(); // skip middle line
+                    String[] subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
+                    int subjStart = Basic.parseInt(subjectLineTokens[1]);
+                    StringBuilder subjBuf = new StringBuilder();
+                    subjBuf.append(subjectLineTokens[2]);
+                    int subjEnd = Basic.parseInt(subjectLineTokens[3]);
+
+                    // if match is broken over multiple lines, collect all parts of match
+                    while (hasNextLine()) {
+                        line = skipEmptyLines();
+                        if (line == null)
+                            break; // at EOF...
+                        if (line.startsWith(NEW_QUERY)) { // at new query
+                            pushBackLine(line);
+                            break;
+                        } else if (line.startsWith(NEW_MATCH)) { // start of new match
+                            pushBackLine(line);
+                            break;
+                        } else if (line.startsWith(SCORE)) { // there is another match to the same query
+                            if (isParseLongReads()) {
+                                hasAnotherAlignmentAgainstReference = true; //  also report other matches to same query
+                                break;
+                            } else
+                                pushBackLine(getNextLineStartsWith(NEW_QUERY)); // skip other matches to same query
+                        } else if (line.startsWith(QUERY)) { // match continues...
+                            queryLineTokens = line.split("\\s+");
+                            queryBuf.append(queryLineTokens[2]);
+                            queryEnd = Basic.parseInt(queryLineTokens[3]);
+                            subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
+                            subjBuf.append(subjectLineTokens[2]);
+                            subjEnd = Basic.parseInt(subjectLineTokens[3]);
+                        }
+                    }
+
+                    if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
+                        Match match = new Match();
+                        match.bitScore = bitScore;
+                        match.id = matchId++;
+                        match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
+                        matchesIntervalTree.add(new Interval<>(queryStart, queryEnd, match));
+                    } else if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
+                        Match match = new Match();
+                        match.bitScore = bitScore;
+                        match.id = matchId++;
+                        match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
+                        matches.add(match);
+                        if (matches.size() > getMaxNumberOfMatchesPerRead())
+                            matches.remove(matches.last());
+                    }
                 }
             }
         } catch (Exception ex) {

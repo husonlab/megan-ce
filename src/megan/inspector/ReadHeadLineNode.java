@@ -25,26 +25,24 @@ import megan.data.IReadBlock;
  * Daniel Huson, 2.2006
  */
 public class ReadHeadLineNode extends NodeBase {
-    protected long uId;
-    protected int readLength;
+    private final IReadBlock readBlock;
 
     /**
-     * constructor for archive data
+     * constructor
      * @param readBlock
      */
     public ReadHeadLineNode(IReadBlock readBlock) {
         super(readBlock.getReadName());
-        this.uId = readBlock.getUId();
-        this.readLength = readBlock.getReadLength();
+        this.readBlock = readBlock;
         this.rank = readBlock.getNumberOfMatches();
     }
 
     public boolean isLeaf() {
-        return uId == 0; // never leaf, because at least data node is contained below
+        return readBlock == null; // never leaf, because at least data node is contained below
     }
 
     public String toString() {
-        if (readLength <= 0) {
+        if (getReadLength() <= 0) {
             if (rank <= 0)
                 return getName();
             else
@@ -52,18 +50,22 @@ public class ReadHeadLineNode extends NodeBase {
         } else // readLength>0
         {
             if (rank <= 0)
-                return getName() + " [length=" + readLength + "]";
+                return getName() + " [length=" + getReadLength() + "]";
             else
-                return getName() + " [length=" + readLength + ", matches=" + (int) rank + "]";
+                return getName() + " [length=" + getReadLength() + ", matches=" + (int) rank + "]";
 
         }
     }
 
     public long getUId() {
-        return uId;
+        return readBlock.getUId();
     }
 
     public int getReadLength() {
-        return readLength;
+        return readBlock.getReadLength();
+    }
+
+    public IReadBlock getReadBlock() {
+        return readBlock;
     }
 }

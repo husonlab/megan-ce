@@ -78,7 +78,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         final String blastMode;
         if (np.peekMatchIgnoreCase("blastMode")) {
             np.matchIgnoreCase("blastMode=");
-            blastMode = np.getWordMatchesIgnoringCase("blastn blastx blastp");
+            blastMode = np.getWordMatchesIgnoringCase(Basic.toString(RemoteBlastClient.BlastProgram.values(), " "));
         } else
             blastMode = "blastn";
         final String blastDB;

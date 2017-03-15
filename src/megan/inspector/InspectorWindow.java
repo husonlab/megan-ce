@@ -1038,17 +1038,14 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
                     if (node instanceof ReadHeadLineNode) {
                         final ReadHeadLineNode readHeadLineNode = (ReadHeadLineNode) node;
-                        if (readHeadLineNode.getReadBlock() != null) {
-                            final IReadBlock readBlock = readHeadLineNode.getReadBlock();
-                            if (readBlock.getReadSequence() != null) {
-                                list.add(new Pair<>(readBlock.getReadHeader(), readBlock.getReadSequence()));
+                        if (readHeadLineNode.getReadHeader() != null && readHeadLineNode.getReadSequence() != null) {
+                            list.add(new Pair<>(readHeadLineNode.getReadHeader(), readHeadLineNode.getReadSequence()));
                                 if (list.size() >= maxNumber)
                                     return list;
                             }
                         }
                     }
                 }
-            }
         }
         return list;
     }

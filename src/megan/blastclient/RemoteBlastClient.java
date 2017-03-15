@@ -38,7 +38,8 @@ import java.util.Map;
  */
 public class RemoteBlastClient {
     public enum BlastProgram {
-        megablast, discomegablast, blastn, blastp, rpsblast, blastx, tblastn, tblastx;
+        blastn, blastx, blastp;
+        // blastn, blastx,  blastp, megablast, discomegablast, rpsblast, tblastn, tblastx; // todo: these don't appear to work
 
         public static BlastProgram valueOfIgnoreCase(String name) {
             for (BlastProgram blastProgram : values()) {
@@ -80,7 +81,7 @@ public class RemoteBlastClient {
      * @param queries
      * @return request Id
      */
-    public String startRemoteSearch(Collection<Pair<String, String>> queries) {
+    public String startRemoteSearch(Collection<Pair<String, String>> queries) throws IOException {
         if (queries.size() == 0)
             return null;
         final StringBuilder query = new StringBuilder();
@@ -91,7 +92,7 @@ public class RemoteBlastClient {
         estimatedTime = -1;
         actualTime = -1;
         startTime = System.currentTimeMillis();
-        try {
+
             final Map<String, Object> params = new HashMap<>();
             params.put("CMD", "Put");
             params.put("PROGRAM", program.toString());
@@ -99,10 +100,10 @@ public class RemoteBlastClient {
             params.put("QUERY", query.toString());
             final String response = postRequest(baseURL, params);
             requestId = parseRequestId(response);
+        if (requestId == null)
+            throw new IOException("Failed to obtain valid requestId");
             estimatedTime = parseEstimatedTime(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         return requestId;
     }
 

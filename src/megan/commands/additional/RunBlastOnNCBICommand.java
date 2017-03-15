@@ -186,7 +186,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                             @Override
                             public void run() {
                                 try {
-                                    if (result != null) {
+                                    if (result != null && result.length() > 0) {
                                         try {
                                             final File blastFile = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), Basic.replaceFileSuffix(readsFile, "." + blastMode), new MeganFileFilter(), new MeganFileFilter(), null, "Save BLAST file", "." + blastMode);
                                             if (blastFile != null) {

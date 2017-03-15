@@ -58,9 +58,10 @@ public class BlastService extends Service<String> {
                         Thread.sleep(5000);
                     }
                     status = remoteBlastClient.getRemoteStatus();
-                    if (System.currentTimeMillis() - startTime > 2 * estimatedTime)
-                        estimatedTime *= 2;
-                    updateProgress(System.currentTimeMillis() - startTime, estimatedTime);
+                    final long time = System.currentTimeMillis() - startTime;
+                    while (0.9 * time > estimatedTime)
+                        estimatedTime *= 1.2;
+                    updateProgress(time, estimatedTime);
                     if (isCancelled()) {
                         break;
                     }
@@ -78,9 +79,12 @@ public class BlastService extends Service<String> {
                     case noHitsFound:
                         updateMessage("No hits found");
                         break;
+                    case failed:
+                        updateMessage("Failed");
+                        System.err.println("Remote BLAST failed. Lookup details for RID=" + remoteBlastClient.getRequestId() + " on NCBI BLAST website https://blast.ncbi.nlm.nih.gov");
+                        break;
                     default:
                         updateMessage("Status: " + status);
-
                 }
                 return buf.toString();
             }

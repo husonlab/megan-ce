@@ -558,8 +558,8 @@ public class SAMMatch implements megan.rma3.IMatch {
                     sStart = sEnd + 1;
             }
         }
-        if (aligned[0] != null && qEnd > 0 && qEnd != (qStart + queryLength - 1) && warnAboutProblems)
-            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (qStart + queryLength - 1));
+        if (aligned[0] != null && qEnd > 0 && qEnd != (getAlignedQueryStart() + queryLength - 1) && warnAboutProblems)
+            System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (getAlignedQueryStart() + queryLength - 1));
         if (aligned[2] != null) {
             int sEndShouldBe = (getPos() + refLength - 1);
             if (sEnd > 0 && sEnd != sEndShouldBe && warnAboutProblems)

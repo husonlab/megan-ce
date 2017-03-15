@@ -123,6 +123,7 @@ public class RemoteBlastClient {
 
             Status status = Status.unknown;
             boolean thereAreNoHits = false;
+            boolean thereAreHits = false;
             for (String aLine : getLinesBetween(response, "QBlastInfoBegin", "QBlastInfoEnd")) {
                 if (aLine.contains("Status=")) {
                     switch (aLine.replaceAll("Status=", "").trim()) {
@@ -142,9 +143,13 @@ public class RemoteBlastClient {
                     }
                 } else if (aLine.contains("ThereAreHits=no"))
                     thereAreNoHits = true;
+                else if (aLine.contains("ThereAreHits=yes"))
+                    thereAreHits = true;
             }
             if (status == Status.hitsFound && thereAreNoHits)
                 status = Status.noHitsFound;
+            if (status == Status.hitsFound && !thereAreHits)
+                status = Status.failed;
             return status;
         } catch (IOException e) {
             e.printStackTrace();

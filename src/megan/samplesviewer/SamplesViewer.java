@@ -41,7 +41,6 @@ import megan.fx.SpreadSheetSearcher;
 import megan.main.MeganProperties;
 import megan.samplesviewer.commands.PasteCommand;
 import megan.viewer.MainViewer;
-import org.controlsfx.control.spreadsheet.SpreadsheetColumn;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,8 +81,6 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     private final SamplesSpreadSheet samplesSpreadSheet;
 
     private final SpreadSheetSearcher spreadSheetSearcher;
-
-    private boolean isLoaded = false;
 
     /**
      * constructor
@@ -288,12 +285,6 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         javafx.application.Platform.runLater(new Runnable() {
             public void run() {
                 getCommandManager().updateEnableStateFXItems();
-                for (SpreadsheetColumn col : samplesSpreadSheet.getSpreadsheetView().getColumns()) {
-                    if (!isLoaded && what.equals(Director.ALL) && col.getWidth() >= 150) {
-                        col.setPrefWidth(80);
-                        isLoaded = true;
-                    }
-                }
             }
         });
 

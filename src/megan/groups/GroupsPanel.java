@@ -187,7 +187,11 @@ public class GroupsPanel extends JPanel {
     }
 
     public void selectNone() {
-        jList.clearSelection();
+        if (!inSelectSamples) {
+            inSelectSamples = true;
+            jList.clearSelection();
+            inSelectSamples = false;
+        }
     }
 
     /**

@@ -36,14 +36,14 @@ public class GUIConfiguration {
      */
     public static MenuConfiguration getMenuConfiguration() {
         MenuConfiguration menuConfig = new MenuConfiguration();
-        menuConfig.defineMenuBar("File;Edit;Options;Window;Help;");
+        menuConfig.defineMenuBar("File;Edit;Window;Help;");
 
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Export Image...;Export Legend...;|;Page Setup...;Print...;|Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Find...;Find Again;|;Select All;Select None;|;From Previous Window;|;Add New Group;");
-        menuConfig.defineMenu("Options", "Taxonomy Contrasts...;|;SEED Contrasts...;EGGNOG Contrasts...;KEGG Contrasts...;");
+        // menuConfig.defineMenu("Options", "Taxonomy Contrasts...;|;SEED Contrasts...;EGGNOG Contrasts...;KEGG Contrasts...;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +

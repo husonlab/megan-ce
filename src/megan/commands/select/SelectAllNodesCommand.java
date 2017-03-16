@@ -24,6 +24,7 @@ import jloda.gui.director.ProjectManager;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
+import megan.groups.GroupsViewer;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
@@ -61,8 +62,20 @@ public class SelectAllNodesCommand extends CommandBase implements ICommand {
         else if (getViewer() instanceof ClusterViewer && ((ClusterViewer) getViewer()).getTabbedIndex() == ClusterViewer.MATRIX_TAB_INDEX && what.equalsIgnoreCase("previous")) {
             ((ClusterViewer) getViewer()).getMatrixTab().selectByLabels(ProjectManager.getPreviouslySelectedNodeLabels());
             return;
-        }
-        else
+        } else if (getViewer() instanceof GroupsViewer) {
+            switch (what.toLowerCase()) {
+                case "previous":
+                    ((GroupsViewer) getViewer()).selectFromPrevious(ProjectManager.getPreviouslySelectedNodeLabels());
+                    break;
+                case "all":
+                    ((GroupsViewer) getViewer()).getGroupsPanel().selectAll();
+                    break;
+                case "none":
+                    ((GroupsViewer) getViewer()).getGroupsPanel().selectNone();
+                    break;
+            }
+            return;
+        } else
             return;
 
         if (what.equalsIgnoreCase("all"))

@@ -25,6 +25,7 @@ import jloda.graphview.INodeDrawer;
 import jloda.graphview.NodeShape;
 import jloda.graphview.NodeView;
 import jloda.util.ProgramProperties;
+import jloda.util.Statistics;
 import megan.core.Document;
 import megan.main.MeganProperties;
 import megan.viewer.MainViewer;
@@ -308,21 +309,31 @@ public class NodeDrawer implements INodeDrawer {
             gc.drawString(nv.getLabel(), apt.x, apt.y);
         }
 
-        if (data.getSummarized().length > 1 || (data.getSummarized().length == 1 && data.getSummarized()[0] > 0)) {
+        if ((data.getSummarized().length > 1 || (data.getSummarized().length == 1 && data.getSummarized()[0] > 0))) {
             gc.setFont(selectionFont);
 
             StringBuilder buf = new StringBuilder();
             if (data.getCountAssigned() > 0) {
-                buf.append("Ass=");
-                for (float value : data.getAssigned()) {
-                    buf.append(String.format("%,.0f  ", value));
+                buf.append("Assigned=");
+                if (data.getAssigned().length < 50) {
+                    for (float value : data.getAssigned()) {
+                        buf.append(String.format("%,.0f  ", value));
+                    }
+                } else {
+                    final Statistics statistics = new Statistics(data.getAssigned());
+                    buf.append(String.format(" %,.0f - %,.0f (mean: %,.0f sd: %,.0f)", statistics.getMin(), statistics.getMax(), statistics.getMean(), statistics.getStdDev()));
                 }
                 gc.drawString(buf.toString(), apt.x, apt.y += 14);
             }
             buf = new StringBuilder();
-            buf.append("Sum=");
-            for (float value : data.getSummarized()) {
-                buf.append(String.format("%,.0f  ", value));
+            buf.append("Summed=");
+            if (data.getSummarized().length < 50) {
+                for (float value : data.getSummarized()) {
+                    buf.append(String.format("%,.0f  ", value));
+                }
+            } else {
+                final Statistics statistics = new Statistics(data.getSummarized());
+                buf.append(String.format(" %,.0f - %,.0f (mean: %,.0f sd: %,.0f)", statistics.getMin(), statistics.getMax(), statistics.getMean(), statistics.getStdDev()));
             }
             gc.drawString(buf.toString(), apt.x, apt.y += 12);
         }
@@ -449,7 +460,8 @@ public class NodeDrawer implements INodeDrawer {
             gc.setColor(doc.getColorByIndex(i));
             gc.fill(arc);
             //gc.drawString(""+array[i],apt.x+30,apt.y+(i+1)*20);
-            gc.setColor(Color.BLACK);
+            if (values.length < 120)
+                gc.setColor(Color.GRAY);
             gc.draw(arc);
         }
         if (data.getUpPValue() >= 0) {
@@ -537,11 +549,13 @@ public class NodeDrawer implements INodeDrawer {
                         gc.setColor(doc.getColorByIndex(i));
                         gc.fill(arc);
                         //gc.drawString(""+array[i],apt.x+30,apt.y+(i+1)*20);
-                        gc.setColor(Color.DARK_GRAY);
+                    if (array.length < 120)
+                        gc.setColor(Color.GRAY);
                         gc.draw(arc);
                         oldAngle = newAngle;
                 }
             }
+            gc.setColor(Color.GRAY);
             gc.drawOval(apt.x, apt.y, width, height);
         } else
             gc.drawOval(apt.x, apt.y, width, height);
@@ -566,12 +580,15 @@ public class NodeDrawer implements INodeDrawer {
             array = data.getAssigned();
         }
 
-
         Point2D location = nv.getLocation();
         Rectangle box = new Rectangle();
         viewer.trans.w2d(new Rectangle(0, 0, MainViewer.XSTEP, MainViewer.YSTEP), box);
-        //box.setRect(box.x, box.y, maxNodeRadius, box.height);
-        box.setRect(box.x, box.y, Math.max(4, array.length == 0 ? 4 : maxNodeHeight / array.length), Math.min(2 * maxNodeHeight, box.height));
+        int width;
+        if (array.length <= 1)
+            width = 30;
+        else
+            width = (int) (30.0 / array.length * (Math.sqrt(array.length)));
+        box.setRect(box.x, box.y, width, Math.min(2 * maxNodeHeight, box.height));
 
         if (location == null)
             return; // no location, don't draw
@@ -630,11 +647,17 @@ public class NodeDrawer implements INodeDrawer {
                 gc.setColor(color);
 
                 // gc.setColor(getLogScaleColor(COLORS[i % COLORS.length], array[i], inverseLogTotalReads));
-                gc.fill(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, box.getWidth(), box.getHeight()));
+                double aWidth = Math.max(0.2, box.getWidth());
+                gc.fill(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, aWidth, box.getHeight()));
 
-                gc.setColor(Color.DARK_GRAY);
-                gc.draw(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, box.getWidth(), box.getHeight()));
-
+                if (box.getWidth() > 1) {
+                    gc.setColor(Color.DARK_GRAY);
+                    gc.draw(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, box.getWidth(), box.getHeight()));
+                }
+            }
+            if (box.getWidth() <= 1) {
+                gc.setColor(Color.GRAY);
+                gc.drawRect(apt.x, apt.y, (int) Math.round(array.length * box.getWidth()), (int) Math.round(box.getHeight()));
             }
         } else
             nv.draw(gc, viewer.trans);
@@ -668,6 +691,7 @@ public class NodeDrawer implements INodeDrawer {
         else
             width = (int) (30.0 / array.length * (Math.sqrt(array.length)));
         box.setRect(box.x, box.y, width, Math.min(2 * maxNodeHeight, box.height));
+
 
         if (location == null)
             return; // no location, don't draw
@@ -713,13 +737,20 @@ public class NodeDrawer implements INodeDrawer {
                 gc.setColor(doc.getColorByIndex(i));
                 double height = box.getHeight() / (double) getMaxNodeHeight() * getScaledSize(array[i]);
 
-                gc.fill(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y + (box.getHeight() - height), box.getWidth(), height));
+                double aWidth = Math.max(0.2, box.getWidth());
+                gc.fill(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y + (box.getHeight() - height), aWidth, height));
 
                 // Color color = new Color(Math.max(0, (int) (0.8 * doc.getColorByIndex(i).getRed())), Math.max(0, (int) (0.8 * doc.getColorByIndex(i).getGreen())), Math.max(0, (int) (0.8 * doc.getColorByIndex(i).getBlue())));
                 // gc.setColor(color);
                 // gc.drawLine(apt.x + i * box.width, apt.y + (int) (box.height - height), apt.x + (i + 1) * box.width, apt.y + (int) (box.height - height));
+                if (box.getWidth() > 1) {
+                    gc.setColor(Color.GRAY);
+                    gc.draw(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, box.getWidth(), box.getHeight()));
+                }
+            }
+            if (box.getWidth() <= 1) {
                 gc.setColor(Color.GRAY);
-                gc.draw(new Rectangle2D.Double(apt.x + i * box.getWidth(), apt.y, box.getWidth(), box.getHeight()));
+                gc.drawRect(apt.x, apt.y, (int) Math.round(array.length * box.getWidth()), (int) Math.round(box.getHeight()));
             }
         } else
             nv.draw(gc, viewer.trans);

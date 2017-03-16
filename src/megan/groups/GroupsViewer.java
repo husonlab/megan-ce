@@ -334,4 +334,9 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     public GroupsPanel getGroupsPanel() {
         return groupsPanel;
     }
+
+    public void selectFromPrevious(Collection<String> previous) {
+        getGroupsPanel().selectSamples(previous, true);
+        ignoreNextUpdateAll = true; // update would clobber selection
+    }
 }

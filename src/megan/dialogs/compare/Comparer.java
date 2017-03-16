@@ -115,7 +115,8 @@ public class Comparer {
                 sampleAttributeTable.addSample(names[pos], attributes2value, false, true);
             }
             try {
-                uids[pos] = dir.getDocument().getConnector().getUId();
+                if (!dir.getDocument().getMeganFile().isMeganSummaryFile())
+                    uids[pos] = dir.getDocument().getConnector().getUId();
             } catch (Exception e) {
                 uids[pos] = 0L;
             }

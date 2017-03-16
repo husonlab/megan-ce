@@ -99,7 +99,7 @@ public class GroupSamplesByCommand extends CommandBase implements ICommand {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                execute("groupBy attribute='" + choice + "';");
+                                execute("groupBy attribute='" + choice + "';show window=groups;");
                             }
                         });
                     }

@@ -1526,32 +1526,39 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         NodeData data = (super.getNodeData(v));
         if (data.getCountAssigned() > 0) {
             writer.write("Assigned: ");
-            int count = 0;
-            for (float value : data.getAssigned()) {
-                if (count > 0) {
-                    if (count % 10 == 0)
-                        writer.write(",<p>");
+            if (data.getAssigned().length < 50) {
+                boolean first = true;
+                for (float value : data.getAssigned()) {
+                    if (first)
+                        first = false;
                     else
                         writer.write(", ");
+                    writer.write("<b>" + Math.round(value) + "</b>");
                 }
-                writer.write("<b>" + Math.round(value) + "</b>");
-                count++;
+                writer.write("<p>");
+            } else {
+                Statistics statistics = new Statistics(data.getAssigned());
+                writer.write(String.format("<b>%,.0f - %,.0f</b> (mean: %,.0f sd: %,.0f)", statistics.getMin(), statistics.getMax(), statistics.getMean(), statistics.getStdDev()));
             }
             writer.write("<p>");
         }
         if (data.getCountSummarized() > data.getCountAssigned()) {
-            writer.write("Summed: ");
-            int count = 0;
-            for (float value : data.getSummarized()) {
-                if (count > 0) {
-                    if (count % 10 == 0)
-                        writer.write(",<p>");
+            writer.write("Summed:    ");
+            if (data.getSummarized().length < 50) {
+                boolean first = true;
+                for (float value : data.getSummarized()) {
+                    if (first)
+                        first = false;
                     else
                         writer.write(", ");
+                    writer.write("<b>" + Math.round(value) + "</b>");
                 }
-                writer.write("<b>" + Math.round(value) + "</b>");
-                count++;
+                writer.write("<p>");
+            } else {
+                Statistics statistics = new Statistics(data.getSummarized());
+                writer.write(String.format("<b>%,.0f - %,.0f</b> (mean: %,.0f sd: %,.0f)", statistics.getMin(), statistics.getMax(), statistics.getMean(), statistics.getStdDev()));
             }
+            writer.write("<p>");
         }
         setToolTipText(writer.toString());
     }

@@ -49,7 +49,7 @@ public class GroupByCommand extends CommandBase implements ICommand {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
         final String attribute = viewer.getSamplesTable().getASelectedColumn();
         if (attribute != null)
-            execute("groupBy attribute='" + attribute + "';");
+            execute("groupBy attribute='" + attribute + "';show window=groups;");
     }
 
     public boolean isApplicable() {

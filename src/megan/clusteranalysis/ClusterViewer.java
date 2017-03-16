@@ -360,7 +360,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     }
 
     /**
-     * ask view to rescan itself. This method is wrapped into a runnable object
+     * ask view to update itself. This method is wrapped into a runnable object
      * and put in the swing event queue to avoid concurrent modifications.
      *
      * @param what what should be updated? Possible values: Director.ALL or Director.TITLE
@@ -391,7 +391,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 if (isPCoATab()) { // setup group 2 nodes in order that samples appear in table
                     Map<String, Node> sample2node = new HashMap<>();
                     for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-                        sample2node.put(graphView.getNV(v).getLabel(), v);
+                        sample2node.put(graph.getLabel(v), v);
                     }
                     for (String sample : getDir().getDocument().getSampleAttributeTable().getSampleOrder()) {
                         String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(sample);
@@ -400,11 +400,11 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                             if (nodes == null) {
                                 nodes = new LinkedList<>();
                                 group2Nodes.put(groupId, nodes);
-                                }
-                            nodes.add(sample2node.get(sample));
                             }
+                            nodes.add(sample2node.get(sample));
                         }
                     }
+                }
 
                 if (frame.isActive())
                     graphView.requestFocusInWindow();
@@ -432,8 +432,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
                         if (selectedLabels.contains(nv.getLabel()))
                             toSelect.add(v);
-                        }
                     }
+                }
                 addFormatting(upgmaTab.getGraphView());
                 addFormatting(njTab.getGraphView());
                 addFormatting(nnetTab.getGraphView());
@@ -469,8 +469,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 ((ITab) tabbedPane.getSelectedComponent()).updateView(what);
             } catch (Exception e) {
                 Basic.caught(e);
-                }
             }
+        }
 
         legendPanel.updateView();
         if (doc.getNumberOfSamples() <= 1)
@@ -483,8 +483,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 ITab tab = (ITab) tabbedPane.getComponentAt(i);
                 tabbedPane.setEnabledAt(i, tab.isApplicable());
 
-                }
             }
+        }
     }
 
     /**

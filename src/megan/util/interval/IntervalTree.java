@@ -218,6 +218,33 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
+     * remove an interval associated with the given data
+     * Will not rebuild until the next query or call to build
+     *
+     * @param data
+     * @return true, if was contained
+     */
+    public boolean remove(T data) {
+        Interval<T> interval = find(data);
+        return interval != null && remove(interval);
+    }
+
+    /**
+     * find an interval whose data equals the given data
+     *
+     * @param data (can be null)
+     * @return interval or null
+     */
+    public Interval<T> find(T data) {
+        sortList();
+        for (Interval<T> interval : intervalList) {
+            if ((data == null && interval.getData() == null) || (data != null && interval.getData() != null && interval.getData().equals(data)))
+                return interval;
+        }
+        return null;
+    }
+
+    /**
      * remove a collection of intervals
      * Will not rebuild until the next query or call to build
      * @param intervals

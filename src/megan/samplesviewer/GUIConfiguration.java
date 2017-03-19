@@ -46,9 +46,10 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Samples Viewer Cut;Samples Viewer Copy;Samples Viewer Paste;Samples Viewer Paste By Attribute;|;Select All;Select None;Select Similar;From Previous Window;|;Find...;Find Again;Replace...;|;Colors...;");
 
-        menuConfig.defineMenu("Attributes", getAttributeColumnHeaderPopupConfiguration());
+        menuConfig.defineMenu("Attributes", "Rename Attribute...;|;Sort Increasing;Sort Decreasing;|;Move Left;Move Right;|;New Column...;Delete Column(s)...;|;Hide;Unhide;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
+                "Expand...;");
 
-        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Open RMA File...;");
+        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Compare Relative...;Compare Absolute...;|;Open RMA File...;");
 
         menuConfig.defineMenu("Layout", "Squeeze Wide Columns;");
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +

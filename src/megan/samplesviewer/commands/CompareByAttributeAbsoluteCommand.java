@@ -20,13 +20,18 @@ package megan.samplesviewer.commands;
 
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
+import jloda.util.Basic;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.compare.Comparer;
+import megan.samplesviewer.SamplesSpreadSheet;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
 /**
  * * compare by command
@@ -50,8 +55,18 @@ public class CompareByAttributeAbsoluteCommand extends CommandBase implements IC
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
         final String attribute = viewer.getSamplesTable().getASelectedColumn();
-        if (attribute != null)
-            execute("compareBy attribute='" + attribute + "' mode=" + Comparer.COMPARISON_MODE.ABSOLUTE.toString().toLowerCase() + ";");
+        final SamplesSpreadSheet samplesTable = ((SamplesViewer) getViewer()).getSamplesTable();
+
+        final BitSet samples = samplesTable.getSelectedSampleIndices();
+        final List<String> tarSamplesOrder = new ArrayList<>();
+
+        for (int row = samples.nextSetBit(1); row != -1; row = samples.nextSetBit(row + 1))
+            tarSamplesOrder.add(samplesTable.getDataGrid().getRowName(row));
+
+        if (attribute != null && tarSamplesOrder.size() > 0) {
+            execute("compareBy attribute='" + attribute + "' mode=" + Comparer.COMPARISON_MODE.ABSOLUTE.toString().toLowerCase() +
+                    " samples='" + Basic.toString(tarSamplesOrder, "' '") + "';");
+        }
     }
 
     public boolean isApplicable() {

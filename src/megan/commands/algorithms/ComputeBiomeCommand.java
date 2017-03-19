@@ -23,13 +23,13 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
+import megan.commands.additional.ComputeCoreBiome;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastMode;
-import megan.samplesviewer.ComputeCoreBiome;
 import megan.viewer.gui.NodeDrawer;
 
 import javax.swing.*;

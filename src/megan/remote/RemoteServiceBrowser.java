@@ -107,7 +107,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        final ToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        final ToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(toolBar, BorderLayout.NORTH);
 

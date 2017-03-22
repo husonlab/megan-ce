@@ -162,7 +162,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
-        frame.add(new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
+        frame.add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
         frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
         statusBar = new jloda.gui.StatusBar();
         frame.add(statusBar, BorderLayout.SOUTH);

@@ -104,7 +104,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         this.commandManager = new CommandManagerFX(dir, this, new String[]{"megan.commands", "megan.samplesviewer.commands"}, !ProgramProperties.isUseGUI());
 
         String toolBarConfig = megan.samplesviewer.GUIConfiguration.getToolBarConfiguration();
-        JToolBar toolBar = new ToolBar(toolBarConfig, commandManager);
+        JToolBar toolBar = new ToolBar(this, toolBarConfig, commandManager);
         frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 
         mainPanel = new JPanel();

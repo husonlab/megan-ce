@@ -92,7 +92,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
         mainPanel.setLayout(new BorderLayout());
         frame.add(mainPanel, BorderLayout.CENTER);
 
-        JToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        JToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
         mainPanel.add(toolBar, BorderLayout.NORTH);
 
         groupsPanel = new GroupsPanel(dir.getDocument(), this);

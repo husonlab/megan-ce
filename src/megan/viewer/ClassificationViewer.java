@@ -199,7 +199,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         getFrame().getContentPane().setLayout(new BorderLayout());
 
-        JToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), getCommandManager());
+        JToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), getCommandManager());
         getFrame().getContentPane().add(toolBar, BorderLayout.NORTH);
         getFrame().getContentPane().add(mainSplitPane, BorderLayout.CENTER);
         getFrame().getContentPane().add(statusBar, BorderLayout.SOUTH);
@@ -423,7 +423,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (findToolBar.isEnabled())
             findToolBar.clearMessage();
 
-        if (showLegend.equals("undefined") && doc.getNumberOfSamples() > 0) {
+        if (showLegend.equals("undefined") && doc.getNumberOfSamples() > 0 && doc.getNumberOfSamples() < 100) {
             setShowLegend(doc.getNumberOfSamples() <= 1 ? "none" : "horizontal");
         }
         legendPanel.setStyle(getNodeDrawer().getStyle());

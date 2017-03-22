@@ -114,7 +114,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
         popupMenu = new PopupMenu(this, GUIConfiguration.getPopupMenuConfiguration(), getCommandManager());
 
-        frame.add(new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
+        frame.add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
         statusBar = new StatusBar();
         frame.getContentPane().add(statusBar, BorderLayout.SOUTH);
 

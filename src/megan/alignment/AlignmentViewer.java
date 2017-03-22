@@ -130,7 +130,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
         final int[] geometry = ProgramProperties.get("AlignerViewerGeometry", new int[]{100, 100, 850, 600});
         frame.setSize(geometry[2], geometry[3]);
 
-        JToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        JToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(toolBar, BorderLayout.NORTH);
 

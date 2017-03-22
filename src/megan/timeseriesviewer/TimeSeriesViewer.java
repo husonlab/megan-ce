@@ -98,7 +98,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        final ToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        final ToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
         mainPanel.add(toolBar, BorderLayout.NORTH);
 
         subjectJTable = new SubjectJTable(this);

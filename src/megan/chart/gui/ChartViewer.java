@@ -172,7 +172,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             ProjectManager.addAnotherWindowWithWindowMenu(dir, jMenuBar.getWindowMenu());
         }
 
-        toolBar4List = new ToolBar(GUIConfiguration.getToolBar4DomainListConfiguration(), commandManager);
+        toolBar4List = new ToolBar(this, GUIConfiguration.getToolBar4DomainListConfiguration(), commandManager);
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BorderLayout());
         listPanel.add(toolBar4List, BorderLayout.NORTH);
@@ -238,7 +238,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
         getContentPane().setLayout(new BorderLayout());
 
-        toolbar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        toolbar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
 
         getContentPane().add(toolbar, BorderLayout.NORTH);
 

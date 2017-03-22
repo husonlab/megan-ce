@@ -53,8 +53,9 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
         return getDoc().getNumberOfSamples() > 0;
     }
 
+    public static final String NAME = "Samples Viewer...";
     public String getName() {
-        return "Samples Viewer...";
+        return NAME;
     }
 
     public ImageIcon getIcon() {

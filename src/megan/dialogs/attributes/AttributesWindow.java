@@ -123,7 +123,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
         frame.getContentPane().setLayout(new BorderLayout());
         frame.setJMenuBar(menuBar);
 
-        JToolBar toolBar = new ToolBar(GUIConfiguration.getToolBarConfiguration(), commandManager);
+        JToolBar toolBar = new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager);
         frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);

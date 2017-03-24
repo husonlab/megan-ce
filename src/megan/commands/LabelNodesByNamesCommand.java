@@ -24,9 +24,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 public class LabelNodesByNamesCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
@@ -76,7 +74,7 @@ public class LabelNodesByNamesCommand extends CommandBase implements ICheckBoxCo
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return null;
     }
 
     public ImageIcon getIcon() {

@@ -20,6 +20,7 @@ package megan.parsers.blast.blastxml;
 
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import megan.parsers.blast.Match;
 import megan.parsers.blast.Utilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -32,7 +33,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
@@ -206,11 +206,11 @@ public class BlastXMLParser extends DefaultHandler {
                     int numberOfMatches = 0;
                     matches.clear();
                     for (Hit hit : iterationHits) {
-                        if (matches.size() < getMaxMatchesPerRead() || hit.hsp.bitScore > matches.last().bitScore) {
+                        if (matches.size() < getMaxMatchesPerRead() || hit.hsp.bitScore > matches.last().getBitScore()) {
                             Match match = new Match();
                             final HSP hsp = hit.hsp;
-                            match.bitScore = hsp.bitScore;
-                            match.id = numberOfMatches++;
+                            match.setBitScore(hsp.bitScore);
+                            match.setId(numberOfMatches++);
                             int queryStart = (int) (hsp.queryFrame >= 0 ? hsp.queryFrom : hsp.queryTo);
                             int queryEnd = (int) (hsp.queryFrame >= 0 ? hsp.queryTo : hsp.queryFrom);
 
@@ -222,8 +222,8 @@ public class BlastXMLParser extends DefaultHandler {
                             else
                                 hitLabel = (hit.def + " " + hit.id).replaceAll("\\s+", " ");
 
-                            match.samLine = makeSAM(iteration.queryDef, hitLabel, hit.len, hsp.bitScore, (float) hsp.eValue,
-                                    (int) hsp.score, hsp.identity, hsp.queryFrame, queryStart, queryEnd, (int) hsp.hitFrom, (int) hsp.hitTo, hsp.qSeq, hsp.hSeq);
+                            match.setSamLine(makeSAM(iteration.queryDef, hitLabel, hit.len, hsp.bitScore, (float) hsp.eValue,
+                                    (int) hsp.score, hsp.identity, hsp.queryFrame, queryStart, queryEnd, (int) hsp.hitFrom, (int) hsp.hitTo, hsp.qSeq, hsp.hSeq));
                             matches.add(match);
                             if (matches.size() > maxMatchesPerRead)
                                 matches.remove(matches.last());
@@ -231,7 +231,7 @@ public class BlastXMLParser extends DefaultHandler {
                     }
                     StringBuilder buf = new StringBuilder();
                     for (Match match : matches) {
-                        buf.append(match.samLine).append("\n");
+                        buf.append(match.getSamLine()).append("\n");
                     }
                     matchesText.setText(buf.toString().getBytes());
                     matchesText.setLengthOfText(matchesText.getText().length);
@@ -465,28 +465,5 @@ public class BlastXMLParser extends DefaultHandler {
         public String id;
         public int len;
         public HSP hsp;
-    }
-
-    /**
-     * a match, as used to sort matches
-     */
-    protected class Match implements Comparator<Match> {
-        float bitScore;
-        int id;
-        String samLine;
-
-        @Override
-        public int compare(Match a, Match b) {
-            if (a.bitScore > b.bitScore)
-                return -1;
-            else if (a.bitScore < b.bitScore)
-                return 1;
-            else if (a.id < b.id)
-                return -1;
-            else if (a.id > b.id)
-                return 1;
-            else
-                return 0;
-        }
     }
 }

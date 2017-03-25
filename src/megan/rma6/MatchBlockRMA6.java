@@ -133,6 +133,8 @@ public class MatchBlockRMA6 implements IMatchBlock {
      * @return
      */
     public float getBitScore() {
+        if (samMatch == null)
+            System.err.println("null");
         return samMatch.getBitScore();
     }
 

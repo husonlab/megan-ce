@@ -167,7 +167,6 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
-
     /**
      * gets the matches text
      *

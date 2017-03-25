@@ -61,7 +61,7 @@ public class IteratorManager {
         else if (format == BlastFileFormat.RDPAssignmentDetails)
             iterator = new RDPAssignmentDetails2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.IlluminaReporter)
-            iterator = new IlluminarReporter2SAMIterator(blastFile, maxMatchesPerRead);
+            iterator = new IlluminaReporter2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.RDPStandalone)
             iterator = new RDPStandalone2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.References_as_FastA)

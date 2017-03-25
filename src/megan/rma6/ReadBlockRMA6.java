@@ -57,7 +57,6 @@ public class ReadBlockRMA6 implements IReadBlock {
         this.blastMode = blastMode;
         this.pairedReads = pairedReads;
         this.cNames = cNames;
-
     }
 
     /**
@@ -292,8 +291,8 @@ public class ReadBlockRMA6 implements IReadBlock {
                 try {
                     final SAMMatch samMatch = new SAMMatch(blastMode);
                     samMatch.parse(aLine);
-                    ((MatchBlockRMA6) matchBlocks[matchCount]).setFromSAM(samMatch);
-                    if (matchBlocks[matchCount].getBitScore() >= minScore && matchBlocks[matchCount].getExpected() <= maxExpected)
+                    ((MatchBlockRMA6) matchBlocks[i]).setFromSAM(samMatch);
+                    if (matchBlocks[i].getBitScore() >= minScore && matchBlocks[i].getExpected() <= maxExpected)
                         copies[matchCount++] = matchBlocks[i]; // this match is ok, keep it
                 } catch (IOException ex) {
                     System.err.println("RMA6 Parse error: " + ex.getMessage() + ", numberOfMatches=" + numberOfMatches + ", i=" + i + " line=" + aLine);

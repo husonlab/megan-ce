@@ -21,7 +21,6 @@ package megan.parsers.blast;
 import jloda.util.FileInputIterator;
 
 import java.io.IOException;
-import java.util.Comparator;
 
 /**
  * base class
@@ -289,29 +288,6 @@ public class SAMIteratorBase {
 
     public int incrementNumberOfErrors() {
         return ++numberOfErrors;
-    }
-
-    /**
-     * use this to sort matches
-     */
-    protected class Match implements Comparator<Match> {
-        float bitScore;
-        int id;
-        String samLine;
-
-        @Override
-        public int compare(Match a, Match b) {
-            if (a.bitScore > b.bitScore)
-                return -1;
-            else if (a.bitScore < b.bitScore)
-                return 1;
-            else if (a.id < b.id)
-                return -1;
-            else if (a.id > b.id)
-                return 1;
-            else
-                return 0;
-        }
     }
 
     /**

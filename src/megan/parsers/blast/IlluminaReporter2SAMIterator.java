@@ -19,6 +19,7 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import jloda.util.Pair;
 import megan.util.IlluminaReporterFileFilter;
 
 import java.io.IOException;
@@ -36,10 +37,9 @@ import java.util.TreeSet;
  * <p>
  * Daniel Huson, 1.2016
  */
-public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements ISAMIterator {
+public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     private final TreeSet<Match> matches = new TreeSet<>(new Match());
-    private byte[] matchesText = new byte[10000];
-    private int matchesTextLength = 0;
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
     /**
      * constructor
@@ -47,7 +47,7 @@ public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements IS
      * @param fileName
      * @throws IOException
      */
-    public IlluminarReporter2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
+    public IlluminaReporter2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!IlluminaReporterFileFilter.getInstance().accept(fileName)) {
             close();
@@ -74,7 +74,7 @@ public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements IS
         if (!hasNextLine())
             return -1;
 
-        matchesTextLength = 0;
+        matchesTextAndLength.setSecond(0);
 
         String line = nextLine();
         while (hasNextLine() && !line.startsWith(">")) {
@@ -129,28 +129,7 @@ public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements IS
                 throw new RuntimeException("Too many errors");
         }
 
-        if (matches.size() == 0) { // no matches, so return query name only
-            if (queryName.length() > matchesText.length) {
-                matchesText = new byte[2 * queryName.length()];
-            }
-            for (int i = 0; i < queryName.length(); i++)
-                matchesText[matchesTextLength++] = (byte) queryName.charAt(i);
-            matchesText[matchesTextLength++] = '\n';
-            return 0;
-        } else {
-            for (Match match : matches) {
-                byte[] bytes = match.samLine.getBytes();
-                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
-                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
-                    System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
-                    matchesText = tmp;
-                }
-                System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
-                matchesTextLength += bytes.length;
-                matchesText[matchesTextLength++] = '\n';
-            }
-            return matches.size();
-        }
+        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
     }
 
     /**
@@ -160,8 +139,7 @@ public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements IS
      */
     @Override
     public byte[] getMatchesText() {
-        //System.err.println(Basic.toString(matchesText,matchesTextLength));
-        return matchesText;
+        return matchesTextAndLength.getFirst();
     }
 
     /**
@@ -171,7 +149,7 @@ public class IlluminarReporter2SAMIterator extends SAMIteratorBase implements IS
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesTextLength;
+        return matchesTextAndLength.getSecond();
     }
 
     /**

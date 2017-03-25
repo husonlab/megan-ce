@@ -41,14 +41,14 @@ public class PostProcessMatches {
      * @param matches
      * @return number of matches returned
      */
-    public static int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<SAMIteratorBase.Match> matchesIntervalTree, Set<SAMIteratorBase.Match> matches) {
-        if (parseLongReads) {
+    public static int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches) {
+        if (parseLongReads && matchesIntervalTree != null) {
             matches.clear();
-            for (Interval<SAMIteratorBase.Match> interval : matchesIntervalTree) {
-                final SAMIteratorBase.Match match = interval.getData();
+            for (Interval<Match> interval : matchesIntervalTree) {
+                final Match match = interval.getData();
                 boolean covered = false;
-                for (Interval<SAMIteratorBase.Match> other : matchesIntervalTree.getIntervals(interval)) {
-                    final SAMIteratorBase.Match otherMatch = other.getData();
+                for (Interval<Match> other : matchesIntervalTree.getIntervals(interval)) {
+                    final Match otherMatch = other.getData();
 
                     if ((other.overlap(interval) > 0.9 * interval.length() && 0.90 * otherMatch.bitScore > match.bitScore)
                             || (other.equals(interval) && (otherMatch.bitScore > match.bitScore || (otherMatch.bitScore == match.bitScore && otherMatch.samLine.compareTo(match.samLine) < 0)))) {
@@ -75,8 +75,8 @@ public class PostProcessMatches {
             matchesTextAndLength.getFirst()[matchesTextLength++] = '\n';
             matchesTextAndLength.set(matchesText, matchesTextLength);
             return 0;
-        } else {
-            for (SAMIteratorBase.Match match : matches) {
+        } else { // short reads
+            for (Match match : matches) {
                 byte[] bytes = match.samLine.getBytes();
                 if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
                     byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];

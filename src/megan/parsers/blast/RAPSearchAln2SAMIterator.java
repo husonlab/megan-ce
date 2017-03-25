@@ -19,7 +19,10 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import jloda.util.Pair;
 import megan.util.RAPSearch2AlnFileFilter;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.util.TreeSet;
@@ -32,10 +35,10 @@ import java.util.TreeSet;
 public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     final static String vsString = " vs ";
 
-    private byte[] matchesText = new byte[10000];
-    private int matchesTextLength = 0;
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
     private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     /**
      * constructor
@@ -67,8 +70,6 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
      * @return number of matches
      */
     public int next() {
-        matchesTextLength = 0;
-
         String queryLine = getNextLineContains(vsString);
         if (queryLine == null)
             return -1; // at end of file
@@ -78,6 +79,8 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
+        matchesTextAndLength.setSecond(0);
+        matchesIntervalTree.clear();
 
         // get all matches for given query:
         try {
@@ -91,19 +94,25 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                     break;
                 }
 
-                RapSearchMatch match = new RapSearchMatch();
+                final RapSearchMatch match = new RapSearchMatch();
 
                 match.parseHeader(queryLine);
                 match.parseLines(nextLine(), nextLine(), nextLine());
 
 
-                if (matches.size() < getMaxNumberOfMatchesPerRead() || match.bitScore > matches.last().bitScore) {
+                if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
+                    match.samLine = makeSAM(queryName, match.referenceName, -1, match.bitScore, match.expected, 0, match.identity, match.frame, match.queryStart, match.queryEnd, match.refStart, match.refEnd, match.querySequence, match.refSequence);
+                    matchesIntervalTree.add(new Interval<Match>(match.queryStart, match.queryEnd, match));
+                } else {
+                    if (matches.size() < getMaxNumberOfMatchesPerRead() || match.bitScore > matches.last().bitScore) {
                     match.id = matchId++;
                     match.samLine = makeSAM(queryName, match.referenceName, -1, match.bitScore, match.expected, 0, match.identity, match.frame, match.queryStart, match.queryEnd, match.refStart, match.refEnd, match.querySequence, match.refSequence);
                     matches.add(match);
                     if (matches.size() > getMaxNumberOfMatchesPerRead())
                         matches.remove(matches.last());
                 }
+                }
+
             }
         } catch (Exception ex) {
             System.err.println("Error parsing file near line: " + getLineNumber());
@@ -111,38 +120,18 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                 throw new RuntimeException("Too many errors");
         }
 
-        if (matches.size() == 0) { // no matches, so return query name only
-            if (queryName.length() > matchesText.length) {
-                matchesText = new byte[2 * queryName.length()];
-            }
-            for (int i = 0; i < queryName.length(); i++)
-                matchesText[matchesTextLength++] = (byte) queryName.charAt(i);
-            matchesText[matchesTextLength++] = '\n';
-            return 0;
-        } else {
-            for (Match match : matches) {
-                byte[] bytes = match.samLine.getBytes();
-                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
-                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
-                    System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
-                    matchesText = tmp;
-                }
-                System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
-                matchesTextLength += bytes.length;
-                matchesText[matchesTextLength++] = '\n';
-            }
-            return matches.size();
-        }
+        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**
+     /**
      * gets the matches text
      *
      * @return matches text
      */
     @Override
     public byte[] getMatchesText() {
-        return matchesText;
+        return matchesTextAndLength.getFirst();
     }
 
     /**
@@ -152,7 +141,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
      */
     @Override
     public int getMatchesTextLength() {
-        return matchesTextLength;
+        return matchesTextAndLength.getSecond();
     }
 
     /**

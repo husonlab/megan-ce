@@ -58,13 +58,13 @@ public class RemoteBlastDialog {
             return null; // no reads provided...
 
         final String lastDir = ProgramProperties.get("RemoteBlastDir", System.getProperty("user.dir"));
-        final File lastOpenFile = new File(lastDir, ProgramProperties.get("RemoteBlastFile", dir.getDocument().getTitle() + "-" + Basic.toCleanName(queryName) + ".fasta"));
+        final File lastOpenFile = new File(lastDir, ProgramProperties.get("RemoteBlastFile", Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + Basic.toCleanName(queryName) + ".fasta")));
 
         final boolean needToSaveReads = (providedReadsFile == null);
 
         final JDialog dialog = new JDialog(viewer.getFrame(), "Setup Remote NCBI Blast - MEGAN", true);
         dialog.setLocationRelativeTo(viewer.getFrame());
-        dialog.setSize(500, 150);
+        dialog.setSize(500, 180);
         dialog.getContentPane().setLayout(new BorderLayout());
         final Single<String> result = new Single<>();
 
@@ -81,89 +81,121 @@ public class RemoteBlastDialog {
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         topPanel.add(leftPanel);
 
-        final JLabel readsFileLabel = new JLabel("Reads file:");
-        readsFileLabel.setMinimumSize(labelDim);
-        readsFileLabel.setMaximumSize(labelDim);
-        leftPanel.add(readsFileLabel);
-        final JLabel blastModeLabel = new JLabel("Blast Mode:");
-        blastModeLabel.setMinimumSize(labelDim);
-        blastModeLabel.setMaximumSize(labelDim);
-        leftPanel.add(blastModeLabel);
-        final JLabel blastDBLabel = new JLabel("Blast DB:");
-        blastDBLabel.setMinimumSize(labelDim);
-        blastDBLabel.setMaximumSize(labelDim);
-        leftPanel.add(blastDBLabel);
 
         final JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         topPanel.add(rightPanel);
 
-        final JPanel line1 = new JPanel();
-        line1.setLayout(new BoxLayout(line1, BoxLayout.X_AXIS));
-        line1.setMinimumSize(minLineDim);
-        line1.setMaximumSize(maxLineDim);
-
         final JTextField fileNameField = new JTextField(needToSaveReads ? lastOpenFile.getPath() : providedReadsFile);
-        fileNameField.setEditable(needToSaveReads);
-        line1.add(fileNameField);
-        final JButton browseButton = new JButton(new AbstractAction("Browse...") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final File readsFile = ChooseFileDialog.chooseFileToSave(viewer.getFrame(), new File(fileNameField.getText()), new FastaFileFilter(), new FastaFileFilter(), null, "Save READS file", ".fasta");
-                if (readsFile != null)
-                    fileNameField.setText(readsFile.getPath());
-            }
-        });
-        browseButton.setEnabled(needToSaveReads);
-        line1.add(browseButton);
-        rightPanel.add(line1);
+        {
+            final JLabel readsFileLabel = new JLabel("Reads file:");
+            readsFileLabel.setMinimumSize(labelDim);
+            readsFileLabel.setMaximumSize(labelDim);
+            leftPanel.add(readsFileLabel);
 
-        final String previousMode = ProgramProperties.get("RemoteBlastMode", RemoteBlastClient.BlastProgram.blastn.toString());
+            final JPanel aLine = new JPanel();
+            aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));
+            aLine.setMinimumSize(minLineDim);
+            aLine.setMaximumSize(maxLineDim);
 
-        final JPanel line2 = new JPanel();
-        line2.setLayout(new BoxLayout(line2, BoxLayout.X_AXIS));
-        line2.setMinimumSize(minLineDim);
-        line2.setMaximumSize(maxLineDim);
+            fileNameField.setEditable(needToSaveReads);
+            aLine.add(fileNameField);
+            final JButton browseButton = new JButton(new AbstractAction("Browse...") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    final File readsFile = ChooseFileDialog.chooseFileToSave(viewer.getFrame(), new File(fileNameField.getText()), new FastaFileFilter(), new FastaFileFilter(), null, "Save READS file", ".fasta");
+                    if (readsFile != null)
+                        fileNameField.setText(readsFile.getPath());
+                }
+            });
+            browseButton.setEnabled(needToSaveReads);
+            aLine.add(browseButton);
+            rightPanel.add(aLine);
 
-        final JComboBox<RemoteBlastClient.BlastProgram> modeCBox = new JComboBox<>();
-        modeCBox.setEditable(false);
-
-        for (RemoteBlastClient.BlastProgram mode : RemoteBlastClient.BlastProgram.values()) {
-            modeCBox.addItem(mode);
-            if (mode.toString().equalsIgnoreCase(previousMode))
-                modeCBox.setSelectedItem(mode);
+            fileNameField.setToolTipText("Reads will be saved to this file");
         }
 
-        line2.add(modeCBox);
-        line2.add(Box.createHorizontalGlue());
-        rightPanel.add(line2);
+        final JCheckBox longReadsCheckBox = new JCheckBox();
+        {
+            final JLabel longReadsLabel = new JLabel("Long reads:");
+            longReadsLabel.setMinimumSize(labelDim);
+            longReadsLabel.setMaximumSize(labelDim);
+            leftPanel.add(longReadsLabel);
 
-        final JPanel line3 = new JPanel();
-        line3.setLayout(new BoxLayout(line3, BoxLayout.X_AXIS));
-        line3.setMinimumSize(minLineDim);
-        line3.setMaximumSize(maxLineDim);
+            final JPanel aLine = new JPanel();
+            aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));
+            aLine.setMinimumSize(minLineDim);
+            aLine.setMaximumSize(maxLineDim);
+            aLine.add(longReadsCheckBox);
+            longReadsCheckBox.setSelected(dir.getDocument().isLongReads());
+            rightPanel.add(aLine);
 
-        final JComboBox<String> dbCBox = new JComboBox<>();
-        dbCBox.setEditable(false);
-        line3.add(dbCBox);
-        line3.add(Box.createHorizontalGlue());
-        rightPanel.add(line3);
+            longReadsCheckBox.setToolTipText("Are these long reads that are expected to contain more than one gene?");
+        }
 
-        modeCBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                dbCBox.removeAllItems();
-                for (String item : RemoteBlastClient.getDatabaseNames(RemoteBlastClient.BlastProgram.valueOfIgnoreCase(modeCBox.getSelectedItem().toString()))) {
-                    dbCBox.addItem(item);
-                }
+        final JComboBox<RemoteBlastClient.BlastProgram> blastModeCBox = new JComboBox<>();
+        {
+            final JLabel blastModeLabel = new JLabel("Blast Mode:");
+            blastModeLabel.setMinimumSize(labelDim);
+            blastModeLabel.setMaximumSize(labelDim);
+            leftPanel.add(blastModeLabel);
+
+            final JPanel aLine = new JPanel();
+            aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));
+            aLine.setMinimumSize(minLineDim);
+            aLine.setMaximumSize(maxLineDim);
+
+            blastModeCBox.setEditable(false);
+
+            final String previousMode = ProgramProperties.get("RemoteBlastMode", RemoteBlastClient.BlastProgram.blastn.toString());
+            for (RemoteBlastClient.BlastProgram mode : RemoteBlastClient.BlastProgram.values()) {
+                blastModeCBox.addItem(mode);
+                if (mode.toString().equalsIgnoreCase(previousMode))
+                    blastModeCBox.setSelectedItem(mode);
             }
-        });
-        final String previousDB = ProgramProperties.get("RemoteBlastDB", "nr");
 
-        for (String item : RemoteBlastClient.getDatabaseNames((RemoteBlastClient.BlastProgram) modeCBox.getSelectedItem())) {
-            dbCBox.addItem(item);
-            if (item.equalsIgnoreCase(previousDB))
-                dbCBox.setSelectedItem(item);
+            aLine.add(blastModeCBox);
+            aLine.add(Box.createHorizontalGlue());
+            rightPanel.add(aLine);
+
+            blastModeCBox.setToolTipText("BLAST mode to be run at NCBI");
+        }
+
+        final JComboBox<String> blastDataBaseCBox = new JComboBox<>();
+        {
+            final JLabel blastDBLabel = new JLabel("Blast DB:");
+            blastDBLabel.setMinimumSize(labelDim);
+            blastDBLabel.setMaximumSize(labelDim);
+            leftPanel.add(blastDBLabel);
+
+            final JPanel aLine = new JPanel();
+            aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));
+            aLine.setMinimumSize(minLineDim);
+            aLine.setMaximumSize(maxLineDim);
+
+            blastDataBaseCBox.setEditable(false);
+            aLine.add(blastDataBaseCBox);
+            aLine.add(Box.createHorizontalGlue());
+            rightPanel.add(aLine);
+
+            blastModeCBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    blastDataBaseCBox.removeAllItems();
+                    for (String item : RemoteBlastClient.getDatabaseNames(RemoteBlastClient.BlastProgram.valueOfIgnoreCase(blastModeCBox.getSelectedItem().toString()))) {
+                        blastDataBaseCBox.addItem(item);
+                    }
+                }
+            });
+            final String previousDB = ProgramProperties.get("RemoteBlastDB", "nr");
+
+            for (String item : RemoteBlastClient.getDatabaseNames((RemoteBlastClient.BlastProgram) blastModeCBox.getSelectedItem())) {
+                blastDataBaseCBox.addItem(item);
+                if (item.equalsIgnoreCase(previousDB))
+                    blastDataBaseCBox.setSelectedItem(item);
+            }
+
+            blastDataBaseCBox.setToolTipText("Blast database to be used at NCBI");
         }
 
         final JPanel bottomPanel = new JPanel();
@@ -206,12 +238,12 @@ public class RemoteBlastDialog {
                             System.err.println("Reads written to: " + readsFile);
                         }
                         ProgramProperties.put("RemoteBlastDir", (new File(readsFile)).getParent());
-                        if (dbCBox.getSelectedItem() != null)
-                            ProgramProperties.put("RemoteBlastDB", dbCBox.getSelectedItem().toString());
-                        if (modeCBox.getSelectedItem() != null)
-                            ProgramProperties.put("RemoteBlastMode", modeCBox.getSelectedItem().toString());
+                        if (blastDataBaseCBox.getSelectedItem() != null)
+                            ProgramProperties.put("RemoteBlastDB", blastDataBaseCBox.getSelectedItem().toString());
+                        if (blastModeCBox.getSelectedItem() != null)
+                            ProgramProperties.put("RemoteBlastMode", blastModeCBox.getSelectedItem().toString());
 
-                        result.set("remoteBlastNCBI readsFile='" + fileNameField.getText().trim() + "' blastMode=" + modeCBox.getSelectedItem() + " blastDB='" + dbCBox.getSelectedItem() + "';");
+                        result.set("remoteBlastNCBI readsFile='" + fileNameField.getText().trim() + "' longReads=" + longReadsCheckBox.isSelected() + " blastMode=" + blastModeCBox.getSelectedItem() + " blastDB='" + blastDataBaseCBox.getSelectedItem() + "';");
                     }
                 } finally {
                     dialog.setVisible(false);

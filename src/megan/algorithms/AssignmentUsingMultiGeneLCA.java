@@ -45,7 +45,7 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
      *
      * @param cName
      * @param useIdentityFilter
-     * @param topPercent        this only works if matches are not already prefiltered by top percent
+     * @param topPercent this only works if matches are not already prefiltered by top percent
      */
     public AssignmentUsingMultiGeneLCA(String cName, boolean useIdentityFilter, float topPercent) {
         super(cName, useIdentityFilter);

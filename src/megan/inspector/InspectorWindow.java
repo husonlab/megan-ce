@@ -793,9 +793,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      *              value will recursively expand the tree to that
      *              depth relative to node.
      */
-    public static int expandJTreeNode(javax.swing.JTree tree,
-                                      javax.swing.tree.TreeModel model,
-                                      Object node, int row, int depth) {
+    public static int expandJTreeNode(javax.swing.JTree tree, javax.swing.tree.TreeModel model, Object node, int row, int depth) {
         if (node != null && !model.isLeaf(node)) {
             tree.expandRow(row);
             if (depth != 0) {
@@ -867,34 +865,52 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     }
 
     /**
-     * returns the read-hit node in a treepath
+     * returns the read head node in a path
      *
      * @param path
-     * @return readhitnode or null
+     * @return read head node or null
      */
-    public MatchHeadLineNode getMatchLevelNodeFromPath(TreePath path) {
+    public ReadHeadLineNode getReadHeadLineNodeFromPath(TreePath path) {
         Object[] components = path.getPath();
         for (Object component : components) {
-            if (component instanceof MatchHeadLineNode)
-                return (MatchHeadLineNode) component;
+            if (component instanceof ReadHeadLineNode)
+                return (ReadHeadLineNode) component;
         }
         return null;
     }
 
     /**
-     * does window currently have a selected match node?
+     * does window currently have a selected read headline node?
      *
-     * @return true, if some node is selected
+     * @return true, if some read headline node is selected
      */
-    public boolean hasSelectedMatchLevelNode() {
+    public boolean hasSelectedReadHeadLineNodes() {
         TreePath[] paths = dataTree.getSelectionPaths();
         if (paths != null) {
             for (TreePath path : paths) {
-                if (getMatchLevelNodeFromPath(path) != null)
+                if (getReadHeadLineNodeFromPath(path) != null)
                     return true;
             }
         }
         return false;
+    }
+
+    /**
+     * get all selected read headline nodes
+     *
+     * @return all selected read headline nodes
+     */
+    public ArrayList<ReadHeadLineNode> getAllSelectedReadHeadLineNodes() {
+        ArrayList<ReadHeadLineNode> list = new ArrayList<>();
+        TreePath[] paths = dataTree.getSelectionPaths();
+        if (paths != null) {
+            for (TreePath path : paths) {
+                ReadHeadLineNode node = getReadHeadLineNodeFromPath(path);
+                if (node != null)
+                    list.add(node);
+            }
+        }
+        return list;
     }
 
     public boolean isDirty() {
@@ -1040,14 +1056,18 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                         final ReadHeadLineNode readHeadLineNode = (ReadHeadLineNode) node;
                         if (readHeadLineNode.getReadHeader() != null && readHeadLineNode.getReadSequence() != null) {
                             list.add(new Pair<>(readHeadLineNode.getReadHeader(), readHeadLineNode.getReadSequence()));
-                                if (list.size() >= maxNumber)
-                                    return list;
-                            }
+                            if (list.size() >= maxNumber)
+                                return list;
                         }
                     }
                 }
+            }
         }
         return list;
+    }
+
+    public Director getDir() {
+        return dir;
     }
 }
 

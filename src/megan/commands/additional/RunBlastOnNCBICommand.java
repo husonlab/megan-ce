@@ -63,7 +63,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
     static boolean serviceIsRunning = false;
 
     public String getSyntax() {
-        return "remoteBlastNCBI readsFile=<file-name> sequence=<string> [blastMode={blastn|blastx|blastp}] [blastDB={nr|<name>}];";
+        return "remoteBlastNCBI readsFile=<file-name> [longReads={false|true}] [blastMode={blastn|blastx|blastp}] [blastDB={nr|<name>}];";
     }
 
     /**
@@ -75,6 +75,13 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("remoteBlastNCBI readsFile=");
         final File readsFile = new File(np.getWordFileNamePunctuation());
+        final boolean longReads;
+        if (np.peekMatchIgnoreCase("longReads")) {
+            np.matchIgnoreCase("longReads=");
+            longReads = np.getBoolean();
+        } else
+            longReads = false;
+
         final String blastMode;
         if (np.peekMatchIgnoreCase("blastMode")) {
             np.matchIgnoreCase("blastMode=");
@@ -165,11 +172,16 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         });
         thread.run();
 
-        serviceIsRunning = true;
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                blastService.setOnRunning(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        serviceIsRunning = true;
+                    }
+                });
+
                 blastService.messageProperty().addListener(messageChangeListener);
                 blastService.progressProperty().addListener(progressChangeListener);
                 blastService.restart();
@@ -198,10 +210,11 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                                                     final int result = JOptionPane.showConfirmDialog(null, "Import remotely BLASTED file into MEGAN?", "Import - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION);
                                                     getDir().notifyUnlockInput();
                                                     if (result == JOptionPane.YES_OPTION) {
-                                                        ImportBlastDialog importBlastDialog = new ImportBlastDialog(getViewer().getFrame(), (Director) getDir(), "Import Blast File");
+                                                        final ImportBlastDialog importBlastDialog = new ImportBlastDialog(getViewer().getFrame(), (Director) getDir(), "Import Blast File");
                                                         importBlastDialog.getBlastFileNameField().setText(blastFile.getPath());
                                                         importBlastDialog.getReadFileNameField().setText(readsFile.getPath());
-                                                        importBlastDialog.getMeganFileNameField().setText(Basic.replaceFileSuffix(blastFile.getPath(), ".rma6"));
+                                                        importBlastDialog.setLongReads(longReads);
+                                                        importBlastDialog.getMeganFileNameField().setText(Basic.replaceFileSuffix(blastFile.getPath(), "-" + blastMode + ".rma6"));
                                                         importBlastDialog.updateView(IDirector.ALL);
                                                         final String command = importBlastDialog.showAndGetCommand();
                                                         if (command != null) {
@@ -258,7 +271,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                         blastService.progressProperty().removeListener(progressChangeListener);
                         blastService.messageProperty().removeListener(messageChangeListener);
                         if (serviceIsRunning)
-                            NotificationsInSwing.showError("Remote blast canceled");
+                            NotificationsInSwing.showWarning("Remote blast canceled");
 
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override

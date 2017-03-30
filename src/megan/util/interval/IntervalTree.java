@@ -12,7 +12,10 @@
 
 package megan.util.interval;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  * An Interval Tree is essentially a map from intervals to objects, which
@@ -25,7 +28,7 @@ import java.util.*;
  */
 public class IntervalTree<T> implements Iterable<Interval<T>> {
     private IntervalNode<T> head;
-    private final List<Interval<T>> intervalList;
+    private final ArrayList<Interval<T>> intervalList;
     private boolean inSync;
     private boolean sorted;
     private int size;
@@ -269,7 +272,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
-     * gets a copy of the list of all intervals
+     * gets a copy of the list of all intervals in order of the start coordinate
      *
      * @return intervals
      */
@@ -306,5 +309,29 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     @Override
     public String toString() {
         return head.toStringRec(0);
+    }
+
+    /**
+     * computes how much the set of intervals covers
+     *
+     * @return total covered by intervals
+     */
+    public int computeCovered() {
+        int covered = 0;
+        int a = Integer.MIN_VALUE;
+        int b = Integer.MIN_VALUE;
+
+        for (Interval interval : values()) {
+            if (interval.getStart() > b) {
+                if (a > Integer.MIN_VALUE)
+                    covered += (b - a) + 1;
+                a = interval.getStart();
+                b = interval.getEnd();
+            } else
+                b = Math.max(b, interval.getEnd());
+        }
+        if (a > Integer.MIN_VALUE)
+            covered += (b - a) + 1;
+        return covered;
     }
 }

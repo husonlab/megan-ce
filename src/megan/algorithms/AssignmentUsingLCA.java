@@ -105,8 +105,8 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
                 final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
-                final int id = fullTree.getAddress2Id(address);
-                if (id > 0) {
+                final Integer id = fullTree.getAddress2Id(address);
+                if (id != null && id > 0) {
                     return id;
                 }
             }

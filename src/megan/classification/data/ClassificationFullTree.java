@@ -619,8 +619,12 @@ public class ClassificationFullTree extends PhyloTree {
      * @param address
      * @return id
      */
-    public Integer getAddress2Id(String address) {
-        return address2Id.get(address);
+    public int getAddress2Id(String address) {
+        Integer id = address2Id.get(address);
+        if (id == null)
+            return 0;
+        else
+            return id;
     }
 
     /**

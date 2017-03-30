@@ -317,7 +317,6 @@ public class CSVExportFViewer {
         return totalLines;
     }
 
-
     /**
      * export readid to  names mapping
      *

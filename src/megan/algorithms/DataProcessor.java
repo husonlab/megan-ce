@@ -24,14 +24,13 @@ import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.core.Document;
 import megan.core.SyncArchiveAndDataTable;
-import megan.data.IConnector;
-import megan.data.IReadBlock;
-import megan.data.IReadBlockIterator;
-import megan.data.UpdateItemList;
+import megan.data.*;
 import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.util.*;
@@ -77,6 +76,18 @@ public class DataProcessor {
             // step 0: set up classification algorithms
 
             final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveMultiGene);
+
+            final double minCoveredPercent = Math.min(100, ProgramProperties.get("minCoveredPercent", 0.0));
+            int numberOfReadsFailedCoveredThreshold = 0;
+            final IntervalTree<Object> intervals;
+            if (minCoveredPercent > 0) {
+                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minCoveredPercent));
+                if (doc.isLongReads())
+                    intervals = new IntervalTree<>();
+                else
+                    intervals = null;
+            } else
+                intervals = null;
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int i = 0; i < numberOfClassifications; i++) {
@@ -187,28 +198,31 @@ public class DataProcessor {
 
                     int taxId = 0;
                     if (taxonomyIndex >= 0) {
-                        if (doMatePairs && readBlock.getMateUId() > 0) {
-                            mateReader.seek(readBlock.getMateUId());
-                            mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                            int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                            if (mateTaxId > 0) {
-                                if (taxId <= 0) {
-                                    taxId = mateTaxId;
-                                    numberAssignedViaMatePair++;
-                                } else {
-                                    int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
-                                    if (bothId == taxId)
+                        if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatches, intervals)) {
+                            if (doMatePairs && readBlock.getMateUId() > 0) {
+                                mateReader.seek(readBlock.getMateUId());
+                                mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
+                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                                ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                                int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                                if (mateTaxId > 0) {
+                                    if (taxId <= 0) {
                                         taxId = mateTaxId;
-                                        // else if(bothId==taxId) taxId=taxId; // i.e, no change
-                                    else if (bothId != mateTaxId)
-                                        taxId = bothId;
+                                        numberAssignedViaMatePair++;
+                                    } else {
+                                        int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
+                                        if (bothId == taxId)
+                                            taxId = mateTaxId;
+                                            // else if(bothId==taxId) taxId=taxId; // i.e, no change
+                                        else if (bothId != mateTaxId)
+                                            taxId = bothId;
+                                    }
                                 }
+                            } else {
+                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
                             }
-                        } else {
-                            taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                        }
+                        } else
+                            numberOfReadsFailedCoveredThreshold++;
                     }
 
                     if (activeMatches.cardinality() > 0)
@@ -268,6 +282,9 @@ public class DataProcessor {
             System.err.println(String.format("Total reads:   %,15d", numberOfReadsFound));
             if (numberOfReadsWithLowComplexity > 0)
                 System.err.println(String.format("Low complexity:%,15d", numberOfReadsWithLowComplexity));
+            if (numberOfReadsFailedCoveredThreshold > 0)
+                System.err.println(String.format("Low covered:   %,15d", numberOfReadsFailedCoveredThreshold));
+
             System.err.println(String.format("With hits:     %,15d ", numberOfReadsWithHits));
             System.err.println(String.format("Alignments:    %,15d", numberOfMatches));
 
@@ -336,5 +353,36 @@ public class DataProcessor {
             NotificationsInSwing.showInternalError("Data Processor failed: " + ex.getMessage());
         }
         return 0;
+    }
+
+    /**
+     * check that enough of read is covered by alignments
+     *
+     * @param minCoveredPercent percent of read that must be covered
+     * @param readBlock
+     * @param activeMatches
+     * @param intervals         this will non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @return true, if sufficient coverage
+     */
+    private static boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {
+        int lengthToCover = (int) (0.01 * minCoveredPercent * readBlock.getReadLength());
+        if (lengthToCover == 0)
+            return true;
+
+        if (intervals != null)
+            intervals.clear();
+
+        for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
+            final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+            if (Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryStart()) >= lengthToCover)
+                return true;
+            if (intervals != null) {
+                Interval<Object> interval = new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), null);
+                intervals.add(interval);
+                if (intervals.computeCovered() >= lengthToCover)
+                    return true;
+            }
+        }
+        return false;
     }
 }

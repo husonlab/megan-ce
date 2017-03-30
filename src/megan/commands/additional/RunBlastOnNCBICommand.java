@@ -178,7 +178,13 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                 blastService.setOnRunning(new EventHandler<WorkerStateEvent>() {
                     @Override
                     public void handle(WorkerStateEvent event) {
-                        serviceIsRunning = true;
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                serviceIsRunning = true;
+                                getCommandManager().updateEnableState(NAME);
+                            }
+                        });
                     }
                 });
 

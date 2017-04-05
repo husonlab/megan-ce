@@ -282,17 +282,13 @@ public class SAMMatch implements megan.rma3.IMatch {
         }
 
         int alignedQueryLength = computeAlignedQuerySegmentLength(getSequence());
-        final boolean reverse;
         if (mode == BlastMode.BlastX) {
             final Object df = optionalFields.get("ZF");
-            reverse = (df != null && df instanceof Integer && ((Integer) df) < 0);
-        } else
-            reverse = ((mode == BlastMode.BlastN) && isReverseComplemented());
-
-        if (reverse) {
-            return alignedQueryStart - alignedQueryLength + 1;
-        } else
-            return alignedQueryStart + alignedQueryLength - 1;
+            final boolean reverse = (df != null && df instanceof Integer && ((Integer) df) < 0);
+            if (reverse)
+                return alignedQueryStart - alignedQueryLength + 1;
+        }
+        return alignedQueryStart + alignedQueryLength - 1;
     }
 
     /**

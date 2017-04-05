@@ -114,7 +114,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Inspect the read-to-function assignments";
+        return "Inspect reads and their alignments";
     }
 
     public boolean isCritical() {

@@ -464,12 +464,14 @@ public class Director implements IDirectableViewer, IDirector {
      * ask view to prevent user input
      */
     public void lockUserInput() {
+        ProjectManager.updateWindowMenus();
     }
 
     /**
      * ask view to allow user input
      */
     public void unlockUserInput() {
+        ProjectManager.updateWindowMenus();
     }
 
     /**

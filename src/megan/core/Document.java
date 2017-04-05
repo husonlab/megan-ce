@@ -48,20 +48,24 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
 
 /**
  * The main document
- * Daniel Huson    11.2005
+ * Daniel Huson    11.2005, 4.2017
  */
 public class Document {
     public enum LCAAlgorithm {
         Naive, Weighted, NaiveMultiGene;
-
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
-            for (LCAAlgorithm lcaAlgorithm : values()) {
-                if (lcaAlgorithm.toString().equalsIgnoreCase(str))
-                    return lcaAlgorithm;
-            }
-            return null;
+            return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
         }
     }
+
+    public enum Counts {
+        reads, bases;
+
+        public static Counts valueOfIgnoreCase(String str) {
+            return Basic.valueOfIgnoreCase(Counts.class, str);
+        }
+    }
+
     final static Map<String, String> name2versionInfo = new HashMap<>(); // used to track versions of tree etc
 
     private long numberReads = 0;
@@ -85,7 +89,6 @@ public class Document {
     public static final boolean DEFAULT_USE_IDENTITY = false;
     public static final boolean DEFAULT_LONG_READS = false;
 
-
     private float minScore = DEFAULT_MINSCORE;
     private float maxExpected = DEFAULT_MAXEXPECTED;
     private float minPercentIdentity = DEFAULT_MIN_PERCENT_IDENTITY;
@@ -101,6 +104,8 @@ public class Document {
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
 
     private boolean longReads = DEFAULT_LONG_READS;
+
+    private Counts countsRepresent = Counts.reads;
 
     private long lastRecomputeTime = 0;
 
@@ -276,6 +281,8 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
+                setCountsRepresent(np.findIgnoreCase(tokens, "countsRepresent=", Basic.toString(Counts.values(), " "), getCountsRepresent()));
+
                 {
                     String fNamesString = (np.findIgnoreCase(tokens, "fNames=", "{", "}", "").trim());
                     if (fNamesString.length() > 0) {
@@ -302,6 +309,14 @@ public class Document {
         }
     }
 
+    private String getCountsRepresent() {
+        return countsRepresent.toString();
+    }
+
+    public void setCountsRepresent(String countsRepresent) {
+        this.countsRepresent = Counts.valueOf(countsRepresent);
+    }
+
     /**
      * write an algorithm parameter string
      *
@@ -325,6 +340,8 @@ public class Document {
             buf.append(" pairedReads=true");
         if (isUseIdentityFilter())
             buf.append(" identityFilter=true");
+        if (countsRepresent != Counts.reads)
+            buf.append(" countsRepresent=").append(getCountsRepresent());
         if (getActiveViewers().size() > 0) {
             buf.append(" fNames= {");
             for (String cName : getActiveViewers()) {

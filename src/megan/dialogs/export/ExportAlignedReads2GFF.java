@@ -47,7 +47,7 @@ public class ExportAlignedReads2GFF {
     /**
      * export read names to GFF
      *
-     * @param cNames           classifications to report
+     * @param cNames classifications to report
      * @param file
      * @param progressListener
      * @return lines written
@@ -89,7 +89,7 @@ public class ExportAlignedReads2GFF {
                                         final IReadBlock readBlock = it.next();
                                         if (!seen.contains(readBlock.getReadName())) {
                                             seen.add(readBlock.getReadName());
-                                            w.write(createGFFLine(blastMode, readBlock, cNames, taxonomyClassification ? id : 0));
+                                            w.write(createGFFLine(blastMode, readBlock, cNames));
                                             totalLines++;
                                         }
                                     }
@@ -113,11 +113,10 @@ public class ExportAlignedReads2GFF {
      * @param blastMode
      * @param readBlock
      * @param cNames
-     * @param readTaxonId
      * @return
      */
-    public static String createGFFLine(BlastMode blastMode, IReadBlock readBlock, String[] cNames, int readTaxonId) {
-        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, cNames, readTaxonId, null);
+    public static String createGFFLine(BlastMode blastMode, IReadBlock readBlock, String[] cNames) {
+        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, cNames, null);
         return createGFFLine(blastMode, readBlock.getReadName(), readBlock.getReadLength(), cNames, intervals);
     }
 

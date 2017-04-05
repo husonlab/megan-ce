@@ -101,7 +101,7 @@ public class DataProcessor {
                             break;
                         default:
                         case Naive:
-                        assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
+                            assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
                     }
                 } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
                     assignmentAlgorithmCreators[i] = new AssignmentUsingLCACreator(cNames[i]);
@@ -137,7 +137,7 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveMultiGene ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
+            final float topPercent = (usingMultiGeneAnalysis ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
 
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;
@@ -183,7 +183,9 @@ public class DataProcessor {
                     if (progress.isUserCancelled())
                         break;
 
-                    if (readBlock.getReadWeight() == 0)
+                    if (doc.isLongReads() && readBlock.getReadWeight() <= 1)
+                        readBlock.setReadWeight(readBlock.getReadLength());
+                    else if (readBlock.getReadWeight() == 0)
                         readBlock.setReadWeight(1);
 
                     numberOfReadsFound += readBlock.getReadWeight();
@@ -235,7 +237,7 @@ public class DataProcessor {
                         } else if (i == taxonomyIndex) {
                             id = taxId;
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
+                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
                             id = assignmentAlgorithm[i].computeId(activeMatches, readBlock);
                             if (id > 0 && usingMultiGeneAnalysis && assignmentAlgorithm[i] instanceof IMultiAssignmentAlgorithm) {
                                 int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[i]).getOtherClassIds(i, numberOfClassifications, moreClassIds[i]);
@@ -260,7 +262,6 @@ public class DataProcessor {
                                 updateList.addItem(readBlock.getUId(), multiGeneWeights[i], aClassIds);
                             }
                         }
-
                     }
 
                     progress.setProgress(it.getProgress());
@@ -279,6 +280,8 @@ public class DataProcessor {
                 ((ProgressPercentage) progress).reportTaskCompleted();
             }
 
+            if (usingMultiGeneAnalysis)
+                System.err.println("Following counts are in base-pairs:");
             System.err.println(String.format("Total reads:   %,15d", numberOfReadsFound));
             if (numberOfReadsWithLowComplexity > 0)
                 System.err.println(String.format("Low complexity:%,15d", numberOfReadsWithLowComplexity));

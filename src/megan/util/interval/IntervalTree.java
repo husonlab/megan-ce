@@ -276,9 +276,22 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      *
      * @return intervals
      */
-    public ArrayList<Interval<T>> values() {
+    public ArrayList<Interval<T>> intervals() {
         sortList();
         return new ArrayList<>(intervalList);
+    }
+
+    /**
+     * gets a copy of the list of all data values in order of start coordinate
+     *
+     * @return values
+     */
+    public ArrayList<T> values() {
+        sortList();
+        ArrayList<T> result = new ArrayList<>(intervalList.size());
+        for (Interval<T> interval : intervalList)
+            result.add(interval.getData());
+        return result;
     }
 
     /**
@@ -321,7 +334,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         int a = Integer.MIN_VALUE;
         int b = Integer.MIN_VALUE;
 
-        for (Interval interval : values()) {
+        for (Interval interval : intervals()) {
             if (interval.getStart() > b) {
                 if (a > Integer.MIN_VALUE)
                     covered += (b - a) + 1;

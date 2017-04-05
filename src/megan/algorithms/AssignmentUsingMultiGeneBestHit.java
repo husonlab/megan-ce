@@ -154,7 +154,7 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
                 toDelete.clear();
             }
         }
-        allMatches.addAll(reverseMatches.values());
+        allMatches.addAll(reverseMatches.intervals());
         return allMatches;
     }
 

@@ -29,6 +29,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * * selection command
@@ -36,7 +39,7 @@ import java.awt.event.KeyEvent;
  */
 public class SelectAllCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "select {all|none|similar|fromPrevious} [name=<string>] [value=<string>];";
+        return "select {all|none|similar|fromPrevious|commentLike|numerical|uninformative} [name=<string>] [value=<string>];";
     }
 
     /**
@@ -47,7 +50,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
      */
     public void apply(final NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select");
-        final String what = np.getWordMatchesIgnoringCase("all none similar fromPrevious");
+        final String what = np.getWordMatchesIgnoringCase("all none similar commentLike numerical uninformative fromPrevious");
         final String name;
         final String value;
         if (what.equalsIgnoreCase("similar")) {
@@ -75,6 +78,82 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                     case "none":
                         viewer.getSamplesTable().getSpreadsheetView().getSelectionModel().clearSelection();
                         break;
+                    case "commentLike": {
+                        int count = 0;
+                        for (int col = 0; col < viewer.getSamplesTable().getDataGrid().getColumnCount(); col++) {
+                            final String attribute = viewer.getSamplesTable().getDataGrid().getColumnName(col);
+
+                            int min = Integer.MAX_VALUE;
+                            int max = 0;
+                            for (int row = 0; row < viewer.getSamplesTable().getDataGrid().getRowCount(); row++) {
+                                String sample = viewer.getSamplesTable().getDataGrid().getRowName(row);
+                                Object value = viewer.getSampleAttributeTable().get(sample, attribute);
+                                if (value != null) {
+                                    String string = value.toString().trim();
+                                    if (string.length() > 0) {
+                                        min = Math.min(min, string.length());
+                                        max = Math.max(max, string.length());
+                                    }
+                                }
+                            }
+                            if (max - min > 100) {
+                                final SpreadsheetColumn column = viewer.getSamplesTable().getSpreadsheetView().getColumns().get(col);
+                                for (int row = 0; row < viewer.getSamplesTable().getDataGrid().getRowCount(); row++) {
+                                    viewer.getSamplesTable().getSpreadsheetView().getSelectionModel().select(row, column);
+                                }
+                                count++;
+                            }
+                        }
+                        if (count > 0)
+                            System.err.println("Selected " + count + " columns");
+                        break;
+                    }
+                    case "numerical": {
+                        int count = 0;
+                        final Collection<String> numericalAttributes = viewer.getSampleAttributeTable().getNumericalAttributes();
+                        for (int col = 0; col < viewer.getSamplesTable().getDataGrid().getColumnCount(); col++) {
+                            String attribute = viewer.getSamplesTable().getDataGrid().getColumnName(col);
+                            if (numericalAttributes.contains(attribute)) {
+                                final SpreadsheetColumn column = viewer.getSamplesTable().getSpreadsheetView().getColumns().get(col);
+                                for (int row = 0; row < viewer.getSamplesTable().getDataGrid().getRowCount(); row++) {
+                                    viewer.getSamplesTable().getSpreadsheetView().getSelectionModel().select(row, column);
+                                }
+                                count++;
+                            }
+
+                        }
+                        if (count > 0)
+                            System.err.println("Selected " + count + " columns");
+                        break;
+                    }
+                    case "uninformative": {
+                        int count = 0;
+                        for (int col = 0; col < viewer.getSamplesTable().getDataGrid().getColumnCount(); col++) {
+                            final String attribute = viewer.getSamplesTable().getDataGrid().getColumnName(col);
+
+                            final Set<String> values = new HashSet<>();
+                            for (int row = 0; row < viewer.getSamplesTable().getDataGrid().getRowCount(); row++) {
+                                String sample = viewer.getSamplesTable().getDataGrid().getRowName(row);
+                                Object value = viewer.getSampleAttributeTable().get(sample, attribute);
+                                if (value != null) {
+                                    String string = value.toString().trim();
+                                    if (string.length() > 0) {
+                                        values.add(string);
+                                    }
+                                }
+                            }
+                            if (values.size() <= 1 || values.size() == viewer.getSamplesTable().getDataGrid().getRowCount()) {
+                                final SpreadsheetColumn column = viewer.getSamplesTable().getSpreadsheetView().getColumns().get(col);
+                                for (int row = 0; row < viewer.getSamplesTable().getDataGrid().getRowCount(); row++) {
+                                    viewer.getSamplesTable().getSpreadsheetView().getSelectionModel().select(row, column);
+                                }
+                                count++;
+                            }
+                        }
+                        if (count > 0)
+                            System.err.println("Selected " + count + " columns");
+                        break;
+                    }
                     case "similar":
                         viewer.getSamplesTable().selectCellsByValue(name, value);
                         break;
@@ -116,7 +195,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return true;
+        return getViewer() instanceof SamplesViewer;
     }
 
     public String getName() {

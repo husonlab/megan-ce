@@ -44,7 +44,9 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Export", "CSV Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Reads...;Matches...;Alignments...;|;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
 
-        menuConfig.defineMenu("Edit", "Samples Viewer Cut;Samples Viewer Copy;Samples Viewer Paste;Samples Viewer Paste By Attribute;|;Select All;Select None;Select Similar;From Previous Window;|;Find...;Find Again;Replace...;|;Colors...;");
+        menuConfig.defineMenu("Edit", "Samples Viewer Cut;Samples Viewer Copy;Samples Viewer Paste;Samples Viewer Paste By Attribute;|;" +
+                "Select All;Select None;Select Similar;From Previous Window;|;Select Comment-Like;Select Numerical;Select Uninformative;|;" +
+                "Find...;Find Again;Replace...;|;Colors...;");
 
         menuConfig.defineMenu("Attributes", "List Attribute Summary...;|;Rename Attribute...;|;Sort Increasing;Sort Decreasing;|;Move Left;Move Right;|;New Column...;Delete Column(s)...;|;Hide;Unhide;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
                 "Expand...;");

@@ -303,7 +303,7 @@ public class RMA6FromBlastCreator {
 
         // update and then save auxiliary data:
         final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(rma6File), "");
-        SyncArchiveAndDataTable.syncRecomputedArchive2Summary(sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), new RMA6Connector(rma6File), doc.getDataTable(), 0);
+        SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.isUseWeightedReadCounts(), sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), new RMA6Connector(rma6File), doc.getDataTable(), 0);
         doc.saveAuxiliaryData();
     }
 }

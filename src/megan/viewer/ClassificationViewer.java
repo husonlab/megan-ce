@@ -100,6 +100,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     protected Classification classification;
 
+    private boolean useReadWeights = false;
+
     /**
      * Classification viewer
      *

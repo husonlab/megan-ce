@@ -194,14 +194,14 @@ public class RMA2Connector implements IConnector {
             rma2Modifier.startClassificationSection(names[i]);
             try {
                 for (Integer classId : updateItems.getClassIds(i)) {
-                    float weightedSize = updateItems.getSize(i, classId);
+                    float weight = updateItems.getWeight(i, classId);
                     final List<Long> positions = new ArrayList<>();
-                    if (weightedSize > 0) {
+                    if (updateItems.getWeight(i, classId) > 0) {
                         for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
                             positions.add(item.getReadUId());
                         }
                     }
-                    rma2Modifier.addToClassification(classId, weightedSize, positions);
+                    rma2Modifier.addToClassification(classId, weight, positions);
                     progressListener.incrementProgress();
                 }
             } finally {

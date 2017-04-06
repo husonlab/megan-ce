@@ -130,7 +130,7 @@ public class LocalService implements IRemoteService {
                     IConnector connector = meganFile.getConnector();
                     DataTable dataTable = new DataTable();
                     SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                    SyncArchiveAndDataTable.syncArchive2Summary(meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
+                    SyncArchiveAndDataTable.syncArchive2Summary(true, meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
                     Object description = sampleAttributeTable.get(meganFile.getName(), "Description");
                     if (description == null)
                         description = meganFile.getName();

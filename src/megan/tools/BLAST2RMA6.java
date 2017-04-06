@@ -279,6 +279,7 @@ public class BLAST2RMA6 {
             doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setWeightedLCAPercent(weightedLCAPercent);
             doc.setLongReads(longReads);
+            doc.setUseWeightedReadCounts(longReads);
 
             if (!processInPairs)
                 createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);

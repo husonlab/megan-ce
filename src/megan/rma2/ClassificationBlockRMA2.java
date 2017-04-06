@@ -81,17 +81,16 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
      * @param key
      * @param sum
      */
-    public void setWeightedSum(Integer key, int sum) {
-
-        id2WeightedSum.put(key, sum);
+    public void setWeightedSum(Integer key, float sum) {
+        throw new RuntimeException("Not implemented");
     }
 
     /**
      * set the number associated with a key -> just set not written to disk
-     *  @param key
+     * @param key
      * @param sum
      */
-    public void setSum(Integer key, float sum) {
+    public void setSum(Integer key, int sum) {
         Pair<Integer, Long> pair = id2SumAndPos.get(key);
         if (pair == null) {
             pair = new Pair<>();

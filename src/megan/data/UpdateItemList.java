@@ -29,7 +29,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     private final int numberOfClassifications;
     private final Map<Integer, UpdateItem>[] first;
     private final Map<Integer, UpdateItem>[] last;
-    private final Map<Integer, Float>[] size;
+    private final Map<Integer, Float>[] weights;
 
     /**
      * constructor
@@ -42,11 +42,11 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
         this.numberOfClassifications = numberOfClassifications;
         first = new HashMap[numberOfClassifications];
         last = new HashMap[numberOfClassifications];
-        size = new HashMap[numberOfClassifications];
+        weights = new HashMap[numberOfClassifications];
         for (int i = 0; i < numberOfClassifications; i++) {
             first[i] = new HashMap<>(1000000);
             last[i] = new HashMap<>(1000000);
-            size[i] = new HashMap<>(1000000);
+            weights[i] = new HashMap<>(1000000);
         }
     }
 
@@ -76,11 +76,11 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
                 if (lastInClass == null) {
                     first[i].put(id, item);
                     last[i].put(id, item);
-                    size[i].put(id, readWeight);
+                    weights[i].put(id, readWeight);
                 } else {
                     lastInClass.setNextInClassifaction(i, item);
                     last[i].put(id, item);
-                    size[i].put(id, size[i].get(id) + readWeight);
+                    weights[i].put(id, weights[i].get(id) + readWeight);
                 }
             }
         }
@@ -94,12 +94,16 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @return size of class
      */
-    public float getSize(int classificationId, int classId) {
-        Float result = size[classificationId].get(classId);
+    public float getWeight(int classificationId, int classId) {
+        Float result = weights[classificationId].get(classId);
         if (result == null)
             return 0;
         else
             return result;
+    }
+
+    public void setWeight(int classificationId, int classId, float weight) {
+        this.weights[classificationId].put(classId, weight);
     }
 
     /**
@@ -108,8 +112,8 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classificationId
      * @return class-id to size map
      */
-    public Map<Integer, Float> getClassIdToSizeMap(int classificationId) {
-        return size[classificationId];
+    public Map<Integer, Float> getClassIdToWeightMap(int classificationId) {
+        return weights[classificationId];
     }
 
     /**
@@ -158,17 +162,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     }
 
     /**
-     * set the size value for a given class
-     *
-     * @param classificationId
-     * @param classId
-     * @param value
-     */
-    public void setSize(int classificationId, int classId, float value) {
-        size[classificationId].put(classId, value);
-    }
-
-    /**
      * gets the set of class ids defined for a given classification
      *
      * @param classificationId
@@ -189,8 +182,8 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
         first[classificationId].remove(classId);
         last[classificationId].put(classId, null);
         last[classificationId].remove(classId);
-        size[classificationId].put(classId, null);
-        size[classificationId].remove(classId);
+        weights[classificationId].put(classId, null);
+        weights[classificationId].remove(classId);
     }
 
     /**
@@ -201,7 +194,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param tarClassId
      */
     public void appendClass(int classificationId, int srcClassId, int tarClassId) {
-        float newSize = getSize(classificationId, srcClassId) + getSize(classificationId, tarClassId);
+        float newSize = getWeight(classificationId, srcClassId) + getWeight(classificationId, tarClassId);
 
         if (newSize > 0) {
             UpdateItem firstItemSrc = getFirst(classificationId, srcClassId);
@@ -231,7 +224,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
             UpdateItem lastItemSrc = getLast(classificationId, srcClassId);
             setLast(classificationId, tarClassId, lastItemSrc);
 
-            setSize(classificationId, tarClassId, newSize);
+            setWeight(classificationId, tarClassId, newSize);
             removeClass(classificationId, srcClassId);
 
             sortChain(classificationId, tarClassId);

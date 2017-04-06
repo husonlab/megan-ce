@@ -58,14 +58,6 @@ public class Document {
         }
     }
 
-    public enum Counts {
-        reads, bases;
-
-        public static Counts valueOfIgnoreCase(String str) {
-            return Basic.valueOfIgnoreCase(Counts.class, str);
-        }
-    }
-
     final static Map<String, String> name2versionInfo = new HashMap<>(); // used to track versions of tree etc
 
     private long numberReads = 0;
@@ -105,8 +97,6 @@ public class Document {
 
     private boolean longReads = DEFAULT_LONG_READS;
 
-    private Counts countsRepresent = Counts.reads;
-
     private long lastRecomputeTime = 0;
 
     private final MeganFile meganFile = new MeganFile();
@@ -129,6 +119,8 @@ public class Document {
     private final Set<String> activeViewers = new HashSet<>();
     private int pairedReadSuffixLength;
     private boolean openDAAFileOnlyIfMeganized = true;
+
+    private boolean useWeightedReadCounts = false;
 
     /**
      * constructor
@@ -195,11 +187,27 @@ public class Document {
         clearReads();
         getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
         if (getMeganFile().hasDataConnector()) {
+            reloadFromConnector();
+        } else if (getMeganFile().isMeganSummaryFile()) {
+            loadMeganSummaryFile();
+        } else
+            throw new IOException("File format not (or no longer) supported");
+
+        lastRecomputeTime = System.currentTimeMillis();
+    }
+
+    /**
+     * relead from connector
+     *
+     * @throws IOException
+     */
+    public void reloadFromConnector() throws IOException {
+        if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
-            SyncArchiveAndDataTable.syncArchive2Summary(meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
+            SyncArchiveAndDataTable.syncArchive2Summary(isUseWeightedReadCounts(), meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
 
             if (dataTable.getTotalReads() == 0 && connector.getNumberOfReads() > 0) {
-                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getMeganFile().getName(), "merge", dataTable.getBlastMode(), "", connector, dataTable, 0);
+                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getName(), "merge", dataTable.getBlastMode(), "", connector, dataTable, 0);
             }
             setNumberReads(getDataTable().getTotalReads());
             setAdditionalReads(getDataTable().getAdditionalReads());
@@ -211,12 +219,7 @@ public class Document {
             }
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);
             loadColorTableFromDataTable();
-        } else if (getMeganFile().isMeganSummaryFile()) {
-            loadMeganSummaryFile();
-        } else
-            throw new IOException("File format not (or no longer) supported");
-
-        lastRecomputeTime = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -281,7 +284,10 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
-                setCountsRepresent(np.findIgnoreCase(tokens, "countsRepresent=", Basic.toString(Counts.values(), " "), getCountsRepresent()));
+                if (np.findIgnoreCase(tokens, "useWeightedReadCounts=true", true, false))
+                    setUseWeightedReadCounts(true);
+                else if (np.findIgnoreCase(tokens, "useWeightedReadCounts=false", true, false))
+                    setUseWeightedReadCounts(false);
 
                 {
                     String fNamesString = (np.findIgnoreCase(tokens, "fNames=", "{", "}", "").trim());
@@ -309,14 +315,6 @@ public class Document {
         }
     }
 
-    private String getCountsRepresent() {
-        return countsRepresent.toString();
-    }
-
-    public void setCountsRepresent(String countsRepresent) {
-        this.countsRepresent = Counts.valueOf(countsRepresent);
-    }
-
     /**
      * write an algorithm parameter string
      *
@@ -340,8 +338,9 @@ public class Document {
             buf.append(" pairedReads=true");
         if (isUseIdentityFilter())
             buf.append(" identityFilter=true");
-        if (countsRepresent != Counts.reads)
-            buf.append(" countsRepresent=").append(getCountsRepresent());
+        if (isUseWeightedReadCounts())
+            buf.append(" useWeightedReadCounts=true");
+
         if (getActiveViewers().size() > 0) {
             buf.append(" fNames= {");
             for (String cName : getActiveViewers()) {
@@ -895,55 +894,6 @@ public class Document {
             getDir().getMainViewer().setDoReInduce(true);
     }
 
-    public void duplicateSample(String srcName, String newName) throws IOException {
-        if (getSampleNames().contains(newName))
-            throw new IOException("Can't duplicate sample, name already used: " + newName);
-        getDataTable().duplicateSample(srcName, newName);
-        getSampleAttributeTable().duplicateSample(srcName, newName, true);
-        setDirty(true);
-        try {
-            processReadHits();
-        } catch (CanceledException e) {
-            Basic.caught(e);
-        }
-        getDir().getMainViewer().setDoReInduce(true);
-    }
-
-    public void removeSamples(Set<String> samples) {
-        getDataTable().removeSamples(samples);
-        for (String sample : samples)
-            getSampleAttributeTable().removeSample(sample);
-        setDirty(true);
-        try {
-            processReadHits();
-        } catch (CanceledException e) {
-            Basic.caught(e);
-        }
-        if (getDir() != null)
-            getDir().getMainViewer().setDoReInduce(true);
-    }
-
-    /**
-     * merge the given samples to a new sample
-     *
-     * @param samples
-     * @throws IOException
-     */
-    public void mergeSamples(Set<String> samples, String newName) throws IOException {
-        if (getSampleNames().contains(newName))
-            throw new IOException("Can't merge samples, name already used: " + newName);
-        getDataTable().mergeSamples(samples, newName);
-        getSampleAttributeTable().mergeSamples(samples, newName);
-        setDirty(true);
-        try {
-            processReadHits();
-        } catch (CanceledException e) {
-            Basic.caught(e);
-        }
-        if (getDir() != null)
-            getDir().getMainViewer().setDoReInduce(true);
-    }
-
     /**
      * extract named samples from the given document
      *
@@ -1006,20 +956,6 @@ public class Document {
             return getDataTable().getSampleSizes()[i];
     }
 
-    public Set<String> getDisabledSamples() {
-        return dataTable.getDisabledSamples();
-    }
-
-    public void disableSamples(Set<String> samples) {
-        dataTable.disableSamples(samples);
-        setLastRecomputeTime(System.currentTimeMillis());
-    }
-
-    public void enableSamples(Set<String> samples) {
-        dataTable.enableSamples(samples);
-        setLastRecomputeTime(System.currentTimeMillis());
-    }
-
     public IConnector getConnector() {
         try {
             IConnector connector = getMeganFile().getConnector(isOpenDAAFileOnlyIfMeganized());
@@ -1069,5 +1005,13 @@ public class Document {
 
     public boolean isOpenDAAFileOnlyIfMeganized() {
         return openDAAFileOnlyIfMeganized;
+    }
+
+    public boolean isUseWeightedReadCounts() {
+        return useWeightedReadCounts; // use weighted read counts when extracting counts from archive
+    }
+
+    public void setUseWeightedReadCounts(boolean useWeightedReadCounts) {
+        this.useWeightedReadCounts = useWeightedReadCounts;
     }
 }

@@ -159,10 +159,10 @@ public class RMA3Connector implements IConnector {
 
                 final Map<Integer, ListOfLongs> classId2Locations = new HashMap<>();
                 for (Integer classId : updateItems.getClassIds(i)) {
-                    float weightedSize = updateItems.getSize(i, classId);
+                    float weight = updateItems.getWeight(i, classId);
                     final ListOfLongs positions = new ListOfLongs();
                     classId2Locations.put(classId, positions);
-                    if (weightedSize > 0) {
+                    if (updateItems.getWeight(i, classId) > 0) {
                         for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
                             positions.add(item.getReadUId());
                         }

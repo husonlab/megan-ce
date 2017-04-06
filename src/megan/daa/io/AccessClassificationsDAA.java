@@ -89,7 +89,6 @@ public class AccessClassificationsDAA {
      * @throws IOException
      */
     public static IClassificationBlock loadClassification(DAAHeader daaHeader, String classificationName) throws IOException {
-
         for (int i = 0; i < daaHeader.getBlockTypeRankArrayLength() - 1; i++) {
             if (daaHeader.getBlockType(i) == BlockType.megan_classification_key_block) {
                 long keyBase = daaHeader.computeBlockStart(i);
@@ -103,8 +102,9 @@ public class AccessClassificationsDAA {
 
                         for (int c = 0; c < numberOfClasses; c++) {
                             int classId = ins.readInt();
+                            classificationBlock.setWeightedSum(classId, ins.readInt());
                             classificationBlock.setSum(classId, ins.readInt());
-                            ins.skipBytes(12); // skip count & offset
+                            ins.skipBytes(8); // skip offset
                         }
                         return classificationBlock;
                     }

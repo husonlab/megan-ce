@@ -30,25 +30,36 @@ import java.util.Set;
  * Created by huson on 5/16/14.
  */
 public class ClassificationBlockDAA implements IClassificationBlock {
-    private final Map<Integer, Float> classId2Weight;
+    private final Map<Integer, Float> id2weight;
+    private final Map<Integer, Integer> id2count;
     private String classificationName;
 
     public ClassificationBlockDAA(String classificationName) {
         this.classificationName = classificationName;
-        classId2Weight = new HashMap<>();
+        id2weight = new HashMap<>();
+        id2count = new HashMap<>();
     }
 
     public int getSum(Integer key) {
-        Float value = classId2Weight.get(key);
-        return (int) (value == null ? 0 : value);
+        Integer value = id2count.get(key);
+        return (value == null ? 0 : value);
     }
 
     public float getWeightedSum(Integer key) {
-        return classId2Weight.get(key);
+        final Float result = id2weight.get(key);
+        if (result > 0)
+            return result;
+        else
+            return id2count.get(key);
     }
 
-    public void setSum(Integer key, float num) {
-        classId2Weight.put(key, num);
+    public void setSum(Integer key, int num) {
+        id2count.put(key, num);
+    }
+
+    @Override
+    public void setWeightedSum(Integer key, float num) {
+        id2weight.put(key, num);
     }
 
     public String getName() {
@@ -60,6 +71,6 @@ public class ClassificationBlockDAA implements IClassificationBlock {
     }
 
     public Set<Integer> getKeySet() {
-        return classId2Weight.keySet();
+        return id2count.keySet();
     }
 }

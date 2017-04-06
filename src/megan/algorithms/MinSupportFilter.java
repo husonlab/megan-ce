@@ -37,7 +37,7 @@ import java.util.Set;
  * Daniel Huson, 4.2010, 3.2016
  */
 public class MinSupportFilter {
-    private final Map<Integer, Float> id2count;
+    private final Map<Integer, Float> id2weight;
     private final int minSupport;
     private final ProgressListener progress;
     private final PhyloTree tree;
@@ -46,17 +46,16 @@ public class MinSupportFilter {
     /**
      * constructor
      *
-     * @param id2count
+     * @param id2weight
      * @param minSupport
      * @param progress
      */
-    public MinSupportFilter(String cName, Map<Integer, Float> id2count, int minSupport, final ProgressListener progress) {
-        this.id2count = id2count;
+    public MinSupportFilter(String cName, Map<Integer, Float> id2weight, int minSupport, final ProgressListener progress) {
+        this.id2weight = id2weight;
         this.minSupport = minSupport;
         this.progress = progress;
         tree = ClassificationManager.get(cName, true).getFullTree();
         this.idMapper = ClassificationManager.get(cName, false).getIdMapper();
-
     }
 
     /**
@@ -110,23 +109,23 @@ public class MinSupportFilter {
             below += computeOrphan2AncestorMappingRec(w, orphan2AncestorMapping, orphansBelow);
         }
 
-        Float count = id2count.get(taxId);
-        if (count == null)
-            count = 0f;
+        Float weight = id2weight.get(taxId);
+        if (weight == null)
+            weight = 0f;
 
-        if (below + count >= minSupport && !idMapper.isDisabled(taxId))  // this is a strong node, map all orphans to here
+        if (below + weight >= minSupport && !idMapper.isDisabled(taxId))  // this is a strong node, map all orphans to here
         {
             for (Integer id : orphansBelow) {
                 orphan2AncestorMapping.put(id, taxId);
             }
         } else // this node is not strong enough, pass all orphans up
         {
-            if (count > 0) // this node has reads assigned to it, pass it up as an orpha
+            if (weight > 0) // this node has reads assigned to it, pass it up as an orpha
             {
                 orphansBelow.add(taxId);
             }
             orphans.addAll(orphansBelow);
         }
-        return below + count;
+        return below + weight;
     }
 }

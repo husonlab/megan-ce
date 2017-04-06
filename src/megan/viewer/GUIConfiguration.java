@@ -60,7 +60,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Expand/Contract", "Expand Horizontal;Contract Horizontal;Expand Vertical;Contract Vertical;");
 
-        menuConfig.defineMenu("Options", "Change LCA Parameters...;Set Number Of Reads...;|;Project Assignments To Rank...;|;List Summary...;List Paths...;|;" +
+        menuConfig.defineMenu("Options", "Change LCA Parameters...;Set Number Of Reads...;|;Project Assignments To Rank...;Use Read Weights for Assignments;|;List Summary...;List Paths...;|;" +
                 "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;Open NCBI Web Page...;Inspect...;");
 
         menuConfig.defineMenu("Tree", "Collapse;Collapse To Top;Collapse All Others;Collapse at Level...;Rank...;|;" +

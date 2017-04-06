@@ -61,13 +61,15 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
 
         footerSectionRMA6.getAvailableClassification2Position().clear();
 
-        for (int i = 0; i < cNames.length; i++) {
-            final String cName = cNames[i];
+        for (int c = 0; c < cNames.length; c++) {
+            final String cName = cNames[c];
             final ClassificationBlockRMA6 classification = new ClassificationBlockRMA6(cName);
-            final Map<Integer, ListOfLongs> id2locations = fName2ClassId2Location[i];
+            final Map<Integer, ListOfLongs> id2locations = fName2ClassId2Location[c];
             for (int id : id2locations.keySet()) {
-                final Float weight = fName2ClassId2Weight[i].get(id);
-                classification.setSum(id, weight != null ? weight : 0f);
+                final Float weight = fName2ClassId2Weight[c].get(id);
+                classification.setWeightedSum(id, weight != null ? weight : 0f);
+                final ListOfLongs list = fName2ClassId2Location[c].get(id);
+                classification.setSum(id, list != null ? list.size() : 0);
             }
             footerSectionRMA6.getAvailableClassification2Position().put(cName, io.getPosition());
             classification.write(io, id2locations);
@@ -124,5 +126,11 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
         footerSectionRMA6.setStartFooterSection(io.getPosition());
         footerSectionRMA6.write(io);
         close();
+    }
+
+    public class DataRecord {
+        ListOfLongs locations;
+        float weight;
+        int sum;
     }
 }

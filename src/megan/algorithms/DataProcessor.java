@@ -116,6 +116,7 @@ public class DataProcessor {
             progress.setSubtask("Processing alignments");
 
             long numberOfReadsFound = 0;
+            double totalWeight = 0;
             long numberOfMatches = 0;
             long numberOfReadsWithLowComplexity = 0;
             long numberOfReadsWithHits = 0;
@@ -183,12 +184,13 @@ public class DataProcessor {
                     if (progress.isUserCancelled())
                         break;
 
-                    if (doc.isLongReads() && readBlock.getReadWeight() <= 1)
-                        readBlock.setReadWeight(readBlock.getReadLength());
-                    else if (readBlock.getReadWeight() == 0)
+                    if (readBlock.getReadWeight() == 0)
                         readBlock.setReadWeight(1);
+                    if (doc.isLongReads())
+                        readBlock.setReadWeight(readBlock.getReadWeight() * readBlock.getReadLength());
 
-                    numberOfReadsFound += readBlock.getReadWeight();
+                    numberOfReadsFound++;
+                    totalWeight += readBlock.getReadWeight();
                     numberOfMatches += readBlock.getNumberOfMatches();
 
                     final boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
@@ -280,9 +282,10 @@ public class DataProcessor {
                 ((ProgressPercentage) progress).reportTaskCompleted();
             }
 
-            if (usingMultiGeneAnalysis)
-                System.err.println("Following counts are in base-pairs:");
-            System.err.println(String.format("Total reads:   %,15d", numberOfReadsFound));
+            System.err.println(String.format("Total reads:  %,15d", numberOfReadsFound));
+            if (totalWeight > numberOfReadsFound)
+                System.err.println(String.format("Total weight: %,15d", (long) totalWeight));
+
             if (numberOfReadsWithLowComplexity > 0)
                 System.err.println(String.format("Low complexity:%,15d", numberOfReadsWithLowComplexity));
             if (numberOfReadsFailedCoveredThreshold > 0)
@@ -302,7 +305,7 @@ public class DataProcessor {
 
             progress.setCancelable(false); // can't cancel beyond here because file could be left in undefined state
 
-            doc.setNumberReads(numberOfReadsFound);
+            doc.setNumberReads(Math.round(totalWeight));
 
             // If min support percentage is set, set the min support:
             if (doc.getMinSupportPercent() > 0) {
@@ -318,7 +321,7 @@ public class DataProcessor {
                 if (ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy))
                         && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
                     progress.setSubtask("Applying min-support & disabled filter to " + cName + "...");
-                    final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToSizeMap(i), doc.getMinSupport(), progress);
+                    final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(i), doc.getMinSupport(), progress);
                     final Map<Integer, Integer> changes = minSupportFilter.apply();
 
                     for (Integer srcId : changes.keySet()) {
@@ -337,7 +340,7 @@ public class DataProcessor {
 
             // 4. sync
             progress.setSubtask("Syncing");
-            SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
+            SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.isUseWeightedReadCounts(), doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
 
             if (progress instanceof ProgressPercentage)
                 ((ProgressPercentage) progress).reportTaskCompleted();

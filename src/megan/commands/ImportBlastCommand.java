@@ -205,6 +205,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             if (np.peekMatchIgnoreCase("longReads")) {
                 np.matchIgnoreCase("longReads=");
                 doc.setLongReads(np.getBoolean());
+                doc.setUseWeightedReadCounts(doc.isLongReads());
             }
 
             if (np.peekMatchIgnoreCase("paired")) {

@@ -81,17 +81,17 @@ public class RMA2Modifier {
      * add an entry to the classification
      *
      * @param classId
-     * @param size
+     * @param weight
      * @param positions
      * @throws IOException
      */
-    public void addToClassification(Integer classId, float size, List<Long> positions) throws IOException {
+    public void addToClassification(Integer classId, float weight, List<Long> positions) throws IOException {
         numberOfClasses++;
         classificationIndexTmpFileWriter.writeInt(classId);
-        if (size == positions.size())
-            classificationIndexTmpFileWriter.writeInt((int) size);
+        if (weight == positions.size())
+            classificationIndexTmpFileWriter.writeInt((int) weight);
         else {
-            classificationIndexTmpFileWriter.writeInt(-(int) size);
+            classificationIndexTmpFileWriter.writeInt(-(int) weight);
             classificationIndexTmpFileWriter.writeInt(positions.size());
         }
 

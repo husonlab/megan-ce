@@ -272,6 +272,7 @@ public class DAA2RMA6 {
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
             doc.setLongReads(longReads);
+            doc.setUseWeightedReadCounts(longReads);
 
             if (!processInPairs)
                 createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);

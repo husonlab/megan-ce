@@ -55,13 +55,18 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     }
 
     @Override
+    public void setWeightedSum(Integer key, float num) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
     public float getWeightedSum(Integer key) {
         return map.get(key);
     }
 
     @Override
-    public void setSum(Integer key, float num) {
-        map.put(key, (int) num);
+    public void setSum(Integer key, int num) {
+        map.put(key, num);
 
     }
 

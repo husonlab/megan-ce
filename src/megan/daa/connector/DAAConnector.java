@@ -169,11 +169,10 @@ public class DAAConnector implements IConnector {
             final Map<Integer, Float> classId2weight = fName2ClassId2Weight[i];
 
             for (Integer classId : updateItems.getClassIds(i)) {
-                float weightedSize = updateItems.getSize(i, classId);
+                classId2weight.put(classId, updateItems.getWeight(i, classId));
                 final ListOfLongs positions = new ListOfLongs();
                 classId2Location.put(classId, positions);
-                classId2weight.put(classId, weightedSize);
-                if (weightedSize > 0) {
+                if (updateItems.getWeight(i, classId) > 0) {
                     for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
                         positions.add(item.getReadUId());
                     }

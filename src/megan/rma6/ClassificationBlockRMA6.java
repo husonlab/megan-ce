@@ -36,7 +36,8 @@ import java.util.Set;
  * Created by huson on 5/16/14.
  */
 public class ClassificationBlockRMA6 implements IClassificationBlock {
-    private final Map<Integer, Float> map2Weight = new HashMap<>();
+    private final Map<Integer, Integer> id2count = new HashMap<>();
+    private final Map<Integer, Float> id2weight = new HashMap<>();
     private String classificationName;
 
     public ClassificationBlockRMA6(String classificationName) {
@@ -44,16 +45,25 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     }
 
     public int getSum(Integer key) {
-        Float sum = map2Weight.get(key);
-        return (int) (sum != null ? sum : 0);
+        Integer sum = id2count.get(key);
+        return (sum != null ? sum : 0);
     }
 
     public float getWeightedSum(Integer key) {
-        return map2Weight.get(key);
+        final Float result = id2weight.get(key);
+        if (result > 0)
+            return result;
+        else
+            return id2count.get(key);
     }
 
-    public void setSum(Integer key, float num) {
-        map2Weight.put(key, num);
+    public void setSum(Integer key, int num) {
+        id2count.put(key, num);
+    }
+
+    @Override
+    public void setWeightedSum(Integer key, float num) {
+        id2weight.put(key, num);
     }
 
     public String getName() {
@@ -65,7 +75,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     }
 
     public Set<Integer> getKeySet() {
-        return map2Weight.keySet();
+        return id2weight.keySet();
     }
 
     /**
@@ -76,11 +86,11 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      * @throws IOException
      */
     public void write(IOutputWriter writer, Map<Integer, ListOfLongs> classId2locations) throws IOException {
-        writer.writeInt(map2Weight.size());
-        for (Object key : map2Weight.keySet()) {
+        writer.writeInt(id2weight.size());
+        for (Object key : id2weight.keySet()) {
             writer.writeInt((Integer) key); // class id
-            final Float sum = map2Weight.get(key);
-            writer.writeInt(Math.round(sum)); //weight
+            final Float weight = id2weight.get(key);
+            writer.writeInt(Math.round(weight != null ? weight : 0)); //weight
             if (classId2locations != null) {
                 final ListOfLongs list = classId2locations.get(key);
                 writer.writeInt(list.size());
@@ -99,7 +109,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      * @throws IOException
      */
     public int read(long position, IInputReader reader) throws IOException {
-        map2Weight.clear();
+        id2weight.clear();
 
         reader.seek(position);
         final int numberOfClasses = reader.readInt();
@@ -108,9 +118,10 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
             final int weight = reader.readInt();
             final int count = reader.readInt();
             reader.skipBytes(count * 8); // skip all locations, 8 bytes each
-            map2Weight.put(classId, (float) weight);
+            id2weight.put(classId, (float) weight);
+            id2count.put(classId, count);
         }
-        return map2Weight.size();
+        return id2weight.size();
     }
 
     /**
@@ -122,7 +133,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      */
     public int read(long position, InputReader reader, int classId) throws IOException {
         reader.seek(position);
-        map2Weight.clear();
+        id2weight.clear();
 
         final int numberOfClasses = reader.readInt();
         for (int i = 0; i < numberOfClasses; i++) {
@@ -131,11 +142,12 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
             final int count = reader.readInt();
             reader.skipBytes(count * 8); // skip all locations, 8 bytes each
             if (currentId == classId) {
-                map2Weight.put(currentId, (float) weight);
+                id2weight.put(currentId, (float) weight);
+                id2count.put(currentId, count);
                 break;
             }
         }
-        return map2Weight.size();
+        return id2weight.size();
     }
 
     /**

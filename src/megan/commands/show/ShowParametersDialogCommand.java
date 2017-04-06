@@ -88,6 +88,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
         if (np.peekMatchIgnoreCase("longReads")) {
             np.matchIgnoreCase("longReads=");
             getDoc().setLongReads(np.getBoolean());
+            getDoc().setUseWeightedReadCounts(getDoc().isLongReads());
         }
         if (np.peekMatchIgnoreCase("pairedReads")) {
             np.matchIgnoreCase("pairedReads=");

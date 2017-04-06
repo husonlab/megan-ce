@@ -82,6 +82,7 @@ public class Meganize {
         doc.setLcaAlgorithm(lcaAlgorithm);
         doc.setWeightedLCAPercent(weightedLCAPercent);
         doc.setLongReads(longReads);
+        doc.setUseWeightedReadCounts(longReads);
 
         doc.setProgressListener(progress);
 
@@ -89,7 +90,7 @@ public class Meganize {
 
         // update and then save auxiliary data:
         final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(daaFile), "");
-        SyncArchiveAndDataTable.syncRecomputedArchive2Summary(sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), doc.getConnector(), doc.getDataTable(), 0);
+        SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.isUseWeightedReadCounts(), sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), doc.getConnector(), doc.getDataTable(), 0);
         doc.saveAuxiliaryData();
 
         if (metaDataFile.length() > 0) {

@@ -181,6 +181,7 @@ public class Director implements IDirectableViewer, IDirector {
                         directorListener.lockUserInput();
                 }
             }
+            ProjectManager.updateWindowMenus();
         }
         locked = true;
     }
@@ -197,6 +198,7 @@ public class Director implements IDirectableViewer, IDirector {
                         directorListener.unlockUserInput();
                 }
             }
+            ProjectManager.updateWindowMenus();
         }
         locked = false;
     }
@@ -464,14 +466,12 @@ public class Director implements IDirectableViewer, IDirector {
      * ask view to prevent user input
      */
     public void lockUserInput() {
-        ProjectManager.updateWindowMenus();
     }
 
     /**
      * ask view to allow user input
      */
     public void unlockUserInput() {
-        ProjectManager.updateWindowMenus();
     }
 
     /**

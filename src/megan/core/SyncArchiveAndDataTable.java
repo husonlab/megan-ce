@@ -48,9 +48,8 @@ public class SyncArchiveAndDataTable {
      * @param table
      * @throws IOException
      */
-    static public void syncRecomputedArchive2Summary(String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
+    static public void syncRecomputedArchive2Summary(boolean useWeights, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
         String[] classifications = connector.getAllClassificationNames();
-
         table.clear();
         table.setCreator(ProgramProperties.getProgramName());
         table.setCreationDate((new Date()).toString());
@@ -61,9 +60,9 @@ public class SyncArchiveAndDataTable {
 
         table.setSamples(new String[]{dataSetName}, new Long[]{connector.getUId()}, new float[]{connector.getNumberOfReads()}, new BlastMode[]{blastMode});
         for (String classification : classifications) {
-            IClassificationBlock block = connector.getClassificationBlock(classification);
-            if (block != null)
-                syncClassificationBlock2Summary(0, 1, block, table);
+            IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
+            if (classificationBlock != null)
+                syncClassificationBlock2Summary(useWeights, 0, 1, classificationBlock, table);
         }
     }
 
@@ -74,7 +73,7 @@ public class SyncArchiveAndDataTable {
      * @param connector
      * @param table
      */
-    public static void syncArchive2Summary(String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
+    public static void syncArchive2Summary(boolean useWeights, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
         table.clear();
         Map<String, byte[]> label2data = connector.getAuxiliaryData();
         if (label2data.containsKey(SampleAttributeTable.USER_STATE)) {
@@ -105,7 +104,7 @@ public class SyncArchiveAndDataTable {
         for (String classification : classifications) {
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
-                syncClassificationBlock2Summary(0, 1, classificationBlock, table);
+                syncClassificationBlock2Summary(useWeights, 0, 1, classificationBlock, table);
         }
     }
 
@@ -116,12 +115,12 @@ public class SyncArchiveAndDataTable {
      * @param classificationBlock
      * @param table
      */
-    static public void syncClassificationBlock2Summary(int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
+    static public void syncClassificationBlock2Summary(boolean useWeights, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
         final Map<Integer, float[]> classId2count = new HashMap<>();
         table.setClass2Counts(classificationBlock.getName(), classId2count);
 
         for (Integer classId : classificationBlock.getKeySet()) {
-            float sum = classificationBlock.getWeightedSum(classId);
+            float sum = (useWeights ? classificationBlock.getWeightedSum(classId) : classificationBlock.getSum(classId));
             if (sum > 0) {
                 if (classId2count.get(classId) == null)
                     classId2count.put(classId, new float[totalDataSets]);

@@ -148,8 +148,10 @@ public class RMA6Connector implements IConnector {
 
         final Map<Integer, ListOfLongs>[] fName2ClassId2Location = new HashMap[cNames.length];
         final Map<Integer, Float>[] fName2ClassId2Weight = new HashMap[cNames.length];
+        final Map<Integer, Integer>[] fName2ClassId2Count = new HashMap[cNames.length];
         for (int i = 0; i < cNames.length; i++) {
             fName2ClassId2Location[i] = new HashMap<>(10000);
+            fName2ClassId2Weight[i] = new HashMap<>(10000);
             fName2ClassId2Weight[i] = new HashMap<>(10000);
         }
 
@@ -158,11 +160,11 @@ public class RMA6Connector implements IConnector {
             final Map<Integer, Float> classId2weight = fName2ClassId2Weight[i];
 
             for (Integer classId : updateItems.getClassIds(i)) {
-                float weightedSize = updateItems.getSize(i, classId);
+                float weight = updateItems.getWeight(i, classId);
+                classId2weight.put(classId, weight);
                 final ListOfLongs positions = new ListOfLongs();
                 classId2Location.put(classId, positions);
-                classId2weight.put(classId, weightedSize);
-                if (weightedSize > 0) {
+                if (updateItems.getWeight(i, classId) > 0) {
                     for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
                         positions.add(item.getReadUId());
                     }

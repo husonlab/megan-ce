@@ -66,6 +66,7 @@ public class DataTable {
 
     private long totalReads = -1;
     private long additionalReads = -1;
+    private double totalReadWeights = -1;
 
     private final Vector<String> sampleNames = new Vector<>();
     private final Vector<BlastMode> blastModes = new Vector<>();
@@ -87,7 +88,6 @@ public class DataTable {
     private String colorEdits = null;
     private boolean colorByPosition = false;
 
-
     private String parameters;
 
     private final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
@@ -108,8 +108,9 @@ public class DataTable {
         sampleSizes.clear();
         sampleUIds.clear();
         disabledSamples.clear();
-        totalReads = 0;
-        additionalReads = 0;
+        totalReads = -1;
+        additionalReads = -1;
+        totalReadWeights = -1;
         classification2collapsedIds.clear();
         classification2NodeStyle.clear();
         classification2algorithm.clear();
@@ -195,10 +196,10 @@ public class DataTable {
                                 sampleSizes.add(Basic.parseFloat(tokens[i]));
                             break;
                         case TOTAL_READS:
-                            totalReads = (Integer.parseInt(tokens[1]));
+                            totalReads = (Long.parseLong(tokens[1]));
                             break;
                         case ADDITIONAL_READS:
-                            additionalReads = (Basic.parseInt(tokens[1]));
+                            additionalReads = (Long.parseLong(tokens[1]));
                             break;
                         case COLLAPSE:
                             if (tokens.length > 1) {
@@ -387,79 +388,66 @@ public class DataTable {
      * @throws IOException
      */
     public void writeHeader(Writer w) throws IOException {
-        w.write(CREATOR + "\t" + (creator != null ? creator : ProgramProperties.getProgramName()) + "\n");
-        w.write(CREATION_DATE + "\t" + (creationDate != null ? creationDate : ((new Date()).toString())) + "\n");
-        w.write(CONTENT_TYPE + "\t" + getContentType() + "\n");
-        w.write(NAMES);
-        for (String dataName : sampleNames) w.write("\t" + dataName);
-        w.write("\n");
-        w.write(BLAST_MODE);
-        for (BlastMode blastMode : blastModes) w.write("\t" + blastMode.toString());
-        w.write("\n");
+        w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
+        w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
+        w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
+        w.write(String.format("%s\t%s\n", NAMES, Basic.toString(sampleNames, "\t")));
+        w.write(String.format("%s\t%s\n", BLAST_MODE, Basic.toString(blastModes, "\t")));
         if (disabledSamples.size() > 0) {
-            w.write(DISABLED);
-            for (String dataName : disabledSamples) w.write("\t" + dataName);
-            w.write("\n");
+            w.write(String.format("%s\t%s\n", DISABLED, Basic.toString(disabledSamples, "\t")));
         }
         if (sampleUIds.size() > 0) {
-            w.write(UIDS);
-            for (Long dataUid : sampleUIds) w.write("\t" + dataUid);
-            w.write("\n");
+            w.write(String.format("%s\t%s\n", UIDS, Basic.toString(sampleUIds, "\t")));
         }
         if (sampleSizes.size() > 0) {
-            w.write(SIZES);
-            for (float dataSize : sampleSizes) w.write("\t" + dataSize);
-            w.write("\n");
+            w.write(String.format("%s\t%s\n", SIZES, Basic.toString(sampleSizes, "\t")));
         }
 
         if (totalReads != -1)
-            w.write(TOTAL_READS + "\t" + totalReads + "\n");
+            w.write(String.format("%s\t%d\n", TOTAL_READS, totalReads));
 
         if (additionalReads != -1)
-            w.write(ADDITIONAL_READS + "\t" + additionalReads + "\n");
+            w.write(String.format("%s\t%d\n", ADDITIONAL_READS, additionalReads));
 
         for (String classification : classification2collapsedIds.keySet()) {
             Set<Integer> collapsed = classification2collapsedIds.get(classification);
             if (collapsed != null && collapsed.size() > 0) {
-                w.write(COLLAPSE + "\t" + classification);
-                for (Integer id : collapsed)
-                    w.write("\t" + id);
+                w.write(String.format("%s\t%s\t%s\n", COLLAPSE, classification, Basic.toString(collapsed, "\t")));
             }
-            w.write("\n");
         }
 
         for (String classification : classification2algorithm.keySet()) {
             String algorithm = classification2algorithm.get(classification);
             if (algorithm != null) {
-                w.write(ALGORITHM + "\t" + classification + "\t" + algorithm + "\n");
+                w.write(String.format("%s\t%s\t%s\n", ALGORITHM, classification, algorithm));
             }
         }
 
         if (parameters != null)
-            w.write(PARAMETERS + "\t" + parameters + "\n");
+            w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
 
         for (String classification : classification2NodeStyle.keySet()) {
             String nodeType = classification2NodeStyle.get(classification);
             if (nodeType != null) {
-                w.write(NODE_STYLE + "\t" + classification + "\t" + nodeType + "\n");
+                w.write(String.format("%s\t%s\t%s\n", NODE_STYLE, classification, nodeType));
             }
         }
         if (colorTable != null)
-            w.write(COLOR_TABLE + "\t" + colorTable + (colorByPosition ? "\tbyPosition\t" : "\t") + getColorTableHeatMap() + "\n");
+            w.write(String.format("%s\t%s%s\t%s\n", COLOR_TABLE, colorTable, (colorByPosition ? "\tbyPosition" : ""), getColorTableHeatMap()));
         if (colorEdits != null)
-            w.write(COLOR_EDITS + "\t" + colorEdits + "\n");
+            w.write(String.format("%s\t%s\n", COLOR_EDITS, colorEdits));
 
         for (String classification : classification2NodeFormats.keySet()) {
             String formatting = classification2NodeFormats.get(classification);
             if (formatting != null) {
-                w.write(NODE_FORMATS + "\t" + classification + "\t" + formatting + "\n");
+                w.write(String.format("%s\t%s\t%s\n", NODE_FORMATS, classification, formatting));
             }
         }
 
         for (String classification : classification2EdgeFormats.keySet()) {
             String formatting = classification2EdgeFormats.get(classification);
             if (formatting != null)
-                w.write(EDGE_FORMATS + "\t" + classification + "\t" + formatting + "\n");
+                w.write(String.format("%s\t%s\t%s\n", EDGE_FORMATS, classification, formatting));
         }
     }
 
@@ -494,33 +482,32 @@ public class DataTable {
         }
 
         if (totalReads != -1)
-            w.write("<b>" + TOTAL_READS.substring(1) + ":</b> " + totalReads + "<br>");
+            w.write(String.format("<b>%s:</b> %d<br>\n", TOTAL_READS.substring(1), totalReads));
         if (additionalReads != -1)
-            w.write("<b>" + ADDITIONAL_READS.substring(1) + ":</b> " + additionalReads + "<br>");
+            w.write(String.format("<b>%s:</b> %d<br>\n", ADDITIONAL_READS.substring(1), additionalReads));
 
         w.write("<b>Classifications:</b> ");
         for (String classification : classification2class2counts.keySet()) {
             Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
             int size = class2counts != null ? class2counts.size() : 0;
-            w.write(classification + " (" + size + " classes)");
+            w.write(String.format("%s (%d classes)", classification, size));
         }
-        w.write("<br>");
+        w.write("<br>\n");
 
         for (String classification : classification2algorithm.keySet()) {
             String algorithm = classification2algorithm.get(classification);
             if (algorithm != null) {
-                w.write("<b>" + ALGORITHM.substring(1) + ":</b> " + classification + ": " + algorithm + "<br>");
+                w.write(String.format("<b>%s:</b> %s: %s<br>\n", ALGORITHM.substring(1), classification, algorithm));
             }
         }
 
         if (parameters != null)
-            w.write("<b>" + PARAMETERS.substring(1) + ":</b> " + parameters + "<br>");
-
+            w.write(String.format("<b>%s:</b> %s<br>\n", PARAMETERS.substring(1), parameters));
         if (colorTable != null)
-            w.write("<b>ColorTable:</b> " + colorTable + (colorByPosition ? " byPosition" : "") + " <b>HeatMapColorTable:</b>" + colorTableHeatMap + "<br>");
+            w.write(String.format("<b>ColorTable:</b> %s%s <b>HeatMapColorTable:</b> %s<br>\n", colorTable, (colorByPosition ? " byPosition" : ""), colorTableHeatMap));
 
         if (colorEdits != null)
-            w.write("<b>ColorEdits:</b> " + Basic.abbreviateDotDotDot(colorEdits, 50) + " <br>");
+            w.write(String.format("<b>ColorEdits:</b> %s<br>\n", Basic.abbreviateDotDotDot(colorEdits, 50)));
 
         return w.toString();
     }
@@ -534,31 +521,24 @@ public class DataTable {
     public String getSummary() throws IOException {
         Writer w = new StringWriter();
 
-        w.write(CREATOR.substring(1) + ": " + (creator != null ? creator : ProgramProperties.getProgramName()) + "\n");
-        w.write(CREATION_DATE.substring(1) + ":" + (creationDate != null ? creationDate : "unknown") + "\n");
-        w.write(CONTENT_TYPE.substring(1) + ":" + getContentType() + "\n");
-        w.write(NAMES.substring(1) + ":");
-        for (String dataName : sampleNames) w.write(" " + dataName);
-        w.write("\n");
-        w.write(BLAST_MODE.substring(1) + ":");
-        for (BlastMode blastMode : blastModes) w.write(" " + blastMode.toString());
-        w.write("\n");
+        w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
+        w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
+        w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
+        w.write(String.format("%s\t%s\n", NAMES, Basic.toString(sampleNames, "\t")));
+        w.write(String.format("%s\t%s\n", BLAST_MODE, Basic.toString(blastModes, "\t")));
 
         if (sampleUIds.size() > 0) {
-            w.write(UIDS.substring(1) + ": ");
-            for (Long dataUid : sampleUIds) w.write(" " + dataUid);
-            w.write("\n");
+            w.write(String.format("%s\t%s\n", UIDS, Basic.toString(sampleUIds, "\t")));
         }
         if (sampleSizes.size() > 0) {
-            w.write(SIZES.substring(1) + ": ");
-            for (float dataSize : sampleSizes) w.write(" " + dataSize);
-            w.write("\n");
+            w.write(String.format("%s\t%s\n", SIZES, Basic.toString(sampleSizes, "\t")));
         }
 
         if (totalReads != -1)
-            w.write(TOTAL_READS.substring(1) + ": " + totalReads + "\n");
+            w.write(String.format("%s\t%d\n", TOTAL_READS, totalReads));
+
         if (additionalReads != -1)
-            w.write(ADDITIONAL_READS.substring(1) + ": " + additionalReads + "\n");
+            w.write(String.format("%s\t%d\n", ADDITIONAL_READS, additionalReads));
 
         w.write("Classifications:\n");
         for (String classification : classification2class2counts.keySet()) {
@@ -568,15 +548,17 @@ public class DataTable {
         }
         w.write("\n");
 
+
         for (String classification : classification2algorithm.keySet()) {
             String algorithm = classification2algorithm.get(classification);
             if (algorithm != null) {
-                w.write(ALGORITHM.substring(1) + ": " + classification + ": " + algorithm + "\n");
+                w.write(String.format("%s\t%s\t%s\n", ALGORITHM, classification, algorithm));
             }
         }
 
         if (parameters != null)
-            w.write(PARAMETERS.substring(1) + ": " + parameters + "\n");
+            w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
+
         return w.toString();
     }
 
@@ -649,6 +631,7 @@ public class DataTable {
                             break;
                         case TOTAL_READS:
                             totalReads = Integer.parseInt(second);
+                            totalReadWeights = totalReads;
                             break;
                     }
                 } else if (!headerOnly)// data line
@@ -996,8 +979,19 @@ public class DataTable {
     }
 
     public long getTotalReads() {
-        if (totalReads < 0)
+        if (totalReads > 0)
+            return totalReads;
+        else
             return 0;
+    }
+
+    public void setTotalReadWeights(double totalReadWeights) {
+        this.totalReadWeights = totalReadWeights;
+    }
+
+    public double getTotalReadWeights() {
+        if (totalReadWeights > 0)
+            return totalReadWeights;
         else
             return totalReads;
     }
@@ -1007,10 +1001,10 @@ public class DataTable {
     }
 
     public long getAdditionalReads() {
-        if (additionalReads < 0)
-            return 0;
-        else
+        if (additionalReads > 0)
             return additionalReads;
+        else
+            return 0;
     }
 
     /**
@@ -1049,35 +1043,11 @@ public class DataTable {
         sampleNames.set(pid, newName);
     }
 
-    public void duplicateSample(String name, String newName) {
-        if (!sampleNames.contains(newName)) {
-            int srcId = Basic.getIndex(name, sampleNames);
-            sampleSizes.add(sampleSizes.get(srcId));
-            sampleNames.add(newName);
-            blastModes.add(blastModes.get(srcId));
-            sampleUIds.add(System.currentTimeMillis());
-
-            int tarId = Basic.getIndex(newName, sampleNames);
-            for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
-                for (Integer classId : class2counts.keySet()) {
-                    float[] counts = class2counts.get(classId);
-                    if (counts != null) {
-                        int newLength = Math.max(counts.length + 1, tarId + 1);
-                        float[] newCounts = new float[newLength];
-                        System.arraycopy(counts, 0, newCounts, 0, counts.length);
-                        newCounts[tarId] = counts[srcId];
-                        class2counts.put(classId, newCounts);
-                    }
-                }
-            }
-            totalReads += sampleSizes.get(srcId);
-        }
-    }
-
-    public void removeSample(String name) {
-        removeSamples(Collections.singletonList(name));
-    }
-
+    /**
+     * removes samples
+     *
+     * @param toDelete
+     */
     public void removeSamples(Collection<String> toDelete) {
         Set<Integer> dead = new HashSet<>();
         for (String name : toDelete) {
@@ -1369,23 +1339,6 @@ public class DataTable {
      */
     private static float[] modify(Integer[] order, float[] array) {
         float[] tmp = new float[order.length];
-        int pos = 0;
-        for (Integer id : order) {
-            if (id < array.length)
-                tmp[pos++] = array[id];
-        }
-        return tmp;
-    }
-
-    /**
-     * modify an array according to the given order
-     *
-     * @param order
-     * @param array
-     * @return modified array, possibly with changed length
-     */
-    private static Integer[] modify(Integer[] order, Integer[] array) {
-        Integer[] tmp = new Integer[order.length];
         int pos = 0;
         for (Integer id : order) {
             if (id < array.length)

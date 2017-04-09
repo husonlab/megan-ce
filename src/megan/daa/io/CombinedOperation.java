@@ -28,6 +28,15 @@ public class CombinedOperation {
     private int count;
     private byte letter;
 
+    public CombinedOperation() {
+    }
+
+    public CombinedOperation(PackedTranscript.EditOperation editOperation, int count, Byte letter) {
+        this.editOperation = editOperation;
+        this.count = count;
+        this.letter = (letter == null ? 0 : letter);
+    }
+
     public PackedTranscript.EditOperation getEditOperation() {
         return editOperation;
     }

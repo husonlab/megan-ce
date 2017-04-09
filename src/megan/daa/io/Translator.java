@@ -91,7 +91,10 @@ public class Translator {
             }};
 
     public static final byte[] DNA_ALPHABET = "ACGTN".getBytes();
-    public static final byte[] AMINO_ACID_ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*".getBytes();
+    public static final byte[] AMINO_ACID_ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*/\\".getBytes(); // last two must be: / and then \
+
+    public static final byte FORWARD_SHIFT_CODE = (byte) (AMINO_ACID_ALPHABET.length - 1); // last letter: backslash
+    public static final byte REVERSE_SHIFT_CODE = (byte) (AMINO_ACID_ALPHABET.length - 2); // second-to-last letter: forward slash
 
     /**
      * get reversed-complemented DNA
@@ -105,6 +108,22 @@ public class Translator {
         int j = dna.length - 1;
         for (byte a : dna) {
             reverse[j--] = reverseNucleotide[dna[a]];
+        }
+        return reverse;
+    }
+
+    /**
+     * get reversed-complemented DNA
+     *
+     * @param dna
+     * @return reverse component
+     */
+    public static byte[] getReverseComplement(byte[] dna, int offset, int length) {
+        byte[] reverse = new byte[length];
+
+        int j = offset + length - 1;
+        for (int i = 0; i < length; i++) {
+            reverse[i] = reverseNucleotide[dna[j--]];
         }
         return reverse;
     }

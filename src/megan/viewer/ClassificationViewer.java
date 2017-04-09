@@ -1399,21 +1399,21 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                             if (nodeData.getAssigned().length == 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(nodeData.getCountAssigned());
+                                buf.append(Math.round(nodeData.getCountAssigned()));
                             } else if (nodeData.getAssigned().length > 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(Basic.toString(nodeData.getAssigned(), " "));
+                                buf.append(Basic.toString(nodeData.getAssigned(), 0, nodeData.getAssigned().length, " ", true));
                             }
                         } else {
                             if (nodeData.getSummarized().length == 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(nodeData.getCountSummarized());
+                                buf.append(Math.round(nodeData.getCountSummarized()));
                             } else if (nodeData.getAssigned().length > 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(Basic.toString(nodeData.getSummarized(), " "));
+                                buf.append(Basic.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
                             }
                         }
                         if (buf.length() > 0 && !getLabelVisible(v))
@@ -1423,11 +1423,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                         if (nodeData.getSummarized().length == 1) {
                             if (buf.length() > 0)
                                 buf.append("; ");
-                            buf.append(nodeData.getCountSummarized());
+                            buf.append(Math.round(nodeData.getCountSummarized()));
                         } else if (nodeData.getAssigned().length > 1) {
                             if (buf.length() > 0)
                                 buf.append("; ");
-                            buf.append(Basic.toString(nodeData.getSummarized(), " "));
+                            buf.append(Basic.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
                         }
                         if (buf.length() > 0 && !getLabelVisible(v))
                             setLabelVisible(v, true); // explicitly set, make visible

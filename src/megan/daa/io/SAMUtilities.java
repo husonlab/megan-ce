@@ -19,6 +19,9 @@
 
 package megan.daa.io;
 
+import static megan.daa.io.Translator.FORWARD_SHIFT_CODE;
+import static megan.daa.io.Translator.REVERSE_SHIFT_CODE;
+
 /**
  * generates SAM lines
  * Daniel Huson, 8.2015
@@ -31,8 +34,10 @@ public class SAMUtilities {
     private static final String FILE_HEADER_BLASTX_TEMPLATE = "@HD\tVN:1.5\tSO:unsorted\tGO:query\n@PG\tID:1\tPN:MEGAN\tCL:%s\tDS:BlastX\n@RG\tID:1\tPL:unknown\tSM:unknown\n@CO\tBlastX-like alignments\n" +
             "@CO\tReporting AS: bitScore, ZR: rawScore, ZE: expected, ZI: percent identity, ZL: reference length, ZF: frame, ZS: query start DNA coordinate\n";
 
-    private static final int map[] = {0, 1, 2, 0};
-    private static final char letter[] = {'M', 'I', 'D'};
+    private static final int mapDaaOpCode2CigarOpCode[] = {0, 1, 2, 0}; // op_match -> M, op_insertion-> I, op_deletion-> D, op_substitution -> M
+    private static final char daaOpCode2CigarLetter[] = {'M', 'I', 'D'};
+
+    private static final CombinedOperation insertOperation = new CombinedOperation(PackedTranscript.EditOperation.op_insertion, 1, null);
 
     /**
      * create a sam line
@@ -46,10 +51,39 @@ public class SAMUtilities {
         buffer.write(matchRecord.getSubjectName());
         buffer.writeString(String.format("\t%d\t255\t", matchRecord.getSubjectBegin() + 1));
 
-        writeCigar(matchRecord, buffer);
+        final int frameShiftCorrection = computeFrameShiftCorrection(matchRecord.getTranscript());
+
+        final byte[][] cigarAndAlignedQueryAndMD;
+        if (frameShiftCorrection > 0) {
+            final int queryBegin = matchRecord.getQueryBegin();
+            final int queryEndUncorrected = matchRecord.getQueryEnd(); // query end position, in the case of BlastX, not taking frame shifts into account
+            int start;
+            byte[] querySequence;
+            if (queryBegin < queryEndUncorrected) { // positve frame
+                querySequence = matchRecord.getQueryRecord().getSourceSequence();
+                start = queryBegin;
+            } else { // negative frame
+                start = 0;
+                int queryEndCorrected = queryEndUncorrected + computeFrameShiftCorrection(matchRecord.getTranscript());
+                int length = queryBegin - queryEndCorrected + 1;
+                System.err.println(queryEndUncorrected + " -> " + queryEndCorrected + " - " + queryBegin + " len: " + length);
+                querySequence = Translator.getReverseComplement(matchRecord.getQueryRecord().getSourceSequence(), queryEndCorrected, length);
+            }
+            cigarAndAlignedQueryAndMD = computeCigarAndAlignedQueryAndMD(querySequence, start, queryAlphabet, matchRecord.getTranscript());
+        } else
+            cigarAndAlignedQueryAndMD = null;
+
+        if (cigarAndAlignedQueryAndMD == null)
+            writeCigar(matchRecord, buffer);
+        else
+            buffer.write(cigarAndAlignedQueryAndMD[0]);
 
         buffer.writeString("\t*\t0\t0\t");
-        buffer.write(Translator.translate(matchRecord.getQuery(), queryAlphabet, matchRecord.getTranslatedQueryBegin(), matchRecord.getTranslatedQueryLen()));
+        if (cigarAndAlignedQueryAndMD == null) {
+            buffer.write(Translator.translate(matchRecord.getQuery(), queryAlphabet, matchRecord.getTranslatedQueryBegin(), matchRecord.getTranslatedQueryLen()));
+        } else {
+            buffer.write(cigarAndAlignedQueryAndMD[1]);
+        }
         buffer.writeString("\t*\t");
 
         float bitScore = daaParser.getHeader().computeAlignmentBitScore(matchRecord.getScore());
@@ -59,9 +93,163 @@ public class SAMUtilities {
         buffer.writeString(
                 String.format("AS:i:%d\tNM:i:%d\tZL:i:%d\tZR:i:%d\tZE:f:%.1e\tZI:i:%d\tZF:i:%d\tZS:i:%d\tMD:Z:",
                         (int) bitScore, matchRecord.getLen() - matchRecord.getIdentities(), matchRecord.getTotalSubjectLen(), matchRecord.getScore(),
-                        evalue, percentIdentity, blastFrame, matchRecord.getQueryBegin() + 1));
-        writeMD(matchRecord, buffer, queryAlphabet);
+                        evalue, percentIdentity, blastFrame, matchRecord.getQueryBegin() + (matchRecord.getQueryBegin() < matchRecord.getQueryEnd() ? 1 : 0)));
+        if (cigarAndAlignedQueryAndMD == null)
+            writeMD(matchRecord, buffer, queryAlphabet);
+        else
+            buffer.write(cigarAndAlignedQueryAndMD[2]);
         buffer.write((byte) '\n');
+    }
+
+
+    /**
+     * compute the aligned query string, cigar and MD string
+     *
+     * @param queryDNA
+     * @param queryAlphabet
+     * @param editTranscript
+     * @return alignment, cigar and MD string
+     */
+    public static byte[][] computeCigarAndAlignedQueryAndMD(byte[] queryDNA, int start, byte[] queryAlphabet, PackedTranscript editTranscript) {
+        final ByteOutputBuffer alignedQueryBuf = new ByteOutputBuffer();
+        //final ByteOutputBuffer alignedReferenceBuf=new ByteOutputBuffer();
+        final ByteOutputBuffer cigarBuf = new ByteOutputBuffer();
+        final ByteOutputBuffer mdBuf = new ByteOutputBuffer();
+
+        // used in computation of cigar:
+        int previousCount = 0, previousOp = 0;
+
+        // used in computation of MD string:
+        int matches = 0, del = 0;
+
+        // current query position
+        int queryPosition = start;
+
+        for (CombinedOperation editOp : editTranscript.gather()) {
+            final CombinedOperation editOpCorrected;
+            // compute sequence:
+            switch (editOp.getEditOperation()) {
+                case op_match: {
+                    for (int i = 0; i < editOp.getCount(); i++) {
+                        byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
+                        alignedQueryBuf.write(aa);
+                        //alignedReferenceBuf.write(aa);
+                        queryPosition += 3;
+                    }
+                    editOpCorrected = editOp;
+                    break;
+                }
+                case op_insertion: {
+                    for (int i = 0; i < editOp.getCount(); i++) {
+                        byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
+                        alignedQueryBuf.write(aa);
+                        //alignedReferenceBuf.write((byte)'-');
+                        queryPosition += 3;
+                    }
+                    editOpCorrected = editOp;
+                    break;
+                }
+                case op_deletion: {
+                    byte c = queryAlphabet[editOp.getLetter()];
+                    //alignedQueryBuf.write((byte)'-');
+                    //alignedReferenceBuf.write(c);
+                    editOpCorrected = editOp;
+                    break;
+                }
+                // Key idea here: Although a frame shift in the query is really an insertion in the query,
+                // in a DAA file it is represented as a substitution by a / or \ in the reference, due to limitations due to the bit packed transcript encoding
+                case op_substitution: {
+                    byte c = queryAlphabet[editOp.getLetter()];
+                    if (c == '/') { // reverse shift
+                        alignedQueryBuf.write(c);
+                        //alignedReferenceBuf.write((byte)'-');
+                        queryPosition -= 1;
+                        editOpCorrected = insertOperation;
+                    } else if (c == '\\') {  // forward shift
+                        alignedQueryBuf.write(c);
+                        //alignedReferenceBuf.write((byte)'-');
+                        queryPosition += 1;
+                        editOpCorrected = insertOperation;
+                    } else {
+                        byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
+                        alignedQueryBuf.write(aa);
+                        //alignedReferenceBuf.write(c);
+                        queryPosition += 3;
+                        editOpCorrected = editOp;
+                    }
+                    break;
+                }
+                default:
+                    throw new RuntimeException("this should't happen");
+            }
+            // compute cigar:
+            if (mapDaaOpCode2CigarOpCode[editOpCorrected.getOpCode()] == previousOp)
+                previousCount += editOpCorrected.getCount();
+            else {
+                if (previousCount > 0)
+                    cigarBuf.writeString(String.format("%d", previousCount));
+                cigarBuf.write((byte) daaOpCode2CigarLetter[previousOp]);
+                previousCount = editOpCorrected.getCount();
+                previousOp = mapDaaOpCode2CigarOpCode[editOpCorrected.getOpCode()];
+            }
+            // compute md:
+            switch (editOpCorrected.getEditOperation()) {
+                case op_match:
+                    del = 0;
+                    matches += editOpCorrected.getCount();
+                    break;
+                case op_insertion:
+                    break;
+                case op_substitution:
+                    if (matches > 0) {
+                        mdBuf.writeString(String.format("%d", matches));
+                        matches = 0;
+                    } else if (del > 0) {
+                        mdBuf.write((byte) '0');
+                        del = 0;
+                    }
+                    mdBuf.write(queryAlphabet[editOpCorrected.getLetter()]);
+                    break;
+                case op_deletion:
+                    if (matches > 0) {
+                        mdBuf.writeString(String.format("%d", matches));
+                        matches = 0;
+                    }
+                    if (del == 0)
+                        mdBuf.write((byte) '^');
+                    mdBuf.write(queryAlphabet[editOpCorrected.getLetter()]);
+                    ++del;
+            }
+        }
+        if (previousCount > 0) { // finish cigar
+            cigarBuf.writeString(String.format("%d", previousCount));
+            cigarBuf.write((byte) daaOpCode2CigarLetter[previousOp]);
+        }
+        if (matches > 0) // finish md
+            mdBuf.writeString(String.format("%d", matches));
+        return new byte[][]{cigarBuf.copyBytes(), alignedQueryBuf.copyBytes(), mdBuf.copyBytes()};
+    }
+
+    /**
+     * compute the aligned query length correction required to accommodate frame shifts
+     *
+     * @param transcript
+     * @return frame shift correction
+     */
+    private static int computeFrameShiftCorrection(PackedTranscript transcript) {
+        int frameShiftCorrection = 0;
+
+        for (CombinedOperation editOp : transcript.gather()) {
+            // compute sequence:
+            if (editOp.getEditOperation() == PackedTranscript.EditOperation.op_substitution) {
+                if (editOp.getLetter() == REVERSE_SHIFT_CODE) {
+                    frameShiftCorrection += 4;
+                } else if (editOp.getLetter() == FORWARD_SHIFT_CODE) {
+                    frameShiftCorrection += 2;
+                }
+            }
+        }
+        return frameShiftCorrection;
     }
 
     /**
@@ -71,22 +259,22 @@ public class SAMUtilities {
      * @param buffer
      */
     private static void writeCigar(DAAMatchRecord match, ByteOutputBuffer buffer) {
-        int n = 0, op = 0;
+        int previousCount = 0, previousOp = 0;
 
         for (CombinedOperation cop : match.getTranscript().gather()) {
-            if (map[cop.getOpCode()] == op)
-                n += cop.getCount();
+            if (mapDaaOpCode2CigarOpCode[cop.getOpCode()] == previousOp)
+                previousCount += cop.getCount();
             else {
-                if (n > 0)
-                    buffer.writeString(String.format("%d", n));
-                buffer.write((byte) letter[op]);
-                n = cop.getCount();
-                op = map[cop.getOpCode()];
+                if (previousCount > 0)
+                    buffer.writeString(String.format("%d", previousCount));
+                buffer.write((byte) daaOpCode2CigarLetter[previousOp]);
+                previousCount = cop.getCount();
+                previousOp = mapDaaOpCode2CigarOpCode[cop.getOpCode()];
             }
         }
-        if (n > 0) {
-            buffer.writeString(String.format("%d", n));
-            buffer.write((byte) letter[op]);
+        if (previousCount > 0) {
+            buffer.writeString(String.format("%d", previousCount));
+            buffer.write((byte) daaOpCode2CigarLetter[previousOp]);
         }
     }
 
@@ -100,11 +288,11 @@ public class SAMUtilities {
     private static void writeMD(DAAMatchRecord match, ByteOutputBuffer buffer, byte[] queryAlphabet) {
         {
             int matches = 0, del = 0;
-            for (CombinedOperation cop : match.getTranscript().gather()) {
-                switch (cop.getEditOperation()) {
+            for (CombinedOperation editOp : match.getTranscript().gather()) {
+                switch (editOp.getEditOperation()) {
                     case op_match:
                         del = 0;
-                        matches += cop.getCount();
+                        matches += editOp.getCount();
                         break;
                     case op_insertion:
                         break;
@@ -116,7 +304,7 @@ public class SAMUtilities {
                             buffer.write((byte) '0');
                             del = 0;
                         }
-                        buffer.write(queryAlphabet[cop.getLetter()]);
+                        buffer.write(queryAlphabet[editOp.getLetter()]);
                         break;
                     case op_deletion:
                         if (matches > 0) {
@@ -125,7 +313,7 @@ public class SAMUtilities {
                         }
                         if (del == 0)
                             buffer.write((byte) '^');
-                        buffer.write(queryAlphabet[cop.getLetter()]);
+                        buffer.write(queryAlphabet[editOp.getLetter()]);
                         ++del;
                 }
             }

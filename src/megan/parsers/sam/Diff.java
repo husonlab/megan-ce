@@ -122,7 +122,7 @@ public class Diff {
                 element.type = Type.MATCH;
                 element.count = i;
                 differences.add(element);
-            } else if (Character.isLetter(ch) || ch == '.') {
+            } else if (isLetterOrFrameShift(ch) || ch == '.') {
                 DiffElement element = new DiffElement();
                 element.type = Type.REPLACE;
                 element.what = "" + (char) ch;
@@ -131,7 +131,7 @@ public class Diff {
             } else if (ch == '^') {
                 pos++;
                 int a = pos;
-                while (pos < diff.length() && (Character.isLetter(diff.charAt(pos)) || diff.charAt(pos) == '.'))
+                while (pos < diff.length() && (isLetterOrFrameShift(diff.charAt(pos)) || diff.charAt(pos) == '.'))
                     pos++;
                 DiffElement element = new DiffElement();
                 element.type = Type.INSERT;
@@ -152,6 +152,10 @@ public class Diff {
         Type type;
         int count;
         String what;
+    }
+
+    private static boolean isLetterOrFrameShift(int c) {
+        return Character.isLetter(c) || c == '\\' || c == '/';
     }
 
     private static boolean isGap(char c) {

@@ -20,6 +20,7 @@ package megan.core;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
@@ -48,7 +49,7 @@ public class SyncArchiveAndDataTable {
      * @param table
      * @throws IOException
      */
-    static public void syncRecomputedArchive2Summary(boolean useWeights, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
+    static public void syncRecomputedArchive2Summary(boolean useWeightsForTaxonomy, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
         String[] classifications = connector.getAllClassificationNames();
         table.clear();
         table.setCreator(ProgramProperties.getProgramName());
@@ -62,7 +63,7 @@ public class SyncArchiveAndDataTable {
         for (String classification : classifications) {
             IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
-                syncClassificationBlock2Summary(useWeights, 0, 1, classificationBlock, table);
+                syncClassificationBlock2Summary(useWeightsForTaxonomy, 0, 1, classificationBlock, table);
         }
     }
 
@@ -73,7 +74,7 @@ public class SyncArchiveAndDataTable {
      * @param connector
      * @param table
      */
-    public static void syncArchive2Summary(boolean useWeights, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
+    public static void syncArchive2Summary(boolean useWeightsForTaxonomy, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
         table.clear();
         Map<String, byte[]> label2data = connector.getAuxiliaryData();
         if (label2data.containsKey(SampleAttributeTable.USER_STATE)) {
@@ -104,7 +105,7 @@ public class SyncArchiveAndDataTable {
         for (String classification : classifications) {
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
-                syncClassificationBlock2Summary(useWeights, 0, 1, classificationBlock, table);
+                syncClassificationBlock2Summary(useWeightsForTaxonomy, 0, 1, classificationBlock, table);
         }
     }
 
@@ -116,6 +117,9 @@ public class SyncArchiveAndDataTable {
      * @param table
      */
     static public void syncClassificationBlock2Summary(boolean useWeights, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
+        if (useWeights && !classificationBlock.getName().equals(Classification.Taxonomy))
+            useWeights = false; // don't use weights unless taxonomy...
+
         final Map<Integer, float[]> classId2count = new HashMap<>();
         table.setClass2Counts(classificationBlock.getName(), classId2count);
 

@@ -65,7 +65,7 @@ public class ParametersDialog extends JDialog {
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
 
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
-    private final JCheckBox longReadsCBox = new JCheckBox("Parsed as Long Reads");
+    private final JCheckBox longReadsCBox = new JCheckBox("Parse as Long Reads");
 
     private final JCheckBox useMagnitudesCBox = new JCheckBox("Use Read Magnitudes");
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
@@ -100,7 +100,6 @@ public class ParametersDialog extends JDialog {
 
         lcaAlgorithmComboBox.setEditable(false);
         for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-            // todo: what this item to be present, but disabled
             if (algorithm != Document.LCAAlgorithm.NaiveMultiGene || doc.isLongReads())
                 lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
@@ -155,7 +154,7 @@ public class ParametersDialog extends JDialog {
     /**
      * construct the parameters panel
      */
-    private JPanel makeLCAParametersPanel(Document doc) {
+    private JPanel makeLCAParametersPanel(final Document doc) {
         final JTabbedPane tabbedPane = new JTabbedPane();
 
         // first tab:
@@ -369,8 +368,24 @@ public class ParametersDialog extends JDialog {
             pairReadsCBox.setToolTipText("Process paired reads together (will only work if reads were imported as pairs)");
 
             aPanel.add(longReadsCBox);
-            longReadsCBox.setToolTipText("Reads were parsed as 'long reads'");
+            longReadsCBox.setToolTipText("Reads parsed as 'long reads'");
             longReadsCBox.setEnabled(doc.getConnector() instanceof DAAConnector); // can only change this if is DAA file because reads are sorted during
+            longReadsCBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    lcaAlgorithmComboBox.removeAllItems();
+                    for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
+                        if (algorithm != Document.LCAAlgorithm.NaiveMultiGene || longReadsCBox.isSelected()) {
+                            lcaAlgorithmComboBox.addItem(algorithm.toString());
+                        }
+                    }
+                    if (lcaAlgorithmComboBox.getItemCount() <= 2)
+                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
+                    else if (lcaAlgorithmComboBox.getItemCount() > 2)
+                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(2));
+
+                }
+            });
 
             aPanel.add(useMagnitudesCBox);
             useMagnitudesCBox.setToolTipText("Parse and use read magnitudes (given e.g. as magnitude|99 in read header line0");

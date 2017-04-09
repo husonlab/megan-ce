@@ -305,7 +305,7 @@ public class DataProcessor {
 
             progress.setCancelable(false); // can't cancel beyond here because file could be left in undefined state
 
-            doc.setNumberReads(Math.round(totalWeight));
+            doc.setNumberReads(numberOfReadsFound);
 
             // If min support percentage is set, set the min support:
             if (doc.getMinSupportPercent() > 0) {

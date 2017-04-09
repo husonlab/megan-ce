@@ -112,7 +112,7 @@ public class DAAHeader {
                     throw new IOException("Input file is not a DAA file.");
                 version = ins.readLong();
                 if (version > DAA_VERSION)
-                    throw new IOException("DAA version requires later version of MEGAN.");
+                    throw new IOException("DAA version not supported by this version of MEGAN.");
 
                 diamondBuild = ins.readLong();
                 dbSeqs = ins.readLong();

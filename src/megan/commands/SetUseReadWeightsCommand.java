@@ -19,7 +19,6 @@
 package megan.commands;
 
 import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.director.IDirectableViewer;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
@@ -41,14 +40,10 @@ public class SetUseReadWeightsCommand extends megan.importblast.commands.Command
         np.matchIgnoreCase("set useReadWeights=");
         boolean use = np.getBoolean();
         np.matchIgnoreCase(";");
-        for (IDirectableViewer viewer : getDir().getViewers()) {
-            if (!(viewer instanceof MainViewer))
-                viewer.destroyView();
-        }
         final Document doc = getDoc();
         doc.setUseWeightedReadCounts(use);
-        getDir().getDocument().reloadFromConnector();
-        doc.setUseWeightedReadCounts(use); // value got overwriting during reload
+        doc.setDirty(true);
+        doc.reloadFromConnector(doc.getParameterString());
         getDir().getMainViewer().updateData();
         getDir().getMainViewer().updateTree();
         getDir().getMainViewer().setDoReInduce(true);
@@ -60,8 +55,7 @@ public class SetUseReadWeightsCommand extends megan.importblast.commands.Command
     }
 
     public boolean isApplicable() {
-        final Document doc = getDoc();
-        return doc.getNumberOfReads() > 0 && doc.getMeganFile().hasDataConnector();
+        return getViewer() instanceof MainViewer && getDoc().getNumberOfReads() > 0 && getDoc().getMeganFile().hasDataConnector();
     }
 
     public static final String NAME = "Use Read Weights for Assignments";
@@ -71,7 +65,8 @@ public class SetUseReadWeightsCommand extends megan.importblast.commands.Command
     }
 
     public String getDescription() {
-        return "Request that displayed assignment values reflect read weights rather than read counts.\nOnly makes sense when reads have magnitudes or when using long read mode.";
+        return "Request that assignments displayed in main taxonomy viewer reflect read weights rather than read counts.\n" +
+                "Only makes sense when reads have magnitudes or when using long read mode.";
     }
 
     public ImageIcon getIcon() {

@@ -1015,7 +1015,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             for (int i = 0; i < query.length(); i++) {
                 char ch = query.charAt(i);
                 if (ch == '/') // reverse shift by 1
-                    length -= 4; // single letter is counted above as 3 nucleotides, but this is  a rervse shift by 1, so above we overcounted by 4
+                    length -= 4; // single letter is counted above as 3 nucleotides, but this is  a reverse shift by 1, so above we overcounted by 4
                 else if (ch == '\\') // forward shift by 1
                     length -= 2; // a single letter is counted above as 3 nucleotides, but this is only a forward shift by 1, so above we overcounted by 2
             }

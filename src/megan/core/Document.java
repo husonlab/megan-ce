@@ -53,6 +53,7 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
 public class Document {
     public enum LCAAlgorithm {
         Naive, Weighted, NaiveMultiGene;
+
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
         }
@@ -152,6 +153,7 @@ public class Document {
 
     /**
      * setup the chart color manager
+     *
      * @param useProgramColorTable
      */
     public void setupChartColorManager(boolean useProgramColorTable) {
@@ -187,7 +189,7 @@ public class Document {
         clearReads();
         getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
         if (getMeganFile().hasDataConnector()) {
-            reloadFromConnector();
+            reloadFromConnector(null);
         } else if (getMeganFile().isMeganSummaryFile()) {
             loadMeganSummaryFile();
         } else
@@ -201,22 +203,25 @@ public class Document {
      *
      * @throws IOException
      */
-    public void reloadFromConnector() throws IOException {
+    public void reloadFromConnector(String parametersOverride) throws IOException {
         if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
-            SyncArchiveAndDataTable.syncArchive2Summary(isUseWeightedReadCounts(), meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
+            SyncArchiveAndDataTable.syncArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
 
-            if (dataTable.getTotalReads() == 0 && connector.getNumberOfReads() > 0) {
-                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getName(), "merge", dataTable.getBlastMode(), "", connector, dataTable, 0);
-            }
             setNumberReads(getDataTable().getTotalReads());
             setAdditionalReads(getDataTable().getAdditionalReads());
             getActiveViewers().clear();
             getActiveViewers().addAll(Arrays.asList(connector.getAllClassificationNames()));
-            String parameters = getDataTable().getParameters();
+
+            final String parameters = (parametersOverride != null ? parametersOverride : getDataTable().getParameters());
             if (parameters != null) {
                 parseParameterString(parameters);
             }
+
+            if (connector.getNumberOfReads() > 0) {
+                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getName(), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
+            }
+
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);
             loadColorTableFromDataTable();
         }

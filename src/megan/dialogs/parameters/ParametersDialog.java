@@ -338,8 +338,10 @@ public class ParametersDialog extends JDialog {
             lcaAlgorithmComboBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
-                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
+                    if (lcaAlgorithmComboBox.getSelectedItem() != null) {
+                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
+                        ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
+                    }
                 }
             });
 
@@ -383,7 +385,7 @@ public class ParametersDialog extends JDialog {
                         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
                     else if (lcaAlgorithmComboBox.getItemCount() > 2)
                         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(2));
-
+                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                 }
             });
 

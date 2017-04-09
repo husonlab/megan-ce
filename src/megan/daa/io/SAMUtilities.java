@@ -66,7 +66,7 @@ public class SAMUtilities {
                 start = 0;
                 int queryEndCorrected = queryEndUncorrected + computeFrameShiftCorrection(matchRecord.getTranscript());
                 int length = queryBegin - queryEndCorrected + 1;
-                System.err.println(queryEndUncorrected + " -> " + queryEndCorrected + " - " + queryBegin + " len: " + length);
+                //System.err.println(queryEndUncorrected + " -> " + queryEndCorrected + " - " + queryBegin + " len: " + length);
                 querySequence = Translator.getReverseComplement(matchRecord.getQueryRecord().getSourceSequence(), queryEndCorrected, length);
             }
             cigarAndAlignedQueryAndMD = computeCigarAndAlignedQueryAndMD(querySequence, start, queryAlphabet, matchRecord.getTranscript());

@@ -52,7 +52,7 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
  */
 public class Document {
     public enum LCAAlgorithm {
-        Naive, Weighted, NaiveMultiGene;
+        Naive, Weighted, NaiveMultiGene, CoverageMultiGene;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
@@ -79,6 +79,8 @@ public class Document {
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM = LCAAlgorithm.Naive;
     public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
+    public final static float DEFAULT_MIN_PERCENT_READ_COVERED = 0f;
+
     public static final boolean DEFAULT_USE_IDENTITY = false;
     public static final boolean DEFAULT_LONG_READS = false;
 
@@ -93,6 +95,8 @@ public class Document {
     private float weightedLCAPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
+
+    private float minPercentReadCovered = DEFAULT_MIN_PERCENT_READ_COVERED;
 
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
 
@@ -264,15 +268,19 @@ public class Document {
                     setLcaAlgorithm(LCAAlgorithm.Weighted);
                 else if (np.findIgnoreCase(tokens, "weightedLCA=false", true, false))
                     setLcaAlgorithm(LCAAlgorithm.Naive);
-                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Naive.toString()))
-                    setLcaAlgorithm(LCAAlgorithm.Naive);
-                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.Weighted.toString()))
-                    setLcaAlgorithm(LCAAlgorithm.Weighted);
-                else if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + LCAAlgorithm.NaiveMultiGene.toString()))
-                    setLcaAlgorithm(LCAAlgorithm.NaiveMultiGene);
+
+                for (LCAAlgorithm algorithm : LCAAlgorithm.values()) {
+                    if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + algorithm, true, false)) {
+                        setLcaAlgorithm(algorithm);
+                        break;
+                    }
+                }
 
                 setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
+
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
+
+                setMinPercentReadCovered(np.findIgnoreCase(tokens, "minPercentReadCovered=", getMinPercentReadCovered()));
 
                 if (np.findIgnoreCase(tokens, "longReads=true", true, false))
                     setLongReads(true);
@@ -334,9 +342,12 @@ public class Document {
         buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-        if (getLcaAlgorithm().equals(LCAAlgorithm.Weighted))
+        if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageMultiGene)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
+        if (getMinPercentReadCovered() > 0)
+            buf.append(" minPercentReadCovered=").append(getMinPercentReadCovered());
+
         if (isLongReads())
             buf.append(" longReads=true");
         if (isPairedReads())
@@ -508,6 +519,9 @@ public class Document {
             getDataTable().setColorTable(getChartColorManager().getColorTableName(), getChartColorManager().isColorByPosition(), getChartColorManager().getHeatMapTable().getName());
             getDataTable().setColorEdits(getChartColorManager().getColorEdits());
 
+            if (getDataTable().getParameters() == null || getDataTable().getParameters().isEmpty())
+                getDataTable().setParameters(getParameterString());
+
             byte[] userState = getDataTable().getUserStateAsBytes();
             byte[] sampleAttributes = getSampleAttributeTable().getBytes();
 
@@ -571,6 +585,14 @@ public class Document {
      */
     public void setMinComplexity(float minComplexity) {
         this.minComplexity = minComplexity;
+    }
+
+    public float getMinPercentReadCovered() {
+        return minPercentReadCovered;
+    }
+
+    public void setMinPercentReadCovered(float minPercentReadCovered) {
+        this.minPercentReadCovered = minPercentReadCovered;
     }
 
     public void setLcaAlgorithm(LCAAlgorithm lcaAlgorithm) {
@@ -993,7 +1015,10 @@ public class Document {
                     if (getMeganFile().isReadOnly())
                         System.err.println("File is read-only, discarding changes");
                     else {
-                        saveAuxiliaryData();
+                        if (getParameterString() != null)
+                            saveAuxiliaryData();
+                        else
+                            System.err.println("Parameter string is null...");
                     }
                 }
                 MeganFile.removeUIdFromSetOfOpenFiles(getMeganFile().getName(), getMeganFile().getConnector().getUId());

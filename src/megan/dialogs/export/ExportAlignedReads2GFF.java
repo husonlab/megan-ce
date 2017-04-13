@@ -58,7 +58,6 @@ public class ExportAlignedReads2GFF {
             final BlastMode blastMode = cViewer.getDir().getDocument().getBlastMode();
 
             final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final boolean taxonomyClassification = classification.getName().equals(Classification.Taxonomy);
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 w.write(getHeader());

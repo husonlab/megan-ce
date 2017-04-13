@@ -85,6 +85,10 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
             np.matchIgnoreCase("minComplexity=");
             getDoc().setMinComplexity((float) np.getDouble(-1.0, 1.0));
         }
+        if (np.peekMatchIgnoreCase("minPercentReadCovered")) {
+            np.matchIgnoreCase("minPercentReadCovered=");
+            getDoc().setMinPercentReadCovered((float) np.getDouble(0, 100));
+        }
         if (np.peekMatchIgnoreCase("longReads")) {
             np.matchIgnoreCase("longReads=");
             getDoc().setLongReads(np.getBoolean());

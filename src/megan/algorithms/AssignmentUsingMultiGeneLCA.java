@@ -148,10 +148,6 @@ public class AssignmentUsingMultiGeneLCA extends AssignmentUsingLCAForTaxonomy i
                 activeMatches.set(i);
         }
 
-        if (readBlock.getReadHeader().contains("R1.94")) {
-            System.err.println(readBlock.getReadName());
-        }
-
         // 1. separate alignments by query coordinates into bins
         taxonId2Intervals.clear();
         taxonId2BitScore.clear();

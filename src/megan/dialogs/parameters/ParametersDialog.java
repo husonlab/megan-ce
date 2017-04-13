@@ -62,6 +62,9 @@ public class ParametersDialog extends JDialog {
     private final JTextField minComplexityField = new JTextField(8);
     private final JTextField weightedLCAPercentField = new JTextField(8);
 
+    private final JTextField minPercentReadCovered = new JTextField(8);
+
+
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
 
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
@@ -100,7 +103,7 @@ public class ParametersDialog extends JDialog {
 
         lcaAlgorithmComboBox.setEditable(false);
         for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-            if (algorithm != Document.LCAAlgorithm.NaiveMultiGene || doc.isLongReads())
+            if ((algorithm != Document.LCAAlgorithm.NaiveMultiGene && algorithm != Document.LCAAlgorithm.CoverageMultiGene) || doc.isLongReads())
                 lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());
@@ -339,9 +342,11 @@ public class ParametersDialog extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (lcaAlgorithmComboBox.getSelectedItem() != null) {
-                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
                         ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
+                        weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
+                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageMultiGene));
                     }
+
                 }
             });
 
@@ -361,7 +366,8 @@ public class ParametersDialog extends JDialog {
                 }
             });
             weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
-            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
+                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageMultiGene));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
@@ -377,7 +383,7 @@ public class ParametersDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     lcaAlgorithmComboBox.removeAllItems();
                     for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-                        if (algorithm != Document.LCAAlgorithm.NaiveMultiGene || longReadsCBox.isSelected()) {
+                        if (algorithm != Document.LCAAlgorithm.NaiveMultiGene && algorithm != Document.LCAAlgorithm.CoverageMultiGene || longReadsCBox.isSelected()) {
                             lcaAlgorithmComboBox.addItem(algorithm.toString());
                         }
                     }
@@ -449,8 +455,8 @@ public class ParametersDialog extends JDialog {
                         if (useLCAButton instanceof ICheckBoxCommand)
                             useLCAButton.setSelected(((ICheckBoxCommand) useLCACommand).isSelected());
                         useLCAButton.setEnabled(useLCACommand.isApplicable());
+                        useLCAButton.setText("Use LCA to analyze " + cName + " data");
                         bPanel.add(useLCAButton);
-                        bPanel.add(new Label(" to analyze " + cName + " data"));
                         aPanel.add(bPanel);
                         add = true;
                     }
@@ -459,6 +465,32 @@ public class ParametersDialog extends JDialog {
                 Basic.caught(e);
             }
             aPanel.add(Box.createVerticalGlue());
+            {
+                JPanel line = new JPanel();
+                line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
+                line.add(new JLabel("Min Percent Read Covered: "));
+                minPercentReadCovered.setText("" + doc.getMinPercentReadCovered());
+                minPercentReadCovered.setMaximumSize(new Dimension(100, 26));
+                line.add(minPercentReadCovered);
+                minPercentReadCovered.setToolTipText("Minimum percent of read that has to be covered for read to be binned");
+                minPercentReadCovered.getDocument().addDocumentListener(new DocumentListener() {
+                    public void insertUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+
+                    public void removeUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+
+                    public void changedUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+                });
+                aPanel.add(line);
+            }
+            aPanel.add(Box.createVerticalGlue());
+            aPanel.add(Box.createVerticalGlue());
+
             if (add)
                 tabbedPane.add("Advanced", aPanel);
         }
@@ -486,7 +518,7 @@ public class ParametersDialog extends JDialog {
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
-        return value;
+        return Math.max(0, Math.min(100, value));
     }
 
     public double getMaxExpected() {
@@ -516,7 +548,7 @@ public class ParametersDialog extends JDialog {
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
-        return value;
+        return Math.max(0, Math.min(100, value));
     }
 
     public void setMinScore(double value) {
@@ -561,6 +593,20 @@ public class ParametersDialog extends JDialog {
 
     public void setMinComplexity(double value) {
         minComplexityField.setText("" + (float) value);
+    }
+
+    public void setMinPercentReadCovered(double value) {
+        minPercentReadCovered.setText("" + (float) value);
+    }
+
+    public double getMinPercentReadCovered() {
+        double value = Document.DEFAULT_MIN_PERCENT_READ_COVERED;
+        try {
+            value = Double.parseDouble(minPercentReadCovered.getText());
+        } catch (NumberFormatException e) {
+            Basic.caught(e);
+        }
+        return Math.max(0, Math.min(100, value));
     }
 
     public void setMinPercentIdentity(double value) {
@@ -625,8 +671,11 @@ public class ParametersDialog extends JDialog {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
-                " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
+                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageMultiGene ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
+                " minComplexity=" + getMinComplexity() +
+                (getMinPercentReadCovered() > 0 ? " minPercentReadCovered=" + getMinPercentReadCovered() : "") +
+
+                " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }

@@ -347,4 +347,24 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
             covered += (b - a) + 1;
         return covered;
     }
+
+    /**
+     * compute the number of positions covered
+     *
+     * @return covered
+     */
+    public int getCovered() {
+        int covered = 0;
+        int start = Integer.MIN_VALUE;
+        int end = Integer.MIN_VALUE;
+        for (Interval<T> interval : intervals()) {
+            if (interval.getStart() > end) {
+                covered += ((end - start) + 1);
+                start = interval.getStart();
+            }
+            end = interval.getEnd();
+        }
+        covered += (end - start);
+        return covered;
+    }
 }

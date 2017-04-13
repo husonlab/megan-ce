@@ -105,7 +105,7 @@ public class SortLastMAFAlignmentsByQuery {
                 while (it.hasNext()) {
                     String line = it.next();
                     if (line.startsWith("#")) {
-                        if (inInitialComments) {
+                        if (inInitialComments && !line.startsWith("# batch")) {
                             w.write(line);
                             w.write('\n');
                         }

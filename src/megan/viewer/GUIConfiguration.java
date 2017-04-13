@@ -42,7 +42,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Server", "Set Server Credentials...;;|;Add User...;Add Metadata...;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Export", "CSV Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
+        menuConfig.defineMenu("Export", "CSV Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;Export Reads in GFF Format...;Export Read Lengths and Coverage...;|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Edit Node Label;Edit Edge Label;Description...;|;Format...;|;Find...;Find Again;|;Colors...;|;@Preferences;");
@@ -52,7 +52,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Accession Parsing", "First Word Is Accession;Set Accession Tags;");
         menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;");
 
-        menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;|;Invert;|;Select By Rank;");
+        menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;|;Invert;|;Select By Rank;|;Scroll To Selected;");
 
         menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Layout Labels;|;Scale Nodes By Assigned;Scale Nodes By Summarized;"
                 + "Set Max Node Height...;|;Zoom To Selection;|;Fully Contract;Fully Expand;|;"

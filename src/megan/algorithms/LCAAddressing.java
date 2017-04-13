@@ -77,10 +77,10 @@ public class LCAAddressing {
      * given a set of addresses, returns the common prefix.
      *
      * @param addresses
-     * @param ignorePrefixes ignore prefixes of longer addresses
+     * @param ignoreAncestors ignore ancestors, i.e. ignore prefixes of longer addresses
      * @return prefix
      */
-    public static String getCommonPrefix(final Collection<String> addresses, boolean ignorePrefixes) {
+    public static String getCommonPrefix(final Collection<String> addresses, boolean ignoreAncestors) {
         if (addresses.size() == 0)
             return "";
         else if (addresses.size() == 1)
@@ -94,7 +94,7 @@ public class LCAAddressing {
                     reference = other;
                 } else {
                     // if most specific requested, use longest sequence as reference, else use shortest
-                    if (ignorePrefixes && other.length() > reference.length() || !ignorePrefixes && other.length() < reference.length()) {
+                    if (ignoreAncestors && other.length() > reference.length() || !ignoreAncestors && other.length() < reference.length()) {
                         reference = other;
                     }
                 }

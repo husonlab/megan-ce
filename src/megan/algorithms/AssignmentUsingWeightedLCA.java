@@ -186,10 +186,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             // compute LCA using addresses:
             if (arrayLength > 0) {
                 final String address = computeWeightedLCA(percentToCover, addressingArray, arrayLength);
-                Integer id = fullTree.getAddress2Id(address);
-                if (id == null) {
-                    System.err.println("WCA: internal error, address not mapped");
-                } else if (id > 0) {
+                int id = fullTree.getAddress2Id(address);
+                if (id > 0) {
                     if (useIdentityFilter) {
                         return AssignmentUsingLCAForTaxonomy.adjustByPercentIdentity(id, activeMatches, readBlock, fullTree, name2IdMap);
                     }
@@ -219,6 +217,24 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             return id1;
         else
             return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2, false));
+    }
+
+    /**
+     * compute the weight LCA for a set of taxa and weights
+     *
+     * @param percentToCover
+     * @param taxon2weight
+     * @return LCA address
+     */
+    public String computeWeightedLCA(final float percentToCover, final Map<Integer, Integer> taxon2weight) {
+        int arrayLength = 0;
+        for (Integer taxonId : taxon2weight.keySet()) {
+            if (addressingArray.length == arrayLength) {
+                AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+            }
+            addressingArray[arrayLength++].set(fullTree.getAddress(taxonId), taxon2weight.get(taxonId));
+        }
+        return computeWeightedLCA(percentToCover, addressingArray, arrayLength);
     }
 
     /**
@@ -372,6 +388,14 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         return result;
     }
 
+    public float getPercentToCover() {
+        return percentToCover;
+    }
+
+    public ClassificationFullTree getFullTree() {
+        return fullTree;
+    }
+
     /**
      * address and weight
      */
@@ -421,27 +445,5 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         public String toString() {
             return "[" + toNumbers(address) + "," + weight + "]";
         }
-    }
-
-    public static void main(String[] args) {
-        List<WeightedAddress> list = new LinkedList<>();
-
-        list.add(new WeightedAddress("a", 0));
-        list.add(new WeightedAddress("aa", 0));
-        list.add(new WeightedAddress("aaa", 20));
-        list.add(new WeightedAddress("aaaa", 20));
-        list.add(new WeightedAddress("aaab", 10));
-        list.add(new WeightedAddress("aaab", 10));
-
-        list.add(new WeightedAddress("aaba", 5));
-        list.add(new WeightedAddress("aaba", 5));
-        list.add(new WeightedAddress("aabb", 5));
-        list.add(new WeightedAddress("aabc", 5));
-
-        list.add(new WeightedAddress("ab", 20));
-
-        WeightedAddress[] array = list.toArray(new WeightedAddress[list.size()]);
-
-        System.err.println("GOT: " + (new AssignmentUsingWeightedLCA()).computeWeightedLCA(75, array, array.length));
     }
 }

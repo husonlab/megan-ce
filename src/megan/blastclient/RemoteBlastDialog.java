@@ -104,8 +104,9 @@ public class RemoteBlastDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     final File readsFile = ChooseFileDialog.chooseFileToSave(viewer.getFrame(), new File(fileNameField.getText()), new FastaFileFilter(), new FastaFileFilter(), null, "Save READS file", ".fasta");
-                    if (readsFile != null)
+                    if (readsFile != null) {
                         fileNameField.setText(readsFile.getPath());
+                    }
                 }
             });
             browseButton.setEnabled(needToSaveReads);
@@ -214,6 +215,8 @@ public class RemoteBlastDialog {
             public void actionPerformed(ActionEvent e) {
                 try {
                     final String readsFile = fileNameField.getText().trim();
+                    ProgramProperties.put("RemoteBlastDir", (new File(readsFile)).getParent());
+
 
                     if (readsFile.length() > 0) {
                         if (needToSaveReads) {
@@ -221,7 +224,7 @@ public class RemoteBlastDialog {
                             final Collection<Pair<String, String>> pairs = readsProvider.getReads(maxNumberRemoteBlastReads + 1);
                             if (pairs.size() > maxNumberRemoteBlastReads) {
                                 System.err.println("Number of reads (" + readsProvider.isReadsAvailable() + ") exceeds MaxNumberRemoteBlastReads (" + maxNumberRemoteBlastReads + ")");
-                                System.err.println("Use 'setprop MaxNumberRemoteBlastReads=X' to change to limit to X");
+                                System.err.println("Use 'setprop MaxNumberRemoteBlastReads=X' to change limit to X");
                             }
 
                             int count = 0;

@@ -91,7 +91,6 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
      * @return number of matches
      */
     public int next() {
-
         if (mafMatch[0] == null)
             return -1; // at end of file
 
@@ -127,7 +126,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                     final int frame = (queryReversed ? -1 : 1) * ((queryStart - 1) % 3 + 1); // do this before changing start to reflect reversed sequence
 
                     if (queryReversed) {
-                        queryStart = queryLength - queryStart;
+                        queryStart = queryLength - queryStart + 1;
                         queryEnd = queryStart - queryAlignmentLength + 1;
                     } else {
                         queryEnd = queryStart + queryAlignmentLength - 1;

@@ -44,6 +44,11 @@ public class SetUseReadWeightsCommand extends megan.importblast.commands.Command
         doc.setUseWeightedReadCounts(use);
         doc.setDirty(true);
         doc.reloadFromConnector(doc.getParameterString());
+        // need to write this back (it gets cleaned away during reload...)
+        if (doc.getDataTable().getParameters() == null || doc.getDataTable().getParameters().isEmpty())
+            doc.getDataTable().setParameters(doc.getParameterString());
+
+
         getDir().getMainViewer().updateData();
         getDir().getMainViewer().updateTree();
         getDir().getMainViewer().setDoReInduce(true);

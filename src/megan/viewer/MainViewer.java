@@ -34,6 +34,7 @@ import megan.commands.CloseCommand;
 import megan.commands.SaveCommand;
 import megan.core.DataTable;
 import megan.core.Director;
+import megan.core.Document;
 import megan.core.SelectionSet;
 import megan.dialogs.compare.Comparer;
 import megan.main.MeganProperties;
@@ -230,6 +231,9 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             if (disabledTaxa != null && disabledTaxa.size() > 0)
                 buf2.append(String.format(" disabledTaxa=%,d", disabledTaxa.size()));
             if (doc.isUseIdentityFilter())
+                buf2.append(" UseIdentityFilter=true");
+            if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.CoverageMultiGene)
+                buf2.append(String.format(" weightedLCAPercent=%d", Math.round(doc.getWeightedLCAPercent())));
                 buf2.append(" UseIdentityFilter=true");
         } else {
             buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));

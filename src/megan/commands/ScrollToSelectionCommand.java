@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -18,28 +18,27 @@
  */
 package megan.commands;
 
-import jloda.graph.Node;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
+import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * scroll to a specific node
  * Daniel Huson, 8.2011
  */
-public class ScrollToNodeCommand extends CommandBase implements ICommand {
+public class ScrollToSelectionCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *
      * @return name
      */
     public String getName() {
-        return "Scroll To...";
+        return "Scroll To Selected";
     }
 
     /**
@@ -48,7 +47,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Scroll to a specific node";
+        return "Scroll to a selected node";
     }
 
     /**
@@ -57,7 +56,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return null;
+        return ResourceManager.getIcon("ZoomToSelection16.gif");
     }
 
     /**
@@ -77,29 +76,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("scrollTo node=");
-        String name = np.getWordRespectCase();
-        np.matchWordIgnoreCase(";");
-
-        if (getViewer() instanceof ViewerBase) {
-            ViewerBase viewerBase = (ViewerBase) getViewer();
-            if (name.equalsIgnoreCase("selected")) {
-                List<String> labels = viewerBase.getSelectedNodeLabels(true);
-                if (labels.size() > 0) {
-                    name = labels.get(0);
-                } else
-                    return;
-            }
-
-            for (Node v = viewerBase.getGraph().getFirstNode(); v != null; v = v.getNext()) {
-                String label = viewerBase.getLabel(v);
-                if (label != null && label.equals(name)) {
-                    viewerBase.scrollToNode(v);
-                    break;
-                }
-                }
-            }
-        }
+    }
 
     /**
      * is this a critical command that can only be executed when no other command is running?
@@ -117,7 +94,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "scrollTo node={<name>|selected};";
+        return null;
     }
 
     /**
@@ -126,7 +103,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getGraph().getNumberOfNodes() > 0;
+        return getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getSelectedNodes().size() > 0;
     }
 
     /**
@@ -136,11 +113,6 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        String input = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter label of node to scroll to", "None");
-        if (input != null) {
-            input = input.trim();
-            if (input.length() > 0)
-                execute("scrollTo node='" + input + "';");
-        }
+        execute("scrollTo node=selected;");
     }
 }

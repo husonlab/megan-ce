@@ -58,13 +58,15 @@ public class DataProcessor {
 
             final int numberOfClassifications = doc.getActiveViewers().size();
             final String[] cNames = doc.getActiveViewers().toArray(new String[numberOfClassifications]);
+            final boolean[] useLCAForClassification = new boolean[numberOfClassifications];
             final int taxonomyIndex = Basic.getIndex(Classification.Taxonomy, cNames);
-            for (int i = 0; i < cNames.length; i++) {
-                if (i != taxonomyIndex)
-                    ClassificationManager.ensureTreeIsLoaded(cNames[i]);
+            for (int c = 0; c < numberOfClassifications; c++)
+                if (c != taxonomyIndex) {
+                    ClassificationManager.ensureTreeIsLoaded(cNames[c]);
+                    useLCAForClassification[c] = ProgramProperties.get(cNames[c] + "UseLCA", cNames[c].equals(Classification.Taxonomy));
             }
 
-            final UpdateItemList updateList = new UpdateItemList(cNames.length);
+            final UpdateItemList updateList = new UpdateItemList(numberOfClassifications);
 
             final boolean doMatePairs = doc.isPairedReads() && doc.getMeganFile().isRMA6File();
 
@@ -77,7 +79,7 @@ public class DataProcessor {
 
             final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveMultiGene);
 
-            final double minCoveredPercent = Math.min(100, ProgramProperties.get("minCoveredPercent", 0.0));
+            final double minCoveredPercent = doc.getMinPercentReadCovered();
             int numberOfReadsFailedCoveredThreshold = 0;
             final IntervalTree<Object> intervals;
             if (minCoveredPercent > 0) {
@@ -89,26 +91,34 @@ public class DataProcessor {
             } else
                 intervals = null;
 
+            if (doc.isLongReads() && doc.getTopPercent() > 0 && doc.getTopPercent() < 100) {
+                System.err.println("Long reads: set TopPercent threshold to 100 (off)");
+                doc.setTopPercent(100);
+            }
+
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
-            for (int i = 0; i < numberOfClassifications; i++) {
-                if (i == taxonomyIndex) {
+            for (int c = 0; c < numberOfClassifications; c++) {
+                if (c == taxonomyIndex) {
                     switch (doc.getLcaAlgorithm()) {
+                        case CoverageMultiGene:
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc);
+                            break;
                         case NaiveMultiGene:
-                            assignmentAlgorithmCreators[i] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
                             break;
                         case Weighted:
-                            assignmentAlgorithmCreators[i] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
                         default:
                         case Naive:
-                            assignmentAlgorithmCreators[i] = new AssignmentUsingLCAForTaxonomyCreator(cNames[i], doc.isUseIdentityFilter());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
                     }
-                } else if (ProgramProperties.get(cNames[i] + "UseLCA", false))
-                    assignmentAlgorithmCreators[i] = new AssignmentUsingLCACreator(cNames[i]);
+                } else if (useLCAForClassification[c])
+                    assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c]);
                 else if (usingMultiGeneAnalysis)
-                    assignmentAlgorithmCreators[i] = new AssignmentUsingMultiGeneBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
+                    assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
                 else
-                    assignmentAlgorithmCreators[i] = new AssignmentUsingBestHitCreator(cNames[i], doc.getMeganFile().getFileName());
+                    assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
             }
 
             // step 1:  stream through reads and assign classes
@@ -126,13 +136,13 @@ public class DataProcessor {
             final int[] countAssigned = new int[numberOfClassifications];
 
             final IAssignmentAlgorithm[] assignmentAlgorithm = new IAssignmentAlgorithm[numberOfClassifications];
-            for (int i = 0; i < numberOfClassifications; i++)
-                assignmentAlgorithm[i] = assignmentAlgorithmCreators[i].createAssignmentAlgorithm();
+            for (int c = 0; c < numberOfClassifications; c++)
+                assignmentAlgorithm[c] = assignmentAlgorithmCreators[c].createAssignmentAlgorithm();
 
             final Set<Integer>[] knownIds = new HashSet[numberOfClassifications];
-            for (int i = 0; i < cNames.length; i++) {
-                knownIds[i] = new HashSet<>();
-                knownIds[i].addAll(ClassificationManager.get(cNames[i], true).getName2IdMap().getIds());
+            for (int c = 0; c < numberOfClassifications; c++) {
+                knownIds[c] = new HashSet<>();
+                knownIds[c].addAll(ClassificationManager.get(cNames[c], true).getName2IdMap().getIds());
             }
 
             final IConnector connector = doc.getConnector();
@@ -145,8 +155,8 @@ public class DataProcessor {
             final float[] multiGeneWeights;
             if (usingMultiGeneAnalysis) {
                 moreClassIds = new ArrayList[numberOfClassifications];
-                for (int i = 0; i < moreClassIds.length; i++)
-                    moreClassIds[i] = new ArrayList<>();
+                for (int c = 0; c < numberOfClassifications; c++)
+                    moreClassIds[c] = new ArrayList<>();
                 multiGeneWeights = new float[numberOfClassifications];
             } else {
                 moreClassIds = null;
@@ -171,11 +181,11 @@ public class DataProcessor {
 
                 while (it.hasNext()) {
                     // clean up previous values
-                    for (int i = 0; i < numberOfClassifications; i++) {
-                        classIds[i] = 0;
+                    for (int c = 0; c < numberOfClassifications; c++) {
+                        classIds[c] = 0;
                         if (usingMultiGeneAnalysis) {
-                            moreClassIds[i].clear();
-                            multiGeneWeights[i] = 0;
+                            moreClassIds[c].clear();
+                            multiGeneWeights[c] = 0;
                         }
                     }
 
@@ -232,36 +242,36 @@ public class DataProcessor {
                     if (activeMatches.cardinality() > 0)
                         numberOfReadsWithHits += readBlock.getReadWeight();
 
-                    for (int i = 0; i < numberOfClassifications; i++) {
+                    for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
                         if (hasLowComplexity) {
                             id = IdMapper.LOW_COMPLEXITY_ID;
-                        } else if (i == taxonomyIndex) {
+                        } else if (c == taxonomyIndex) {
                             id = taxId;
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[i], activeMatches);
-                            id = assignmentAlgorithm[i].computeId(activeMatches, readBlock);
-                            if (id > 0 && usingMultiGeneAnalysis && assignmentAlgorithm[i] instanceof IMultiAssignmentAlgorithm) {
-                                int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[i]).getOtherClassIds(i, numberOfClassifications, moreClassIds[i]);
-                                multiGeneWeights[i] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
+                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
+                            id = assignmentAlgorithm[c].computeId(activeMatches, readBlock);
+                            if (id > 0 && usingMultiGeneAnalysis && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
+                                int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
+                                multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
                             }
                         }
-                        if (!knownIds[i].contains(id))
+                        if (!knownIds[c].contains(id))
                             id = IdMapper.UNASSIGNED_ID;
 
-                        classIds[i] = id;
+                        classIds[c] = id;
                         if (id == IdMapper.UNASSIGNED_ID)
-                            countUnassigned[i]++;
+                            countUnassigned[c]++;
 
                         else if (id > 0)
-                            countAssigned[i]++;
+                            countAssigned[c]++;
                     }
                     updateList.addItem(readBlock.getUId(), readBlock.getReadWeight(), classIds);
 
                     if (usingMultiGeneAnalysis) {
-                        for (int i = 0; i < numberOfClassifications; i++) {
-                            for (int[] aClassIds : moreClassIds[i]) {
-                                updateList.addItem(readBlock.getUId(), multiGeneWeights[i], aClassIds);
+                        for (int c = 0; c < numberOfClassifications; c++) {
+                            for (int[] aClassIds : moreClassIds[c]) {
+                                updateList.addItem(readBlock.getUId(), multiGeneWeights[c], aClassIds);
                             }
                         }
                     }
@@ -294,8 +304,8 @@ public class DataProcessor {
             System.err.println(String.format("With hits:     %,15d ", numberOfReadsWithHits));
             System.err.println(String.format("Alignments:    %,15d", numberOfMatches));
 
-            for (int i = 0; i < countAssigned.length; i++) {
-                System.err.println(String.format("%-19s%,11d", "Assig. " + cNames[i] + ":", countAssigned[i]));
+            for (int c = 0; c < numberOfClassifications; c++) {
+                System.err.println(String.format("%-19s%,11d", "Assig. " + cNames[c] + ":", countAssigned[c]));
             }
 
             // if used mate pairs, report here:
@@ -315,17 +325,16 @@ public class DataProcessor {
 
             // 2. apply min support and disabled taxa filter
 
-            for (int i = 0; i < numberOfClassifications; i++) {
-                final String cName = cNames[i];
+            for (int c = 0; c < numberOfClassifications; c++) {
+                final String cName = cNames[c];
                 // todo: need to remove assignments to disabled ids when not using the LCA algorithm
-                if (ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy))
-                        && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
+                if (useLCAForClassification[c] && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
                     progress.setSubtask("Applying min-support & disabled filter to " + cName + "...");
-                    final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(i), doc.getMinSupport(), progress);
+                    final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(c), doc.getMinSupport(), progress);
                     final Map<Integer, Integer> changes = minSupportFilter.apply();
 
                     for (Integer srcId : changes.keySet()) {
-                        updateList.appendClass(i, srcId, changes.get(srcId));
+                        updateList.appendClass(c, srcId, changes.get(srcId));
                     }
                     System.err.println(String.format("Min-supp. changes:%,12d", changes.size()));
                 }
@@ -367,7 +376,7 @@ public class DataProcessor {
      * @param minCoveredPercent percent of read that must be covered
      * @param readBlock
      * @param activeMatches
-     * @param intervals         this will non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @param intervals this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */
     private static boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {

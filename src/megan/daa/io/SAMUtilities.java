@@ -93,7 +93,7 @@ public class SAMUtilities {
         buffer.writeString(
                 String.format("AS:i:%d\tNM:i:%d\tZL:i:%d\tZR:i:%d\tZE:f:%.1e\tZI:i:%d\tZF:i:%d\tZS:i:%d\tMD:Z:",
                         (int) bitScore, matchRecord.getLen() - matchRecord.getIdentities(), matchRecord.getTotalSubjectLen(), matchRecord.getScore(),
-                        evalue, percentIdentity, blastFrame, matchRecord.getQueryBegin() + (matchRecord.getQueryBegin() < matchRecord.getQueryEnd() ? 1 : 0)));
+                        evalue, percentIdentity, blastFrame, matchRecord.getQueryBegin() + (matchRecord.getQueryBegin() < matchRecord.getQueryEnd() ? 1 : 1)));
         if (cigarAndAlignedQueryAndMD == null)
             writeMD(matchRecord, buffer, queryAlphabet);
         else

@@ -127,11 +127,11 @@ public class ReadDataCollector {
      * @throws IOException
      */
     private static int[] getReferenceCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokensFirst = getLineTokens("Sbjct:", matchBlock.getText());
-        String[] tokensLast = getLastLineTokens("Sbjct:", matchBlock.getText());
+        String[] tokensFirst = getLineTokens("Sbjct:", matchBlock.getText(), false);
+        String[] tokensLast = getLineTokens("Sbjct:", matchBlock.getText(), true);
         if (tokensFirst == null) {
-            tokensFirst = getLineTokens("Sbjct", matchBlock.getText());
-            tokensLast = getLastLineTokens("Sbjct", matchBlock.getText());
+            tokensFirst = getLineTokens("Sbjct", matchBlock.getText(), false);
+            tokensLast = getLineTokens("Sbjct", matchBlock.getText(), true);
         }
         if (tokensFirst == null || tokensFirst.length != 4 || tokensLast == null || tokensLast.length != 4) {
             throw new IOException("Failed to parse sbjct line for match:\n" + matchBlock.getText());
@@ -142,35 +142,21 @@ public class ReadDataCollector {
     }
 
     /**
-     * get the tokens of the query line
+     * get all tokens on the first line that begin with start
      *
+     * @param start
      * @param text
-     * @return query line tokens
+     * @param last if true, returns last such line rather than first
+     * @return tokens
      */
-    private static String[] getLineTokens(String start, String text) {
-        int a = text.indexOf("\n" + start);
+    private static String[] getLineTokens(String start, String text, boolean last) {
+        int a = (last ? text.lastIndexOf("\n" + start) : text.indexOf("\n" + start));
         if (a != -1) {
             int b = text.indexOf('\n', a + 1);
-            if (b != -1) {
+            if (b == -1)
+                return text.substring(a + 1).split("\\s+");
+            else
                 return text.substring(a + 1, b).split("\\s+");
-            }
-        }
-        return null;
-    }
-
-    /**
-     * get the tokens of the query line
-     *
-     * @param text
-     * @return query line tokens
-     */
-    private static String[] getLastLineTokens(String start, String text) {
-        int a = text.lastIndexOf("\n" + start);
-        if (a != -1) {
-            int b = text.indexOf('\n', a + 1);
-            if (b != -1) {
-                return text.substring(a + 1, b).split("\\s+");
-            }
         }
         return null;
     }

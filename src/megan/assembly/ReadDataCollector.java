@@ -110,37 +110,34 @@ public class ReadDataCollector {
      * get start and end query coordinates of a match
      *
      * @param matchBlock
-     * @return query coordinates
+     * @return query coordinates, 1-based
      * @throws IOException
      */
     private static int[] getQueryCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokens = getLineTokens("Query:", matchBlock.getText());
-        if (tokens == null)
-            tokens = getLineTokens("Query", matchBlock.getText());
-        if (tokens == null || tokens.length != 4) {
-            throw new IOException("Failed to parse query line for match:\n" + matchBlock.getText());
-        }
-        int a = Integer.parseInt(tokens[1]);
-        int b = Integer.parseInt(tokens[3]);
-        return new int[]{a, b};
+        int start = matchBlock.getAlignedQueryStart();
+        int end = matchBlock.getAlignedQueryEnd();
+        return new int[]{start, end};
     }
 
     /**
      * get start and end reference coordinates of a match
      *
      * @param matchBlock
-     * @return reference coordinates
+     * @return reference coordinates 1-based
      * @throws IOException
      */
     private static int[] getReferenceCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokens = getLineTokens("Sbjct:", matchBlock.getText());
-        if (tokens == null)
-            tokens = getLineTokens("Sbjct", matchBlock.getText());
-        if (tokens == null || tokens.length != 4) {
+        String[] tokensFirst = getLineTokens("Sbjct:", matchBlock.getText());
+        String[] tokensLast = getLastLineTokens("Sbjct:", matchBlock.getText());
+        if (tokensFirst == null) {
+            tokensFirst = getLineTokens("Sbjct", matchBlock.getText());
+            tokensLast = getLastLineTokens("Sbjct", matchBlock.getText());
+        }
+        if (tokensFirst == null || tokensFirst.length != 4 || tokensLast == null || tokensLast.length != 4) {
             throw new IOException("Failed to parse sbjct line for match:\n" + matchBlock.getText());
         }
-        int a = Integer.parseInt(tokens[1]);
-        int b = Integer.parseInt(tokens[3]);
+        int a = Integer.parseInt(tokensFirst[1]);
+        int b = Integer.parseInt(tokensLast[3]);
         return new int[]{a, b};
     }
 
@@ -151,10 +148,29 @@ public class ReadDataCollector {
      * @return query line tokens
      */
     private static String[] getLineTokens(String start, String text) {
-        String[] lines = Basic.split(text, '\n');
-        for (String line : lines) {
-            if (line.startsWith(start))
-                return line.split("\\s+");
+        int a = text.indexOf("\n" + start);
+        if (a != -1) {
+            int b = text.indexOf('\n', a + 1);
+            if (b != -1) {
+                return text.substring(a + 1, b).split("\\s+");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * get the tokens of the query line
+     *
+     * @param text
+     * @return query line tokens
+     */
+    private static String[] getLastLineTokens(String start, String text) {
+        int a = text.lastIndexOf("\n" + start);
+        if (a != -1) {
+            int b = text.indexOf('\n', a + 1);
+            if (b != -1) {
+                return text.substring(a + 1, b).split("\\s+");
+            }
         }
         return null;
     }

@@ -216,8 +216,12 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     if (ProgramProperties.isUseGUI()) {
                         if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
                             final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), null, outputFile, "contig");
-                            if (commandString != null)
-                                executeImmediately(commandString);
+                            if (commandString != null) {
+                                final Director newDir = Director.newProject();
+                                newDir.getMainViewer().setDoReInduce(true);
+                                newDir.getMainViewer().setDoReset(true);
+                                newDir.executeImmediately(commandString, newDir.getMainViewer().getCommandManager());
+                            }
                         }
                     }
                 }
@@ -480,7 +484,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
     public String getDescription() {
         return "Compute and export 'gene-centric' assembly of reads for all selected nodes.\n" +
-                "Huson et al, Protein-alignment-guided assembly of orthologous gene families from microbiome sequencing reads. Under review.";
+                "Huson et al, Protein-alignment-guided assembly of orthologous gene families from microbiome sequencing reads. J. Microbiome, 2017";
     }
 
     public ImageIcon getIcon() {

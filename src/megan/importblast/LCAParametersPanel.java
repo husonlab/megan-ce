@@ -100,10 +100,10 @@ public class LCAParametersPanel extends JPanel {
                 }
             });
             Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM.toString()));
-            if (algorithm == null || (!dialog.isLongReads() && algorithm == Document.LCAAlgorithm.NaiveMultiGene))
+            if (algorithm == null || (!dialog.isLongReads() && algorithm == Document.LCAAlgorithm.NaiveLongRead))
                 algorithm = Document.LCAAlgorithm.Naive;
-            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveMultiGene)
-                algorithm = Document.LCAAlgorithm.NaiveMultiGene;
+            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveLongRead)
+                algorithm = Document.LCAAlgorithm.NaiveLongRead;
 
             lcaAlgorithmComboBox.setSelectedItem(algorithm.toString());
             lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");

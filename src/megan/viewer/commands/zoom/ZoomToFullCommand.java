@@ -18,19 +18,45 @@
  */
 package megan.viewer.commands.zoom;
 
+import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
+import jloda.util.parse.NexusStreamParser;
+import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ZoomToFullCommand extends ZoomBase implements ICommand {
+/**
+ * zoom to full
+ * Daniel Huson, 2005
+ */
+public class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "zoom full;";
+        return "zoom {fit|full|selection}";
+    }
+
+    public void apply(NexusStreamParser np) throws Exception {
+        np.matchIgnoreCase("zoom");
+        final String what = np.getWordMatchesIgnoringCase("fit full selected");
+        np.matchIgnoreCase(";");
+
+        if (getViewer() instanceof ViewerBase) {
+            final ViewerBase viewer = (ViewerBase) getViewer();
+            if (what.equalsIgnoreCase("fit")) {
+                viewer.fitGraphToWindow();
+                //viewer.trans.setScaleY(0.14); // no idea why this was here...
+            } else if (what.equalsIgnoreCase("full")) {
+                viewer.fitGraphToWindow();
+                viewer.trans.setScaleY(1);
+            } else { // selection
+                viewer.zoomToSelection();
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately(getSyntax());
+        executeImmediately("zoom full;");
     }
 
     public String getName() {
@@ -38,11 +64,19 @@ public class ZoomToFullCommand extends ZoomBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Expand tree vertically";
+        return "Expand tree";
     }
 
     public ImageIcon getIcon() {
         return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignJustifyVertical16.gif");
+    }
+
+    public boolean isApplicable() {
+        return getViewer() instanceof ViewerBase;
+    }
+
+    public boolean isCritical() {
+        return true;
     }
 
     /**

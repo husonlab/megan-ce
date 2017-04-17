@@ -400,6 +400,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                         setSelected(v, true);
                     }
                 }
+                trans.setScaleY(1);
                 zoomToSelection();
                 setPreviousNodeIdsOfInterest(null);
             }

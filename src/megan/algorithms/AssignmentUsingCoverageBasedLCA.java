@@ -48,6 +48,7 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
     public AssignmentUsingCoverageBasedLCA(Document doc) {
         comparator = createComparator();
         assignmentUsingWeightedLCA = new AssignmentUsingWeightedLCA(Classification.Taxonomy, null, null, null, doc.getWeightedLCAPercent(), false);
+        assignmentUsingWeightedLCA.setIgnoreAncestors(false); // don't ignore ancestors
         fullTree = assignmentUsingWeightedLCA.getFullTree();
     }
 

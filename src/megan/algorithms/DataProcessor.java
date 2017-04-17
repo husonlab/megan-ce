@@ -61,7 +61,9 @@ public class DataProcessor {
             final boolean[] useLCAForClassification = new boolean[numberOfClassifications];
             final int taxonomyIndex = Basic.getIndex(Classification.Taxonomy, cNames);
             for (int c = 0; c < numberOfClassifications; c++)
-                if (c != taxonomyIndex) {
+                if (c == taxonomyIndex) {
+                    useLCAForClassification[c] = true;
+                } else {
                     ClassificationManager.ensureTreeIsLoaded(cNames[c]);
                     useLCAForClassification[c] = ProgramProperties.get(cNames[c] + "UseLCA", cNames[c].equals(Classification.Taxonomy));
             }
@@ -77,7 +79,7 @@ public class DataProcessor {
 
             // step 0: set up classification algorithms
 
-            final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveMultiGene);
+            final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongRead);
 
             final double minCoveredPercent = doc.getMinPercentReadCovered();
             int numberOfReadsFailedCoveredThreshold = 0;
@@ -100,18 +102,19 @@ public class DataProcessor {
             for (int c = 0; c < numberOfClassifications; c++) {
                 if (c == taxonomyIndex) {
                     switch (doc.getLcaAlgorithm()) {
-                        case CoverageMultiGene:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc);
-                            break;
-                        case NaiveMultiGene:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                        default:
+                        case Naive:
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
                             break;
                         case Weighted:
                             assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
-                        default:
-                        case Naive:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
+                        case NaiveLongRead:
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
+                            break;
+                        case CoverageLongRead:
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc);
+                            break;
                     }
                 } else if (useLCAForClassification[c])
                     assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c]);

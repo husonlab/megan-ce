@@ -32,6 +32,7 @@ import megan.viewer.TaxonomicLevels;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 /**
  * collapse rank command
@@ -51,7 +52,11 @@ public class CollapseByRankCommand extends CommandBase implements ICommand {
             NotificationsInSwing.showError(getViewer().getFrame(), "Unknown rank: " + rankName);
         else {
             final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
-            classificationViewer.setCollapsedIds(ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getNodeIdsAtGivenRank(rank, true));
+            final Set<Integer> ids2collapse = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getNodeIdsAtGivenRank(rank, true);
+
+            // todo: add code here to keep Eurayotes and similar stuff collapsed if they already are
+
+            classificationViewer.setCollapsedIds(ids2collapse);
             getDoc().setDirty(true);
             classificationViewer.updateTree();
         }

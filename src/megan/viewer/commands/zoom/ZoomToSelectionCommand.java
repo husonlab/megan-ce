@@ -18,24 +18,35 @@
  */
 package megan.viewer.commands.zoom;
 
+import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
-import megan.viewer.ClassificationViewer;
+import jloda.util.parse.NexusStreamParser;
+import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ZoomToSelectionCommand extends ZoomBase implements ICommand {
+/**
+ * zoom to selection
+ * Daniel Huson, 2005
+ */
+public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "zoom selected;";
+        return null;
+    }
+
+    @Override
+    public void apply(NexusStreamParser np) throws Exception {
+
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately(getSyntax());
+        executeImmediately("zoom selected;");
     }
 
     public boolean isApplicable() {
-        return getViewer() != null && ((ClassificationViewer) getViewer()).getSelectedNodes().size() > 0;
+        return getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getSelectedNodes().size() > 0;
     }
 
     public String getName() {
@@ -57,6 +68,11 @@ public class ZoomToSelectionCommand extends ZoomBase implements ICommand {
      */
     public KeyStroke getAcceleratorKey() {
         return null;
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }
 

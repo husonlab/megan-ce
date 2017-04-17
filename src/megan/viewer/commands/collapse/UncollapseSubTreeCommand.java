@@ -38,6 +38,8 @@ public class UncollapseSubTreeCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
+        if (((ClassificationViewer) getViewer()).getSelectedNodes().size() > 0)
+            ((ClassificationViewer) getViewer()).setPreviousNodeIdsOfInterest(((ClassificationViewer) getViewer()).getSelectedNodeIds());
         execute("uncollapse nodes=subtree;");
     }
 

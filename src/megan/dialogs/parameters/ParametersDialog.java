@@ -103,7 +103,7 @@ public class ParametersDialog extends JDialog {
 
         lcaAlgorithmComboBox.setEditable(false);
         for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-            if ((algorithm != Document.LCAAlgorithm.NaiveMultiGene && algorithm != Document.LCAAlgorithm.CoverageMultiGene) || doc.isLongReads())
+            if ((algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead) || doc.isLongReads())
                 lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());
@@ -278,7 +278,7 @@ public class ParametersDialog extends JDialog {
 
             aPanel.add(new JLabel("Min Support:"));
             aPanel.add(minSupportField);
-            minSupportField.setToolTipText("Minimum number of reads that a taxon must obtain");
+            minSupportField.setToolTipText("Minimum number of reads (or base pairs, when using long-read mode) that a taxon must obtain");
             minSupportField.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent event) {
                     if (!avoidBounce) {
@@ -344,7 +344,7 @@ public class ParametersDialog extends JDialog {
                     if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                         ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                         weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
-                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageMultiGene));
+                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead));
                     }
 
                 }
@@ -367,7 +367,7 @@ public class ParametersDialog extends JDialog {
             });
             weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
             weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
-                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageMultiGene));
+                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
@@ -383,14 +383,14 @@ public class ParametersDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     lcaAlgorithmComboBox.removeAllItems();
                     for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-                        if (algorithm != Document.LCAAlgorithm.NaiveMultiGene && algorithm != Document.LCAAlgorithm.CoverageMultiGene || longReadsCBox.isSelected()) {
+                        if (algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead || longReadsCBox.isSelected()) {
                             lcaAlgorithmComboBox.addItem(algorithm.toString());
                         }
                     }
                     if (lcaAlgorithmComboBox.getItemCount() <= 2)
                         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
-                    else if (lcaAlgorithmComboBox.getItemCount() > 2)
-                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(2));
+                    else if (lcaAlgorithmComboBox.getItemCount() > 3)
+                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(3));
                     ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                 }
             });
@@ -671,7 +671,7 @@ public class ParametersDialog extends JDialog {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageMultiGene ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
+                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
                 " minComplexity=" + getMinComplexity() +
                 (getMinPercentReadCovered() > 0 ? " minPercentReadCovered=" + getMinPercentReadCovered() : "") +
 

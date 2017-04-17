@@ -35,6 +35,9 @@ public class CollapseSelectedNodesCommand extends CommandBase implements IComman
     }
 
     public void apply(NexusStreamParser np) throws Exception {
+        if (((ClassificationViewer) getViewer()).getSelectedNodes().size() > 0)
+            ((ClassificationViewer) getViewer()).setPreviousNodeIdsOfInterest(((ClassificationViewer) getViewer()).getSelectedNodeIds());
+
         np.matchIgnoreCase("collapse nodes=");
         String what = np.getWordMatchesIgnoringCase("selected top");
         if (what.equals("selected"))
@@ -45,8 +48,6 @@ public class CollapseSelectedNodesCommand extends CommandBase implements IComman
     }
 
     public void actionPerformed(ActionEvent event) {
-        if (((ClassificationViewer) getViewer()).getSelectedNodes().size() > 0)
-            ((ClassificationViewer) getViewer()).setPreviousNodeIdsOfInterest(((ClassificationViewer) getViewer()).getSelectedNodeIds());
         execute("collapse nodes=selected;");
     }
 

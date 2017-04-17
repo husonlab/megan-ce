@@ -52,7 +52,7 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
  */
 public class Document {
     public enum LCAAlgorithm {
-        Naive, Weighted, NaiveMultiGene, CoverageMultiGene;
+        Naive, Weighted, NaiveLongRead, CoverageLongRead;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
@@ -342,7 +342,7 @@ public class Document {
         buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-        if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageMultiGene)
+        if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageLongRead)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minComplexity=").append(getMinComplexity());
         if (getMinPercentReadCovered() > 0)

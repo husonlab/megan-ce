@@ -58,6 +58,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     private WeightedAddress[] addressingArray = new WeightedAddress[0];
 
+    private boolean ignoreAncestors = true; // alignments to ancestors are considered ok
+
     private AssignmentUsingWeightedLCA() {
         cName = null;
         cNameIsTaxonomy = false;
@@ -232,7 +234,11 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             if (addressingArray.length == arrayLength) {
                 AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
             }
-            addressingArray[arrayLength++].set(fullTree.getAddress(taxonId), taxon2weight.get(taxonId));
+            String address = fullTree.getAddress(taxonId);
+            if (address != null)
+                addressingArray[arrayLength++].set(address, taxon2weight.get(taxonId));
+            // else
+            //     System.err.println("Unknown taxonId: "+taxonId);
         }
         return computeWeightedLCA(percentToCover, addressingArray, arrayLength);
     }
@@ -280,10 +286,12 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         if (--length == 0) // run out of addresses, return  prefix
                             return address.substring(0, pos);
                         prev.next = current.next;
-                        // this node lies on route to best node, so it is covered and its weight can  be removed from totalWeight
-                        totalWeight -= current.weight;
-                        weightToCover = ((int) Math.ceil((totalWeight / 100.0) * percentToCover));
-                        // Note: prev does not change
+                        if (ignoreAncestors) {
+                            // this node lies on route to best node, so it is covered and its weight can  be removed from totalWeight
+                            totalWeight -= current.weight;
+                            weightToCover = ((int) Math.ceil((totalWeight / 100.0) * percentToCover));
+                            // Note: prev does not change
+                        }
                     } else {
                         final char ch = address.charAt(pos);
                         final Integer count = ch2weight.get(ch);
@@ -394,6 +402,14 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     public ClassificationFullTree getFullTree() {
         return fullTree;
+    }
+
+    public boolean isIgnoreAncestors() {
+        return ignoreAncestors;
+    }
+
+    public void setIgnoreAncestors(boolean ignoreAncestors) {
+        this.ignoreAncestors = ignoreAncestors;
     }
 
     /**

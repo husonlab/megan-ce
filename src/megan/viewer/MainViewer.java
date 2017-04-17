@@ -232,7 +232,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 buf2.append(String.format(" disabledTaxa=%,d", disabledTaxa.size()));
             if (doc.isUseIdentityFilter())
                 buf2.append(" UseIdentityFilter=true");
-            if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.CoverageMultiGene)
+            if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead)
                 buf2.append(String.format(" weightedLCAPercent=%d", Math.round(doc.getWeightedLCAPercent())));
                 buf2.append(" UseIdentityFilter=true");
         } else {

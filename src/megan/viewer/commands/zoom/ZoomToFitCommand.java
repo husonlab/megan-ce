@@ -18,19 +18,30 @@
  */
 package megan.viewer.commands.zoom;
 
+import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
+import jloda.util.parse.NexusStreamParser;
+import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ZoomToFitCommand extends ZoomBase implements ICommand {
+/**
+ * zoom to fit
+ * Daniel Huson, 2005
+ */
+public class ZoomToFitCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "zoom fit;";
+        return null;
+    }
+
+    @Override
+    public void apply(NexusStreamParser np) throws Exception {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately(getSyntax());
+        executeImmediately("zoom fit;");
     }
 
     public String getName() {
@@ -53,5 +64,16 @@ public class ZoomToFitCommand extends ZoomBase implements ICommand {
     public KeyStroke getAcceleratorKey() {
         return null;
     }
+
+    @Override
+    public boolean isCritical() {
+        return true;
+    }
+
+    @Override
+    public boolean isApplicable() {
+        return getViewer() instanceof ViewerBase;
+    }
+
 }
 

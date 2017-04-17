@@ -115,7 +115,7 @@ public class ExportAlignedReads2GFF {
      * @return
      */
     public static String createGFFLine(BlastMode blastMode, IReadBlock readBlock, String[] cNames) {
-        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, cNames, null);
+        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null);
         return createGFFLine(blastMode, readBlock.getReadName(), readBlock.getReadLength(), cNames, intervals);
     }
 

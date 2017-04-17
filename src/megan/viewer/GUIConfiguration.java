@@ -83,7 +83,7 @@ public class GUIConfiguration {
      */
     public static String getToolBarConfiguration() {
         return "Open...;Print...;Export Image...;|;Find...;|;" +
-                "Expand Vertical;Contract Vertical;Expand Horizontal;Contract Horizontal;|;Fully Contract;Fully Expand;|;Rounded Cladogram;Cladogram;Rounded Phylogram;Phylogram;|;" +
+                "Expand Vertical;Contract Vertical;Expand Horizontal;Contract Horizontal;|;Fully Contract;Fully Expand;Scroll To Selected;|;Rounded Cladogram;Cladogram;Rounded Phylogram;Phylogram;|;" +
                 "Colors...;|;" +
                 "Collapse;Collapse To Top;Uncollapse;Uncollapse Subtree;Rank...;|;Draw Circles;Draw Pies;Draw Coxcombs;Draw Bars;Draw Heatmaps;|;Linear Scale;Sqrt Scale;Log Scale;|;" +
                 "Chart...;|;Inspect...;Show Alignment...;Extract Reads...;Rarefaction Analysis...;|;" +

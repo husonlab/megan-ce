@@ -91,19 +91,27 @@ public class LCAParametersPanel extends JPanel {
             lcaAlgorithmComboBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (lcaAlgorithmComboBox.getSelectedItem() != null)
-                        dialog.setLcaAlgorithm(Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem()));
+                    if (lcaAlgorithmComboBox.getSelectedItem() != null) {
+                        final Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase((String) lcaAlgorithmComboBox.getSelectedItem());
+                        dialog.setLcaAlgorithm(algorithm != null ? algorithm : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
+                    }
                     else
                         dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
                     dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
-                    ProgramProperties.put("SelectedLCAAlgorithm", dialog.getLcaAlgorithm().toString());
+                    ProgramProperties.put("SelectedLCAAlgorithm" + (dialog.isLongReads() ? "LongReads" : "ShortReads"), dialog.getLcaAlgorithm().toString());
                 }
             });
-            Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-            if (algorithm == null || (!dialog.isLongReads() && (algorithm == Document.LCAAlgorithm.NaiveLongRead || algorithm == Document.LCAAlgorithm.CoverageLongRead)))
-                algorithm = Document.DEFAULT_LCA_ALGORITHM_SHORT_READS;
-            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead)
-                algorithm = Document.DEFAULT_LCA_ALGORITHM_LONG_READS;
+
+            Document.LCAAlgorithm algorithm;
+            if (dialog.isLongReads()) {
+                algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithmLongReads", Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString()));
+                if (algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead)
+                    algorithm = Document.DEFAULT_LCA_ALGORITHM_LONG_READS;
+            } else { // short reads:
+                algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithmShortReads", Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
+                if (algorithm == Document.LCAAlgorithm.NaiveLongRead || algorithm == Document.LCAAlgorithm.CoverageLongRead)
+                    algorithm = Document.DEFAULT_LCA_ALGORITHM_SHORT_READS;
+            }
 
             lcaAlgorithmComboBox.setSelectedItem(algorithm.toString());
             lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");

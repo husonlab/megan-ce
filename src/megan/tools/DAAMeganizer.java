@@ -95,10 +95,11 @@ public class DAAMeganizer {
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
+        final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), longReads ? Document.LCAAlgorithm.NaiveLongRead.toString() : Document.LCAAlgorithm.Naive.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float weightedLCAPercent;
-        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted || lcaAlgorithm == Document.LCAAlgorithm.CoverageLongRead)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
@@ -206,14 +207,14 @@ public class DAAMeganizer {
             }
         }
 
-        /**
+        /*
          * process each file
          */
 
         for (int i = 0; i < daaFiles.length; i++) {
             final String daaFile = daaFiles[i];
             final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
-            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, weightedLCAPercent, longReads);
+            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, weightedLCAPercent, longReads, minPercentReadToCover);
         }
     }
 }

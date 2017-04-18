@@ -47,7 +47,7 @@ public class LCAParametersPanel extends JPanel {
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(14, 2));
+        centerPanel.setLayout(new GridLayout(16, 2));
 
         centerPanel.add(new JLabel("Min Score:"));
         centerPanel.add(dialog.getMinScoreField());
@@ -94,16 +94,16 @@ public class LCAParametersPanel extends JPanel {
                     if (lcaAlgorithmComboBox.getSelectedItem() != null)
                         dialog.setLcaAlgorithm(Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem()));
                     else
-                        dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM);
+                        dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
                     dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
                     ProgramProperties.put("SelectedLCAAlgorithm", dialog.getLcaAlgorithm().toString());
                 }
             });
-            Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM.toString()));
-            if (algorithm == null || (!dialog.isLongReads() && algorithm == Document.LCAAlgorithm.NaiveLongRead))
-                algorithm = Document.LCAAlgorithm.Naive;
-            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveLongRead)
-                algorithm = Document.LCAAlgorithm.NaiveLongRead;
+            Document.LCAAlgorithm algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithm", Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
+            if (algorithm == null || (!dialog.isLongReads() && (algorithm == Document.LCAAlgorithm.NaiveLongRead || algorithm == Document.LCAAlgorithm.CoverageLongRead)))
+                algorithm = Document.DEFAULT_LCA_ALGORITHM_SHORT_READS;
+            else if (dialog.isLongReads() && algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead)
+                algorithm = Document.DEFAULT_LCA_ALGORITHM_LONG_READS;
 
             lcaAlgorithmComboBox.setSelectedItem(algorithm.toString());
             lcaAlgorithmComboBox.setToolTipText("Set LCA algorithm for taxonomic binning");
@@ -118,6 +118,15 @@ public class LCAParametersPanel extends JPanel {
             centerPanel.add(new JLabel(" "));
             centerPanel.add(new JLabel(" "));
         }
+
+        {
+            centerPanel.add(new JLabel("Min Percent Read To Cover:"));
+            centerPanel.add(dialog.getMinPercentReadToCoverField());
+            dialog.getMinSupportPercentField().setToolTipText("Minimum percent of read that has to be covered by alignments for read to be binned");
+        }
+
+        centerPanel.add(new JLabel(" "));
+        centerPanel.add(new JLabel(" "));
 
         {
             final AbstractButton button = commandManager.getButton(SetUseComplexityFilterCommand.NAME);

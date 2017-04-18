@@ -101,14 +101,13 @@ public class Blast2LCA {
 
         options.comment("Parameters");
         // todo: implement long reads
-        //final boolean longReads=options.getOption("-lg","longReads","Parse and analyse as long reads",Document.DEFAULT_LONG_READS);
+        // final boolean longReads=options.getOption("-lg","longReads","Parse and analyse as long reads",Document.DEFAULT_LONG_READS);
         final boolean longReads = false;
 
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
         final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", 0.01f);
         float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final float minPercentIdentity = options.getOption("-mid", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
-
         final double minComplexity = 0; //options.getOption("-c","Minimum complexity (between 0 and 1)",0.0);
 
         final int keggRanksToReport = options.getOption("-kr", "maxKeggPerRead", "Maximum number of KEGG assignments to report for a read", 4);

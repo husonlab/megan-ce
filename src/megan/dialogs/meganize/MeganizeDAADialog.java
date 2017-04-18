@@ -77,7 +77,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
             for (String name : fileNames) {
                 File file = new File(name);
                 if (!(file.exists() && file.canRead())) {
-                    NotificationsInSwing.showError(this, "Failed to open BLAST file for reading: " + name);
+                    NotificationsInSwing.showError(this, "Failed to open DAA file for reading: " + name);
                     return;
                 }
                 if (first)
@@ -95,8 +95,11 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 buf.append(" minSupportPercent=").append(getMinSupportPercent());
             buf.append(" minSupport=").append(getMinSupport());
             buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-            if (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted))
+            if (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead))
                 buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+            if (getMinPercentReadToCover() > 0)
+                buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
+
             buf.append(" minComplexity=").append(getMinComplexity());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 

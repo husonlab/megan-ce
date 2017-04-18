@@ -79,9 +79,9 @@ public class DataProcessor {
 
             // step 0: set up classification algorithms
 
-            final boolean usingMultiGeneAnalysis = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongRead);
+            final boolean usingNaiveLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongRead);
 
-            final double minCoveredPercent = doc.getMinPercentReadCovered();
+            final double minCoveredPercent = doc.getMinPercentReadToCover();
             int numberOfReadsFailedCoveredThreshold = 0;
             final IntervalTree<Object> intervals;
             if (minCoveredPercent > 0) {
@@ -118,7 +118,7 @@ public class DataProcessor {
                     }
                 } else if (useLCAForClassification[c])
                     assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c]);
-                else if (usingMultiGeneAnalysis)
+                else if (usingNaiveLongReadAlgorithm)
                     assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
                 else
                     assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
@@ -151,12 +151,12 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent = (usingMultiGeneAnalysis ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
+            final float topPercent = (usingNaiveLongReadAlgorithm ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
 
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;
             final float[] multiGeneWeights;
-            if (usingMultiGeneAnalysis) {
+            if (usingNaiveLongReadAlgorithm) {
                 moreClassIds = new ArrayList[numberOfClassifications];
                 for (int c = 0; c < numberOfClassifications; c++)
                     moreClassIds[c] = new ArrayList<>();
@@ -186,7 +186,7 @@ public class DataProcessor {
                     // clean up previous values
                     for (int c = 0; c < numberOfClassifications; c++) {
                         classIds[c] = 0;
-                        if (usingMultiGeneAnalysis) {
+                        if (usingNaiveLongReadAlgorithm) {
                             moreClassIds[c].clear();
                             multiGeneWeights[c] = 0;
                         }
@@ -254,7 +254,7 @@ public class DataProcessor {
                         } else {
                             ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
                             id = assignmentAlgorithm[c].computeId(activeMatches, readBlock);
-                            if (id > 0 && usingMultiGeneAnalysis && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
+                            if (id > 0 && usingNaiveLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
                                 int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
                                 multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
                             }
@@ -271,7 +271,7 @@ public class DataProcessor {
                     }
                     updateList.addItem(readBlock.getUId(), readBlock.getReadWeight(), classIds);
 
-                    if (usingMultiGeneAnalysis) {
+                    if (usingNaiveLongReadAlgorithm) {
                         for (int c = 0; c < numberOfClassifications; c++) {
                             for (int[] aClassIds : moreClassIds[c]) {
                                 updateList.addItem(readBlock.getUId(), multiGeneWeights[c], aClassIds);

@@ -79,7 +79,7 @@ public class SetUseReadWeightsCommand extends megan.importblast.commands.Command
     }
 
     public boolean isCritical() {
-        return false;
+        return true;
     }
 
     public KeyStroke getAcceleratorKey() {

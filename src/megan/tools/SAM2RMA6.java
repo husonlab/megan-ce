@@ -100,6 +100,8 @@ public class SAM2RMA6 {
         final boolean pairedReads = options.getOption("-p", "paired", "Reads are paired", false);
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
         options.comment("Parameters");
+        boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+
         final int maxMatchesPerRead = options.getOption("-m", "maxMatchesPerRead", "Max matches per read", 100);
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
@@ -107,10 +109,11 @@ public class SAM2RMA6 {
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
         final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
+        final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
-                Document.LCAAlgorithm.values(), Document.DEFAULT_LCA_ALGORITHM.toString()));
+                Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float weightedLCAPercent;
-        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted)
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted || lcaAlgorithm == Document.LCAAlgorithm.CoverageLongRead)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
@@ -240,7 +243,7 @@ public class SAM2RMA6 {
             }
         }
 
-        /**
+        /*
          * process each set of files:
          */
         for (int i = 0; i < samFiles.length; i++) {
@@ -254,6 +257,7 @@ public class SAM2RMA6 {
             final Document doc = new Document();
             doc.getActiveViewers().add(Classification.Taxonomy);
             doc.getActiveViewers().addAll(Arrays.asList(cNames));
+            doc.setLongReads(longReads);
             doc.setMinScore(minScore);
             doc.setMaxExpected(maxExpected);
             doc.setTopPercent(topPercent);
@@ -264,6 +268,7 @@ public class SAM2RMA6 {
             doc.setBlastMode(BlastMode.determineBlastModeSAMFile(samFiles[i]));
             doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setWeightedLCAPercent(weightedLCAPercent);
+            doc.setMinPercentReadToCover(minPercentReadToCover);
 
             createRMA6FileFromSAM("SAM2RMA6", samFiles[i], readsFiles[i], outputFiles[i], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
 

@@ -39,7 +39,7 @@ import java.awt.event.KeyEvent;
 public class ShowParametersDialogCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
-                "\t[weightedLCA={false|true}] [weightedLCAPercent=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+                "\t[weightedLCA={false|true}] [weightedLCAPercent=<number>] [percentReadToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }
 
@@ -81,13 +81,13 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
             np.matchIgnoreCase("weightedLCAPercent=");
             getDoc().setWeightedLCAPercent((float) np.getDouble(1, 100));
         }
+        if (np.peekMatchIgnoreCase("minPercentReadToCover")) {
+            np.matchIgnoreCase("minPercentReadToCover=");
+            getDoc().setMinPercentReadToCover((float) np.getDouble(0, 100));
+        }
         if (np.peekMatchIgnoreCase("minComplexity")) {
             np.matchIgnoreCase("minComplexity=");
             getDoc().setMinComplexity((float) np.getDouble(-1.0, 1.0));
-        }
-        if (np.peekMatchIgnoreCase("minPercentReadCovered")) {
-            np.matchIgnoreCase("minPercentReadCovered=");
-            getDoc().setMinPercentReadCovered((float) np.getDouble(0, 100));
         }
         if (np.peekMatchIgnoreCase("longReads")) {
             np.matchIgnoreCase("longReads=");

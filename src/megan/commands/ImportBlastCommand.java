@@ -60,7 +60,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
         return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minPercentReadToCover=<nu>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[hasMagnitudes={false|true}] [description=<text>];";
     }
@@ -174,8 +174,14 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             }
             if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
                 np.matchIgnoreCase("weightedLCAPercent=");
-                getDoc().setWeightedLCAPercent((float) np.getDouble(1, 100));
+                getDoc().setWeightedLCAPercent((float) np.getDouble(50, 100));
                 ProgramProperties.put("weightedLCAPercent", doc.getWeightedLCAPercent());
+            }
+
+            if (np.peekMatchIgnoreCase("minPercentReadToCover")) {
+                np.matchIgnoreCase("minPercentReadToCover=");
+                getDoc().setMinPercentReadToCover((float) np.getDouble(0, 100));
+                ProgramProperties.put("minPercentReadToCover", doc.getMinPercentReadToCover());
             }
 
             if (np.peekMatchIgnoreCase("minComplexity")) {

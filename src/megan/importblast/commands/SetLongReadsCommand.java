@@ -46,11 +46,11 @@ public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
         importBlastDialog.setLongReads(!isSelected());
         if (importBlastDialog.isLongReads()) {
-            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.NaiveLongRead);
+            importBlastDialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_LONG_READS);
             importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(false);
             importBlastDialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(false);
         } else {
-            importBlastDialog.setLcaAlgorithm(Document.LCAAlgorithm.Naive);
+            importBlastDialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
             importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(true);
             importBlastDialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(true);
         }
@@ -67,7 +67,7 @@ public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand
     }
 
     public String getDescription() {
-        return "Input consists of long reads (more than 500bp) or contigs\nThis effects how alignments are parsed and how binning is performed.";
+        return "This is an EXPERIMENTAL feature under development.\nUse when input consists of long reads (more than 500bp) or contigs.\nThis effects how alignments are parsed and how binning is performed.";
     }
 
     public ImageIcon getIcon() {

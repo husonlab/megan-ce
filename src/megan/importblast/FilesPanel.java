@@ -59,7 +59,7 @@ public class FilesPanel extends JPanel {
 
             JPanel panel1 = new JPanel();
             panel1.setLayout(new BorderLayout());
-            panel1.setBorder(BorderFactory.createTitledBorder("1. Specify the BLAST (or DAA or SAM or RDP or Silva) file(s) to import"));
+            panel1.setBorder(BorderFactory.createTitledBorder("1. Specify the BLAST (or DAA or MAF or SAM or RDP or Silva) file(s) to import"));
             JPanel line1 = new JPanel();
             line1.setLayout(new BoxLayout(line1, BoxLayout.X_AXIS));
             // line1.add(Box.createHorizontalGlue());

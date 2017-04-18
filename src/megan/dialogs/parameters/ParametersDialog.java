@@ -62,7 +62,7 @@ public class ParametersDialog extends JDialog {
     private final JTextField minComplexityField = new JTextField(8);
     private final JTextField weightedLCAPercentField = new JTextField(8);
 
-    private final JTextField minPercentReadCovered = new JTextField(8);
+    private final JTextField minPercentReadToCoverField = new JTextField(8);
 
 
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
@@ -110,6 +110,7 @@ public class ParametersDialog extends JDialog {
 
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
 
+        setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinComplexity(doc.getMinComplexity());
         setLongReads(doc.isLongReads());
         setPairedReads(doc.isPairedReads());
@@ -383,7 +384,7 @@ public class ParametersDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     lcaAlgorithmComboBox.removeAllItems();
                     for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-                        if (algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead || longReadsCBox.isSelected()) {
+                        if ((algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead) || longReadsCBox.isSelected()) {
                             lcaAlgorithmComboBox.addItem(algorithm.toString());
                         }
                     }
@@ -436,14 +437,14 @@ public class ParametersDialog extends JDialog {
         }
 
         // second tab:
-        if (ClassificationManager.getAllSupportedClassifications().size() > ClassificationManager.getDefaultClassificationsList().size()) {
-            boolean add = false;
+        {
             final JPanel aPanel = new JPanel();
             aPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Advanced settings:"), BorderFactory.createEmptyBorder(3, 10, 1, 10)));
             aPanel.setLayout(new BoxLayout(aPanel, BoxLayout.Y_AXIS));
             aPanel.setToolTipText("These are application-wide settings determining the algorithm used for classification.\n" +
-                    "We recommend using LCA only for taxonomic classifications.\n" +
-                    "For functional classifications, the alternative 'best hit' should be used");
+                    "By default, the 'best hit' algorithm is used.\n" +
+                    "Select a box to use the 'LCA' algorithm instead.\n" +
+                    "We do not recommend selecting any of these boxes.\n");
 
             try {
                 for (String cName : doc.getConnector().getAllClassificationNames()) {
@@ -458,7 +459,6 @@ public class ParametersDialog extends JDialog {
                         useLCAButton.setText("Use LCA to analyze " + cName + " data");
                         bPanel.add(useLCAButton);
                         aPanel.add(bPanel);
-                        add = true;
                     }
                 }
             } catch (IOException e) {
@@ -468,12 +468,12 @@ public class ParametersDialog extends JDialog {
             {
                 JPanel line = new JPanel();
                 line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
-                line.add(new JLabel("Min Percent Read Covered: "));
-                minPercentReadCovered.setText("" + doc.getMinPercentReadCovered());
-                minPercentReadCovered.setMaximumSize(new Dimension(100, 26));
-                line.add(minPercentReadCovered);
-                minPercentReadCovered.setToolTipText("Minimum percent of read that has to be covered for read to be binned");
-                minPercentReadCovered.getDocument().addDocumentListener(new DocumentListener() {
+                line.add(new JLabel("Min Percent Read To Cover: "));
+                minPercentReadToCoverField.setText("" + doc.getMinPercentReadToCover());
+                minPercentReadToCoverField.setMaximumSize(new Dimension(100, 26));
+                line.add(minPercentReadToCoverField);
+                minPercentReadToCoverField.setToolTipText("Minimum percent of read that has to be covered by alignments for read to be binned");
+                minPercentReadToCoverField.getDocument().addDocumentListener(new DocumentListener() {
                     public void insertUpdate(DocumentEvent event) {
                         commandManager.updateEnableState();
                     }
@@ -491,8 +491,7 @@ public class ParametersDialog extends JDialog {
             aPanel.add(Box.createVerticalGlue());
             aPanel.add(Box.createVerticalGlue());
 
-            if (add)
-                tabbedPane.add("Advanced", aPanel);
+            tabbedPane.add("Advanced", aPanel);
         }
 
         final JPanel panel = new JPanel();
@@ -595,14 +594,14 @@ public class ParametersDialog extends JDialog {
         minComplexityField.setText("" + (float) value);
     }
 
-    public void setMinPercentReadCovered(double value) {
-        minPercentReadCovered.setText("" + (float) value);
+    public void setMinPercentReadToCover(double value) {
+        minPercentReadToCoverField.setText("" + (float) value);
     }
 
-    public double getMinPercentReadCovered() {
-        double value = Document.DEFAULT_MIN_PERCENT_READ_COVERED;
+    public double getMinPercentReadToCover() {
+        double value = Document.DEFAULT_MIN_PERCENT_READ_TO_COVER;
         try {
-            value = Double.parseDouble(minPercentReadCovered.getText());
+            value = Double.parseDouble(minPercentReadToCoverField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -672,10 +671,7 @@ public class ParametersDialog extends JDialog {
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
                 " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
-                " minComplexity=" + getMinComplexity() +
-                (getMinPercentReadCovered() > 0 ? " minPercentReadCovered=" + getMinPercentReadCovered() : "") +
-
-                " longReads=" + isLongReads() +
+                " minPercentReadToCover=" + getMinPercentReadToCover() + " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }

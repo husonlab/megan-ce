@@ -41,23 +41,6 @@ public class HMM2Blastx {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws Exception {
-        if (args.length == 0 && System.getProperty("user.name").equals("huson")) {
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/PF04563_meta.out", "-o", "/Users/huson/data/michael/adam/PF04563_meta.blastx", "-r", "/Users/huson/data/michael/input/SRR172902-rpoB.fasta"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next2/880_rpoB_sequences_min_1000_AAs.out", "-o", "/Users/huson/data/michael/adam/next2/880_rpoB_sequences_min_1000_AAs.blastx", "-r", "/Users/huson/data/michael/adam/next2/SRR172902-rpoB.fasta"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next/orthodb_EOG6M9DS6_bacteria_all.out", "-o", "/Users/huson/data/michael/adam/next/orthodb_EOG6M9DS6_bacteria_all.blastx", "-r", "/Users/huson/data/michael/adam/next/SRR172902-rpoB.fasta"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next/33_uniprot_seqs_with_specific_RNA_pol_Rpb2_arch.out", "-o", "/Users/huson/data/michael/adam/next/33_uniprot_seqs_with_specific_RNA_pol_Rpb2_arch.blastx", "-r", "/Users/huson/data/michael/adam/next/SRR172902-rpoB.fasta"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next3/SRR172902.out",
-                    "-o", "/Users/huson/data/michael/adam/next3/SRR172902.blastx",
-                    "-r", "/Users/huson/data/hmp-mock/input-wgs/SRR172902.fastq.gz"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next4/rpoB_reference_sequences_malt_matches.out",
-                    "-o", "/Users/huson/data/michael/adam/next4/rpoB_reference_sequences_malt_matches.blastx",
-                    "-r", "/Users/huson/data/michael/adam/next/SRR172902-rpoB.fasta"};
-            args = new String[]{"-i", "/Users/huson/data/michael/adam/next5/rpoB_reference_sequences_SRR172902.out",
-                    "-o", "/Users/huson/data/michael/adam/next5/rpoB_reference_sequences_SRR172902.blastx",
-                    "-r", "/Users/huson/data/hmp-mock/input-wgs/SRR172902.fastq.gz"};
-
-        }
-
         try {
             ProgramProperties.setProgramName("HMM2BlastX");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);

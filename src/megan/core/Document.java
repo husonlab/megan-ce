@@ -76,10 +76,12 @@ public class Document {
     public final static float DEFAULT_TOPPERCENT = 10; // in percent
     public final static int DEFAULT_MINSUPPORT = 0;
     public final static float DEFAULT_MINSUPPORT_PERCENT = 0.01f; // in percent
-    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM = LCAAlgorithm.Naive;
+    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.Naive;
+    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.CoverageLongRead;
+
     public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
-    public final static float DEFAULT_MIN_PERCENT_READ_COVERED = 0f;
+    public final static float DEFAULT_MIN_PERCENT_READ_TO_COVER = 0f;
 
     public static final boolean DEFAULT_USE_IDENTITY = false;
     public static final boolean DEFAULT_LONG_READS = false;
@@ -91,12 +93,12 @@ public class Document {
     private float minSupportPercent = DEFAULT_MINSUPPORT_PERCENT; // if this is !=0, overrides explicit minSupport value and uses percentage of assigned reads
     private int minSupport = DEFAULT_MINSUPPORT; // min summary count that a node needs to make it into the induced taxonomy
 
-    private LCAAlgorithm lcaAlgorithm = DEFAULT_LCA_ALGORITHM;
+    private LCAAlgorithm lcaAlgorithm = DEFAULT_LCA_ALGORITHM_SHORT_READS;
     private float weightedLCAPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
-    private float minPercentReadCovered = DEFAULT_MIN_PERCENT_READ_COVERED;
+    private float minPercentReadToCover = DEFAULT_MIN_PERCENT_READ_TO_COVER;
 
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
 
@@ -278,9 +280,9 @@ public class Document {
 
                 setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
 
-                setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
+                setMinPercentReadToCover(np.findIgnoreCase(tokens, "minPercentReadToCover=", getMinPercentReadToCover()));
 
-                setMinPercentReadCovered(np.findIgnoreCase(tokens, "minPercentReadCovered=", getMinPercentReadCovered()));
+                setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
 
                 if (np.findIgnoreCase(tokens, "longReads=true", true, false))
                     setLongReads(true);
@@ -344,9 +346,9 @@ public class Document {
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
         if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageLongRead)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+        if (getMinPercentReadToCover() > 0)
+            buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
-        if (getMinPercentReadCovered() > 0)
-            buf.append(" minPercentReadCovered=").append(getMinPercentReadCovered());
 
         if (isLongReads())
             buf.append(" longReads=true");
@@ -587,12 +589,12 @@ public class Document {
         this.minComplexity = minComplexity;
     }
 
-    public float getMinPercentReadCovered() {
-        return minPercentReadCovered;
+    public float getMinPercentReadToCover() {
+        return minPercentReadToCover;
     }
 
-    public void setMinPercentReadCovered(float minPercentReadCovered) {
-        this.minPercentReadCovered = minPercentReadCovered;
+    public void setMinPercentReadToCover(float minPercentReadToCover) {
+        this.minPercentReadToCover = minPercentReadToCover;
     }
 
     public void setLcaAlgorithm(LCAAlgorithm lcaAlgorithm) {

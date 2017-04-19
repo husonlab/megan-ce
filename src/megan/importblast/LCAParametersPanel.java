@@ -47,7 +47,7 @@ public class LCAParametersPanel extends JPanel {
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(16, 2));
+        centerPanel.setLayout(new GridLayout(15, 2));
 
         centerPanel.add(new JLabel("Min Score:"));
         centerPanel.add(dialog.getMinScoreField());
@@ -132,9 +132,6 @@ public class LCAParametersPanel extends JPanel {
             centerPanel.add(dialog.getMinPercentReadToCoverField());
             dialog.getMinSupportPercentField().setToolTipText("Minimum percent of read that has to be covered by alignments for read to be binned");
         }
-
-        centerPanel.add(new JLabel(" "));
-        centerPanel.add(new JLabel(" "));
 
         {
             final AbstractButton button = commandManager.getButton(SetUseComplexityFilterCommand.NAME);

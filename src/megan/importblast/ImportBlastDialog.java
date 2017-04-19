@@ -181,7 +181,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setLocationRelativeTo(parent);
         setTitle(title);
         setModal(true);
-        setSize(900, 550);
+        setSize(900, 600);
 
         getContentPane().setLayout(new BorderLayout());
 

@@ -377,7 +377,7 @@ public class ParametersDialog extends JDialog {
             pairReadsCBox.setToolTipText("Process paired reads together (will only work if reads were imported as pairs)");
 
             aPanel.add(longReadsCBox);
-            longReadsCBox.setToolTipText("Reads parsed as 'long reads'");
+            longReadsCBox.setToolTipText("EXPERIMENTAL. Reads parsed as 'long reads'");
             longReadsCBox.setEnabled(doc.getConnector() instanceof DAAConnector); // can only change this if is DAA file because reads are sorted during
             longReadsCBox.addActionListener(new ActionListener() {
                 @Override

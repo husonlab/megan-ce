@@ -346,18 +346,12 @@ public class Document {
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
         if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageLongRead)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
-        if (getMinPercentReadToCover() > 0)
-            buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
+        buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
-
-        if (isLongReads())
-            buf.append(" longReads=true");
-        if (isPairedReads())
-            buf.append(" pairedReads=true");
-        if (isUseIdentityFilter())
-            buf.append(" identityFilter=true");
-        if (isUseWeightedReadCounts())
-            buf.append(" useWeightedReadCounts=true");
+        buf.append(" longReads=").append(isLongReads());
+        buf.append(" pairedReads=").append(isPairedReads());
+        buf.append(" identityFilter=").append(isUseIdentityFilter());
+        buf.append(" useWeightedReadCounts=").append(isUseWeightedReadCounts());
 
         if (getActiveViewers().size() > 0) {
             buf.append(" fNames= {");

@@ -21,7 +21,10 @@ package megan.dialogs.compare;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
-import megan.core.*;
+import megan.core.ClassificationType;
+import megan.core.DataTable;
+import megan.core.Director;
+import megan.core.SampleAttributeTable;
 import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
@@ -127,18 +130,25 @@ public class Comparer {
 
         final boolean useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
 
-        long calculateNewSampleSize = 0;
-        if (useRelative) {
-            for (Director dir : dirs) {
-                final Document doc = dir.getDocument();
-                final MainViewer mainViewer = dir.getMainViewer();
-                long numberOfReads = isIgnoreUnassigned() ? mainViewer.getTotalAssignedReads() : doc.getNumberOfReads();
-                if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
-                    calculateNewSampleSize = numberOfReads;
+        final long newSampleSize;
+        {
+            long calculateNewSampleSize = 0;
+            if (useRelative) {
+                for (Director dir : dirs) {
+                    final MainViewer mainViewer = dir.getMainViewer();
+                    final long numberOfReads;
+                    if (isIgnoreUnassigned())
+                        numberOfReads = mainViewer.getTotalAssignedReads();
+                    else {
+                        numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
+                    }
+                    if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
+                        calculateNewSampleSize = numberOfReads;
+                }
+                System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
             }
-            System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
+            newSampleSize = calculateNewSampleSize;
         }
-        final long newSampleSize = calculateNewSampleSize;
 
         String parameters = "mode=" + getMode();
         if (useRelative)
@@ -176,25 +186,20 @@ public class Comparer {
                             if (dir == sentinel)
                                 return;
 
-                            final Document doc = dir.getDocument();
                             final int pos = pid2pos[dir.getID()];
                             readCount = 0;
 
                             final DataTable table = dir.getDocument().getDataTable();
 
-                            int numberOfReads;
+                            final long numberOfReads;
 
-                            if (isIgnoreUnassigned()) {
-                                numberOfReads = (int) doc.getNumberOfReads();
-                                Map<Integer, float[]> classificationBlock = table.getClassification2Class2Counts().get(ClassificationType.Taxonomy.toString());
-                                if (classificationBlock != null) {
-                                    for (Integer key : classificationBlock.keySet()) {
-                                        if (key < 0)
-                                            numberOfReads -= classificationBlock.get(key)[0];
-                                    }
+                            {
+                                final MainViewer mainViewer = dir.getMainViewer();
+                                if (isIgnoreUnassigned())
+                                    numberOfReads = mainViewer.getTotalAssignedReads();
+                                else {
+                                    numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
                                 }
-                            } else {
-                                numberOfReads = (int) doc.getNumberOfReads();
                             }
 
                             ProgressListener progress;

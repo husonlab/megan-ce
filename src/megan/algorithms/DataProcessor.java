@@ -29,6 +29,7 @@ import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
+import megan.util.ReadMagnitudeParser;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -196,6 +197,15 @@ public class DataProcessor {
 
                     if (progress.isUserCancelled())
                         break;
+
+                    if (false) { // code for fixing missing weights
+                        if (readBlock.getReadWeight() <= 1) {
+                            ReadMagnitudeParser.setEnabled(true);
+                            int value = ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader());
+                            if (value > 1)
+                                readBlock.setReadWeight(value);
+                        }
+                    }
 
                     if (readBlock.getReadWeight() == 0)
                         readBlock.setReadWeight(1);

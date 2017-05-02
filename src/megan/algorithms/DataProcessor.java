@@ -50,9 +50,9 @@ public class DataProcessor {
     public static int apply(final Document doc) throws CanceledException {
         final ProgressListener progress = doc.getProgressListener();
         try {
-            progress.setTasks("Analyzing reads & alignments", "Initialization");
+            progress.setTasks("Binning reads", "Initialization");
 
-            System.err.println("Analyzing...");
+            System.err.println("Binning reads...");
             if (doc.isUseIdentityFilter()) {
                 System.err.println("Using min percent-identity values for taxonomic assignment of 16S reads");
             }
@@ -123,8 +123,6 @@ public class DataProcessor {
 
             // step 1:  stream through reads and assign classes
 
-            progress.setSubtask("Processing alignments");
-
             long numberOfReadsFound = 0;
             double totalWeight = 0;
             long numberOfMatches = 0;
@@ -155,8 +153,6 @@ public class DataProcessor {
             } else
                 topPercent = doc.getTopPercent();
 
-
-
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;
             final float[] multiGeneWeights;
@@ -173,6 +169,8 @@ public class DataProcessor {
 
             final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
             final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
+
+            progress.setTasks("Binning reads", "Processing alignments");
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {
                 progress.setMaximum(it.getMaximumProgress());
@@ -335,7 +333,7 @@ public class DataProcessor {
                 final String cName = cNames[c];
                 // todo: need to remove assignments to disabled ids when not using the LCA algorithm
                 if (useLCAForClassification[c] && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
-                    progress.setSubtask("Applying min-support & disabled filter to " + cName + "...");
+                    progress.setTasks("Binning reads", "Applying min-support & disabled filter to " + cName + "...");
                     final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(c), doc.getMinSupport(), progress);
                     final Map<Integer, Integer> changes = minSupportFilter.apply();
 
@@ -348,13 +346,13 @@ public class DataProcessor {
 
             // 3. save classifications
 
-            doc.getProgressListener().setSubtask("Writing classification tables");
+            progress.setTasks("Binning reads", "Writing classification tables");
 
             connector.updateClassifications(cNames, updateList, progress);
             connector.setNumberOfReads((int) doc.getNumberOfReads());
 
             // 4. sync
-            progress.setSubtask("Syncing");
+            progress.setTasks("Binning reads", "Syncing");
             SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
 
             if (progress instanceof ProgressPercentage)

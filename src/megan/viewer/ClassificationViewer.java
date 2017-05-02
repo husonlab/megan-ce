@@ -544,7 +544,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         updateStatusBar();
         setPOWEREDBY(getMajorityRankOfLeaves());
 
-
         viewerJTable.update();
         viewerJTree.update();
     }

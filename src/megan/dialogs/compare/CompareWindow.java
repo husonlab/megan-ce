@@ -40,8 +40,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.*;
+import java.util.List;
 
 /**
  * dialog to set up comparison of data sets
@@ -276,7 +276,8 @@ public class CompareWindow extends JDialog {
 
 
         if (selected.size() >= 1) {
-            final Document.ReadAssignmentMode readAssignmentMode = selected.get(0).getReadAssignmentMode();
+
+            final Document.ReadAssignmentMode readAssignmentMode = computeMajorityReadAssignmentMode(selected);
 
             StringBuilder buf = new StringBuilder();
             buf.append("compare");
@@ -313,6 +314,30 @@ public class CompareWindow extends JDialog {
             return buf.toString();
         } else
             return null;
+    }
+
+    /**
+     * returns the most often mentioned read assignment mode
+     *
+     * @param list
+     * @return most mentioned mode
+     */
+    private static Document.ReadAssignmentMode computeMajorityReadAssignmentMode(List<MyListItem> list) {
+        Map<Document.ReadAssignmentMode, Integer> mode2count = new HashMap<>();
+        for (MyListItem item : list) {
+            Integer count = mode2count.get(item.getReadAssignmentMode());
+            if (count == null)
+                mode2count.put(item.getReadAssignmentMode(), 1);
+            else
+                mode2count.put(item.getReadAssignmentMode(), count + 1);
+        }
+        Document.ReadAssignmentMode readAssignmentMode = null;
+        for (Document.ReadAssignmentMode mode : mode2count.keySet()) {
+            if (readAssignmentMode == null || mode2count.get(mode) > mode2count.get(readAssignmentMode)
+                    || (mode2count.get(mode).equals(mode2count.get(readAssignmentMode)) && readAssignmentMode == Document.ReadAssignmentMode.readCount))
+                readAssignmentMode = mode;
+        }
+        return readAssignmentMode;
     }
 
     /**

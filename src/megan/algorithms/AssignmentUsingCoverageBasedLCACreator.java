@@ -28,14 +28,16 @@ import megan.core.Document;
  */
 public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgorithmCreator {
     private final Document document;
+    private final float topPercent;
 
     /**
      * constructor
      *
      * @param document
      */
-    public AssignmentUsingCoverageBasedLCACreator(Document document) {
+    public AssignmentUsingCoverageBasedLCACreator(Document document, float topPercent) {
         this.document = document;
+        this.topPercent = topPercent;
         System.err.println("Using coverage-based LCA algorithm for binning: " + Classification.Taxonomy);
     }
 
@@ -46,6 +48,6 @@ public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgori
      */
     @Override
     public AssignmentUsingCoverageBasedLCA createAssignmentAlgorithm() {
-        return new AssignmentUsingCoverageBasedLCA(document);
+        return new AssignmentUsingCoverageBasedLCA(document, topPercent);
     }
 }

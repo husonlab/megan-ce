@@ -108,7 +108,7 @@ public class DataProcessor {
                             assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc);
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc, doc.getTopPercent());
                             break;
                     }
                 } else if (useLCAForClassification[c])
@@ -146,12 +146,11 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent;
-            if (usingLongReadAlgorithm && doc.getTopPercent() > 0 && doc.getTopPercent() < 100) {
-                System.err.println("Long reads algorithm: ignoring topPercent filter");
-                topPercent = 0;
+            final float topPercentForActiveMatchFiltering;
+            if (usingLongReadAlgorithm) {
+                topPercentForActiveMatchFiltering = 0;
             } else
-                topPercent = doc.getTopPercent();
+                topPercentForActiveMatchFiltering = doc.getTopPercent();
 
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;
@@ -170,7 +169,7 @@ public class DataProcessor {
             final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
             final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
 
-            progress.setTasks("Binning reads", "Processing alignments");
+            progress.setTasks("Binning reads", "Analyzing alignments");
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {
                 progress.setMaximum(it.getMaximumProgress());
@@ -186,8 +185,7 @@ public class DataProcessor {
                     mateReadBlock = null;
 
                 while (it.hasNext()) {
-                    if (progress.isUserCancelled())
-                        break;
+                    progress.setProgress(it.getProgress());
 
                     // clean up previous values
                     for (int c = 0; c < numberOfClassifications; c++) {
@@ -200,7 +198,7 @@ public class DataProcessor {
 
                     final IReadBlock readBlock = it.next();
 
-                    ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
+                    ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
                     readBlock.setReadWeight(readAssignmentCalculator.compute(readBlock, activeMatches, intervals));
 
@@ -221,7 +219,7 @@ public class DataProcessor {
                                 mateReader.seek(readBlock.getMateUId());
                                 mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
                                 taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
-                                ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                                ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
                                 int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
                                 if (mateTaxId > 0) {
                                     if (taxId <= 0) {
@@ -253,7 +251,7 @@ public class DataProcessor {
                         } else if (c == taxonomyIndex) {
                             id = taxId;
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
+                            ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
                             id = assignmentAlgorithm[c].computeId(activeMatches, readBlock);
                             if (id > 0 && usingLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
                                 int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
@@ -279,8 +277,6 @@ public class DataProcessor {
                             }
                         }
                     }
-
-                    progress.setProgress(it.getProgress());
                 }
             } catch (Exception ex) {
                 Basic.caught(ex);

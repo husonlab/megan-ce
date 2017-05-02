@@ -144,7 +144,7 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
                 final IMatchBlock match = interval.getData();
                 for (Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
                     final IMatchBlock other = otherInterval.getData();
-                    if (otherInterval.overlap(interval) > 0.2 * interval.length() &&
+                    if (otherInterval.overlap(interval) > 0.5 * interval.length() &&
                             (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId()))
                         toDelete.add(interval);
                 }

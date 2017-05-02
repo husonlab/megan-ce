@@ -25,6 +25,8 @@ import megan.classification.data.ClassificationFullTree;
 import megan.core.Document;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.util.*;
 
@@ -39,17 +41,21 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
 
     private final AssignmentUsingWeightedLCA assignmentUsingWeightedLCA;
 
+    private final IntervalTree<Integer> intervals = new IntervalTree<>();
+    private final float topPercentFactor;
+
     private StartStopEvent[] events = new StartStopEvent[10000]; // not final because may get resized...
 
 
     /**
      * constructor
      */
-    public AssignmentUsingCoverageBasedLCA(Document doc) {
+    public AssignmentUsingCoverageBasedLCA(Document doc, final float topPercent) {
         comparator = createComparator();
         assignmentUsingWeightedLCA = new AssignmentUsingWeightedLCA(Classification.Taxonomy, null, null, null, doc.getWeightedLCAPercent(), false);
         assignmentUsingWeightedLCA.setIgnoreAncestors(false); // don't ignore ancestors
         fullTree = assignmentUsingWeightedLCA.getFullTree();
+        topPercentFactor = (topPercent == 0 || topPercent == 100 ? 1 : Math.min(1f, topPercent / 100.0f));
     }
 
     /**
@@ -87,10 +93,37 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
     /**
      * compute the taxonId 2 weight mapping
      *
-     * @param activeMatches
+     * @param activeMatches0
      * @param readBlock
      */
-    private void computeTaxon2WeightMapping(BitSet activeMatches, IReadBlock readBlock, Map<Integer, Integer> taxon2weight) {
+    private void computeTaxon2WeightMapping(BitSet activeMatches0, IReadBlock readBlock, Map<Integer, Integer> taxon2weight) {
+        final BitSet activeMatches;
+        if (topPercentFactor < 1) {
+            activeMatches = (new BitSet());
+            activeMatches.or(activeMatches0);
+            intervals.clear();
+            for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+                final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+                if (matchBlock.getTaxonId() > 0) {
+                    final Interval<Integer> interval = new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), m);
+                    intervals.add(interval);
+                } else
+                    activeMatches.clear(m); // doesn't have a tax-id, don't use
+            }
+            for (Interval<Integer> interval : intervals) {
+                final IMatchBlock matchBlock = readBlock.getMatchBlock(interval.getData());
+
+                for (Interval<Integer> overlapper : intervals.getIntervals(interval)) {
+                    if (overlapper.contains(interval) && matchBlock.getBitScore() < topPercentFactor * readBlock.getMatchBlock(overlapper.getData()).getBitScore()) {
+                        activeMatches.clear(interval.getData());
+                        break;
+                    }
+                }
+            }
+        } else
+            activeMatches = activeMatches0;
+
+
         int numberOfEvents = 0;
 
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
@@ -116,7 +149,7 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
 
         taxon2weight.clear();
 
-        final BitSet currentMatches = new BitSet();
+        final BitSet currentMatches = new BitSet(); // set of matches currently active
 
         StartStopEvent previousEvent = null;
         for (int c = 0; c < numberOfEvents; c++) {

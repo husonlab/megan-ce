@@ -49,7 +49,7 @@ public class SyncArchiveAndDataTable {
      * @param table
      * @throws IOException
      */
-    static public void syncRecomputedArchive2Summary(boolean useWeightsForTaxonomy, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
+    static public void syncRecomputedArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
         String[] classifications = connector.getAllClassificationNames();
         table.clear();
         table.setCreator(ProgramProperties.getProgramName());
@@ -63,7 +63,7 @@ public class SyncArchiveAndDataTable {
         for (String classification : classifications) {
             IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
-                syncClassificationBlock2Summary(useWeightsForTaxonomy, 0, 1, classificationBlock, table);
+                syncClassificationBlock2Summary(readAssignmentMode, 0, 1, classificationBlock, table);
         }
     }
 
@@ -71,14 +71,21 @@ public class SyncArchiveAndDataTable {
      * sync the content of an archive to the Megan4Summary. Formatting is obtained from the aux block, while
      * classifications are obtained from the classification blocks
      *
+     * @param readAssignmentMode if null, first determines this from user state table
      * @param connector
      * @param table
      */
-    public static void syncArchive2Summary(boolean useWeightsForTaxonomy, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
+    public static void syncArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
         table.clear();
         Map<String, byte[]> label2data = connector.getAuxiliaryData();
         if (label2data.containsKey(SampleAttributeTable.USER_STATE)) {
             syncAux2Summary(fileName, label2data.get(SampleAttributeTable.USER_STATE), table);
+        }
+
+        if (readAssignmentMode == null && table.getParameters() != null) {
+            Document doc = new Document();
+            doc.parseParameterString(table.getParameters());
+            readAssignmentMode = doc.getReadAssignmentMode();
         }
 
         if (label2data.containsKey(SampleAttributeTable.SAMPLE_ATTRIBUTES)) {
@@ -105,7 +112,7 @@ public class SyncArchiveAndDataTable {
         for (String classification : classifications) {
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
-                syncClassificationBlock2Summary(useWeightsForTaxonomy, 0, 1, classificationBlock, table);
+                syncClassificationBlock2Summary(readAssignmentMode, 0, 1, classificationBlock, table);
         }
     }
 
@@ -116,9 +123,13 @@ public class SyncArchiveAndDataTable {
      * @param classificationBlock
      * @param table
      */
-    static public void syncClassificationBlock2Summary(boolean useWeights, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
-        if (useWeights && !classificationBlock.getName().equals(Classification.Taxonomy))
+    static public void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
+        boolean useWeights;
+        if (!classificationBlock.getName().equals(Classification.Taxonomy) || readAssignmentMode == Document.ReadAssignmentMode.readCount)
             useWeights = false; // don't use weights unless taxonomy...
+        else {
+            useWeights = true;
+        }
 
         final Map<Integer, float[]> classId2count = new HashMap<>();
         table.setClass2Counts(classificationBlock.getName(), classId2count);

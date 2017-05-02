@@ -76,7 +76,7 @@ public class TaxaChart extends ChartViewer {
         setWindowTitle("Taxonomy Chart");
         chartData.setSeriesLabel("Samples");
         chartData.setClassesLabel("Taxa");
-        chartData.setCountsLabel("Number of reads");
+        chartData.setCountsLabel(dir.getDocument().getReadAssignmentMode().getDisplayLabel());
         setClassLabelAngle(Math.PI / 4);
         //setShowLegend(true);
 

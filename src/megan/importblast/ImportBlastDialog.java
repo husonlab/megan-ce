@@ -800,7 +800,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-        if (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead)
+        if (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());

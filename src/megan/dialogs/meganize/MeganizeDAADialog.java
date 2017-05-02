@@ -95,7 +95,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 buf.append(" minSupportPercent=").append(getMinSupportPercent());
             buf.append(" minSupport=").append(getMinSupport());
             buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-            if (getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted) || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead))
+            if (getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted) || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads))
                 buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
             if (getMinPercentReadToCover() > 0)
                 buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());

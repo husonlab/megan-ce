@@ -116,9 +116,9 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("weightedLCA")) {
             np.matchIgnoreCase("weightedLCA=");
             if (np.getBoolean())
-                lcaAlgorithm = Document.LCAAlgorithm.Weighted;
+                lcaAlgorithm = Document.LCAAlgorithm.weighted;
             else
-                lcaAlgorithm = Document.LCAAlgorithm.Naive;
+                lcaAlgorithm = Document.LCAAlgorithm.naive;
             ProgramProperties.put("lcaAlgorithm", lcaAlgorithm.toString());
         } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
             np.matchIgnoreCase("lcaAlgorithm=");

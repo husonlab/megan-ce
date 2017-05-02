@@ -215,37 +215,41 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 if (disabledTaxa != null && disabledTaxa.size() > 0)
                     buf2.append(String.format(" disabledTaxa=%,d", disabledTaxa.size()));
             }
-        } else if (dataTable.getNumberOfSamples() == 1) {
-            buf2.append(String.format("Reads=%,d Assigned=%,d", doc.getNumberOfReads(), getTotalAssignedReads()));
-            buf2.append(" MinScore=").append(doc.getMinScore());
-            if (doc.getMaxExpected() != 10000)
-                buf2.append(" MaxExpected=").append(doc.getMaxExpected());
-            if (doc.getMinPercentIdentity() > 0)
-                buf2.append(" MinPercentIdentity=").append(doc.getMinPercentIdentity());
-            buf2.append(" TopPercent=").append(doc.getTopPercent());
-            if (doc.getMinSupportPercent() > 0)
-                buf2.append(" MinSupportPercent=").append(doc.getMinSupportPercent());
-            if (doc.getMinSupportPercent() == 0 || doc.getMinSupport() > 1)
-                buf2.append(" MinSupport=").append(doc.getMinSupport());
-            final Set<Integer> disabledTaxa = TaxonomyData.getDisabledTaxa();
-            if (disabledTaxa != null && disabledTaxa.size() > 0)
-                buf2.append(String.format(" disabledTaxa=%,d", disabledTaxa.size()));
-            if (doc.isUseIdentityFilter())
-                buf2.append(" UseIdentityFilter=true");
-            if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead)
-                buf2.append(String.format(" weightedLCAPercent=%d", Math.round(doc.getWeightedLCAPercent())));
-                buf2.append(" UseIdentityFilter=true");
         } else {
-            buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));
-            Comparer.COMPARISON_MODE mode = Comparer.parseMode(dataTable.getParameters());
-            int normalized_to = Comparer.parseNormalizedTo(dataTable.getParameters());
-            if (mode.equals(Comparer.COMPARISON_MODE.RELATIVE)) {
-                buf2.append(String.format(" Relative Comparison, Reads=%,d Assigned=%,d (normalized to %,d reads per sample)", doc.getNumberOfReads(), getTotalAssignedReads(), normalized_to));
-            } else
-                buf2.append(String.format(" Absolute Comparison, Reads=%,d, Assigned=%,d", doc.getNumberOfReads(), getTotalAssignedReads()));
+            if (dataTable.getNumberOfSamples() == 1) {
+                buf2.append(String.format("Reads=%,d Assigned=%,d", doc.getNumberOfReads(), getTotalAssignedReads()));
+                buf2.append(String.format(" (%s)", doc.getReadAssignmentMode().toString()));
+                buf2.append(" MinScore=").append(doc.getMinScore());
+                if (doc.getMaxExpected() != 10000)
+                    buf2.append(" MaxExpected=").append(doc.getMaxExpected());
+                if (doc.getMinPercentIdentity() > 0)
+                    buf2.append(" MinPercentIdentity=").append(doc.getMinPercentIdentity());
+                buf2.append(" TopPercent=").append(doc.getTopPercent());
+                if (doc.getMinSupportPercent() > 0)
+                    buf2.append(" MinSupportPercent=").append(doc.getMinSupportPercent());
+                if (doc.getMinSupportPercent() == 0 || doc.getMinSupport() > 1)
+                    buf2.append(" MinSupport=").append(doc.getMinSupport());
+                final Set<Integer> disabledTaxa = TaxonomyData.getDisabledTaxa();
+                if (disabledTaxa != null && disabledTaxa.size() > 0)
+                    buf2.append(String.format(" disabledTaxa=%,d", disabledTaxa.size()));
+                if (doc.isUseIdentityFilter())
+                    buf2.append(" UseIdentityFilter=true");
+                buf2.append(" LCA=").append(doc.getLcaAlgorithm().toString());
+                if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
+                    buf2.append(String.format(" weightedLCAPercent=%d", Math.round(doc.getWeightedLCAPercent())));
+            } else {
+                buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));
+                Comparer.COMPARISON_MODE mode = Comparer.parseMode(dataTable.getParameters());
+                int normalized_to = Comparer.parseNormalizedTo(dataTable.getParameters());
+                if (mode.equals(Comparer.COMPARISON_MODE.RELATIVE)) {
+                    buf2.append(String.format(" Relative Comparison, Assigned=%,d (normalized to %,d per sample)", getTotalAssignedReads(), normalized_to));
+                } else
+                    buf2.append(String.format(" Absolute Comparison, Reads=%,d, Assigned=%,d", doc.getNumberOfReads(), getTotalAssignedReads()));
+                buf2.append(String.format(" (%s)", doc.getReadAssignmentMode().toString()));
+            }
+            if (doc.getBlastMode() != BlastMode.Unknown)
+                buf2.append(" blast=").append(doc.getBlastMode().toString());
         }
-        if (doc.getBlastMode() != BlastMode.Unknown)
-            buf2.append(" mode=").append(doc.getBlastMode().toString());
 
         getStatusBar().setText2(buf2.toString());
     }

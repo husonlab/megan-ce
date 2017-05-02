@@ -127,8 +127,8 @@ public class DAAReferencesAnnotator {
                         final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
                         w.writeNullTerminatedString(cNames[task].getBytes());
                         final int[] ref2class = cName2ref2class[task];
-                        for (int ref2clas : ref2class)
-                            w.writeInt(ref2clas);
+                        for (int classId : ref2class)
+                            w.writeInt(classId);
                         cName2Bytes[task] = outs.getBytes();
                         cName2Size[task] = outs.size();
                         progress.incrementProgress();

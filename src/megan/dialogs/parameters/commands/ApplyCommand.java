@@ -23,6 +23,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
+import megan.core.Document;
 import megan.data.IConnector;
 import megan.dialogs.parameters.ParametersDialog;
 import megan.util.ReadMagnitudeParser;
@@ -66,12 +67,12 @@ public class ApplyCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         final ParametersDialog parametersDialog = (ParametersDialog) getParent();
         final Director dir = (Director) getDir();
+        final Document doc = dir.getDocument();
 
         parametersDialog.setVisible(false);
 
         if (dir.getDocument().getMeganFile().hasDataConnector()) {
-            ReadMagnitudeParser.setEnabled(parametersDialog.isUseMagnitudes());
-
+            ReadMagnitudeParser.setEnabled(doc.getReadAssignmentMode() == Document.ReadAssignmentMode.readMagnitude);
             int numberOfMatches = 0;
             try {
                 final IConnector connector = dir.getDocument().getConnector();

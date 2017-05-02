@@ -167,7 +167,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 doc.setMinScore(1);
             if (np.peekMatchIgnoreCase("weightedLCA")) {
                 np.matchIgnoreCase("weightedLCA=");
-                getDoc().setLcaAlgorithm(Document.LCAAlgorithm.Weighted);
+                getDoc().setLcaAlgorithm(Document.LCAAlgorithm.weighted);
             } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
                 np.matchIgnoreCase("lcaAlgorithm=");
                 getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
@@ -211,8 +211,10 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             if (np.peekMatchIgnoreCase("longReads")) {
                 np.matchIgnoreCase("longReads=");
                 doc.setLongReads(np.getBoolean());
-                doc.setUseWeightedReadCounts(doc.isLongReads());
-            }
+                doc.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS);
+            } else
+                doc.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+
 
             if (np.peekMatchIgnoreCase("paired")) {
                 np.matchIgnoreCase("paired=");

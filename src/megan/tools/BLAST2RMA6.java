@@ -116,7 +116,7 @@ public class BLAST2RMA6 {
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
 
         final float weightedLCAPercent;
-        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted || lcaAlgorithm == Document.LCAAlgorithm.CoverageLongRead)
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.weighted || lcaAlgorithm == Document.LCAAlgorithm.longReads)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
@@ -283,7 +283,7 @@ public class BLAST2RMA6 {
             doc.setWeightedLCAPercent(weightedLCAPercent);
             doc.setMinPercentReadToCover(minPercentReadToCover);
             doc.setLongReads(longReads);
-            doc.setUseWeightedReadCounts(longReads);
+            doc.setReadAssignmentMode(longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
 
             if (!processInPairs)
                 createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);

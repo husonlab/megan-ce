@@ -71,7 +71,7 @@ public class AttributesChart extends ChartViewer {
         setWindowTitle("Microbial Attributes Chart");
         chartData.setSeriesLabel("Samples");
         chartData.setClassesLabel("Microbial Attributes");
-        chartData.setCountsLabel("Number of reads");
+        chartData.setCountsLabel(dir.getDocument().getReadAssignmentMode().getDisplayLabel());
         setClassLabelAngle(Math.PI / 4);
         //setShowLegend(true);
 

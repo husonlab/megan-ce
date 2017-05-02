@@ -171,6 +171,7 @@ public class CompareGroupsCommand extends jloda.gui.commands.CommandBase impleme
             final String fileName = Basic.replaceFileSuffix(new File(new File(doc.getMeganFile().getFileName()).getParent(), title).getPath(), ".megan");
             newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
+            newDocument.setReadAssignmentMode(doc.getReadAssignmentMode());
             comparer.computeComparison(newDocument.getSampleAttributeTable(), newDocument.getDataTable(), doc.getProgressListener());
             newDocument.processReadHits();
             newDocument.setTopPercent(100);

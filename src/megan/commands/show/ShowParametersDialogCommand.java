@@ -40,7 +40,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
     public String getSyntax() {
         return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
                 "\t[weightedLCA={false|true}] [weightedLCAPercent=<number>] [percentReadToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
-                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
+                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -72,7 +72,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
         }
         if (np.peekMatchIgnoreCase("weightedLCA")) {
             np.matchIgnoreCase("weightedLCA=");
-            getDoc().setLcaAlgorithm(Document.LCAAlgorithm.Weighted);
+            getDoc().setLcaAlgorithm(Document.LCAAlgorithm.weighted);
         } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {
             np.matchIgnoreCase("lcaAlgorithm=");
             getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
@@ -100,6 +100,10 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
         if (np.peekMatchIgnoreCase("useIdentityFilter")) {
             np.matchIgnoreCase("useIdentityFilter=");
             getDoc().setUseIdentityFilter(np.getBoolean());
+        }
+        if (np.peekMatchIgnoreCase("readAssignmentMode")) {
+            np.matchIgnoreCase("readAssignmentMode=");
+            getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " "))));
         }
         if (np.peekMatchIgnoreCase("fNames")) {
             getDoc().getActiveViewers().clear();

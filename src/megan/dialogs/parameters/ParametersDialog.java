@@ -34,7 +34,6 @@ import megan.dialogs.parameters.commands.ApplyCommand;
 import megan.dialogs.parameters.commands.CancelCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
 import megan.parsers.blast.BlastMode;
-import megan.util.ReadMagnitudeParser;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -49,7 +48,7 @@ import java.util.Set;
 
 /**
  * load data from a blast file
- * Daniel Huson, 8.2008
+ * Daniel Huson, 8.2008, 4.2017
  */
 public class ParametersDialog extends JDialog {
     final JTextField minScoreField = new JTextField(8);
@@ -70,7 +69,9 @@ public class ParametersDialog extends JDialog {
     private final JCheckBox pairReadsCBox = new JCheckBox("Use Paired Reads");
     private final JCheckBox longReadsCBox = new JCheckBox("Parse as Long Reads");
 
-    private final JCheckBox useMagnitudesCBox = new JCheckBox("Use Read Magnitudes");
+    private final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
+
+
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
 
     private final Set<String> activeFNames = new HashSet<>();
@@ -92,6 +93,11 @@ public class ParametersDialog extends JDialog {
         commandManager = new CommandManager(dir, this, new String[]{"megan.dialogs.parameters.commands"}, !ProgramProperties.isUseGUI());
         commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(), true);
 
+        setLocationRelativeTo(parent);
+        setTitle("Change LCA Parameters - MEGAN");
+        setModal(true);
+        setSize(500, 800);
+
         final Document doc = dir.getDocument();
 
         setMinScore(doc.getMinScore());
@@ -103,12 +109,17 @@ public class ParametersDialog extends JDialog {
 
         lcaAlgorithmComboBox.setEditable(false);
         for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-            if ((algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead) || doc.isLongReads())
-                lcaAlgorithmComboBox.addItem(algorithm.toString());
+            lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());
 
         setWeightedLCAPercent(doc.getWeightedLCAPercent());
+
+        readAssignmentModeComboBox.setEditable(false);
+        for (Document.ReadAssignmentMode readAssignmentMode : Document.ReadAssignmentMode.values()) {
+            readAssignmentModeComboBox.addItem(readAssignmentMode.toString());
+        }
+        setReadAssignmentMode(doc.getReadAssignmentMode());
 
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinComplexity(doc.getMinComplexity());
@@ -116,15 +127,8 @@ public class ParametersDialog extends JDialog {
         setPairedReads(doc.isPairedReads());
         setUsePercentIdentity(doc.isUseIdentityFilter());
 
-        setUseMagnitudes(ReadMagnitudeParser.isEnabled());
-
         activeFNames.addAll(doc.getActiveViewers());
         activeFNames.remove(Classification.Taxonomy);
-
-        setLocationRelativeTo(parent);
-        setTitle("Change LCA Parameters - MEGAN");
-        setModal(true);
-        setSize(500, 700);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(makeLCAParametersPanel(doc), BorderLayout.CENTER);
@@ -139,6 +143,12 @@ public class ParametersDialog extends JDialog {
         bottomPanel.add(commandManager.getButton(ApplyCommand.NAME));
 
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+
+        // do this again to trigger code:
+        setLcaAlgorithm(doc.getLcaAlgorithm());
+        setReadAssignmentMode(doc.getReadAssignmentMode());
+
+
         // actions.getApplyAction().setEnabled(false);
 
         if (doc.getMinComplexity() < 0)
@@ -168,7 +178,7 @@ public class ParametersDialog extends JDialog {
 
             final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
 
-            aPanel.setLayout(new GridLayout(17 + (cNames.length + 1) / 2, 2));
+            aPanel.setLayout(new GridLayout(19 + (cNames.length + 1) / 2, 2));
 
             aPanel.add(new JLabel("Min Score:"));
             aPanel.add(minScoreField);
@@ -335,7 +345,7 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel("LCA Algorithm:"));
-            aPanel.add(new JLabel(" "));
+            aPanel.add(new JLabel("Percent to cover:"));
 
             aPanel.add(lcaAlgorithmComboBox);
             lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
@@ -344,15 +354,27 @@ public class ParametersDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                         ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
-                        weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
-                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead));
+                        weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted)
+                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads));
                     }
-
+                    switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
+                        case naive:
+                            lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
+                            break;
+                        case weighted:
+                            lcaAlgorithmComboBox.setToolTipText("Weighted LCA for taxonomic binning: slower algorithm applicable to short reads, slightly more specific than naive LCA");
+                            break;
+                        case longReads:
+                            lcaAlgorithmComboBox.setToolTipText("Long Reads LCA for taxonomic and functional binning of long reads and contigs");
+                            break;
+                        default:
+                            lcaAlgorithmComboBox.setToolTipText("Select LCA algorithm");
+                    }
                 }
             });
 
             aPanel.add(weightedLCAPercentField);
-            weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA");
+            weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA or long reads LCA");
             weightedLCAPercentField.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent event) {
                     commandManager.updateEnableState();
@@ -367,8 +389,39 @@ public class ParametersDialog extends JDialog {
                 }
             });
             weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
-            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted)
-                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.CoverageLongRead));
+            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted)
+                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads));
+
+            aPanel.add(new JLabel("Read Assignment Mode:"));
+            aPanel.add(new JLabel(" "));
+
+            aPanel.add(readAssignmentModeComboBox);
+            readAssignmentModeComboBox.setToolTipText("Read assignment mode: determines what is shown as number of assigned reads in taxonomy analysis");
+            readAssignmentModeComboBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (readAssignmentModeComboBox.getSelectedItem() != null) {
+                        ProgramProperties.put("ReadAssignmentModeComboBox", getReadAssignmentMode().toString());
+                    }
+                    switch (Document.ReadAssignmentMode.valueOfIgnoreCase(readAssignmentModeComboBox.getSelectedItem().toString())) {
+                        case readCount:
+                            readAssignmentModeComboBox.setToolTipText("Display read counts as 'assigned reads' in taxonomy viewer");
+                            break;
+                        case readLength:
+                            readAssignmentModeComboBox.setToolTipText("Display sum of read lengths as 'assigned reads' in taxonomy viewer");
+                            break;
+                        case alignedBases:
+                            readAssignmentModeComboBox.setToolTipText("Display number of aligned bases as 'assigned reads' in taxonomy viewer");
+                            break;
+                        case readMagnitude:
+                            readAssignmentModeComboBox.setToolTipText("Display sum of read magnitudes as 'assigned reads' in taxonomy viewer");
+                            break;
+                        default:
+                            readAssignmentModeComboBox.setToolTipText("Select what to display as 'assigned reads' in taxonomy viewer");
+                    }
+                }
+            });
+            aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
@@ -382,26 +435,16 @@ public class ParametersDialog extends JDialog {
             longReadsCBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    lcaAlgorithmComboBox.removeAllItems();
-                    for (Document.LCAAlgorithm algorithm : Document.LCAAlgorithm.values()) {
-                        if ((algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead) || longReadsCBox.isSelected()) {
-                            lcaAlgorithmComboBox.addItem(algorithm.toString());
-                        }
-                    }
-                    if (lcaAlgorithmComboBox.getItemCount() <= 2)
-                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(0));
-                    else if (lcaAlgorithmComboBox.getItemCount() > 3)
-                        lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(3));
+                    lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(longReadsCBox.isSelected() ? 2 : 0));
                     ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                 }
             });
 
-            aPanel.add(useMagnitudesCBox);
-            useMagnitudesCBox.setToolTipText("Parse and use read magnitudes (given e.g. as magnitude|99 in read header line0");
-
             aPanel.add(usePercentIdentityCBox);
             usePercentIdentityCBox.setToolTipText(SetUseIdentityFilterCommand.DESCRIPTION);
             usePercentIdentityCBox.setEnabled(doc.getBlastMode().equals(BlastMode.BlastN));
+            aPanel.add(new JLabel(" "));
+
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
@@ -636,20 +679,20 @@ public class ParametersDialog extends JDialog {
         usePercentIdentityCBox.setSelected(usePercentIdentity);
     }
 
-    public boolean isUseMagnitudes() {
-        return useMagnitudesCBox.isSelected();
-    }
-
-    public void setUseMagnitudes(boolean use) {
-        useMagnitudesCBox.setSelected(use);
-    }
-
     public Document.LCAAlgorithm getLcaAlgorithm() {
         return Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem());
     }
 
     public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
+    }
+
+    public Document.ReadAssignmentMode getReadAssignmentMode() {
+        return Document.ReadAssignmentMode.valueOf((String) readAssignmentModeComboBox.getSelectedItem());
+    }
+
+    public void setReadAssignmentMode(Document.ReadAssignmentMode readAssignmentMode) {
+        readAssignmentModeComboBox.setSelectedItem(readAssignmentMode.toString());
     }
 
     public float getWeightedLCAPercent() {
@@ -670,9 +713,10 @@ public class ParametersDialog extends JDialog {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.Weighted || getLcaAlgorithm() == Document.LCAAlgorithm.CoverageLongRead ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
+                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
                 " minPercentReadToCover=" + getMinPercentReadToCover() + " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
+                + " readAssignmentMode=" + getReadAssignmentMode()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }
 

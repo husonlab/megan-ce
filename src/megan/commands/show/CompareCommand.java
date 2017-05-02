@@ -62,6 +62,11 @@ public class CompareCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("mode=");
             comparer.setMode(np.getWordMatchesIgnoringCase(Basic.toString(Comparer.COMPARISON_MODE.values(), " ")));
         }
+        Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.readCount;
+        if (np.peekMatchIgnoreCase("readAssignmentMode")) {
+            np.matchIgnoreCase("readAssignmentMode=");
+            readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " ")));
+        }
 
         if (np.peekMatchIgnoreCase("keep1")) {
             np.matchIgnoreCase("keep1=");
@@ -125,6 +130,7 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.getMeganFile().setFileName(ProjectManager.getUniqueName("Comparison.megan"));
 
             doc.clearReads();
+            doc.setReadAssignmentMode(readAssignmentMode);
             comparer.computeComparison(doc.getSampleAttributeTable(), doc.getDataTable(), progress);
             doc.setNumberReads(doc.getDataTable().getTotalReads());
             doc.processReadHits();
@@ -141,6 +147,7 @@ public class CompareCommand extends CommandBase implements ICommand {
             mainViewer.setDoReInduce(true);
             mainViewer.setDoReset(true);
             mainViewer.setVisible(true);
+            mainViewer.updateData();
         } finally {
             for (Director aDir : toDelete) {
                 aDir.close();

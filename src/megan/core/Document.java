@@ -52,10 +52,32 @@ import static megan.chart.ChartColorManager.SAMPLE_ID;
  */
 public class Document {
     public enum LCAAlgorithm {
-        Naive, Weighted, NaiveLongRead, CoverageLongRead;
+        naive, weighted, longReads;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
             return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
+        }
+    }
+
+    public enum ReadAssignmentMode {
+        readCount, readLength, alignedBases, readMagnitude;
+
+        public static ReadAssignmentMode valueOfIgnoreCase(String label) {
+            return Basic.valueOfIgnoreCase(ReadAssignmentMode.class, label);
+        }
+
+        public String getDisplayLabel() {
+            switch (this) {
+                default:
+                case readCount:
+                    return "Number of reads";
+                case readLength:
+                    return "Number of bases";
+                case alignedBases:
+                    return "Number of aligned bases";
+                case readMagnitude:
+                    return "Sum of read magnitudes";
+            }
         }
     }
 
@@ -76,15 +98,19 @@ public class Document {
     public final static float DEFAULT_TOPPERCENT = 10; // in percent
     public final static int DEFAULT_MINSUPPORT = 0;
     public final static float DEFAULT_MINSUPPORT_PERCENT = 0.01f; // in percent
-    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.Naive;
-    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.CoverageLongRead;
+    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.naive;
+    public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.longReads;
 
     public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public final static float DEFAULT_MIN_PERCENT_READ_TO_COVER = 0f;
 
     public static final boolean DEFAULT_USE_IDENTITY = false;
+
     public static final boolean DEFAULT_LONG_READS = false;
+
+    public static final ReadAssignmentMode DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS = ReadAssignmentMode.readCount;
+    public static final ReadAssignmentMode DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS = ReadAssignmentMode.alignedBases;
 
     private float minScore = DEFAULT_MINSCORE;
     private float maxExpected = DEFAULT_MAXEXPECTED;
@@ -127,7 +153,7 @@ public class Document {
     private int pairedReadSuffixLength;
     private boolean openDAAFileOnlyIfMeganized = true;
 
-    private boolean useWeightedReadCounts = false;
+    private ReadAssignmentMode readAssignmentMode = DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS;
 
     /**
      * constructor
@@ -212,7 +238,7 @@ public class Document {
     public void reloadFromConnector(String parametersOverride) throws IOException {
         if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
-            SyncArchiveAndDataTable.syncArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
+            SyncArchiveAndDataTable.syncArchive2Summary(getReadAssignmentMode(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
 
             setNumberReads(getDataTable().getTotalReads());
             setAdditionalReads(getDataTable().getAdditionalReads());
@@ -225,7 +251,7 @@ public class Document {
             }
 
             if (connector.getNumberOfReads() > 0) {
-                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(isUseWeightedReadCounts(), getMeganFile().getName(), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
+                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getReadAssignmentMode(), getMeganFile().getName(), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
             }
 
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);
@@ -266,10 +292,19 @@ public class Document {
                 setTopPercent(np.findIgnoreCase(tokens, "topPercent=", getTopPercent()));
                 setMinSupportPercent(np.findIgnoreCase(tokens, "minSupportPercent=", 0f));
                 setMinSupport((int) np.findIgnoreCase(tokens, "minSupport=", getMinSupport()));
-                if (np.findIgnoreCase(tokens, "weightedLCA=true", true, false))
-                    setLcaAlgorithm(LCAAlgorithm.Weighted);
-                else if (np.findIgnoreCase(tokens, "weightedLCA=false", true, false))
-                    setLcaAlgorithm(LCAAlgorithm.Naive);
+
+                setLcaAlgorithm(LCAAlgorithm.naive);
+                // legacy support:
+                {
+                    if (np.findIgnoreCase(tokens, "weightedLCA=true", true, false))
+                        setLcaAlgorithm(LCAAlgorithm.weighted);
+                    else if (np.findIgnoreCase(tokens, "weightedLCA=false", true, false))
+                        setLcaAlgorithm(LCAAlgorithm.naive);
+                    else if (np.findIgnoreCase(tokens, "lcaAlgorithm=NaiveLongRead", true, false))
+                        setLcaAlgorithm(LCAAlgorithm.naive);
+                    else if (np.findIgnoreCase(tokens, "lcaAlgorithm=CoverageLongRead", true, false))
+                        setLcaAlgorithm(LCAAlgorithm.longReads);
+                }
 
                 for (LCAAlgorithm algorithm : LCAAlgorithm.values()) {
                     if (np.findIgnoreCase(tokens, "lcaAlgorithm=" + algorithm, true, false)) {
@@ -299,10 +334,21 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
-                if (np.findIgnoreCase(tokens, "useWeightedReadCounts=true", true, false))
-                    setUseWeightedReadCounts(true);
-                else if (np.findIgnoreCase(tokens, "useWeightedReadCounts=false", true, false))
-                    setUseWeightedReadCounts(false);
+                setReadAssignmentMode(DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+                //legacy support:
+                {
+                    if (np.findIgnoreCase(tokens, "useWeightedReadCounts=true", true, false))
+                        setReadAssignmentMode(ReadAssignmentMode.readLength); // legacy
+                    else if (np.findIgnoreCase(tokens, "useWeightedReadCounts=false", true, false))
+                        setReadAssignmentMode(ReadAssignmentMode.readCount); // legacy
+                }
+
+                for (ReadAssignmentMode readAssignmentMode : ReadAssignmentMode.values()) {
+                    if (np.findIgnoreCase(tokens, "readAssignmentMode=" + readAssignmentMode, true, false)) {
+                        setReadAssignmentMode(readAssignmentMode);
+                        break;
+                    }
+                }
 
                 {
                     String fNamesString = (np.findIgnoreCase(tokens, "fNames=", "{", "}", "").trim());
@@ -344,14 +390,14 @@ public class Document {
         buf.append(" minSupportPercent=").append(getMinSupportPercent());
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-        if (getLcaAlgorithm() == LCAAlgorithm.Weighted || getLcaAlgorithm() == LCAAlgorithm.CoverageLongRead)
+        if (getLcaAlgorithm() == LCAAlgorithm.weighted || getLcaAlgorithm() == LCAAlgorithm.longReads)
             buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" longReads=").append(isLongReads());
         buf.append(" pairedReads=").append(isPairedReads());
         buf.append(" identityFilter=").append(isUseIdentityFilter());
-        buf.append(" useWeightedReadCounts=").append(isUseWeightedReadCounts());
+        buf.append(" readAssignmentMode=").append(getReadAssignmentMode().toString());
 
         if (getActiveViewers().size() > 0) {
             buf.append(" fNames= {");
@@ -1033,11 +1079,11 @@ public class Document {
         return openDAAFileOnlyIfMeganized;
     }
 
-    public boolean isUseWeightedReadCounts() {
-        return useWeightedReadCounts; // use weighted read counts when extracting counts from archive
+    public ReadAssignmentMode getReadAssignmentMode() {
+        return readAssignmentMode;
     }
 
-    public void setUseWeightedReadCounts(boolean useWeightedReadCounts) {
-        this.useWeightedReadCounts = useWeightedReadCounts;
+    public void setReadAssignmentMode(ReadAssignmentMode readAssignmentMode) {
+        this.readAssignmentMode = readAssignmentMode;
     }
 }

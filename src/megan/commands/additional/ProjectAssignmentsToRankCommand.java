@@ -29,7 +29,6 @@ import megan.classification.ClassificationManager;
 import megan.core.*;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.util.CallBack;
 import megan.util.PopupChoice;
 import megan.viewer.ClassificationViewer;
@@ -66,6 +65,12 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
         final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + rank + "-projection.megan");
         final SampleAttributeTable sampleAttributeTable = doc.getSampleAttributeTable().copy();
 
+        final long numberOfReads = doc.getNumberOfReads();
+        final int[] sampleSizes = new int[numberOfSamples];
+        for (int s = 0; s < numberOfSamples; s++) {
+            sampleSizes[s] = Math.round(doc.getDataTable().getSampleSizes()[s]);
+        }
+
         final Map<Integer, float[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
         final Map<Integer, float[]>[] sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
 
@@ -76,6 +81,7 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
             newDir.getMainViewer().setDoReInduce(true);
             newDir.getMainViewer().setDoReset(true);
             newDocument = newDir.getDocument();
+            newDocument.setReadAssignmentMode(doc.getReadAssignmentMode());
         } else {
             newDir = (Director) getDir();
             newDocument = doc;
@@ -84,14 +90,14 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
         }
         newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
-        for (int i = 0; i < numberOfSamples; i++) {
+        for (int s = 0; s < numberOfSamples; s++) {
             Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
-            classification2class2counts.put(ClassificationType.Taxonomy.toString(), sample2taxonMap[i]);
-            float sampleSize = computeSize(sample2taxonMap[i]);
-            newDocument.addSample(sampleNames[i], sampleSize, 0, BlastMode.Unknown, classification2class2counts);
+            classification2class2counts.put(ClassificationType.Taxonomy.toString(), sample2taxonMap[s]);
+            // float sampleSize = computeSize(sample2taxonMap[s]);
+            newDocument.addSample(sampleNames[s], sampleSizes[s], 0, doc.getBlastMode(), classification2class2counts);
         }
+        newDocument.setNumberReads(numberOfReads);
 
-        newDocument.setNumberReads(newDocument.getDataTable().getTotalReads());
         System.err.println("Number of reads: " + newDocument.getNumberOfReads());
         newDocument.processReadHits();
         newDocument.setTopPercent(100);

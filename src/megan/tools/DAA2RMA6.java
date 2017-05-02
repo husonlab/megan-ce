@@ -113,7 +113,7 @@ public class DAA2RMA6 {
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float weightedLCAPercent;
-        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.Weighted || lcaAlgorithm == Document.LCAAlgorithm.CoverageLongRead)
+        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.weighted || lcaAlgorithm == Document.LCAAlgorithm.longReads)
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
@@ -274,7 +274,7 @@ public class DAA2RMA6 {
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
             doc.setLongReads(longReads);
             doc.setMinPercentReadToCover(minPercentReadToCover);
-            doc.setUseWeightedReadCounts(longReads);
+            doc.setReadAssignmentMode(longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
 
             if (!processInPairs)
                 createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);

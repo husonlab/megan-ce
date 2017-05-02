@@ -710,7 +710,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (doc.getNumberOfSamples() > 1) {
             Comparer.COMPARISON_MODE mode = Comparer.parseMode(doc.getDataTable().getParameters());
             if (mode.equals(Comparer.COMPARISON_MODE.RELATIVE)) {
-                buf2.append(String.format("Relative comparison, Reads=%,d (normalized to %,d reads per sample)", totalReads, Comparer.parseNormalizedTo(doc.getDataTable().getParameters())));
+                buf2.append(String.format("Relative comparison, Assigned=%,d (normalized to %,d per sample)", totalReads, Comparer.parseNormalizedTo(doc.getDataTable().getParameters())));
             } else
                 buf2.append(String.format("Absolute comparison, Reads=%,d Assigned=%,d", totalReads, totalAssignedReads));
         } else if (totalReads > 0) {

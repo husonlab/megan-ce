@@ -97,7 +97,7 @@ public class LCAParametersPanel extends JPanel {
                     }
                     else
                         dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
-                    dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+                    dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted));
                     ProgramProperties.put("SelectedLCAAlgorithm" + (dialog.isLongReads() ? "LongReads" : "ShortReads"), dialog.getLcaAlgorithm().toString());
                 }
             });
@@ -105,11 +105,11 @@ public class LCAParametersPanel extends JPanel {
             Document.LCAAlgorithm algorithm;
             if (dialog.isLongReads()) {
                 algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithmLongReads", Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString()));
-                if (algorithm != Document.LCAAlgorithm.NaiveLongRead && algorithm != Document.LCAAlgorithm.CoverageLongRead)
+                if (algorithm != Document.LCAAlgorithm.longReads)
                     algorithm = Document.DEFAULT_LCA_ALGORITHM_LONG_READS;
             } else { // short reads:
                 algorithm = Document.LCAAlgorithm.valueOfIgnoreCase(ProgramProperties.get("SelectedLCAAlgorithmShortReads", Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-                if (algorithm == Document.LCAAlgorithm.NaiveLongRead || algorithm == Document.LCAAlgorithm.CoverageLongRead)
+                if (algorithm == Document.LCAAlgorithm.longReads)
                     algorithm = Document.DEFAULT_LCA_ALGORITHM_SHORT_READS;
             }
 
@@ -119,7 +119,7 @@ public class LCAParametersPanel extends JPanel {
             dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
 
             centerPanel.add(lcaAlgorithmComboBox);
-            dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.Weighted));
+            dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted));
             centerPanel.add(dialog.getWeightedLCAPercentField());
             dialog.getWeightedLCAPercentField().setToolTipText("Percent of weight to cover by weighted LCA");
 

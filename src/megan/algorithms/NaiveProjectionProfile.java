@@ -141,7 +141,7 @@ public class NaiveProjectionProfile {
                 lostCount[i] = totalInitiallyAssigned[i] - totalProjected[i];
 
                 System.err.println("Sample " + i + ":");
-                System.err.println(String.format("Reads:    %,10f", viewer.getDocument().getDataTable().getSampleSizes()[i]));
+                System.err.println(String.format("Reads:    %,10.0f", viewer.getDocument().getDataTable().getSampleSizes()[i]));
                 System.err.println(String.format("Assigned: %,10d", totalInitiallyAssigned[i]));
                 System.err.println(String.format("Projected:%,10d", totalProjected[i]));
                 System.err.println(String.format("Lost:     %,10d", lostCount[i]));

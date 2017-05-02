@@ -23,13 +23,13 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.core.Document;
+import megan.core.ReadAssignmentCalculator;
 import megan.core.SyncArchiveAndDataTable;
 import megan.data.*;
 import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
-import megan.util.ReadMagnitudeParser;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -80,8 +80,6 @@ public class DataProcessor {
 
             // step 0: set up classification algorithms
 
-            final boolean usingNaiveLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.NaiveLongRead);
-
             final double minCoveredPercent = doc.getMinPercentReadToCover();
             int numberOfReadsFailedCoveredThreshold = 0;
             final IntervalTree<Object> intervals;
@@ -94,36 +92,34 @@ public class DataProcessor {
             } else
                 intervals = null;
 
-            if (doc.isLongReads() && doc.getTopPercent() > 0 && doc.getTopPercent() < 100) {
-                System.err.println("Long reads: set TopPercent threshold to 100 (off)");
-                doc.setTopPercent(100);
-            }
+
+            final boolean usingLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads);
+
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int c = 0; c < numberOfClassifications; c++) {
                 if (c == taxonomyIndex) {
                     switch (doc.getLcaAlgorithm()) {
                         default:
-                        case Naive:
+                        case naive:
                             assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
                             break;
-                        case Weighted:
+                        case weighted:
                             assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
-                        case NaiveLongRead:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneLCACreator(cNames[taxonomyIndex], doc.isUseIdentityFilter(), doc.getTopPercent());
-                            break;
-                        case CoverageLongRead:
+                        case longReads:
                             assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc);
                             break;
                     }
                 } else if (useLCAForClassification[c])
                     assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c]);
-                else if (usingNaiveLongReadAlgorithm)
+                else if (usingLongReadAlgorithm)
                     assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
                 else
                     assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
             }
+
+            final ReadAssignmentCalculator readAssignmentCalculator = new ReadAssignmentCalculator(doc.getReadAssignmentMode());
 
             // step 1:  stream through reads and assign classes
 
@@ -152,12 +148,20 @@ public class DataProcessor {
             final IConnector connector = doc.getConnector();
             final InputOutputReaderWriter mateReader = doMatePairs ? new InputOutputReaderWriter(doc.getMeganFile().getFileName(), "r") : null;
 
-            final float topPercent = (usingNaiveLongReadAlgorithm ? 100 : doc.getTopPercent()); // if we are using the long-read lca, must not use this filter on original matches
+            final float topPercent;
+            if (usingLongReadAlgorithm && doc.getTopPercent() > 0 && doc.getTopPercent() < 100) {
+                System.err.println("Long reads algorithm: ignoring topPercent filter");
+                topPercent = 0;
+            } else
+                topPercent = doc.getTopPercent();
+
+
 
             final int[] classIds = new int[numberOfClassifications];
             final ArrayList<int[]>[] moreClassIds;
             final float[] multiGeneWeights;
-            if (usingNaiveLongReadAlgorithm) {
+
+            if (usingLongReadAlgorithm) {
                 moreClassIds = new ArrayList[numberOfClassifications];
                 for (int c = 0; c < numberOfClassifications; c++)
                     moreClassIds[c] = new ArrayList<>();
@@ -184,10 +188,13 @@ public class DataProcessor {
                     mateReadBlock = null;
 
                 while (it.hasNext()) {
+                    if (progress.isUserCancelled())
+                        break;
+
                     // clean up previous values
                     for (int c = 0; c < numberOfClassifications; c++) {
                         classIds[c] = 0;
-                        if (usingNaiveLongReadAlgorithm) {
+                        if (usingLongReadAlgorithm) {
                             moreClassIds[c].clear();
                             multiGeneWeights[c] = 0;
                         }
@@ -195,22 +202,9 @@ public class DataProcessor {
 
                     final IReadBlock readBlock = it.next();
 
-                    if (progress.isUserCancelled())
-                        break;
+                    ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
-                    if (false) { // code for fixing missing weights
-                        if (readBlock.getReadWeight() <= 1) {
-                            ReadMagnitudeParser.setEnabled(true);
-                            int value = ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader());
-                            if (value > 1)
-                                readBlock.setReadWeight(value);
-                        }
-                    }
-
-                    if (readBlock.getReadWeight() == 0)
-                        readBlock.setReadWeight(1);
-                    if (doc.isLongReads())
-                        readBlock.setReadWeight(readBlock.getReadWeight() * readBlock.getReadLength());
+                    readBlock.setReadWeight(readAssignmentCalculator.compute(readBlock, activeMatches, intervals));
 
                     numberOfReadsFound++;
                     totalWeight += readBlock.getReadWeight();
@@ -221,7 +215,6 @@ public class DataProcessor {
                     if (hasLowComplexity)
                         numberOfReadsWithLowComplexity += readBlock.getReadWeight();
 
-                    ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
                     int taxId = 0;
                     if (taxonomyIndex >= 0) {
@@ -264,7 +257,7 @@ public class DataProcessor {
                         } else {
                             ActiveMatches.compute(doc.getMinScore(), topPercent, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
                             id = assignmentAlgorithm[c].computeId(activeMatches, readBlock);
-                            if (id > 0 && usingNaiveLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
+                            if (id > 0 && usingLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
                                 int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
                                 multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
                             }
@@ -281,7 +274,7 @@ public class DataProcessor {
                     }
                     updateList.addItem(readBlock.getUId(), readBlock.getReadWeight(), classIds);
 
-                    if (usingNaiveLongReadAlgorithm) {
+                    if (usingLongReadAlgorithm) {
                         for (int c = 0; c < numberOfClassifications; c++) {
                             for (int[] aClassIds : moreClassIds[c]) {
                                 updateList.addItem(readBlock.getUId(), multiGeneWeights[c], aClassIds);
@@ -362,7 +355,7 @@ public class DataProcessor {
 
             // 4. sync
             progress.setSubtask("Syncing");
-            SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.isUseWeightedReadCounts(), doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
+            SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
 
             if (progress instanceof ProgressPercentage)
                 ((ProgressPercentage) progress).reportTaskCompleted();

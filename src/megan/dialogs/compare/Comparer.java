@@ -97,7 +97,7 @@ public class Comparer {
 
         final String[] names = new String[dirs.size()];
         final Long[] uids = new Long[dirs.size()];
-        final float[] sizes = new float[dirs.size()];
+        final float[] originalNumberOfReads = new float[dirs.size()];
         final BlastMode[] blastModes = new BlastMode[dirs.size()];
 
         // lock all unlocked projects involved in the comparison
@@ -110,7 +110,7 @@ public class Comparer {
             }
             int pos = pid2pos[dir.getID()];
             names[pos] = getUniqueName(names, pos, Basic.getFileBaseName(dir.getDocument().getTitle()));
-            sizes[pos] = (int) dir.getDocument().getNumberOfReads();
+            originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
             blastModes[pos] = dir.getDocument().getBlastMode();
             if (dir.getDocument().getSampleAttributeTable().getNumberOfSamples() == 1) {
                 String oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();
@@ -137,6 +137,7 @@ public class Comparer {
                 for (Director dir : dirs) {
                     final MainViewer mainViewer = dir.getMainViewer();
                     final long numberOfReads;
+
                     if (isIgnoreUnassigned())
                         numberOfReads = mainViewer.getTotalAssignedReads();
                     else {
@@ -157,6 +158,8 @@ public class Comparer {
             parameters += " ignoreUnassigned=true";
         result.setParameters(parameters);
 
+        final float[] sizes = new float[dirs.size()];
+
         progressListener.setMaximum(dirs.size());
         progressListener.setProgress(0);
 
@@ -164,7 +167,7 @@ public class Comparer {
         final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
         final ExecutorService executor = Executors.newCachedThreadPool();
 
-        final long[] readCountPerThread = new long[numberOfThreads];
+        final long[] assignedCountPerThread = new long[numberOfThreads];
 
         final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
         final ProgressSilent progressSilent = new ProgressSilent();
@@ -270,7 +273,7 @@ public class Comparer {
                             if (progressListenerThread.get() == threadNumber)
                                 progressListenerThread.set(-1);
                         }
-                        readCountPerThread[threadNumber] += readCount;
+                        assignedCountPerThread[threadNumber] += readCount;
                         countDownLatch.countDown();
                     }
                 }
@@ -316,7 +319,7 @@ public class Comparer {
         result.setSamples(names, uids, sizes, blastModes);
         sampleAttributeTable.removeAttribute(SampleAttributeTable.HiddenAttribute.Label.toString());
 
-        final long totalNumberOfReads = Basic.getSum(readCountPerThread);
+        final long totalAssigned = Basic.getSum(assignedCountPerThread);
 
         for (String classificationName : result.getClassification2Class2Counts().keySet()) {
             result.setNodeStyle(classificationName, NodeDrawer.Style.PieChart.toString());
@@ -328,12 +331,12 @@ public class Comparer {
         }
 
         if (useRelative) {
-            System.err.println(String.format("Total: %,12d normalized reads", totalNumberOfReads));
+            System.err.println(String.format("Total assigned: %,12d normalized", totalAssigned));
         } else {
-            System.err.println(String.format("Total: %,12d", totalNumberOfReads));
+            System.err.println(String.format("Total assigned: %,12d", totalAssigned));
         }
 
-        result.setTotalReads((int) totalNumberOfReads);
+        result.setTotalReads((int) Basic.getSum(originalNumberOfReads));
     }
 
     /**

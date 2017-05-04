@@ -117,7 +117,7 @@ public class SAM2RMA6 {
         else
             weightedLCAPercent = -1;
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
-                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
+                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
 
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
@@ -127,7 +127,6 @@ public class SAM2RMA6 {
                 throw new UsageException("--function: Unknown classification: " + cName);
             if (cName.equals(Classification.Taxonomy))
                 throw new UsageException("--function: Illegal argument: 'Taxonomy'");
-
         }
 
         options.comment("Classification support:");

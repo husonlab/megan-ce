@@ -121,7 +121,7 @@ public class BLAST2RMA6 {
             weightedLCAPercent = -1;
 
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
-                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
+                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
         String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);

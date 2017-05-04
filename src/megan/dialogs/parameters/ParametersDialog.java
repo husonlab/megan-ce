@@ -178,7 +178,7 @@ public class ParametersDialog extends JDialog {
 
             final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
 
-            aPanel.setLayout(new GridLayout(19 + (cNames.length + 1) / 2, 2));
+            aPanel.setLayout(new GridLayout(18 + (cNames.length + 1) / 2, 2));
 
             aPanel.add(new JLabel("Min Score:"));
             aPanel.add(minScoreField);
@@ -345,7 +345,6 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel("LCA Algorithm:"));
-            aPanel.add(new JLabel("Percent to cover:"));
 
             aPanel.add(lcaAlgorithmComboBox);
             lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
@@ -373,6 +372,7 @@ public class ParametersDialog extends JDialog {
                 }
             });
 
+            aPanel.add(new JLabel("Percent to cover:"));
             aPanel.add(weightedLCAPercentField);
             weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA or long reads LCA");
             weightedLCAPercentField.getDocument().addDocumentListener(new DocumentListener() {
@@ -393,7 +393,6 @@ public class ParametersDialog extends JDialog {
                     || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads));
 
             aPanel.add(new JLabel("Read Assignment Mode:"));
-            aPanel.add(new JLabel(" "));
 
             aPanel.add(readAssignmentModeComboBox);
             readAssignmentModeComboBox.setToolTipText("Read assignment mode: determines what is shown as number of assigned reads in taxonomy analysis");
@@ -421,7 +420,6 @@ public class ParametersDialog extends JDialog {
                     }
                 }
             });
-            aPanel.add(new JLabel(" "));
 
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));

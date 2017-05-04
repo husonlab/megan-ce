@@ -60,7 +60,7 @@ public class Meganize {
      * @throws CanceledException
      */
     public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final String[] cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
-                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, float weightedLCAPercent, boolean longReads, float minPercentReadToCover) throws IOException, CanceledException {
+                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float weightedLCAPercent, boolean longReads, float minPercentReadToCover) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
@@ -83,7 +83,7 @@ public class Meganize {
         doc.setWeightedLCAPercent(weightedLCAPercent);
         doc.setMinPercentReadToCover(minPercentReadToCover);
         doc.setLongReads(longReads);
-        doc.setReadAssignmentMode(longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+        doc.setReadAssignmentMode(readAssignmentMode);
 
         doc.setProgressListener(progress);
 

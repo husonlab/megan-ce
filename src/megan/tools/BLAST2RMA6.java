@@ -96,7 +96,6 @@ public class BLAST2RMA6 {
         String[] outputFiles = options.getOptionMandatory("-o", "out", "Output file(s), one for each input file, or a directory", new String[0]);
         boolean useCompression = options.getOption("-c", "useCompression", "Compress reads and matches in RMA file (smaller files, longer to generate", true);
         options.comment("Reads");
-        final boolean hasMagnitudes = options.getOption("-mag", "magnitudes", "Reads are annotated with magnitudes", false);
         final boolean pairedReads = options.getOption("-p", "paired", "Reads are paired", false);
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
         final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
@@ -120,6 +119,9 @@ public class BLAST2RMA6 {
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
+
+        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
+                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
         String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
@@ -283,12 +285,12 @@ public class BLAST2RMA6 {
             doc.setWeightedLCAPercent(weightedLCAPercent);
             doc.setMinPercentReadToCover(minPercentReadToCover);
             doc.setLongReads(longReads);
-            doc.setReadAssignmentMode(longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+            doc.setReadAssignmentMode(readAssignmentMode);
 
             if (!processInPairs)
-                createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+                createRMA6FileFromBLAST("BLAST2RMA6", blastFiles[i], blastFormat, readsFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, progressListener);
             else
-                createRMA6FileFromBLASTPair("BLAST2RMA6", blastFiles[i], blastFiles[i + 1], blastFormat, readsFiles[i], readsFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+                createRMA6FileFromBLASTPair("BLAST2RMA6", blastFiles[i], blastFiles[i + 1], blastFormat, readsFiles[i], readsFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, progressListener);
 
             progressListener.close();
 
@@ -322,14 +324,13 @@ public class BLAST2RMA6 {
      * @param useCompression
      * @param doc
      * @param maxMatchesPerRead
-     * @param hasMagnitudes
      * @param progressListener
      * @throws IOException
      * @throws CanceledException
      */
     public static void createRMA6FileFromBLAST(String creator, String blastFile, BlastFileFormat format, String queryFile, String rma6FileName, boolean useCompression, Document doc,
-                                               int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
-        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+                                               int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException {
+        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);
     }
 
@@ -346,14 +347,13 @@ public class BLAST2RMA6 {
      * @param useCompression
      * @param doc
      * @param maxMatchesPerRead
-     * @param hasMagnitudes
      * @param progressListener
      * @throws IOException
      * @throws CanceledException
      */
     public static void createRMA6FileFromBLASTPair(String creator, String blastFile1, String blastFile2, BlastFileFormat format, String queryFile1, String queryFile2, String rma6FileName, boolean useCompression, Document doc,
-                                                   int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
-        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile1, blastFile2}, new String[]{queryFile1, queryFile2}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+                                                   int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException {
+        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile1, blastFile2}, new String[]{queryFile1, queryFile2}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);
     }
 

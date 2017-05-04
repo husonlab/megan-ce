@@ -101,8 +101,8 @@ public class Blast2LCA {
 
         options.comment("Parameters");
         // todo: implement long reads
-        // final boolean longReads=options.getOption("-lg","longReads","Parse and analyse as long reads",Document.DEFAULT_LONG_READS);
         final boolean longReads = false;
+        // final boolean longReads=options.getOption("-lg","longReads","Parse and analyse as long reads",Document.DEFAULT_LONG_READS);
 
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
         final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", 0.01f);
@@ -179,7 +179,7 @@ public class Blast2LCA {
             System.err.println("Reading file: " + blastFile);
             System.err.println("Writing file: " + outputFile);
 
-            try (BlastFileReadBlockIterator it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoringCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, false, longReads)) {
+            try (BlastFileReadBlockIterator it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoringCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, longReads)) {
                 final ProgressPercentage progressListener = new ProgressPercentage();
                 progressListener.setMaximum(it.getMaximumProgress());
 

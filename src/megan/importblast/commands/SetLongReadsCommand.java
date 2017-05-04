@@ -43,16 +43,18 @@ public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand
     }
 
     public void actionPerformed(ActionEvent event) {
-        ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        importBlastDialog.setLongReads(!isSelected());
-        if (importBlastDialog.isLongReads()) {
-            importBlastDialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_LONG_READS);
-            importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(false);
-            importBlastDialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(false);
+        ImportBlastDialog dialog = (ImportBlastDialog) getParent();
+        dialog.setLongReads(!isSelected());
+        if (dialog.isLongReads()) {
+            dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_LONG_READS);
+            dialog.getMaxNumberOfMatchesPerReadField().setEnabled(false);
+            dialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(false);
+            dialog.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS);
         } else {
-            importBlastDialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
-            importBlastDialog.getMaxNumberOfMatchesPerReadField().setEnabled(true);
-            importBlastDialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(true);
+            dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
+            dialog.getMaxNumberOfMatchesPerReadField().setEnabled(true);
+            dialog.getMaxNumberOfMatchesPerReadLabel().setEnabled(true);
+            dialog.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
         }
     }
 

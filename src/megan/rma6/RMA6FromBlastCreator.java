@@ -32,7 +32,6 @@ import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
 import megan.parsers.blast.ISAMIterator;
 import megan.parsers.blast.IteratorManager;
-import megan.util.ReadMagnitudeParser;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -69,11 +68,10 @@ public class RMA6FromBlastCreator {
      * @param readsFiles
      * @param maxMatchesPerRead
      * @param doc
-     * @param hasMagnitudes
      * @throws IOException
      */
     public RMA6FromBlastCreator(String creator, BlastFileFormat format, BlastMode blastMode, String[] blastFiles, String[] readsFiles, String rma6File, boolean useCompression,
-                                Document doc, int maxMatchesPerRead, boolean hasMagnitudes) throws IOException {
+                                Document doc, int maxMatchesPerRead) throws IOException {
         this.format = format;
         this.blastMode = blastMode;
         this.blastFiles = blastFiles;
@@ -103,8 +101,6 @@ public class RMA6FromBlastCreator {
             throw new IOException("Internal error: taxonMapperIndex=-1");
         else
             this.taxonMapperIndex = taxonMapperIndex;
-
-        ReadMagnitudeParser.setEnabled(hasMagnitudes);
 
         this.longReads = doc.isLongReads();
         this.pairedReads = doc.isPairedReads();

@@ -103,6 +103,8 @@ public class MeganizeDAADialog extends ImportBlastDialog {
             buf.append(" minComplexity=").append(getMinComplexity());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 
+            buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
+
             buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
 
             buf.append(" paired=").append(isUsePairedReads());
@@ -111,9 +113,6 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 String pattern1 = getPairedReadSuffix1();
                 //String pattern2 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX2, "");
                 buf.append(" pairSuffixLength=").append(pattern1.length());
-            }
-            if (isUseReadMagnitudes()) {
-                buf.append(" hasMagnitudes=").append(isUseReadMagnitudes());
             }
 
             if (getShortDescription().length() > 0)

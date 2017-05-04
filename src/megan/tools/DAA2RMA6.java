@@ -95,7 +95,6 @@ public class DAA2RMA6 {
         boolean useCompression = options.getOption("-c", "useCompression", "Compress reads and matches in RMA file (smaller files, longer to generate", true);
 
         options.comment("Reads");
-        final boolean hasMagnitudes = options.getOption("-mag", "magnitudes", "Reads are annotated with magnitudes", false);
         final boolean pairedReads = options.getOption("-p", "paired", "Reads are paired", false);
         final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name (i.e. first word in header) of read and its mate (use 0 if read and mate have same name)", 0);
         final boolean pairsInSingleFile = options.getOption("-pof", "pairedReadsInOneFile", "Are paired reads in one file (usually they are in two)", false);
@@ -117,6 +116,9 @@ public class DAA2RMA6 {
             weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
         else
             weightedLCAPercent = -1;
+
+        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
+                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
 
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
@@ -274,12 +276,12 @@ public class DAA2RMA6 {
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
             doc.setLongReads(longReads);
             doc.setMinPercentReadToCover(minPercentReadToCover);
-            doc.setReadAssignmentMode(longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+            doc.setReadAssignmentMode(readAssignmentMode);
 
             if (!processInPairs)
-                createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+                createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, progressListener);
             else
-                createRMA6FileFromDAAPair("DAA2RMA6", daaFiles[i], daaFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, hasMagnitudes, progressListener);
+                createRMA6FileFromDAAPair("DAA2RMA6", daaFiles[i], daaFiles[i + 1], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, progressListener);
 
             progressListener.close();
 
@@ -312,8 +314,8 @@ public class DAA2RMA6 {
      * @param progressListener  @throws CanceledException
      */
     public static void createRMA6FileFromDAA(String creator, String daaFile, String rma6FileName, boolean useCompression, Document doc,
-                                             int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
-        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+                                             int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException {
+        final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);
     }
 
@@ -327,9 +329,9 @@ public class DAA2RMA6 {
      * @param progressListener  @throws CanceledException
      */
     public static void createRMA6FileFromDAAPair(String creator, String daaFile1, String daaFile2, String rma6FileName, boolean useCompression, Document doc,
-                                                 int maxMatchesPerRead, boolean hasMagnitudes, ProgressListener progressListener) throws IOException, CanceledException {
+                                                 int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException {
         final RMA6FromBlastCreator rma6Creator =
-                new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile1, daaFile2}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+                new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile1, daaFile2}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);
     }
 }

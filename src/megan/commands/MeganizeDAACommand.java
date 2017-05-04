@@ -58,9 +58,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[hasMagnitudes={false|true}] [description=<text>];";
+                "\t[description=<text>];";
     }
-
 
     /**
      * parses the given command and executes it
@@ -147,6 +146,12 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 System.err.println("IGNORED setting: useIdentityFilter=" + useIdentityFilter);
         }
 
+        Document.ReadAssignmentMode readAssignmentMode = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS;
+        if (np.peekMatchIgnoreCase("readAssignmentMode")) {
+            np.matchIgnoreCase("readAssignmentMode=");
+            readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " ")));
+        }
+
         final Collection<String> known = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
         final ArrayList<String> list = new ArrayList<>();
         if (np.peekMatchIgnoreCase("fNames=")) {
@@ -174,13 +179,6 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             }
         }
 
-        if (np.peekMatchIgnoreCase("hasMagnitudes")) {
-            np.matchIgnoreCase("hasMagnitudes=");
-            final boolean hasMagnitudes = np.getBoolean();
-            ReadMagnitudeParser.setEnabled(hasMagnitudes);
-            ProgramProperties.put("allow-read-weights", hasMagnitudes);
-        }
-
         String description = null;
         if (np.peekMatchIgnoreCase("description")) {
             np.matchIgnoreCase("description=");
@@ -206,7 +204,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, weightedLCAPercent, doc.isLongReads(), doc.getMinPercentReadToCover());
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, weightedLCAPercent, doc.isLongReads(), doc.getMinPercentReadToCover());
                 // todo: save the description
 
                 {

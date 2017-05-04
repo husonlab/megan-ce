@@ -35,7 +35,6 @@ import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
 import megan.rma6.RMA6FromBlastCreator;
-import megan.util.ReadMagnitudeParser;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
@@ -61,8 +60,8 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minPercentReadToCover=<nu>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
-                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[hasMagnitudes={false|true}] [description=<text>];";
+                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
+                "\t[description=<text>];";
     }
 
 
@@ -193,6 +192,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 np.matchIgnoreCase("useIdentityFilter=");
                 getDoc().setUseIdentityFilter(np.getBoolean());
             }
+
+            if (np.peekMatchIgnoreCase("readAssignmentMode")) {
+                np.matchIgnoreCase("readAssignmentMode=");
+                getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " "))));
+            }
+
             Collection<String> known = ClassificationManager.getAllSupportedClassifications();
             if (np.peekMatchIgnoreCase("fNames=")) {
                 doc.getActiveViewers().clear();
@@ -211,10 +216,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             if (np.peekMatchIgnoreCase("longReads")) {
                 np.matchIgnoreCase("longReads=");
                 doc.setLongReads(np.getBoolean());
-                doc.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS);
-            } else
-                doc.setReadAssignmentMode(Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
-
+            }
 
             if (np.peekMatchIgnoreCase("paired")) {
                 np.matchIgnoreCase("paired=");
@@ -227,14 +229,6 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 }
             }
 
-            boolean hasMagnitudes = false;
-            if (np.peekMatchIgnoreCase("hasMagnitudes")) {
-                np.matchIgnoreCase("hasMagnitudes=");
-                hasMagnitudes = np.getBoolean();
-                ReadMagnitudeParser.setEnabled(hasMagnitudes);
-                ProgramProperties.put("allow-read-weights", hasMagnitudes);
-            }
-
             String description = null;
             if (np.peekMatchIgnoreCase("description")) {
                 np.matchIgnoreCase("description=");
@@ -242,8 +236,6 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             }
 
             np.matchIgnoreCase(";");
-
-            ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));
 
             if (meganFileName == null)
                 throw new IOException("Must specify MEGAN file");
@@ -262,7 +254,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
 
             doc.getMeganFile().setFile(meganFileName, MeganFile.Type.RMA6_FILE);
             RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(ProgramProperties.getProgramName(), format, doc.getBlastMode(),
-                    blastFileNames, readFileNames, doc.getMeganFile().getFileName(), useCompression, doc, maxMatchesPerRead, hasMagnitudes);
+                    blastFileNames, readFileNames, doc.getMeganFile().getFileName(), useCompression, doc, maxMatchesPerRead);
 
             rma6Creator.parseFiles(doc.getProgressListener());
 

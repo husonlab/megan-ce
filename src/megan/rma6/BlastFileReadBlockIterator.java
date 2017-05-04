@@ -29,7 +29,6 @@ import megan.parsers.blast.BlastMode;
 import megan.parsers.blast.ISAMIterator;
 import megan.parsers.blast.IteratorManager;
 import megan.parsers.sam.SAMMatch;
-import megan.util.ReadMagnitudeParser;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -51,7 +50,6 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
     private final boolean isFasta;
     private final byte[] queryName = new byte[100000];
     private final Single<byte[]> fastAText = new Single<>(new byte[1000]);
-    private final boolean hasMagnitudes;
     private int missingReadWarnings;
 
     /**
@@ -63,7 +61,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
      * @param maxMatchesPerRead
      * @throws IOException
      */
-    public BlastFileReadBlockIterator(String blastFile, String readsFile, BlastFileFormat format, BlastMode blastMode, String[] cNames, int maxMatchesPerRead, boolean hasMagnitudes, boolean longReads) throws IOException {
+    public BlastFileReadBlockIterator(String blastFile, String readsFile, BlastFileFormat format, BlastMode blastMode, String[] cNames, int maxMatchesPerRead, boolean longReads) throws IOException {
         this.readsFile = readsFile;
         this.cNames = cNames;
         parsers = new IdParser[cNames.length];
@@ -89,7 +87,6 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
             fastaIterator = null;
             isFasta = false;
         }
-        this.hasMagnitudes = hasMagnitudes;
     }
 
     /**
@@ -164,9 +161,6 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
                 String fasta = Basic.toString(fastAText.get(), 0, length);
                 int pos = fasta.indexOf('\n');
                 if (pos > 0) {
-                    if (hasMagnitudes) {
-                        readBlock.setReadWeight(ReadMagnitudeParser.parseMagnitude(fasta.substring(pos)));
-                    }
                     readBlock.setReadHeader(fasta.substring(0, pos));
                     if (pos + 1 < fasta.length())
                         readBlock.setReadSequence(fasta.substring((pos + 1)));
@@ -181,9 +175,6 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
         }
         if (!foundRead) {
             readBlock.setReadHeader(String.format(">%s\n", Basic.toString(queryName, 0, queryNameLength)));
-            if (hasMagnitudes) {
-                readBlock.setReadWeight(ReadMagnitudeParser.parseMagnitude(Basic.toString(queryName, 0, queryNameLength)));
-            }
         }
         int start = 0;
         MatchBlockRMA6[] matchBlocks = new MatchBlockRMA6[numberOfMatches];

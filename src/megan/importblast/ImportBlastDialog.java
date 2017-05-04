@@ -67,6 +67,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     final JTextField minSupportPercentField = new JTextField(8);
 
     final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
+    final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
+
 
     final JTextField weightedLCAPercentField = new JTextField(8);
     final JTextField minComplexityField = new JTextField(8);
@@ -181,7 +183,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setLocationRelativeTo(parent);
         setTitle(title);
         setModal(true);
-        setSize(900, 600);
+        setSize(900, 700);
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -400,14 +402,6 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         this.usePairedReads = usePairedReads;
     }
 
-    public boolean isUseReadMagnitudes() {
-        return useReadMagnitudes;
-    }
-
-    public void setUseReadMagnitudes(boolean useReadMagnitudes) {
-        this.useReadMagnitudes = useReadMagnitudes;
-    }
-
     public boolean isParseTaxonNames() {
         return parseTaxonNames;
     }
@@ -439,6 +433,14 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     public Document.LCAAlgorithm getLcaAlgorithm() {
         return Document.LCAAlgorithm.valueOfIgnoreCase((String) lcaAlgorithmComboBox.getSelectedItem());
+    }
+
+    public void setReadAssignmentMode(Document.ReadAssignmentMode readAssignmentMode) {
+        readAssignmentModeComboBox.setSelectedItem(readAssignmentMode.toString());
+    }
+
+    public Document.ReadAssignmentMode getReadAssignmentMode() {
+        return Document.ReadAssignmentMode.valueOfIgnoreCase((String) readAssignmentModeComboBox.getSelectedItem());
     }
 
     public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
@@ -552,6 +554,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     public JComboBox<String> getLcaAlgorithmComboBox() {
         return lcaAlgorithmComboBox;
+    }
+
+    public JComboBox<String> getReadAssignmentModeComboBox() {
+        return readAssignmentModeComboBox;
     }
 
     /**
@@ -806,6 +812,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 
+        buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
+
         buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
 
         if (isLongReads())
@@ -818,9 +826,6 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             String pattern1 = getPairedReadSuffix1();
             //String pattern2 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX2, "");
             buf.append(" pairSuffixLength=").append(pattern1.length());
-        }
-        if (isUseReadMagnitudes()) {
-            buf.append(" hasMagnitudes=").append(isUseReadMagnitudes());
         }
 
         if (getShortDescription().length() > 0)

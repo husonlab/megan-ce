@@ -19,6 +19,7 @@
 
 package megan.core;
 
+import jloda.util.ProgramProperties;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.ReadMagnitudeParser;
@@ -35,6 +36,7 @@ public class ReadAssignmentCalculator {
 
     public ReadAssignmentCalculator(Document.ReadAssignmentMode mode) {
         this.mode = mode;
+        ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));
     }
 
     /**

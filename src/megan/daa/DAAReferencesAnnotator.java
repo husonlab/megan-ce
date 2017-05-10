@@ -70,7 +70,7 @@ public class DAAReferencesAnnotator {
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 
-        progress.setSubtask("Annotating references");
+        progress.setTasks("Meganizing", "Annotating references");
         progress.setMaximum(header.getNumberOfReferences() / numberOfThreads + cNames.length);
         progress.setProgress(0);
 

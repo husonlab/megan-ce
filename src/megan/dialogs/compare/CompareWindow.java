@@ -62,7 +62,7 @@ public class CompareWindow extends JDialog {
     /**
      * setup and display the compare dialog
      */
-    public CompareWindow(JFrame parent, final Director dir, Collection<String> files) {
+    public CompareWindow(JFrame parent, final Director dir, Collection<String> files) throws CanceledException {
         super(parent);
 
         mode = Comparer.COMPARISON_MODE.valueOfIgnoreCase(ProgramProperties.get("CompareWindowMode", Comparer.COMPARISON_MODE.RELATIVE.toString()));
@@ -93,7 +93,7 @@ public class CompareWindow extends JDialog {
 
         loadListFromOpenDocuments();
         if (files != null)
-            loadList(files);
+            loadList(files, false);
 
         jList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
@@ -208,12 +208,13 @@ public class CompareWindow extends JDialog {
     /**
      * setup the list
      */
-    private void loadList(Collection<String> files) {
+    private void loadList(Collection<String> files, boolean loadReadAssignmentMode) {
+
         int[] selectionIds = new int[files.size()];
         int f = 0;
         for (String file : files) {
             try {
-                final MyListItem myListItem = new MyListItem(file);
+                final MyListItem myListItem = new MyListItem(file, loadReadAssignmentMode);
                 selectionIds[f++] = listModel.size();
                 listModel.addElement(myListItem);
             } catch (Exception ex) {
@@ -337,7 +338,7 @@ public class CompareWindow extends JDialog {
                     || (mode2count.get(mode).equals(mode2count.get(readAssignmentMode)) && readAssignmentMode == Document.ReadAssignmentMode.readCount))
                 readAssignmentMode = mode;
         }
-        return readAssignmentMode;
+        return readAssignmentMode != null ? readAssignmentMode : Document.ReadAssignmentMode.readCount;
     }
 
     /**
@@ -357,7 +358,7 @@ public class CompareWindow extends JDialog {
                 @Override
                 public void run() {
                     try {
-                        MyListItem item = new MyListItem(fileName);
+                        MyListItem item = new MyListItem(fileName, true);
                         int index = listModel.size();
                         listModel.add(index, item);
                         int[] selection = jList.getSelectedIndices();
@@ -401,13 +402,16 @@ public class CompareWindow extends JDialog {
             readAssignmentMode = dir.getDocument().getReadAssignmentMode();
         }
 
-        MyListItem(String fileName) throws IOException, CanceledException {
+        MyListItem(String fileName, boolean loadReadAssignmentMode) throws IOException, CanceledException {
             pid = -1;
             this.name = fileName;
-            final Document doc = new Document();
-            doc.getMeganFile().setFileFromExistingFile(fileName, true);
-            doc.loadMeganFile();
-            readAssignmentMode = doc.getReadAssignmentMode();
+            if (loadReadAssignmentMode) {
+                final Document doc = new Document();
+                doc.getMeganFile().setFileFromExistingFile(fileName, true);
+                doc.loadMeganFile();
+                readAssignmentMode = doc.getReadAssignmentMode();
+            } else
+                readAssignmentMode = null;
         }
 
         public String toString() {
@@ -416,7 +420,7 @@ public class CompareWindow extends JDialog {
                 str += "[" + getPID() + "] ";
             }
             str += name;
-            if (readAssignmentMode != Document.ReadAssignmentMode.readCount)
+            if (readAssignmentMode != null && readAssignmentMode != Document.ReadAssignmentMode.readCount)
                 str += " [" + readAssignmentMode.toString() + "]";
             return str;
         }

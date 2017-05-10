@@ -102,7 +102,7 @@ public class PCoA {
         numberOfPositiveEigenValues = 0;
         final Matrix positiveEigenValues = eigenValueDecomposition.getD();
         for (int i = 0; i < rank; i++) {
-            if (positiveEigenValues.get(i, i) > 0.00000001)
+            if (positiveEigenValues.get(i, i) > 0.000000001)
                 numberOfPositiveEigenValues++;
             else
                 positiveEigenValues.set(i, i, 0);

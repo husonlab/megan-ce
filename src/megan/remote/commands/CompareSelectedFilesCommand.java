@@ -45,25 +45,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-    }
-
-    /**
-     * get command-line usage description
-     *
-     * @return usage
-     */
-    @Override
-    public String getSyntax() {
-        return null;
-    }
-
-    /**
-     * action to be performed
-     *
-     * @param ev
-     */
-    @Override
-    public void actionPerformed(ActionEvent ev) {
+        np.matchIgnoreCase(getSyntax());
         final megan.remote.RemoteServiceBrowser remoteServiceBrowser = (megan.remote.RemoteServiceBrowser) getViewer();
 
         final megan.remote.ServicePanel servicePanel = remoteServiceBrowser.getServicePanel();
@@ -79,42 +61,29 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
                     final String command = compareWindow.getCommand();
                     if (command != null)
                         newDir.execute(command, newDir.getCommandManager());
-                    }
-            }
-
-                /*
-
-                StringBuilder buf = new StringBuilder();
-                buf.append("compare mode=").append(Comparer.COMPARISON_MODE.ABSOLUTE.toString());
-
-                Set<String> openFiles = servicePanel.getCurrentlyOpenRemoteFiles();
-
-                int count = 0;
-                for (String fileName : selectedFiles) {
-                    if (openFiles.contains(fileName)) {
-                        int pid = getPID(fileName);
-                        if (pid >= 0) {
-                            if (count == 0) {
-                                buf.append(" pid=");
-                            }
-                            buf.append(" ").append(pid);
-                            count++;
-                        }
-                    }
                 }
-                selectedFiles.removeAll(openFiles);
-                if (selectedFiles.size() > 0) {
-                    buf.append(" meganFile=");
-                    for (String fileName : selectedFiles) {
-                        buf.append(" '").append(fileName).append("'");
-                        count++;
-                    }
-                }
-                buf.append(";");
-                if (count > 1)
-                    execute(buf.toString());
-                    */
             }
+        }
+    }
+
+    /**
+     * get command-line usage description
+     *
+     * @return usage
+     */
+    @Override
+    public String getSyntax() {
+        return "compare;";
+    }
+
+    /**
+     * action to be performed
+     *
+     * @param ev
+     */
+    @Override
+    public void actionPerformed(ActionEvent ev) {
+        execute(getSyntax());
         }
 
     /**

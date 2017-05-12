@@ -19,6 +19,7 @@
 package megan.commands;
 
 import jloda.gui.ChooseFileDialog;
+import jloda.gui.ProgressDialog;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.IDirector;
 import jloda.gui.director.ProjectManager;
@@ -129,6 +130,11 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 }
 
                 doc.getProgressListener().setMaximum(-1);
+                doc.getProgressListener().setProgress(-1);
+                if (doc.getProgressListener() instanceof ProgressDialog) {
+                    doc.getProgressListener().setTasks("Opening file", meganFile.getName());
+                    ((ProgressDialog) doc.getProgressListener()).show();
+                }
                 viewer.getCollapsedIds().clear();
                 doc.loadMeganFile(); // note that megan3 summary and comparison files get converted to megan4 files here
 

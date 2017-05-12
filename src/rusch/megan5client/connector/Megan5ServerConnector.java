@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -49,6 +51,8 @@ public class Megan5ServerConnector implements IConnector {
     private HttpEntity<String> request;
     private String url;
     private String fileId;
+
+    private static ConcurrentMap<String, Object> url2response = new ConcurrentHashMap<>();
 
     /**
      * Create connection and apply authentication.
@@ -76,8 +80,10 @@ public class Megan5ServerConnector implements IConnector {
     }
 
     public RMADataset[] getAvailiableDatasets() {
-        ResponseEntity<RMADataset[]> response = restTemplate.exchange(url + RMAControllerMappings.LIST_DATASETS_MAPPING, HttpMethod.GET, request, RMADataset[].class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.LIST_DATASETS_MAPPING;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, RMADataset[].class).getBody());
+        return (RMADataset[]) url2response.get(requestURL);
     }
 
 
@@ -89,38 +95,36 @@ public class Megan5ServerConnector implements IConnector {
 
     @Override
     public boolean isReadOnly() throws IOException {
-        ResponseEntity<Boolean> response = restTemplate.exchange(url + RMAControllerMappings.IS_READ_ONLY_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Boolean.class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.IS_READ_ONLY_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(url + RMAControllerMappings.IS_READ_ONLY_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Boolean.class).getBody());
+        return (Boolean) url2response.get(requestURL);
     }
 
     @Override
     public long getUId() throws IOException {
-        ResponseEntity<Long> response = restTemplate.exchange(url + RMAControllerMappings.GET_UID_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Long.class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.GET_UID_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, Long.class).getBody());
+        return (Long) url2response.get(requestURL);
     }
 
     @Override
-    public IReadBlockIterator getAllReadsIterator(float minScore,
-                                                  float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
+    public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_ALL_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
         ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
-    public IReadBlockIterator getReadsIterator(String classification,
-                                               int classId, float minScore, float maxExpected,
-                                               boolean wantReadSequence, boolean wantMatches) throws IOException {
+    public IReadBlockIterator getReadsIterator(String classification, int classId, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classId=" + classId + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
         ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
-    public IReadBlockIterator getReadsIteratorForListOfClassIds(
-            String classification, Collection<Integer> classIds,
-            float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches)
-            throws IOException {
+    public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classIds=" + httpArray(classIds) + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
         ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
@@ -135,56 +139,63 @@ public class Megan5ServerConnector implements IConnector {
 
     @Override
     public String[] getAllClassificationNames() throws IOException {
-        ResponseEntity<String[]> response = restTemplate.exchange(url + RMAControllerMappings.GET_ALL_CLASSIFICATION_NAMES_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, String[].class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.GET_ALL_CLASSIFICATION_NAMES_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, String[].class).getBody());
+        return (String[]) url2response.get(requestURL);
+
     }
 
     @Override
-    public int getClassificationSize(String classificationName)
-            throws IOException {
-        ResponseEntity<Integer> response = restTemplate.exchange(url + RMAControllerMappings.GET_CLASSIFICATION_SIZE_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName, HttpMethod.GET, request, Integer.class);
-        return response.getBody();
+    public int getClassificationSize(String classificationName) throws IOException {
+        final String requestURL = url + RMAControllerMappings.GET_CLASSIFICATION_SIZE_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, Integer.class).getBody());
+        return (Integer) url2response.get(requestURL);
     }
 
     @Override
-    public int getClassSize(String classificationName, int classId)
-            throws IOException {
-        ResponseEntity<Integer> response = restTemplate.exchange(url + RMAControllerMappings.GET_CLASS_SIZE_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName + "&classId=" + classId, HttpMethod.GET, request, Integer.class);
-        return response.getBody();
+    public int getClassSize(String classificationName, int classId) throws IOException {
+        final String requestURL = url + RMAControllerMappings.GET_CLASS_SIZE_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName + "&classId=" + classId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, Integer.class).getBody());
+        return (Integer) url2response.get(requestURL);
     }
 
     @Override
-    public IClassificationBlock getClassificationBlock(String classificationName)
-            throws IOException {
-        ResponseEntity<ClassificationBlockServer> response3 = restTemplate.exchange(url + RMAControllerMappings.GET_CLASSIFICATIONBLOCK_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName, HttpMethod.GET, request, ClassificationBlockServer.class);
-        return new ClassificationBlock(response3.getBody());
+    public IClassificationBlock getClassificationBlock(String classificationName) throws IOException {
+        final String requestURL = url + RMAControllerMappings.GET_CLASSIFICATIONBLOCK_MAPPING + "?fileId=" + fileId + "&classification=" + classificationName;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, ClassificationBlockServer.class).getBody());
+        return new ClassificationBlock((ClassificationBlockServer) url2response.get(requestURL));
     }
 
     @Override
-    public void updateClassifications(String[] classificationNames,
-                                      List<UpdateItem> updateItems, ProgressListener progressListener)
-            throws IOException, CanceledException {
+    public void updateClassifications(String[] classificationNames, List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException, CanceledException {
         System.err.println("updateClassifications(String[] classificationNames,List<UpdateItem> updateItems, ProgressListener progressListener): not implemented");
     }
 
     @Override
-    public IReadBlockIterator getFindAllReadsIterator(String regEx,
-                                                      FindSelection findSelection, Single<Boolean> canceled) throws IOException {
-        ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_FIND_ALL_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&regEx=" + regEx + "&findSelection=" + httpArray2(DataSelectionSerializer.serializeFindSelection(findSelection)), HttpMethod.GET, request, ReadBlockPage.class);
+    public IReadBlockIterator getFindAllReadsIterator(String regEx, FindSelection findSelection, Single<Boolean> canceled) throws IOException {
+        final ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_FIND_ALL_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&regEx=" + regEx + "&findSelection=" + httpArray2(DataSelectionSerializer.serializeFindSelection(findSelection)), HttpMethod.GET, request, ReadBlockPage.class);
         ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
     public int getNumberOfReads() throws IOException {
-        ResponseEntity<Integer> response = restTemplate.exchange(url + RMAControllerMappings.GET_NUMBER_OF_READS_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Integer.class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.GET_NUMBER_OF_READS_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, Integer.class).getBody());
+        return (Integer) url2response.get(requestURL);
     }
 
     @Override
     public int getNumberOfMatches() throws IOException {
-        ResponseEntity<Integer> response = restTemplate.exchange(url + RMAControllerMappings.GET_NUMBER_OF_MATCHES_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Integer.class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.GET_NUMBER_OF_MATCHES_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, Integer.class).getBody());
+        return (Integer) url2response.get(requestURL);
     }
 
     @Override
@@ -202,13 +213,17 @@ public class Megan5ServerConnector implements IConnector {
 
     @Override
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
-        ResponseEntity<Map> response = restTemplate.exchange(url + RMAControllerMappings.GET_AUXILIARY_MAPPING + "?fileId=" + fileId, HttpMethod.GET, request, Map.class);
-        Map<String, String> map = response.getBody();
-        Map<String, byte[]> map2 = new HashMap<>();
-        for (Entry<String, String> entry : map.entrySet()) {
-            map2.put(entry.getKey(), entry.getValue().getBytes());
+        final String requestURL = url + RMAControllerMappings.GET_AUXILIARY_MAPPING + "?fileId=" + fileId;
+        if (!url2response.containsKey(requestURL)) {
+            ResponseEntity<Map> response = restTemplate.exchange(requestURL, HttpMethod.GET, request, Map.class);
+            final Map<String, String> map = response.getBody();
+            final Map<String, byte[]> map2 = new HashMap<>();
+            for (Entry<String, String> entry : map.entrySet()) {
+                map2.put(entry.getKey(), entry.getValue().getBytes());
+            }
+            url2response.put(requestURL, map2);
         }
-        return map2;
+        return (Map<String, byte[]>) url2response.get(requestURL);
     }
 
 
@@ -239,7 +254,6 @@ public class Megan5ServerConnector implements IConnector {
         }
         return s.substring(0, s.length() - 1);
     }
-
 
     public IReadBlock getReadBlock(long readUid, String fileId, float minScore, float maxExpected, boolean wantReadText, boolean wantMatches) {
         ResponseEntity<ReadBlockServer> response = restTemplate.exchange(url + RMAControllerMappings.GET_READ_MAPPING + "?fileId=" + fileId + "&readUid=" + readUid + "&minScore=" + minScore + "&maxExpected=" + maxExpected, HttpMethod.GET, request, ReadBlockServer.class);
@@ -310,7 +324,14 @@ public class Megan5ServerConnector implements IConnector {
      * @return
      */
     public String getInfo() {
-        ResponseEntity<String> response = restTemplate.exchange(url + RMAControllerMappings.GET_INFO_MAPPING, HttpMethod.GET, request, String.class);
-        return response.getBody();
+        final String requestURL = url + RMAControllerMappings.GET_INFO_MAPPING;
+        if (!url2response.containsKey(requestURL))
+            url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, String.class).getBody());
+        return (String) url2response.get(requestURL);
     }
+
+    public static void clearCache() {
+        url2response.clear();
+    }
+
 }

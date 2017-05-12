@@ -908,7 +908,7 @@ public class Document {
         if (blastMode == BlastMode.Unknown && meganFile.isDAAFile()) {
             dataTable.setBlastMode(0, DAAParser.getBlastMode(meganFile.getFileName()));
         }
-        if (blastMode == BlastMode.Unknown && meganFile.hasDataConnector()) {
+        if (blastMode == BlastMode.Unknown && meganFile.hasDataConnector() && !meganFile.isMeganServerFile()) {
             try (IReadBlockIterator it = meganFile.getConnector().getAllReadsIterator(1, 10, true, true)) {
                 while (it.hasNext()) {
                     IReadBlock readBlock = it.next();
@@ -917,15 +917,13 @@ public class Document {
                         if (matchBlock.getText() != null) {
                             if (matchBlock.getText().contains("Frame")) {
                                 dataTable.setBlastMode(0, BlastMode.BlastX);
-                                break;
                             } else if (matchBlock.getText().contains("Strand")) {
                                 dataTable.setBlastMode(0, BlastMode.BlastN);
-                                break;
                             } else {
                                 dataTable.setBlastMode(0, BlastMode.Classifier);
-                                break;
                             }
                         }
+                        break;
                     }
                 }
             } catch (IOException e) {

@@ -330,9 +330,11 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
             v = toSelect.getLastElement();
 
         if (v != null) {
-            final Point p = classificationViewer.trans.w2d(classificationViewer.getLocation(v));
-            classificationViewer.scrollRectToVisible(new Rectangle(p.x - 60, p.y - 25, 500, 100));
-
+            try {
+                final Point p = classificationViewer.trans.w2d(classificationViewer.getLocation(v));
+                classificationViewer.scrollRectToVisible(new Rectangle(p.x - 60, p.y - 25, 500, 100));
+            } catch (Exception ex) {// happens occasionally
+            }
         }
         classificationViewer.selectedNodes.removeAll(toDeselect);
         classificationViewer.fireDoDeselect(toDeselect);

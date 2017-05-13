@@ -23,6 +23,7 @@ import jloda.gui.ChooseFileDialog;
 import jloda.gui.director.IDirectableViewer;
 import jloda.util.*;
 import megan.core.Director;
+import megan.core.MeganFile;
 import megan.fx.NotificationsInSwing;
 import megan.util.IReadsProvider;
 
@@ -57,7 +58,8 @@ public class RemoteBlastDialog {
         if (readsProvider == null && providedReadsFile == null)
             return null; // no reads provided...
 
-        final String lastDir = ProgramProperties.get("RemoteBlastDir", System.getProperty("user.dir"));
+        final MeganFile meganFile = dir.getDocument().getMeganFile();
+        final String lastDir = (meganFile.isMeganServerFile() ? ProgramProperties.get("RemoteBlastDir", System.getProperty("user.dir")) : new File(meganFile.getFileName()).getParent());
         final File lastOpenFile = new File(lastDir, ProgramProperties.get("RemoteBlastFile", Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + Basic.toCleanName(queryName) + ".fasta")));
 
         final boolean needToSaveReads = (providedReadsFile == null);

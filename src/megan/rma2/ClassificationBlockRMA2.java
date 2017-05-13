@@ -82,7 +82,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
      * @param sum
      */
     public void setWeightedSum(Integer key, float sum) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
     }
 
     /**

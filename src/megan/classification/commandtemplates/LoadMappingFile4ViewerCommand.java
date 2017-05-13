@@ -76,8 +76,8 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
         final File lastOpenFile = ProgramProperties.getFile(ClassificationManager.getMapFileKey(cName, mapType));
         getDir().notifyLockInput();
         ImportBlastDialog dialog = (ImportBlastDialog) getParent();
-        final String[] suffixes = (mapType == IdMapper.MapType.Accession ? new String[]{"map", "abin" } : new String[]{"map", "bin" });
-        final File file = ChooseFileDialog.chooseFileToOpen(dialog, lastOpenFile, new TextFileFilter(suffixes, true),
+        final String[] suffixes = (mapType == IdMapper.MapType.Accession ? new String[]{"map", "abin", "map.gz"} : new String[]{"map", "bin", "map.gz"});
+        final File file = ChooseFileDialog.chooseFileToOpen(dialog, lastOpenFile, new TextFileFilter(suffixes, false),
                 new TextFileFilter(suffixes, true), ev, "Open " + mapType + " File");
         getDir().notifyUnlockInput();
 

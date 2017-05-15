@@ -21,18 +21,17 @@ package megan.viewer.gui;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graph.NodeData;
 import jloda.gui.IPopupMenuModifier;
 import jloda.phylo.PhyloTree;
-import jloda.util.ProgramProperties;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.event.*;
-import javax.swing.tree.*;
-import java.awt.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -55,8 +54,8 @@ public class ViewerJTree extends JTree {
 
     /**
      * constructor
+     *  @param classificationViewer
      *
-     * @param classificationViewer
      */
     public ViewerJTree(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;
@@ -97,8 +96,6 @@ public class ViewerJTree extends JTree {
             setRootVisible(true);
             setShowsRootHandles(true);
             addChildren(node);
-
-
         }
     }
 
@@ -221,68 +218,6 @@ public class ViewerJTree extends JTree {
         public boolean isLeaf() {
             return v.getOutDegree() == 0;
         }
-    }
-}
-
-/**
- * tree cell Renderer
- */
-class MyJTreeCellRender implements TreeCellRenderer {
-    private final ClassificationViewer classificationViewer;
-    private final Map<Integer, Set<Node>> id2NodesInInducedTree;
-
-    private final JLabel label = new JLabel();
-    private final LineBorder selectedBorder = (LineBorder) BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER);
-
-    public MyJTreeCellRender(ClassificationViewer classificationViewer, Map<Integer, Set<Node>> id2NodesInInducedTree) {
-        this.classificationViewer = classificationViewer;
-        this.id2NodesInInducedTree = id2NodesInInducedTree;
-        label.setOpaque(true);
-    }
-
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        if (value instanceof ViewerJTree.MyJTreeNode) {
-            final ViewerJTree.MyJTreeNode jNode = (ViewerJTree.MyJTreeNode) value;
-            final Node v = jNode.getV(); // node in full tree tree
-            final Integer classId = (Integer) v.getInfo();
-            float count = 0;
-            Set<Node> inducedNodes = id2NodesInInducedTree.get(classId);
-            if (inducedNodes != null && inducedNodes.size() > 0) {
-                final NodeData nodeData = (NodeData) inducedNodes.iterator().next().getData();
-                if (nodeData != null)
-                    count = nodeData.getCountSummarized();
-            }
-
-            final String name = (classificationViewer.getClassification().getName2IdMap().get((Integer) v.getInfo()));
-
-            if (count > 0) {
-                label.setText(String.format("<html>%s<font color=#a0a0a0> (%,.0f)</font>", name, count));
-                label.setForeground(Color.BLACK);
-            } else {
-                label.setForeground(Color.LIGHT_GRAY);
-                label.setText(name);
-            }
-
-            selected = classificationViewer.getSelectedNodeIds().contains((Integer) v.getInfo());
-
-            if (selected) {
-                label.setBackground(ProgramProperties.SELECTION_COLOR);
-                label.setBorder(selectedBorder);
-            } else if (hasFocus) {
-                label.setBackground(Color.WHITE);
-                label.setBorder(selectedBorder);
-            } else {
-                label.setBackground(Color.WHITE);
-                label.setBorder(null);
-            }
-        } else {
-            label.setText(value.toString());
-        }
-        label.setPreferredSize(new Dimension(label.getPreferredSize().width + 100, label.getPreferredSize().height));
-        label.setMinimumSize(label.getPreferredSize());
-        label.validate();
-        label.setToolTipText(label.getText());
-        return label;
     }
 }
 

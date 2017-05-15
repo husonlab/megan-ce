@@ -159,7 +159,6 @@ public class DAA2RMA6 {
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
 
-
         final String propertiesFile;
         if (ProgramProperties.isMacOS())
             propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";

@@ -98,7 +98,7 @@ public class SaveCommand extends CommandBase implements ICommand {
                     doc.getMeganFile().setFileName(file.getPath());
                 }
             } else {
-                throw new IOException("RMA and DB files can only be saved as summary files");
+                throw new IOException("RMA and DAA files can only be saved as summary files");
             }
 
             System.err.println("done");

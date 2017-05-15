@@ -693,7 +693,9 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             Object obj = viewer.getDir().getDocument().getSampleAttributeTable().get(sample, attributeNameY);
             if (obj instanceof Number)
                 y = ((Number) obj).doubleValue();
-            else
+            else if (Basic.isDouble(obj.toString())) {
+                y = Basic.parseDouble(obj.toString());
+            } else
                 throw new IllegalArgumentException("Attribute '" + attributeNameY + "': has non-numerical value: " + obj);
 
             xValues.add(x);

@@ -164,15 +164,15 @@ public class TaxaChart extends ChartViewer {
         if (!inSync) {
             inSync = true;
 
-            IChartData chartData = (IChartData) getChartData();
+            final IChartData chartData = (IChartData) getChartData();
             chartData.clear();
 
-            Document doc = ((Director) dir).getDocument();
+            final Document doc = dir.getDocument();
             setChartTitle("Taxonomy profile for " + doc.getTitle());
 
             int numberOfSamples = doc.getNumberOfSamples();
             if (numberOfSamples > 0) {
-                MainViewer mainViewer = ((Director) dir).getMainViewer();
+                final MainViewer mainViewer = dir.getMainViewer();
 
                 if (mainViewer.getSelectedNodes().size() == 0) {
                     mainViewer.selectAllLeaves();

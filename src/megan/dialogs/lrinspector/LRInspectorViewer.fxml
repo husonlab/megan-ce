@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~  Copyright (C) 2015 Daniel H. Huson
+  ~
+  ~  (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
+            prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="megan.dialogs.lrinspector.LRInspectorController">
+    <bottom>
+        <GridPane alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="300.0" minWidth="100.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="438.0" minWidth="10.0" prefWidth="77.0"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="104.0"
+                                   prefWidth="235.0"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="86.0"
+                                   prefWidth="86.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints/>
+                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER"/>
+            </rowConstraints>
+            <children>
+                <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.columnIndex="3"
+                        GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
+                <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="200.0" progress="0.0"
+                             GridPane.rowIndex="1">
+                    <GridPane.margin>
+                        <Insets right="5.0"/>
+                    </GridPane.margin>
+                </ProgressBar>
+                <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Stop"
+                        GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <GridPane.margin>
+                        <Insets left="5.0"/>
+                    </GridPane.margin>
+                </Button>
+                <Slider fx:id="panelWidthSlider" max="100000.0" min="500.0" GridPane.columnIndex="2"
+                        GridPane.rowIndex="1"/>
+            </children>
+            <padding>
+                <Insets bottom="3.0" left="5.0" right="5.0"/>
+            </padding>
+        </GridPane>
+    </bottom>
+    <top>
+        <GridPane BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="176.0"
+                                   prefWidth="413.0"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="95.0" minWidth="95.0" prefWidth="95.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="95.0" prefWidth="95.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <TextField fx:id="headerField" editable="false" prefHeight="27.0" prefWidth="100.0"
+                           style="-fx-background-color: transparent;">
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                </TextField>
+                <MenuButton fx:id="layoutMenuButton" mnemonicParsing="false" text="Layout" GridPane.columnIndex="2">
+                    <items>
+                        <CheckMenuItem fx:id="overviewMenuItem" mnemonicParsing="false" text="Overview"/>
+                        <MenuItem fx:id="detailsMenuItem" mnemonicParsing="false" text="Details"/>
+                    </items>
+                    <padding>
+                        <Insets right="5.0"/>
+                    </padding>
+                </MenuButton>
+                <MenuButton fx:id="tableMenuButton" mnemonicParsing="false" text="Table" GridPane.columnIndex="1"/>
+            </children>
+            <BorderPane.margin>
+                <Insets left="10.0" right="10.0"/>
+            </BorderPane.margin>
+        </GridPane>
+    </top>
+    <center>
+        <TableView fx:id="tableView"
+                   style="-fx-selection-bar: lemonchiffon; -fx-control-inner-background-alt: lavender; -fx-selection-bar-non-focused: lemonchiffon;">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <columns>
+                <TableColumn fx:id="readNameCol" prefWidth="75.0" text="Read"/>
+                <TableColumn fx:id="readLengthCol" prefWidth="75.0" text="Length"/>
+                <TableColumn fx:id="assignmentCol" editable="false" prefWidth="150.0" text="Assignment"/>
+                <TableColumn fx:id="scoreCol" editable="false" prefWidth="75.0" sortType="DESCENDING"
+                             style="-fx-alignment: CENTER-RIGHT;" text="Score"/>
+                <TableColumn fx:id="coverageCol" editable="false" prefWidth="73.0" sortType="DESCENDING"
+                             style="-fx-alignment: CENTER-RIGHT;" text="\%Cover"/>
+                <TableColumn fx:id="hitsCol" editable="false" prefWidth="77.0" sortType="DESCENDING"
+                             style="-fx-alignment: CENTER-RIGHT;" text="#Hits"/>
+                <TableColumn fx:id="maxScoreCol" editable="false" prefWidth="75.0" sortType="DESCENDING"
+                             style="-fx-alignment: CENTER-RIGHT;" text="Max Score"/>
+                <TableColumn fx:id="layoutCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0"
+                             prefWidth="300.0" sortable="false" text="Layout"/>
+            </columns>
+            <BorderPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </BorderPane.margin>
+        </TableView>
+    </center>
+    <right>
+        <Slider fx:id="panelHeightSlider" blockIncrement="100.0" max="2000.0" maxHeight="300.0" min="30.0"
+                orientation="VERTICAL" value="110.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets right="1.0"/>
+            </BorderPane.margin>
+        </Slider>
+    </right>
+</BorderPane>

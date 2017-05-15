@@ -61,7 +61,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Expand/Contract", "Expand Horizontal;Contract Horizontal;Expand Vertical;Contract Vertical;");
 
         menuConfig.defineMenu("Options", "Change LCA Parameters...;Set Number Of Reads...;|;Project Assignments To Rank...;|;List Summary...;List Paths...;|;" +
-                "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;Open NCBI Web Page...;Inspect...;");
+                "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;Open NCBI Web Page...;Inspect...;Inspect Long Reads...;");
 
         menuConfig.defineMenu("Tree", "Collapse;Collapse To Top;Collapse All Others;Collapse at Level...;Rank...;|;" +
                 "Uncollapse;Uncollapse Subtree;Uncollapse All;|;Show Names;Show IDs;Show Number of Reads Assigned;" +
@@ -96,16 +96,16 @@ public class GUIConfiguration {
      * @return config
      */
     public static String getNodePopupConfiguration() {
-        return "Inspect...;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;Correlate To Attributes...;|;Edit Node Label;Copy Node Label;|;Collapse;|;Uncollapse;Uncollapse Subtree;|;" +
+        return "Inspect...;Inspect Long Reads...;|;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;Correlate To Attributes...;|;Edit Node Label;Copy Node Label;|;Collapse;|;Uncollapse;Uncollapse Subtree;|;" +
                 "Node Labels On;Node Labels Off;|;Open Web Page...;Web Search...;";
     }
 
     public static String getJTreePopupConfiguration() {
-        return "Inspect...;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
+        return "Inspect...;Inspect Long Reads...;|Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
     }
 
     public static String getJTablePopupConfiguration() {
-        return "Inspect...;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
+        return "Inspect...;Inspect Long Reads...;|Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
     }
 
     /**

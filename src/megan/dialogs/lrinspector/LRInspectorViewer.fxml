@@ -54,8 +54,8 @@
                         <Insets left="5.0"/>
                     </GridPane.margin>
                 </Button>
-                <Slider fx:id="panelWidthSlider" max="100000.0" min="500.0" GridPane.columnIndex="2"
-                        GridPane.rowIndex="1"/>
+                <Slider fx:id="panelWidthSlider" max="100000.0" min="500.0" style="-fx-border-color: darkgray;"
+                        GridPane.columnIndex="2" GridPane.rowIndex="1"/>
             </children>
             <padding>
                 <Insets bottom="3.0" left="5.0" right="5.0"/>
@@ -124,7 +124,7 @@
     </center>
     <right>
         <Slider fx:id="panelHeightSlider" blockIncrement="100.0" max="2000.0" maxHeight="300.0" min="30.0"
-                orientation="VERTICAL" value="110.0" BorderPane.alignment="CENTER">
+                orientation="VERTICAL" style="-fx-border-color: darkgray;" value="110.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets right="1.0"/>
             </BorderPane.margin>

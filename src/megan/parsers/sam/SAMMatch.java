@@ -191,7 +191,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         setCigarString(tokens[5]);
         setRNext(tokens[6]);
         setPNext(Basic.parseInt(tokens[7]));
-        setTLength(Basic.parseInt(tokens[8]));
+        setTLength(Math.abs(Basic.parseInt(tokens[8])));
         //setSequence(isReverseComplemented() ? SequenceUtils.getReverseComplement(tokens[9]) : tokens[9]);
         setSequence(tokens[9].toUpperCase());
 
@@ -964,8 +964,12 @@ public class SAMMatch implements megan.rma3.IMatch {
         final String gappedQuerySequence = gappedQueryBuffer.toString();
         final String gappedReferenceSequence;
 
-        if (getOptionalFields().get("MD") != null) {
-            gappedReferenceSequence = Diff.getReference((String) getOptionalFields().get("MD"), gappedQuerySequence, gappedReferenceBuffer.toString());
+        String mdString = (String) getOptionalFields().get("MD");
+        if (mdString == null)
+            mdString = (String) getOptionalFields().get("md");
+
+        if (mdString != null) {
+            gappedReferenceSequence = Diff.getReference(mdString, gappedQuerySequence, gappedReferenceBuffer.toString());
         } else
             gappedReferenceSequence = gappedReferenceBuffer.toString();
 

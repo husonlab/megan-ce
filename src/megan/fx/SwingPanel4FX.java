@@ -23,6 +23,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import jloda.fx.ExtendedFXMLLoader;
 import jloda.util.Basic;
+import jloda.util.Single;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -34,10 +35,9 @@ import java.util.List;
  * Daniel Huson, 2.2017
  */
 public class SwingPanel4FX<C> {
-    private final Object lock = new Object();
     private final Class viewerClass;
     private JFXPanel jFXPanel;
-    private boolean initialized = false;
+    private final Single<Boolean> initialized = new Single<>(false);
     private C controller;
     private final List<Runnable> toRunLaterInSwing = new ArrayList<>();
 
@@ -86,20 +86,18 @@ public class SwingPanel4FX<C> {
      * initialize JavaFX
      */
     private void initFxLater() {
-        if (!initialized) {
-            synchronized (lock) {
-                if (!initialized) {
-                    try {
-                        final ExtendedFXMLLoader<C> extendedFXMLLoader = new ExtendedFXMLLoader<>(viewerClass);
-                        controller = extendedFXMLLoader.getController();
-                        jFXPanel.setScene(new Scene(extendedFXMLLoader.getRoot()));
-                    } catch (IOException ex) {
-                        Basic.caught(ex);
-                    } finally {
-                        initialized = true;
-                        for (Runnable runnable : toRunLaterInSwing) {
-                            SwingUtilities.invokeLater(runnable);
-                        }
+        synchronized (initialized) {
+            if (!initialized.get()) {
+                try {
+                    final ExtendedFXMLLoader<C> extendedFXMLLoader = new ExtendedFXMLLoader<>(viewerClass);
+                    controller = extendedFXMLLoader.getController();
+                    jFXPanel.setScene(new Scene(extendedFXMLLoader.getRoot()));
+                } catch (IOException ex) {
+                    Basic.caught(ex);
+                } finally {
+                    initialized.set(true);
+                    for (Runnable runnable : toRunLaterInSwing) {
+                        SwingUtilities.invokeLater(runnable);
                     }
                 }
             }
@@ -112,15 +110,12 @@ public class SwingPanel4FX<C> {
      * @param runnable
      */
     public void runLaterInSwing(Runnable runnable) {
-        if (!initialized) {
-            synchronized (lock) {
-                if (!initialized) {
-                    toRunLaterInSwing.add(runnable);
-                } else
-                    SwingUtilities.invokeLater(runnable);
-            }
-        } else
-            SwingUtilities.invokeLater(runnable);
+        synchronized (initialized) {
+            if (!initialized.get()) {
+                toRunLaterInSwing.add(runnable);
+            } else
+                SwingUtilities.invokeLater(runnable);
+        }
     }
 
     /**

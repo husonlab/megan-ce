@@ -55,10 +55,17 @@
             <fileset dir="${maltSrcDir}" excludes=""/>
             <fileset dir="${meganSrcDir}" excludes=""/>
         </copy>
-    </target>
+</target>
+
+ <!-- copy fxml -->
+    <target name="copy_fx" depends="copy_sources">
+        <copy todir="${classDir}">
+		<fileset dir="${meganSrcDir}" includes="**/*.fxml"/>
+        </copy>
+</target>
 
     <!-- compile  MEGAN -->
-    <target name="compile" depends="copy_sources">
+    <target name="compile" depends="copy_fx">
         <javac  includeantruntime="false"
                 srcdir="${srcDir}"
                 destdir="${classDir}"

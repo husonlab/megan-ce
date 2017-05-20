@@ -25,8 +25,6 @@ import megan.data.IReadBlock;
 import megan.util.ReadMagnitudeParser;
 import megan.util.interval.IntervalTree;
 
-import java.util.BitSet;
-
 /**
  * calcuates the values that appear is assigned reads in tree representations
  * Daniel Huson, 4.2107
@@ -45,7 +43,7 @@ public class ReadAssignmentCalculator {
      * @param readBlock
      * @return assignment value
      */
-    public int compute(IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {
+    public int compute(IReadBlock readBlock, IntervalTree<Object> intervals) {
         switch (mode) {
             default:
             case readCount: {
@@ -55,7 +53,7 @@ public class ReadAssignmentCalculator {
                 return Math.max(1, readBlock.getReadLength());
             }
             case alignedBases: {
-                return computeCoveredBases(readBlock, activeMatches, intervals);
+                return computeCoveredBases(readBlock, intervals);
             }
             case readMagnitude: {
                 return ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader());
@@ -64,23 +62,20 @@ public class ReadAssignmentCalculator {
     }
 
     /**
-     * computes the number of bases covered by active alignments
+     * computes the number of bases covered by any alignments
      *
      * @param readBlock
-     * @param activeMatches
      * @param intervals
      * @return covered bases
      */
-    public static int computeCoveredBases(IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {
+    public static int computeCoveredBases(IReadBlock readBlock, IntervalTree<Object> intervals) {
         if (intervals == null)
             intervals = new IntervalTree<>();
         else
             intervals.clear();
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-            if (activeMatches == null || activeMatches.get(m)) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                 intervals.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
-            }
         }
         return intervals.getCovered();
     }

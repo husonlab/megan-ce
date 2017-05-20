@@ -38,22 +38,27 @@ public class Utilities {
         Matrix result = new Matrix(matrix.getColumnDimension(), matrix.getRowDimension());
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                double v1 = 0;
+                double rowAverage = 0;
                 for (int k = 0; k < size; k++) {
-                    v1 += matrix.get(k, j) * matrix.get(k, j) / size;
+                    rowAverage += matrix.get(k, j) * matrix.get(k, j);
                 }
-                double v2 = 0;
+                rowAverage /= size;
+
+                double colAverage = 0;
                 for (int k = 0; k < size; k++) {
-                    v2 += matrix.get(i, k) * matrix.get(i, k) / size;
+                    colAverage += matrix.get(i, k) * matrix.get(i, k);
                 }
-                double v3 = 0;
+                colAverage /= size;
+
+                double overallAverage = 0;
                 for (int k = 0; k < size; k++) {
                     for (int l = 0; l < size; l++) {
-                        v3 += matrix.get(k, l) * matrix.get(k, l) / (size * size);
+                        overallAverage += matrix.get(k, l) * matrix.get(k, l);
                     }
                 }
-                double v4 = matrix.get(i, j);
-                result.set(i, j, 0.5 * (v1 + v2 - v3 - (v4 * v4)));
+                overallAverage /= (size * size);
+
+                result.set(i, j, -0.5 * (Math.pow(matrix.get(i, j), 2) - rowAverage - colAverage + overallAverage));
             }
         }
         return result;
@@ -61,7 +66,7 @@ public class Utilities {
 
     /**
      * center and scale a given matrix.
-     * Center means: subtract column-mean from each column
+     * Center means: subtract row-average from each col
      * Scale means: divide each column by square root of (sum-of-squares of column / (number of columns -1))
      * See http://docs.tibco.com/pub/enterprise-runtime-for-R/1.1.0-november-2012/TERR_1.1.0_LanguageRef/base/scale.html
      *
@@ -78,13 +83,14 @@ public class Utilities {
 
         // center:
         for (int col = 0; col < nCols; col++) {
-            double mean = 0;
+            double rowAverage = 0;
             for (double[] aRow : result) {
-                mean += aRow[col];
+                rowAverage += aRow[col];
             }
-            mean /= nRows;
+            rowAverage /= nRows;
+
             for (double[] aRow : result) {
-                aRow[col] -= mean;
+                aRow[col] -= rowAverage;
             }
         }
         // scale:
@@ -214,7 +220,7 @@ public class Utilities {
     }
 
     /**
-     * creates a  matrix with a and b on the diagonal and all other entries are zero
+     * creates a  matrix whose diagonal contains the given values and all other entries are 0
      *
      * @param values
      * @return matrix

@@ -83,18 +83,15 @@ public class DataProcessor {
             final double minCoveredPercent = doc.getMinPercentReadToCover();
             int numberOfReadsFailedCoveredThreshold = 0;
             final IntervalTree<Object> intervals;
-            if (minCoveredPercent > 0) {
-                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minCoveredPercent));
-                if (doc.isLongReads())
-                    intervals = new IntervalTree<>();
-                else
-                    intervals = null;
-            } else
+            if (minCoveredPercent > 0 && doc.isLongReads() || doc.getReadAssignmentMode() == Document.ReadAssignmentMode.alignedBases)
+                intervals = new IntervalTree<>();
+            else
                 intervals = null;
 
+            if (minCoveredPercent > 0)
+                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minCoveredPercent));
 
             final boolean usingLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads);
-
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int c = 0; c < numberOfClassifications; c++) {
@@ -118,8 +115,6 @@ public class DataProcessor {
                 else
                     assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
             }
-
-            final ReadAssignmentCalculator readAssignmentCalculator = new ReadAssignmentCalculator(doc.getReadAssignmentMode());
 
             // step 1:  stream through reads and assign classes
 
@@ -166,8 +161,7 @@ public class DataProcessor {
                 multiGeneWeights = null;
             }
 
-            final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
-            final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
+            final ReadAssignmentCalculator readAssignmentCalculator = new ReadAssignmentCalculator(doc.getReadAssignmentMode());
 
             progress.setTasks("Binning reads", "Analyzing alignments");
 
@@ -198,9 +192,8 @@ public class DataProcessor {
 
                     final IReadBlock readBlock = it.next();
 
-                    ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatches);
 
-                    readBlock.setReadWeight(readAssignmentCalculator.compute(readBlock, activeMatches, intervals));
+                    readBlock.setReadWeight(readAssignmentCalculator.compute(readBlock, intervals));
 
                     numberOfReadsFound++;
                     totalWeight += readBlock.getReadWeight();
@@ -211,14 +204,16 @@ public class DataProcessor {
                     if (hasLowComplexity)
                         numberOfReadsWithLowComplexity += readBlock.getReadWeight();
 
-
                     int taxId = 0;
                     if (taxonomyIndex >= 0) {
-                        if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatches, intervals)) {
+                        final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
+                        ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+                        if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatchesForTaxa, intervals)) {
                             if (doMatePairs && readBlock.getMateUId() > 0) {
                                 mateReader.seek(readBlock.getMateUId());
                                 mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForTaxa, readBlock);
+                                final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
                                 ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
                                 int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
                                 if (mateTaxId > 0) {
@@ -235,14 +230,14 @@ public class DataProcessor {
                                     }
                                 }
                             } else {
-                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatches, readBlock);
+                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForTaxa, readBlock);
                             }
                         } else
                             numberOfReadsFailedCoveredThreshold++;
+                        if (activeMatchesForTaxa.cardinality() > 0)
+                            numberOfReadsWithHits += readBlock.getReadWeight();
                     }
 
-                    if (activeMatches.cardinality() > 0)
-                        numberOfReadsWithHits += readBlock.getReadWeight();
 
                     for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
@@ -251,8 +246,9 @@ public class DataProcessor {
                         } else if (c == taxonomyIndex) {
                             id = taxId;
                         } else {
-                            ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatches);
-                            id = assignmentAlgorithm[c].computeId(activeMatches, readBlock);
+                            final BitSet activeMatchesForFunction = new BitSet(); // pre filter matches for taxon identification
+                            ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForFunction);
+                            id = assignmentAlgorithm[c].computeId(activeMatchesForFunction, readBlock);
                             if (id > 0 && usingLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
                                 int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
                                 multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);

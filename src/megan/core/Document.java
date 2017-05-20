@@ -334,21 +334,27 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
-                setReadAssignmentMode(DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
+                boolean readAssignmentModeWasSet = false;
                 //legacy support:
                 {
-                    if (np.findIgnoreCase(tokens, "useWeightedReadCounts=true", true, false))
+                    if (np.findIgnoreCase(tokens, "useWeightedReadCounts=true", true, false)) {
                         setReadAssignmentMode(ReadAssignmentMode.readLength); // legacy
-                    else if (np.findIgnoreCase(tokens, "useWeightedReadCounts=false", true, false))
+                        readAssignmentModeWasSet = true;
+                    } else if (np.findIgnoreCase(tokens, "useWeightedReadCounts=false", true, false)) {
                         setReadAssignmentMode(ReadAssignmentMode.readCount); // legacy
+                        readAssignmentModeWasSet = true;
+                    }
                 }
 
                 for (ReadAssignmentMode readAssignmentMode : ReadAssignmentMode.values()) {
                     if (np.findIgnoreCase(tokens, "readAssignmentMode=" + readAssignmentMode, true, false)) {
                         setReadAssignmentMode(readAssignmentMode);
+                        readAssignmentModeWasSet = true;
                         break;
                     }
                 }
+                if (!readAssignmentModeWasSet)
+                    setReadAssignmentMode(DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS);
 
                 {
                     String fNamesString = (np.findIgnoreCase(tokens, "fNames=", "{", "}", "").trim());

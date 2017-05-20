@@ -158,6 +158,10 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                     @Override
                     public void run() {
                         try {
+                            System.err.println("swingPanel4FX: " + swingPanel4FX);
+                            System.err.println("swingPanel4FX.getController(): " + swingPanel4FX.getController());
+                            System.err.println("toolBar: " + toolBar);
+
                             swingPanel4FX.getController().setupControls(LRInspectorViewer.this, toolBar);
                             swingPanel4FX.getController().updateScene(LRInspectorViewer.this);
                             SwingUtilities.invokeLater(new Runnable() {
@@ -176,7 +180,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         });
 
         if (!warned) {
-            //warned=true;
+            warned = true;
             NotificationsInSwing.showWarning(this.getFrame(),
                     "Long read analysis in MEGAN is under development.\n" +
                             "This is an experimental feature.\n" +
@@ -444,8 +448,12 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     @Override
     public boolean isReadsAvailable() {
         try {
-            if (swingPanel4FX != null)
-                return swingPanel4FX.getController().getTableView().getSelectionModel().getSelectedItems().size() > 0;
+            if (swingPanel4FX != null) {
+                for (TableItem item : swingPanel4FX.getController().getTableView().getSelectionModel().getSelectedItems()) {
+                    if (item.getReadLength() > 0)
+                        return true;
+                }
+            }
         } catch (Exception ex) {
         }
         return false;
@@ -455,10 +463,12 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     public Collection<Pair<String, String>> getReads(int maxNumber) {
         ArrayList<Pair<String, String>> list = new ArrayList<>();
         for (TableItem tableItem : swingPanel4FX.getController().getTableView().getSelectionModel().getSelectedItems()) {
-            final Pair<String, String> pair = new Pair<>(tableItem.getReadName(), tableItem.getReadSequence());
-            list.add(pair);
-            if (maxNumber >= 0 && list.size() >= maxNumber)
-                break;
+            if (tableItem.getReadLength() > 0 && tableItem.getReadSequence() != null) {
+                final Pair<String, String> pair = new Pair<>(tableItem.getReadName(), tableItem.getReadSequence());
+                list.add(pair);
+                if (maxNumber >= 0 && list.size() >= maxNumber)
+                    break;
+            }
         }
         return list;
     }

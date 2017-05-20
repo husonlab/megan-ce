@@ -693,7 +693,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     /**
      * apply import from blast
      */
-    public void apply() {
+    public void apply() throws CanceledException, IOException {
         ClassificationManager.get(Classification.Taxonomy, true).getIdMapper().setUseTextParsing(isParseTaxonNames());
 
         final String blastFileName = getBlastFileName();
@@ -735,28 +735,20 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             if (blastFileName.length() > 0) {
                 final String fileName = Basic.getFirstLine(blastFileName);
                 if (blastFormat.equals(BlastFileFormat.Unknown.toString())) {
-                    try {
                         String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
                         if (formatName != null)
                             blastFormat = BlastFileFormat.valueOf(formatName).toString();
                         else
                             throw new IOException("Failed to detect BLAST format for file: " + fileName);
-                    } catch (IOException e) {
-                        Basic.caught(e);
-                        return;
-                    }
                 }
                 if (blastMode.equals(BlastMode.Unknown.toString())) {
-                    try {
-                        String modeName = BlastMode.detectMode(this, fileName, true).toString();
-                        if (modeName != null)
-                            blastMode = BlastMode.valueOf(modeName).toString();
-                        else
+                    BlastMode mode = BlastMode.detectMode(this, fileName, true);
+                    if (mode == null) // user canceled
+                        throw new CanceledException();
+                    else if (mode == BlastMode.Unknown)
                             throw new IOException("Failed to detect BLAST mode for file: " + fileName);
-                    } catch (IOException e) {
-                        Basic.caught(e);
-                        return;
-                    }
+                    else
+                        blastMode = mode.toString();
                 }
             }
 

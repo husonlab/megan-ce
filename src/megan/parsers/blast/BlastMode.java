@@ -103,10 +103,8 @@ public enum BlastMode {
         if (mode == Unknown && ask) {
             if (!ProgramProperties.isUseGUI())
                 throw new IOException("Couldn't detect BLAST mode, please specify");
-            final BlastMode result = (BlastMode) JOptionPane.showInputDialog(owner, "Cannot determine mode, please choose:", "Question: Which mode?",
+            mode = (BlastMode) JOptionPane.showInputDialog(owner, "Cannot determine mode, please choose:", "Question: Which mode?",
                     JOptionPane.QUESTION_MESSAGE, null, values(), BlastX);
-            if (result != null)
-                mode = result;
         }
         return mode;
     }

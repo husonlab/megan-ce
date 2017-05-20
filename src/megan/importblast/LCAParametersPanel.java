@@ -105,12 +105,15 @@ public class LCAParametersPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
+                            dialog.getWeightedLCAPercentField().setEnabled(false);
                             lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
                             break;
                         case weighted:
+                            dialog.getWeightedLCAPercentField().setEnabled(true);
                             lcaAlgorithmComboBox.setToolTipText("Weighted LCA for taxonomic binning: slower algorithm applicable to short reads, slightly more specific than naive LCA");
                             break;
                         case longReads:
+                            dialog.getWeightedLCAPercentField().setEnabled(true);
                             lcaAlgorithmComboBox.setToolTipText("Long Reads LCA for taxonomic and functional binning of long reads and contigs");
                             break;
                         default:
@@ -122,7 +125,6 @@ public class LCAParametersPanel extends JPanel {
                         dialog.setLcaAlgorithm(algorithm != null ? algorithm : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
                     } else
                         dialog.setLcaAlgorithm(Document.DEFAULT_LCA_ALGORITHM_SHORT_READS);
-                    dialog.getWeightedLCAPercentField().setEnabled(dialog.getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted));
                     ProgramProperties.put("SelectedLCAAlgorithm" + (dialog.isLongReads() ? "LongReads" : "ShortReads"), dialog.getLcaAlgorithm().toString());
                 }
             });

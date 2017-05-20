@@ -20,10 +20,10 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.FileIterator;
-import megan.io.Compressor;
 import megan.util.SAMFileFilter;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * iterates over a file of alignments and returns them in SAM format
@@ -31,6 +31,7 @@ import java.io.IOException;
  */
 public class SAM2SAMIterator implements ISAMIterator {
     private final FileIterator samIterator;
+    private final AlignedIterator alignedIterator; // iterators over all sam lines delivered by the samIterator that have an alignment
     private final int maxMatchesPerRead;
 
     private byte[] firstOfNext = new byte[0];
@@ -57,6 +58,7 @@ public class SAM2SAMIterator implements ISAMIterator {
         // skip header lines:
         while (samIterator.hasNext() && samIterator.peekNextByte() == '@')
             samIterator.next();
+        alignedIterator = new AlignedIterator(samIterator);
     }
 
     /**
@@ -77,7 +79,7 @@ public class SAM2SAMIterator implements ISAMIterator {
      */
     @Override
     public boolean hasNext() {
-        return lengthOfFirstOfNext > 0 || samIterator.hasNext();
+        return lengthOfFirstOfNext > 0 || alignedIterator.hasNext();
     }
 
     /**
@@ -133,9 +135,9 @@ public class SAM2SAMIterator implements ISAMIterator {
         } else
             length = 0;
 
-        while (samIterator.hasNext()) {
-            byte[] line = samIterator.next();
-            int lineLength = samIterator.getLineLength();
+        while (alignedIterator.hasNext()) {
+            byte[] line = alignedIterator.next();
+            int lineLength = alignedIterator.getLineLength();
             if (length == 0 || sameQuery(result, line)) {
                 if (matchesInResult < maxMatchesPerRead) {
                     matchesInResult++;
@@ -161,7 +163,8 @@ public class SAM2SAMIterator implements ISAMIterator {
     }
 
     /**
-     * are the two strings identical up until the first tab
+     * Two lines belong to the same query if the first word is the same (the query name) and the second word is an integer flag that same 7&8 bit.
+     * This indicate that the sequences are the same either first or second template, i.e. mate pair
      *
      * @param a
      * @param b
@@ -169,31 +172,31 @@ public class SAM2SAMIterator implements ISAMIterator {
      */
     private boolean sameQuery(byte[] a, byte[] b) {
         int top = Math.min(a.length, b.length);
-        for (int i = 0; i < top; i++) {
-            if (a[i] != b[i])
+        int pos = 0;
+        while (pos < top) {
+            if (a[pos] != b[pos]) {
                 return false;
-            if (a[i] == '\t')
-                return true;
-        }
-        return a.length == b.length;
-    }
-
-    public static void main(String[] args) throws IOException {
-        String file = "/Users/huson/data/diamond/debugging/YhgE/yhge.sam";
-
-        Compressor compressor = new Compressor();
-
-        int count = 0;
-        ISAMIterator it = new SAM2SAMIterator(file, 20);
-        while (it.hasNext()) {
-            System.err.println("Got:    " + it.next());
-            System.err.println("length: " + it.getMatchesTextLength());
-            System.err.println("comp. : " + compressor.deflateString2ByteArray(Basic.toString(it.getMatchesText(), 0, it.getMatchesTextLength())).length);
-            System.err.println(Basic.toString(it.getMatchesText(), 0, it.getMatchesTextLength()));
-            if (count++ > 20)
+            }
+            if (a[pos] == '\t')
                 break;
+            pos++;
         }
-        it.close();
+        if (pos >= a.length || pos >= b.length || b[pos] != '\t')
+            return false;
+        pos++;
+        int posA = pos;
+        while (posA < a.length && !Character.isWhitespace(a[posA]))
+            posA++;
+        if (posA == pos)
+            return false;
+        int posB = pos;
+        while (posB < b.length && !Character.isWhitespace(b[posB]))
+            posB++;
+        if (posB == pos)
+            return false;
+        final int flagA = Basic.parseInt(new String(a, pos, posA - pos));
+        final int flagB = Basic.parseInt(new String(b, pos, posB - pos));
+        return (flagA & 192) == (flagB & 192); // have same 7th and 8th bit
     }
 
     @Override
@@ -204,5 +207,60 @@ public class SAM2SAMIterator implements ISAMIterator {
     @Override
     public boolean isParseLongReads() {
         return parseLongReads;
+    }
+
+    /**
+     * iterator that only return SAM lines for which an alignment is present
+     */
+    class AlignedIterator implements Iterator<byte[]> {
+        final private FileIterator iterator;
+        private byte[] next = null;
+        private int length = 0;
+
+        public AlignedIterator(final FileIterator iterator) {
+            this.iterator = iterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (next != null) {
+                return true;
+            } else {
+                while (iterator.hasNext()) {
+                    byte[] line = iterator.next();
+                    length = iterator.getLineLength();
+
+                    final String secondToken = Basic.getTokenFromTabSeparatedLine(line, 1);
+                    if (Basic.isInteger(secondToken)) {
+                        final int flags = Basic.parseInt(secondToken);
+                        if ((flags & 4) != 0) {
+                            continue; // this is an unmapped read
+                        }
+                    }
+                    next = line;
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        @Override
+        public byte[] next() {
+            if (hasNext()) {
+                byte[] result = next;
+                next = null;
+                return result;
+            } else
+                return null;
+        }
+
+        @Override
+        public void remove() {
+
+        }
+
+        public int getLineLength() {
+            return length;
+        }
     }
 }

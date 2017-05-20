@@ -26,6 +26,7 @@ import megan.importblast.ImportBlastDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 /**
  * apply
@@ -60,12 +61,19 @@ public class ApplyCommand extends CommandBase implements ICommand {
     @Override
     public void actionPerformed(ActionEvent event) {
         final ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        importBlastDialog.apply();
-
         try {
-            importBlastDialog.destroyView();
-        } catch (CanceledException e) {
-            Basic.caught(e);
+            importBlastDialog.apply();
+        } catch (CanceledException ex) {
+            System.err.println("USER CANCELED");
+        } catch (IOException ex) {
+            Basic.caught(ex);
+        } finally {
+            try {
+                if (importBlastDialog != null)
+                    importBlastDialog.destroyView();
+            } catch (CanceledException e) {
+                Basic.caught(e);
+            }
         }
     }
 

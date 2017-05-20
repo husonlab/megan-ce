@@ -214,8 +214,7 @@ public class PCoA {
      *  @param numberOfSamples
      * @param class2counts
      */
-    public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float
-            []> class2counts) {
+    public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float[]> class2counts) {
         loadingVectorsBiPlot.clear();
 
         final int numberOfClasses = (class2counts == null ? 0 : class2counts.size());
@@ -247,8 +246,8 @@ public class PCoA {
         Utilities.scalarMultiply(1.0 / (numberOfSamples - 1), values);
         Utilities.sqrt(values);
         Utilities.invertValues(values);
-        double[][] tmp = Utilities.diag(values);
-        double[][] biplotProjection = Utilities.multiply(S, tmp);
+        double[][] diagonal = Utilities.diag(values);
+        double[][] biplotProjection = Utilities.multiply(S, diagonal);
 
         for (double[] row : biplotProjection)
             Utilities.scalarMultiply(0.00001, row);
@@ -296,7 +295,6 @@ public class PCoA {
 
         final double[][] matrixM = new double[numberOfSamples][numberOfAttributes]; // sample X class matrix
 
-
         // setup attributes
         final String[] attributeNames;
         if (attribute2counts != null) {
@@ -322,12 +320,11 @@ public class PCoA {
         Utilities.scalarMultiply(1.0 / (numberOfSamples - 1), values);
         Utilities.sqrt(values);
         Utilities.invertValues(values);
-        double[][] tmp = Utilities.diag(values);
-        double[][] biplotProjection = Utilities.multiply(S, tmp);
+        double[][] diagonal = Utilities.diag(values);
+        double[][] biplotProjection = Utilities.multiply(S, diagonal);
 
         for (double[] row : biplotProjection)
             Utilities.scalarMultiply(0.00001, row);
-
 
         Pair<String, double[]>[] nameAndLoadingVectorBiPlot = new Pair[numberOfAttributes];
         for (int i = 0; i < numberOfAttributes; i++) {

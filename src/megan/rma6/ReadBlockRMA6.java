@@ -228,7 +228,8 @@ public class ReadBlockRMA6 implements IReadBlock {
 
     /**
      * reads a read block
-     *  @param reader
+     *
+     * @param reader
      * @param wantReadSequence
      * @param wantMatches
      */
@@ -282,6 +283,8 @@ public class ReadBlockRMA6 implements IReadBlock {
             int matchCount = 0;
             final IMatchBlock[] copies = new MatchBlockRMA6[numberOfMatches]; // need to copy matches we want to keep
 
+            String[] firstSamMatch = null;
+
             for (int i = 0; i < numberOfMatches; i++) {
                 int end = matchesText.indexOf('\n', offset + 1);
                 if (end == -1)
@@ -290,10 +293,25 @@ public class ReadBlockRMA6 implements IReadBlock {
                 offset = end + 1;
                 try {
                     final SAMMatch samMatch = new SAMMatch(blastMode);
-                    samMatch.parse(aLine);
-                    ((MatchBlockRMA6) matchBlocks[i]).setFromSAM(samMatch);
-                    if (matchBlocks[i].getBitScore() >= minScore && matchBlocks[i].getExpected() <= maxExpected)
-                        copies[matchCount++] = matchBlocks[i]; // this match is ok, keep it
+                    final String[] tokens = Basic.split(aLine, '\t');
+                    if (tokens.length >= 10) {
+                        if (firstSamMatch != null) {
+                            if (tokens[9] == null || tokens[9].equals("*")) {
+                                tokens[9] = firstSamMatch[9];
+                                tokens[10] = firstSamMatch[10];
+                            }
+                        } else
+                            firstSamMatch = tokens;
+                    }
+
+                    samMatch.parse(tokens, tokens.length);
+
+                    if (samMatch.getCigarString() != null && !samMatch.getCigarString().equals("*")) {
+                        final MatchBlockRMA6 matchBlock = (MatchBlockRMA6) matchBlocks[i];
+                        matchBlock.setFromSAM(samMatch);
+                        if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected)
+                            copies[matchCount++] = matchBlock; // this match is ok, keep it
+                    }
                 } catch (IOException ex) {
                     System.err.println("RMA6 Parse error: " + ex.getMessage() + ", numberOfMatches=" + numberOfMatches + ", i=" + i + " line=" + aLine);
                 }

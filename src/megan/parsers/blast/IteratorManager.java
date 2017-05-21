@@ -40,7 +40,7 @@ public class IteratorManager {
     public static ISAMIterator getIterator(String blastFile, BlastFileFormat format, BlastMode blastMode, int maxMatchesPerRead, boolean longReads) throws IOException {
         final ISAMIterator iterator;
         if (format == BlastFileFormat.SAM)
-            iterator = new SAM2SAMIterator(blastFile, maxMatchesPerRead);
+            iterator = new SAM2SAMIterator(blastFile, maxMatchesPerRead, blastMode);
         else if (format == BlastFileFormat.DAA) {
             iterator = new DAA2SAMIterator(blastFile, maxMatchesPerRead);
         }

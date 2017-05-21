@@ -219,7 +219,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 throw new RuntimeException("Too many errors");
         }
 
-        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**

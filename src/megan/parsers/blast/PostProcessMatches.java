@@ -20,6 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -27,9 +28,29 @@ import java.util.Set;
 
 /**
  * post process set of parsed matches
- * Created by huson on 2/20/17.
+ * Daniel Huson, Feb 2017
  */
 public class PostProcessMatches {
+    private final static float defaultMinPercentToCoverToDominate = 90f;
+    private final static float defaultTopPercentScoreToDominate = 90f;
+
+    private final float minProportionCoverToDominate;
+    private final float topProportionScoreToDominate;
+
+    /**
+     * constructor
+     */
+    public PostProcessMatches() {
+        final float minPercentCoverToDominate = (float) ProgramProperties.get("MinPercentCoverToDominate", defaultMinPercentToCoverToDominate);
+        if (minPercentCoverToDominate != defaultMinPercentToCoverToDominate)
+            System.err.println("Using MinPercentCoverToDominate=" + minPercentCoverToDominate);
+        minProportionCoverToDominate = minPercentCoverToDominate / 100.0f;
+
+        final float topPercentScoreToDominate = (float) ProgramProperties.get("TopPercentScoreToDominate", defaultTopPercentScoreToDominate);
+        if (topPercentScoreToDominate != defaultTopPercentScoreToDominate)
+            System.err.println("Using TopPercentScoreToDominate=" + topPercentScoreToDominate);
+        topProportionScoreToDominate = topPercentScoreToDominate / 100.0f;
+    }
 
     /**
      * post process set of parsed matches
@@ -41,7 +62,7 @@ public class PostProcessMatches {
      * @param matches
      * @return number of matches returned
      */
-    public static int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches) {
+    public int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches) {
         if (parseLongReads && matchesIntervalTree != null) {
             matches.clear();
             for (Interval<Match> interval : matchesIntervalTree) {
@@ -50,8 +71,7 @@ public class PostProcessMatches {
                 for (Interval<Match> other : matchesIntervalTree.getIntervals(interval)) {
                     final Match otherMatch = other.getData();
 
-                    if ((other.overlap(interval) > 0.9 * interval.length() && 0.90 * otherMatch.bitScore > match.bitScore)
-                            || (other.equals(interval) && (otherMatch.bitScore > match.bitScore || (otherMatch.bitScore == match.bitScore && otherMatch.samLine.compareTo(match.samLine) < 0)))) {
+                    if (other.overlap(interval) > minProportionCoverToDominate * interval.length() && topProportionScoreToDominate * otherMatch.bitScore > match.bitScore) {
                         covered = true;
                         break;
                     }

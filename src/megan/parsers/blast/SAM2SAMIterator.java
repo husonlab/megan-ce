@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,248 +19,176 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
-import jloda.util.FileIterator;
+import jloda.util.Pair;
+import megan.parsers.sam.SAMMatch;
 import megan.util.SAMFileFilter;
+import megan.util.interval.Interval;
+import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.TreeSet;
+
 
 /**
- * iterates over a file of alignments and returns them in SAM format
- * Daniel Huson, 4.2015
+ * parses a SAM File in SAM format
+ * Daniel Huson, 2.2017
  */
-public class SAM2SAMIterator implements ISAMIterator {
-    private final FileIterator samIterator;
-    private final AlignedIterator alignedIterator; // iterators over all sam lines delivered by the samIterator that have an alignment
-    private final int maxMatchesPerRead;
+public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
-    private byte[] firstOfNext = new byte[0];
-    private int lengthOfFirstOfNext;
-    private byte[] result = new byte[100000];
-    private int length = 0;
-    private int matchesInResult = 0;
+    private final BlastMode blastMode;
 
-    private boolean parseLongReads;
+    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
+
+    private String currentMatchLine = null;
+
+    final SAMMatch samMatch;
 
     /**
      * constructor
      *
      * @param fileName
-     * @param maxMatchesPerRead
      * @throws IOException
      */
-    public SAM2SAMIterator(String fileName, int maxMatchesPerRead) throws IOException {
-        this.maxMatchesPerRead = maxMatchesPerRead;
+    protected SAM2SAMIterator(String fileName, int maxNumberOfMatchesPerRead, BlastMode blastMode) throws IOException {
+        super(fileName, maxNumberOfMatchesPerRead);
+        this.blastMode = blastMode;
+        samMatch = new SAMMatch(blastMode);
+        if (!SAMFileFilter.getInstance().accept(fileName)) {
+            close();
+            throw new IOException("File not a SAM file: " + fileName);
+        }
 
-        if (!SAMFileFilter.getInstance().accept(fileName))
-            throw new IOException("File not in SAM format: " + fileName);
-        samIterator = new FileIterator(fileName);
-        // skip header lines:
-        while (samIterator.hasNext() && samIterator.peekNextByte() == '@')
-            samIterator.next();
-        alignedIterator = new AlignedIterator(samIterator);
+        // skip header lines
+        while (hasNextLine()) {
+            String line = nextLine();
+            if (!line.startsWith("@")) {
+                pushBackLine(line);
+                break;
+            }
+        }
+
+        moveToNextSAMLine();
     }
 
     /**
-     * returns the next number of matches found
+     * is there more data?
      *
-     * @return number of next matches found
-     */
-    @Override
-    public int next() {
-        moveToNext();
-        return matchesInResult;
-    }
-
-    /**
-     * is there next?
-     *
-     * @return next
+     * @return true, if more data available
      */
     @Override
     public boolean hasNext() {
-        return lengthOfFirstOfNext > 0 || alignedIterator.hasNext();
+        return currentMatchLine != null;
     }
 
     /**
-     * get the matches found as single text
+     * gets the next matches
      *
-     * @return text
+     * @return number of matches
+     */
+    public int next() {
+        if (currentMatchLine == null)
+            return -1; // at end of file
+
+        final String firstQuery = currentMatchLine;
+
+        int matchId = 0; // used to distinguish between matches when sorting
+        matches.clear();
+        matchesTextAndLength.setSecond(0);
+        matchesIntervalTree.clear();
+
+        // get all matches for given query:
+        try {
+            while (true) {
+                if (currentMatchLine != null && sameQuery(currentMatchLine, firstQuery)) {
+                    samMatch.parse(currentMatchLine);
+
+                    if (samMatch.isMatch()) {
+                        final Match match = new Match();
+                        match.bitScore = samMatch.getBitScore();
+                        match.id = matchId++;
+                        match.samLine = currentMatchLine;
+
+                        if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
+                            matchesIntervalTree.add(new Interval<>(samMatch.getAlignedQueryStart(), samMatch.getAlignedQueryEnd(), match));
+                        } else {
+                            if (matches.size() < getMaxNumberOfMatchesPerRead() || samMatch.getBitScore() > matches.last().bitScore) {
+                                matches.add(match);
+                                if (matches.size() > getMaxNumberOfMatchesPerRead())
+                                    matches.remove(matches.last());
+                            }
+                        }
+                    }
+                    moveToNextSAMLine();
+                } else // new query or last alignment, in either case return
+                {
+                    break;
+                }
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Error parsing file near line: " + getLineNumber() + ": " + ex.getMessage());
+            if (incrementNumberOfErrors() >= getMaxNumberOfErrors())
+                throw new RuntimeException("Too many errors");
+        }
+
+        return postProcessMatches.apply(firstQuery, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+    }
+
+    /**
+     * move to the next match
+     */
+    private void moveToNextSAMLine() {
+        if (hasNextLine()) {
+            currentMatchLine = nextLine();
+        } else {
+            currentMatchLine = null;
+        }
+    }
+
+    /**
+     * gets the matches text
+     *
+     * @return matches text
      */
     @Override
     public byte[] getMatchesText() {
-        return result;
+        return matchesTextAndLength.getFirst();
     }
 
     /**
-     * gets the length of the matches string
+     * length of matches text
      *
-     * @return length
+     * @return length of text
      */
     @Override
     public int getMatchesTextLength() {
-        return length;
-    }
-
-    @Override
-    public long getMaximumProgress() {
-        return samIterator.getMaximumProgress();
-    }
-
-    @Override
-    public long getProgress() {
-        return samIterator.getProgress();
-    }
-
-    @Override
-    public void close() throws IOException {
-        samIterator.close();
-    }
-
-    @Override
-    public byte[] getQueryText() {
-        return null;
-    }
-
-    private void moveToNext() {
-        matchesInResult = 0;
-
-        if (lengthOfFirstOfNext > 0) {
-            if (result.length < lengthOfFirstOfNext)
-                result = new byte[2 * lengthOfFirstOfNext];
-            System.arraycopy(firstOfNext, 0, result, 0, lengthOfFirstOfNext);
-            length = lengthOfFirstOfNext;
-            matchesInResult++;
-            lengthOfFirstOfNext = 0;
-        } else
-            length = 0;
-
-        while (alignedIterator.hasNext()) {
-            byte[] line = alignedIterator.next();
-            int lineLength = alignedIterator.getLineLength();
-            if (length == 0 || sameQuery(result, line)) {
-                if (matchesInResult < maxMatchesPerRead) {
-                    matchesInResult++;
-                    if (result.length < length + lineLength + 1) {
-                        byte[] tmp = new byte[2 * (length + lineLength)];
-                        System.arraycopy(result, 0, tmp, 0, length);
-                        result[length++] = '\n';
-                        result = tmp;
-                    }
-                    System.arraycopy(line, 0, result, length, lineLength);
-                    length += lineLength;
-                }
-            } else {
-                if (firstOfNext.length < lineLength + 1) {
-                    firstOfNext = new byte[lineLength + 1];
-                }
-                System.arraycopy(line, 0, firstOfNext, 0, lineLength);
-                lengthOfFirstOfNext = lineLength;
-                //firstOfNext[lengthOfFirstOfNext++]='\n';
-                break;
-            }
-        }
+        return matchesTextAndLength.getSecond();
     }
 
     /**
-     * Two lines belong to the same query if the first word is the same (the query name) and the second word is an integer flag that same 7&8 bit.
-     * This indicate that the sequences are the same either first or second template, i.e. mate pair
-     *
-     * @param a
-     * @param b
-     * @return true, if identical up to first tab
+     * do these two SAM lines refer to the same query sequence?
+     * @param samA
+     * @param samB
+     * @return true, if same query
      */
-    private boolean sameQuery(byte[] a, byte[] b) {
-        int top = Math.min(a.length, b.length);
-        int pos = 0;
-        while (pos < top) {
-            if (a[pos] != b[pos]) {
-                return false;
-            }
-            if (a[pos] == '\t')
-                break;
-            pos++;
-        }
-        if (pos >= a.length || pos >= b.length || b[pos] != '\t')
+    private boolean sameQuery(String samA, String samB) {
+        String[] tokensA = Basic.split(samA, '\t', 2);
+        String[] tokensB = Basic.split(samB, '\t', 2);
+
+        // not the same name, return false
+        if (tokensA.length >= 1 && tokensB.length >= 1 && !tokensA[0].equals(tokensB[0]))
             return false;
-        pos++;
-        int posA = pos;
-        while (posA < a.length && !Character.isWhitespace(a[posA]))
-            posA++;
-        if (posA == pos)
-            return false;
-        int posB = pos;
-        while (posB < b.length && !Character.isWhitespace(b[posB]))
-            posB++;
-        if (posB == pos)
-            return false;
-        final int flagA = Basic.parseInt(new String(a, pos, posA - pos));
-        final int flagB = Basic.parseInt(new String(b, pos, posB - pos));
-        return (flagA & 192) == (flagB & 192); // have same 7th and 8th bit
-    }
 
-    @Override
-    public void setParseLongReads(boolean longReads) {
-        this.parseLongReads = longReads;
-    }
-
-    @Override
-    public boolean isParseLongReads() {
-        return parseLongReads;
-    }
-
-    /**
-     * iterator that only return SAM lines for which an alignment is present
-     */
-    class AlignedIterator implements Iterator<byte[]> {
-        final private FileIterator iterator;
-        private byte[] next = null;
-        private int length = 0;
-
-        public AlignedIterator(final FileIterator iterator) {
-            this.iterator = iterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (next != null) {
-                return true;
-            } else {
-                while (iterator.hasNext()) {
-                    byte[] line = iterator.next();
-                    length = iterator.getLineLength();
-
-                    final String secondToken = Basic.getTokenFromTabSeparatedLine(line, 1);
-                    if (Basic.isInteger(secondToken)) {
-                        final int flags = Basic.parseInt(secondToken);
-                        if ((flags & 4) != 0) {
-                            continue; // this is an unmapped read
-                        }
-                    }
-                    next = line;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        @Override
-        public byte[] next() {
-            if (hasNext()) {
-                byte[] result = next;
-                next = null;
-                return result;
-            } else
-                return null;
-        }
-
-        @Override
-        public void remove() {
-
-        }
-
-        public int getLineLength() {
-            return length;
+        // check whether they are different "templates", that is, first and last of a read pair
+        try {
+            final int flagA = Basic.parseInt(tokensA[1]);
+            final int flagB = Basic.parseInt(tokensB[1]);
+            return (flagA & 192) == (flagB & 192); // second token is 'flag', must have same 7th and 8th bit for same query
+        } catch (Exception ex) {
+            return true;
         }
     }
 }
+

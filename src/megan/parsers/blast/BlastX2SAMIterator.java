@@ -211,17 +211,14 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                         }
                     }
 
+                    final Match match = new Match();
+                    match.bitScore = bitScore;
+                    match.id = matchId++;
+                    match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
+
                     if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
-                        Match match = new Match();
-                        match.bitScore = bitScore;
-                        match.id = matchId++;
-                        match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
                         matchesIntervalTree.add(new Interval<>(queryStart, queryEnd, match));
                     } else if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
-                        Match match = new Match();
-                        match.bitScore = bitScore;
-                        match.id = matchId++;
-                        match.samLine = makeSAM(queryName, refName, referenceLength, bitScore, expect, rawScore, percentIdentities, frame, queryStart, queryEnd, subjStart, subjEnd, queryBuf.toString(), subjBuf.toString());
                         matches.add(match);
                         if (matches.size() > getMaxNumberOfMatchesPerRead())
                             matches.remove(matches.last());
@@ -234,7 +231,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 throw new RuntimeException("Too many errors");
         }
 
-        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
 

@@ -22,7 +22,6 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.classification.Classification;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 
 import javax.swing.*;
@@ -54,8 +53,7 @@ public class SelectCompatibleAlignmentsCommand extends CommandBase implements IC
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof LRInspectorViewer &&
-                ((LRInspectorViewer) getViewer()).getClassificationName().equals(Classification.Taxonomy);
+        return getViewer() instanceof LRInspectorViewer;
     }
 
     public String getName() {

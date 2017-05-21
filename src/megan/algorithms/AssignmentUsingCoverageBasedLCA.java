@@ -170,11 +170,11 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
                             final float localCoverageFactor = 1.0f / currentMatches.cardinality();
                             final float bitScoreForSegment = matchBlock.getBitScore() * length / (float) matchLength;
 
-                            Integer weight = taxon2weight.get(taxonId);
+                            final Integer weight = taxon2weight.get(taxonId);
                             if (weight == null)
-                                weight = 0;
-                            weight += Math.round(bitScoreForSegment * localCoverageFactor);
-                            taxon2weight.put(taxonId, weight);
+                                taxon2weight.put(taxonId, Math.round(bitScoreForSegment * localCoverageFactor));
+                            else
+                                taxon2weight.put(taxonId, weight + Math.round(bitScoreForSegment * localCoverageFactor));
                         }
                     }
                 }

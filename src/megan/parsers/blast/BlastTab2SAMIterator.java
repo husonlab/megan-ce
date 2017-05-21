@@ -164,7 +164,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                 throw new RuntimeException("Too many errors");
         }
 
-        return PostProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**

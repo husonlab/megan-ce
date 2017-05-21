@@ -192,6 +192,8 @@ public class DataProcessor {
 
                     final IReadBlock readBlock = it.next();
 
+                    if (readBlock.getNumberOfAvailableMatchBlocks() > 0)
+                        numberOfReadsWithHits += readBlock.getReadWeight();
 
                     readBlock.setReadWeight(readAssignmentCalculator.compute(readBlock, intervals));
 
@@ -234,10 +236,7 @@ public class DataProcessor {
                             }
                         } else
                             numberOfReadsFailedCoveredThreshold++;
-                        if (activeMatchesForTaxa.cardinality() > 0)
-                            numberOfReadsWithHits += readBlock.getReadWeight();
                     }
-
 
                     for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
@@ -254,13 +253,15 @@ public class DataProcessor {
                                 multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
                             }
                         }
-                        if (!knownIds[c].contains(id))
+
+                        if (id <= 0 && readBlock.getNumberOfAvailableMatchBlocks() == 0)
+                            id = IdMapper.NOHITS_ID;
+                        else if (!knownIds[c].contains(id))
                             id = IdMapper.UNASSIGNED_ID;
 
                         classIds[c] = id;
                         if (id == IdMapper.UNASSIGNED_ID)
                             countUnassigned[c]++;
-
                         else if (id > 0)
                             countAssigned[c]++;
                     }

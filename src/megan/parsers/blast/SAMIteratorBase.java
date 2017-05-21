@@ -34,6 +34,7 @@ public class SAMIteratorBase {
     private int numberOfErrors = 0;
     private String pushedBackLine;
     private boolean parseLongReads;
+    protected final PostProcessMatches postProcessMatches;
 
     /**
      * constructor
@@ -45,6 +46,7 @@ public class SAMIteratorBase {
     public SAMIteratorBase(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         iterator = new FileInputIterator(fileName);
         this.maxNumberOfMatchesPerRead = maxNumberOfMatchesPerRead;
+        postProcessMatches = new PostProcessMatches();
     }
 
     /**

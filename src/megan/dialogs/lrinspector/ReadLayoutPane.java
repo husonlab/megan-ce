@@ -804,14 +804,23 @@ public class ReadLayoutPane extends Pane {
      */
     public void selectAllCompatibleTaxa(boolean compatible, String classificationName, int classId) {
         if (classId > 0) {
-            final Classification classification = ClassificationManager.get(classificationName, true);
-            for (IMatchBlock matchBlock : match2GeneArrow.keySet()) {
-                int matchClassId = matchBlock.getId(classificationName);
-                boolean isCompatibleWith = (matchClassId > 0 && (matchClassId == classId || classification.getFullTree().isDescendant(classId, matchClassId)));
-                if (compatible == isCompatibleWith)
-                    matchSelection.select(matchBlock);
-                else
-                    matchSelection.clearSelect(matchBlock);
+            if (classificationName.equals(Classification.Taxonomy)) {
+                final Classification classification = ClassificationManager.get(Classification.Taxonomy, true);
+                for (IMatchBlock matchBlock : match2GeneArrow.keySet()) {
+                    int matchClassId = matchBlock.getId(classificationName);
+                    boolean isCompatibleWith = (matchClassId > 0 && (matchClassId == classId || classification.getFullTree().isDescendant(classId, matchClassId)));
+                    if (compatible == isCompatibleWith)
+                        matchSelection.select(matchBlock);
+                    else
+                        matchSelection.clearSelect(matchBlock);
+                }
+            } else {
+                for (IMatchBlock matchBlock : match2GeneArrow.keySet()) {
+                    if (matchBlock.getId(classificationName) == classId)
+                        matchSelection.select(matchBlock);
+                    else
+                        matchSelection.clearSelect(matchBlock);
+                }
             }
         }
     }

@@ -38,7 +38,7 @@ import java.util.*;
 
 /**
  * Analyzes all reads in a sample
- * Daniel Huson, 1.2009, 3.2106
+ * Daniel Huson, 1.2009, 3.2016
  */
 public class DataProcessor {
     /**
@@ -48,6 +48,11 @@ public class DataProcessor {
      * @throws jloda.util.CanceledException
      */
     public static int apply(final Document doc) throws CanceledException {
+        if (ProgramProperties.get("UseParallelDataProcessor", false)) {
+            DataProcessorParallel dataProcessorParallel = new DataProcessorParallel(doc);
+            return dataProcessorParallel.apply();
+        }
+
         final ProgressListener progress = doc.getProgressListener();
         try {
             progress.setTasks("Binning reads", "Initialization");

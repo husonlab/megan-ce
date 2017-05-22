@@ -25,7 +25,6 @@ import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.core.SyncArchiveAndDataTable;
 import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAHeader;
 import megan.daa.io.DAAParser;
@@ -89,9 +88,7 @@ public class Meganize {
 
         doc.processReadHits();
 
-        // update and then save auxiliary data:
-        final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(daaFile), "");
-        SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), doc.getConnector(), doc.getDataTable(), 0);
+        // save auxiliary data:
         doc.saveAuxiliaryData();
 
         if (metaDataFile.length() > 0) {

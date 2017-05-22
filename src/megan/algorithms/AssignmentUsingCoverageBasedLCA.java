@@ -160,21 +160,32 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
                 currentMatches.set(currentEvent.getMatchId());
             } else {
                 if (currentEvent.getPos() > previousEvent.getPos()) {
+                    final int length = (currentEvent.getPos() - previousEvent.getPos() + 1); // length of segment
+                    // compute total bit score for segment as sum of bit scores per segment
+                    float totalBitScoreForSegment = 0;
+                    {
+                        for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
+                            final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+                            final int matchLength = Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
+                            totalBitScoreForSegment = matchBlock.getBitScore() * length / (float) matchLength;
+                        }
+                        if (totalBitScoreForSegment == 0)
+                            totalBitScoreForSegment = 1;
+                    }
+
                     for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
                         final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
 
                         final int taxonId = matchBlock.getTaxonId();
                         if (taxonId > 0) {
-                            final int length = (currentEvent.getPos() - previousEvent.getPos() + 1); // length of segment
                             final int matchLength = Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
-                            final float localCoverageFactor = 1.0f / currentMatches.cardinality();
                             final float bitScoreForSegment = matchBlock.getBitScore() * length / (float) matchLength;
 
                             final Integer weight = taxon2weight.get(taxonId);
                             if (weight == null)
-                                taxon2weight.put(taxonId, Math.round(bitScoreForSegment * localCoverageFactor));
+                                taxon2weight.put(taxonId, Math.round(bitScoreForSegment / totalBitScoreForSegment));
                             else
-                                taxon2weight.put(taxonId, weight + Math.round(bitScoreForSegment * localCoverageFactor));
+                                taxon2weight.put(taxonId, weight + Math.round(bitScoreForSegment / totalBitScoreForSegment));
                         }
                     }
                 }

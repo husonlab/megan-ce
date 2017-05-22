@@ -518,7 +518,6 @@ public class Document {
         if (getMeganFile().hasDataConnector()) {
             try {
                 final int readsFound = DataProcessor.apply(this);
-
                 // rescan size:
                 {
                     getSampleAttributeTable().addAttribute("Size", numberReads, true);

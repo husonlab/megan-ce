@@ -66,7 +66,7 @@ public class DAAReferencesAnnotator {
 
         final int[][] cName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
 
-        final int numberOfThreads = 8;
+        final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

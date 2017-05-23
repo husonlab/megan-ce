@@ -18,8 +18,6 @@
  */
 package megan.algorithms;
 
-import jloda.graph.Edge;
-import jloda.graph.Node;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
@@ -27,7 +25,6 @@ import jloda.util.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationFullTree;
-import megan.classification.data.IntIntMap;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;
@@ -37,7 +34,6 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
-import megan.viewer.TaxonomicLevels;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,73 +47,36 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 2.2016
  */
 public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCreator {
-    private static final Object syncTaxId2SpeciesId = new Object();
-    private static IntIntMap taxId2SpeciesId;
-
     private int[] refId2weight;
     private Map<String, Integer> ref2weight; // map reference sequence to number of reads associated with it
     private final Object syncRef = new Object();
-
-    private final String cName;
-    private final boolean cNameIsTaxonomy;
 
     private final Name2IdMap name2IdMap;
 
     private final boolean useIdentityFilter;
     private final float percentToCover;
 
+    private final String cName = Classification.Taxonomy;
+
+
+    private final Taxon2SpeciesMapping taxon2SpeciesMapping;
+
     /**
      * constructor
      */
-    public AssignmentUsingWeightedLCACreator(final Document doc, final String cName, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
-        this.cName = cName;
+    public AssignmentUsingWeightedLCACreator(final Document doc, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
         this.useIdentityFilter = usingIdentityFilter;
+
+        this.taxon2SpeciesMapping = Taxon2SpeciesMapping.getInstance(doc.getProgressListener());
+
         ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
         name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
-        cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 
         System.err.println(String.format("Using 'Weighted LCA' assignment (%.1f %%) on %s", this.percentToCover, cName));
 
-        if (taxId2SpeciesId == null) {
-            synchronized (syncTaxId2SpeciesId) {
-                if (taxId2SpeciesId == null) {
-                    taxId2SpeciesId = new IntIntMap(fullTree.getNumberOfNodes(), 0.999f);
-                    ProgressListener progress = doc.getProgressListener();
-                    progress.setSubtask("Computing taxon-to-species map");
-                    progress.setMaximum(fullTree.getNumberOfNodes());
-                    progress.setProgress(0);
-                    computeTax2SpeciesMapRec(fullTree.getRoot(), 0, taxId2SpeciesId, progress);
-                    if (progress instanceof ProgressPercentage)
-                        ((ProgressPercentage) progress).reportTaskCompleted();
-                }
-            }
-        }
         computeWeights(doc);
-    }
-
-    /**
-     * recursively compute the taxon-id to species-id map
-     *
-     * @param v
-     * @param taxId2SpeciesId
-     * @return taxa below species
-     */
-    private void computeTax2SpeciesMapRec(final Node v, int speciesId, final IntIntMap taxId2SpeciesId, final ProgressListener progress) throws CanceledException {
-        final int taxId = (Integer) v.getInfo();
-
-        if (speciesId == 0) {
-            if (name2IdMap.getRank(taxId) == TaxonomicLevels.getSpeciesId()) {
-                speciesId = taxId;
-                taxId2SpeciesId.put(taxId, speciesId);
-            }
-        } else
-            taxId2SpeciesId.put(taxId, speciesId);
-
-        for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e))
-            computeTax2SpeciesMapRec(e.getTarget(), speciesId, taxId2SpeciesId, progress);
-        progress.incrementProgress();
     }
 
     /**
@@ -168,9 +127,9 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                             int chosenId = 0; // species id, if there is one, otherwise taxon id
                             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                int id = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                                int id = matchBlock.getTaxonId();
                                 if (id > 0) {
-                                    id = taxId2SpeciesId.get(id); // todo: there is a  problem here: what if the match is to a higher rank and that is incompatible with the majority species?
+                                    id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a  problem here: what if the match is to a higher rank and that is incompatible with the majority species?
                                     if (id > 0) {
                                         if (chosenId == 0)
                                             chosenId = id;
@@ -184,7 +143,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                             if (chosenId > 0) {
                                 for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                    int id = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                                    int id = matchBlock.getTaxonId();
                                     if (id == chosenId) {
                                         if (ref2weight != null) {
                                             final String ref = matchBlock.getTextFirstWord();
@@ -265,7 +224,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
      */
 
     public AssignmentUsingWeightedLCA createAssignmentAlgorithm() {
-        return new AssignmentUsingWeightedLCA(cName, refId2weight, ref2weight, taxId2SpeciesId, percentToCover, useIdentityFilter);
+        return new AssignmentUsingWeightedLCA(cName, refId2weight, ref2weight, taxon2SpeciesMapping, percentToCover, useIdentityFilter);
     }
 }
 

@@ -25,7 +25,6 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
-import megan.classification.data.IntIntMap;
 import megan.classification.data.Name2IdMap;
 import megan.daa.connector.MatchBlockDAA;
 import megan.data.IMatchBlock;
@@ -48,7 +47,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     private final int[] refId2weight;
     private final Map<String, Integer> ref2weight; // map reference sequence to number of reads associated with it
-    private final IntIntMap taxId2SpeciesId;
+    private final Taxon2SpeciesMapping taxon2SpeciesMapping;
 
     private final boolean useIdentityFilter;
     private final float percentToCover;
@@ -68,7 +67,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         idMapper = null;
         refId2weight = null;
         ref2weight = null;
-        taxId2SpeciesId = null;
+        taxon2SpeciesMapping = null;
         useIdentityFilter = false;
         percentToCover = 70;
     }
@@ -80,7 +79,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
      * @param ref2weight
      * @param percentToCover
      */
-    public AssignmentUsingWeightedLCA(final String cName, final int[] refId2Weight, final Map<String, Integer> ref2weight, final IntIntMap taxId2SpeciesId, final float percentToCover, final boolean useIdentityFilter) {
+    public AssignmentUsingWeightedLCA(final String cName, final int[] refId2Weight, final Map<String, Integer> ref2weight, final Taxon2SpeciesMapping taxon2SpeciesMapping, final float percentToCover, final boolean useIdentityFilter) {
         this.cName = cName;
         this.useIdentityFilter = useIdentityFilter;
         fullTree = ClassificationManager.get(cName, true).getFullTree();
@@ -89,7 +88,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
         this.refId2weight = refId2Weight;
         this.ref2weight = ref2weight;
-        this.taxId2SpeciesId = taxId2SpeciesId;
+        this.taxon2SpeciesMapping = taxon2SpeciesMapping;
 
         addressingArray = resizeArray(addressingArray, 1000);
 
@@ -120,9 +119,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
                 if (taxId > 0) {
                     if (!allowBelowSpeciesAssignment) {
-                        int species = taxId2SpeciesId.get(taxId);
-                        if (species != 0 && species != taxId)
-                            taxId = species;
+                        taxId = taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(taxId);
                     }
 
                     if (!idMapper.isDisabled(taxId)) {
@@ -156,9 +153,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                     int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
                     if (taxId > 0) {
                         if (!allowBelowSpeciesAssignment) {
-                            int species = taxId2SpeciesId.get(taxId);
-                            if (species != 0 && species != taxId)
-                                taxId = species;
+                            taxId = taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(taxId);
                         }
 
                         if (!idMapper.isDisabled(taxId)) {
@@ -195,8 +190,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                     }
                     if (allowBelowSpeciesAssignment)
                         return id;
-                    int species = taxId2SpeciesId.get(id);
-                    return species > 0 ? species : id;
+                    else
+                        return taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(id);
                 }
             }
         }

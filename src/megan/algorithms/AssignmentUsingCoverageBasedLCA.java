@@ -63,6 +63,8 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
         topPercentFactor = (topPercent == 0 || topPercent == 100 ? 1 : Math.min(1f, topPercent / 100.0f));
         try {
             taxon2SpeciesMapping = (ProgramProperties.get("CollapseSpeciesLongReadLCA", false) ? Taxon2SpeciesMapping.getInstance(doc.getProgressListener()) : null);
+            if (taxon2SpeciesMapping != null)
+                System.err.println("Using collapseSpecies option: At most one alignment per species used");
         } catch (CanceledException e) {
             Basic.caught(e);
         }
@@ -173,32 +175,54 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
                     final int segmentLength = (currentEvent.getPos() - previousEvent.getPos() + 1); // length of segment
 
                     if (segmentLength > 0) {
+                        // System.err.println("Segment: "+previousEvent.getPos()+" - "+currentEvent.getPos()+" length: "+segmentLength);
+
                         // setup
                         final HashMap<Integer, Integer> match2taxonId;
                         if (taxon2SpeciesMapping != null) { // this means that isCollapseSpecies is true
-                            final Map<Integer, Pair<Integer, Float>> speciesToBestMatch = new HashMap<>();
+                            int orginalTaxonSeen = -1; // -1: seen nothing: 0: seen more than one taxon, otherwise (n): all taxa seen are of type n
+                            final Map<Integer, Pair<Integer, Float>> speciesToMatchIdAndScore = new HashMap<>();
                             for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
                                 final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                                 final int matchLength = Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
                                 final float bitScorePerBase = matchBlock.getBitScore() / matchLength;
-                                final int taxonId = taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(matchBlock.getTaxonId());
+                                final int originalTaxonId = matchBlock.getTaxonId();
+                                final int taxonId = taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(originalTaxonId);
+                                if (originalTaxonId > 0) {
+                                    switch (orginalTaxonSeen) {
+                                        case -1:
+                                            orginalTaxonSeen = originalTaxonId;
+                                            break;
+                                        case 0: //  have seen more than one
+                                            break;
+                                        default: // if we see another taxon then set taxon seen to 0
+                                            if (originalTaxonId != orginalTaxonSeen)
+                                                orginalTaxonSeen = 0;
+                                    }
+                                }
+                                // System.err.println("Mapping "+matchBlock.getTaxonId()+" -> "+taxonId);
 
                                 if (taxonId > 0) {
-                                    final Pair<Integer, Float> pair = speciesToBestMatch.get(taxonId);
-                                    if (pair != null) {
-                                        if (bitScorePerBase > pair.getSecond()) {
-                                            pair.setFirst(m);
-                                            pair.setSecond(bitScorePerBase);
+                                    final Pair<Integer, Float> matchAndScore = speciesToMatchIdAndScore.get(taxonId);
+                                    if (matchAndScore != null) {
+                                        if (bitScorePerBase > matchAndScore.getSecond()) {
+                                            matchAndScore.setFirst(m);
+                                            matchAndScore.setSecond(bitScorePerBase);
                                         }
                                     } else {
-                                        speciesToBestMatch.put(taxonId, new Pair<>(m, bitScorePerBase));
+                                        speciesToMatchIdAndScore.put(taxonId, new Pair<>(m, bitScorePerBase));
                                     }
                                 }
                             }
-                            match2taxonId = new HashMap<>();
-                            for (Integer id : speciesToBestMatch.keySet()) {
-                                Pair<Integer, Float> pair = speciesToBestMatch.get(id);
-                                match2taxonId.put(id, pair.getFirst());
+                            if (speciesToMatchIdAndScore.size() >= 1 && orginalTaxonSeen == 0) { // only use species-based filtering if more than one original taxon seen
+                                match2taxonId = new HashMap<>();
+                                for (Integer id : speciesToMatchIdAndScore.keySet()) {
+                                    Pair<Integer, Float> matchAndScore = speciesToMatchIdAndScore.get(id);
+                                    // System.err.println("match m="+ matchAndScore.getFirst()+" taxon: "+id+" ("+ TaxonomyData.getName2IdMap().get(id)+") score: "+matchAndScore.getSecond());
+                                    match2taxonId.put(matchAndScore.getFirst(), id);
+                                }
+                            } else { // if all
+                                match2taxonId = null;
                             }
                         } else
                             match2taxonId = null;
@@ -221,15 +245,16 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
                         for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
                             if (match2taxonId == null || match2taxonId.containsKey(m)) {
                                 final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-
-                                final int taxonId = (match2taxonId == null ? matchBlock.getTaxonId() : match2taxonId.get(m));
+                                final int originalTaxonId = matchBlock.getTaxonId();
+                                final int taxonId = (match2taxonId == null ? originalTaxonId : match2taxonId.get(m));
                                 if (taxonId > 0) {
                                     final int matchLength = Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
                                     final float bitScorePerBase = matchBlock.getBitScore() / matchLength;
 
-                                    final int score = Math.round(segmentLength * (bitScorePerBase / totalBitScorePerBase));
-
+                                    final int score = Math.round((10000 * segmentLength * bitScorePerBase) / totalBitScorePerBase); // multiple by 10000 to avoid truncation when converting to int
                                     final Integer weight = taxon2weight.get(taxonId);
+                                    //System.err.println(taxonId+" ("+TaxonomyData.getName2IdMap().get(taxonId) + ") adding: " + score);
+
                                     if (weight == null)
                                         taxon2weight.put(taxonId, score);
                                     else
@@ -248,6 +273,14 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
             }
             previousEvent = currentEvent;
         }
+        /*
+         {
+            System.err.println("Final weights for read:");
+            for (int id : taxon2weight.keySet()) {
+                System.err.println(id + " (" + TaxonomyData.getName2IdMap().get(id) + ") score: " + taxon2weight.get(id));
+            }
+        }
+        */
     }
 
     @Override

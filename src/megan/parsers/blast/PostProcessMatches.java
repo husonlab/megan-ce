@@ -108,6 +108,7 @@ public class PostProcessMatches {
                 matchesText[matchesTextLength++] = '\n';
             }
             matchesTextAndLength.set(matchesText, matchesTextLength);
+            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.get2()));
             return matches.size();
         }
     }

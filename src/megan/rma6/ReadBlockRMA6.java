@@ -306,7 +306,7 @@ public class ReadBlockRMA6 implements IReadBlock {
 
                     samMatch.parse(tokens, tokens.length);
 
-                    if (samMatch.getCigarString() != null && !samMatch.getCigarString().equals("*")) {
+                    if (samMatch.getRefName() != null) {
                         final MatchBlockRMA6 matchBlock = (MatchBlockRMA6) matchBlocks[i];
                         matchBlock.setFromSAM(samMatch);
                         if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected)

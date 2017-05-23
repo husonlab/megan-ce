@@ -97,7 +97,7 @@ public class TaxonomyData {
         if (taxonomyClassification != null && taxonomyClassification.getIdMapper() != null)
             return taxonomyClassification.getIdMapper().getDisabledIds();
         else
-            return new HashSet<Integer>();
+            return new HashSet<>();
     }
 
     public static int getTaxonomicRank(Integer id) {

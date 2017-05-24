@@ -51,7 +51,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
 
     public float getWeightedSum(Integer key) {
         final Float result = id2weight.get(key);
-        if (result > 0)
+        if (result != null && result > 0)
             return result;
         else
             return id2count.get(key);

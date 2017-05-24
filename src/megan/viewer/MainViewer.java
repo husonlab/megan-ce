@@ -260,7 +260,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
      */
     private void askToSaveCurrent() throws CanceledException {
         if (ProgramProperties.isUseGUI()) {
-            if (!doc.getMeganFile().hasDataConnector() && doc.getNumberOfSamples() > 0 && doc.isDirty()) {
+            if (doc.getMeganFile().isMeganSummaryFile() && doc.getNumberOfSamples() > 0 && doc.isDirty()) {
                 getFrame().toFront();
                 getFrame().setAlwaysOnTop(true);
                 try {

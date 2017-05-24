@@ -120,7 +120,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
 
                 meganFile.checkFileOkToRead(); // will throw IOException if there is a problem
 
-                if (meganFile.hasDataConnector()) {
+                if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector()) {
                     if (meganFile.isMeganServerFile())
                         meganFile.setReadOnly(true);
                     if (!meganFile.isReadOnly() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId())) {
@@ -138,17 +138,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 viewer.getCollapsedIds().clear();
                 doc.loadMeganFile(); // note that megan3 summary and comparison files get converted to megan4 files here
 
-                if (meganFile.hasDataConnector()) {
-                    if (doc.getDataTable().getNumberOfSamples() > 0) {
-                        SyncDataTableAndTaxonomy.syncCollapsedFromSummaryToTaxonomyViewer(doc.getDataTable(), viewer);
-                        if (doc.getDataTable().getTotalReads() > 0) {
-                            doc.setNumberReads(doc.getDataTable().getTotalReads());
-                        }
-                        viewer.getNodeDrawer().setStyle(doc.getDataTable().getNodeStyle(ClassificationType.Taxonomy.toString()), NodeDrawer.Style.Circle);
-                        // make sure we use the correct name for the sample:
-                        doc.getDataTable().setSamples(new String[]{Basic.getFileBaseName(meganFile.getName())}, doc.getDataTable().getSampleUIds(), doc.getDataTable().getSampleSizes(), doc.getDataTable().getBlastModes());
-                    }
-                } else if (meganFile.isMeganSummaryFile()) {
+                if (meganFile.isMeganSummaryFile()) {
                     SyncDataTableAndTaxonomy.syncCollapsedFromSummaryToTaxonomyViewer(doc.getDataTable(), viewer);
                     if (doc.getDataTable().getTotalReads() > 0) {
                         doc.setNumberReads(doc.getDataTable().getTotalReads());
@@ -162,6 +152,16 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                     } else {
                         throw new IOException("File is either empty or format is too old: " + meganFile.getName());
                     }
+                } else if (meganFile.hasDataConnector()) {
+                    if (doc.getDataTable().getNumberOfSamples() > 0) {
+                        SyncDataTableAndTaxonomy.syncCollapsedFromSummaryToTaxonomyViewer(doc.getDataTable(), viewer);
+                        if (doc.getDataTable().getTotalReads() > 0) {
+                            doc.setNumberReads(doc.getDataTable().getTotalReads());
+                        }
+                        viewer.getNodeDrawer().setStyle(doc.getDataTable().getNodeStyle(ClassificationType.Taxonomy.toString()), NodeDrawer.Style.Circle);
+                        // make sure we use the correct name for the sample:
+                        doc.getDataTable().setSamples(new String[]{Basic.getFileBaseName(meganFile.getName())}, doc.getDataTable().getSampleUIds(), doc.getDataTable().getSampleSizes(), doc.getDataTable().getBlastModes());
+                    }
                 } else
                     throw new IOException("Old MEGAN2 format, not supported by this version of MEGAN");
 
@@ -172,7 +172,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (!dir.isInternalDocument())
                     MeganProperties.addRecentFile(meganFile.getFileName());
                 doc.setDirty(false);
-                if (meganFile.hasDataConnector())
+                if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector())
                     MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
                     NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()), 5000);

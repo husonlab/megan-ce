@@ -36,6 +36,7 @@ import java.util.List;
  * Daniel Huson, 12.2012
  */
 public class SampleAttributeTable {
+
     public enum Type {String, Integer, Float, Date}
 
     public static final String SAMPLE_ATTRIBUTES = "SAMPLE_ATTRIBUTES";
@@ -748,6 +749,22 @@ public class SampleAttributeTable {
         for (String attribute : getAttributeSet()) {
             setAttributeTypeFromValues(attribute);
         }
+    }
+
+    /**
+     * gets all source files embedded in this file
+     *
+     * @return embedded source files
+     */
+    public ArrayList<String> getSourceFiles() {
+        final ArrayList<String> sourceFiles = new ArrayList<>();
+        for (String sample : sampleOrder) {
+            final Object obj = get(sample, SampleAttributeTable.HiddenAttribute.Source);
+            if (obj != null) {
+                sourceFiles.add(obj.toString());
+            }
+        }
+        return sourceFiles;
     }
 
     /**

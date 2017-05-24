@@ -18,8 +18,10 @@
  */
 package megan.core;
 
+import jloda.util.Basic;
 import jloda.util.Pair;
 import megan.daa.connector.DAAConnector;
+import megan.data.ConnectorCombiner;
 import megan.data.IConnector;
 import megan.remote.client.RemoteServiceManager;
 import megan.rma2.RMA2Connector;
@@ -30,6 +32,7 @@ import rusch.megan5client.connector.Megan5ServerConnector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +49,8 @@ public class MeganFile {
     private IConnector connector;
 
     public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE, MEGAN_SERVER_FILE}
+
+    private ArrayList<String> embeddedSourceFiles = new ArrayList<>();
 
     /**
      * set the megan file from an existing file
@@ -89,6 +94,8 @@ public class MeganFile {
                 || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
                 || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
+            embeddedSourceFiles.clear();
+            embeddedSourceFiles.addAll(determineEmbeddedSourceFiles(fileName));
         } else
             fileType = Type.UNKNOWN_FILE;
     }
@@ -141,6 +148,20 @@ public class MeganFile {
                 return;
             default:
                 throw new IOException("File has unknown type: " + fileName);
+        }
+    }
+
+    /**
+     * is file ok to read?
+     *
+     * @return true, if ok to read
+     */
+    public boolean isOkToRead() {
+        try {
+            checkFileOkToRead();
+            return true;
+        } catch (IOException ex) {
+            return false;
         }
     }
 
@@ -209,7 +230,8 @@ public class MeganFile {
      * @return true, if data connector present
      */
     public boolean hasDataConnector() {
-        return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE);
+        return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE
+                || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size()>0));
     }
 
     /**
@@ -261,6 +283,13 @@ public class MeganFile {
                         DAAConnector.openDAAFileOnlyIfMeganized = save;
                     }
                     break;
+                }
+                case MEGAN_SUMMARY_FILE: {
+                    if (embeddedSourceFiles.size() > 0) {
+                        connector = new ConnectorCombiner(embeddedSourceFiles);
+                        break;
+                    }
+                    // else fall through to default:
                 }
                 default:
                     throw new IOException("File type '" + fileType.toString() + "': not supported");
@@ -328,5 +357,30 @@ public class MeganFile {
         final Pair<String, Long> pair = new Pair<>(name, uId);
         Integer count = openFiles.get(pair);
         return count != null && count > 0;
+    }
+
+    /**
+     * gets the names of all source files embedded in a comparison file
+     *
+     * @param fileName
+     * @return embedded source files
+     */
+    public static ArrayList<String> determineEmbeddedSourceFiles(String fileName) {
+        final Document doc = new Document();
+        doc.getMeganFile().setFile(fileName, Type.MEGAN_SUMMARY_FILE);
+        try {
+            doc.loadMeganFile();
+        } catch (Exception e) {
+            Basic.caught(e);
+        }
+        return doc.getSampleAttributeTable().getSourceFiles();
+    }
+
+    public ArrayList<String> getEmbeddedSourceFiles() {
+        return embeddedSourceFiles;
+    }
+
+    public void setEmbeddedSourceFiles(ArrayList<String> embeddedSourceFiles) {
+        this.embeddedSourceFiles = embeddedSourceFiles;
     }
 }

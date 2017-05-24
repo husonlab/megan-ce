@@ -220,10 +220,10 @@ public class Document {
     public void loadMeganFile() throws IOException, CanceledException {
         clearReads();
         getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
-        if (getMeganFile().hasDataConnector()) {
-            reloadFromConnector(null);
-        } else if (getMeganFile().isMeganSummaryFile()) {
+        if (getMeganFile().isMeganSummaryFile()) {
             loadMeganSummaryFile();
+        } else if (getMeganFile().hasDataConnector()) {
+            reloadFromConnector(null);
         } else
             throw new IOException("File format not (or no longer) supported");
 
@@ -913,7 +913,7 @@ public class Document {
         if (blastMode == BlastMode.Unknown && meganFile.isDAAFile()) {
             dataTable.setBlastMode(0, DAAParser.getBlastMode(meganFile.getFileName()));
         }
-        if (blastMode == BlastMode.Unknown && meganFile.hasDataConnector() && !meganFile.isMeganServerFile()) {
+        if (blastMode == BlastMode.Unknown && !meganFile.isMeganSummaryFile() && meganFile.hasDataConnector() && !meganFile.isMeganServerFile()) {
             try (IReadBlockIterator it = meganFile.getConnector().getAllReadsIterator(1, 10, true, true)) {
                 while (it.hasNext()) {
                     IReadBlock readBlock = it.next();
@@ -1054,7 +1054,7 @@ public class Document {
      * close connector, if there is one
      */
     public void closeConnector() {
-        if (getMeganFile().hasDataConnector()) {
+        if (!getMeganFile().isMeganSummaryFile() && getMeganFile().hasDataConnector()) {
             try {
                 if (isDirty()) {
                     if (getMeganFile().isReadOnly())

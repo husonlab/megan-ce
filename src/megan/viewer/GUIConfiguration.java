@@ -101,11 +101,11 @@ public class GUIConfiguration {
     }
 
     public static String getJTreePopupConfiguration() {
-        return "Inspect...;Inspect Long Reads...;|Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
+        return "Inspect...;Inspect Long Reads...;|;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
     }
 
     public static String getJTablePopupConfiguration() {
-        return "Inspect...;Inspect Long Reads...;|Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
+        return "Inspect...;Inspect Long Reads...;|;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;|;Copy Node Label;|;Open Web Page...;Web Search...;";
     }
 
     /**

@@ -515,7 +515,7 @@ public class Document {
      * process the given reads
      */
     public void processReadHits() throws CanceledException {
-        if (getMeganFile().hasDataConnector()) {
+        if (!getMeganFile().isMeganSummaryFile() && getMeganFile().hasDataConnector()) {
             try {
                 final int readsFound = DataProcessor.apply(this);
                 // rescan size:

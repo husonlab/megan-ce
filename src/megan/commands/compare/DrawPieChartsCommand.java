@@ -40,9 +40,9 @@ public class DrawPieChartsCommand extends CommandBase implements ICheckBoxComman
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeDrawer=");
-        ViewerBase viewer = (ViewerBase) getViewer();
-        Document doc = getDoc();
-        String style = np.getWordMatchesIgnoringCase(Basic.toString(NodeDrawer.Style.values(), " "));
+        final ViewerBase viewer = (ViewerBase) getViewer();
+        final Document doc = getDoc();
+        final String style = np.getWordMatchesIgnoringCase(Basic.toString(NodeDrawer.Style.values(), " "));
         np.matchIgnoreCase(";");
         viewer.getNodeDrawer().setStyle(style, NodeDrawer.Style.Circle);
         viewer.getLegendPanel().setStyle(viewer.getNodeDrawer().getStyle());

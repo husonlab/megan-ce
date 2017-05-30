@@ -132,6 +132,11 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
         return result;
     }
 
+    @Override
+    public void remove() {
+
+    }
+
     /**
      * gets the next result
      *

@@ -182,6 +182,6 @@ public class ShowLRInspectorCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0;
+        return getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getDocument().getMeganFile().hasDataConnector();
     }
 }

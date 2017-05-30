@@ -50,7 +50,7 @@ public class MeganFile {
 
     public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE, MEGAN_SERVER_FILE}
 
-    private ArrayList<String> embeddedSourceFiles = new ArrayList<>();
+    private final ArrayList<String> embeddedSourceFiles = new ArrayList<>();
 
     /**
      * set the megan file from an existing file
@@ -66,9 +66,7 @@ public class MeganFile {
 
         if (fileName.contains("::")) {
             fileType = Type.MEGAN_SERVER_FILE;
-            return;
-        }
-        if (fileName.toLowerCase().endsWith(".rma1")) {
+        } else if (fileName.toLowerCase().endsWith(".rma1")) {
             fileType = Type.RMA1_FILE;
         } else if (fileName.toLowerCase().endsWith(".rma2")) {
             fileType = Type.RMA2_FILE;
@@ -94,8 +92,7 @@ public class MeganFile {
                 || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
                 || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
-            embeddedSourceFiles.clear();
-            embeddedSourceFiles.addAll(determineEmbeddedSourceFiles(fileName));
+            setEmbeddedSourceFiles(determineEmbeddedSourceFiles(fileName));
         } else
             fileType = Type.UNKNOWN_FILE;
     }
@@ -323,7 +320,7 @@ public class MeganFile {
      */
     public static boolean addUIdToSetOfOpenFiles(String name, long uId) {
         final Pair<String, Long> pair = new Pair<>(name, uId);
-        Integer count = openFiles.get(pair);
+        final Integer count = openFiles.get(pair);
         if (count == null) {
             openFiles.put(pair, 1);
             return true;
@@ -376,11 +373,31 @@ public class MeganFile {
         return doc.getSampleAttributeTable().getSourceFiles();
     }
 
+    /**
+     * get the embedded source files
+     *
+     * @return get
+     */
     public ArrayList<String> getEmbeddedSourceFiles() {
         return embeddedSourceFiles;
     }
 
+    /**
+     * set the embedded source files
+     * @param embeddedSourceFiles
+     */
     public void setEmbeddedSourceFiles(ArrayList<String> embeddedSourceFiles) {
-        this.embeddedSourceFiles = embeddedSourceFiles;
+        this.embeddedSourceFiles.clear();
+
+        if (embeddedSourceFiles != null) {
+            final ArrayList<String> filtered = new ArrayList<>();
+            for (String fileName : embeddedSourceFiles) {
+                final MeganFile file = new MeganFile();
+                file.setFileFromExistingFile(fileName, true);
+                if (!file.isMeganSummaryFile() && !file.isUnsupportedRMA1File() && !file.isMeganServerFile())
+                    filtered.add(fileName);
+            }
+            this.embeddedSourceFiles.addAll(filtered);
+        }
     }
 }

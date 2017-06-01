@@ -357,18 +357,20 @@ public class CompareWindow extends JDialog {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        MyListItem item = new MyListItem(fileName, true);
-                        int index = listModel.size();
-                        listModel.add(index, item);
-                        int[] selection = jList.getSelectedIndices();
-                        int[] newSelection = new int[selection.length + 1];
-                        System.arraycopy(selection, 0, newSelection, 0, selection.length);
-                        newSelection[selection.length] = index;
-                        jList.setSelectedIndices(newSelection);
-                        jList.repaint();
-                    } catch (Exception ex) {
-                        Basic.caught(ex);
+                    if (!isCanceled()) {
+                        try {
+                            MyListItem item = new MyListItem(fileName, true);
+                            int index = listModel.size();
+                            listModel.add(index, item);
+                            int[] selection = jList.getSelectedIndices();
+                            int[] newSelection = new int[selection.length + 1];
+                            System.arraycopy(selection, 0, newSelection, 0, selection.length);
+                            newSelection[selection.length] = index;
+                            jList.setSelectedIndices(newSelection);
+                            jList.repaint();
+                        } catch (Exception ex) {
+                            Basic.caught(ex);
+                        }
                     }
                 }
             });

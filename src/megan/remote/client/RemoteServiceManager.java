@@ -35,7 +35,7 @@ import java.util.*;
 public class RemoteServiceManager {
     public static final String LOCAL = "Local::";
 
-    public static final String DEFAULT_MEGAN_SERVER = "megan-db.org/Public";
+    public static final String DEFAULT_MEGAN_SERVER = "meganserver2.informatik.uni-tuebingen.de/Public";
 
     private static final Map<String, IRemoteService> url2node = new HashMap<>();
 

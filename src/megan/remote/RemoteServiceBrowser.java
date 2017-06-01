@@ -167,6 +167,12 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         };
         urlComboBox.addItemListener(itemListener);
         urlComboBox.addItemsFromString(ProgramProperties.get("RemoteServers", ""), "%%%");
+        for (int i = 0; i < urlComboBox.getItemCount(); i++) {
+            if (urlComboBox.getItemAt(i).contains("megan-db.org")) { // remove old default
+                urlComboBox.removeItemAt(i);
+                break;
+            }
+        }
         urlComboBox.setMaximumSize(new Dimension(2000, 25));
         urlComboBox.setPreferredSize(new Dimension(400, 25));
         urlComboBox.setToolTipText("MEGAN server URL");

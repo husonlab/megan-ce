@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 
 /**
- * command
+ * compare command
  * Daniel Huson, 11.2010
  */
 public class CompareSelectedFilesCommand extends CommandBase implements ICommand {

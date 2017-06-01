@@ -143,12 +143,13 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.getActiveViewers().addAll(doc.getDataTable().getClassification2Class2Counts().keySet());
             doc.setDirty(true);
             doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
-            MainViewer mainViewer = dir.getMainViewer();
+            final MainViewer mainViewer = dir.getMainViewer();
             mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
             mainViewer.setDoReInduce(true);
             mainViewer.setDoReset(true);
             mainViewer.setVisible(true);
             mainViewer.updateData();
+            doc.loadColorTableFromDataTable();
         } finally {
             for (Director aDir : toDelete) {
                 aDir.close();

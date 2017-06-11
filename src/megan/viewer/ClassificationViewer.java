@@ -247,7 +247,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 InputDialog inputDialog = InputDialog.getInstance();
                 if (inputDialog != null)
                     inputDialog.setViewer(dir, ClassificationViewer.this);
-                ClassificationViewer.this.requestFocusInWindow();
+                //ClassificationViewer.this.requestFocusInWindow();
             }
 
             public void windowDeactivated(WindowEvent event) {

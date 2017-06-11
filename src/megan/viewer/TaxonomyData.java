@@ -18,6 +18,7 @@
  */
 package megan.viewer;
 
+import jloda.graph.Node;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -25,6 +26,7 @@ import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -157,4 +159,62 @@ public class TaxonomyData {
         // although we had some hits, couldn't make an assignment
         return IdMapper.UNASSIGNED_ID;
     }
+
+    /**
+     * get the path string associated with a taxon
+     *
+     * @param taxId
+     * @return path string or null
+     */
+    public static String getPath(int taxId, boolean majorRanksOnly) {
+        Node v = taxonomyClassification.getFullTree().getANode(taxId);
+        if (v != null) {
+            ArrayList<String> list = new ArrayList<>(20);
+            while (true) {
+                Integer id = (Integer) v.getInfo();
+                if (id != null) {
+                    Integer rank = taxonomyClassification.getId2Rank().get(id);
+                    if (rank != null && rank != 0 && TaxonomicLevels.isMajorRank(rank)
+                            && TaxonomicLevels.getName(rank) != null) {
+                        String letters = TaxonomicLevels.getName(rank);
+
+                        if (letters.equals("Domain"))
+                            letters = "SK";
+                        else
+                            letters = letters.substring(0, 1);
+                        list.add("[" + letters + "] " + taxonomyClassification.getName2IdMap().get(id));
+                    } else if (!majorRanksOnly || v.getInDegree() == 0 || v.getFirstInEdge().getSource().getInDegree() == 0)
+                        list.add(taxonomyClassification.getName2IdMap().get(id));
+                }
+                if (v.getInDegree() > 0)
+                    v = v.getFirstInEdge().getSource();
+                else {
+                    break;
+                }
+            }
+            StringBuilder buf = new StringBuilder();
+            boolean first = true;
+            for (int i = list.size() - 1; i >= 0; i--) {
+                if (first)
+                    first = false;
+                else
+                    buf.append(" ");
+                buf.append(list.get(i)).append(";");
+            }
+            return buf.toString();
+        } else
+            return null;
+    }
+
+    /**
+     * gets the path, or id, if path not found
+     *
+     * @param taxId
+     * @return path or id
+     */
+    public static String getPathOrId(int taxId, boolean majorRanksOnly) {
+        String path = getPath(taxId, majorRanksOnly);
+        return path != null ? path : "" + taxId;
+    }
+
 }

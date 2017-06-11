@@ -36,6 +36,7 @@ import megan.classification.ClassificationManager;
 import megan.core.Director;
 import megan.core.Document;
 import megan.data.*;
+import megan.dialogs.input.InputDialog;
 import megan.main.MeganProperties;
 import megan.util.IReadsProvider;
 import megan.viewer.MainViewer;
@@ -193,6 +194,11 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         });
 
         frame.addWindowListener(new WindowAdapter() {
+            public void windowActivated(WindowEvent event) {
+                final InputDialog inputDialog = InputDialog.getInstance();
+                if (inputDialog != null)
+                    inputDialog.setViewer(dir, InspectorWindow.this);
+            }
             public void windowClosing(WindowEvent event) {
                 if (dir.getDocument().getProgressListener() != null)
                     dir.getDocument().getProgressListener().setUserCancelled(true);

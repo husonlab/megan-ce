@@ -55,7 +55,7 @@ public class CompareWindow extends JDialog {
     private boolean keep1;
 
 
-    private boolean canceled = true;
+    private boolean canceled = false;
 
     private final CommandManager commandManager;
 

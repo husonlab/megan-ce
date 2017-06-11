@@ -42,14 +42,19 @@ import megan.data.IClassificationBlock;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.dialogs.input.InputDialog;
 import megan.fx.NotificationsInSwing;
 import megan.fx.SwingPanel4FX;
 import megan.main.MeganProperties;
+import megan.samplesviewer.commands.PasteCommand;
 import megan.util.IReadsProvider;
 import megan.viewer.ClassificationViewer;
+import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -140,8 +145,19 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         searchManager.getFindDialogAsToolBar().setEnabled(false);
 
         commandManager.updateEnableState();
-        frame.setLocationRelativeTo(parent);
 
+        getFrame().addWindowListener(new WindowAdapter() {
+            public void windowActivated(WindowEvent event) {
+                MainViewer.setLastActiveFrame(frame);
+                commandManager.updateEnableState(PasteCommand.ALT_NAME);
+                final InputDialog inputDialog = InputDialog.getInstance();
+                if (inputDialog != null) {
+                    inputDialog.setViewer(dir, LRInspectorViewer.this);
+                }
+            }
+        });
+
+        frame.setLocationRelativeTo(parent);
         setSize(900, 800);
         frame.setVisible(true);
 

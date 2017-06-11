@@ -124,7 +124,7 @@ public class BLAST2RMA6 {
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
         final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         options.comment("Functional classification:");
-        String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
+        String[] cNames = options.getOption("-fun", "function", "Function assignments (Possible values: " + Basic.toString(availableFNames, " ") + ")", new String[0]);
         for (String cName : cNames) {
             if (!ClassificationManager.getAllSupportedClassifications().contains(cName))
                 throw new UsageException("--function: Unknown classification: " + cName);

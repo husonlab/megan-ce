@@ -36,6 +36,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.core.SelectionSet;
+import megan.dialogs.input.InputDialog;
 import megan.fx.CommandManagerFX;
 import megan.fx.SpreadSheetSearcher;
 import megan.main.MeganProperties;
@@ -97,7 +98,6 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         frame.setLocationRelativeTo(dir.getMainViewer().getFrame());
         final int[] geometry = ProgramProperties.get("SampleViewerGeometry", new int[]{100, 100, 800, 600});
         frame.setSize(geometry[2], geometry[3]);
-        frame.setVisible(true);
 
         statusbar = new StatusBar();
 
@@ -152,6 +152,10 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
             public void windowActivated(WindowEvent event) {
                 MainViewer.setLastActiveFrame(frame);
                 commandManager.updateEnableState(PasteCommand.ALT_NAME);
+                final InputDialog inputDialog = InputDialog.getInstance();
+                if (inputDialog != null) {
+                    inputDialog.setViewer(dir, SamplesViewer.this);
+                }
             }
 
             public void windowDeactivated(WindowEvent event) {

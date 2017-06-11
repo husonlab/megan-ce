@@ -19,12 +19,15 @@
 package megan.tools;
 
 import jloda.util.*;
+import megan.classification.Classification;
+import megan.classification.ClassificationManager;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.viewer.TaxonomyData;
 
 import java.io.*;
 import java.util.*;
@@ -79,9 +82,11 @@ public class RMA2Info {
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
         final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
 
-        final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s)", new ArrayList<String>()));
-        final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s)", new ArrayList<String>()));
+        final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<String>()));
+        final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<String>()));
         final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
+        final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers for taxonomy", false);
+        final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "When reporting class paths for taxonomy, only report major ranks", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
         options.done();
@@ -121,8 +126,13 @@ public class RMA2Info {
                 if (!availableClassificationNames.contains(classification))
                     throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
 
+                final boolean isTaxonomy = (classification.equals(Classification.Taxonomy));
+
                 final Name2IdMap name2IdMap;
-                if (reportNames) {
+                if (isTaxonomy && reportPaths) {
+                    ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
+                    name2IdMap = null;
+                } else if (reportNames) {
                     name2IdMap = new Name2IdMap();
                     name2IdMap.loadFromFile(classification.toLowerCase() + ".map");
                     classification2NameMap.put(classification, name2IdMap);
@@ -135,7 +145,9 @@ public class RMA2Info {
                 for (Integer classId : ids) {
                     if (classId > 0 || !ignoreUnassigned) {
                         final String className;
-                        if (name2IdMap == null || name2IdMap.get(classId) == null)
+                        if (isTaxonomy && reportPaths) {
+                            className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
+                        } else if (name2IdMap == null || name2IdMap.get(classId) == null)
                             className = "" + classId;
                         else
                             className = name2IdMap.get(classId);
@@ -150,8 +162,13 @@ public class RMA2Info {
                 if (!availableClassificationNames.contains(classification))
                     throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
 
+                final boolean isTaxonomy = (classification.equals(Classification.Taxonomy));
+
                 final Name2IdMap name2IdMap;
-                if (reportNames) {
+                if (isTaxonomy && reportPaths) {
+                    ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
+                    name2IdMap = null;
+                } else if (reportNames) {
                     if (classification2NameMap.containsKey(classification))
                         name2IdMap = classification2NameMap.get(classification);
                     else {
@@ -170,7 +187,9 @@ public class RMA2Info {
                         while (it.hasNext()) {
                             final IReadBlock readBlock = it.next();
                             final String className;
-                            if (name2IdMap == null || name2IdMap.get(classId) == null)
+                            if (isTaxonomy && reportPaths) {
+                                className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
+                            } else if (name2IdMap == null || name2IdMap.get(classId) == null)
                                 className = "" + classId;
                             else
                                 className = name2IdMap.get(classId);

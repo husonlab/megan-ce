@@ -46,6 +46,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
     private final MenuBar menuBar;
     private final RememberingComboBox inputCBox;
     private final AbstractAction applyAction;
+    private final JLabel commandContextLabel;
 
     private static InputDialog instance = null;
 
@@ -96,7 +97,11 @@ public class InputDialog extends JFrame implements IDirectableViewer {
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        commandContextLabel = new JLabel();
+        commandContextLabel.setForeground(Color.LIGHT_GRAY);
+        bottomPanel.add(commandContextLabel);
         bottomPanel.add(Box.createHorizontalGlue());
+
         applyAction = new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
                 inputCBox.getCurrentText(true);
@@ -139,6 +144,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
                 getFrame().requestFocusInWindow();
             }
         });
+        setViewer(dir, viewer);
         updateView(IDirector.ALL);
         setVisible(true);
     }
@@ -226,6 +232,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
         this.viewer = viewer;
         this.commandManager = viewer.getCommandManager();
         setTitle();
+        commandContextLabel.setText("Command context: " + viewer.getTitle().replaceAll("- MEGAN.*", ""));
         if (this.viewer.isLocked())
             lockUserInput();
     }

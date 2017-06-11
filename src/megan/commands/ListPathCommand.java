@@ -28,7 +28,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.fx.NotificationsInSwing;
-import megan.viewer.TaxonomicLevels;
+import megan.viewer.TaxonomyData;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
@@ -58,54 +58,53 @@ public class ListPathCommand extends CommandBase implements ICommand {
 
         final ViewerBase viewer = (ViewerBase) getViewer();
         final Classification classification = ClassificationManager.get(viewer.getClassName(), true);
+        final boolean isTaxonomy = (viewer.getClassName().equals(Classification.Taxonomy));
 
         final Set<Node> nodes = new HashSet<>();
         {
             final NodeSet selected = viewer.getSelectedNodes();
             nodes.addAll(selected);
             for (Node v : selected) {
-                for (Node w : viewer.getNodes((Integer) v.getInfo()))
-                    nodes.add(w); // for a given node, add all that have same id
+                // for a given node, add all that have same id
+                nodes.addAll(viewer.getNodes((Integer) v.getInfo()));
             }
         }
 
         final BufferedWriter writer = new BufferedWriter(fileName == null ? new OutputStreamWriter(System.out) : new FileWriter(fileName));
         int count = 0;
         try {
-
             for (Node v : nodes) {
-                final NodeData data = viewer.getNodeData(v);
-
-                LinkedList<String> list = new LinkedList<>();
-                while (true) {
-                    Integer id = (Integer) v.getInfo();
+                if (isTaxonomy) {
+                    final Integer id = (Integer) v.getInfo();
                     if (id != null) {
-                        Integer rank = classification.getId2Rank().get(id);
-                        if (rank != null && rank != 0 && TaxonomicLevels.isMajorRank(rank)
-                                && TaxonomicLevels.getName(rank) != null) { // todo: need to do this for each classification separately
-                            String letters = TaxonomicLevels.getName(rank);
-
-                            if (letters.equals("Domain"))
-                                letters = "SK";
-                            else
-                                letters = letters.substring(0, 1);
-                            list.add("[" + letters + "] " + classification.getName2IdMap().get(id));
-                        } else
+                        final String path = TaxonomyData.getPath(id, false);
+                        if (path != null)
+                            writer.write(path + " ");
+                        else
+                            writer.write(classification.getName2IdMap().get(id) + " ");
+                    }
+                } else {
+                    LinkedList<String> list = new LinkedList<>();
+                    while (true) {
+                        Integer id = (Integer) v.getInfo();
+                        if (id != null) {
                             list.add(classification.getName2IdMap().get(id));
+                        }
+                        if (v.getInDegree() > 0)
+                            v = v.getFirstInEdge().getSource();
+                        else {
+                            break;
+                        }
                     }
-                    if (v.getInDegree() > 0)
-                        v = v.getFirstInEdge().getSource();
-                    else {
-                        break;
+                    for (Iterator<String> it = list.descendingIterator(); it.hasNext(); ) {
+                        writer.write(it.next() + "; ");
                     }
-                }
-                for (Iterator<String> it = list.descendingIterator(); it.hasNext(); ) {
-                    writer.write(it.next() + "; ");
                 }
 
+                final NodeData data = viewer.getNodeData(v);
                 if (data != null) {
                     final float[] summarized;
-                    ;
+
                     if (data.getSummarized() != null)
                         summarized = data.getSummarized();
                     else

@@ -39,23 +39,7 @@ public class ShowInspectorCommand extends CommandBase implements ICommand {
         final Director dir = getDir();
         InspectorWindow inspectorWindow = (InspectorWindow) dir.getViewerByClass(InspectorWindow.class);
         if (inspectorWindow == null) {
-            final InspectorWindow inspectorWindow0 = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
-            // the follows addresses the problem that the inspector window sometimes is sent to back
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    System.err.println("NOW");
-                    inspectorWindow0.getFrame().toFront();
-                }
-            });
-            thread.setDaemon(true);
-            thread.start();
-            inspectorWindow = inspectorWindow0;
+            inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
         }
         inspectorWindow.getFrame().setVisible(true);
         inspectorWindow.getFrame().toFront();

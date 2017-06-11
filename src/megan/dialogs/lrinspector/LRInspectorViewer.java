@@ -174,10 +174,6 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                     @Override
                     public void run() {
                         try {
-                            System.err.println("swingPanel4FX: " + swingPanel4FX);
-                            System.err.println("swingPanel4FX.getController(): " + swingPanel4FX.getController());
-                            System.err.println("toolBar: " + toolBar);
-
                             swingPanel4FX.getController().setupControls(LRInspectorViewer.this, toolBar);
                             swingPanel4FX.getController().updateScene(LRInspectorViewer.this);
                             SwingUtilities.invokeLater(new Runnable() {

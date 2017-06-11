@@ -207,22 +207,22 @@ public class BlastXMLParser extends DefaultHandler {
                     matches.clear();
                     for (Hit hit : iterationHits) {
                         if (matches.size() < getMaxMatchesPerRead() || hit.hsp.bitScore > matches.last().getBitScore()) {
-                            Match match = new Match();
+                            final Match match = new Match();
                             final HSP hsp = hit.hsp;
                             match.setBitScore(hsp.bitScore);
                             match.setId(numberOfMatches++);
                             int queryStart = (int) (hsp.queryFrame >= 0 ? hsp.queryFrom : hsp.queryTo);
                             int queryEnd = (int) (hsp.queryFrame >= 0 ? hsp.queryTo : hsp.queryFrom);
 
-                            final String hitLabel;
-                            if (hit.id == null)
-                                hitLabel = hit.def;
-                            else if (hit.def == null)
-                                hitLabel = hit.id;
-                            else
-                                hitLabel = (hit.def + " " + hit.id).replaceAll("\\s+", " ");
+                            final StringBuilder buf = new StringBuilder();
+                            if (hit.accession != null)
+                                buf.append(hit.accession).append(" ");
+                            if (hit.id != null)
+                                buf.append(hit.id).append(" ");
+                            if (hit.def != null)
+                                buf.append(hit.def);
 
-                            match.setSamLine(makeSAM(iteration.queryDef, hitLabel, hit.len, hsp.bitScore, (float) hsp.eValue,
+                            match.setSamLine(makeSAM(iteration.queryDef, buf.toString().replaceAll("\\s+", " "), hit.len, hsp.bitScore, (float) hsp.eValue,
                                     (int) hsp.score, hsp.identity, hsp.queryFrame, queryStart, queryEnd, (int) hsp.hitFrom, (int) hsp.hitTo, hsp.qSeq, hsp.hSeq));
                             matches.add(match);
                             if (matches.size() > maxMatchesPerRead)

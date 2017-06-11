@@ -145,6 +145,7 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
             final MainViewer mainViewer = dir.getMainViewer();
             mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
+            mainViewer.collapseToDefault();
             mainViewer.setDoReInduce(true);
             mainViewer.setDoReset(true);
             mainViewer.setVisible(true);

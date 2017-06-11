@@ -28,6 +28,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 import megan.core.Document;
+import megan.core.MeganFile;
 import megan.dialogs.importcsv.ImportCSVWindow;
 import megan.dialogs.parameters.ParametersDialogSmall;
 import megan.fx.NotificationsInSwing;
@@ -120,15 +121,18 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
 
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
-                viewer.getCollapsedIds().clear();
+                viewer.collapseToDefault();
                 doc.getMeganFile().setFileName(Basic.replaceFileSuffix(fileName, ".megan"));
+                doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
                 doc.getActiveViewers().clear();
                 doc.getActiveViewers().addAll(cNames);
                 doc.processReadHits();
-                doc.setDirty(true);
+                if (doc.getNumberOfReads() > 0)
+                    doc.setDirty(true);
                 viewer.getNodeDrawer().setStyle(doc.getNumberOfSamples() > 1 ? NodeDrawer.Style.PieChart : NodeDrawer.Style.Circle);
                 viewer.setDoReInduce(true);
                 viewer.setDoReset(true);
+                dir.executeImmediately("update;", viewer.getCommandManager());
                 NotificationsInSwing.showInformation(String.format("Imported %,d reads from file '%s'", +doc.getNumberOfReads(), fileName));
             } else {
                 Director newDir = Director.newProject();
@@ -138,7 +142,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 newDir.execute("import csv=reads separator=" + (tabSeparator ? "tab" : "comma") + " file='"
                                 + fileName + "' fNames=" + Basic.toString(cNames, " ")
                                 + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent
-                                + " minSupport=" + minSupport + ";update;",
+                                + " minSupport=" + minSupport + ";",
                         newDir.getMainViewer().getCommandManager());
             }
         } else // csv-summary
@@ -156,13 +160,16 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 CSVSummaryParser.apply(fileName, doc, cNames.toArray(new String[cNames.size()]), tabSeparator, multiplier);
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
-                viewer.getCollapsedIds().clear();
+                viewer.collapseToDefault();
                 doc.getMeganFile().setFileName(Basic.getFileBaseName(fileName) + ".megan");
-                doc.setDirty(true);
-                if (doc.getNumberOfSamples() > 0)
+                doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
+                if (doc.getNumberOfReads() > 0)
+                    doc.setDirty(true);
+                if (doc.getNumberOfSamples() > 1)
                     viewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.PieChart);
                 viewer.setDoReInduce(true);
                 viewer.setDoReset(true);
+                dir.executeImmediately("update;", viewer.getCommandManager());
                 NotificationsInSwing.showInformation(String.format("Imported %,d reads from file '%s'", +doc.getNumberOfReads(), fileName));
             } else {
                 Director newDir = Director.newProject();
@@ -171,7 +178,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 newDir.getMainViewer().setDoReset(true);
                 newDir.executeImmediately("import csv=summary separator=" + (tabSeparator ? "tab" : "comma") + " file='"
                         + fileName + "' fNames=" + Basic.toString(cNames, " ")
-                        + " multiplier=" + multiplier + ";update;", newDir.getMainViewer().getCommandManager());
+                        + (multiplier != 1 ? " multiplier=" + multiplier : "") + ";", newDir.getMainViewer().getCommandManager());
             }
         }
     }

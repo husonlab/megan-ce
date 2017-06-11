@@ -178,6 +178,12 @@ public class CSVSummaryParser {
                                 float[] counts = getOrCreate(class2counts[i], id, names.length);
                                 addToArray(counts, add);
                                 addToArray(total[i], add);
+
+                                /*
+                                if(id>0) {
+                                    System.err.println(tokens[0]+" -> "+id);
+                                }
+                                */
                             } else {
                                 if (warnings[i] < 50) {
                                     System.err.println("Warning: " + cNames[i] + " Unclassified item: " + tokens[0]);

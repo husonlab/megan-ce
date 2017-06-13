@@ -23,9 +23,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
 import jloda.gui.commands.ICommand;
-import jloda.util.Basic;
-import jloda.util.ResourceManager;
-import jloda.util.Single;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -65,6 +63,11 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
         final Writer w = new BufferedWriter(fileName == null ? new OutputStreamWriter(System.out) : new FileWriter(fileName));
         final Single<Integer> countLines = new Single<>();
 
+        final ProgressListener progress = doc.getProgressListener();
+        progress.setTasks("List", "Summary");
+        progress.setMaximum(viewer.getTree().getNumberOfNodes());
+        progress.setProgress(0);
+
         try {
             w.write("########## Begin of summary for file: " + doc.getMeganFile().getFileName() + "\n");
             w.write("Samples: " + doc.getNumberOfSamples() + "\n");
@@ -75,7 +78,7 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
                 w.write("Summarized at nodes:" + "\n");
                 countLines.set(countLines.get() + 1);
 
-                listSummaryRec(viewer, classification, selectedNodes, viewer.getTree().getRoot(), 0, w, countLines);
+                listSummaryRec(viewer, classification, selectedNodes, viewer.getTree().getRoot(), 0, w, countLines, progress);
             }
             w.write("########## End of summary for file: " + doc.getMeganFile().getFileName() + "\n");
         } finally {
@@ -87,7 +90,6 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
 
         if (fileName != null && countLines.get() > 0)
             NotificationsInSwing.showInformation(getViewer().getFrame(), "Lines written to file: " + countLines.get());
-
     }
 
 
@@ -98,13 +100,15 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
      * @param v
      * @param indent
      */
-    private void listSummaryRec(ViewerBase viewer, Classification classification, NodeSet selectedNodes, Node v, int indent, Writer outs, final Single<Integer> countLines) throws IOException {
-        int id = (Integer) v.getInfo();
-        final String name = classification.getName2IdMap().get(id);
+    private void listSummaryRec(ViewerBase viewer, Classification classification, NodeSet selectedNodes, Node v, int indent, Writer outs, final Single<Integer> countLines, ProgressListener progress) throws IOException, CanceledException {
+        progress.incrementProgress();
 
-        NodeData data = (viewer.getNodeData(v));
+        final int id = (Integer) v.getInfo();
 
         if ((selectedNodes == null || selectedNodes.contains(v))) {
+            final NodeData data = (viewer.getNodeData(v));
+            final String name = classification.getName2IdMap().get(id);
+
             if (data.getCountSummarized() > 0) {
                 for (int i = 0; i < indent; i++)
                     outs.write(" ");
@@ -116,7 +120,7 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
             return;
         }
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-            listSummaryRec(viewer, classification, selectedNodes, f.getOpposite(v), indent + 2, outs, countLines);
+            listSummaryRec(viewer, classification, selectedNodes, f.getOpposite(v), indent + 2, outs, countLines, progress);
         }
     }
 

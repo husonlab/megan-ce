@@ -24,7 +24,7 @@ package megan.algorithms;
  * Daniel Huson, 3.2016
  */
 public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgorithmCreator {
-    private final AssignmentUsingMultiGeneBestHit algorithm;
+    private final String cName;
 
     /**
      * constructor
@@ -32,7 +32,7 @@ public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgori
      * @param cName
      */
     public AssignmentUsingMultiGeneBestHitCreator(String cName, String fileName) {
-        algorithm = new AssignmentUsingMultiGeneBestHit(cName);
+        this.cName = cName;
         System.err.println("Using Multi-Gene Best-Hit algorithm for binning: " + cName);
     }
 
@@ -43,6 +43,6 @@ public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgori
      */
     @Override
     public IMultiAssignmentAlgorithm createAssignmentAlgorithm() {
-        return algorithm;
+        return new AssignmentUsingMultiGeneBestHit(cName);
     }
 }

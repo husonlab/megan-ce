@@ -99,6 +99,9 @@ public class CSVReadsHitsParser {
 
             boolean warnedNoScoreGiven = false;
 
+
+            String prevName = "";
+
             while (it.hasNext()) {
                 String aLine = it.next();
                 numberOfLines++;
@@ -131,12 +134,14 @@ public class CSVReadsHitsParser {
                                 readName2IdAndScore[i].put(readName, taxonIdAndScore);
                             }
                             taxonIdAndScore.add(new Pair<>(id, score));
-                            count[i]++;
+                            if (!readName.equals(prevName))
+                                count[i]++;
                             found = true;
                         }
                     }
                     if (!found)
                         System.err.println("Unrecognized name: " + tokens[1]);
+                    prevName = readName;
                 } catch (Exception ex) {
                     System.err.println("Error: " + ex + ", skipping");
                     numberOfErrors++;
@@ -192,23 +197,25 @@ public class CSVReadsHitsParser {
                     System.err.println("MinSupport set to: " + doc.getMinSupport());
                 }
 
-                final MinSupportFilter minSupportFilter = new MinSupportFilter(Classification.Taxonomy, class2count, doc.getMinSupport(), progress);
-                try {
-                    Map<Integer, Integer> changes = minSupportFilter.apply();
-                    for (Integer oldTaxId : changes.keySet()) {
-                        Integer newTaxId = changes.get(oldTaxId);
-                        float oldCount = class2counts.get(oldTaxId)[0];
+                if (doc.getMinSupport() > 1) {
+                    final MinSupportFilter minSupportFilter = new MinSupportFilter(Classification.Taxonomy, class2count, doc.getMinSupport(), progress);
+                    try {
+                        Map<Integer, Integer> changes = minSupportFilter.apply();
+                        for (Integer oldTaxId : changes.keySet()) {
+                            Integer newTaxId = changes.get(oldTaxId);
+                            float oldCount = class2counts.get(oldTaxId)[0];
 
-                        float[] newCounts = class2counts.get(newTaxId);
-                        if (newCounts == null) {
-                            newCounts = new float[]{oldCount};
-                            class2counts.put(newTaxId, newCounts);
-                        } else {
-                            newCounts[0] += oldCount;
+                            float[] newCounts = class2counts.get(newTaxId);
+                            if (newCounts == null) {
+                                newCounts = new float[]{oldCount};
+                                class2counts.put(newTaxId, newCounts);
+                            } else {
+                                newCounts[0] += oldCount;
+                            }
+                            class2counts.remove(oldTaxId);
                         }
-                        class2counts.remove(oldTaxId);
+                    } catch (CanceledException e) {
                     }
-                } catch (CanceledException e) {
                 }
             }
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
@@ -302,7 +309,7 @@ public class CSVReadsHitsParser {
 
         Float bestScore = null;
 
-        float threshold = doc.getMinScore();
+        double threshold = doc.getMinScore();
 
         for (Pair<Integer, Float> pair : pairs) {
             Integer taxonId = pair.getFirst();
@@ -312,7 +319,7 @@ public class CSVReadsHitsParser {
                     bestScore = score;
                     taxonIds.add(taxonId);
                     if (doc.getTopPercent() != 0) {
-                        threshold = Math.max((100 - doc.getTopPercent()) * bestScore, threshold);
+                        threshold = Math.max((1.0 - doc.getTopPercent() / 100.0) * bestScore, threshold);
                     }
                 }
                 taxonIds.add(taxonId);

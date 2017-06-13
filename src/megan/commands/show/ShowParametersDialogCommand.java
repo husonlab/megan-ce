@@ -141,7 +141,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
 
     public boolean isApplicable() {
         Document doc = getDoc();
-        return !doc.getMeganFile().isReadOnly() && doc.getMeganFile().hasDataConnector();
+        return !doc.getMeganFile().isReadOnly() && doc.getMeganFile().hasDataConnector() && !doc.getMeganFile().isMeganSummaryFile();
     }
 
     public String getName() {

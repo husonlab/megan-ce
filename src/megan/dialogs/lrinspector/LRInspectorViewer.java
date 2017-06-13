@@ -592,7 +592,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
             if (tableItems.size() == 0)
                 tableItems = getController().getTableView().getItems();
             for (TableItem tableItem : tableItems) {
-                if (tableItem.getPane().hasHiddenAlignments())
+                if (tableItem.getPane() != null && tableItem.getPane().hasHiddenAlignments())
                     return true;
             }
         }

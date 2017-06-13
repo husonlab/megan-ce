@@ -362,7 +362,6 @@ public class DataProcessorParallel {
 
                 final boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
 
-
                 if (readBlock.getNumberOfAvailableMatchBlocks() > 0)
                     counts.numberOfReadsWithHits.addAndGet(readBlock.getReadWeight());
 
@@ -452,14 +451,13 @@ public class DataProcessorParallel {
         }
     }
 
-
     /**
      * check that enough of read is covered by alignments
      *
      * @param minCoveredPercent percent of read that must be covered
      * @param readBlock
      * @param activeMatches
-     * @param intervals         this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @param intervals this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */
     private boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {

@@ -58,7 +58,6 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
 
     private final String cName = Classification.Taxonomy;
 
-
     private final Taxon2SpeciesMapping taxon2SpeciesMapping;
 
     /**
@@ -171,7 +170,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
             });
         }
 
-        /**
+        /*
          * feed the queue:
          */
         try (final IReadBlockIterator it = connector.getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), false, true)) {

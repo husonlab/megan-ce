@@ -24,7 +24,8 @@ package megan.algorithms;
  * Daniel Huson, 3.2016
  */
 public class AssignmentUsingBestHitCreator implements IAssignmentAlgorithmCreator {
-    private final AssignmentUsingBestHit assignmentUsingBestHit;
+    private final String cName;
+    private final String fileName;
 
     /**
      * constructor
@@ -32,7 +33,8 @@ public class AssignmentUsingBestHitCreator implements IAssignmentAlgorithmCreato
      * @param cName
      */
     public AssignmentUsingBestHitCreator(String cName, String fileName) {
-        assignmentUsingBestHit = new AssignmentUsingBestHit(cName, fileName);
+        this.cName = cName;
+        this.fileName = fileName;
         System.err.println("Using Best-Hit algorithm for binning: " + cName);
     }
 
@@ -43,6 +45,6 @@ public class AssignmentUsingBestHitCreator implements IAssignmentAlgorithmCreato
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return assignmentUsingBestHit;
+        return new AssignmentUsingBestHit(cName, fileName);
     }
 }

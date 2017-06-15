@@ -65,7 +65,7 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
         try {
             taxon2SpeciesMapping = (ProgramProperties.get("CollapseSpeciesLongReadLCA", false) ? Taxon2SpeciesMapping.getInstance(doc.getProgressListener()) : null);
             if (taxon2SpeciesMapping != null)
-                System.err.println("Using collapseSpecies option: At most one alignment per species used");
+                System.err.println("Using CollapseSpeciesLongReadLCA option: At most one competing alignment per species used");
         } catch (CanceledException e) {
             Basic.caught(e);
         }

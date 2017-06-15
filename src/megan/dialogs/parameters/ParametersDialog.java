@@ -137,19 +137,17 @@ public class ParametersDialog extends JDialog {
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 20));
         bottomPanel.add(Box.createHorizontalGlue());
-        JButton cancelButton = (JButton) commandManager.getButton(CancelCommand.NAME);
+        final JButton cancelButton = (JButton) commandManager.getButton(CancelCommand.NAME);
         bottomPanel.add(cancelButton);
-        getRootPane().setDefaultButton(cancelButton);
-        bottomPanel.add(commandManager.getButton(ApplyCommand.NAME));
+        final JButton applyButton = (JButton) commandManager.getButton(ApplyCommand.NAME);
+        getRootPane().setDefaultButton(applyButton);
+        bottomPanel.add(applyButton);
 
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 
         // do this again to trigger code:
         setLcaAlgorithm(doc.getLcaAlgorithm());
         setReadAssignmentMode(doc.getReadAssignmentMode());
-
-
-        // actions.getApplyAction().setEnabled(false);
 
         if (doc.getMinComplexity() < 0)
             minComplexityField.setEnabled(false);

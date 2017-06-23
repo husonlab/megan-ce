@@ -19,6 +19,7 @@
 
 package megan.algorithms;
 
+import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.core.Document;
 
@@ -47,7 +48,16 @@ public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgori
      * @return assignment algorithm
      */
     @Override
-    public AssignmentUsingCoverageBasedLCA createAssignmentAlgorithm() {
-        return new AssignmentUsingCoverageBasedLCA(document, topPercent);
+    public IAssignmentAlgorithm createAssignmentAlgorithm() {
+        if (ProgramProperties.get("use-segment-lca", false)) {
+            System.err.println("Using SEGMENT algorithm");
+            return new AssignmentUsingSegmentLCA(document);
+        } else if (ProgramProperties.get("use-new-coverage-lca", false)) {
+            System.err.println("Using NEW algorithm");
+            return new AssignmentUsingCoverageBasedLCANext(document);
+        } else {
+            System.err.println("Using OLD algorithm");
+            return new AssignmentUsingCoverageBasedLCA(document, topPercent);
+        }
     }
 }

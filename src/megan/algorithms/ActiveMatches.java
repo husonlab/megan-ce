@@ -20,6 +20,7 @@ package megan.algorithms;
 
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
+import megan.viewer.TaxonomyData;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -45,7 +46,7 @@ public class ActiveMatches {
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            if (!matchBlock.isIgnore() && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+            if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
                     (minPercentIdentity == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
                 if (matchBlock.getId(classificationName) > 0)
                     activeMatchesForClassification.set(i);

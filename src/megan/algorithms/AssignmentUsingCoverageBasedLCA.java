@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -40,7 +40,6 @@ import java.util.*;
  * Created by huson on 4/12/17.
  */
 public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
-    private final Comparator<StartStopEvent> comparator;
     private final Map<Integer, Integer> taxon2weight = new HashMap<>();
     private final ClassificationFullTree fullTree;
 
@@ -50,6 +49,7 @@ public class AssignmentUsingCoverageBasedLCA implements IAssignmentAlgorithm {
     private final float topPercentFactor;
 
     private StartStopEvent[] events = new StartStopEvent[10000]; // not final because may get resized...
+    private final Comparator<StartStopEvent> comparator;
 
     private Taxon2SpeciesMapping taxon2SpeciesMapping;
 

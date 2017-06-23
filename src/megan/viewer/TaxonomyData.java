@@ -87,7 +87,7 @@ public class TaxonomyData {
      * @return true, if disabled
      */
     public static boolean isTaxonDisabled(Integer taxonId) {
-        return taxonId == null || taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId);
+        return taxonId == null || (taxonId > 0 && taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId));
     }
 
     /**

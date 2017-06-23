@@ -475,7 +475,7 @@ public class DataProcessorParallel {
             if (intervals != null) {
                 Interval<Object> interval = new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), null);
                 intervals.add(interval);
-                if (intervals.computeCovered() >= lengthToCover)
+                if (intervals.getCovered() >= lengthToCover)
                     return true;
             }
         }

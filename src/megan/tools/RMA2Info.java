@@ -18,9 +18,11 @@
  */
 package megan.tools;
 
+import jloda.graph.Node;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
+import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
 import megan.data.IClassificationBlock;
@@ -89,7 +91,10 @@ public class RMA2Info {
         final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers for taxonomy", false);
         final boolean prefixRank = options.getOption("-r", "ranks", "When reporting taxonomy, report taxonomic rank using single letter (K for Kingdom, P for Phylum etc)", false);
         final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+        final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
+
+        final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments", "");
 
         options.done();
 
@@ -117,7 +122,13 @@ public class RMA2Info {
                     outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                 }
             }
-            reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, outs);
+            reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
+        }
+        if (extractSummaryFile.length() > 0) {
+            try (Writer w = new FileWriter(extractSummaryFile)) {
+                doc.getDataTable().write(w);
+                doc.getSampleAttributeTable().write(w, false, true);
+            }
         }
     }
 
@@ -137,11 +148,13 @@ public class RMA2Info {
      * @param outs
      * @throws IOException
      */
-    public static void reportFileContent(Document doc, boolean listGeneralInfo, boolean listMoreStuff, boolean reportPaths, boolean reportNames, boolean prefixRank, boolean ignoreUnassigned, boolean majorRanksOnly, Collection<String> listClass2Count, Collection<String> listRead2Class, Writer outs) throws IOException {
+    public static void reportFileContent(Document doc, boolean listGeneralInfo, boolean listMoreStuff, boolean reportPaths, boolean reportNames, boolean prefixRank, boolean ignoreUnassigned, boolean majorRanksOnly, Collection<String> listClass2Count, Collection<String> listRead2Class, boolean bacteriaOnly, Writer outs) throws IOException {
         final IConnector connector = doc.getConnector();
 
         final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
         final Set<String> availableClassificationNames = new HashSet<>(Arrays.asList(connector.getAllClassificationNames()));
+
+        ClassificationFullTree taxonomyTree = null;
 
         for (String classification : listClass2Count) {
             if (listGeneralInfo || listMoreStuff)
@@ -166,44 +179,52 @@ public class RMA2Info {
             if (isTaxonomy && prefixRank) {
                 ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
             }
+            if (isTaxonomy && bacteriaOnly) {
+                taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
+            }
 
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
             if (isTaxonomy) {
                 final Map<Integer, Float> taxId2count = new HashMap<>();
                 if (!majorRanksOnly) {
                     for (int taxId : classificationBlock.getKeySet()) {
-                        taxId2count.put(taxId, classificationBlock.getWeightedSum(taxId));
+                        if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2))
+                            taxId2count.put(taxId, classificationBlock.getWeightedSum(taxId));
                     }
                 } else { // major ranks only
                     for (int taxId : classificationBlock.getKeySet()) {
-                        int classId = TaxonomyData.getLowestAncestorWithMajorRank(taxId);
-                        Float count = taxId2count.get(classId);
-                        if (count == null)
-                            count = classificationBlock.getWeightedSum(taxId);
-                        else
-                            count += classificationBlock.getWeightedSum(taxId);
-                        taxId2count.put(classId, count);
+                        if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2)) {
+                            int classId = TaxonomyData.getLowestAncestorWithMajorRank(taxId);
+                            Float count = taxId2count.get(classId);
+                            if (count == null)
+                                count = classificationBlock.getWeightedSum(taxId);
+                            else
+                                count += classificationBlock.getWeightedSum(taxId);
+                            taxId2count.put(classId, count);
+                        }
                     }
                 }
-                for (Integer classId : taxId2count.keySet()) {
-                    if (classId > 0 || !ignoreUnassigned) {
-                        final String className;
-                        if (reportPaths) {
-                            className = TaxonomyData.getPathOrId(classId, false);
-                        } else if (name2IdMap == null || name2IdMap.get(classId) == null)
-                            className = "" + classId;
-                        else
-                            className = name2IdMap.get(classId);
-                        if (prefixRank) {
-                            int rank = TaxonomyData.getTaxonomicRank(classId);
-                            String rankLabel = null;
-                            if (TaxonomicLevels.isMajorRank(rank))
-                                rankLabel = TaxonomicLevels.getName(rank);
-                            if (rankLabel == null || rankLabel.length() == 0)
-                                rankLabel = "-";
-                            outs.write(rankLabel.charAt(0) + "\t");
+                for (Integer taxId : taxId2count.keySet()) {
+                    if (taxId > 0 || !ignoreUnassigned) {
+                        if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2)) {
+                            final String className;
+                            if (reportPaths) {
+                                className = TaxonomyData.getPathOrId(taxId, false);
+                            } else if (name2IdMap == null || name2IdMap.get(taxId) == null)
+                                className = "" + taxId;
+                            else
+                                className = name2IdMap.get(taxId);
+                            if (prefixRank) {
+                                int rank = TaxonomyData.getTaxonomicRank(taxId);
+                                String rankLabel = null;
+                                if (TaxonomicLevels.isMajorRank(rank))
+                                    rankLabel = TaxonomicLevels.getName(rank);
+                                if (rankLabel == null || rankLabel.length() == 0)
+                                    rankLabel = "-";
+                                outs.write(rankLabel.charAt(0) + "\t");
+                            }
+                            outs.write(className + "\t" + taxId2count.get(taxId) + "\n");
                         }
-                        outs.write(className + "\t" + taxId2count.get(classId) + "\n");
                     }
                 }
 
@@ -247,14 +268,21 @@ public class RMA2Info {
             if (isTaxonomy && prefixRank) {
                 ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
             }
+            if (isTaxonomy && bacteriaOnly) {
+                taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
+            }
+
             final Set<Integer> ids = new TreeSet<>();
             ids.addAll(connector.getClassificationBlock(classification).getKeySet());
             for (Integer classId : ids) {
+                if (isTaxonomy && bacteriaOnly && !isDescendant(taxonomyTree, classId, 2))
+                    continue;
                 if (classId > 0 || !ignoreUnassigned) {
                     final IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10, true, false);
                     while (it.hasNext()) {
                         final IReadBlock readBlock = it.next();
                         final String className;
+
                         if (isTaxonomy && majorRanksOnly)
                             classId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
 
@@ -275,6 +303,27 @@ public class RMA2Info {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * determine whether given taxon is ancestor of one of the named taxa
+     *
+     * @param taxonomy
+     * @param taxId
+     * @param ancestorIds
+     * @return true, if is ancestor
+     */
+    private static boolean isDescendant(ClassificationFullTree taxonomy, int taxId, int... ancestorIds) {
+        Node v = taxonomy.getANode(taxId);
+        while (true) {
+            for (int id : ancestorIds)
+                if ((Integer) v.getInfo() == id)
+                    return true;
+                else if (v.getInDegree() > 0)
+                    v = v.getFirstInEdge().getSource();
+                else
+                    return false;
         }
     }
 }

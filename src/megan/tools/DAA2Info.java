@@ -86,8 +86,10 @@ public class DAA2Info {
         final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers for taxonomy", false);
         final boolean prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
         final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+        final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
+        final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments", "");
         options.done();
 
         final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, false);
@@ -116,8 +118,14 @@ public class DAA2Info {
                         outs.write("# Meganization summary:\n");
                         outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                     }
-                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, outs);
+                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
                 }
+            }
+        }
+        if (extractSummaryFile.length() > 0) {
+            try (Writer w = new FileWriter(extractSummaryFile)) {
+                doc.getDataTable().write(w);
+                doc.getSampleAttributeTable().write(w, false, true);
             }
         }
     }

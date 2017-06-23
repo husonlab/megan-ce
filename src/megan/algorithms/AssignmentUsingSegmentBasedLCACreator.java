@@ -19,7 +19,6 @@
 
 package megan.algorithms;
 
-import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.core.Document;
 
@@ -27,7 +26,7 @@ import megan.core.Document;
  * create a coverage-base LCA assignment algorithm
  * Daniel Huson, 4.2017
  */
-public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgorithmCreator {
+public class AssignmentUsingSegmentBasedLCACreator implements IAssignmentAlgorithmCreator {
     private final Document document;
     private final float topPercent;
 
@@ -36,10 +35,10 @@ public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgori
      *
      * @param document
      */
-    public AssignmentUsingCoverageBasedLCACreator(Document document, float topPercent) {
+    public AssignmentUsingSegmentBasedLCACreator(Document document, float topPercent) {
         this.document = document;
         this.topPercent = topPercent;
-        System.err.println("Using coverage-based LCA algorithm for binning: " + Classification.Taxonomy);
+        System.err.println("Using segment-based LCA algorithm for binning: " + Classification.Taxonomy);
     }
 
     /**
@@ -49,15 +48,6 @@ public class AssignmentUsingCoverageBasedLCACreator implements IAssignmentAlgori
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        if (ProgramProperties.get("use-segment-lca", false)) {
-            System.err.println("Using SEGMENT algorithm");
             return new AssignmentUsingSegmentLCA(document);
-        } else if (ProgramProperties.get("use-new-coverage-lca", false)) {
-            System.err.println("Using NEW algorithm");
-            return new AssignmentUsingCoverageBasedLCANext(document);
-        } else {
-            System.err.println("Using OLD algorithm");
-            return new AssignmentUsingCoverageBasedLCA(document, topPercent);
-        }
     }
 }

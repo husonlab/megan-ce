@@ -115,7 +115,7 @@ public class DataProcessorParallel {
                             assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc, doc.getTopPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingSegmentBasedLCACreator(doc, doc.getTopPercent());
                             break;
                     }
                 } else if (useLCAForClassification[c])

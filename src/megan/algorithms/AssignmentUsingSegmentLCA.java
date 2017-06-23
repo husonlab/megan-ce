@@ -46,6 +46,10 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
     private final Map<Node, Integer> node2covered = new HashMap<>();
     private final Set<Node> allNodes = new HashSet<>();
 
+    private final Set<Integer> taxa = new HashSet<>();
+    private final ArrayList<String> addresses = new ArrayList<>(taxa.size());
+    private final BitSet currentMatches = new BitSet(); // set of matches currently active
+
     private StartStopEvent[] events = new StartStopEvent[10000]; // not final because may get resized...
     private final Comparator<StartStopEvent> comparator;
 
@@ -124,9 +128,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
 
         final boolean debug = false;
 
-        final BitSet currentMatches = new BitSet(); // set of matches currently active
-
-        final Set<Integer> taxa = new HashSet<>();
+        currentMatches.clear();
 
         StartStopEvent previousEvent = null;
         for (int c = 0; c < numberOfEvents; c++) {
@@ -161,7 +163,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
                         }
                         final int lca;
                         {
-                            final ArrayList<String> addresses = new ArrayList<>(taxa.size());
+                            addresses.clear();
                             for (Integer taxId : taxa) {
                                 addresses.add(fullTree.getAddress(taxId));
                             }
@@ -198,7 +200,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
         if (taxa.contains(1))
             root = fullTree.getRoot();
         else {
-            final ArrayList<String> addresses = new ArrayList<>(taxa.size());
+            addresses.clear();
             for (Integer taxId : taxa) {
                 addresses.add(fullTree.getAddress(taxId));
             }

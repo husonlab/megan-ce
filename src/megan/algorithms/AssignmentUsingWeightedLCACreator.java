@@ -23,9 +23,6 @@ import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
 import megan.classification.Classification;
-import megan.classification.ClassificationManager;
-import megan.classification.data.ClassificationFullTree;
-import megan.classification.data.Name2IdMap;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.connector.MatchBlockDAA;
@@ -51,8 +48,6 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
     private Map<String, Integer> ref2weight; // map reference sequence to number of reads associated with it
     private final Object syncRef = new Object();
 
-    private final Name2IdMap name2IdMap;
-
     private final boolean useIdentityFilter;
     private final float percentToCover;
 
@@ -67,9 +62,6 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         this.useIdentityFilter = usingIdentityFilter;
 
         this.taxon2SpeciesMapping = Taxon2SpeciesMapping.getInstance(doc.getProgressListener());
-
-        ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
-        name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 
@@ -104,7 +96,6 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         final ProgressListener progress = doc.getProgressListener();
         progress.setSubtask("Computing weights");
 
-        // we don't use multi-threaded code here because most effort is reading the data, not analysing it.
         for (int i = 0; i < numberOfThreads; i++) {
             final int threadNumber = i;
             executorService.submit(new Runnable() {
@@ -122,41 +113,46 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                                 break;
 
                             ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cName, activeMatches);
+                            totalMatches[threadNumber] += activeMatches.cardinality();
 
-                            int chosenId = 0; // species id, if there is one, otherwise taxon id
+                            int speciesId = 0; // assigns weights at the species level
                             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                 int id = matchBlock.getTaxonId();
                                 if (id > 0) {
-                                    id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a  problem here: what if the match is to a higher rank and that is incompatible with the majority species?
+                                    id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a potential problem here: what if the match is to a higher rank and that is incompatible with the majority species?
                                     if (id > 0) {
-                                        if (chosenId == 0)
-                                            chosenId = id;
-                                        else if (chosenId != id) {
-                                            chosenId = -1; // means mismatch
+                                        if (speciesId == 0)
+                                            speciesId = id;
+                                        else if (speciesId != id) {
+                                            speciesId = -1; // means mismatch
+                                            break;
                                         }
                                     }
                                 }
-                                totalMatches[threadNumber]++;
                             }
-                            if (chosenId > 0) {
+
+                            if (speciesId > 0) {
                                 for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                     int id = matchBlock.getTaxonId();
-                                    if (id == chosenId) {
-                                        if (ref2weight != null) {
-                                            final String ref = matchBlock.getTextFirstWord();
-                                            synchronized (syncRef) {
-                                                final Integer count = Basic.replaceNull(ref2weight.get(ref), 0);
-                                                ref2weight.put(ref, count + 1);
+                                    if (id > 0) {
+                                        id = taxon2SpeciesMapping.getSpecies(id);
+                                        if (id == speciesId) {
+                                            if (ref2weight != null) {
+                                                final String ref = matchBlock.getTextFirstWord();
+                                                synchronized (syncRef) {
+                                                    final Integer count = Basic.replaceNull(ref2weight.get(ref), 0);
+                                                    ref2weight.put(ref, count + Math.max(1, readBlock.getReadWeight()));
+                                                }
+                                            } else {
+                                                final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
+                                                synchronized (syncRef) {
+                                                    refId2weight[refId] += Math.max(1, readBlock.getReadWeight());
+                                                }
                                             }
-                                        } else {
-                                            final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
-                                            synchronized (syncRef) {
-                                                refId2weight[refId] += 1;
-                                            }
+                                            totalWeight[threadNumber] += Math.max(1, readBlock.getReadWeight());
                                         }
-                                        totalWeight[threadNumber]++;
                                     }
                                 }
                             }

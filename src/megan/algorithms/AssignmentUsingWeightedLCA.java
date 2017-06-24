@@ -126,7 +126,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         final String address = fullTree.getAddress(taxId);
                         if (address != null) {
                             if (arrayLength == addressingArray.length)
-                                AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+                                resizeArray(addressingArray, 2 * addressingArray.length);
 
                             if (ref2weight != null) {
                                 final String ref = matchBlock.getTextFirstWord();
@@ -160,7 +160,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                             final String address = fullTree.getAddress(taxId);
                             if (address != null) {
                                 if (arrayLength == addressingArray.length)
-                                    AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+                                    resizeArray(addressingArray, 2 * addressingArray.length);
 
                                 if (ref2weight != null) {
                                     final String ref = matchBlock.getTextFirstWord();

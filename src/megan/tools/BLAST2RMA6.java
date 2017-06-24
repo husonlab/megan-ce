@@ -107,8 +107,24 @@ public class BLAST2RMA6 {
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
         final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", Document.DEFAULT_MAXEXPECTED);
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
-        final float minSupportPercent = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
-        final int minSupport = options.getOption("-sup", "minSupport", "Min support", Document.DEFAULT_MINSUPPORT);
+        final int minSupport;
+        final float minSupportPercent;
+        {
+            final float minSupportPercent0 = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
+            final int minSupport0 = options.getOption("-sup", "minSupport", "Min support (0==off)", Document.DEFAULT_MINSUPPORT);
+            if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 == Document.DEFAULT_MINSUPPORT) {
+                minSupportPercent = minSupportPercent0;
+                minSupport = 0;
+            } else if (minSupportPercent0 == Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
+                minSupportPercent = 0;
+                minSupport = minSupport0;
+            } else if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
+                throw new IOException("Please specify a value for either --minSupport or --minSupportPercent, but not for both");
+            } else {
+                minSupportPercent = minSupportPercent0;
+                minSupport = minSupport0;
+            }
+        }
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
 
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
@@ -168,8 +184,6 @@ public class BLAST2RMA6 {
             propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
-        if (minSupport > 0 && minSupportPercent > 0)
-            throw new IOException("Please specify a positive value for either --minSupport or --minSupportPercent, but not for both");
 
         for (String fileName : metaDataFiles) {
             Basic.checkFileReadableNonEmpty(fileName);

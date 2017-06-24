@@ -47,10 +47,10 @@ public class ClassificationBlockDAA implements IClassificationBlock {
 
     public float getWeightedSum(Integer key) {
         final Float result = id2weight.get(key);
-        if (result > 0)
+        if (result != null && result > 0)
             return result;
         else
-            return id2count.get(key);
+            return getSum(key);
     }
 
     public void setSum(Integer key, int num) {

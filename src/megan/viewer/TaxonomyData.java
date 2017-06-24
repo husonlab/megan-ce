@@ -87,7 +87,7 @@ public class TaxonomyData {
      * @return true, if disabled
      */
     public static boolean isTaxonDisabled(Integer taxonId) {
-        return taxonId == null || taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId);
+        return taxonId == null || (taxonId > 0 && taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId));
     }
 
     /**
@@ -108,6 +108,33 @@ public class TaxonomyData {
 
     public static void setTaxonomicRank(Integer id, byte rank) {
         taxonomyClassification.getIdMapper().getName2IdMap().setRank(id, rank);
+    }
+
+    /**
+     * gets the closest ancestor that has a major rank
+     *
+     * @param id
+     * @return rank of this node, if is major, otherwise of closest ancestor
+     */
+    public static int getLowestAncestorWithMajorRank(Integer id) {
+        if (id <= 0)
+            return id;
+
+        while (true) {
+            int rank = getTaxonomicRank(id);
+            if (TaxonomicLevels.isMajorRank(rank))
+                return id;
+            String address = getAddress(id);
+            if (address == null || address.length() == 0)
+                return 1;
+            address = address.substring(0, address.length() - 1);
+            if (address.length() == 0)
+                return 1;
+            id = getAddress2Id(address);
+            if (id <= 0)
+                return 1;
+        }
+
     }
 
     public static String getAddress(Integer id) {

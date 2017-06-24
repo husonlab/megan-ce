@@ -490,17 +490,17 @@ public class ReadLayoutPane extends Pane {
         for (GeneArrow geneArrow : geneArrows) {
             boolean colored = false;
             for (IMatchBlock matchBlock : geneArrow) {
-                String keyString = "";
+                final StringBuilder keyBuffer = new StringBuilder();
 
                 for (String cName : cNames) {
                     int classId = matchBlock.getId(cName);
                     if (classId > 0) {
                         final String add = ClassificationManager.get(cName, false).getName2IdMap().get(classId);
-                        keyString += (add != null ? add : cName + classId) + ";";
+                        keyBuffer.append(add != null ? add : cName + classId).append(";");
                     }
                 }
-                if (keyString.length() > 0) {
-                    final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(keyString), 0.5);
+                if (keyBuffer.length() > 0) {
+                    final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(keyBuffer.toString()), 0.5);
                     geneArrow.setFill(color);
                     colored = true;
                     break;

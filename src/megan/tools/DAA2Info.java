@@ -19,20 +19,16 @@
 package megan.tools;
 
 import jloda.util.*;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.classification.data.Name2IdMap;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAHeader;
 import megan.daa.io.DAAParser;
-import megan.data.IClassificationBlock;
-import megan.data.IReadBlock;
-import megan.data.IReadBlockIterator;
-import megan.viewer.TaxonomyData;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * provides info on a DAA files
@@ -88,9 +84,12 @@ public class DAA2Info {
         final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<String>()));
         final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
         final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers for taxonomy", false);
-        final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "When reporting class paths for taxonomy, only report major ranks", false);
+        final boolean prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
+        final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+        final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
+        final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments", "");
         options.done();
 
         final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, false);
@@ -119,96 +118,14 @@ public class DAA2Info {
                         outs.write("# Meganization summary:\n");
                         outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                     }
+                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
                 }
             }
-
-            final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
-            doc.setOpenDAAFileOnlyIfMeganized(false);
-            final DAAConnector connector = (DAAConnector) doc.getConnector();
-            final Set<String> availableClassificationNames = new HashSet<>(Arrays.asList(connector.getAllClassificationNames()));
-
-            for (String classification : listClass2Count) {
-                if (listGeneralInfo || listMoreStuff)
-                    outs.write("# Class to count for '" + classification + "':\n");
-
-                if (isMeganized) {
-                    if (!availableClassificationNames.contains(classification))
-                        throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
-
-                    final boolean isTaxonomy = (classification.equals(Classification.Taxonomy));
-
-                    final Name2IdMap name2IdMap;
-                    if (isTaxonomy && reportPaths) {
-                        ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
-                        name2IdMap = null;
-                    } else if (reportNames) {
-                        name2IdMap = new Name2IdMap();
-                        name2IdMap.loadFromFile(classification.toLowerCase() + ".map");
-                        classification2NameMap.put(classification, name2IdMap);
-                    } else
-                        name2IdMap = null;
-
-                    final Set<Integer> ids = new TreeSet<>();
-                    final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
-                    ids.addAll(classificationBlock.getKeySet());
-                    for (Integer classId : ids) {
-                        if (classId > 0 || !ignoreUnassigned) {
-                            final String className;
-                            if (isTaxonomy && reportPaths) {
-                                className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
-                            } else if (name2IdMap == null || name2IdMap.get(classId) == null)
-                                className = "" + classId;
-                            else
-                                className = name2IdMap.get(classId);
-                            outs.write(className + "\t" + classificationBlock.getWeightedSum(classId) + "\n");
-                        }
-                    }
-                }
-            }
-
-            for (String classification : listRead2Class) {
-                if (listGeneralInfo || listMoreStuff)
-                    outs.write("# Reads to class for '" + classification + "':\n");
-                if (isMeganized) {
-                    if (!availableClassificationNames.contains(classification))
-                        throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
-
-                    final boolean isTaxonomy = (classification.equals(Classification.Taxonomy));
-
-                    final Name2IdMap name2IdMap;
-                    if (isTaxonomy && reportPaths) {
-                        ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
-                        name2IdMap = null;
-                    } else if (reportNames) {
-                        if (classification2NameMap.containsKey(classification))
-                            name2IdMap = classification2NameMap.get(classification);
-                        else {
-                            name2IdMap = new Name2IdMap();
-                            name2IdMap.loadFromFile(classification.toLowerCase() + ".map");
-                            classification2NameMap.put(classification, name2IdMap);
-                        }
-                    } else
-                        name2IdMap = null;
-
-                    final Set<Integer> ids = new TreeSet<>();
-                    ids.addAll(connector.getClassificationBlock(classification).getKeySet());
-                    for (Integer classId : ids) {
-                        if (classId > 0 || !ignoreUnassigned) {
-                            final IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10, true, false);
-                            while (it.hasNext()) {
-                                final IReadBlock readBlock = it.next();
-                                final String className;
-                                if (isTaxonomy && reportPaths) {
-                                    className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
-                                } else if (name2IdMap == null || name2IdMap.get(classId) == null)
-                                    className = "" + classId;
-                                else
-                                    className = name2IdMap.get(classId);
-                                outs.write(readBlock.getReadName() + "\t" + className + "\n");
-                            }
-                        }
-                    }
-                }
+        }
+        if (extractSummaryFile.length() > 0) {
+            try (Writer w = new FileWriter(extractSummaryFile)) {
+                doc.getDataTable().write(w);
+                doc.getSampleAttributeTable().write(w, false, true);
             }
         }
     }

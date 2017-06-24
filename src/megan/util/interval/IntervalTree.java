@@ -12,26 +12,23 @@
 
 package megan.util.interval;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * An Interval Tree is essentially a map from intervals to objects, which
- * can be queried for all data associated with a particular interval of
- * time
+ * can be queried for all data associated with a particular interval
  *
  * @param <T> the type of objects to associate
  * @author Kevin Dolan
- *         Modified by Daniel Huson, 2.2017
+ *         Extended by Daniel Huson, 2.2017
  */
 public class IntervalTree<T> implements Iterable<Interval<T>> {
     private IntervalNode<T> head;
     private final ArrayList<Interval<T>> intervalList;
     private boolean inSync;
     private boolean sorted;
-    private int size;
+
+    private int covered;
 
     /**
      * Instantiate a new interval tree with no intervals
@@ -41,7 +38,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         this.intervalList = new ArrayList<>();
         this.inSync = true;
         this.sorted = true;
-        this.size = 0;
+        covered = 0;
     }
 
     /**
@@ -54,7 +51,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         this.intervalList = new ArrayList<>(intervalList);
         this.inSync = true;
         this.sorted = false;
-        this.size = intervalList.size();
+        covered = -1;
     }
 
     /**
@@ -65,11 +62,11 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         this.intervalList.clear();
         this.inSync = true;
         this.sorted = true;
-        this.size = 0;
+        covered = 0;
     }
 
     /**
-     * @return the number of entries in the interval list, equal to .currentSize() if inSync()
+     * @return the number of entries in the interval list
      */
     public int size() {
         return intervalList.size();
@@ -168,6 +165,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         else
             inSync = false;
         sorted = false;
+        covered = -1;
     }
 
     /**
@@ -192,6 +190,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         intervalList.addAll(intervals); // don't add one by one as this will lead to an unbalanced tree
         inSync = false;
         sorted = false;
+        covered = -1;
     }
 
     /**
@@ -205,6 +204,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         intervalList.addAll(intervals);
         inSync = false;
         sorted = false;
+        covered = -1;
     }
 
     /**
@@ -215,8 +215,10 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     public boolean remove(Interval<T> interval) {
         boolean removed = intervalList.remove(interval);
-        if (removed)
+        if (removed) {
             inSync = false;
+            covered = -1;
+        }
         return removed;
     }
 
@@ -255,8 +257,10 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     public boolean removeAll(Collection<Interval<T>> intervals) {
         boolean removed = intervalList.removeAll(intervals);
-        if (removed)
+        if (removed) {
             inSync = false;
+            covered = -1;
+        }
         return removed;
     }
 
@@ -267,41 +271,79 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         if (!inSync) {
             head = new IntervalNode<>(intervalList);
             inSync = true;
-            size = intervalList.size();
         }
     }
 
     /**
-     * gets a copy of the list of all intervals in order of the start coordinate
+     * gets the list of all intervals in order of the start coordinate
      *
      * @return intervals
      */
-    public ArrayList<Interval<T>> intervals() {
-        sortList();
-        return new ArrayList<>(intervalList);
+    public List<Interval<T>> intervals() {
+        return getAllIntervals(true);
     }
 
     /**
-     * gets a copy of the list of all data values in order of start coordinate
+     * gets all intervals
+     *
+     * @param sort first sort all intervals by their start coordinate
+     * @return all intervals
+     */
+    public List<Interval<T>> getAllIntervals(boolean sort) {
+        if (sort)
+            sortList();
+        return new AbstractList<Interval<T>>() { // wrap like this so interval list can't be changed
+            @Override
+            public Interval<T> get(int index) {
+                return intervalList.get(index);
+            }
+
+            @Override
+            public int size() {
+                return intervalList.size();
+            }
+        };
+    }
+
+    /**
+     * gets the list of all data values in order of start coordinate
      *
      * @return values
      */
-    public ArrayList<T> values() {
-        sortList();
-        ArrayList<T> result = new ArrayList<>(intervalList.size());
-        for (Interval<T> interval : intervalList)
-            result.add(interval.getData());
-        return result;
+    public List<T> values() {
+        return getAllValues(true);
     }
 
     /**
-     * iterates over all intervals
+     * gets the list of all data values
      *
-     * @return
+     * @param sort first sort all intervals by their start coordinate
+     * @return values
+     */
+    public List<T> getAllValues(boolean sort) {
+        if (sort)
+            sortList();
+
+        return new AbstractList<T>() {
+            @Override
+            public T get(int index) {
+                return intervalList.get(index).getData();
+            }
+
+            @Override
+            public int size() {
+                return intervalList.size();
+            }
+        };
+    }
+
+    /**
+     * iterates over all intervals, in order of start coordinate
+     *
+     * @return iterator
      */
     public Iterator<Interval<T>> iterator() {
-        sortList();
-        return intervalList.iterator();
+        return getAllIntervals(true).iterator();
     }
 
     /**
@@ -325,38 +367,18 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
-     * computes how much the set of intervals covers
-     *
-     * @return total covered by intervals
-     */
-    public int computeCovered() {
-        int covered = 0;
-        int a = Integer.MIN_VALUE;
-        int b = Integer.MIN_VALUE;
-
-        for (Interval interval : intervals()) {
-            if (interval.getStart() > b) {
-                if (a > Integer.MIN_VALUE)
-                    covered += (b - a) + 1;
-                a = interval.getStart();
-                b = interval.getEnd();
-            } else
-                b = Math.max(b, interval.getEnd());
-        }
-        if (a > Integer.MIN_VALUE)
-            covered += (b - a) + 1;
-        return covered;
-    }
-
-    /**
-     * compute the number of positions covered
+     * get the number of positions covered
      *
      * @return covered
      */
     public int getCovered() {
-        int covered = 0;
+        if (covered >= 0)
+            return covered;
+        else
+            covered = 0;
         int start = Integer.MIN_VALUE;
         int end = Integer.MIN_VALUE;
+
         for (Interval<T> interval : intervals()) {
             if (interval.getStart() > end) {
                 covered += ((end - start) + 1);

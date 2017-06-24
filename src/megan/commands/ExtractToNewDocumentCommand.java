@@ -37,13 +37,13 @@ import megan.util.RMAFileFilter;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
-import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -181,8 +181,8 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
     }
 
     public boolean isApplicable() {
-        return (getDoc().getMeganFile().getFileType() == MeganFile.Type.MEGAN_SERVER_FILE || getDoc().getMeganFile().getFileType() == MeganFile.Type.RMA6_FILE || getDoc().getMeganFile().getFileType() == MeganFile.Type.DAA_FILE)
-                && ((getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getSelectedNodes().size() > 0));
+        return getViewer() != null && ((ClassificationViewer) getViewer()).getSelectedNodes().size() > 0 &&
+                ((ClassificationViewer) getViewer()).getDocument().getMeganFile().hasDataConnector();
     }
 
     public boolean isCritical() {
@@ -193,8 +193,17 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         Director dir = getDir();
         if (!dir.getDocument().getMeganFile().hasDataConnector())
             return;
-        String name = ProjectManager.getUniqueName(Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-Extraction.rma"));
-        File lastOpenFile = new File(ProgramProperties.get("ExtractToNewFile", name));
+
+        String className = null;
+        if (getViewer() instanceof ClassificationViewer) {
+            final ClassificationViewer viewer = (ClassificationViewer) getViewer();
+            Collection<String> selectedLabels = viewer.getSelectedNodeLabels(false);
+            if (selectedLabels.size() == 1)
+                className = Basic.toCleanName(selectedLabels.iterator().next());
+        }
+        final String name = ProjectManager.getUniqueName(Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + (className != null ? className : "Extracted") + ".rma"));
+        final String directory = (new File(ProgramProperties.get("ExtractToNewFile", ""))).getParent();
+        File lastOpenFile = new File(directory, name);
 
         dir.notifyLockInput();
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new RMAFileFilter(true), new RMAFileFilter(true), event, "Extract selected data to document", ".rma");

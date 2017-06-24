@@ -111,7 +111,7 @@ public class DataProcessor {
                             assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingCoverageBasedLCACreator(doc, doc.getTopPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingSegmentBasedLCACreator(doc, doc.getTopPercent());
                             break;
                     }
                 } else if (useLCAForClassification[c])
@@ -397,7 +397,7 @@ public class DataProcessor {
             if (intervals != null) {
                 Interval<Object> interval = new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), null);
                 intervals.add(interval);
-                if (intervals.computeCovered() >= lengthToCover)
+                if (intervals.getCovered() >= lengthToCover)
                     return true;
             }
         }

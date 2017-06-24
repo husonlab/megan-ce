@@ -54,7 +54,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
         if (result != null && result > 0)
             return result;
         else
-            return id2count.get(key);
+            return getSum(key);
     }
 
     public void setSum(Integer key, int num) {

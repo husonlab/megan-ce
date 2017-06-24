@@ -236,15 +236,17 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         final StringBuilder buf = new StringBuilder();
         buf.append("Coordinates: ");
         if (!reverse)
-            buf.append(start).append(" - ").append(end).append("\n");
+            buf.append(start).append(" - ").append(end);
         else
-            buf.append(end).append(" - ").append(start).append("\n");
+            buf.append(end).append(" - ").append(start);
+        buf.append(String.format(" Length: %d\n", (Math.abs(start - end) + 1)));
         if (matchBlocks.size() > 1)
             buf.append("Matches: ").append(matchBlocks.size()).append("\n");
         for (IMatchBlock matchBlock : getMatchBlocks()) {
             final String accession = Basic.swallowLeadingGreaterSign(matchBlock.getTextFirstWord());
             if (accession != null)
-                buf.append(String.format("Accession: %s\n", accession));
+                buf.append(String.format("-- Accession: %s --\n", accession));
+            buf.append(String.format("Bit score: %.0f, Expect: %f\n", matchBlock.getBitScore(), matchBlock.getExpected()));
             for (String cName : cNames) {
                 int classId = matchBlock.getId(cName);
                 if (classId > 0) {

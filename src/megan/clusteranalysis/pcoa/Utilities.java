@@ -34,31 +34,29 @@ public class Utilities {
      * @return new matrix
      */
     public static Matrix computeDoubleCenteringOfSquaredMatrix(Matrix matrix) {
-        int size = matrix.getColumnDimension();
-        Matrix result = new Matrix(matrix.getColumnDimension(), matrix.getRowDimension());
+        final int size = matrix.getColumnDimension();
+        Matrix result = new Matrix(size, size);
+
+        final double[] rowAverage = new double[size];
+        final double[] colAverage = new double[size];
+        double overallAverage = 0;
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                double rowAverage = 0;
-                for (int k = 0; k < size; k++) {
-                    rowAverage += matrix.get(k, j) * matrix.get(k, j);
-                }
-                rowAverage /= size;
+                rowAverage[j] += matrix.get(i, j) * matrix.get(i, j);
+                colAverage[i] += matrix.get(i, j) * matrix.get(i, j);
+                overallAverage += matrix.get(i, j) * matrix.get(i, j);
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            rowAverage[i] /= size;
+            colAverage[i] /= size;
+        }
+        overallAverage /= (size * size);
 
-                double colAverage = 0;
-                for (int k = 0; k < size; k++) {
-                    colAverage += matrix.get(i, k) * matrix.get(i, k);
-                }
-                colAverage /= size;
-
-                double overallAverage = 0;
-                for (int k = 0; k < size; k++) {
-                    for (int l = 0; l < size; l++) {
-                        overallAverage += matrix.get(k, l) * matrix.get(k, l);
-                    }
-                }
-                overallAverage /= (size * size);
-
-                result.set(i, j, -0.5 * (Math.pow(matrix.get(i, j), 2) - rowAverage - colAverage + overallAverage));
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                result.set(i, j, -0.5 * (Math.pow(matrix.get(i, j), 2) - rowAverage[j] - colAverage[i] + overallAverage));
             }
         }
         return result;

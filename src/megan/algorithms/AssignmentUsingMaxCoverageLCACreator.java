@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,6 +19,7 @@
 
 package megan.algorithms;
 
+import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.core.Document;
 
@@ -26,19 +27,20 @@ import megan.core.Document;
  * create a coverage-base LCA assignment algorithm
  * Daniel Huson, 4.2017
  */
-public class AssignmentUsingSegmentBasedLCACreator implements IAssignmentAlgorithmCreator {
+public class AssignmentUsingMaxCoverageLCACreator implements IAssignmentAlgorithmCreator {
     private final Document document;
-    private final float topPercent;
 
     /**
      * constructor
      *
      * @param document
      */
-    public AssignmentUsingSegmentBasedLCACreator(Document document, float topPercent) {
+    public AssignmentUsingMaxCoverageLCACreator(Document document, float topPercent) {
         this.document = document;
-        this.topPercent = topPercent;
-        System.err.println("Using segment-based LCA algorithm for binning: " + Classification.Taxonomy);
+        if (ProgramProperties.get("use-segment-lca", false))
+            System.err.println("Using segment-LCA algorithm for binning: " + Classification.Taxonomy);
+        else
+            System.err.println("Using max-coverage-LCA algorithm for binning: " + Classification.Taxonomy);
     }
 
     /**
@@ -48,6 +50,9 @@ public class AssignmentUsingSegmentBasedLCACreator implements IAssignmentAlgorit
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
+        if (ProgramProperties.get("use-segment-lca", false)) {
             return new AssignmentUsingSegmentLCA(document);
+        } else
+            return new AssignmentUsingMaxCoverageLCA(document);
     }
 }

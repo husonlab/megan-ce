@@ -812,14 +812,14 @@ public class ReadLayoutPane extends Pane {
                     if (compatible == isCompatibleWith)
                         matchSelection.select(matchBlock);
                     else
-                        matchSelection.clearSelect(matchBlock);
+                        matchSelection.clearSelection(matchBlock);
                 }
             } else {
                 for (IMatchBlock matchBlock : match2GeneArrow.keySet()) {
                     if (matchBlock.getId(classificationName) == classId)
                         matchSelection.select(matchBlock);
                     else
-                        matchSelection.clearSelect(matchBlock);
+                        matchSelection.clearSelection(matchBlock);
                 }
             }
         }

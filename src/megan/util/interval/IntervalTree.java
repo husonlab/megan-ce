@@ -379,14 +379,16 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         int start = Integer.MIN_VALUE;
         int end = Integer.MIN_VALUE;
 
-        for (Interval<T> interval : intervals()) {
-            if (interval.getStart() > end) {
-                covered += ((end - start) + 1);
+        for (Interval<T> interval : getAllIntervals(true)) {
+            if (start == Integer.MIN_VALUE) {
+                start = interval.getStart();
+            } else if (interval.getStart() > end) {
+                covered += (end - start) + 1;
                 start = interval.getStart();
             }
-            end = interval.getEnd();
+            end = Math.max(end, interval.getEnd());
         }
-        covered += (end - start);
+        covered += (end - start) + 1;
         return covered;
     }
 }

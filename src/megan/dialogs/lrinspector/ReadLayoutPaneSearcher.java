@@ -168,7 +168,7 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
                             if (select)
                                 matchBlockSelectionModel.select(matchBlock);
                             else
-                                matchBlockSelectionModel.clearSelect(matchBlock);
+                                matchBlockSelectionModel.clearSelection(matchBlock);
                         }
                     }
                 }

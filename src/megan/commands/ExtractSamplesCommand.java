@@ -69,7 +69,13 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         if (toExtract.size() > 0) {
             newDir.notifyLockInput();
             try {
-                String fileName = Basic.replaceFileSuffix(((Director) getDir()).getDocument().getMeganFile().getFileName(), "-Extracted.megan");
+                final String sourceFileName = ((Director) getDir()).getDocument().getMeganFile().getFileName();
+                final String fileName;
+                if (toExtract.size() == 1)
+                    fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
+                else
+                    fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
+
                 newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
                 newDocument.extractSamples(toExtract, ((Director) getDir()).getDocument());
                 newDocument.setNumberReads(newDocument.getDataTable().getTotalReads());
@@ -91,7 +97,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
             } finally {
                 newDir.notifyUnlockInput();
             }
-            newDir.execute("update reprocess=true reinduce=true;", newDir.getMainViewer().getCommandManager());
+            newDir.execute("update reprocess=true reInduce=true;", newDir.getMainViewer().getCommandManager());
         }
     }
 

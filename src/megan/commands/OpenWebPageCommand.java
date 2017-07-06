@@ -85,7 +85,8 @@ public class OpenWebPageCommand extends CommandBase implements ICommand {
         for (String id : selectedIds) {
             try {
                 final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
-                final URL url = new URL(String.format(searchURL, name.trim().replaceAll("\\s+", "+") + "+" + id.trim().replaceAll("\\s+", "+")));
+                final URL url = new URL(String.format(searchURL, name.trim().replaceAll("\\s+", "+") + "+" + id.trim()
+                        .replaceAll("<", " ").replaceAll(">", " ").replaceAll("\\s+", "+")));
                 System.err.println(url);
                 Basic.openWebPage(url);
                 ok = true;

@@ -143,7 +143,6 @@ public class DAAMatchRecord {
                     d += count;
             }
         }
-        System.err.println("translated length=" + translatedQueryLen + " untranslated length=" + (3 * translatedQueryLen + frameshiftAdjustmentForBlastXMode));
     }
 
     private int getQueryTranslatedBegin(int query_begin, int frame, int dna_len) { // this needs testing

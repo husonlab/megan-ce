@@ -154,6 +154,8 @@ public class ReadLayoutPane extends Pane {
                 forward = (matchBlock.getAlignedQueryStart() < matchBlock.getAlignedQueryEnd());
             final int alignedQueryStart;
             final int alignedQueryEnd;
+
+
             if (forward) {
                 alignedQueryStart = Math.min(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd());
                 alignedQueryEnd = Math.max(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd());

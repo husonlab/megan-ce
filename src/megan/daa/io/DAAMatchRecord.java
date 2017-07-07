@@ -31,6 +31,8 @@ public class DAAMatchRecord {
     private final DAAHeader daaHeader;
 
     private int subjectId, totalSubjectLen, score, queryBegin, subjectBegin, frame, translatedQueryBegin, translatedQueryLen, subjectLen, len, identities, mismatches, gapOpenings;
+    private int frameshiftAdjustmentForBlastXMode; // added to accommodate frame shift counts in DAA files generated from MAF files
+
     private byte[] subjectName;
 
     private PackedTranscript transcript = new PackedTranscript();
@@ -95,6 +97,7 @@ public class DAAMatchRecord {
      */
     private void parseTranscript(PackedTranscript transcript) {
         translatedQueryLen = 0;
+        frameshiftAdjustmentForBlastXMode = 0;
         subjectLen = 0;
         len = 0;
         identities = 0;
@@ -114,9 +117,18 @@ public class DAAMatchRecord {
                     d = 0;
                     break;
                 case op_substitution:
-                    mismatches += count;
+
+                    byte c = daaParser.getAlignmentAlphabet()[op.getLetter()];
+                    if (c == '/') { // reverse shift
+                        frameshiftAdjustmentForBlastXMode -= 4; // minus 1 for frame shift and 3 for translatedQueryLen increment
+
+                    } else if (c == '\\') {  // forward shift
+                        frameshiftAdjustmentForBlastXMode -= 2; // plus 1 for frame shift and 3 for translatedQueryLen increment
+                    }
                     translatedQueryLen += count;
                     subjectLen += count;
+                    mismatches += count;
+
                     d = 0;
                     break;
                 case op_insertion:
@@ -161,7 +173,7 @@ public class DAAMatchRecord {
                 return queryBegin + translatedQueryLen - 1;
             }
             case blastx: {
-                int len = translatedQueryLen * 3 * (frame > 2 ? -1 : 1);
+                int len = translatedQueryLen * 3 * (frame > 2 ? -1 : 1) + frameshiftAdjustmentForBlastXMode;
                 return queryBegin + (len > 0 ? -1 : 1) + len;
             }
             case blastn: {

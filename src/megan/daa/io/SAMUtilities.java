@@ -51,23 +51,19 @@ public class SAMUtilities {
         buffer.write(matchRecord.getSubjectName());
         buffer.writeString(String.format("\t%d\t255\t", matchRecord.getSubjectBegin() + 1));
 
-        final int frameShiftCorrection = computeFrameShiftCorrection(matchRecord.getTranscript());
-
         final byte[][] cigarAndAlignedQueryAndMD;
-        if (frameShiftCorrection > 0) {
+        if (matchRecord.getFrameShiftAdjustmentForBlastXMode() > 0) {
             final int queryBegin = matchRecord.getQueryBegin();
-            final int queryEndUncorrected = matchRecord.getQueryEnd(); // query end position, in the case of BlastX, not taking frame shifts into account
+            final int queryEnd = matchRecord.getQueryEnd(); // query end position, in the case of BlastX, not taking frame shifts into account
             int start;
             byte[] querySequence;
-            if (queryBegin < queryEndUncorrected) { // positve frame
+            if (queryBegin < queryEnd) { // positive frame
                 querySequence = matchRecord.getQueryRecord().getSourceSequence();
                 start = queryBegin;
             } else { // negative frame
                 start = 0;
-                int queryEndCorrected = queryEndUncorrected + computeFrameShiftCorrection(matchRecord.getTranscript());
-                int length = queryBegin - queryEndCorrected + 1;
-                //System.err.println(queryEndUncorrected + " -> " + queryEndCorrected + " - " + queryBegin + " len: " + length);
-                querySequence = Translator.getReverseComplement(matchRecord.getQueryRecord().getSourceSequence(), queryEndCorrected, length);
+                int length = queryBegin - queryEnd + 1;
+                querySequence = Translator.getReverseComplement(matchRecord.getQueryRecord().getSourceSequence(), queryEnd, length);
             }
             cigarAndAlignedQueryAndMD = computeCigarAndAlignedQueryAndMD(querySequence, start, queryAlphabet, matchRecord.getTranscript());
         } else

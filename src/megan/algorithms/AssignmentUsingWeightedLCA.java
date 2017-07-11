@@ -55,22 +55,9 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     private final Map<Character, Integer> ch2weight = new HashMap<>(Character.MAX_VALUE, 1f);
 
-    private WeightedAddress[] addressingArray = new WeightedAddress[0];
+    private WeightedAddress[] addressingArray = new WeightedAddress[1000];
 
     private boolean ignoreAncestors = true; // alignments to ancestors are considered ok
-
-    private AssignmentUsingWeightedLCA() {
-        cName = null;
-        cNameIsTaxonomy = false;
-        fullTree = null;
-        name2IdMap = null;
-        idMapper = null;
-        refId2weight = null;
-        ref2weight = null;
-        taxon2SpeciesMapping = null;
-        useIdentityFilter = false;
-        percentToCover = 70;
-    }
 
     /**
      * constructor
@@ -89,8 +76,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         this.refId2weight = refId2Weight;
         this.ref2weight = ref2weight;
         this.taxon2SpeciesMapping = taxon2SpeciesMapping;
-
-        addressingArray = resizeArray(addressingArray, 1000);
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
     }
@@ -125,7 +110,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                     if (!idMapper.isDisabled(taxId)) {
                         final String address = fullTree.getAddress(taxId);
                         if (address != null) {
-                            if (arrayLength == addressingArray.length)
+                            if (arrayLength >= addressingArray.length)
                                 resizeArray(addressingArray, 2 * addressingArray.length);
 
                             if (ref2weight != null) {
@@ -159,7 +144,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         if (!idMapper.isDisabled(taxId)) {
                             final String address = fullTree.getAddress(taxId);
                             if (address != null) {
-                                if (arrayLength == addressingArray.length)
+                                if (arrayLength >= addressingArray.length)
                                     resizeArray(addressingArray, 2 * addressingArray.length);
 
                                 if (ref2weight != null) {
@@ -226,12 +211,13 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     public String computeWeightedLCA(final float percentToCover, final Map<Integer, Integer> taxon2weight) {
         int arrayLength = 0;
         for (Integer taxonId : taxon2weight.keySet()) {
-            if (addressingArray.length == arrayLength) {
-                AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
-            }
             String address = fullTree.getAddress(taxonId);
-            if (address != null)
+            if (address != null) {
+                if (arrayLength >= addressingArray.length) {
+                    AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+                }
                 addressingArray[arrayLength++].set(address, taxon2weight.get(taxonId));
+            }
             // else
             //     System.err.println("Unknown taxonId: "+taxonId);
         }

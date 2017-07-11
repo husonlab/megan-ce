@@ -126,10 +126,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 useCompression = np.getBoolean();
             }
 
-            np.matchIgnoreCase("format=");
+            np.matchAnyTokenIgnoreCase("format blastFormat");
+            np.matchIgnoreCase("=");
             final BlastFileFormat format = BlastFileFormat.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastFileFormat.valuesExceptUnknown(), " ")));
 
-            np.matchIgnoreCase("mode=");
+            np.matchAnyTokenIgnoreCase("mode blastMode");
+            np.matchIgnoreCase("=");
             doc.setBlastMode(BlastMode.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastMode.valuesExceptUnknown(), " "))));
 
             int maxMatchesPerRead = 25;

@@ -31,7 +31,7 @@ public class DAAMatchRecord {
     private final DAAHeader daaHeader;
 
     private int subjectId, totalSubjectLen, score, queryBegin, subjectBegin, frame, translatedQueryBegin, translatedQueryLen, subjectLen, len, identities, mismatches, gapOpenings;
-    private int frameshiftAdjustmentForBlastXMode; // added to accommodate frame shift counts in DAA files generated from MAF files
+    private int frameShiftAdjustmentForBlastXMode; // added to accommodate frame shift counts in DAA files generated from MAF files
 
     private byte[] subjectName;
 
@@ -91,13 +91,20 @@ public class DAAMatchRecord {
     }
 
     /**
-     * parse the transcript
+     * parse the transcript.
+     * Sets all these variables:
+     * translatedQueryLen
+     * frameShiftAdjustmentForBlastXMode
+     * subjectLen
+     * identities
+     * mismatches
+     * gapOpeningS
      *
      * @param transcript
      */
     private void parseTranscript(PackedTranscript transcript) {
         translatedQueryLen = 0;
-        frameshiftAdjustmentForBlastXMode = 0;
+        frameShiftAdjustmentForBlastXMode = 0;
         subjectLen = 0;
         len = 0;
         identities = 0;
@@ -120,10 +127,10 @@ public class DAAMatchRecord {
 
                     byte c = daaParser.getAlignmentAlphabet()[op.getLetter()];
                     if (c == '/') { // reverse shift
-                        frameshiftAdjustmentForBlastXMode -= 4; // minus 1 for frame shift and 3 for translatedQueryLen increment
+                        frameShiftAdjustmentForBlastXMode -= 4; // minus 1 for frame shift and 3 for translatedQueryLen increment
 
                     } else if (c == '\\') {  // forward shift
-                        frameshiftAdjustmentForBlastXMode -= 2; // plus 1 for frame shift and 3 for translatedQueryLen increment
+                        frameShiftAdjustmentForBlastXMode -= 2; // plus 1 for frame shift and 3 for translatedQueryLen increment
                     }
                     translatedQueryLen += count;
                     subjectLen += count;
@@ -173,7 +180,11 @@ public class DAAMatchRecord {
                 return queryBegin + translatedQueryLen - 1;
             }
             case blastx: {
-                int len = translatedQueryLen * 3 * (frame > 2 ? -1 : 1) + frameshiftAdjustmentForBlastXMode;
+                final int len;
+                if (frame > 2) {
+                    len = -(3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode);
+                } else
+                    len = 3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode;
                 return queryBegin + (len > 0 ? -1 : 1) + len;
             }
             case blastn: {
@@ -253,4 +264,7 @@ public class DAAMatchRecord {
         return queryRecord.getContext()[frame];
     }
 
+    public int getFrameShiftAdjustmentForBlastXMode() {
+        return frameShiftAdjustmentForBlastXMode;
+    }
 }

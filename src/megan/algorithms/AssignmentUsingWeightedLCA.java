@@ -58,7 +58,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     private WeightedAddress[] addressingArray = new WeightedAddress[1000];
 
     private boolean ignoreAncestors = true; // alignments to ancestors are considered ok
-    
+
     /**
      * constructor
      * @param cName

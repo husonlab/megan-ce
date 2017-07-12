@@ -34,6 +34,7 @@ import megan.core.Document;
 import megan.data.IReadBlockIterator;
 import megan.data.ReadBlockIteratorMaxCount;
 import megan.fx.NotificationsInSwing;
+import megan.main.MeganProperties;
 import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
@@ -156,7 +157,8 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             System.err.println(String.format("Number of contigs:%6d", count));
 
             if (doOverlapContigs) {
-                count = ReadAssembler.mergeOverlappingContigs(8, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
+                final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
+                count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
                 System.err.println(String.format("Remaining contigs:%6d", count));
             }
 
@@ -194,7 +196,8 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     System.err.println(String.format("Number of contigs:%6d", count));
 
                     if (doOverlapContigs) {
-                        count = ReadAssembler.mergeOverlappingContigs(8, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
+                        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
+                        count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
                         System.err.println(String.format("Remaining contigs:%6d", count));
                     }
 

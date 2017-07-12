@@ -18,10 +18,7 @@
  */
 package megan.algorithms;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
 import megan.classification.Classification;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;
@@ -31,6 +28,7 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.main.MeganProperties;
 
 import java.io.IOException;
 import java.util.*;
@@ -83,7 +81,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         } else
             ref2weight = new HashMap<>(10000000);
 
-        final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
         final ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

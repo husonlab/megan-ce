@@ -18,14 +18,12 @@
  */
 package megan.daa;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
 import megan.daa.io.*;
+import megan.main.MeganProperties;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -66,7 +64,7 @@ public class DAAReferencesAnnotator {
 
         final int[][] cName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
 
-        final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS) / 2, Runtime.getRuntime().availableProcessors() / 2));
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

@@ -31,6 +31,7 @@ import megan.data.IReadBlockIterator;
 import megan.data.UpdateItemList;
 import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
+import megan.main.MeganProperties;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
 import megan.util.interval.Interval;
@@ -130,7 +131,7 @@ public class DataProcessorParallel {
 
             final ArrayList<Exception> exceptions = new ArrayList<>();
 
-            final int numberOfThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+            final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS) / 2, Runtime.getRuntime().availableProcessors() / 2));
             final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

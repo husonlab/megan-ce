@@ -52,7 +52,7 @@ public class SAMUtilities {
         buffer.writeString(String.format("\t%d\t255\t", matchRecord.getSubjectBegin() + 1));
 
         final byte[][] cigarAndAlignedQueryAndMD;
-        if (matchRecord.getFrameShiftAdjustmentForBlastXMode() > 0) {
+        if (matchRecord.getFrameShiftAdjustmentForBlastXMode() != 0) {
             final int queryBegin = matchRecord.getQueryBegin();
             final int queryEnd = matchRecord.getQueryEnd(); // query end position, in the case of BlastX, not taking frame shifts into account
             int start;
@@ -257,15 +257,17 @@ public class SAMUtilities {
     private static void writeCigar(DAAMatchRecord match, ByteOutputBuffer buffer) {
         int previousCount = 0, previousOp = 0;
 
-        for (CombinedOperation cop : match.getTranscript().gather()) {
-            if (mapDaaOpCode2CigarOpCode[cop.getOpCode()] == previousOp)
+        for (final CombinedOperation cop : match.getTranscript().gather()) {
+            int opCode = cop.getOpCode();
+
+            if (mapDaaOpCode2CigarOpCode[opCode] == previousOp)
                 previousCount += cop.getCount();
             else {
                 if (previousCount > 0)
                     buffer.writeString(String.format("%d", previousCount));
                 buffer.write((byte) daaOpCode2CigarLetter[previousOp]);
                 previousCount = cop.getCount();
-                previousOp = mapDaaOpCode2CigarOpCode[cop.getOpCode()];
+                previousOp = mapDaaOpCode2CigarOpCode[opCode];
             }
         }
         if (previousCount > 0) {

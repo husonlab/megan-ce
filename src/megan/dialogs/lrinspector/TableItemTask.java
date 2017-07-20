@@ -134,8 +134,6 @@ public class TableItemTask extends Task<Integer> {
                             maxBitScore.set(Math.max(maxBitScore.get(), matchBlock.getBitScore()));
                             maxNormalizedBitScore.set(Math.max(maxNormalizedBitScore.get(), matchBlock.getBitScore() / (float) readBlock.getReadLength()));
                         }
-                        if (readBlock.getReadName().equals("c564b5bc-f93d-4a05-b46b-44ee337a4b8e_Basecall_2D_000_2d"))
-                            System.err.println("c564b5bc-f93d-4a05-b46b-44ee337a4b8e_Basecall_2D_000_2d");
                         final ReadLayoutPane pane = new ReadLayoutPane(cNames, readBlock.getReadLength(), intervalTree, maxReadLength, layoutWidth);
                         final Utilities.Values values = Utilities.analyze(intervalTree);
                         final int percentCover = Math.min(100, (int) Math.round((100.0 * values.coverage) / readBlock.getReadLength()));

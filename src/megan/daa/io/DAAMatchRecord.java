@@ -185,7 +185,9 @@ public class DAAMatchRecord {
                     len = -(3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode);
                 } else
                     len = 3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode;
-                return queryBegin + (len > 0 ? -1 : 1) + len;
+                int queryEnd = queryBegin + (len > 0 ? -1 : 1) + len;
+                //System.err.println("queryEnd: "+queryEnd);
+                return queryEnd;
             }
             case blastn: {
                 int len = translatedQueryLen * (frame > 0 ? -1 : 1);

@@ -21,6 +21,7 @@ package megan.assembly;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.*;
+import megan.main.MeganProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ContigBuilder {
             return;
         }
 
-        final int numberOfThreads = Math.min(paths.length, Runtime.getRuntime().availableProcessors());
+        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(paths.length);
 

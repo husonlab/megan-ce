@@ -154,6 +154,8 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                                 Math.max(fpanel.getBounds().height, scrollPane.getBounds().height));
                     }
                 }
+                ensureReasonableBounds(panel);
+                ensureReasonableBounds(scrollPane);
 
                 NodeView.descriptionWriter = null;
                 if (nodeLabelDescriptionFile != null) {
@@ -180,6 +182,24 @@ public class ExportImageCommand extends CommandBase implements ICommand {
             np.matchWordIgnoreCase("exportImage");
             throw new IOException("ExportImage not implemented for this type of window: " + (Basic.getShortName(getParent().getClass())));
         }
+    }
+
+    /**
+     * if width or height unreasonably big (>500000), sets to 1000
+     *
+     * @param panel
+     */
+    private static void ensureReasonableBounds(JPanel panel) {
+        panel.setBounds(panel.getX(), panel.getY(), (panel.getWidth() < 500000 ? panel.getWidth() : 1000), (panel.getHeight() < 500000 ? panel.getHeight() : 1000));
+    }
+
+    /**
+     * if width or height unreasonably big, sets to 1000
+     *
+     * @param panel
+     */
+    private void ensureReasonableBounds(JScrollPane panel) {
+        panel.setBounds(panel.getX(), panel.getY(), (panel.getWidth() < 500000 ? panel.getWidth() : 1000), (panel.getHeight() < 500000 ? panel.getHeight() : 1000));
     }
 
     public void actionPerformed(ActionEvent event) {

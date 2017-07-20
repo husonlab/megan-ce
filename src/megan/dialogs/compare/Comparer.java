@@ -25,6 +25,7 @@ import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;
+import megan.main.MeganProperties;
 import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
@@ -163,7 +164,7 @@ public class Comparer {
         progressListener.setMaximum(dirs.size());
         progressListener.setProgress(0);
 
-        final int numberOfThreads = Math.min(Math.max(1, Runtime.getRuntime().availableProcessors() - 1), dirs.size());
+        final int numberOfThreads = Math.min(Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1)), dirs.size());
         final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
         final ExecutorService executor = Executors.newCachedThreadPool();
 

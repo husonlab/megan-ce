@@ -148,8 +148,7 @@ public class SaveCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfReads() > 0
-                && !getDoc().getMeganFile().hasDataConnector();
+        return getDoc().getNumberOfReads() > 0 && getDoc().getMeganFile().isMeganSummaryFile();
     }
 
     final public static String NAME = "Save As...";

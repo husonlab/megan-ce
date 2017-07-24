@@ -306,8 +306,12 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);
-
-        dir.execute("sync;", commandManager);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                dir.execute("sync;", commandManager);
+            }
+        });
     }
 
     /**

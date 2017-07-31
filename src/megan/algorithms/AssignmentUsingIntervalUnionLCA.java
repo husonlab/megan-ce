@@ -36,7 +36,7 @@ import java.util.*;
  * performs taxonId assignment using a union-based algorithm
  * Created by huson on 4/12/17.
  */
-public class AssignmentUsingMaxCoverageLCA implements IAssignmentAlgorithm {
+public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     private static boolean debug = false;
 
     private final float weightedPercentFactor;
@@ -54,7 +54,7 @@ public class AssignmentUsingMaxCoverageLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      */
-    public AssignmentUsingMaxCoverageLCA(Document doc) {
+    public AssignmentUsingIntervalUnionLCA(Document doc) {
         this.weightedPercentFactor = Math.min(1f, doc.getWeightedLCAPercent() / 100.0f);
         this.topPercent = doc.getTopPercent();
         this.fullTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();

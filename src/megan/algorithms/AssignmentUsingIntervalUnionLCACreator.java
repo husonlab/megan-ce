@@ -27,7 +27,7 @@ import megan.core.Document;
  * create a coverage-base LCA assignment algorithm
  * Daniel Huson, 4.2017
  */
-public class AssignmentUsingMaxCoverageLCACreator implements IAssignmentAlgorithmCreator {
+public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgorithmCreator {
     private final Document document;
 
     /**
@@ -35,7 +35,7 @@ public class AssignmentUsingMaxCoverageLCACreator implements IAssignmentAlgorith
      *
      * @param document
      */
-    public AssignmentUsingMaxCoverageLCACreator(Document document, float topPercent) {
+    public AssignmentUsingIntervalUnionLCACreator(Document document, float topPercent) {
         this.document = document;
         if (ProgramProperties.get("use-segment-lca", false))
             System.err.println("Using segment-LCA algorithm for binning: " + Classification.Taxonomy);
@@ -53,6 +53,6 @@ public class AssignmentUsingMaxCoverageLCACreator implements IAssignmentAlgorith
         if (ProgramProperties.get("use-segment-lca", false)) {
             return new AssignmentUsingSegmentLCA(document);
         } else
-            return new AssignmentUsingMaxCoverageLCA(document);
+            return new AssignmentUsingIntervalUnionLCA(document);
     }
 }

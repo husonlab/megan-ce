@@ -28,6 +28,8 @@ import megan.data.IReadBlock;
 
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * computes the taxon assignment for a read, using the LCA algorithm
@@ -36,8 +38,11 @@ import java.util.Collection;
  */
 public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     protected String[] addresses;
+    private final BitSet activeSet;
+    private final Map<Character, Integer> ch2weight;
 
     protected final boolean useIdentityFilter;
+    protected float proportionToCover = 1;
 
     protected final ClassificationFullTree fullTree;
     protected final IdMapper idMapper;
@@ -45,13 +50,16 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     /**
      * constructor
      */
-    public AssignmentUsingLCAForTaxonomy(String cName, boolean useIdentityFilter) {
+    public AssignmentUsingLCAForTaxonomy(String cName, boolean useIdentityFilter, float percentToCover) {
         fullTree = ClassificationManager.get(cName, false).getFullTree();
         idMapper = ClassificationManager.get(cName, true).getIdMapper();
         name2idMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();
-
         addresses = new String[1000];
+        activeSet = new BitSet();
+        ch2weight = new HashMap<>(Character.MAX_VALUE, 1f);
+
         this.useIdentityFilter = useIdentityFilter;
+        this.proportionToCover = percentToCover / 100f;
     }
 
     /**
@@ -112,14 +120,17 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
 
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
-                final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
-                int taxId = fullTree.getAddress2Id(address);
-                if (taxId > 0) {
-                    if (useIdentityFilter) {
-                        taxId = adjustByPercentIdentity(taxId, activeMatches, readBlock, fullTree, name2idMap);
-                    }
-                    return taxId;
+                final int id;
+                if (proportionToCover == 1) {
+                    final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
+                    id = fullTree.getAddress2Id(address);
+                } else {
+                    final int weightToCover = (int) Math.min(numberOfAddresses, Math.ceil(proportionToCover * numberOfAddresses));
+                    final String address = getPrefixCoveringWeight(weightToCover, addresses, numberOfAddresses);
+                    id = fullTree.getAddress2Id(address);
                 }
+                if (id > 0)
+                    return id;
             }
         }
 
@@ -247,5 +258,74 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         } while (changed);
         return taxId;
     }
+
+
+    /**
+     * given a set of addresses, returns the longest prefix that equals or exceeds  the given weight threshold
+     *
+     * @param addresses
+     * @return prefix
+     */
+    private String getPrefixCoveringWeight(int weightToCover, String[] addresses, int length) {
+        activeSet.clear();
+        ch2weight.clear();
+
+        for (int i = 0; i < length; i++) {
+            activeSet.set(i);
+        }
+
+        final StringBuilder buf = new StringBuilder();
+
+        for (int pos = 0; ; pos++) {
+            for (int i = activeSet.nextSetBit(0); i != -1; i = activeSet.nextSetBit(i + 1)) {
+                if (pos == addresses[i].length()) {
+                    activeSet.set(i, false); // run out of symbols
+                    //  weightToCover -= 1;   // this node lies on route to best node, so it is covered and its weight can  be removed from weightToCover
+                } else {
+                    char ch = addresses[i].charAt(pos);
+                    Integer count = ch2weight.get(ch);
+                    if (count == null)
+                        ch2weight.put(ch, 1);
+                    else
+                        ch2weight.put(ch, count + 1);
+                }
+            }
+            if (activeSet.cardinality() == 0)
+                break;
+
+            // determine the heaviest character
+            Character bestCh = null;
+            int bestCount = 0;
+            for (Character ch : ch2weight.keySet()) {
+                Integer weight = ch2weight.get(ch);
+                if (weight != null && weight > bestCount) {
+                    bestCh = ch;
+                    bestCount = weight;
+                }
+            }
+
+            if (bestCount >= weightToCover && bestCh != null)
+                buf.append(bestCh);
+            else
+                break;
+
+            for (int i = activeSet.nextSetBit(0); i != -1; i = activeSet.nextSetBit(i + 1)) {
+                if (addresses[i].charAt(pos) != bestCh)   // no length problem here, if address too short then it will not be active
+                    activeSet.set(i, false);   // not on best path, remove from active nodes
+            }
+            if (activeSet.cardinality() == 0)
+                break;
+            ch2weight.clear();
+        }
+
+        String result = buf.toString();
+
+        if (result.length() > 0) {
+            return result;
+        } else
+            return "";
+    }
+
+
 }
 

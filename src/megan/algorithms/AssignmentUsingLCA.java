@@ -33,8 +33,6 @@ import java.util.BitSet;
 public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     private String[] addresses;
 
-    private final BitSet toRemove;
-
     private final String cName;
     private final ClassificationFullTree fullTree;
 
@@ -45,7 +43,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
         this.cName = cName;
         fullTree = ClassificationManager.get(cName, true).getFullTree();
         addresses = new String[1000];
-        toRemove = new BitSet();
     }
 
     /**
@@ -61,7 +58,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
 
         // compute addresses of all hit taxa:
         if (activeMatches.cardinality() > 0) {
-
             boolean hasDisabledMatches = false;
 
             // collect the addresses of all non-disabled taxa:
@@ -105,10 +101,9 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
             // compute LCA using addresses:
             if (numberOfAddresses > 0) {
                 final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
-                final Integer id = fullTree.getAddress2Id(address);
-                if (id != null && id > 0) {
+                final int id = fullTree.getAddress2Id(address);
+                if (id > 0)
                     return id;
-                }
             }
         }
         // although we had some hits, couldn't make an assignment

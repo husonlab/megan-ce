@@ -26,16 +26,21 @@ package megan.algorithms;
 public class AssignmentUsingLCAForTaxonomyCreator implements IAssignmentAlgorithmCreator {
     private final String cName;
     private final boolean usePercentIdentityFilter;
+    private final float percentToCover;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingLCAForTaxonomyCreator(String cName, boolean usePercentIdentityFilter) {
+    public AssignmentUsingLCAForTaxonomyCreator(String cName, boolean usePercentIdentityFilter, float percentToCover) {
         this.cName = cName;
         this.usePercentIdentityFilter = usePercentIdentityFilter;
-        System.err.println("Using Naive LCA algorithm for binning: " + cName);
+        this.percentToCover = percentToCover;
+        if (percentToCover == 100)
+            System.err.println(String.format("Using 'Naive LCA' algorithm for binning: %s", cName));
+        else
+            System.err.println(String.format("Using 'Naive LCA' algorithm (%.1f %%) for binning: %s", percentToCover, cName));
     }
 
     /**
@@ -45,6 +50,6 @@ public class AssignmentUsingLCAForTaxonomyCreator implements IAssignmentAlgorith
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingLCAForTaxonomy(cName, usePercentIdentityFilter);
+        return new AssignmentUsingLCAForTaxonomy(cName, usePercentIdentityFilter, percentToCover);
     }
 }

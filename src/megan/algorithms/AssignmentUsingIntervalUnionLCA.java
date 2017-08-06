@@ -55,7 +55,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
      * constructor
      */
     public AssignmentUsingIntervalUnionLCA(Document doc) {
-        this.weightedPercentFactor = Math.min(1f, doc.getWeightedLCAPercent() / 100.0f);
+        this.weightedPercentFactor = Math.min(1f, doc.getLcaCoveragePercent() / 100.0f);
         this.topPercent = doc.getTopPercent();
         this.fullTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
 
@@ -232,18 +232,20 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     private IntervalList computeCoveredBasesRec(final Node v, final HashSet<Node> allNodes, final HashMap<Integer, IntervalList> taxa2intervals, final Map<Node, Integer> node2covered) {
         final int taxId = (Integer) v.getInfo();
 
-        IntervalList intervals = taxa2intervals.get(taxId); // get intervals, if defined
+        final IntervalList intervals;
+        if (taxa2intervals.get(taxId) != null)
+            intervals = taxa2intervals.get(taxId);
+        else {
+            intervals = new IntervalList();
+            taxa2intervals.put(taxId, intervals);
+        }
 
-        // get intervals or children:
+        // get intervals of children:
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             final Node w = e.getTarget();
             if (allNodes.contains(w)) {
                 final IntervalList intervalsW = computeCoveredBasesRec(w, allNodes, taxa2intervals, node2covered);
-                if (intervals == null)
-                    intervals = intervalsW;
-                else {
-                    intervals.addAll(intervalsW.getAll()); // this will trigger recomputation of amount covered
-                }
+                intervals.addAll(intervalsW.getAll()); // this will trigger recomputation of amount covered
             }
         }
         node2covered.put(v, intervals.getCovered());
@@ -261,23 +263,22 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
      */
     private int getLCA(Node v, HashSet<Node> allNodes, Map<Node, Integer> node2covered, double threshold) {
         while (true) {
-            Node next = null;
+            Node bestChild = null;
 
             for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
                 final Node w = e.getTarget();
                 if (allNodes.contains(w)) {
                     if (node2covered.get(w) >= threshold) {
-                        if (next == null)
-                            next = w;
-                        else
-                            return (Integer) v.getInfo(); // more than one child meets the threshold, return v
+                        if (bestChild == null)
+                            bestChild = w;
+                        else return (Integer) v.getInfo(); // has at least two best children, return v
                     }
                 }
             }
-            if (next == null)
-                return (Integer) v.getInfo(); // no child meets the threshold, return v
+            if (bestChild != null)
+                v = bestChild; // has exactly one child that beats threshold, move down to it
             else
-                v = next;
+                return (Integer) v.getInfo(); //  no best child, return v
         }
     }
 
@@ -308,7 +309,6 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
             }
         };
     }
-
 
     private class StartStopEvent {
         private boolean start;
@@ -343,7 +343,10 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
         private int covered = 0;
         private boolean isSorted = false;
 
-        public void updateSort() {
+        public IntervalList() {
+        }
+
+        private void updateSort() {
             // sort all the intervals:
             list.sort(new Comparator<IntPair>() {
                 @Override
@@ -360,9 +363,26 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                         return 0;
                 }
             });
+
+            // make the intervals disjoint:
+            final ArrayList<IntPair> orig = new ArrayList<>(list);
+            list.clear();
+            IntPair prev = null;
+            for (IntPair pair : orig) {
+                if (prev == null)
+                    prev = pair;
+                else if (pair.getA() > prev.getB()) {
+                    list.add(prev);
+                    prev = new IntPair(pair.getA(), pair.getB());
+                } else {
+                    prev.setB(Math.max(prev.getB(), pair.getB()));
+                }
+            }
+            if (prev != null)
+                list.add(prev);
         }
 
-        public void updateCover() {
+        private void updateCover() {
             // recompute the amount covered:
             covered = 0;
             int lastStart = -1;
@@ -418,14 +438,22 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
         public Collection<IntPair> getAll() {
             return list;
         }
+
+        public int size() {
+            return list.size();
+        }
     }
 
     private class IntPair {
-        private final int a;
-        private final int b;
+        private int a;
+        private int b;
 
         public IntPair(int a, int b) {
             this.a = a;
+            this.b = b;
+        }
+
+        public void setB(int b) {
             this.b = b;
         }
 

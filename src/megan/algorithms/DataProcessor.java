@@ -104,14 +104,14 @@ public class DataProcessor {
                     switch (doc.getLcaAlgorithm()) {
                         default:
                         case naive:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case weighted:
                             // we are assuming that taxonomy classification is The taxonomy classification
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(doc, doc.getTopPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(doc);
                             break;
                     }
                 } else if (useLCAForClassification[c])

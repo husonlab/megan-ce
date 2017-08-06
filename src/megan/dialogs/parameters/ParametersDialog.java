@@ -59,7 +59,7 @@ public class ParametersDialog extends JDialog {
     private final JTextField minSupportPercentField = new JTextField(8);
     private final JTextField minPercentIdentityField = new JTextField(8);
     private final JTextField minComplexityField = new JTextField(8);
-    private final JTextField weightedLCAPercentField = new JTextField(8);
+    private final JTextField lcaCoveragePercent = new JTextField(8);
 
     private final JTextField minPercentReadToCoverField = new JTextField(8);
 
@@ -113,7 +113,7 @@ public class ParametersDialog extends JDialog {
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());
 
-        setWeightedLCAPercent(doc.getWeightedLCAPercent());
+        setWeightedLCAPercent(doc.getLcaCoveragePercent());
 
         readAssignmentModeComboBox.setEditable(false);
         for (Document.ReadAssignmentMode readAssignmentMode : Document.ReadAssignmentMode.values()) {
@@ -351,8 +351,10 @@ public class ParametersDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                         ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
-                        weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted)
-                                || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads));
+                        if (getLcaAlgorithm().equals(Document.LCAAlgorithm.naive))
+                            lcaCoveragePercent.setText("100");
+                        else
+                            lcaCoveragePercent.setText("80");
                     }
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
@@ -371,9 +373,9 @@ public class ParametersDialog extends JDialog {
             });
 
             aPanel.add(new JLabel("Percent to cover:"));
-            aPanel.add(weightedLCAPercentField);
-            weightedLCAPercentField.setToolTipText("Percent of weight to cover by weighted LCA or long reads LCA");
-            weightedLCAPercentField.getDocument().addDocumentListener(new DocumentListener() {
+            aPanel.add(lcaCoveragePercent);
+            lcaCoveragePercent.setToolTipText("Percent of weight to covered by LCA");
+            lcaCoveragePercent.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent event) {
                     commandManager.updateEnableState();
                 }
@@ -386,9 +388,7 @@ public class ParametersDialog extends JDialog {
                     commandManager.updateEnableState();
                 }
             });
-            weightedLCAPercentField.setText("" + doc.getWeightedLCAPercent());
-            weightedLCAPercentField.setEnabled(getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted)
-                    || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads));
+            lcaCoveragePercent.setText("" + doc.getLcaCoveragePercent());
 
             aPanel.add(new JLabel("Read Assignment Mode:"));
 
@@ -691,10 +691,10 @@ public class ParametersDialog extends JDialog {
         readAssignmentModeComboBox.setSelectedItem(readAssignmentMode.toString());
     }
 
-    public float getWeightedLCAPercent() {
-        float value = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
+    public float getLCACoveragePercent() {
+        float value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
         try {
-            value = Basic.parseFloat(weightedLCAPercentField.getText());
+            value = Basic.parseFloat(lcaCoveragePercent.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -702,14 +702,14 @@ public class ParametersDialog extends JDialog {
     }
 
     public void setWeightedLCAPercent(float value) {
-        weightedLCAPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
+        lcaCoveragePercent.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
     public String getParameterString() {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " lcaAlgorithm=" + getLcaAlgorithm().toString() + (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads ? " weightedLCAPercent=" + getWeightedLCAPercent() : "") +
+                " lcaAlgorithm=" + getLcaAlgorithm().toString() + " lcaCoveragePercent=" + getLCACoveragePercent() +
                 " minPercentReadToCover=" + getMinPercentReadToCover() + " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + " readAssignmentMode=" + getReadAssignmentMode()

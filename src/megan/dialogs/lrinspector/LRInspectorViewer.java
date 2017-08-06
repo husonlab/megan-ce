@@ -196,7 +196,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
             NotificationsInSwing.showWarning(this.getFrame(),
                     "Long read analysis in MEGAN is under development.\n" +
                             "This is an experimental feature.\n" +
-                            "We plan to submit a publication on this by mid 2017.");
+                            "We plan to submit a publication on this in 2017.");
         }
     }
 

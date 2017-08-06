@@ -35,12 +35,13 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      *
      * @param document
      */
-    public AssignmentUsingIntervalUnionLCACreator(Document document, float topPercent) {
+    public AssignmentUsingIntervalUnionLCACreator(Document document) {
         this.document = document;
         if (ProgramProperties.get("use-segment-lca", false))
-            System.err.println("Using segment-LCA algorithm for binning: " + Classification.Taxonomy);
+            System.err.println("Using 'segment-LCA' algorithm for binning: " + Classification.Taxonomy);
         else
-            System.err.println("Using max-coverage-LCA algorithm for binning: " + Classification.Taxonomy);
+            System.err.println(String.format("Using 'Interval-Union-LCA' algorithm (%.1f %%) for binning: %s",
+                    document.getLcaCoveragePercent(), Classification.Taxonomy));
     }
 
     /**

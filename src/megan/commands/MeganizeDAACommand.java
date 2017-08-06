@@ -56,7 +56,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
      */
     public String getSyntax() {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[description=<text>];";
     }
@@ -123,11 +123,12 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("lcaAlgorithm=");
             lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase());
         }
-        float weightedLCAPercent = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
-        if (np.peekMatchAnyTokenIgnoreCase("weightedLCAPercent")) {
-            np.matchIgnoreCase("weightedLCAPercent=");
-            weightedLCAPercent = (float) np.getDouble(1, 100);
-            ProgramProperties.put("weightedLCAPercent", weightedLCAPercent);
+        float lcaCoveragePercent = Document.DEFAULT_LCA_COVERAGE_PERCENT;
+        if (np.peekMatchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent")) {
+            np.matchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent");
+            np.matchIgnoreCase("=");
+            lcaCoveragePercent = (float) np.getDouble(1, 100);
+            ProgramProperties.put("lcaCoveragePercent", lcaCoveragePercent);
         }
 
         float minComplexity = 0;
@@ -204,7 +205,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, weightedLCAPercent, doc.isLongReads(), doc.getMinPercentReadToCover());
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), doc.getMinPercentReadToCover());
                 // todo: save the description
 
                 {

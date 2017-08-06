@@ -70,7 +70,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
 
 
-    final JTextField weightedLCAPercentField = new JTextField(8);
+    final JTextField lcaCoveragePercentField = new JTextField(8);
     final JTextField minComplexityField = new JTextField(8);
     final JTextField minPercentReadCoveredField = new JTextField(8);
 
@@ -168,7 +168,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinComplexity(doc.getMinComplexity());
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
-        setWeightedLCAPercent(doc.getWeightedLCAPercent());
+        setLCACoveragePercent(doc.getLcaCoveragePercent());
         setLcaAlgorithm(doc.getLcaAlgorithm());
 
         setLongReads(doc.isLongReads());
@@ -447,22 +447,22 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
     }
 
-    public double getWeightedLCAPercent() {
-        double value = Document.DEFAULT_WEIGHTED_LCA_PERCENT;
+    public double getLCACoveragePercent() {
+        double value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
         try {
-            value = Basic.parseDouble(weightedLCAPercentField.getText());
+            value = Basic.parseDouble(lcaCoveragePercentField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
         return value;
     }
 
-    public void setWeightedLCAPercent(double value) {
-        weightedLCAPercentField.setText("" + (float) Math.max(0, Math.min(100, value)));
+    public void setLCACoveragePercent(double value) {
+        lcaCoveragePercentField.setText("" + (float) Math.max(0, Math.min(100, value)));
     }
 
-    public JTextField getWeightedLCAPercentField() {
-        return weightedLCAPercentField;
+    public JTextField getLcaCoveragePercentField() {
+        return lcaCoveragePercentField;
     }
 
     public JTextField getMinPercentReadToCoverField() {
@@ -799,7 +799,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
         if (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
-            buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+            buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());

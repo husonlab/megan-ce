@@ -196,7 +196,7 @@ public class NotificationsInSwing {
                                 imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-confim.png").toExternalForm());
                                 break;
                             }
-                            }
+                        }
                         imageView.setFitHeight(16);
                         imageView.setFitWidth(16);
                         notification.graphic(imageView);
@@ -206,7 +206,7 @@ public class NotificationsInSwing {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            }
+        }
 
         if (!isShowNotifications() || isEchoToConsole()) {
             switch (mode) {

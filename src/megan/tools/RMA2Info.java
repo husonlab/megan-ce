@@ -122,7 +122,9 @@ public class RMA2Info {
                     outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                 }
             }
-            reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
+            if (listClass2Count.size() > 0 || listRead2Class.size() > 0) {
+                reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
+            }
         }
         if (extractSummaryFile.length() > 0) {
             try (Writer w = new FileWriter(extractSummaryFile)) {

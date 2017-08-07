@@ -99,7 +99,6 @@ public class DAA2Info {
         doc.loadMeganFile();
 
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
-
             if (listGeneralInfo || listMoreStuff) {
                 final DAAHeader daaHeader = new DAAHeader(daaFile, true);
                 outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
@@ -118,8 +117,14 @@ public class DAA2Info {
                         outs.write("# Meganization summary:\n");
                         outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                     }
-                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
                 }
+            }
+
+            if (listClass2Count.size() > 0 || listRead2Class.size() > 0) {
+                if (isMeganized)
+                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
+                else
+                    System.err.println("Can't list class to count or read to count: file has not been meganized");
             }
         }
         if (extractSummaryFile.length() > 0) {

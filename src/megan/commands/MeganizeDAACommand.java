@@ -56,7 +56,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
      */
     public String getSyntax() {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>]  [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[description=<text>];";
     }
@@ -129,6 +129,13 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("=");
             lcaCoveragePercent = (float) np.getDouble(1, 100);
             ProgramProperties.put("lcaCoveragePercent", lcaCoveragePercent);
+        }
+
+        float minPercentReadToCover = Document.DEFAULT_MIN_PERCENT_READ_TO_COVER;
+        if (np.peekMatchIgnoreCase("minPercentReadToCover")) {
+            np.matchIgnoreCase("minPercentReadToCover=");
+            minPercentReadToCover = (float) np.getDouble(0, 100);
+            ProgramProperties.put("minPercentReadToCover", minPercentReadToCover);
         }
 
         float minComplexity = 0;
@@ -205,7 +212,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), doc.getMinPercentReadToCover());
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), minPercentReadToCover);
                 // todo: save the description
 
                 {

@@ -224,6 +224,7 @@ public class DAAMeganizer {
 
         for (int i = 0; i < daaFiles.length; i++) {
             final String daaFile = daaFiles[i];
+            System.err.println("Meganizing: " + daaFile);
             final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
             Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads, minPercentReadToCover);
         }

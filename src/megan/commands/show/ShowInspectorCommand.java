@@ -24,6 +24,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.inspector.InspectorWindow;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -41,10 +42,7 @@ public class ShowInspectorCommand extends CommandBase implements ICommand {
         if (inspectorWindow == null) {
             inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
         }
-        inspectorWindow.getFrame().setVisible(true);
-        inspectorWindow.getFrame().toFront();
-        inspectorWindow.getFrame().setState(JFrame.NORMAL);
-
+        WindowUtilities.toFront(inspectorWindow.getFrame());
     }
 
     public void actionPerformed(ActionEvent event) {

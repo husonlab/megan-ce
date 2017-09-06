@@ -68,7 +68,7 @@ public class TaxonomicLevels {
         majorRanks.set(127);
 
         addLevel(1, Kingdom);
-        majorRanks.set(1);
+        //majorRanks.set(1);  // don't use this because it will cause kingdoms to filled in
 
         addLevel(2, Phylum);
         majorRanks.set(2);

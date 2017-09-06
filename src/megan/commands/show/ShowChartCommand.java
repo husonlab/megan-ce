@@ -34,6 +34,7 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
@@ -103,10 +104,7 @@ public class ShowChartCommand extends CommandBase implements ICommand {
                 chartViewer.updateView(Director.ALL);
             }
         }
-        if (chartViewer != null) {
-            chartViewer.setVisible(true);
-            chartViewer.toFront();
-        }
+        WindowUtilities.toFront(chartViewer);
     }
 
     public boolean isCritical() {

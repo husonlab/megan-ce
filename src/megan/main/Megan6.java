@@ -83,7 +83,7 @@ public class Megan6 {
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setUseGUI(true);
 
-        final ArgsOptions options = new ArgsOptions(args, this, "MEGAN", "MEGAN MetaGenome Analyzer Community Edition");
+        final ArgsOptions options = new ArgsOptions(args, this, "MEGAN MetaGenome Analyzer Community Edition");
         options.setAuthors("Daniel H. Huson");
         options.setLicense("Copyright (C) 2017 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.");

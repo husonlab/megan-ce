@@ -115,7 +115,7 @@ public class ExtractToNewDocument {
                 iterator = new BlastX2SAMIterator(matchesText, maxNumberOfReads);
                 break;
             default:
-                throw new IOException("CanUnknown BLAST mode: " + blastMode.toString());
+                throw new IOException("Invalid BLAST mode: " + blastMode.toString());
         }
         try {
             iterator.next();

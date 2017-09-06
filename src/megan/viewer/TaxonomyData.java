@@ -26,8 +26,8 @@ import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -194,39 +194,56 @@ public class TaxonomyData {
      * @return path string or null
      */
     public static String getPath(int taxId, boolean majorRanksOnly) {
-        Node v = taxonomyClassification.getFullTree().getANode(taxId);
+
+        final String expectedPath = "DPCOFGS";
+        int expectedIndex = 0;
+
+        final Node v = taxonomyClassification.getFullTree().getANode(taxId);
         if (v != null) {
-            ArrayList<String> list = new ArrayList<>(20);
-            while (true) {
-                Integer id = (Integer) v.getInfo();
+            final LinkedList<Node> path = new LinkedList<>();
+            {
+                Node w = v;
+                while (true) {
+                    if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get((Integer) w.getInfo())))
+                        path.push(w);
+                    if (w.getInDegree() > 0)
+                        w = w.getFirstInEdge().getSource();
+                    else
+                        break;
+                }
+            }
+            StringBuilder buf = new StringBuilder();
+
+            for (Node w : path) {
+                Integer id = (Integer) w.getInfo();
                 if (id != null) {
-                    Integer rank = taxonomyClassification.getId2Rank().get(id);
-                    if (rank != null && rank != 0 && TaxonomicLevels.isMajorRank(rank)
-                            && TaxonomicLevels.getName(rank) != null) {
-                        String letters = TaxonomicLevels.getName(rank);
+                    if (majorRanksOnly) {
+                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer) w.getInfo()));
+
+                        final char key = Character.toUpperCase(letters.charAt(0));
+                        while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {
+                            char missing = expectedPath.charAt(expectedIndex);
+                            if (buf.length() > 0)
+                                buf.append(" ");
+                            buf.append("[").append(missing == 'D' ? "SK" : missing).append("] unknown;");
+                            expectedIndex++;
+                        }
+                        expectedIndex++;
 
                         if (letters.equals("Domain"))
                             letters = "SK";
                         else
                             letters = letters.substring(0, 1);
-                        list.add("[" + letters + "] " + taxonomyClassification.getName2IdMap().get(id));
-                    } else if (!majorRanksOnly || v.getInDegree() == 0 || v.getFirstInEdge().getSource().getInDegree() == 0)
-                        list.add(taxonomyClassification.getName2IdMap().get(id));
+
+                        if (buf.length() > 0)
+                            buf.append(" ");
+                        buf.append("[").append(letters).append("] ").append(taxonomyClassification.getName2IdMap().get(id)).append(";");
+                    } else {
+                        if (buf.length() > 0)
+                            buf.append(" ");
+                        buf.append(taxonomyClassification.getName2IdMap().get(id)).append(";");
+                    }
                 }
-                if (v.getInDegree() > 0)
-                    v = v.getFirstInEdge().getSource();
-                else {
-                    break;
-                }
-            }
-            StringBuilder buf = new StringBuilder();
-            boolean first = true;
-            for (int i = list.size() - 1; i >= 0; i--) {
-                if (first)
-                    first = false;
-                else
-                    buf.append(" ");
-                buf.append(list.get(i)).append(";");
             }
             return buf.toString();
         } else

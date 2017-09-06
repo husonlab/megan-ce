@@ -146,6 +146,9 @@ public class TaxonPathAssignment {
         final StringBuilder buf = new StringBuilder();
         final List<Pair<Integer, Float>> path = TaxonPathAssignment.computeTaxPath(readBlock, activeMatchesForTaxa);
 
+        final String expectedPath = "dpcofgs";
+        int expectedIndex = 0;
+
         for (Pair<Integer, Float> pair : path) {
             final Integer taxId = pair.getFirst();
             final String taxonName = (showTaxonIds ? "" + taxId : TaxonomyData.getName2IdMap().get(taxId)).replaceAll(";", "\\;");
@@ -170,7 +173,17 @@ public class TaxonPathAssignment {
                 char letter = Character.toLowerCase(rankName.charAt(0));
                 if (rank == 127) // domain
                     letter = 'd';
+
+                if (useOfficialRanksOnly) {
+                    while (expectedIndex < expectedPath.length() && letter != expectedPath.charAt(expectedIndex)) {
+                        buf.append(String.format("%c__unknown; %d;", expectedPath.charAt(expectedIndex), (int) (float) pair.getSecond()));
+                        expectedIndex++;
+                    }
+                    expectedIndex++;
+                }
+
                 buf.append(String.format("%c__%s; %d;", letter, taxonName, (int) (float) pair.getSecond()));
+
             } else
                 buf.append(" ").append(taxonName).append("; ").append((int) (float) pair.getSecond()).append(";");
         }

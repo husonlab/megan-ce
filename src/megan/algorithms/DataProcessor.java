@@ -55,9 +55,9 @@ public class DataProcessor {
 
         final ProgressListener progress = doc.getProgressListener();
         try {
-            progress.setTasks("Binning reads", "Initialization");
+            progress.setTasks("Binning reads", "Initializing...");
 
-            System.err.println("Binning reads...");
+            System.err.println("Initializing binning...");
             if (doc.isUseIdentityFilter()) {
                 System.err.println("Using min percent-identity values for taxonomic assignment of 16S reads");
             }
@@ -169,6 +169,7 @@ public class DataProcessor {
 
             final ReadAssignmentCalculator readAssignmentCalculator = new ReadAssignmentCalculator(doc.getReadAssignmentMode());
 
+            System.err.println("Binning reads...");
             progress.setTasks("Binning reads", "Analyzing alignments");
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {

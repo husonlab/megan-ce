@@ -35,10 +35,15 @@ public class ResetWindowCommand extends jloda.gui.commands.CommandBase implement
         np.matchIgnoreCase(getSyntax());
 
         final IDirectableViewer viewer = getViewer();
-        // viewer.getFrame().setSize(1000, 1000);
-        viewer.getFrame().setLocation(100, 100);
-        viewer.getFrame().setVisible(true);
-        viewer.getFrame().toFront();
+        // viewer.getFrame().setSize(1000, 1000);\
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                viewer.getFrame().setLocation(100, 100);
+                viewer.getFrame().setVisible(true);
+                viewer.getFrame().toFront();
+            }
+        });
     }
 
     public void actionPerformed(ActionEvent event) {

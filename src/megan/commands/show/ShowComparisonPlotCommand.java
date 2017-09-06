@@ -28,6 +28,7 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -61,13 +62,10 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
                     throw new IOException("Viewer must be open for chart to operate");
                 chartViewer = new ComparisonPlot(dir, classificationViewer);
                 getDir().addViewer(chartViewer);
-                chartViewer.setVisible(true);
             } else {
                 chartViewer.sync();
-                chartViewer.setVisible(true);
-                chartViewer.toFront();
-                chartViewer.updateView(Director.ALL);
             }
+        WindowUtilities.toFront(chartViewer);
     }
 
     public void actionPerformed(ActionEvent event) {

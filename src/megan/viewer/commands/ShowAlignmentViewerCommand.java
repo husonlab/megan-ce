@@ -26,6 +26,7 @@ import megan.alignment.AlignmentViewer;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
@@ -61,8 +62,7 @@ public class ShowAlignmentViewerCommand extends CommandBase implements ICommand 
                 final AlignmentViewer alignerViewer = new AlignmentViewer(dir);
                 dir.addViewer(alignerViewer);
                 alignerViewer.getBlast2Alignment().loadData(classificationViewer.getClassName(), ids, name, doc.getProgressListener());
-                alignerViewer.setVisible(true);
-                alignerViewer.toFront();
+                WindowUtilities.toFront(alignerViewer);
             }
         }
     }

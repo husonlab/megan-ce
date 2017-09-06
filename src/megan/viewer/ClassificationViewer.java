@@ -316,7 +316,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
             // double click label: inspect node
             public void doClickLabel(NodeSet nodes, int clicks) {
-                // todo: reimplement
             }
         });
 
@@ -400,7 +399,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                         setSelected(v, true);
                     }
                 }
-                trans.setScaleY(1);
+                // trans.setScaleY(1);
                 zoomToSelection();
                 setPreviousNodeIdsOfInterest(null);
             }
@@ -1671,17 +1670,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         final PhyloTree tree = new PhyloTree();
         computeInduceTreeWithNoCollapsedNodes(tree, new HashMap<Integer, Set<Node>>());
         final List<Integer> list = new ArrayList<>(tree.getNumberOfNodes());
-        final Set<Integer> seen = new HashSet<>();
         final Stack<Node> stack = new Stack<>();
         stack.add(tree.getRoot());
         while (stack.size() > 0) {
-            Node v = stack.pop();
-            Integer id = (Integer) v.getInfo();
-            // if (!seen.contains(id))
-            {
-                list.add(id);
-                seen.add(id);
-            }
+            final Node v = stack.pop();
+            list.add((Integer) v.getInfo());
             for (Edge e = v.getLastOutEdge(); e != null; e = v.getPrevOutEdge(e))
                 stack.push(e.getTarget());
         }

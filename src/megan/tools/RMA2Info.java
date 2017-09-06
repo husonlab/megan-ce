@@ -29,6 +29,7 @@ import megan.data.IClassificationBlock;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.dialogs.export.CSVExportFViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
@@ -158,14 +159,14 @@ public class RMA2Info {
 
         ClassificationFullTree taxonomyTree = null;
 
-        for (String classification : listClass2Count) {
+        for (String classificationName : listClass2Count) {
             if (listGeneralInfo || listMoreStuff)
-                outs.write("# Class to count for '" + classification + "':\n");
+                outs.write("# Class to count for '" + classificationName + "':\n");
 
-            if (!availableClassificationNames.contains(classification))
-                throw new IOException("Classification '" + classification + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
+            if (!availableClassificationNames.contains(classificationName))
+                throw new IOException("Classification '" + classificationName + "' not found in file, available: " + Basic.toString(availableClassificationNames, " "));
 
-            final boolean isTaxonomy = (classification.equals(Classification.Taxonomy));
+            final boolean isTaxonomy = (classificationName.equals(Classification.Taxonomy));
 
             final Name2IdMap name2IdMap;
             if (isTaxonomy && reportPaths) {
@@ -173,8 +174,8 @@ public class RMA2Info {
                 name2IdMap = null;
             } else if (reportNames) {
                 name2IdMap = new Name2IdMap();
-                name2IdMap.loadFromFile((classification.equals(Classification.Taxonomy) ? "ncbi" : classification.toLowerCase()) + ".map");
-                classification2NameMap.put(classification, name2IdMap);
+                name2IdMap.loadFromFile((classificationName.equals(Classification.Taxonomy) ? "ncbi" : classificationName.toLowerCase()) + ".map");
+                classification2NameMap.put(classificationName, name2IdMap);
             } else {
                 name2IdMap = null;
             }
@@ -185,7 +186,7 @@ public class RMA2Info {
                 taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
             }
 
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
             if (isTaxonomy) {
                 final Map<Integer, Float> taxId2count = new HashMap<>();
                 if (!majorRanksOnly) {
@@ -211,7 +212,7 @@ public class RMA2Info {
                         if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2)) {
                             final String className;
                             if (reportPaths) {
-                                className = TaxonomyData.getPathOrId(taxId, false);
+                                className = TaxonomyData.getPathOrId(taxId, majorRanksOnly);
                             } else if (name2IdMap == null || name2IdMap.get(taxId) == null)
                                 className = "" + taxId;
                             else
@@ -231,14 +232,31 @@ public class RMA2Info {
                 }
 
             } else { // not taxonomy
-                for (Integer classId : classificationBlock.getKeySet()) {
-                    if (classId > 0 || !ignoreUnassigned) {
-                        final String className;
-                        if (name2IdMap == null || name2IdMap.get(classId) == null)
-                            className = "" + classId;
-                        else
-                            className = name2IdMap.get(classId);
-                        outs.write(className + "\t" + classificationBlock.getWeightedSum(classId) + "\n");
+                if (reportPaths) {
+                    final Classification classification = ClassificationManager.get(classificationName, true);
+                    final ClassificationFullTree tree = classification.getFullTree();
+
+                    for (Integer classId : classificationBlock.getKeySet()) {
+                        final Set<Node> nodes = tree.getNodes(classId);
+                        if (nodes != null) {
+                            for (Node v : nodes) {
+                                String label = CSVExportFViewer.getPath(classification, v);
+                                outs.write(label + "\t" + classificationBlock.getWeightedSum(classId) + "\n");
+                            }
+                        } else {
+                            outs.write("Class " + classId + "\t" + classificationBlock.getWeightedSum(classId) + "\n");
+                        }
+                    }
+                } else {
+                    for (Integer classId : classificationBlock.getKeySet()) {
+                        if (classId > 0 || !ignoreUnassigned) {
+                            final String className;
+                            if (name2IdMap == null || name2IdMap.get(classId) == null)
+                                className = "" + classId;
+                            else
+                                className = name2IdMap.get(classId);
+                            outs.write(className + "\t" + classificationBlock.getWeightedSum(classId) + "\n");
+                        }
                     }
                 }
             }
@@ -289,7 +307,7 @@ public class RMA2Info {
                             classId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
 
                         if (isTaxonomy && reportPaths) {
-                            className = TaxonomyData.getPathOrId(classId, false);
+                            className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
                         } else if (name2IdMap == null || name2IdMap.get(classId) == null)
                             className = "" + classId;
                         else

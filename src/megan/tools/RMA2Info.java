@@ -89,7 +89,7 @@ public class RMA2Info {
         final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<String>()));
         final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<String>()));
         final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
-        final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers for taxonomy", false);
+        final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
         final boolean prefixRank = options.getOption("-r", "ranks", "When reporting taxonomy, report taxonomic rank using single letter (K for Kingdom, P for Phylum etc)", false);
         final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
         final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);

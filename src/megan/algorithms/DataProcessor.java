@@ -55,9 +55,9 @@ public class DataProcessor {
 
         final ProgressListener progress = doc.getProgressListener();
         try {
-            progress.setTasks("Binning reads", "Initialization");
+            progress.setTasks("Binning reads", "Initializing...");
 
-            System.err.println("Binning reads...");
+            System.err.println("Initializing binning...");
             if (doc.isUseIdentityFilter()) {
                 System.err.println("Using min percent-identity values for taxonomic assignment of 16S reads");
             }
@@ -104,14 +104,14 @@ public class DataProcessor {
                     switch (doc.getLcaAlgorithm()) {
                         default:
                         case naive:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case weighted:
                             // we are assuming that taxonomy classification is The taxonomy classification
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getWeightedLCAPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(doc, doc.getTopPercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(doc);
                             break;
                     }
                 } else if (useLCAForClassification[c])
@@ -169,6 +169,7 @@ public class DataProcessor {
 
             final ReadAssignmentCalculator readAssignmentCalculator = new ReadAssignmentCalculator(doc.getReadAssignmentMode());
 
+            System.err.println("Binning reads...");
             progress.setTasks("Binning reads", "Analyzing alignments");
 
             try (final IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, true)) {

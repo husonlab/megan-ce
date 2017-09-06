@@ -75,7 +75,7 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    final String name = getTaxonLabelSource(dir, format, taxonId);
+                    final String name = getTaxonLabelSource(format, taxonId);
                     if (name != null) {
                         w.write(name);
                         long length = 0L;
@@ -143,8 +143,7 @@ public class CSVExportTaxonomy {
                     if (taxonId != null) {
                         final NodeData data = viewer.getNodeData(v);
                         final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                        final String name = getTaxonLabelSource(dir, format, taxonId);
-                        if (name != null) {
+                        final String name = getTaxonLabelSource(format, taxonId);
                             if (counts.length == names.size()) {
                                 w.write(name);
                                 for (float num : counts)
@@ -153,7 +152,6 @@ public class CSVExportTaxonomy {
                                 totalLines++;
                             } else
                                 System.err.println("Skipped " + name + ", number of values: " + counts.length);
-                        }
                     }
                     progressListener.incrementProgress();
                 }
@@ -359,8 +357,7 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    final String name = getTaxonLabelSource(dir, format, taxonId);
-                    if (name != null) {
+                    final String name = getTaxonLabelSource(format, taxonId);
                         w.write(name);
                         for (int id : allBelow) {
                             if (classificationBlock.getSum(id) > 0) {
@@ -375,7 +372,6 @@ public class CSVExportTaxonomy {
                                 progressListener.checkForCancel();
                             }
                         }
-                    }
                     progressListener.incrementProgress();
                 }
             }
@@ -418,8 +414,7 @@ public class CSVExportTaxonomy {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    final String name = getTaxonLabelSource(dir, format, taxonId);
-                    if (name != null) {
+                    final String name = getTaxonLabelSource(format, taxonId);
                         w.write(name);
                         for (int id : allBelow) {
                             if (classificationBlock.getSum(id) > 0) {
@@ -434,7 +429,6 @@ public class CSVExportTaxonomy {
                                 progressListener.checkForCancel();
                             }
                         }
-                    }
                     progressListener.incrementProgress();
                 }
             }
@@ -450,11 +444,11 @@ public class CSVExportTaxonomy {
      * @param format
      * @return label type
      */
-    public static String getTaxonLabelSource(Director dir, String format, int taxonId) {
+    public static String getTaxonLabelSource(String format, int taxonId) {
         if (format.startsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(dir, taxonId));
+            return Basic.getInCleanQuotes(getPath(taxonId));
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
@@ -475,9 +469,9 @@ public class CSVExportTaxonomy {
         if (format.endsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(dir, taxonId));
+            return Basic.getInCleanQuotes(getPath(taxonId));
         else if (format.endsWith("taxonPathPercent"))
-            return getPathPecent(dir, readBlock);
+            return getPathPercent(dir, readBlock);
         else
             return "" + taxonId;
     }
@@ -486,13 +480,12 @@ public class CSVExportTaxonomy {
     /**
      * gets the full path to the named taxon
      *
-     * @param dir
      * @param taxonId
      * @return
      */
-    public static String getPath(Director dir, int taxonId) {
+    public static String getPath(int taxonId) {
         final List<String> path = new LinkedList<>();
-        Node v = dir.getMainViewer().getTaxId2Node(taxonId);
+        Node v = TaxonomyData.getTree().getANode(taxonId);
         while (v != null && v.getInfo() != null) {
             taxonId = (Integer) v.getInfo();
             String name = TaxonomyData.getName2IdMap().get(taxonId);
@@ -518,7 +511,7 @@ public class CSVExportTaxonomy {
      * @param readBlock
      * @return path
      */
-    public static String getPathPecent(Director dir, IReadBlock readBlock) {
+    public static String getPathPercent(Director dir, IReadBlock readBlock) {
         final Document doc = dir.getDocument();
         final BitSet activeMatchesForTaxa = new BitSet();
         ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);

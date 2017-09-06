@@ -22,6 +22,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.util.WindowUtilities;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
@@ -36,8 +37,7 @@ public class ShowMainViewerCommand extends megan.commands.CommandBase implements
         np.matchIgnoreCase(getSyntax());
         if (ProgramProperties.isUseGUI()) {
             final MainViewer viewer = (MainViewer) getDir().getViewerByClass(MainViewer.class);
-            viewer.getFrame().setVisible(true);
-            viewer.getFrame().toFront();
+            WindowUtilities.toFront(viewer.getFrame());
         }
     }
 

@@ -34,7 +34,6 @@ import megan.commands.CloseCommand;
 import megan.commands.SaveCommand;
 import megan.core.DataTable;
 import megan.core.Director;
-import megan.core.Document;
 import megan.core.SelectionSet;
 import megan.dialogs.compare.Comparer;
 import megan.main.MeganProperties;
@@ -235,8 +234,8 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 if (doc.isUseIdentityFilter())
                     buf2.append(" UseIdentityFilter=true");
                 buf2.append(" LCA=").append(doc.getLcaAlgorithm().toString());
-                if (doc.getLcaAlgorithm() == Document.LCAAlgorithm.weighted || doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
-                    buf2.append(String.format(" weightedLCAPercent=%d", Math.round(doc.getWeightedLCAPercent())));
+                if (doc.getLcaCoveragePercent() < 100f)
+                    buf2.append(String.format(" lcaCoveragePercent=%d", Math.round(doc.getLcaCoveragePercent())));
             } else {
                 buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));
                 Comparer.COMPARISON_MODE mode = Comparer.parseMode(dataTable.getParameters());

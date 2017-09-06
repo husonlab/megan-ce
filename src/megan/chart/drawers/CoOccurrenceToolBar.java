@@ -41,6 +41,8 @@ public class CoOccurrenceToolBar extends JToolBar {
     private final JSlider maxPrevalenceSlider = new JSlider();
     private final JTextField minProbabilityField = new JTextField(3);
     private final JSlider minProbabilitySlider = new JSlider();
+    private final JCheckBox showCooccurring = new JCheckBox();
+    private final JCheckBox showAntiOccurring = new JCheckBox();
     private final JButton applyButton;
 
     /**
@@ -146,6 +148,41 @@ public class CoOccurrenceToolBar extends JToolBar {
         add(minProbabilityField);
         addSeparator();
 
+        showCooccurring.setText("Co");
+        showCooccurring.setFont(font);
+        showCooccurring.setToolTipText("Show co-occurrence edges");
+        showCooccurring.setSelected(coOccurrenceDrawer.isShowCoOccurring());
+        showCooccurring.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                coOccurrenceDrawer.setShowCoOccurring(showCooccurring.isSelected());
+                if (!showCooccurring.isSelected() && !showAntiOccurring.isSelected()) {
+                    showAntiOccurring.setSelected(true);
+                    coOccurrenceDrawer.setShowAntiOccurring(true);
+                }
+                // applyButton.getAction().actionPerformed(null);
+            }
+        });
+        add(showCooccurring);
+
+        showAntiOccurring.setText("Anti");
+        showAntiOccurring.setFont(font);
+        showAntiOccurring.setToolTipText("Show anti-occurrence edges");
+        showAntiOccurring.setSelected(coOccurrenceDrawer.isShowAntiOccurring());
+        showAntiOccurring.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                coOccurrenceDrawer.setShowAntiOccurring(showAntiOccurring.isSelected());
+                if (!showCooccurring.isSelected() && !showAntiOccurring.isSelected()) {
+                    showCooccurring.setSelected(true);
+                    coOccurrenceDrawer.setShowCoOccurring(true);
+                }
+                // applyButton.getAction().actionPerformed(null);
+            }
+        });
+        add(showAntiOccurring);
+        addSeparator();
+
         applyButton = new JButton(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
@@ -178,6 +215,8 @@ public class CoOccurrenceToolBar extends JToolBar {
         maxPrevalenceSlider.setEnabled(enabled);
         minProbabilityField.setEnabled(enabled);
         minProbabilitySlider.setEnabled(enabled);
+        showCooccurring.setEnabled(enabled);
+        showAntiOccurring.setEnabled(enabled);
         applyButton.setEnabled(enabled);
     }
 

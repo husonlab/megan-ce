@@ -26,6 +26,7 @@ import megan.commands.CommandBase;
 import megan.core.ClassificationType;
 import megan.core.Director;
 import megan.dialogs.extractor.ExtractReadsViewer;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 
@@ -54,10 +55,8 @@ public class ShowExtractReadsDialogCommand extends CommandBase implements IComma
         else {
             throw new IOException("Invalid viewer");
         }
+        WindowUtilities.toFront(extractReadsViewer);
 
-        extractReadsViewer.getFrame().setVisible(true);
-        extractReadsViewer.getFrame().toFront();
-        extractReadsViewer.getFrame().setState(JFrame.NORMAL);
     }
 
     public void actionPerformed(ActionEvent event) {

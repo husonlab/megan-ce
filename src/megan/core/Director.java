@@ -24,6 +24,7 @@ import jloda.gui.director.*;
 import jloda.gui.message.MessageWindow;
 import jloda.util.*;
 import megan.fx.NotificationsInSwing;
+import megan.util.WindowUtilities;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
@@ -694,10 +695,8 @@ public class Director implements IDirectableViewer, IDirector {
      */
     public static void showMessageWindow() {
         if (ProgramProperties.isUseGUI() && MessageWindow.getInstance() != null) {
-            MessageWindow.getInstance().getFrame().setVisible(true);
-            MessageWindow.getInstance().getFrame().setState(JFrame.NORMAL);
-            MessageWindow.getInstance().getFrame().toFront();
             MessageWindow.getInstance().startCapturingOutput();
+            WindowUtilities.toFront(MessageWindow.getInstance().getFrame());
         }
     }
 

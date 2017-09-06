@@ -101,7 +101,7 @@ public class Document {
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.naive;
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.longReads;
 
-    public final static float DEFAULT_WEIGHTED_LCA_PERCENT = 80f;
+    public final static float DEFAULT_LCA_COVERAGE_PERCENT = 100f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public final static float DEFAULT_MIN_PERCENT_READ_TO_COVER = 0f;
 
@@ -120,7 +120,7 @@ public class Document {
     private int minSupport = DEFAULT_MINSUPPORT; // min summary count that a node needs to make it into the induced taxonomy
 
     private LCAAlgorithm lcaAlgorithm = DEFAULT_LCA_ALGORITHM_SHORT_READS;
-    private float weightedLCAPercent = DEFAULT_WEIGHTED_LCA_PERCENT;
+    private float lcaCoveragePercent = DEFAULT_LCA_COVERAGE_PERCENT;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
@@ -172,7 +172,7 @@ public class Document {
                     return name;
             }
         };
-        setWeightedLCAPercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_WEIGHTED_LCA_PERCENT));
+        setLcaCoveragePercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_LCA_COVERAGE_PERCENT));
     }
 
     public Director getDir() {
@@ -313,7 +313,7 @@ public class Document {
                     }
                 }
 
-                setWeightedLCAPercent(np.findIgnoreCase(tokens, "weightedLCAPercent=", getWeightedLCAPercent()));
+                setLcaCoveragePercent(np.findIgnoreCase(tokens, "lcaCoveragePercent=", getLcaCoveragePercent()));
 
                 setMinPercentReadToCover(np.findIgnoreCase(tokens, "minPercentReadToCover=", getMinPercentReadToCover()));
 
@@ -397,7 +397,7 @@ public class Document {
         buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
         if (getLcaAlgorithm() == LCAAlgorithm.weighted || getLcaAlgorithm() == LCAAlgorithm.longReads)
-            buf.append(" weightedLCAPercent=").append(getWeightedLCAPercent());
+            buf.append(" lcaCoveragePercent=").append(getLcaCoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" longReads=").append(isLongReads());
@@ -806,12 +806,12 @@ public class Document {
         return name2versionInfo;
     }
 
-    public float getWeightedLCAPercent() {
-        return weightedLCAPercent;
+    public float getLcaCoveragePercent() {
+        return lcaCoveragePercent;
     }
 
-    public void setWeightedLCAPercent(float weightedLCAPercent) {
-        this.weightedLCAPercent = weightedLCAPercent;
+    public void setLcaCoveragePercent(float lcaCoveragePercent) {
+        this.lcaCoveragePercent = lcaCoveragePercent;
     }
 
 

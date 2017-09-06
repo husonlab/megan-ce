@@ -49,11 +49,11 @@ public class LabelSummarizedCommand extends CommandBase implements ICheckBoxComm
     }
 
     public String getName() {
-        return "Show Number of Reads Summarized";
+        return "Show Number of Summarized";
     }
 
     public String getDescription() {
-        return "Display the total number of hits to a taxon and its descendants";
+        return "Show the number of reads, aligned bases or bases assigned to a node or one of its descendants";
     }
 
     public KeyStroke getAcceleratorKey() {

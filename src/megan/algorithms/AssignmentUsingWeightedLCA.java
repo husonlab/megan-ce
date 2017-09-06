@@ -20,6 +20,7 @@
 package megan.algorithms;
 
 
+import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -55,7 +56,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     private final Map<Character, Integer> ch2weight = new HashMap<>(Character.MAX_VALUE, 1f);
 
-    private WeightedAddress[] addressingArray = new WeightedAddress[1000];
+    private WeightedAddress[] addressingArray = new WeightedAddress[0];
 
     private boolean ignoreAncestors = true; // alignments to ancestors are considered ok
 
@@ -78,6 +79,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         this.taxon2SpeciesMapping = taxon2SpeciesMapping;
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
+
+        addressingArray = resizeArray(addressingArray, 1000); // need to call this method so that each element is set
     }
 
     /**
@@ -111,7 +114,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         final String address = fullTree.getAddress(taxId);
                         if (address != null) {
                             if (arrayLength >= addressingArray.length)
-                                resizeArray(addressingArray, 2 * addressingArray.length);
+                                addressingArray = resizeArray(addressingArray, 2 * addressingArray.length);
 
                             if (ref2weight != null) {
                                 final String ref = matchBlock.getTextFirstWord();
@@ -123,7 +126,12 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                             } else {
                                 final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
                                 int weight = Math.max(1, refId2weight[refId]);
-                                addressingArray[arrayLength++].set(address, weight);
+                                try {
+                                    addressingArray[arrayLength++].set(address, weight);
+                                } catch (NullPointerException ex) {
+                                    Basic.caught(ex);
+                                    throw ex;
+                                }
                             }
                         }
                     } else
@@ -145,7 +153,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                             final String address = fullTree.getAddress(taxId);
                             if (address != null) {
                                 if (arrayLength >= addressingArray.length)
-                                    resizeArray(addressingArray, 2 * addressingArray.length);
+                                    addressingArray = resizeArray(addressingArray, 2 * addressingArray.length);
 
                                 if (ref2weight != null) {
                                     final String ref = matchBlock.getTextFirstWord();
@@ -214,7 +222,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             String address = fullTree.getAddress(taxonId);
             if (address != null) {
                 if (arrayLength >= addressingArray.length) {
-                    AssignmentUsingWeightedLCA.resizeArray(addressingArray, 2 * addressingArray.length);
+                    addressingArray = resizeArray(addressingArray, 2 * addressingArray.length);
                 }
                 addressingArray[arrayLength++].set(address, taxon2weight.get(taxonId));
             }
@@ -370,7 +378,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
      * @return new array
      */
     public static WeightedAddress[] resizeArray(WeightedAddress[] array, int size) {
-        WeightedAddress[] result = new WeightedAddress[size];
+        final WeightedAddress[] result = new WeightedAddress[size];
         System.arraycopy(array, 0, result, 0, array.length);
         for (int i = array.length; i < result.length; i++)
             result[i] = new WeightedAddress();

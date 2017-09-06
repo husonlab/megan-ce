@@ -26,6 +26,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.dialogs.lrinspector.LRInspectorViewer;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
@@ -90,8 +91,7 @@ public class ShowLRInspectorCommand extends CommandBase implements ICommand {
                     LRInspectorViewer viewer = classification2viewer.get(pair);
                     if (viewer != null) {
                         if (dir.getViewers().contains(viewer)) {
-                            viewer.setVisible(true);
-                            viewer.toFront();
+                            WindowUtilities.toFront(viewer);
                         } else {
                             classification2viewer.remove(pair);
                             viewer = null;

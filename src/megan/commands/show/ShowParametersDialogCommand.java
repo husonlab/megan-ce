@@ -39,7 +39,7 @@ import java.awt.event.KeyEvent;
 public class ShowParametersDialogCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
-                "\t[weightedLCA={false|true}] [weightedLCAPercent=<number>] [percentReadToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+                "\t[weightedLCA={false|true}] [lcaCoveragePercent=<number>] [percentReadToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }
 
@@ -77,9 +77,10 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
             np.matchIgnoreCase("lcaAlgorithm=");
             getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
         }
-        if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
-            np.matchIgnoreCase("weightedLCAPercent=");
-            getDoc().setWeightedLCAPercent((float) np.getDouble(1, 100));
+        if (np.peekMatchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent")) {
+            np.matchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent");
+            np.matchIgnoreCase("=");
+            getDoc().setLcaCoveragePercent((float) np.getDouble(1, 100));
         }
         if (np.peekMatchIgnoreCase("minPercentReadToCover")) {
             np.matchIgnoreCase("minPercentReadToCover=");

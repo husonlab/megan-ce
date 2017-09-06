@@ -26,6 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.commands.CommandBase;
 import megan.util.FormatterUtils;
+import megan.util.WindowUtilities;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
@@ -48,10 +49,7 @@ public class ShowFormatterCommand extends CommandBase implements ICommand {
             formatter = FormatterUtils.getFormatter((ViewerBase) getViewer(), getDir());
         else
             formatter = FormatterUtils.getFormatter(((ClusterViewer) viewer).getGraphView(), getDir());
-
-        formatter.getFrame().setVisible(true);
-        formatter.getFrame().setState(JFrame.NORMAL);
-        formatter.getFrame().toFront();
+        WindowUtilities.toFront(formatter.getFrame());
     }
 
     public void actionPerformed(ActionEvent event) {

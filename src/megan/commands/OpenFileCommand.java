@@ -95,10 +95,16 @@ public class OpenFileCommand extends CommandBase implements ICommand {
             final Director newDir = Director.newProject();
             newDir.getMainViewer().setDoReInduce(true);
             newDir.getMainViewer().setDoReset(true);
+            newDir.getMainViewer().getFrame().requestFocus(); // todo: recently added in an attempt to fix problem that window opens behind old one
             newDir.execute(np.getQuotedTokensRespectCase(null, ";") + ";", newDir.getMainViewer().getCommandManager());
         } else {
             try {
-                viewer.getFrame().toFront();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewer.getFrame().toFront();
+                    }
+                });
                 np.matchIgnoreCase("open file=");
 
                 String fileName = np.getAbsoluteFileName();

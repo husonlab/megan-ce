@@ -61,21 +61,27 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 
-        ClassificationViewer classificationViewer = (ClassificationViewer) ((Director) getDir()).getViewerByClassName(cName);
-        if (classificationViewer == null) {
+        final ClassificationViewer classificationViewer;
+        if (((Director) getDir()).getViewerByClassName(cName) != null)
+            classificationViewer = (ClassificationViewer) ((Director) getDir()).getViewerByClassName(cName);
+        else {
             try {
                 classificationViewer = new ClassificationViewer((Director) getDir(), ClassificationManager.get(cName, true), true);
                 getDir().addViewer(classificationViewer);
             } catch (Exception e) {
                 Basic.caught(e);
+                return;
             }
         }
-        if (classificationViewer != null) {
-            classificationViewer.updateView(Director.ALL);
-            classificationViewer.getFrame().setVisible(true);
-            classificationViewer.getFrame().setState(JFrame.NORMAL);
-            classificationViewer.getFrame().toFront();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                classificationViewer.updateView(Director.ALL);
+                classificationViewer.getFrame().setVisible(true);
+                classificationViewer.getFrame().setState(JFrame.NORMAL);
+                classificationViewer.getFrame().toFront();
+            }
+        });
     }
 
     /**

@@ -26,6 +26,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.remote.RemoteServiceBrowser;
 import megan.remote.client.RemoteServiceManager;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,9 +51,8 @@ public class ShowRemoteBrowserCommand extends CommandBase implements ICommand {
 
             remoteServiceBrowser = (RemoteServiceBrowser) dir.addViewer(new RemoteServiceBrowser(getViewer().getFrame()));
         }
-        remoteServiceBrowser.getFrame().setVisible(true);
-        remoteServiceBrowser.getFrame().toFront();
-        remoteServiceBrowser.getFrame().setState(JFrame.NORMAL);
+        WindowUtilities.toFront(remoteServiceBrowser.getFrame());
+
     }
 
     public void actionPerformed(ActionEvent event) {

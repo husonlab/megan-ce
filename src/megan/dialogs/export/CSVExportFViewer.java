@@ -87,7 +87,6 @@ public class CSVExportFViewer {
                         final NodeData data = cViewer.getNodeData(v);
                         final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                         final String name = getLabelSource(shortName, classification, format, v);
-                        if (name != null) {
                             if (counts.length == names.size()) {
                                 w.write(name);
                                 for (float a : counts)
@@ -96,7 +95,6 @@ public class CSVExportFViewer {
                                 totalLines++;
                             } else
                                 System.err.println("Skipped " + name + ", number of values: " + counts.length);
-                        }
                     }
                     progressListener.incrementProgress();
                 }
@@ -164,7 +162,6 @@ public class CSVExportFViewer {
                             final NodeData data = cViewer.getNodeData(v);
                             final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                             final String name = getLabelSource(shortName, classification, format, v);
-                            if (name != null) {
                                 if (counts.length == names.size()) {
                                     w.write(name);
                                     for (int i = 0; i < counts.length; i++) {
@@ -175,7 +172,6 @@ public class CSVExportFViewer {
                                     totalLines++;
                                 } else
                                     System.err.println("Skipped " + name + ", number of values: " + counts.length);
-                            }
                         }
                         progressListener.incrementProgress();
                     }
@@ -481,8 +477,8 @@ public class CSVExportFViewer {
      * @param v
      * @return path label
      */
-    private static String getPath(Classification classification, Node v) {
-        List<String> path = new LinkedList<>();
+    public static String getPath(Classification classification, Node v) {
+        final List<String> path = new LinkedList<>();
         while (v != null && v.getInfo() != null) {
             path.add(classification.getName2IdMap().get((Integer) v.getInfo()));
             if (v.getInDegree() > 0)

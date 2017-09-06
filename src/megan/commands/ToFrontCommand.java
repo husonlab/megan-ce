@@ -24,6 +24,7 @@ import jloda.gui.director.IDirector;
 import jloda.gui.director.ProjectManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +35,7 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 2.2011
  */
 public class ToFrontCommand extends CommandBase implements ICommand {
+
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("toFront");
         String fileName = null;
@@ -58,14 +60,11 @@ public class ToFrontCommand extends CommandBase implements ICommand {
         }
 
         if (viewer != null) {
-            viewer.getFrame().setVisible(true);
-            viewer.getFrame().toFront();
+            WindowUtilities.toFront(viewer.getFrame());
         } else if (getParent() != null && getParent() instanceof Window) {
-            ((Window) getParent()).setVisible(true);
-            ((Window) getParent()).toFront();
+            WindowUtilities.toFront((Window) getParent());
         }
     }
-
 
     public boolean isApplicable() {
         return getViewer() != null || (getParent() != null && getParent() instanceof Window);

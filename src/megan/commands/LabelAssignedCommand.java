@@ -46,11 +46,11 @@ public class LabelAssignedCommand extends CommandBase implements ICheckBoxComman
     }
 
     public String getName() {
-        return "Show Number of Reads Assigned";
+        return "Show Number of Assigned";
     }
 
     public String getDescription() {
-        return "Display the number of reads assigned to a taxon";
+        return "Show the number of reads, aligned bases or bases assigned to a node";
     }
 
     public KeyStroke getAcceleratorKey() {
@@ -61,7 +61,7 @@ public class LabelAssignedCommand extends CommandBase implements ICheckBoxComman
         return null;
     }
 
-    /**
+    /*
      * parses the given command and executes it
      *
      * @param np

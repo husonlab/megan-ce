@@ -26,6 +26,7 @@ import jloda.util.Triplet;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.inspector.InspectorWindow;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
@@ -66,33 +67,34 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
                     name2Size2Ids.add(new Triplet<>(name, size, ids));
                 }
             }
+        WindowUtilities.toFront(inspectorWindow.getFrame());
+
         if (name2Size2Ids.size() > 0) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        inspectorWindow.getFrame().setVisible(true);
-                        inspectorWindow.getFrame().toFront();
-                        inspectorWindow.getFrame().setState(JFrame.NORMAL);
                         inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
-                        final Runnable job = new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        inspectorWindow.getFrame().toFront();
+                        if (false) { // todo: without this, inspector window sometimes opens behind main windows...
+                            final Runnable job = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        };
-                        Thread thread = new Thread(job);
-                        thread.setDaemon(true);
-                        thread.start();
+                                    SwingUtilities.invokeLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            inspectorWindow.getFrame().toFront();
+                                        }
+                                    });
+                                }
+                            };
+                            Thread thread = new Thread(job);
+                            thread.setDaemon(true);
+                            thread.start();
+                        }
                     }
                 });
         }

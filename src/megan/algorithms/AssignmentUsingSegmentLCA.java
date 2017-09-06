@@ -57,7 +57,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
      * constructor
      */
     public AssignmentUsingSegmentLCA(Document doc) {
-        this.coverFactor = doc.getWeightedLCAPercent() / 100.0;
+        this.coverFactor = doc.getLcaCoveragePercent() / 100.0;
         this.topPercentFactor = (100.0 - doc.getTopPercent()) / 100.0;
         this.fullTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
 
@@ -251,7 +251,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
 
 
     /**
-     * computes the lowest taxon above weightedLCAPercent of the total weight
+     * computes the lowest taxon above the given percentage of the total weight
      *
      * @param v
      * @param node2covered

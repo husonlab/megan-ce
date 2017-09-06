@@ -59,7 +59,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
         return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [weightedLCAPercent=<num>] [minPercentReadToCover=<nu>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[description=<text>];";
     }
@@ -173,10 +173,11 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 np.matchIgnoreCase("lcaAlgorithm=");
                 getDoc().setLcaAlgorithm(Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase()));
             }
-            if (np.peekMatchIgnoreCase("weightedLCAPercent")) {
-                np.matchIgnoreCase("weightedLCAPercent=");
-                getDoc().setWeightedLCAPercent((float) np.getDouble(50, 100));
-                ProgramProperties.put("weightedLCAPercent", doc.getWeightedLCAPercent());
+            if (np.peekMatchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent")) {
+                np.matchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent");
+                np.matchIgnoreCase("=");
+                getDoc().setLcaCoveragePercent((float) np.getDouble(50, 100));
+                ProgramProperties.put("lcaCoveragePercent", doc.getLcaCoveragePercent());
             }
 
             if (np.peekMatchIgnoreCase("minPercentReadToCover")) {

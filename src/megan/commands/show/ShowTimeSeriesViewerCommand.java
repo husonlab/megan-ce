@@ -24,6 +24,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.timeseriesviewer.TimeSeriesViewer;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -40,15 +41,13 @@ public class ShowTimeSeriesViewerCommand extends megan.commands.CommandBase impl
             try {
                 viewer = new TimeSeriesViewer(getViewer().getFrame(), getDir());
                 getDir().addViewer(viewer);
-                viewer.getFrame().toFront();
+                WindowUtilities.toFront(viewer.getFrame());
             } catch (Exception e) {
                 Basic.caught(e);
             }
         } else {
             viewer.updateView(Director.ALL);
-            viewer.getFrame().setVisible(true);
-            viewer.getFrame().setState(JFrame.NORMAL);
-            viewer.getFrame().toFront();
+            WindowUtilities.toFront(viewer.getFrame());
         }
     }
 

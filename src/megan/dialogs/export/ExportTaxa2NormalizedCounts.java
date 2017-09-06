@@ -115,7 +115,7 @@ public class ExportTaxa2NormalizedCounts {
                     it.close();
                     progressListener.incrementProgress();
                     float normalizedCount = (references.size() > 0 ? (float) countMatchedReads / (float) references.size() : 0f);
-                    w.write(String.format("%s%c%d/%d%c%g\n", CSVExportTaxonomy.getTaxonLabelSource(dir, format, taxonId), separator, countMatchedReads, references.size(), separator, normalizedCount));
+                    w.write(String.format("%s%c%d/%d%c%g\n", CSVExportTaxonomy.getTaxonLabelSource(format, taxonId), separator, countMatchedReads, references.size(), separator, normalizedCount));
                     references.clear();
                     countTaxa++;
                 }

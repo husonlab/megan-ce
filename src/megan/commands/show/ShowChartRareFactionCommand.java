@@ -28,6 +28,7 @@ import megan.chart.gui.ChartViewer;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
@@ -59,8 +60,7 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
                 chartViewer.sync();
                 chartViewer.updateView(Director.ALL);
             }
-        chartViewer.setVisible(true);
-        chartViewer.toFront();
+        WindowUtilities.toFront(chartViewer);
     }
 
     public void actionPerformed(ActionEvent event) {

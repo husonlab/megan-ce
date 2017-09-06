@@ -25,6 +25,7 @@ import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.TaxonomyClusterViewer;
 import megan.commands.CommandBase;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -61,13 +62,7 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
             }
         }
 
-        if (viewer != null) {
-            if (!viewer.isShowing()) {
-                viewer.getFrame().setVisible(true);
-            }
-            viewer.getFrame().setVisible(true);
-            viewer.getFrame().toFront();
-        }
+        WindowUtilities.toFront(viewer);
     }
 
     public void actionPerformed(ActionEvent event) {

@@ -494,8 +494,10 @@ public class LRInspectorController {
             selection.addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    if (newValue)
+                    if (newValue) {
                         tableView.getSelectionModel().select(item);
+                        tableView.scrollTo(item);
+                    }
                     else {
                         ArrayList<TableItem> selected = new ArrayList<>(tableView.getSelectionModel().getSelectedItems());
                         selected.remove(item);
@@ -503,6 +505,7 @@ public class LRInspectorController {
                         for (TableItem tableItem : selected)
                             tableView.getSelectionModel().select(tableItem);
                     }
+
                 }
             });
             list.add(new SingleStringSearcher(viewer.getFrame(), item.toString(), selection));

@@ -22,6 +22,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,9 +41,7 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
                 samplesViewer = new SamplesViewer(getDir());
                 getDir().addViewer(samplesViewer);
         }
-        samplesViewer.getFrame().setState(JFrame.NORMAL);
-        samplesViewer.getFrame().setVisible(true);
-        samplesViewer.getFrame().toFront();
+        WindowUtilities.toFront(samplesViewer.getFrame());
     }
 
     public void actionPerformed(ActionEvent event) {

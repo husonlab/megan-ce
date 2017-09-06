@@ -25,6 +25,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.groups.GroupsViewer;
+import megan.util.WindowUtilities;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -69,17 +70,14 @@ public class ShowGroupsViewerCommand extends CommandBase implements ICommand {
             try {
                 groupsViewer = new GroupsViewer((Director) getDir(), getViewer().getFrame());
                 getDir().addViewer(groupsViewer);
-                groupsViewer.getFrame().toFront();
+                WindowUtilities.toFront(groupsViewer.getFrame());
             } catch (Exception e) {
                 Basic.caught(e);
             }
         } else {
             groupsViewer.updateView(Director.ENABLE_STATE);
-            groupsViewer.getFrame().setVisible(true);
-            groupsViewer.getFrame().setState(JFrame.NORMAL);
-            groupsViewer.getFrame().toFront();
+            WindowUtilities.toFront(groupsViewer.getFrame());
         }
-
     }
 
     /**

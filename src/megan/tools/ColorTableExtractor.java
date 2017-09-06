@@ -69,7 +69,7 @@ public class ColorTableExtractor {
      * @throws CanceledException
      */
     public void run(String[] args) throws UsageException, IOException, CanceledException {
-        final ArgsOptions options = new ArgsOptions(args, this, "Extract colors from image file");
+        final ArgsOptions options = new ArgsOptions(args, this, ProgramProperties.getProgramName(), "Extract colors from image file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2017 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");

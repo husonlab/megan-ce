@@ -45,18 +45,24 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
 
     private int maxRadius = ProgramProperties.get("COMaxRadius", 40);
     private final Graph graph;
+    private final EdgeArray<Float> edgeValue;
+    private final Color PositiveColor = new Color(0x3F861C);
+    private final Color NegativeColor = new Color(0xFB6542);
     private final Rectangle2D boundingBox = new Rectangle2D.Double();
 
     private double minThreshold = ProgramProperties.get("COMinThreshold", 0.01d); // min percentage for class
     private int minProbability = ProgramProperties.get("COMinProbability", 70); // min co-occurrence probability in percent
     private int minPrevalence = ProgramProperties.get("COMinPrevalence", 10); // minimum prevalence in percent
     private int maxPrevalence = ProgramProperties.get("COMaxPrevalence", 90); // maximum prevalence in percent
+    private boolean showAntiOccurring = ProgramProperties.get("COShowAntiOccurring", true);
+    private boolean showCoOccurring = ProgramProperties.get("COShowCoOccurring", true);
 
     /**
      * constructor
      */
     public CoOccurrenceDrawer() {
         graph = new Graph();
+        edgeValue = new EdgeArray<>(graph);
         setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR);
     }
 
@@ -104,8 +110,10 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             Point2D pw = ((NodeData) w.getData()).getLocation();
             try {
                 line.setLine(factorX * pv.getX() + dx, factorY * pv.getY() + dy, factorX * pw.getX() + dx, factorY * pw.getY() + dy);
+                gc.setColor(edgeValue.get(e) > 0 ? PositiveColor : NegativeColor);
                 gc.draw(line);
             } catch (Exception ex) {
+                Basic.caught(ex);
             }
         }
 
@@ -295,10 +303,23 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                     }
                 }
                 if (union.size() > 0) {
-                    double probabilityPercent = (100.0 * (double) intersection.size() / (double) union.size());
+                    boolean positive;
+                    if (isShowCoOccurring() && !isShowAntiOccurring())
+                        positive = true;
+                    else if (!isShowCoOccurring() && isShowAntiOccurring())
+                        positive = false;
+                    else
+                        positive = (intersection.size() >= 0.5 * union.size());
+                    final float probabilityPercent;
+                    if (positive)
+                        probabilityPercent = (100.0f * (float) intersection.size() / (float) union.size());
+                    else
+                        probabilityPercent = (100.0f * (float) (union.size() - intersection.size()) / (float) union.size());
+
                     if (probabilityPercent >= getMinProbability()) {
                         Edge e = graph.newEdge(className2Node.get(className1), className2Node.get(className2));
-                        graph.setInfo(e, (double) intersection.size() / (double) union.size());
+                        graph.setInfo(e, probabilityPercent);
+                        edgeValue.set(e, positive ? probabilityPercent : -probabilityPercent); // negative value indicates anticorrelated
                     }
                 }
             }
@@ -309,8 +330,8 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
      * do embedding of graph
      */
     private void embedGraph() {
-        FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(graph, null);
-        NodeArray<Point2D> coordinates = new NodeArray<>(graph);
+        final FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(graph, null);
+        final NodeArray<Point2D> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         boolean first = true;
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
@@ -394,6 +415,24 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
         ProgramProperties.put("COMaxPrevalence", maxPrevalence);
     }
 
+    public void setShowAntiOccurring(boolean showAntiOccurring) {
+        this.showAntiOccurring = showAntiOccurring;
+        ProgramProperties.put("COShowAntiOccurring", showAntiOccurring);
+    }
+
+    public boolean isShowAntiOccurring() {
+        return showAntiOccurring;
+    }
+
+    public boolean isShowCoOccurring() {
+        return showCoOccurring;
+    }
+
+    public void setShowCoOccurring(boolean showCoOccurring) {
+        this.showCoOccurring = showCoOccurring;
+        ProgramProperties.put("COShowCoOccurring", showCoOccurring);
+    }
+
     class NodeData {
         private String label;
         private Integer prevalence;
@@ -441,7 +480,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
      * @return true if anything selected
      */
     public boolean selectComponent(MouseEvent event) {
-        SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
+        final SelectionGraphics<String[]> selectionGraphics = new SelectionGraphics<>(getGraphics());
         selectionGraphics.setMouseLocation(event.getPoint());
         if (transpose)
             drawChartTransposed(selectionGraphics);

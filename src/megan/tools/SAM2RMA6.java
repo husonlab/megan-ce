@@ -111,11 +111,8 @@ public class SAM2RMA6 {
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-        final float weightedLCAPercent;
-        if (options.isDoHelp() || lcaAlgorithm == Document.LCAAlgorithm.weighted || lcaAlgorithm == Document.LCAAlgorithm.longReads)
-            weightedLCAPercent = (float) options.getOption("-wlp", "weightedLCAPercent", "Set the percent weight to cover", Document.DEFAULT_WEIGHTED_LCA_PERCENT);
-        else
-            weightedLCAPercent = -1;
+        final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover", Document.DEFAULT_LCA_COVERAGE_PERCENT);
+
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
 
@@ -267,7 +264,7 @@ public class SAM2RMA6 {
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             doc.setBlastMode(BlastMode.determineBlastModeSAMFile(samFiles[i]));
             doc.setLcaAlgorithm(lcaAlgorithm);
-            doc.setWeightedLCAPercent(weightedLCAPercent);
+            doc.setLcaCoveragePercent(lcaCoveragePercent);
             doc.setMinPercentReadToCover(minPercentReadToCover);
             doc.setReadAssignmentMode(readAssignmentMode);
 

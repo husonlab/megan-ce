@@ -48,6 +48,7 @@ public class CSVSummaryParser {
      * apply the importer parser to the named file.
      * Format should be:   taxid,count[,count,...]
      * If the first line contains non-number tokens, then these are interpreted as the names of the datasets
+     *
      * @param fileName
      * @param doc
      * @param multiplier
@@ -102,8 +103,6 @@ public class CSVSummaryParser {
         int numberOfErrors = 0;
         boolean first = true;
 
-        String[] firstLineCommentTokens = null;
-
         int warningUnrecognizedName = 0;
         int[] warnings = new int[cNames.length];
 
@@ -122,23 +121,29 @@ public class CSVSummaryParser {
                         throw new IOException("Line " + it.getLineNumber() + ": incorrect number of columns, expected " + numberOfColumns + ", got: " + tokens.length + " (" + aLine + ")");
 
                     if (first) {
-                        first = false;
-                        boolean headerLinePresent = false;
                         if (tokens.length < 2)
                             throw new IOException("Line " + it.getLineNumber() + ": incorrect number of columns, expected at least 2, got: " + tokens.length + " (" + aLine + ")");
 
-                        if (tokens[0].startsWith("#")) {
-                            tokens[0] = tokens[0].substring(1).trim();
-                            firstLineCommentTokens = tokens;
+                        boolean headerLinePresent = (Basic.getIndexIgnoreCase(tokens[0], "name", "names", "samples", "SampleId", SampleAttributeTable.SAMPLE_ID, "Dataset", "Datasets") != -1);
+                        if (!headerLinePresent) { // check other tokens: unless all are numbers, assume the first line is header line
+                            for (int i = 1; i < tokens.length; i++) {
+                                if (!Basic.isFloat(tokens[i])) {
+                                    headerLinePresent = true;
+                                    break;
+                                }
+                            }
                         }
 
-                        if (tokens[0].equalsIgnoreCase("name") || tokens[0].equalsIgnoreCase("names") || tokens[0].equalsIgnoreCase("samples")
-                                || tokens[0].equalsIgnoreCase("SampleID") || tokens[0].equalsIgnoreCase(SampleAttributeTable.SAMPLE_ID)
-                                || tokens[0].equalsIgnoreCase("Dataset") || tokens[0].equalsIgnoreCase("Datasets")) {
+                        if (!headerLinePresent && tokens[0].startsWith("#")) {
+                            System.err.println("Skipping comment line: " + Basic.abbreviateDotDotDot(aLine, 80));
+                            continue;
+                        }
+                        first = false;
+
+                        if (headerLinePresent) {
                             names = new String[tokens.length - 1];
                             System.arraycopy(tokens, 1, names, 0, names.length);
                             table.setSamples(names, null, null, null);
-                            headerLinePresent = true;
                         } else if (tokens.length == 2) {
                             names = new String[]{Basic.getFileBaseName((new File(fileName)).getName())};
                         } else {
@@ -213,10 +218,6 @@ public class CSVSummaryParser {
                 }
             }
         }
-        // try to use top comments as names
-        if (firstLineCommentTokens != null && firstLineCommentTokens.length - 1 == names.length) {
-            System.arraycopy(firstLineCommentTokens, 1, names, 0, firstLineCommentTokens.length - 1);
-        }
 
         float[] sizes = new float[names.length];
         if (taxonomyIndex == -1) {
@@ -232,6 +233,7 @@ public class CSVSummaryParser {
         for (int i = 0; i < cNames.length; i++) {
             table.getClassification2Class2Counts().put(cNames[i], class2counts[i]);
         }
+        doc.getSampleAttributeTable().setSampleOrder(Arrays.asList(names));
 
         long totalReads = 0;
         for (float size : sizes) {

@@ -185,21 +185,24 @@ public class ExportImageCommand extends CommandBase implements ICommand {
     }
 
     /**
-     * if width or height unreasonably big (>500000), sets to 1000
+     * if width or height unreasonably big (>100000) or small (<=0), sets to 1000
      *
      * @param panel
      */
     private static void ensureReasonableBounds(JPanel panel) {
-        panel.setBounds(panel.getX(), panel.getY(), (panel.getWidth() < 500000 ? panel.getWidth() : 1000), (panel.getHeight() < 500000 ? panel.getHeight() : 1000));
+        panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));
     }
 
     /**
-     * if width or height unreasonably big, sets to 1000
+     * if width or height unreasonably big or small, sets to 1000
      *
      * @param panel
      */
     private void ensureReasonableBounds(JScrollPane panel) {
-        panel.setBounds(panel.getX(), panel.getY(), (panel.getWidth() < 500000 ? panel.getWidth() : 1000), (panel.getHeight() < 500000 ? panel.getHeight() : 1000));
+        panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));
+        final JViewport viewPort = panel.getViewport();
+        viewPort.setExtentSize(new Dimension((int) (viewPort.getExtentSize().getWidth() <= 0 || viewPort.getExtentSize().getWidth() > 100000 ? 1000 : viewPort.getExtentSize().getWidth()),
+                (int) (viewPort.getExtentSize().getHeight() <= 0 || viewPort.getExtentSize().getHeight() > 100000 ? 1000 : viewPort.getExtentSize().getHeight())));
     }
 
     public void actionPerformed(ActionEvent event) {

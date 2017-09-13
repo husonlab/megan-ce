@@ -66,8 +66,9 @@
         <GridPane BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="176.0"
-                                   prefWidth="413.0"/>
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="95.0" minWidth="95.0" prefWidth="95.0"/>
+                                   prefWidth="452.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="73.0" minWidth="73.0" prefWidth="73.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="73.0" prefWidth="73.0"/>
                 <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="95.0" prefWidth="95.0"/>
             </columnConstraints>
             <rowConstraints>
@@ -80,7 +81,7 @@
                         <Insets/>
                     </GridPane.margin>
                 </TextField>
-                <MenuButton fx:id="layoutMenuButton" mnemonicParsing="false" text="Layout" GridPane.columnIndex="2">
+                <MenuButton fx:id="layoutMenuButton" mnemonicParsing="false" text="Layout" GridPane.columnIndex="3">
                     <items>
                         <CheckMenuItem fx:id="overviewMenuItem" mnemonicParsing="false" text="Overview"/>
                         <MenuItem fx:id="detailsMenuItem" mnemonicParsing="false" text="Details"/>
@@ -89,7 +90,13 @@
                         <Insets right="5.0"/>
                     </padding>
                 </MenuButton>
-                <MenuButton fx:id="tableMenuButton" mnemonicParsing="false" text="Table" GridPane.columnIndex="1"/>
+                <MenuButton fx:id="tableMenuButton" mnemonicParsing="false" text="Table" GridPane.columnIndex="1"
+                            GridPane.halignment="RIGHT"/>
+                <ChoiceBox fx:id="fontSize" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                    <GridPane.margin>
+                        <Insets right="10.0"/>
+                    </GridPane.margin>
+                </ChoiceBox>
             </children>
             <BorderPane.margin>
                 <Insets left="10.0" right="10.0"/>

@@ -63,8 +63,10 @@ import java.util.*;
 public class ReadLayoutPane extends Pane {
     static public int DEFAULT_LABELED_HEIGHT = 110;
 
-    static Font font = new Font("Courier", 10);
+    public static Font font = new Font("Courier", ProgramProperties.get("LongReadLabelFontSize", 10));
     private static int arrowHeight = 10;
+    private static final Object lock = new Object();
+
     private final IntegerProperty preferredHeightUnlabeled = new SimpleIntegerProperty(30);
     private final IntegerProperty preferredHeightLabeled = new SimpleIntegerProperty(DEFAULT_LABELED_HEIGHT);
 
@@ -132,7 +134,7 @@ public class ReadLayoutPane extends Pane {
         getChildren().add(line);
 
         final Label lengthLabel = new Label(String.format("%,d", readLength));
-        lengthLabel.setFont(font);
+        lengthLabel.setFont(new Font("Courier", 10));
         lengthLabel.setTextFill(Color.DARKGRAY);
         getChildren().add(lengthLabel);
 
@@ -244,6 +246,25 @@ public class ReadLayoutPane extends Pane {
         setOnMousePressed(mousePressedHandler);
     }
 
+    public static void setFontSize(int size) {
+        if (font.getSize() != size) {
+            synchronized (lock) {
+                font = new Font("Courier", size);
+                ProgramProperties.put("LongReadLabelFontSize", size);
+            }
+        }
+    }
+
+    public static int getFontSize() {
+        return (int) Math.round(font.getSize());
+    }
+
+    /**
+     * update label font
+     */
+    public void updateFontSize() {
+        layoutLabels();
+    }
 
     public static int getArrowHeight() {
         return arrowHeight;
@@ -332,6 +353,9 @@ public class ReadLayoutPane extends Pane {
                 for (Node node : currentGeneLabels.getChildren()) {
                     if (node instanceof Label) {
                         final Label label = (Label) node;
+                        if (label.getFont().getSize() != ReadLayoutPane.font.getSize())
+                            label.setFont(ReadLayoutPane.font);
+
                         ArrayList<Label> labels = text2OldLabels.get(label.getText());
                         if (labels == null) {
                             labels = new ArrayList<>();
@@ -365,6 +389,8 @@ public class ReadLayoutPane extends Pane {
                                     for (int j = numberOfTracksPerDirection - 1; j >= 0; j--) {
                                         final Label labelToUse = processLabel(j, 0, labelStartPos, trackPos[j], interval, intervalTrees[j], currentGeneLabels);
                                         if (labelToUse != null) { // could be the one we provided or one already present
+                                            if (labelToUse.getFont().getSize() != ReadLayoutPane.font.getSize())
+                                                labelToUse.setFont(ReadLayoutPane.font);
                                             geneArrow.getLabels().add(labelToUse);
                                             labelToUse.setUserData(extendByOne((IMatchBlock[]) labelToUse.getUserData(), matchBlock));
                                             if (geneArrow.isVisible())
@@ -376,6 +402,8 @@ public class ReadLayoutPane extends Pane {
                                     for (int j = numberOfTracksPerDirection; j < trackPos.length; j++) {
                                         final Label labelToUse = processLabel(j, trackPos.length - 1, labelStartPos, trackPos[j], interval, intervalTrees[j], currentGeneLabels);
                                         if (labelToUse != null) {
+                                            if (labelToUse.getFont().getSize() != ReadLayoutPane.font.getSize())
+                                                labelToUse.setFont(ReadLayoutPane.font);
                                             geneArrow.getLabels().add(labelToUse);
                                             labelToUse.setUserData(extendByOne((IMatchBlock[]) labelToUse.getUserData(), matchBlock));
                                             if (geneArrow.isVisible())

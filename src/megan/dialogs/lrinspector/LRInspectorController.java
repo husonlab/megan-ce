@@ -124,6 +124,9 @@ public class LRInspectorController {
     @FXML
     private Slider panelWidthSlider;
 
+    @FXML
+    private ChoiceBox<Integer> fontSize;
+
     /**
      * setup the controls
      *
@@ -364,6 +367,20 @@ public class LRInspectorController {
         panelWidthSlider.valueProperty().bindBidirectional(layoutCol.prefWidthProperty());
         panelHeightSlider.disableProperty().bind(getService().runningProperty());
         panelWidthSlider.maxProperty().bind(Bindings.min(1000000, viewer.maxReadLengthProperty().multiply(10)));
+
+        fontSize.getItems().addAll(6, 8, 10, 12, 16, 18, 22, 24);
+        fontSize.getSelectionModel().select((Integer) ProgramProperties.get("LongReadLabelFontSize", 10));
+        fontSize.disableProperty().bind(overviewMenuItem.selectedProperty());
+        fontSize.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ReadLayoutPane.setFontSize(fontSize.getSelectionModel().getSelectedItem());
+                for (TableItem tableItem : tableView.getItems()) {
+                    final ReadLayoutPane pane = tableItem.getPane();
+                    pane.layoutLabels();
+                }
+            }
+        });
     }
 
     private String computeReadStats() {

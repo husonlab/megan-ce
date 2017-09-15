@@ -181,33 +181,45 @@ public class TaxaChart extends ChartViewer {
                 }
 
                 chartData.setAllSeries(doc.getSampleNames());
-                chartData.setAllSeriesTotalSizes(doc.getDataTable().getSampleSizes());
 
                 final String[] names = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
+                final float[] totalSizes = new float[doc.getSampleNames().size()];
 
                 syncedNodes = mainViewer.getSelectedNodes();
                 final LinkedList<String> taxonNames = new LinkedList<>();
-                for (Node v : syncedNodes) {
-                    final String taxonName = TaxonomyData.getName2IdMap().get((Integer) v.getInfo());
 
-                    taxonNames.add(taxonName);
-                    if (numberOfSamples == 1) {
-                        if (v.getOutDegree() == 0)
-                            chartData.putValue(names[0], taxonName, ((NodeData) v.getData()).getCountSummarized());
-                        else
-                            chartData.putValue(names[0], taxonName, ((NodeData) v.getData()).getCountAssigned());
+                for (Node v = mainViewer.getGraph().getFirstNode(); v != null; v = v.getNext()) {
+                    if (syncedNodes.contains(v)) {
+                        final String taxonName = TaxonomyData.getName2IdMap().get((Integer) v.getInfo());
 
-                    } else {
-                        float[] values;
-                        if (v.getOutDegree() == 0)
-                            values = ((NodeData) v.getData()).getSummarized();
-                        else
-                            values = ((NodeData) v.getData()).getAssigned();
-                        for (int i = 0; i < names.length; i++) {
-                            chartData.putValue(names[i], taxonName, values[i]);
+                        taxonNames.add(taxonName);
+                        if (numberOfSamples == 1) {
+                            if (v.getOutDegree() == 0)
+                                chartData.putValue(names[0], taxonName, ((NodeData) v.getData()).getCountSummarized());
+                            else
+                                chartData.putValue(names[0], taxonName, ((NodeData) v.getData()).getCountAssigned());
+
+                        } else {
+                            float[] values;
+                            if (v.getOutDegree() == 0)
+                                values = ((NodeData) v.getData()).getSummarized();
+                            else
+                                values = ((NodeData) v.getData()).getAssigned();
+                            for (int i = 0; i < names.length; i++) {
+                                chartData.putValue(names[i], taxonName, values[i]);
+                            }
                         }
                     }
+                    float[] values;
+                    if (v.getOutDegree() == 0)
+                        values = ((NodeData) v.getData()).getSummarized();
+                    else
+                        values = ((NodeData) v.getData()).getAssigned();
+                    for (int i = 0; i < names.length; i++) {
+                        totalSizes[i] += values[i];
+                    }
                 }
+                chartData.setAllSeriesTotalSizes(totalSizes);
                 chartData.setClassNames(taxonNames);
             }
             updateColorByRank();

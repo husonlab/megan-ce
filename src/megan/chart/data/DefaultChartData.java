@@ -362,7 +362,10 @@ public class DefaultChartData implements IChartData {
     }
 
     public double getTotalForSeries(String series) {
-        return isUseTotalSize() ? series2TotalSize.get(series) : series2size.get(series);
+        if (isUseTotalSize())
+            return series2TotalSize.get(series);
+        else
+            return series2size.get(series);
     }
 
     public double getTotalForSeriesIncludingDisabledAttributes(String series) {

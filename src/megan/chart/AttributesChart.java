@@ -111,11 +111,9 @@ public class AttributesChart extends ChartViewer {
                 int numberOfDatasets = doc.getNumberOfSamples();
 
                 if (numberOfDatasets > 0) {
-                    Map<String, Map<String, Integer>> dataset2AttributeState2Value = attributes.getDataSet2AttributeState2Value(mainViewer);
+                    final Map<String, Map<String, Integer>> dataset2AttributeState2Value = attributes.getDataSet2AttributeState2Value(mainViewer);
 
                     chartData.setAllSeries(doc.getSampleNames());
-                    chartData.setAllSeriesTotalSizes(doc.getDataTable().getSampleSizes());
-
                     SortedSet<String> classNames = new TreeSet<>();
                     for (String series : dataset2AttributeState2Value.keySet()) {
                         Map<String, Integer> attributeState2value = dataset2AttributeState2Value.get(series);

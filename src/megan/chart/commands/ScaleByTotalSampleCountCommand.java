@@ -53,7 +53,8 @@ public class ScaleByTotalSampleCountCommand extends CommandBase implements IChec
 
     public boolean isApplicable() {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        return (chartViewer.getChartData() instanceof IChartData) && ((IChartData) chartViewer.getChartData()).hasTotalSize();
+        return (chartViewer.getChartData() instanceof IChartData) && ((IChartData) chartViewer.getChartData()).hasTotalSize()
+                && chartViewer.getChartDrawer().getScalingType() == ChartViewer.ScalingType.PERCENT;
     }
 
     public String getName() {
@@ -61,7 +62,7 @@ public class ScaleByTotalSampleCountCommand extends CommandBase implements IChec
     }
 
     public String getDescription() {
-        return "When selected, 'Percent' based on total sample size, otherwise only based total size of selected nodes";
+        return "When selected, 'Percent' and 'Z-score' are based on total sample size, otherwise they are only based on total counts for selected nodes.";
     }
 
     public ImageIcon getIcon() {

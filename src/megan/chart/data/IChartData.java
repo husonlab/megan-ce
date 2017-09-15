@@ -30,8 +30,15 @@ import java.util.Map;
 public interface IChartData extends IData {
     void setAllSeries(Collection<String> allSeries);
 
+    void setAllSeriesTotalSizes(float... sizes);
+
     String[] getSeriesNamesIncludingDisabled();
 
+    boolean hasTotalSize();
+
+    boolean isUseTotalSize();
+
+    void setUseTotalSize(boolean value);
 
     int getNumberOfClasses();
 

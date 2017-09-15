@@ -26,7 +26,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * maintains data used by charts
@@ -40,19 +43,25 @@ public class DefaultChartData implements IChartData {
     private String classesLabel;
     private String countsLabel;
 
-    private final Collection<String> seriesNames;
+    private final ArrayList<String> seriesNames;
+
+    private final Map<String, Float> series2TotalSize; // maps to total size
+
     private final Collection<String> classNames;
 
     private final Map<String, Map<String, Number>> series2Class2Values;
 
-    private final Map<String, Double> series2total;
-    private final Map<String, Double> classes2total;
+    private final Map<String, Double> series2size; // maps to size associated with selected data
+
+    private final Map<String, Double> classes2size;
 
     private final Map<String, Pair<Number, Number>> series2Range;
     private Pair<Number, Number> range;
 
     private final Map<String, String> samplesTooltips;
     private final Map<String, String> classesTooltips;
+
+    private boolean useTotalSize = false;
 
     private PhyloTree tree;
 
@@ -61,11 +70,12 @@ public class DefaultChartData implements IChartData {
      */
     public DefaultChartData() {
         chartSelection = new ChartSelection();
-        seriesNames = new LinkedList<>();
-        classNames = new LinkedList<>();
+        seriesNames = new ArrayList<>();
+        series2TotalSize = new HashMap<>();
+        classNames = new ArrayList<>();
         series2Class2Values = new HashMap<>();
-        series2total = new HashMap<>();
-        classes2total = new HashMap<>();
+        series2size = new HashMap<>();
+        classes2size = new HashMap<>();
         series2Range = new HashMap<>();
         samplesTooltips = new HashMap<>();
         classesTooltips = new HashMap<>();
@@ -128,7 +138,7 @@ public class DefaultChartData implements IChartData {
      * @return names
      */
     public String[] getSeriesNamesIncludingDisabled() {
-        return (new ArrayList<>(series2total.keySet())).toArray(new String[series2total.size()]);
+        return (new ArrayList<>(series2size.keySet())).toArray(new String[series2size.size()]);
     }
 
     /**
@@ -148,6 +158,16 @@ public class DefaultChartData implements IChartData {
     public void setAllSeries(Collection<String> allSeries) {
         this.seriesNames.clear();
         this.seriesNames.addAll(allSeries);
+    }
+
+    /**
+     * set the total size for each series. This is needed when normalizing by the total number of reads in samples
+     *
+     * @param sizes
+     */
+    public void setAllSeriesTotalSizes(float... sizes) {
+        for (int i = 0; i < sizes.length; i++)
+            this.series2TotalSize.put(seriesNames.get(i), sizes[i]);
     }
 
     /**
@@ -246,16 +266,16 @@ public class DefaultChartData implements IChartData {
                 if (max.doubleValue() > range.get2().doubleValue())
                     range.set2(max);
             }
-            series2total.put(series, total);
-            samplesTooltips.put(series, String.format("%s: %.0f", series, series2total.get(series)));
+            series2size.put(series, total);
+            samplesTooltips.put(series, String.format("%s: %.0f", series, series2size.get(series)));
             for (Map.Entry<String, Number> entry : classes2values.entrySet()) {
                 String className = entry.getKey();
                 Number value = entry.getValue();
-                Number previous = classes2total.get(className);
-                classes2total.put(className, previous == null ? value.doubleValue() : previous.doubleValue() + value.doubleValue());
+                Number previous = classes2size.get(className);
+                classes2size.put(className, previous == null ? value.doubleValue() : previous.doubleValue() + value.doubleValue());
             }
-            for (String className : classes2total.keySet()) {
-                classesTooltips.put(className, String.format("%s: %.0f", className, classes2total.get(className)));
+            for (String className : classes2size.keySet()) {
+                classesTooltips.put(className, String.format("%s: %.0f", className, classes2size.get(className)));
             }
         }
     }
@@ -291,8 +311,8 @@ public class DefaultChartData implements IChartData {
         chartSelection.clearSelectionSeries();
         series2Class2Values.clear();
         series2Range.clear();
-        series2total.clear();
-        classes2total.clear();
+        series2size.clear();
+        classes2size.clear();
         samplesTooltips.clear();
         classesTooltips.clear();
         range = null;
@@ -333,36 +353,40 @@ public class DefaultChartData implements IChartData {
             if (value.doubleValue() > wholeRange.get2().doubleValue())
                 wholeRange.set2(value);
         }
-        Double previous = series2total.get(series);
-        series2total.put(series, previous == null ? value.doubleValue() : previous + value.doubleValue());
-        samplesTooltips.put(series, String.format("%s: %.0f", series, series2total.get(series)));
-        previous = classes2total.get(className);
-        classes2total.put(className, previous == null ? value.doubleValue() : previous + value.doubleValue());
-        classesTooltips.put(className, String.format("%s: %.0f", className, classes2total.get(className)));
+        Double previous = series2size.get(series);
+        series2size.put(series, previous == null ? value.doubleValue() : previous + value.doubleValue());
+        samplesTooltips.put(series, String.format("%s: %.0f", series, series2size.get(series)));
+        previous = classes2size.get(className);
+        classes2size.put(className, previous == null ? value.doubleValue() : previous + value.doubleValue());
+        classesTooltips.put(className, String.format("%s: %.0f", className, classes2size.get(className)));
     }
 
     public double getTotalForSeries(String series) {
-        return series2total.get(series);
+        return isUseTotalSize() ? series2TotalSize.get(series) : series2size.get(series);
     }
 
     public double getTotalForSeriesIncludingDisabledAttributes(String series) {
-        double total = 0;
-        for (String className : classes2total.keySet()) {
-            Number value = getValue(series, className);
-            if (value != null)
-                total += value.doubleValue();
+        if (isUseTotalSize())
+            return series2TotalSize.get(series);
+        else {
+            double total = 0;
+            for (String className : classes2size.keySet()) {
+                Number value = getValue(series, className);
+                if (value != null)
+                    total += value.doubleValue();
+            }
+            return total;
         }
-        return total;
     }
 
     public double getTotalForClass(String className) {
-        Double value = classes2total.get(className);
+        Double value = classes2size.get(className);
         return value == null ? 0 : value;
     }
 
     public double getTotalForClassIncludingDisabledSeries(String className) {
         double total = 0;
-        for (String series : series2total.keySet()) {
+        for (String series : series2size.keySet()) {
             total += getValue(series, className).doubleValue();
         }
         return total;
@@ -371,7 +395,7 @@ public class DefaultChartData implements IChartData {
     public double getMaxTotalSeries() {
         double max = 0;
         for (String series : seriesNames) {
-            Number value = series2total.get(series);
+            Number value = series2size.get(series);
             if (value != null)
                 max = Math.max(max, value.doubleValue());
         }
@@ -381,7 +405,7 @@ public class DefaultChartData implements IChartData {
     public double getMaxTotalClass() {
         double max = 0;
         for (String className : classNames) {
-            Number value = classes2total.get(className);
+            Number value = classes2size.get(className);
             if (value != null)
                 max = Math.max(max, value.doubleValue());
         }
@@ -432,7 +456,7 @@ public class DefaultChartData implements IChartData {
                             range.set2(value);
                     }
                 }
-                series2total.put(series, total);
+                series2size.put(series, total);
             }
         }
     }
@@ -460,7 +484,7 @@ public class DefaultChartData implements IChartData {
                     }
                 }
             }
-            classes2total.put(className, total);
+            classes2size.put(className, total);
         }
     }
 
@@ -485,7 +509,18 @@ public class DefaultChartData implements IChartData {
     }
 
     public String[] getClassNamesIncludingDisabled() {
-        return classes2total.keySet().toArray(new String[classes2total.size()]);
+        return classes2size.keySet().toArray(new String[classes2size.size()]);
+    }
 
+    public boolean isUseTotalSize() {
+        return useTotalSize && hasTotalSize();
+    }
+
+    public void setUseTotalSize(boolean useTotalSize) {
+        this.useTotalSize = useTotalSize;
+    }
+
+    public boolean hasTotalSize() {
+        return series2TotalSize.size() == seriesNames.size();
     }
 }

@@ -106,15 +106,15 @@ public class AttributesChart extends ChartViewer {
             try {
                 MicrobialAttributes attributes = MicrobialAttributes.getInstance();
 
-                Document doc = ((Director) dir).getDocument();
-                MainViewer mainViewer = ((Director) dir).getMainViewer();
+                Document doc = dir.getDocument();
+                MainViewer mainViewer = dir.getMainViewer();
                 int numberOfDatasets = doc.getNumberOfSamples();
-
 
                 if (numberOfDatasets > 0) {
                     Map<String, Map<String, Integer>> dataset2AttributeState2Value = attributes.getDataSet2AttributeState2Value(mainViewer);
 
                     chartData.setAllSeries(doc.getSampleNames());
+                    chartData.setAllSeriesTotalSizes(doc.getDataTable().getSampleSizes());
 
                     SortedSet<String> classNames = new TreeSet<>();
                     for (String series : dataset2AttributeState2Value.keySet()) {

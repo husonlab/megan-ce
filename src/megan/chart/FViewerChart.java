@@ -146,6 +146,7 @@ public class FViewerChart extends ChartViewer {
                     parentViewer.selectAllLeaves();
                 }
                 chartData.setAllSeries(doc.getSampleNames());
+                chartData.setAllSeriesTotalSizes(doc.getDataTable().getSampleSizes());
                 String[] sampleNames = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
 
                 java.util.Collection<Integer> ids = parentViewer.getSelectedIds();

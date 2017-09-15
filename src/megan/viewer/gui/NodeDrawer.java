@@ -321,7 +321,11 @@ public class NodeDrawer implements INodeDrawer {
                     }
                 } else {
                     final Statistics statistics = new Statistics(data.getAssigned());
-                    buf.append(String.format(" %,d - %,d (mean: %,d sd: %,d)", Math.round(statistics.getMin()), Math.round(statistics.getMax()), Math.round(statistics.getMean()), Math.round(statistics.getStdDev())));
+                    final int mean = (int) Math.round(statistics.getMean());
+                    if (mean <= 1)
+                        buf.append(String.format(" %,d - %,d", Math.round(statistics.getMin()), Math.round(statistics.getMax())));
+                    else
+                        buf.append(String.format(" %,d - %,d (mean: %,d sd: %,d)", Math.round(statistics.getMin()), Math.round(statistics.getMax()), mean, Math.round(statistics.getStdDev())));
                 }
                 gc.drawString(buf.toString(), apt.x, apt.y += 14);
             }
@@ -333,7 +337,11 @@ public class NodeDrawer implements INodeDrawer {
                 }
             } else {
                 final Statistics statistics = new Statistics(data.getSummarized());
-                buf.append(String.format(" %,d - %,d (mean: %,d sd: %,d)", Math.round(statistics.getMin()), Math.round(statistics.getMax()), Math.round(statistics.getMean()), Math.round(statistics.getStdDev())));
+                final int mean = (int) Math.round(statistics.getMean());
+                if (mean <= 1)
+                    buf.append(String.format(" %,d - %,d", Math.round(statistics.getMin()), Math.round(statistics.getMax())));
+                else
+                    buf.append(String.format(" %,d - %,d (mean: %,d sd: %,d)", Math.round(statistics.getMin()), Math.round(statistics.getMax()), mean, Math.round(statistics.getStdDev())));
             }
             gc.drawString(buf.toString(), apt.x, apt.y += 12);
         }

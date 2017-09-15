@@ -181,10 +181,12 @@ public class TaxaChart extends ChartViewer {
                 }
 
                 chartData.setAllSeries(doc.getSampleNames());
-                String[] names = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
+                chartData.setAllSeriesTotalSizes(doc.getDataTable().getSampleSizes());
+
+                final String[] names = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
 
                 syncedNodes = mainViewer.getSelectedNodes();
-                LinkedList<String> taxonNames = new LinkedList<>();
+                final LinkedList<String> taxonNames = new LinkedList<>();
                 for (Node v : syncedNodes) {
                     final String taxonName = TaxonomyData.getName2IdMap().get((Integer) v.getInfo());
 

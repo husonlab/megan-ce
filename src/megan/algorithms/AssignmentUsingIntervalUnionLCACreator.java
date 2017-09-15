@@ -39,9 +39,10 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
         this.document = document;
         if (ProgramProperties.get("use-segment-lca", false))
             System.err.println("Using 'segment-LCA' algorithm for binning: " + Classification.Taxonomy);
-        else
-            System.err.println(String.format("Using 'Interval-Union-LCA' algorithm (%.1f %%) for binning: %s",
-                    document.getLcaCoveragePercent(), Classification.Taxonomy));
+        else {
+            System.err.println(String.format("Using 'Interval-Union-LCA' algorithm (%.1f %%) for binning: %s", document.getLcaCoveragePercent(), Classification.Taxonomy));
+            //System.err.println("(setprop CheckForChimeras=true; to turn on experimental chimeric read identification)");
+        }
     }
 
     /**

@@ -215,17 +215,94 @@ public class MatchBlockDAA implements IMatchBlock {
      * @return
      */
     public String getText() {
-        try { // todo: do this directly and more efficently
-            ByteOutputBuffer buffer = new ByteOutputBuffer();
-            SAMUtilities.createSAM(daaParser, matchRecord, buffer, daaParser.getAlignmentAlphabet());
-            SAMMatch match = new SAMMatch(daaParser.getBlastMode());
-            match.parse(buffer.getBytes(), buffer.size());
-            return match.getBlastAlignmentText();
-        } catch (Exception e) {
-            Basic.caught(e);
-            return null;
+        if (false) {
+            String[] alignment = computeAlignmentBlastX(matchRecord, daaParser.getAlignmentAlphabet());
+            return Basic.toString(alignment, "\n");
+        } else {
+            try { // todo: do this directly and more efficently
+                ByteOutputBuffer buffer = new ByteOutputBuffer();
+                SAMUtilities.createSAM(daaParser, matchRecord, buffer, daaParser.getAlignmentAlphabet());
+                SAMMatch match = new SAMMatch(daaParser.getBlastMode());
+                match.parse(buffer.getBytes(), buffer.size());
+                return match.getBlastAlignmentText();
+            } catch (Exception e) {
+                Basic.caught(e);
+                return "";
+            }
         }
     }
+
+    /**
+     * this is experimental code that is used to verify that DAA with frame-shifts is handled ok
+     *
+     * @param matchRecord
+     * @param queryAlphabet
+     * @return two alignment tracks
+     */
+    private String[] computeAlignmentBlastX(DAAMatchRecord matchRecord, byte[] queryAlphabet) {
+        final byte[] totalQuerySequence = matchRecord.getQueryRecord().getSourceSequence();
+        final int totalQueryLength = matchRecord.getQueryRecord().getQueryLength();
+
+        final byte[] querySeq = matchRecord.getFrame() > 0 ? totalQuerySequence : Translator.getReverseComplement(totalQuerySequence);
+        final int start = matchRecord.getFrame() > 0 ? matchRecord.getQueryBegin() : totalQueryLength - matchRecord.getQueryBegin() - 1;
+
+        final StringBuilder[] bufs = {new StringBuilder(), new StringBuilder()};
+
+        int q = start;
+        for (CombinedOperation editOp : matchRecord.getTranscript().gather()) {
+            switch (editOp.getEditOperation()) {
+                case op_match: // handling match
+                {
+                    for (int i = 0; i < editOp.getCount(); i++) {
+                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                        bufs[0].append(aa);
+                        bufs[1].append(aa);
+                        q += 3;
+                    }
+                    break;
+                }
+                case op_insertion: // handling insertion
+                {
+                    for (int i = 0; i < editOp.getCount(); i++) {
+                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                        bufs[0].append(aa);
+                        bufs[1].append('-');
+                        q += 3;
+                    }
+                    break;
+                }
+                case op_deletion: // handling deletion
+                {
+                    char c = (char) queryAlphabet[editOp.getLetter()];
+                    bufs[0].append('-');
+                    bufs[1].append(c);
+                    break;
+                }
+                case op_substitution: // handling substitution
+                {
+                    char c = (char) queryAlphabet[editOp.getLetter()];
+                    if (c == '/') {
+                        bufs[0].append("/");
+                        bufs[1].append("-");
+                        q -= 1;
+                    } else if (c == '\\') {
+                        bufs[0].append("\\");
+                        bufs[1].append("-");
+                        q += 1;
+                    } else {
+                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                        bufs[0].append(aa);
+                        bufs[1].append(c);
+                        q += 3;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return new String[]{bufs[0].toString(), bufs[1].toString()};
+    }
+
 
     @Override
     public String getTextFirstWord() {
@@ -292,5 +369,16 @@ public class MatchBlockDAA implements IMatchBlock {
     @Override
     public int getRefLength() {
         return matchRecord.getTotalSubjectLen();
+    }
+
+
+    /**
+     * compute the BLAST frame
+     *
+     * @param frame (in range 0-5)
+     * @return BLAST frame (in range -2 to 2)
+     */
+    private static int computeBlastFrame(int frame) {
+        return frame <= 2 ? frame + 1 : 2 - frame;
     }
 }

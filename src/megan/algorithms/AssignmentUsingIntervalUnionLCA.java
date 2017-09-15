@@ -37,8 +37,6 @@ import java.util.*;
  * Created by huson on 4/12/17.
  */
 public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
-    private static boolean debug = false;
-
     private final float weightedPercentFactor;
     private final float topPercent;
     private final ClassificationFullTree fullTree;
@@ -166,7 +164,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                                     intervals = new IntervalList();
                                     taxa2intervals.put(taxonId, intervals);
                                 }
-                                intervals.add(new IntPair(previousEvent.getPos(), currentEvent.getPos()));
+                                intervals.add(previousEvent.getPos(), currentEvent.getPos());
                             }
                         }
                     }
@@ -271,7 +269,9 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                     if (node2covered.get(w) >= threshold) {
                         if (bestChild == null)
                             bestChild = w;
-                        else return (Integer) v.getInfo(); // has at least two best children, return v
+                        else { // has at least two best children, return v
+                            return (Integer) v.getInfo();
+                        }
                     }
                 }
             }
@@ -337,133 +337,4 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
             return matchId;
         }
     }
-
-    private class IntervalList implements Iterable<IntPair> {
-        private final ArrayList<IntPair> list = new ArrayList<>();
-        private int covered = 0;
-        private boolean isSorted = false;
-
-        public IntervalList() {
-        }
-
-        private void updateSort() {
-            // sort all the intervals:
-            list.sort(new Comparator<IntPair>() {
-                @Override
-                public int compare(IntPair p, IntPair q) {
-                    if (p.getA() < q.getA())
-                        return -1;
-                    else if (p.getA() > q.getA())
-                        return 1;
-                    else if (p.getB() < q.getB())
-                        return -1;
-                    else if (p.getB() > q.getB())
-                        return 1;
-                    else
-                        return 0;
-                }
-            });
-
-            // make the intervals disjoint:
-            final ArrayList<IntPair> orig = new ArrayList<>(list);
-            list.clear();
-            IntPair prev = null;
-            for (IntPair pair : orig) {
-                if (prev == null)
-                    prev = pair;
-                else if (pair.getA() > prev.getB()) {
-                    list.add(prev);
-                    prev = new IntPair(pair.getA(), pair.getB());
-                } else {
-                    prev.setB(Math.max(prev.getB(), pair.getB()));
-                }
-            }
-            if (prev != null)
-                list.add(prev);
-        }
-
-        private void updateCover() {
-            // recompute the amount covered:
-            covered = 0;
-            int lastStart = -1;
-            int lastFinish = -1;
-
-            for (IntPair pair : this) {
-                if (lastStart == -1) {
-                    lastStart = pair.getA();
-                    lastFinish = pair.getB();
-                } else {
-                    if (pair.getA() < lastFinish)
-                        lastFinish = pair.getB();
-                    else {
-                        covered += (lastFinish - lastStart + 1);
-                        lastStart = pair.getA();
-                        lastFinish = pair.getB();
-                    }
-                }
-            }
-            if (lastStart <= lastFinish)
-                covered += (lastFinish - lastStart + 1);
-        }
-
-        public int getCovered() {
-            if (covered == -1) {
-                if (!isSorted)
-                    updateSort();
-                updateCover();
-            }
-            return covered;
-        }
-
-        public void add(IntPair pair) {
-            list.add(pair);
-            isSorted = false;
-            covered = -1;
-        }
-
-        public void addAll(Collection<IntPair> pairs) {
-            list.addAll(pairs);
-            isSorted = false;
-            covered = -1;
-        }
-
-        public void setIsSorted(boolean value) {
-            isSorted = value;
-        }
-
-        public Iterator<IntPair> iterator() {
-            return list.iterator();
-        }
-
-        public Collection<IntPair> getAll() {
-            return list;
-        }
-
-        public int size() {
-            return list.size();
-        }
-    }
-
-    private class IntPair {
-        private int a;
-        private int b;
-
-        public IntPair(int a, int b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        public void setB(int b) {
-            this.b = b;
-        }
-
-        public final int getA() {
-            return a;
-        }
-
-        public final int getB() {
-            return b;
-        }
-    }
-
 }

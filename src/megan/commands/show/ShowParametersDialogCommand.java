@@ -19,13 +19,16 @@
 package megan.commands.show;
 
 import jloda.gui.commands.ICommand;
+import jloda.gui.director.IDirectableViewer;
 import jloda.util.Basic;
+import jloda.util.CanceledException;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.Document;
+import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.dialogs.parameters.ParametersDialog;
 import megan.fx.NotificationsInSwing;
 import megan.inspector.InspectorWindow;
@@ -35,6 +38,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class ShowParametersDialogCommand extends CommandBase implements ICommand {
     public String getSyntax() {
@@ -121,6 +125,24 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
                 @Override
                 public void run() {
                     inspectorWindow.clear();
+                }
+            });
+        }
+
+        final ArrayList<LRInspectorViewer> toClose = new ArrayList<>();
+        for (IDirectableViewer viewer : getDir().getViewers()) {
+            if (viewer instanceof LRInspectorViewer)
+                toClose.add((LRInspectorViewer) viewer);
+        }
+        for (final IDirectableViewer viewer : toClose) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        viewer.destroyView();
+                    } catch (CanceledException e) {
+                        Basic.caught(e);
+                    }
                 }
             });
         }

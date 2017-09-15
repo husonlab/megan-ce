@@ -28,6 +28,7 @@ public class DAAQueryRecord {
     private byte[] queryName;
     private byte[] sourceSequence;
     private final byte[][] context = new byte[6][];
+    private int queryLength;
 
     // additional stuff:
     private long location; // location in file
@@ -53,7 +54,7 @@ public class DAAQueryRecord {
      * @param buffer
      */
     public void parseBuffer(ByteInputBuffer buffer) {
-        int query_len = buffer.readIntLittleEndian();
+        queryLength = buffer.readIntLittleEndian();
         queryName = buffer.readBytesNullTerminated();
         int flags = buffer.readCharBigEndian();
 
@@ -61,20 +62,20 @@ public class DAAQueryRecord {
 
         switch (daaParser.getHeader().getAlignMode()) {
             case blastp: { // todo: untested
-                byte[] packed = PackedSequence.readPackedSequence(buffer, query_len, 5);
-                sourceSequence = context[0] = PackedSequence.getUnpackedSequence(packed, query_len, 5);
+                byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, 5);
+                sourceSequence = context[0] = PackedSequence.getUnpackedSequence(packed, queryLength, 5);
                 break;
             }
             case blastx: {
-                byte[] packed = PackedSequence.readPackedSequence(buffer, query_len, hasN ? 3 : 2);
-                sourceSequence = PackedSequence.getUnpackedSequence(packed, query_len, hasN ? 3 : 2);
+                byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, hasN ? 3 : 2);
+                sourceSequence = PackedSequence.getUnpackedSequence(packed, queryLength, hasN ? 3 : 2);
                 byte[][] sixFrameTranslation = Translator.getSixFrameTranslations(sourceSequence);
                 System.arraycopy(sixFrameTranslation, 0, context, 0, sixFrameTranslation.length);
                 break;
             }
             case blastn: { // todo: untested
-                byte[] packed = PackedSequence.readPackedSequence(buffer, query_len, hasN ? 3 : 2);
-                sourceSequence = PackedSequence.getUnpackedSequence(packed, query_len, hasN ? 3 : 2);
+                byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, hasN ? 3 : 2);
+                sourceSequence = PackedSequence.getUnpackedSequence(packed, queryLength, hasN ? 3 : 2);
                 context[0] = sourceSequence;
                 context[1] = Translator.getReverseComplement(sourceSequence);
                 break;
@@ -119,5 +120,9 @@ public class DAAQueryRecord {
 
     public void setLocation(long location) {
         this.location = location;
+    }
+
+    public int getQueryLength() {
+        return queryLength;
     }
 }

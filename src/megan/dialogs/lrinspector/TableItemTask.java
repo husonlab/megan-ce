@@ -103,6 +103,8 @@ public class TableItemTask extends Task<Integer> {
                 className = "[" + classId + "]";
 
             updateMessage("Loading '" + classification.getName2IdMap().get(classId) + "'... (" + doc.getConnector().getClassSize(classificationName, classId) + " reads)");
+            final int taxonId = (classificationName.equals(Classification.Taxonomy) ? classId : 0);
+
             try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                 while (it.hasNext()) {
                     final IReadBlock readBlock = it.next();
@@ -134,7 +136,7 @@ public class TableItemTask extends Task<Integer> {
                             maxBitScore.set(Math.max(maxBitScore.get(), matchBlock.getBitScore()));
                             maxNormalizedBitScore.set(Math.max(maxNormalizedBitScore.get(), matchBlock.getBitScore() / (float) readBlock.getReadLength()));
                         }
-                        final ReadLayoutPane pane = new ReadLayoutPane(cNames, readBlock.getReadLength(), intervalTree, maxReadLength, layoutWidth);
+                        final ReadLayoutPane pane = new ReadLayoutPane(taxonId, cNames, readBlock.getReadLength(), intervalTree, maxReadLength, layoutWidth);
                         final Utilities.Values values = Utilities.analyze(intervalTree);
                         final int percentCover = Math.min(100, (int) Math.round((100.0 * values.coverage) / readBlock.getReadLength()));
                         final TableItem tableItem = new TableItem(readName, readBlock.getReadSequence(), className, classId, values.disjointScore, values.maxScore, values.hits, percentCover, pane);

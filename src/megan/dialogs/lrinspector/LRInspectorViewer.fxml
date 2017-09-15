@@ -67,8 +67,8 @@
             <columnConstraints>
                 <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="176.0"
                                    prefWidth="452.0"/>
-                <ColumnConstraints hgrow="NEVER" maxWidth="73.0" minWidth="73.0" prefWidth="73.0"/>
-                <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="73.0" prefWidth="73.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="78.0" minWidth="73.0" prefWidth="78.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="68.0" prefWidth="68.0"/>
                 <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="95.0" prefWidth="95.0"/>
             </columnConstraints>
             <rowConstraints>

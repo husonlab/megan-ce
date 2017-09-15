@@ -261,4 +261,24 @@ public class TaxonomyData {
         return path != null ? path : "" + taxId;
     }
 
+    /**
+     * returns the child of v that is above w
+     *
+     * @param taxonV
+     * @param taxonW
+     * @return child of v that is above w, or 0, if not found
+     */
+    public static int getChildAbove(int taxonV, int taxonW) {
+        final Node v = getTree().getANode(taxonV);
+        Node w = getTree().getANode(taxonW);
+        if (v != null && w != null)
+            while (w.getInDegree() > 0) {
+                final Node u = w.getFirstInEdge().getSource();
+                if (u == v)
+                    return (int) w.getInfo();
+                else
+                    w = u;
+            }
+        return 0;
+    }
 }

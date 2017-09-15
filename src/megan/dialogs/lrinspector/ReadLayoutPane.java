@@ -51,6 +51,7 @@ import megan.fx.FXSwingUtilities;
 import megan.util.Table;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
+import megan.viewer.TaxonomyData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,16 +89,20 @@ public class ReadLayoutPane extends Pane {
 
     private boolean hasHidden = false;
 
+    private final int taxonId; // if >0, used to color gene arrows
+
     /**
      * creates the visualization pane
      *
+     * @param taxonId
      * @param cNames
      * @param readLength
      * @param intervalTree
      * @param maxReadLength
      * @return
      */
-    public ReadLayoutPane(final String[] cNames, final int readLength, IntervalTree<IMatchBlock> intervalTree, final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty layoutWidth) {
+    public ReadLayoutPane(int taxonId, final String[] cNames, final int readLength, IntervalTree<IMatchBlock> intervalTree, final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty layoutWidth) {
+        this.taxonId = taxonId;
         this.intervals = intervalTree;
         this.cNames = cNames;
         this.maxReadLength = maxReadLength;
@@ -257,13 +262,6 @@ public class ReadLayoutPane extends Pane {
 
     public static int getFontSize() {
         return (int) Math.round(font.getSize());
-    }
-
-    /**
-     * update label font
-     */
-    public void updateFontSize() {
-        layoutLabels();
     }
 
     public static int getArrowHeight() {
@@ -439,7 +437,6 @@ public class ReadLayoutPane extends Pane {
         }
     }
 
-
     /**
      * process a label
      *
@@ -508,7 +505,6 @@ public class ReadLayoutPane extends Pane {
         }
     }
 
-
     /**
      * color gene arrows by class
      *
@@ -519,25 +515,43 @@ public class ReadLayoutPane extends Pane {
 
         for (GeneArrow geneArrow : geneArrows) {
             boolean colored = false;
+            boolean hasTaxon = false;
             for (IMatchBlock matchBlock : geneArrow) {
-                final StringBuilder keyBuffer = new StringBuilder();
-
-                for (String cName : cNames) {
-                    int classId = matchBlock.getId(cName);
-                    if (classId > 0) {
-                        final String add = ClassificationManager.get(cName, false).getName2IdMap().get(classId);
-                        keyBuffer.append(add != null ? add : cName + classId).append(";");
+                if (taxonId > 0) {
+                    int classId = matchBlock.getId(Classification.Taxonomy);
+                    if (classId > 0 && classId != taxonId) {
+                        hasTaxon = true;
+                        classId = TaxonomyData.getChildAbove(taxonId, classId);
                     }
-                }
-                if (keyBuffer.length() > 0) {
-                    final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(keyBuffer.toString()), 0.5);
-                    geneArrow.setFill(color);
-                    colored = true;
-                    break;
+                    if (classId > 0) {
+                        String taxonName = TaxonomyData.getName2IdMap().get(classId);
+                        if (taxonName != null) {
+                            final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(taxonName), 0.5);
+                            geneArrow.setFill(color);
+                            colored = true;
+                            break;
+                        }
+                    }
+                } else {
+                    final StringBuilder keyBuffer = new StringBuilder();
+
+                    for (String cName : cNames) {
+                        int classId = matchBlock.getId(cName);
+                        if (classId > 0) {
+                            final String add = ClassificationManager.get(cName, false).getName2IdMap().get(classId);
+                            keyBuffer.append(add != null ? add : cName + classId).append(";");
+                        }
+                    }
+                    if (keyBuffer.length() > 0) {
+                        final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(keyBuffer.toString()), 0.5);
+                        geneArrow.setFill(color);
+                        colored = true;
+                        break;
+                    }
                 }
             }
             if (!colored)
-                geneArrow.setFill(Color.TRANSPARENT);
+                geneArrow.setFill(hasTaxon ? Color.LIGHTGRAY : Color.TRANSPARENT);
         }
         showLabels(cNames, true);
         layoutLabels();

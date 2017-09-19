@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -25,18 +25,34 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * The biome file filter
- * Daniel Huson         9.2012
+ * The biom file filter
+ * Daniel Huson 9.2017
  */
-public class Biom1FileFilter extends FileFilterBase implements FilenameFilter {
+public class BiomFileFilter extends FileFilterBase implements FilenameFilter {
+    public enum Version {V1, V2, All}
+
+    private final Version version;
+
+    /**
+     * default constructor. Accepts all versions
+     */
+    public BiomFileFilter() {
+        this(Version.All);
+    }
+
     /**
      * constructor
+     * @param v version to accept
      */
-    public Biom1FileFilter() {
+    public BiomFileFilter(Version v) {
+        this.version = v;
         add("biom");
-        add("biom1");
-        add("txt");
-
+        if (version == Version.V1 || version == Version.All) {
+            add("biom1");
+            //add("txt");
+        }
+        if (version == Version.V2 || version == Version.All)
+            add("biom2");
     }
 
     /**
@@ -48,10 +64,23 @@ public class Biom1FileFilter extends FileFilterBase implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {
-        if (super.accept(dir, name)) { // ensure that file is not biom2 format...
+        if (super.accept(dir, name)) {
             final byte[] bytes = Basic.getFirstBytesFromFile(new File(dir, name), 4);
-            return bytes != null && bytes[0] == '{' && !Basic.toString(bytes).contains("ﾉHDF");
+            boolean isV2 = (bytes != null && bytes[0] != '{' && Basic.toString(bytes).contains("ﾉHDF"));
+            return (version == Version.All || (version == Version.V1 && !isV2) || (version == Version.V2 && isV2));
         }
         return false;
+    }
+
+    public static boolean isBiom1File(String file) {
+        return new BiomFileFilter(Version.V1).accept(file);
+    }
+
+    public static boolean isBiom2File(String file) {
+        return new BiomFileFilter(Version.V2).accept(file);
+    }
+
+    public static boolean isBiomFile(String file) {
+        return new BiomFileFilter(Version.All).accept(file);
     }
 }

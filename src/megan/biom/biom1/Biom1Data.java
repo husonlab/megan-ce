@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.biom;
+package megan.biom.biom1;
 
 import com.google.gson.Gson;
 import jloda.util.Basic;
@@ -35,7 +35,7 @@ import java.util.TimeZone;
  * biom data
  * Daniel Huson, 7.2012
  */
-public class BiomData {
+public class Biom1Data {
     public enum AcceptableTypes {
         OTU_table("OTU table"),
         Pathway_table("Pathway table"),
@@ -130,7 +130,7 @@ data                : <list of lists>, counts of observations by sample
     /**
      * default constructor
      */
-    public BiomData() {
+    public Biom1Data() {
     }
 
     /**
@@ -138,7 +138,7 @@ data                : <list of lists>, counts of observations by sample
      *
      * @param id
      */
-    public BiomData(String id) {
+    public Biom1Data(String id) {
         this.id = id;
         format = "Biological Observation Matrix 1.0.0";
         format_url = "http://biom-format.org";
@@ -198,11 +198,11 @@ data                : <list of lists>, counts of observations by sample
      * @param reader
      * @throws IOException
      */
-    public static BiomData fromReader(Reader reader) throws IOException {
+    public static Biom1Data fromReader(Reader reader) throws IOException {
         Gson gson = new Gson();
-        BiomData biomData = gson.fromJson(reader, BiomData.class);
-        biomData.check();
-        return biomData;
+        Biom1Data biom1Data = gson.fromJson(reader, Biom1Data.class);
+        biom1Data.check();
+        return biom1Data;
     }
 
     /**

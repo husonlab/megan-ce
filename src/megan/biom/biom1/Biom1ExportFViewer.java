@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.biom;
+package megan.biom.biom1;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
@@ -38,7 +38,7 @@ import java.util.*;
  * export a fviewer analysis in biom format
  * Daniel Huson, 7.2012
  */
-public class BiomExportFViewer {
+public class Biom1ExportFViewer {
     /**
      * export taxon name to counts mapping
      *
@@ -48,12 +48,12 @@ public class BiomExportFViewer {
      * @return lines written
      */
     public static int apply(Director dir, String cName, File file, ProgressListener progressListener) throws IOException, CanceledException {
-        BiomData biomData = new BiomData(file.getPath());
+        Biom1Data biom1Data = new Biom1Data(file.getPath());
 
-        biomData.setType(BiomData.AcceptableTypes.Function_table.toString());
-        biomData.setMatrix_type(BiomData.AcceptableMatrixTypes.dense.toString());
-        biomData.setMatrix_element_type(BiomData.AcceptableMatrixElementTypes.Int.toString());
-        biomData.setComment(cName + " classification computed by MEGAN");
+        biom1Data.setType(Biom1Data.AcceptableTypes.Function_table.toString());
+        biom1Data.setMatrix_type(Biom1Data.AcceptableMatrixTypes.dense.toString());
+        biom1Data.setMatrix_element_type(Biom1Data.AcceptableMatrixElementTypes.Int.toString());
+        biom1Data.setComment(cName + " classification computed by MEGAN");
 
         ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(cName);
         if (viewer == null)
@@ -68,7 +68,7 @@ public class BiomExportFViewer {
             colItem.put("metadata", new StringMap());
             colList.add(colItem);
         }
-        biomData.setColumns(colList.toArray(new Map[colList.size()]));
+        biom1Data.setColumns(colList.toArray(new Map[colList.size()]));
 
         final NodeSet selectedNodes = viewer.getSelectedNodes();
         if (selectedNodes.size() == 0) {
@@ -84,20 +84,20 @@ public class BiomExportFViewer {
 
         visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, new HashSet<Integer>(), progressListener);
         int numberOfRows = rowList.size();
-        biomData.setRows(rowList.toArray(new Map[numberOfRows]));
+        biom1Data.setRows(rowList.toArray(new Map[numberOfRows]));
 
-        biomData.setShape(new int[]{numberOfRows, numberOfCols});
+        biom1Data.setShape(new int[]{numberOfRows, numberOfCols});
 
         float[][] data = new float[numberOfRows][];
         int j = 0;
         for (float[] dataRow : dataList) {
             data[j++] = dataRow;
         }
-        biomData.setData(data);
+        biom1Data.setData(data);
 
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            biomData.write(w);
+            biom1Data.write(w);
         }
         return numberOfRows;
     }

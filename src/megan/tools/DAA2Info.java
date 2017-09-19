@@ -108,8 +108,10 @@ public class DAA2Info {
                 if (isMeganized) {
                     outs.write("# Classifications:");
                     final DAAConnector connector = new DAAConnector(daaFile);
-                    for (String classification : connector.getAllClassificationNames()) {
-                        outs.write(" " + classification);
+                    for (String classificationName : connector.getAllClassificationNames()) {
+                        if (ClassificationManager.getAllSupportedClassifications().contains(classificationName)) {
+                            outs.write(" " + classificationName);
+                        }
                     }
                     outs.write("\n");
 

@@ -18,7 +18,6 @@
  */
 package megan.core;
 
-import jloda.util.Basic;
 import jloda.util.Pair;
 import megan.daa.connector.DAAConnector;
 import megan.data.ConnectorCombiner;
@@ -368,7 +367,7 @@ public class MeganFile {
         try {
             doc.loadMeganFile();
         } catch (Exception e) {
-            Basic.caught(e);
+            //Basic.caught(e);
         }
         return doc.getSampleAttributeTable().getSourceFiles();
     }

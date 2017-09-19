@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,20 +16,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.biom;
+package megan.biom.biom1;
 
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
+import megan.core.MeganFile;
 import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.BlastMode;
+import megan.util.BiomFileFilter;
 import megan.viewer.MainViewer;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -37,45 +37,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * parses a file in biom format
+ * import a file in biom1 format
  * Daniel Huson, 9.2012
  */
-public class BIOMImporter {
+public class BIOM1Importer {
     /**
      * apply the importer parser to the named file.
      *  @param fileName
      * @param doc
      * @param type
      */
-    static public void apply(String fileName, Document doc, String type) throws IOException {
-        byte[] bytes = Basic.getFirstBytesFromFile(new File(fileName), 4);
-        if (bytes == null)
-            throw new IOException("Failed read file: " + fileName);
-        //System.err.println(Basic.toString(bytes));
-        if (Basic.toString(bytes).contains("ﾉHDF")) {
-            throw new IOException("File is in BIOM2 format (not supported), please first convert to BIOM1 format");
+    static public void apply(String fileName, Document doc, String type, boolean taxonomyIgnorePath) throws IOException {
+        doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
+
+        if (!BiomFileFilter.isBiom1File(fileName)) {
+            throw new IOException("File not in BIOM1 format");
         }
 
-        System.err.println("Importing data from BIOM file");
+        System.err.println("Importing data from BIOM1 file");
 
-        BiomData biomData = BiomData.fromReader(new FileReader(fileName));
+        Biom1Data biom1Data = Biom1Data.fromReader(new FileReader(fileName));
 
-        String[] names = biomData.getColumnIds();
+        String[] names = biom1Data.getColumnIds();
 
         Map<String, Map<Integer, Integer>> series2Classes2count;
 
         String classificationName;
-        if (type.equalsIgnoreCase("taxonomy") || biomData.isTaxonomyData() || biomData.isOTUData()) {
-            series2Classes2count = BiomImportTaxonomy.getSeries2Classes2Value(biomData);
+        if (type.equalsIgnoreCase("taxonomy") || biom1Data.isTaxonomyData() || biom1Data.isOTUData()) {
+            series2Classes2count = Biom1ImportTaxonomy.getSample2Class2Value(biom1Data, taxonomyIgnorePath);
             classificationName = Classification.Taxonomy;
-        } else if (type.equalsIgnoreCase("seed") || biomData.isSEEDData()) {
-            series2Classes2count = BiomImportSEED.getSeries2Classes2Value(biomData);
+        } else if (type.equalsIgnoreCase("seed") || biom1Data.isSEEDData()) {
+            series2Classes2count = Biom1ImportSEED.getSeries2Classes2Value(biom1Data);
             classificationName = "SEED";
-        } else if (type.equalsIgnoreCase("kegg") || biomData.isKEGGData()) {
-            series2Classes2count = BiomImportKEGG.getSeries2Classes2Value(biomData);
+        } else if (type.equalsIgnoreCase("kegg") || biom1Data.isKEGGData()) {
+            series2Classes2count = Biom1ImportKEGG.getSeries2Classes2Value(biom1Data);
             classificationName = "KEGG";
         } else
-            throw new IOException("Unable to import this datatype: " + biomData.getType());
+            throw new IOException("Unable to import this datatype: " + biom1Data.getType());
 
         System.err.println("Classification type is: " + classificationName);
 
@@ -91,14 +89,12 @@ public class BIOMImporter {
         int totalReads = 0;
         int numberOfSeries = series2Classes2count.keySet().size();
         final float[] sizes = new float[numberOfSeries];
+
         final Map<String, Integer> series2pid = new HashMap<>();
-        final String[] columnIds = biomData.getColumnIds();
+        final String[] columnIds = biom1Data.getColumnIds();
         for (int c = 0; c < columnIds.length; c++)
             series2pid.put(columnIds[c], c);
 
-        for (int i = 0; i < numberOfSeries; i++) {
-            sizes[i] = 0;
-        }
         for (String series : series2Classes2count.keySet()) {
             int seriesId = series2pid.get(series);
             final Map<Integer, Integer> class2count = series2Classes2count.get(series);
@@ -126,16 +122,16 @@ public class BIOMImporter {
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
         }
 
-        table.setSamples(names, null, sizes, new BlastMode[]{BlastMode.Unknown});
+        table.setSamples(names, null, sizes, new BlastMode[]{BlastMode.Classifier});
         table.setTotalReads(totalReads);
         doc.setNumberReads(totalReads);
 
         System.err.println("done (" + totalReads + " reads)");
 
         NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Imported " + totalReads + " reads, as " + classificationName + " classification"
-                + "\nGenerated by " + biomData.generated_by
-                + "\nDate: " + biomData.getDate()
-                + (biomData.getComment() != null ? "\nComment: " + biomData.getComment() : ""));
+                + "\nGenerated by " + biom1Data.generated_by
+                + "\nDate: " + biom1Data.getDate()
+                + (biom1Data.getComment() != null ? "\nComment: " + biom1Data.getComment() : ""));
     }
 
     /**

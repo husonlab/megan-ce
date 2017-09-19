@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,9 +16,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.biom;
+package megan.biom.biom1;
 
 import jloda.util.Basic;
+import megan.biom.biom2.QIIMETaxonParser;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 
@@ -30,22 +31,22 @@ import java.util.Map;
  * imports a BIOME file of type Taxonomy table or OTU table
  * Daniel Huson, 9.2012
  */
-public class BiomImportTaxonomy {
+public class Biom1ImportTaxonomy {
     /**
-     * gets a series 2 classes to value map from the data
+     * gets a sample to class to value map from the data
      *
      * @return map
      */
-    public static Map<String, Map<Integer, Integer>> getSeries2Classes2Value(BiomData biomData) {
-        final Map<String, Map<Integer, Integer>> series2Classes2count = new HashMap<>();
+    public static Map<String, Map<Integer, Integer>> getSample2Class2Value(Biom1Data biom1Data, boolean taxonomyIgnorePath) {
+        final Map<String, Map<Integer, Integer>> sample2class2value = new HashMap<>();
 
-        int numberOfRows = biomData.getRows().length;
+        int numberOfRows = biom1Data.getRows().length;
         final Integer[] row2class = new Integer[numberOfRows];
         int rowCount = 0;
-        for (Map row : biomData.getRows()) {
+        for (Map row : biom1Data.getRows()) {
             //System.err.println("Obj: "+obj);
 
-            Integer bestId = null;
+            Integer taxonId = null;
             Map metaData = (Map) row.get("metadata");
             if (metaData != null) {
                 Object obj = metaData.get("taxonomy");
@@ -59,52 +60,35 @@ public class BiomImportTaxonomy {
                     obj = metaData.get("ontology");
                 if (obj != null && obj instanceof ArrayList) {
                     ArrayList<String> orig = ((ArrayList<String>) obj);
-                    ArrayList<String> names = new ArrayList<>(orig.size());
-                    for (int i = orig.size() - 1; i >= 0; i--) {
-                        String name = orig.get(i);
-                        if (name.indexOf("__") == 1)
-                            name = name.substring(3);
-                        if (name.equals("Root"))
-                            name = "root";
-                        names.add(name);
-                        }
-
-                    // find last legal name
-                    for (String name : names) {
-                        int newTaxId = TaxonomyData.getName2IdMap().get(name);
-                        if (newTaxId != 0 && (bestId == null || TaxonomyData.getTree().isDescendant(bestId, newTaxId))) {
-                            bestId = newTaxId;
-                        }
-                    }
-                    }
+                    taxonId = QIIMETaxonParser.parseTaxon(orig.toArray(new String[orig.size()]), taxonomyIgnorePath);
                 }
-            if (bestId == null) {
+            }
+            if (taxonId == null) {
                 final String idStr = (String) row.get("id");
                 if (idStr != null) {
                     if (Basic.isInteger(idStr))
-                        bestId = Basic.parseInt(idStr);
+                        taxonId = Basic.parseInt(idStr);
                     else {
                         int newTaxId = TaxonomyData.getName2IdMap().get(idStr);
                         if (newTaxId != 0) {
-                            bestId = newTaxId;
+                            taxonId = newTaxId;
                         }
                     }
-
                 }
             }
 
-            if (bestId != null)
-                row2class[rowCount++] = bestId;
+            if (taxonId != null)
+                row2class[rowCount++] = taxonId;
             else {
                 row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
                 System.err.println("Failed to determine taxon for: " + Basic.toString(row.values(), ","));
             }
         }
 
-        int numberOfClasses = biomData.getColumns().length;
+        int numberOfClasses = biom1Data.getColumns().length;
         String[] col2series = new String[numberOfClasses];
         int colCount = 0;
-        for (Object obj : biomData.getColumns()) {
+        for (Object obj : biom1Data.getColumns()) {
             //System.err.println("Obj: "+obj);
 
             String label = (String) ((Map) obj).get("id");
@@ -112,9 +96,9 @@ public class BiomImportTaxonomy {
             col2series[colCount++] = label;
         }
 
-        if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.dense.toString())) {
+        if (biom1Data.getMatrix_type().equalsIgnoreCase(Biom1Data.AcceptableMatrixTypes.dense.toString())) {
             int row = 0;
-            for (Object obj : biomData.getData()) {
+            for (Object obj : biom1Data.getData()) {
                 final int[] array = createIntArray(obj);
                 if (array == null)
                     continue;
@@ -122,10 +106,10 @@ public class BiomImportTaxonomy {
 
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];
-                    Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
+                    Map<Integer, Integer> class2count = sample2class2value.get(col2series[col]);
                     if (class2count == null) {
                         class2count = new HashMap<>();
-                        series2Classes2count.put(col2series[col], class2count);
+                        sample2class2value.put(col2series[col], class2count);
                     }
                     Integer previous = class2count.get(row2class[row]);
                     if (previous != null)
@@ -136,8 +120,8 @@ public class BiomImportTaxonomy {
                 }
                 row++;
             }
-        } else if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.sparse.toString())) {
-            for (Object obj : biomData.getData()) {
+        } else if (biom1Data.getMatrix_type().equalsIgnoreCase(Biom1Data.AcceptableMatrixTypes.sparse.toString())) {
+            for (Object obj : biom1Data.getData()) {
                 final int[] array3 = createIntArray(obj);
                 if (array3 == null)
                     continue;
@@ -147,10 +131,10 @@ public class BiomImportTaxonomy {
                 int value = array3[2];
                 // System.err.println("Class: " + obj.getClass());
                 // System.err.println("Row: " + Basic.toString(array3));
-                Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
+                Map<Integer, Integer> class2count = sample2class2value.get(col2series[col]);
                 if (class2count == null) {
                     class2count = new HashMap<>();
-                    series2Classes2count.put(col2series[col], class2count);
+                    sample2class2value.put(col2series[col], class2count);
                 }
                 Integer previous = class2count.get(row2class[row]);
                 if (previous != null)
@@ -160,7 +144,7 @@ public class BiomImportTaxonomy {
                 // System.err.println(col2series[col] + " -> " + row2class[row] + " -> " + value);
             }
         }
-        return series2Classes2count;
+        return sample2class2value;
     }
 
     /**

@@ -17,34 +17,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package megan.biom.biom2;
+package megan.biom.biom1;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class Biom2Sample {
-    private String name;
-    private final Map<Integer, Float> classId2Count;
-    private final HashMap<String, String> metaDataMap;
-
-    public Biom2Sample() {
-        classId2Count = new HashMap<>();
-        metaDataMap = new HashMap<>();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<Integer, Float> getClassId2Count() {
-        return classId2Count;
-    }
-
-    public HashMap<String, String> getMetaDataMap() {
-        return metaDataMap;
-    }
+/**
+ * String map
+ */
+public class StringMap<T> extends HashMap<String, T> {
 }

@@ -62,6 +62,7 @@ public class MeganProperties {
     public static final String BLASTFILE = "BlastFile";
     public static final String READSFILE = "ReadsFile";
     public static final String CSVFILE = "CSVFile";
+    public static final String BIOMFILE = "BIOMFile";
     public static final String BLASTOUTFILE = "BlastOutFile";
 
     public static final String COMPARISON_STYLE = "CompareStyle";

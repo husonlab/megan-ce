@@ -40,7 +40,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM1 Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Select All;Select None;|;Find...;Find Again;|;");
 

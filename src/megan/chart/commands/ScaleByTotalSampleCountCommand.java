@@ -53,8 +53,8 @@ public class ScaleByTotalSampleCountCommand extends CommandBase implements IChec
 
     public boolean isApplicable() {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        return (chartViewer.getChartData() instanceof IChartData) && ((IChartData) chartViewer.getChartData()).hasTotalSize()
-                && chartViewer.getChartDrawer().getScalingType() == ChartViewer.ScalingType.PERCENT;
+        return (chartViewer.getChartData() != null && chartViewer.getChartData() instanceof IChartData) && ((IChartData) chartViewer.getChartData()).hasTotalSize()
+                && chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().getScalingType() == ChartViewer.ScalingType.PERCENT;
     }
 
     public String getName() {

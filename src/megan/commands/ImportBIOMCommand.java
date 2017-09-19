@@ -24,12 +24,13 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.biom.BIOMImporter;
+import megan.biom.biom1.BIOM1Importer;
+import megan.biom.biom2.Biom2Importer;
 import megan.core.Director;
 import megan.core.Document;
 import megan.inspector.InspectorWindow;
 import megan.main.MeganProperties;
-import megan.util.Biom1FileFilter;
+import megan.util.BiomFileFilter;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
@@ -41,28 +42,36 @@ import java.util.List;
 
 public class ImportBIOMCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "import format=biom file=<fileName> [type={TAXONOMY|KEGG|SEED|UNKNOWN}];";
+        return "import format=biom file=<fileName> [type={TAXONOMY|KEGG|SEED|UNKNOWN}] [taxonomyIgnorePath={false|true}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        Director dir = getDir();
-        MainViewer viewer = dir.getMainViewer();
-        Document doc = dir.getDocument();
+        final Director dir = getDir();
+        final MainViewer viewer = dir.getMainViewer();
+        final Document doc = dir.getDocument();
 
         np.matchIgnoreCase("import format=");
-        String choice = np.getWordMatchesIgnoringCase("biom");
+        final String choice = np.getWordMatchesIgnoringCase("biom");
         if (!choice.equalsIgnoreCase("biom"))
             throw new IOException("Unsupported format: " + choice);
 
         np.matchIgnoreCase("file=");
         final String fileName = np.getAbsoluteFileName();
 
-        String type;
+        final String type;
         if (np.peekMatchIgnoreCase("type")) {
             np.matchIgnoreCase("type=");
             type = np.getWordMatchesIgnoringCase("taxonomy kegg seed unknown");
         } else
-            type = "unknown";
+            type = "";
+
+        final boolean taxonomyIgnorePath;
+        if (np.peekMatchIgnoreCase("taxonomyIgnorePath")) {
+            np.matchIgnoreCase("taxonomyIgnorePath=");
+            taxonomyIgnorePath = np.getBoolean();
+        } else
+            taxonomyIgnorePath = false;
+
 
         np.matchIgnoreCase(";");
 
@@ -70,7 +79,10 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
             doc.neverOpenedReads = false;
             doc.clearReads();
 
-            BIOMImporter.apply(fileName, doc, type);
+            if (BiomFileFilter.isBiom1File(fileName))
+                BIOM1Importer.apply(fileName, doc, type, taxonomyIgnorePath);
+            else if (BiomFileFilter.isBiom2File(fileName))
+                Biom2Importer.apply(fileName, doc, type, taxonomyIgnorePath);
 
             if (dir.getViewerByClass(InspectorWindow.class) != null)
                 ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
@@ -87,32 +99,55 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
             viewer.setDoReInduce(true);
             viewer.setDoReset(true);
         } else {
-            Director newDir = Director.newProject();
+            final Director newDir = Director.newProject();
             newDir.getMainViewer().getFrame().setVisible(true);
             newDir.getMainViewer().setDoReInduce(true);
             newDir.getMainViewer().setDoReset(true);
-            newDir.execute("import format=biom file='" + fileName + "' type='" + type + "';", newDir.getMainViewer().getCommandManager());
+            newDir.execute("import format=biom file='" + fileName + "'" + (!type.equals("") ? " type=" + type + "" : "")
+                    + (taxonomyIgnorePath ? " taxonomyIgnorePath=true" : "") + ";", newDir.getMainViewer().getCommandManager());
         }
     }
 
     public void actionPerformed(ActionEvent event) {
-        File lastOpenFile = ProgramProperties.getFile(MeganProperties.CSVFILE);
+        final File lastOpenFile = ProgramProperties.getFile(MeganProperties.BIOMFILE);
 
-        List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new Biom1FileFilter(), new Biom1FileFilter(), event, "Open BIOM 1.0 file");
+        final List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new BiomFileFilter(), new BiomFileFilter(), event, "Open BIOM file(s)");
+
         if (files != null && files.size() > 0) {
-            final String[] choices = new String[]{"Taxonomy", "KEGG", "SEED", "Unknown"};
-            String choice = ProgramProperties.get("BIOMImportType", "Unknown");
-            choice = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Choose data type", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), choices, choice);
-            if (choice != null) {
-                ProgramProperties.put("BIOMImportType", choice);
 
-                final StringBuilder buf = new StringBuilder();
-                for (File file : files) {
-                    buf.append("import format=biom file='").append(file.getPath()).append("' type='").append(choice).append("';");
+            final String[] choices = new String[]{"Taxonomy", "KEGG", "SEED", "Unknown"};
+            final String[] algorithms = new String[]{"Match taxonomic path", "Match most specific node"};
+
+            String choice = null;
+            String algorithm = null;
+            boolean taxonomyIgnorePath = false;
+
+            final StringBuilder buf = new StringBuilder();
+            for (File file : files) {
+                final boolean isBiom1File = BiomFileFilter.isBiom1File(file.getPath());
+                if (choice == null && isBiom1File) {
+                    choice = ProgramProperties.get("BIOMImportType", "Unknown");
+                    choice = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Choose data type", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), choices, choice);
+                    if (choice != null)
+                        ProgramProperties.put("BIOMImportType", choice);
                 }
-                execute(buf.toString());
-                ProgramProperties.put(MeganProperties.CSVFILE, files.get(0).getPath());
+                if (algorithm == null && (!isBiom1File || choice != null && choice.equals("Taxonomy"))) {
+                    algorithm = ProgramProperties.get("BIOMImportType", "Unknown");
+
+                    algorithm = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "How to map assignments to taxonomy", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), algorithms, algorithm);
+                    if (algorithm.equals(algorithms[1]))
+                        taxonomyIgnorePath = true;
+                }
+
+                buf.append("import format=biom file='").append(file.getPath()).append("'");
+                if (choice != null && isBiom1File)
+                    buf.append(" type=").append(choice);
+                if (taxonomyIgnorePath)
+                    buf.append(" taxonomyIgnorePath=true");
+                buf.append(";");
             }
+            execute(buf.toString());
+            ProgramProperties.put(MeganProperties.BIOMFILE, files.get(0).getPath());
         }
     }
 
@@ -121,11 +156,11 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "BIOM1 Format...";
+        return "BIOM Format...";
     }
 
     public String getAltName() {
-        return "Import BIOM1 Format...";
+        return "Import BIOM Format...";
     }
 
     public ImageIcon getIcon() {
@@ -133,7 +168,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Import samples from a table in BIOM 1.0 (JSON) format (see http://biom-format.org/documentation/format_versions/biom-1.0.html)";
+        return "Import samples from a table in BIOM 1.0 or BIOM 2.1 format (see http://biom-format.org)";
     }
 
     public boolean isCritical() {

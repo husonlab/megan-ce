@@ -784,8 +784,13 @@ public class DataTable {
                 sampleSizes.add(size);
         }
         blastModes.clear();
-        if (modes != null)
-            blastModes.addAll(Arrays.asList(modes));
+        if (modes != null) {
+            if (modes.length == 1) { // if there is 1 or more samples and only one mode given, apply to all
+                for (String name : sampleNames)
+                    blastModes.add(modes[0]);
+            } else
+                blastModes.addAll(Arrays.asList(modes));
+        }
         else {
             for (int i = 0; i < getNumberOfSamples(); i++)
                 blastModes.add(BlastMode.Unknown);

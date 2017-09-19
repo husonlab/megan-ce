@@ -24,15 +24,15 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.biom.BiomExportFViewer;
-import megan.biom.BiomExportTaxonomy;
+import megan.biom.biom1.Biom1ExportFViewer;
+import megan.biom.biom1.Biom1ExportTaxonomy;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
-import megan.util.Biom1FileFilter;
+import megan.util.BiomFileFilter;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -68,13 +68,13 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
         if (data.equalsIgnoreCase(Classification.Taxonomy)) {
             try {
-                int numberOfRows = BiomExportTaxonomy.apply(dir, new File(outputFile), officialRanksOnly, doc.getProgressListener());
+                int numberOfRows = Biom1ExportTaxonomy.apply(dir, new File(outputFile), officialRanksOnly, doc.getProgressListener());
                 NotificationsInSwing.showInformation(getViewer().getFrame(), String.format("Exported %,d rows in BIOM1 format", numberOfRows));
             } catch (Throwable th) {
                 Basic.caught(th);
             }
         } else {
-            int numberOfRows = BiomExportFViewer.apply(getDir(), data, new File(outputFile), doc.getProgressListener());
+            int numberOfRows = Biom1ExportFViewer.apply(getDir(), data, new File(outputFile), doc.getProgressListener());
             NotificationsInSwing.showInformation(getViewer().getFrame(), String.format("Exported %,d rows in BIOM1 format", numberOfRows));
         }
     }
@@ -119,7 +119,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
             lastOpenFile = new File(lastDir, name);
         }
 
-        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new Biom1FileFilter(), new Biom1FileFilter(), event,
+        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new BiomFileFilter(BiomFileFilter.Version.V1), new BiomFileFilter(BiomFileFilter.Version.V1), event,
                 "Save as BIOM 1.0.0 file (JSON format)", ".txt");
 
         if (file != null) {
@@ -131,7 +131,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "BIOM1 Format...";
+        return "BIOM Format...";
     }
 
     public ImageIcon getIcon() {

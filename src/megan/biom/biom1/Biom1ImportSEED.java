@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.biom;
+package megan.biom.biom1;
 
 import jloda.util.Basic;
 import megan.classification.Classification;
@@ -29,34 +29,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * extracts classification from a BIOME file containing a kegg classification
+ * extracts classification from a BIOME file containing a seed classification
  * Daniel Huson, 9.2012
  */
-public class BiomImportKEGG {
+public class Biom1ImportSEED {
     /**
      * gets a series 2 classes to value map from the data
      *
      * @return map
      */
-    public static Map<String, Map<Integer, Integer>> getSeries2Classes2Value(BiomData biomData) {
-        final Classification classification = ClassificationManager.get("KEGG", true);
+    public static Map<String, Map<Integer, Integer>> getSeries2Classes2Value(Biom1Data biom1Data) {
+        final Classification classification = ClassificationManager.get("SEED", true);
 
         final Map<String, Map<Integer, Integer>> series2Classes2count = new HashMap<>();
 
-        int numberOfRows = biomData.getRows().length;
-        final Integer[] row2class = new Integer[numberOfRows];
+        int numberOfRows = biom1Data.getRows().length;
+        Integer[] row2class = new Integer[numberOfRows];
         int rowCount = 0;
-        for (Map row : biomData.getRows()) {
+        for (Map row : biom1Data.getRows()) {
             //System.err.println("Obj: "+obj);
 
             Integer bestId = null;
-            final String idStr = (String) row.get("id");
+            String idStr = (String) row.get("id");
             if (idStr != null && Basic.isInteger(idStr))
                 bestId = Basic.parseInt(idStr);
-            else if (idStr != null && idStr.startsWith("K"))
-                bestId = Basic.parseInt(idStr.substring(1));
             else {
-                Map metaData = (Map) row.get("metadata");
+                final Map metaData = (Map) row.get("metadata");
 
                 if (metaData != null) {
                     Object obj = metaData.get("taxonomy");
@@ -76,19 +74,18 @@ public class BiomImportKEGG {
                 }
             }
 
-            // System.err.println("Class: " + label);
             if (bestId != null)
                 row2class[rowCount++] = bestId;
             else {
                 row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
-                System.err.println("Failed to determine KEGG for: " + Basic.toString(row.values(), ","));
+                System.err.println("Failed to determine SEED for: " + Basic.toString(row.values(), ","));
             }
         }
 
-        int numberOfClasses = biomData.getColumns().length;
-        final String[] col2series = new String[numberOfClasses];
+        int numberOfClasses = biom1Data.getColumns().length;
+        String[] col2series = new String[numberOfClasses];
         int colCount = 0;
-        for (Object obj : biomData.getColumns()) {
+        for (Object obj : biom1Data.getColumns()) {
             //System.err.println("Obj: "+obj);
 
             String label = (String) ((Map) obj).get("id");
@@ -96,13 +93,12 @@ public class BiomImportKEGG {
             col2series[colCount++] = label;
         }
 
-        if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.dense.toString())) {
+        if (biom1Data.getMatrix_type().equalsIgnoreCase(Biom1Data.AcceptableMatrixTypes.dense.toString())) {
             int row = 0;
-            for (Object obj : biomData.getData()) {
-                final int[] array = BiomImportTaxonomy.createIntArray(obj);
+            for (Object obj : biom1Data.getData()) {
+                final int[] array = Biom1ImportTaxonomy.createIntArray(obj);
                 if (array == null)
                     continue;
-
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];
                     Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
@@ -119,17 +115,17 @@ public class BiomImportKEGG {
                 }
                 row++;
             }
-        } else if (biomData.getMatrix_type().equalsIgnoreCase(BiomData.AcceptableMatrixTypes.sparse.toString())) {
-            for (Object obj : biomData.getData()) {
-                final int[] array3 = BiomImportTaxonomy.createIntArray(obj);
+        } else if (biom1Data.getMatrix_type().equalsIgnoreCase(Biom1Data.AcceptableMatrixTypes.sparse.toString())) {
+            for (Object obj : biom1Data.getData()) {
+                final int[] array3 = Biom1ImportTaxonomy.createIntArray(obj);
                 if (array3 == null)
                     continue;
 
                 int row = array3[0];
                 int col = array3[1];
                 int value = array3[2];
-                //System.err.println("Class: " + obj.getClass());
-                //System.err.println("Row: " + Basic.toString(array3));
+                // System.err.println("Class: " + obj.getClass());
+                // System.err.println("Row: " + Basic.toString(array3));
                 Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
                 if (class2count == null) {
                     class2count = new HashMap<>();

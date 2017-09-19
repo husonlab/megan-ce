@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package megan.biom.biom2;
+package megan.biom.biom1;
 
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;

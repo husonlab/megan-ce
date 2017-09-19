@@ -19,7 +19,6 @@
 package megan.biom.biom1;
 
 import jloda.util.Basic;
-import megan.biom.biom2.QIIMETaxonParser;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 

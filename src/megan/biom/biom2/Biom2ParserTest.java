@@ -23,6 +23,7 @@ import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
 import jloda.util.Basic;
+import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.Document;
@@ -35,7 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Biom2Parser {
+public class Biom2ParserTest {
     /**
      * parse a file in biom2 format.
      *

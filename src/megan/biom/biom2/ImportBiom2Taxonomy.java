@@ -21,6 +21,7 @@ package megan.biom.biom2;
 
 import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
+import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.IdMapper;
 
 import java.io.IOException;

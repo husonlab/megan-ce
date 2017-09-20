@@ -116,7 +116,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
         if (files != null && files.size() > 0) {
 
             final String[] choices = new String[]{"Taxonomy", "KEGG", "SEED", "Unknown"};
-            final String[] algorithms = new String[]{"Match taxonomic path", "Match most specific node"};
+            final String[] taxonomyAssignmentAlgorithm = new String[]{"Match taxonomic path (more conservative)", "Match most specific node (more specific)"};
 
             String choice = null;
             String algorithm = null;
@@ -130,12 +130,18 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
                     choice = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Choose data type", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), choices, choice);
                     if (choice != null)
                         ProgramProperties.put("BIOMImportType", choice);
+                    else
+                        return; // canceled
                 }
-                if (algorithm == null && (!isBiom1File || choice != null && choice.equals("Taxonomy"))) {
-                    algorithm = ProgramProperties.get("BIOMImportType", "Unknown");
+                if (algorithm == null && !isBiom1File) {
+                    algorithm = ProgramProperties.get("BIOMImportTaxonomyAssignment", taxonomyAssignmentAlgorithm[0]);
 
-                    algorithm = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "How to map assignments to taxonomy", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), algorithms, algorithm);
-                    if (algorithm.equals(algorithms[1]))
+                    algorithm = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "How to map assignments to taxonomy", "MEGAN choice", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), taxonomyAssignmentAlgorithm, algorithm);
+                    if (algorithm != null)
+                        ProgramProperties.put("BIOMImportTaxonomyAssignment", algorithm);
+                    else
+                        return; // canceled
+                    if (algorithm.equals(taxonomyAssignmentAlgorithm[1]))
                         taxonomyIgnorePath = true;
                 }
 

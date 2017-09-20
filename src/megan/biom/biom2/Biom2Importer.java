@@ -24,7 +24,6 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
-import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
 import megan.core.MeganFile;
@@ -63,48 +62,62 @@ public class Biom2Importer {
             final String[] sampleIds = reader.readStringArray("/sample/ids"); // dataset of the sample IDs
             final int numberOfSamples = sampleIds.length;
 
-            final Map<Integer, float[]> class2sample2count;
-            final String classificationName;
+            final Map<String, Map<Integer, float[]>> classification2class2sample2count = new HashMap<>();
 
-            if (TopLevelAttributes.Type.OTU_table.equalsName(topLevelAttributes.getType())) {
-                class2sample2count = ImportBiom2Taxonomy.getClass2Samples2Counts(reader, numberOfSamples, ignorePathAbove);
-                classificationName = Classification.Taxonomy;
-            } else {
-                throw new IOException("Import of type '" + topLevelAttributes.getType() + "' not implemented: please request implementation here: http://megan.informatik.uni-tuebingen.de");
+            if (ImportBiom2Taxonomy.hasTaxonomyMetadata(reader)) {
+                final Map<Integer, float[]> class2sample2count = ImportBiom2Taxonomy.getClass2Samples2Counts(reader, numberOfSamples, ignorePathAbove);
+                classification2class2sample2count.put(Classification.Taxonomy, class2sample2count);
             }
-            System.err.println("Classification type is: " + classificationName);
+            // todo: add parsing of other classifications here
 
             final DataTable datatTable = doc.getDataTable();
             datatTable.clear();
             datatTable.setCreator(ProgramProperties.getProgramName());
             datatTable.setCreationDate((new Date()).toString());
 
-            final float[] sizes = computeSizes(numberOfSamples, class2sample2count);
-            final float totalReads = Basic.getSum(sizes);
-
-            doc.getActiveViewers().add(classificationName);
-            doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
-
-            datatTable.getClassification2Class2Counts().put(classificationName, class2sample2count);
-
-            if (!classificationName.equals(ClassificationType.Taxonomy.toString())) {
-                final Map<Integer, float[]> class2counts = new HashMap<>();
-                class2counts.put(IdMapper.UNASSIGNED_ID, sizes);
-                datatTable.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
+            final float[] sizes;
+            if (classification2class2sample2count.containsKey(Classification.Taxonomy))
+                sizes = computeSizes(numberOfSamples, classification2class2sample2count.get(Classification.Taxonomy));
+            else if (classification2class2sample2count.size() > 0)
+                sizes = computeSizes(numberOfSamples, classification2class2sample2count.values().iterator().next());
+            else {
+                sizes = null;
+                System.err.println("Unsupported data, please report on megan.informatik.uni-tuebingen.de");
             }
 
-            datatTable.setSamples(sampleIds, null, sizes, new BlastMode[]{BlastMode.Classifier});
-            datatTable.setTotalReads(Math.round(totalReads));
-            doc.setNumberReads(Math.round(totalReads));
+            final float totalReads;
+            if (sizes != null) {
+                totalReads = Basic.getSum(sizes);
+
+                doc.getActiveViewers().addAll(classification2class2sample2count.keySet());
+
+                doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
+
+                datatTable.getClassification2Class2Counts().putAll(classification2class2sample2count);
+
+                if (!classification2class2sample2count.containsKey(Classification.Taxonomy)) {
+                    final Map<Integer, float[]> class2counts = new HashMap<>();
+                    class2counts.put(IdMapper.UNASSIGNED_ID, sizes);
+                    datatTable.getClassification2Class2Counts().put(Classification.Taxonomy, class2counts);
+                }
+
+                datatTable.setSamples(sampleIds, null, sizes, new BlastMode[]{BlastMode.Classifier});
+                datatTable.setTotalReads(Math.round(totalReads));
+                doc.setNumberReads(Math.round(totalReads));
+            } else {
+                totalReads = 0;
+            }
 
             // read the meta data, if available:
-            Biom2MetaData.read(reader, sampleIds, doc.getSampleAttributeTable());
+            final int metaDataCount = Biom2MetaData.read(reader, sampleIds, doc.getSampleAttributeTable());
 
             System.err.println("done (" + totalReads + " reads)");
 
-            NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Imported " + totalReads + " reads, as " + classificationName + " classification"
-                    + "\nGenerated by " + topLevelAttributes.getGeneratedBy()
-                    + ", date: " + topLevelAttributes.getCreationDate());
+            final String message = "Imported " + totalReads + " reads, " + classification2class2sample2count.size() + " classifications, "
+                    + metaDataCount + " attributes" + "\nGenerated by " + topLevelAttributes.getGeneratedBy()
+                    + ", date: " + topLevelAttributes.getCreationDate();
+
+            NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), message);
         }
     }
 

@@ -21,6 +21,7 @@ package megan.biom.biom2;
 
 import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
+import jloda.util.Basic;
 import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.IdMapper;
 
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ImportBiom2Taxonomy {
+    private final static String[] keys = {"taxonomy", "organism", "organisms"};
+
     /**
      * gets the taxonomy class to samples to counts map
      *
@@ -38,14 +41,16 @@ public class ImportBiom2Taxonomy {
         int countLinesImported = 0;
         int countLinesSkipped = 0;
 
+
         MDArray<String> pathArray = null;
         int[] dimensions = null;
 
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
-            if (metaKey.equalsIgnoreCase("taxonomy") || metaKey.equalsIgnoreCase("organism")) {
+            if (Basic.getIndexIgnoreCase(metaKey, keys) != -1) {
                 pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
                 dimensions = pathArray.dimensions();
-                break;
+                if (dimensions != null && dimensions.length > 0)
+                    break;
             }
         }
         if (dimensions == null)
@@ -98,5 +103,23 @@ public class ImportBiom2Taxonomy {
         for (int c = 0; c < cols; c++)
             path[c] = array.get(row, c);
         return path;
+    }
+
+    /**
+     * determines whether taxonomy metadata is present
+     *
+     * @param reader
+     * @return true, if present
+     */
+    public static boolean hasTaxonomyMetadata(IHDF5Reader reader) {
+        for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
+            if (Basic.getIndexIgnoreCase(metaKey, keys) != -1) {
+                final MDArray<String> pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
+                final int[] dimensions = pathArray.dimensions();
+                if (dimensions != null && dimensions.length > 0)
+                    return true;
+            }
+        }
+        return false;
     }
 }

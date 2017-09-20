@@ -37,7 +37,7 @@ public class Biom2MetaData {
      * @param table
      * @throws IOException
      */
-    public static void read(IHDF5Reader reader, String[] sampleIds, SampleAttributeTable table) throws IOException {
+    public static int read(IHDF5Reader reader, String[] sampleIds, SampleAttributeTable table) throws IOException {
         table.setSampleOrder(Arrays.asList(sampleIds));
         final Map<String, Object> sample2value = new HashMap<>();
         for (final String metaKey : reader.getGroupMembers("/sample/metadata")) {
@@ -48,6 +48,7 @@ public class Biom2MetaData {
             table.addAttribute(metaKey, sample2value, true, true);
             sample2value.clear();
         }
+        return reader.getGroupMembers("/sample/metadata").size();
     }
 
     /**

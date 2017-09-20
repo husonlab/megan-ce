@@ -29,6 +29,9 @@ import megan.core.MeganFile;
 import megan.dialogs.compare.CompareWindow;
 import megan.dialogs.compare.Comparer;
 import megan.main.MeganProperties;
+import megan.util.MeganFileFilter;
+import megan.util.MeganizedDAAFileFilter;
+import megan.util.RMAFileFilter;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
@@ -36,7 +39,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -101,9 +103,13 @@ public class CompareCommand extends CommandBase implements ICommand {
                 ArrayList<String> files = new ArrayList<>();
                 while (true) {
                     String fileName = np.getWordRespectCase();
-                    if (!fileName.contains("::") && !(new File(fileName)).isFile())
-                        throw new IOException("File not found: " + fileName);
-                    files.add(fileName);
+
+                    if (fileName.contains("::")) {
+                        files.add(fileName);
+                    } else {
+                        files.addAll(RecursiveFileLister.apply(fileName, new MeganFileFilter(), new RMAFileFilter(), MeganizedDAAFileFilter.getInstance()));
+                    }
+
                     if (np.peekMatchIgnoreCase(","))
                         np.matchAnyTokenIgnoreCase(",");   // for backward compatibility
                     if (np.peekMatchIgnoreCase(";"))

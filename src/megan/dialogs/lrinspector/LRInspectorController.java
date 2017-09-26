@@ -563,6 +563,7 @@ public class LRInspectorController {
         }
     }
 
+    
     public TableView<TableItem> getTableView() {
         return tableView;
     }

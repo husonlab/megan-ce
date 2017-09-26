@@ -511,6 +511,51 @@ public class ClassificationFullTree extends PhyloTree {
     }
 
     /**
+     * get all parents for a given id. There can be more than one parent because an id can appear on more than one node
+     *
+     * @param classId
+     * @return all ids of all parents
+     */
+    public Set<Integer> getAllParents(int classId) {
+        final Set<Integer> set = new HashSet<>();
+        for (Node v : getNodes(classId)) {
+            if (v.getInDegree() > 0) {
+                final Node w = v.getFirstInEdge().getSource();
+                set.add((Integer) w.getInfo());
+            }
+        }
+        return set;
+    }
+
+    /**
+     * returns the child of classV that is above classW
+     *
+     * @param classV
+     * @param classW
+     * @return child of classV that is above classW, or 0, if not found
+     */
+    public int getChildAbove(int classV, int classW) {
+        if (classV == classW)
+            return classV;
+
+        final Node v = getANode(classV);
+        if (v != null) {
+            for (Node w : getNodes(classW)) {
+                while (w.getInDegree() > 0) {
+                    final Node u = w.getFirstInEdge().getSource();
+                    if (u == v)
+                        return (int) w.getInfo();
+                    else
+                        w = u;
+                }
+            }
+        }
+        return 0;
+    }
+
+
+
+    /**
      * gets all nodes associated with a given f id
      *
      * @param id
@@ -519,11 +564,11 @@ public class ClassificationFullTree extends PhyloTree {
     public Set<Node> getNodes(int id) {
         Set<Node> set = id2Nodes.get(id);
         if (set == null) {
+            set = new HashSet<>();
+            id2Nodes.put(id, set);
             Node v = id2Node.get(id); // there is only one node associated with this id, make a set and save it for repeated use
             if (v != null) {
-                set = new HashSet<>();
                 set.add(v);
-                id2Nodes.put(id, set);
             }
         }
         return set;
@@ -702,4 +747,5 @@ public class ClassificationFullTree extends PhyloTree {
 
         return noneBelowCount < noneBelow.length;
     }
+
 }

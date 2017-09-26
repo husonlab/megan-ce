@@ -51,7 +51,6 @@ import megan.fx.FXSwingUtilities;
 import megan.util.Table;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
-import megan.viewer.TaxonomyData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -89,20 +88,17 @@ public class ReadLayoutPane extends Pane {
 
     private boolean hasHidden = false;
 
-    private final int taxonId; // if >0, used to color gene arrows
 
     /**
      * creates the visualization pane
      *
-     * @param taxonId
      * @param cNames
      * @param readLength
      * @param intervalTree
      * @param maxReadLength
      * @return
      */
-    public ReadLayoutPane(int taxonId, final String[] cNames, final int readLength, IntervalTree<IMatchBlock> intervalTree, final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty layoutWidth) {
-        this.taxonId = taxonId;
+    public ReadLayoutPane(final String[] cNames, final int readLength, IntervalTree<IMatchBlock> intervalTree, final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty layoutWidth) {
         this.intervals = intervalTree;
         this.cNames = cNames;
         this.maxReadLength = maxReadLength;
@@ -509,51 +505,57 @@ public class ReadLayoutPane extends Pane {
      * color gene arrows by class
      *
      * @param colorManager
-     * @param cNames
+     * @param activeClassifications
      */
-    public void colorByClassification(ChartColorManager colorManager, Collection<String> cNames) {
+    public void colorByClassification(ChartColorManager colorManager, Collection<String> activeClassifications, String keyClassification, int keyClassId) {
 
-        for (GeneArrow geneArrow : geneArrows) {
-            boolean colored = false;
-            boolean hasTaxon = false;
-            for (IMatchBlock matchBlock : geneArrow) {
-                if (taxonId > 0) {
-                    int classId = matchBlock.getId(Classification.Taxonomy);
-                    if (classId > 0 && classId != taxonId) {
-                        hasTaxon = true;
-                        classId = TaxonomyData.getChildAbove(taxonId, classId);
-                    }
+        if (activeClassifications.contains(keyClassification) && keyClassId > 0) {
+            for (GeneArrow geneArrow : geneArrows) {
+                final Classification classification = ClassificationManager.get(keyClassification, false);
+
+                boolean hasClass = false;
+                boolean colored = false;
+
+                for (IMatchBlock matchBlock : geneArrow) {
+                    final int classId = matchBlock.getId(keyClassification);
                     if (classId > 0) {
-                        String taxonName = TaxonomyData.getName2IdMap().get(classId);
-                        if (taxonName != null) {
-                            final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(taxonName), 0.5);
-                            geneArrow.setFill(color);
-                            colored = true;
+                        hasClass = true;
+                        final int colorClassId = classification.getFullTree().getChildAbove(keyClassId, classId);
+                        if (colorClassId > 0) {
+                            final String className = classification.getName2IdMap().get(colorClassId);
+                            if (className != null) {
+                                final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(className), 0.5);
+                                geneArrow.setFill(color);
+                                colored = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!colored) {
+                    geneArrow.setFill(hasClass ? Color.LIGHTGRAY : Color.TRANSPARENT);
+                }
+            }
+        } else // key classification not showing
+        {
+            for (GeneArrow geneArrow : geneArrows) {
+                boolean hasClass = false;
+
+                for (IMatchBlock matchBlock : geneArrow) {
+                    for (String cName : activeClassifications) {
+                        final int classId = matchBlock.getId(cName);
+                        if (classId > 0) {
+                            hasClass = true;
                             break;
                         }
                     }
-                } else {
-                    final StringBuilder keyBuffer = new StringBuilder();
-
-                    for (String cName : cNames) {
-                        int classId = matchBlock.getId(cName);
-                        if (classId > 0) {
-                            final String add = ClassificationManager.get(cName, false).getName2IdMap().get(classId);
-                            keyBuffer.append(add != null ? add : cName + classId).append(";");
-                        }
-                    }
-                    if (keyBuffer.length() > 0) {
-                        final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(keyBuffer.toString()), 0.5);
-                        geneArrow.setFill(color);
-                        colored = true;
-                        break;
-                    }
                 }
+
+                geneArrow.setFill(hasClass ? Color.LIGHTGRAY : Color.TRANSPARENT);
             }
-            if (!colored)
-                geneArrow.setFill(hasTaxon ? Color.LIGHTGRAY : Color.TRANSPARENT);
         }
-        showLabels(cNames, true);
+
+        showLabels(activeClassifications, true);
         layoutLabels();
     }
 

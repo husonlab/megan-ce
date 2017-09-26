@@ -22,14 +22,17 @@ import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.fx.NotificationsInSwing;
+import megan.main.MeganProperties;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 public class DisableTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
@@ -41,6 +44,9 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("disable taxa=");
 
         final MainViewer viewer = (MainViewer) getViewer();
+        TaxonomyData.ensureDisabledTaxaInitialized();
+
+        final Set<Integer> disabledInternalIds = TaxonomyData.getDisabledInternalTaxa();
 
         String name = np.getWordRespectCase();
         if (name.equalsIgnoreCase("selected")) {
@@ -48,13 +54,13 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
             for (Node v : selected) {
                 int taxId = (Integer) v.getInfo();
                 if (taxId > 0)
-                    TaxonomyData.getDisabledTaxa().add(taxId);
+                    disabledInternalIds.add(taxId);
             }
         } else {
             while (true) {
                 int taxId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
                 if (taxId > 0)
-                    TaxonomyData.getDisabledTaxa().add(taxId);
+                    disabledInternalIds.add(taxId);
                 if (np.peekMatchIgnoreCase(",")) {
                     np.matchIgnoreCase(",");
                     name = np.getWordRespectCase();
@@ -63,7 +69,13 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
             }
         }
         np.matchIgnoreCase(";");
-        System.err.println("Disabled taxa: " + TaxonomyData.getDisabledTaxa().size());
+
+        TaxonomyData.setDisabledInternalTaxa(disabledInternalIds);
+
+        ProgramProperties.put(MeganProperties.DISABLED_TAXA, Basic.toString(TaxonomyData.getDisabledInternalTaxa(), " "));
+
+        System.err.println("Total disabled taxa: " + TaxonomyData.getDisabledTaxa().size());
+
         viewer.setDoReInduce(true);
     }
 

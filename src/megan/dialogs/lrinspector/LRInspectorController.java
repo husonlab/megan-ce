@@ -465,22 +465,42 @@ public class LRInspectorController {
     public void recolor() {
         if (overviewMenuItem.isSelected()) {
             usingHeatmap = true;
-            for (TableItem item : getSelectedOrAllTableItems()) {
-                item.getPane().colorByNormalizedBitScore(colorManager, getService().maxNormalizedBitScoreProperty().get());
+            for (final TableItem item : getSelectedOrAllTableItems()) {
+                javafx.application.Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        item.getPane().colorByNormalizedBitScore(colorManager, getService().maxNormalizedBitScoreProperty().get());
+                    }
+                });
             }
-            updateSearcher();
+            javafx.application.Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    updateSearcher();
+                }
+            });
         } else {
             usingHeatmap = false;
-            ArrayList<String> selectedCNames = new ArrayList<>();
+            final ArrayList<String> selectedCNames = new ArrayList<>();
             for (Toggle item : classificationLayoutGroup.getSelectedItems()) {
                 if (item instanceof RadioMenuItem) {
                     selectedCNames.add(((RadioMenuItem) item).getText());
                 }
             }
-            for (TableItem item : getSelectedOrAllTableItems()) {
-                item.getPane().colorByClassification(colorManager, selectedCNames);
+            for (final TableItem item : getSelectedOrAllTableItems()) {
+                javafx.application.Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        item.getPane().colorByClassification(colorManager, selectedCNames, viewer.getClassificationName(), viewer.getClassId());
+                    }
+                });
             }
-            updateSearcher();
+            javafx.application.Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    updateSearcher();
+                }
+            });
         }
     }
 
@@ -497,8 +517,7 @@ public class LRInspectorController {
     }
 
     private ContextMenu createTableContextMenu() {
-        final ContextMenu contextMenu = new ContextMenu();
-        return contextMenu;
+        return new ContextMenu();
     }
 
     /**

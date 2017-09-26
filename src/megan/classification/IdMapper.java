@@ -23,7 +23,6 @@ import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.data.*;
-import megan.main.MeganProperties;
 
 import java.io.IOException;
 import java.util.EnumMap;
@@ -99,11 +98,6 @@ public class IdMapper {
 
         algorithm = (ProgramProperties.get(cName + "UseLCAToParse", name.equals(Classification.Taxonomy)) ? IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
 
-        if (name.equals(Classification.Taxonomy)) { // todo: generalize this so that it applies to all classifications
-            for (int i : ProgramProperties.get(MeganProperties.DISABLED_TAXA, new int[0])) {
-                disabledIds.add(i);
-            }
-        }
     }
 
     /**

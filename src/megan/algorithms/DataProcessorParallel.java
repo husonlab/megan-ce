@@ -36,6 +36,7 @@ import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
+import megan.viewer.TaxonomyData;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -96,6 +97,7 @@ public class DataProcessorParallel {
             for (int c = 0; c < numberOfClassifications; c++) {
                 if (c == taxonomyIndex) {
                     useLCAForClassification[c] = true;
+                    TaxonomyData.ensureDisabledTaxaInitialized();
                 } else {
                     ClassificationManager.ensureTreeIsLoaded(cNames[c]);
                     useLCAForClassification[c] = ProgramProperties.get(cNames[c] + "UseLCA", cNames[c].equals(Classification.Taxonomy));

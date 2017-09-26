@@ -140,13 +140,15 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                         for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                             final int taxonId = matchBlock.getTaxonId(); // store the best score for each taxon
-                            if (taxonId > 0) {
+                            if (taxonId == 155900)
+                                System.err.println(155900);
+
+                            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(taxonId)) {
                                 Float bestScore = taxon2BestScore.get(taxonId);
                                 if (bestScore == null)
                                     taxon2BestScore.put(taxonId, matchBlock.getBitScore());
                                 else
                                     taxon2BestScore.put(taxonId, Math.max(bestScore, matchBlock.getBitScore()));
-
                             }
                         }
                         // determine the top-percent threshold on the current segment:

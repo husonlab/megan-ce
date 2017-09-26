@@ -18,17 +18,21 @@
  */
 package megan.viewer;
 
+import jloda.graph.Edge;
 import jloda.graph.Node;
+import jloda.util.ProgramProperties;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
+import megan.main.MeganProperties;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * maintains static access to the taxonomy
@@ -262,23 +266,78 @@ public class TaxonomyData {
     }
 
     /**
-     * returns the child of v that is above w
-     *
-     * @param taxonV
-     * @param taxonW
-     * @return child of v that is above w, or 0, if not found
+     * set total set of disabled nodes from a set of disabled nodes. This is used to set all disabled node from
+     * the representation saved in the preferrences file
+     * @param internal
      */
-    public static int getChildAbove(int taxonV, int taxonW) {
-        final Node v = getTree().getANode(taxonV);
-        Node w = getTree().getANode(taxonW);
-        if (v != null && w != null)
-            while (w.getInDegree() > 0) {
-                final Node u = w.getFirstInEdge().getSource();
-                if (u == v)
-                    return (int) w.getInfo();
-                else
-                    w = u;
+    public static void setDisabledInternalTaxa(Set<Integer> internal) {
+        final Node root = getTree().getRoot();
+        if (root != null)
+            setDisabledInternalTaxaRec(root, internal, internal.contains((int) root.getInfo()));
+    }
+
+    /**
+     * recursively does the work
+     *
+     * @param v
+     * @param internalDisabledIds
+     * @param disable
+     */
+    private static void setDisabledInternalTaxaRec(final Node v, final Set<Integer> internalDisabledIds, boolean disable) {
+        final int id = (int) v.getInfo();
+
+        if (!disable && internalDisabledIds.contains(id))
+            disable = true;
+        if (disable)
+            taxonomyClassification.getIdMapper().getDisabledIds().add(id);
+        else
+            taxonomyClassification.getIdMapper().getDisabledIds().remove(id);
+        for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+            setDisabledInternalTaxaRec(e.getTarget(), internalDisabledIds, disable);
+        }
+    }
+
+    /**
+     * gets the disabled internal nodes. This generates the set that is saved to the preferences file
+     *
+     * @return disabled internal nodes
+     */
+    public static Set<Integer> getDisabledInternalTaxa() {
+        final Set<Integer> internalDisabledIds = new TreeSet<>();
+        final Node root = getTree().getRoot();
+        if (root != null)
+            getDisabledFromInternalTaxaRec(root, internalDisabledIds);
+        return internalDisabledIds;
+    }
+
+    /**
+     * recursively does the work
+     *
+     * @param v
+     * @param internalDisabledIds
+     */
+    private static void getDisabledFromInternalTaxaRec(Node v, Set<Integer> internalDisabledIds) {
+        final int id = (int) v.getInfo();
+
+        if (taxonomyClassification.getIdMapper().getDisabledIds().contains(id)) {
+            internalDisabledIds.add(id);
+        } else {
+            for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+                getDisabledFromInternalTaxaRec(e.getTarget(), internalDisabledIds);
             }
-        return 0;
+        }
+    }
+
+    /**
+     * ensures that the disabled taxa have been initialized
+     */
+    public static void ensureDisabledTaxaInitialized() {
+        if (getDisabledTaxa().size() == 0) {
+            for (int i : ProgramProperties.get(MeganProperties.DISABLED_TAXA, new int[0])) {
+                getDisabledTaxa().add(i);
+            }
+            if (getDisabledTaxa().size() > 0)
+                TaxonomyData.setDisabledInternalTaxa(getDisabledTaxa());
+        }
     }
 }

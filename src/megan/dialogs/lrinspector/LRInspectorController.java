@@ -365,7 +365,7 @@ public class LRInspectorController {
 
         panelWidthSlider.setTooltip(new Tooltip("Change layout width"));
         panelWidthSlider.valueProperty().bindBidirectional(layoutCol.prefWidthProperty());
-        panelHeightSlider.disableProperty().bind(getService().runningProperty());
+        panelWidthSlider.disableProperty().bind(getService().runningProperty());
         panelWidthSlider.maxProperty().bind(Bindings.min(1000000, viewer.maxReadLengthProperty().multiply(10)));
 
         fontSize.getItems().addAll(6, 8, 10, 12, 16, 18, 22, 24);
@@ -421,30 +421,25 @@ public class LRInspectorController {
         axis.setLowerBound(0);
         axis.prefHeightProperty().set(20);
         axis.prefWidthProperty().bind(widthProperty.subtract(60));
-        maxReadLength.addListener(new ChangeListener<Number>() {
+
+        final ChangeListener<Number> changeListener = new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                axis.setUpperBound(newValue.doubleValue());
-                int maxX = Math.round(maxReadLength.get() / 2000.0f); // at most 2000 major ticks
-                for (int x = 10; x < maxX; x *= 10) {
-                    if (x * newValue.doubleValue() > 50.0 * maxReadLength.get()) {
+                int minX = Math.round(maxReadLength.get() / 2000.0f); // at most 2000 major ticks
+                for (int x = 10; x < 10000000; x *= 10) {
+                    if (x >= minX && widthProperty.doubleValue() * x >= 50 * maxReadLength.doubleValue()) {
+                        axis.setUpperBound(maxReadLength.get());
                         axis.setTickUnit(x);
-                        break;
+                        return;
                     }
                 }
+                axis.setTickUnit(maxReadLength.get());
+                axis.setUpperBound(maxReadLength.get());
             }
-        });
-        widthProperty.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                for (int x = 10; x <= maxReadLength.get(); x *= 10) {
-                    if (x * newValue.doubleValue() > 50.0 * maxReadLength.get()) {
-                        axis.setTickUnit(x);
-                        break;
-                    }
-                }
-            }
-        });
+        };
+
+        maxReadLength.addListener(changeListener);
+        widthProperty.addListener(changeListener);
 
         pane.getChildren().add(axis);
         return pane;

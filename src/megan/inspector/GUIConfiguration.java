@@ -20,7 +20,6 @@ package megan.inspector;
 
 import jloda.gui.MenuConfiguration;
 import jloda.util.ProgramProperties;
-import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 
 /**
@@ -47,8 +46,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Options", "BLAST on NCBI...;|;Collapse Inspector;Expand Inspector;|;Sort Reads Alphabetically;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
-                "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
-                ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;");
+                "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;");
 
         menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
 

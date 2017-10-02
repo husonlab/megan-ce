@@ -249,12 +249,12 @@ public class LRInspectorController {
 
         layoutCol.setGraphic(createAxis(viewer.maxReadLengthProperty(), layoutCol.widthProperty()));
 
-
         overviewMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (!overviewMenuItem.isSelected())
+                if (!overviewMenuItem.isSelected()) {
                     overviewMenuItem.setSelected(true);
+                }
                 recolor();
             }
         });
@@ -282,7 +282,7 @@ public class LRInspectorController {
             if (cNames.length > 0) {
                 layoutMenuButton.getItems().add(new SeparatorMenuItem());
                 for (int cid = 0; cid < cNames.length; cid++) {
-                    String cName = cNames[cid];
+                    final String cName = cNames[cid];
                     final RadioMenuItem menuItem = new RadioMenuItem(cName);
                     menuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
@@ -528,8 +528,7 @@ public class LRInspectorController {
                     if (newValue) {
                         tableView.getSelectionModel().select(item);
                         tableView.scrollTo(item);
-                    }
-                    else {
+                    } else {
                         ArrayList<TableItem> selected = new ArrayList<>(tableView.getSelectionModel().getSelectedItems());
                         selected.remove(item);
                         tableView.getSelectionModel().clearSelection();
@@ -558,7 +557,7 @@ public class LRInspectorController {
         }
     }
 
-    
+
     public TableView<TableItem> getTableView() {
         return tableView;
     }

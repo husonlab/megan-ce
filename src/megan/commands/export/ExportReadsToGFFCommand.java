@@ -21,17 +21,22 @@ package megan.commands.export;
 import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
-import jloda.util.TextFileFilter;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import megan.classification.Classification;
+import megan.classification.ClassificationManager;
 import megan.core.Director;
 import megan.core.Document;
-import megan.dialogs.export.ExportAlignedReads2GFF;
+import megan.dialogs.export.ExportAlignedReads2GFF3Format;
+import megan.dialogs.lrinspector.LRInspectorViewer;
+import megan.fx.NotificationsInSwing;
+import megan.main.Version;
+import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
+import megan.viewer.MainViewer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -40,6 +45,11 @@ import java.io.File;
  * Daniel Huson, 3.2017
  */
 public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
+
+    public String getSyntax() {
+        return "export what=GFF file=<file-name> [classification={all|" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={false|true}]";
+    }
+
     /**
      * parses the given command and executes it
      *
@@ -50,50 +60,201 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=GFF file=");
         final String fileName = np.getWordFileNamePunctuation();
+        final String classification;
+        if (np.peekMatchIgnoreCase("classification")) {
+            np.matchIgnoreCase("classification=");
+            classification = np.getWordMatchesIgnoringCase("all " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        } else
+            classification = "all";
+
+        final boolean excludeIncompatible;
+        if (np.peekMatchIgnoreCase("excludeIncompatible")) {
+            np.matchIgnoreCase("excludeIncompatible=");
+            excludeIncompatible = np.getBoolean();
+        } else
+            excludeIncompatible = false;
+        final boolean excludeDominated;
+        if (np.peekMatchIgnoreCase("excludeDominated")) {
+            np.matchIgnoreCase("excludeDominated=");
+            excludeDominated = np.getBoolean();
+        } else
+            excludeDominated = false;
+
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof ClassificationViewer) {
             final ClassificationViewer viewer = (ClassificationViewer) getViewer();
             final Document doc = viewer.getDocument();
-            final String[] cnames = doc.getActiveViewers().toArray(new String[doc.getActiveViewers().size()]);
-
-            System.err.println("Writing file: " + fileName);
-            int lines = ExportAlignedReads2GFF.apply(viewer, cnames, new File(fileName), doc.getProgressListener());
-            System.err.println("done (" + lines + ")");
+            final Pair<Long, Long> counts = ExportAlignedReads2GFF3Format.apply(viewer, new File(fileName), classification, excludeIncompatible, excludeDominated, doc.getProgressListener());
+            NotificationsInSwing.showInformation(viewer.getFrame(), "Number of reads exported: " + counts.getFirst() + ", alignments exported: " + counts.getSecond());
+        } else if (getViewer() instanceof LRInspectorViewer) {
+            final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
+            final Document doc = viewer.getDir().getDocument();
+            final Pair<Long, Long> counts = ExportAlignedReads2GFF3Format.apply(viewer, new File(fileName), classification, excludeIncompatible, excludeDominated, doc.getProgressListener());
+            NotificationsInSwing.showInformation(viewer.getFrame(), "Number of reads exported: " + counts.getFirst() + ", alignments exported: " + counts.getSecond());
         }
-    }
-
-    public String getSyntax() {
-        return "export what=GFF file=<file-name>";
     }
 
     public void actionPerformed(ActionEvent event) {
-        final Director dir = (Director) getDir();
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), ".gff");
-        String lastGFFFile = ProgramProperties.get("lastGFFFile", "");
-        File lastOpenFile = new File((new File(lastGFFFile)).getParent(), name);
+        final boolean canExport;
+        final boolean canExcludeIncompatible;
+        {
+            if (getViewer() instanceof MainViewer) {
+                canExcludeIncompatible = true;
+                canExport = (((MainViewer) getViewer()).getNumberSelectedNodes() > 0);
+            } else if (getViewer() instanceof ClassificationViewer) {
+                canExcludeIncompatible = false;
+                canExport = (((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0);
+            } else if (getViewer() instanceof LRInspectorViewer) {
+                final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
+                canExcludeIncompatible = viewer.getClassificationName().equals(Classification.Taxonomy) && viewer.someSelectedItemHasTaxonLabelsShowing();
+                canExport = viewer.soSelectedItemHasAnyLabelsShowing();
+            } else {
+                canExcludeIncompatible = false;
+                canExport = false;
+            }
+        }
 
-        final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(".gff"), new TextFileFilter(".gff"), event, "Save read annotations to file", ".gff");
+        final Triplet<Boolean, Boolean, String> options = getOptions(getViewer().getFrame(), canExport, canExcludeIncompatible);
+        if (options != null) {
 
-        if (file != null) {
-            ProgramProperties.put("lastGFFFile", file.getPath());
-            execute("export what=GFF file='" + file.getPath() + "';");
+            String name = Basic.replaceFileSuffix(((Director) getDir()).getDocument().getTitle(), "-" + ExportAlignedReads2GFF3Format.getShortName(options.getThird()) + ".gff");
+            String lastGFFFile = ProgramProperties.get("lastGFFFile", "");
+            File lastOpenFile = new File((new File(lastGFFFile)).getParent(), name);
+
+            final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(".gff"), new TextFileFilter(".gff"), event, "Save read annotations to file", ".gff");
+
+            if (file != null) {
+                ProgramProperties.put("lastGFFFile", file.getPath());
+                execute("export what=GFF file='" + file.getPath() + "'" + (options.getThird() != null ? " classification=" + options.getThird() : "") +
+                        (options.getFirst() ? " excludeIncompatible=true" : "") + (options.getSecond() ? " excludeDominated=true" : "") + ";");
+            }
         }
     }
 
-    public boolean isApplicable() {
-        return getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0;
+    /**
+     * gets options from user
+     *
+     * @param frame
+     * @return options
+     */
+    public Triplet<Boolean, Boolean, String> getOptions(JFrame frame, boolean canExport, boolean canExcludeIncompatible) {
+        final JDialog dialog = new JDialog();
+        {
+            dialog.setModal(true);
+            dialog.setTitle("Export in GFF3 Format - " + Version.NAME);
+            dialog.setIconImage(ProgramProperties.getProgramIcon().getImage());
+            dialog.setLocationRelativeTo(frame);
+            dialog.setSize(500, 160);
+            dialog.getContentPane().setLayout(new BorderLayout());
+        }
+        final JPanel topPane = new JPanel();
+        {
+            topPane.setLayout(new BoxLayout(topPane, BoxLayout.X_AXIS));
+            topPane.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+            topPane.add(new JLabel("Select export options:"));
+            dialog.getContentPane().add(topPane, BorderLayout.NORTH);
+        }
+
+        final JPanel middlePanel = new JPanel();
+        {
+            middlePanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4),
+                    BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(4, 4, 4, 4))));
+            middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+            dialog.getContentPane().add(middlePanel, BorderLayout.CENTER);
+        }
+
+        final JComboBox<String> classificationCBox = new JComboBox<>();
+        {
+            classificationCBox.setEditable(false);
+            classificationCBox.addItem("All");
+            for (String classification : ClassificationManager.getAllSupportedClassifications())
+                classificationCBox.addItem(classification);
+            classificationCBox.setSelectedItem(ProgramProperties.get("GFFExportClassification", Classification.Taxonomy));
+
+            final JPanel aLine = new JPanel();
+            aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));
+            aLine.setMaximumSize(new Dimension(256, 60));
+            aLine.add(new JLabel("Classification:"));
+            aLine.add(classificationCBox);
+            classificationCBox.setToolTipText("Choose classification to export");
+            middlePanel.add(aLine);
+        }
+
+        final JCheckBox excludeIncompatible = new JCheckBox("Exclude taxonomically incompatible genes");
+        final JCheckBox excludeDominated = new JCheckBox("Exclude dominated genes");
+        {
+            excludeIncompatible.setToolTipText("Don't report a gene if its taxon is incompatible with the taxon assigned to the read");
+            excludeIncompatible.setEnabled(canExport && canExcludeIncompatible);
+            excludeIncompatible.setSelected(ProgramProperties.get("GFFExportExcludeIncompatible", false));
+            excludeDominated.setToolTipText("Don't report a gene if it is dominated by another.");
+            excludeDominated.setEnabled(canExport);
+            excludeDominated.setSelected(ProgramProperties.get("GFFExportExcludeDominated", false));
+
+            middlePanel.add(excludeIncompatible);
+            middlePanel.add(excludeDominated);
+        }
+
+        final JPanel bottomPanel = new JPanel();
+        {
+            bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+            bottomPanel.add(Box.createHorizontalGlue());
+            if (!canExport) {
+                bottomPanel.add(new JLabel("Nothing to export."));
+            }
+            bottomPanel.add(Box.createHorizontalGlue());
+            dialog.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+        }
+
+        final JButton cancel = new JButton(new AbstractAction("Cancel") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.setVisible(false);
+            }
+        });
+        bottomPanel.add(cancel);
+
+        final Single<Triplet<Boolean, Boolean, String>> result = new Single<>(null);
+        final JButton apply = new JButton(new AbstractAction("Apply") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProgramProperties.put("GFFExportClassification", (String) classificationCBox.getSelectedItem());
+                ProgramProperties.put("GFFExportExcludeIncompatible", excludeIncompatible.isSelected());
+                ProgramProperties.put("GFFExportExcludeDominated", excludeDominated.isSelected());
+                result.set(new Triplet<>(excludeIncompatible.isSelected(), excludeDominated.isSelected(), (String) classificationCBox.getSelectedItem()));
+                dialog.setVisible(false);
+            }
+        });
+        apply.setEnabled(canExport);
+        bottomPanel.add(apply);
+
+        dialog.setVisible(true);
+        return result.get();
     }
 
-    public static final String NAME = "Export Reads in GFF Format...";
+    public boolean isApplicable() {
+        if (((Director) getDir()).getDocument().getBlastMode() == BlastMode.BlastX) {
+            if (getViewer() instanceof ClassificationViewer) {
+                final ClassificationViewer viewer = (ClassificationViewer) getViewer();
+                if (viewer.getDocument().isLongReads() && viewer.getNumberSelectedNodes() > 0)
+                    return true;
+            } else if (getViewer() instanceof LRInspectorViewer) {
+                if (((LRInspectorViewer) getViewer()).getNumberOfSelectedItems() > 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static final String NAME = "Export Read Annotations in GFF Format...";
 
     public String getName() {
         return NAME;
     }
 
     public String getDescription() {
-        return "Export selected read annotations in GFF format";
+        return "Export selected long reads and their aligned genes in GFF3 format";
     }
 
     public ImageIcon getIcon() {

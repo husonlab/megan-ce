@@ -35,6 +35,7 @@ import jloda.gui.find.CompositeObjectSearcher;
 import jloda.gui.find.FindToolBar;
 import jloda.gui.find.SearchManager;
 import jloda.util.*;
+import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 import megan.core.Document;
@@ -450,6 +451,11 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         return searchManager;
     }
 
+    /**
+     * get the controller, if it has been setup
+     *
+     * @return controller or null
+     */
     public LRInspectorController getController() {
         if (swingPanel4FX == null)
             return null;
@@ -644,5 +650,25 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                 clipboard.setContent(content);
             }
         });
+    }
+
+    public boolean someSelectedItemHasTaxonLabelsShowing() {
+        if (getController() != null) {
+            for (TableItem item : getController().getTableView().getItems()) {
+                if (item.getPane().getClassificationLabelsShowing().contains(Classification.Taxonomy))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean soSelectedItemHasAnyLabelsShowing() {
+        if (getController() != null) {
+            for (TableItem item : getController().getTableView().getItems()) {
+                if (item.getPane().getClassificationLabelsShowing().size() > 0)
+                    return true;
+            }
+        }
+        return false;
     }
 }

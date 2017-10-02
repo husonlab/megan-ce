@@ -25,6 +25,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.timeseriesviewer.TimeSeriesViewer;
 import megan.util.WindowUtilities;
+import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -56,9 +57,9 @@ public class ShowTimeSeriesViewerCommand extends megan.commands.CommandBase impl
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfSamples() > 1;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfSamples() > 0 && getViewer() instanceof ClassificationViewer;
 
+    }
     public String getName() {
         return "Time Series Viewer...";
     }

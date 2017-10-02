@@ -21,7 +21,6 @@ package megan.dialogs.lrinspector;
 
 import jloda.gui.MenuConfiguration;
 import jloda.util.ProgramProperties;
-import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 
 /**
@@ -39,7 +38,7 @@ public class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Options;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Export Reads in GFF Format...;|;Page Setup...;Print...;|;Close;|;Quit;");
+        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Export Read Annotations in GFF Format...;|;Page Setup...;Print...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
 
@@ -48,8 +47,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Options", "BLAST on NCBI...;|;Inspect...;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
-                "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
-                ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;");
+                "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|");
 
         menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
         return menuConfig;

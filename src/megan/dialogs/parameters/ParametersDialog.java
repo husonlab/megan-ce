@@ -112,7 +112,6 @@ public class ParametersDialog extends JDialog {
             lcaAlgorithmComboBox.addItem(algorithm.toString());
         }
         setLcaAlgorithm(doc.getLcaAlgorithm());
-
         setWeightedLCAPercent(doc.getLcaCoveragePercent());
 
         readAssignmentModeComboBox.setEditable(false);
@@ -147,6 +146,8 @@ public class ParametersDialog extends JDialog {
 
         // do this again to trigger code:
         setLcaAlgorithm(doc.getLcaAlgorithm());
+        setWeightedLCAPercent(doc.getLcaCoveragePercent());
+
         setReadAssignmentMode(doc.getReadAssignmentMode());
 
         if (doc.getMinComplexity() < 0)

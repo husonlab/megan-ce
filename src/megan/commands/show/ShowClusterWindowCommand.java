@@ -72,9 +72,9 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfSamples() >= 4;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfSamples() >= 4 && getViewer() instanceof ClassificationViewer;
 
+    }
     public String getName() {
         return "Cluster Analysis...";
     }

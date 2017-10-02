@@ -25,6 +25,8 @@ import megan.data.IReadBlock;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
+import java.util.ArrayList;
+
 /**
  * computes interval tree of all matches to keep for a read block
  * Created by huson on 3/29/17.
@@ -48,4 +50,52 @@ public class IntervalTree4Matches {
         }
         return intervalTree;
     }
+
+    /**
+     * extracts the set of dominating matches
+     *
+     * @param intervals
+     * @return dominating intervals
+     */
+    public static IntervalTree<IMatchBlock> extractDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames) {
+        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>();
+        final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>();
+        for (IMatchBlock matchBlock : intervals.values()) {
+            if (matchBlock.getAlignedQueryStart() <= matchBlock.getAlignedQueryEnd()) {
+                allMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
+            } else
+                reverseMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
+        }
+
+        // remove all matches covered by stronger ones
+        for (int i = 0; i < 2; i++) {
+            final IntervalTree<IMatchBlock> matches = (i == 0 ? allMatches : reverseMatches);
+            final ArrayList<Interval<IMatchBlock>> toDelete = new ArrayList<>();
+            for (final Interval<IMatchBlock> interval : matches) {
+                final IMatchBlock match = interval.getData();
+                for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
+                    final IMatchBlock other = otherInterval.getData();
+                    if (otherInterval.overlap(interval) > 0.5 * interval.length() &&
+                            (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId())) {
+                        boolean ok = true; // check that other interval has all annotations that this one has, otherwise it doesn't really dominate
+                        for (String cName : cNames) {
+                            if (match.getId(cName) > 0 && other.getId(cName) <= 0) {
+                                ok = false;
+                                break;
+                            }
+                        }
+                        if (ok)
+                            toDelete.add(interval);
+                    }
+                }
+            }
+            if (toDelete.size() > 0) {
+                matches.removeAll(toDelete);
+                toDelete.clear();
+            }
+        }
+        allMatches.addAll(reverseMatches.intervals());
+        return allMatches;
+    }
+
 }

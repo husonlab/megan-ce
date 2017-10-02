@@ -23,6 +23,7 @@ import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
+import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +38,7 @@ public class ShowChartAttributesCommand extends CommandBase implements ICommand 
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfReads() > 0;
+        return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
     }
 
     public String getName() {

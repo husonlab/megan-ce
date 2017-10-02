@@ -878,4 +878,8 @@ public class ReadLayoutPane extends Pane {
     public boolean hasHiddenAlignments() {
         return hasHidden;
     }
+
+    public Set<String> getClassificationLabelsShowing() {
+        return classificationLabelsShowing;
+    }
 }

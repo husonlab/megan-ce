@@ -119,7 +119,7 @@ public class ShowChartCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getDir().getDocument().getNumberOfReads() > 0;
+        return getDir().getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
     }
 
     public String getName() {

@@ -64,7 +64,7 @@ public class ShowExtractReadsDialogCommand extends CommandBase implements IComma
     }
 
     public boolean isApplicable() {
-        return getViewer() != null && (getViewer() instanceof MainViewer || getViewer() instanceof ClassificationViewer)
+        return getViewer() != null && getViewer() instanceof ClassificationViewer
                 && getDir().getDocument().getMeganFile().hasDataConnector();
     }
 

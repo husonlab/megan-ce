@@ -24,6 +24,7 @@ import jloda.util.Basic;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
+import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -54,9 +55,9 @@ public class ShowChartSpecificCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfReads() > 0;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
+    }
     public static String getName(String displayName) {
         return "Show " + displayName + "";
     }

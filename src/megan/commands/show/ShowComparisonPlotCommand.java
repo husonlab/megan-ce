@@ -80,9 +80,9 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfSamples() > 1;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfSamples() > 1 && getViewer() instanceof ClassificationViewer;
 
+    }
     public String getName() {
         return "Comparison Plot...";
     }

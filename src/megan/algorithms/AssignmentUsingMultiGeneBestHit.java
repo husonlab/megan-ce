@@ -94,7 +94,6 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
         return classIds.size();
     }
 
-
     /**
      * get the LCA of two ids
      *
@@ -140,9 +139,9 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
         for (int i = 0; i < 2; i++) {
             final IntervalTree<IMatchBlock> matches = (i == 0 ? allMatches : reverseMatches);
             final ArrayList<Interval<IMatchBlock>> toDelete = new ArrayList<>();
-            for (Interval<IMatchBlock> interval : matches) {
+            for (final Interval<IMatchBlock> interval : matches) {
                 final IMatchBlock match = interval.getData();
-                for (Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
+                for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
                     final IMatchBlock other = otherInterval.getData();
                     if (otherInterval.overlap(interval) > 0.5 * interval.length() &&
                             (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId()))

@@ -21,6 +21,7 @@ package megan.commands.show;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.Director;
 import megan.samplesviewer.SamplesViewer;
 import megan.util.WindowUtilities;
 
@@ -49,9 +50,9 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfSamples() > 0;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfSamples() > 0;
 
+    }
     public static final String NAME = "Samples Viewer...";
     public String getName() {
         return NAME;

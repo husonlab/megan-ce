@@ -74,9 +74,9 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
     }
 
     public boolean isApplicable() {
-        return getDoc().getNumberOfReads() > 0;
-    }
+        return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
+    }
     public String getName() {
         return "Rarefaction Analysis...";
     }

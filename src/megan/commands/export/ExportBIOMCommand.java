@@ -131,7 +131,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "BIOM Format...";
+        return "BIOM1 Format...";
     }
 
     public ImageIcon getIcon() {

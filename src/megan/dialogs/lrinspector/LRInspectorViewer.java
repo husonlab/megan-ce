@@ -22,8 +22,11 @@ package megan.dialogs.lrinspector;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.Node;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.stage.Stage;
+import jloda.fx.IHasJavaFXStageAndRoot;
 import jloda.gui.MenuBar;
 import jloda.gui.ToolBar;
 import jloda.gui.commands.CommandManager;
@@ -51,6 +54,8 @@ import megan.samplesviewer.commands.PasteCommand;
 import megan.util.IReadsProvider;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
+import megan.viewer.TaxonomicLevels;
+import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +71,7 @@ import java.util.*;
  * visual read inspector viewer
  * Created by huson on 2/21/17.
  */
-public class LRInspectorViewer extends JFrame implements IDirectableViewer, Printable, IViewerWithJComponent, IViewerWithFindToolBar, IUsesHeatMapColors, IReadsProvider {
+public class LRInspectorViewer extends JFrame implements IDirectableViewer, Printable, IViewerWithJComponent, IViewerWithFindToolBar, IUsesHeatMapColors, IReadsProvider, IHasJavaFXStageAndRoot {
     private static boolean warned = false;
 
     private final Director dir;
@@ -289,7 +294,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      * set the title of the window
      */
     public void setTitle() {
-        String newTitle = "LR Inspector [" + classIdName + "] - " + dir.getDocument().getTitle();
+        String newTitle = "LR Inspector [" + getClassIdDisplayName() + "] - " + dir.getDocument().getTitle();
 
         /*
         if (dir.getDocument().isDirty())
@@ -317,7 +322,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      * @return name
      */
     public String getClassName() {
-        return "VInspectorViewer";
+        return "LRInspector";
     }
 
     /**
@@ -499,6 +504,16 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         return classIdName;
     }
 
+    public String getClassIdDisplayName() {
+        if (getClassificationName().equals(Classification.Taxonomy)) {
+            int rank = TaxonomyData.getTaxonomicRank(getClassId());
+            if (rank != 0) {
+                return Basic.abbreviateDotDotDot(TaxonomicLevels.getName(rank) + " " + getClassIdName(), 80);
+            }
+        }
+        return Basic.abbreviateDotDotDot(getClassIdName(), 80);
+    }
+
     public void selectAllCompatible(boolean compatible) {
         Collection<TableItem> tableItems = getController().getTableView().getSelectionModel().getSelectedItems();
         if (tableItems.size() == 0)
@@ -670,5 +685,19 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
             }
         }
         return false;
+    }
+
+    @Override
+    public Node getJavaFXRoot() {
+        if (getController() != null) {
+            return swingPanel4FX.getPanel().getScene().getRoot();
+        } else
+            return null;
+    }
+
+
+    @Override
+    public Stage getJavaFXStage() {
+        return null;
     }
 }

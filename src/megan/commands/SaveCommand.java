@@ -88,6 +88,7 @@ public class SaveCommand extends CommandBase implements ICommand {
                         doc.getDataTable().setColorEdits(doc.getChartColorManager().getColorEdits());
                     }
 
+                    doc.getDataTable().setParameters(doc.getParameterString());
                     doc.getDataTable().write(writer);
                     doc.getSampleAttributeTable().write(writer, false, true);
                 }

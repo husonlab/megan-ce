@@ -55,9 +55,21 @@ public class IntervalTree4Matches {
      * extracts the set of dominating matches
      *
      * @param intervals
+     * @param cNames dominator must have value of each of these for which the dominated does
+     * @param classificationToReport if this is set to some classification, check only this for domination
      * @return dominating intervals
      */
-    public static IntervalTree<IMatchBlock> extractDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames) {
+    public static IntervalTree<IMatchBlock> extractDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames, String classificationToReport) {
+
+        if (!classificationToReport.equalsIgnoreCase("all")) {
+            for (String cName : cNames) {
+                if (cName.equalsIgnoreCase(classificationToReport)) {
+                    cNames = new String[]{cName}; // only need to dominate on this classification
+                    break;
+                }
+            }
+        }
+
         final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>();
         final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>();
         for (IMatchBlock matchBlock : intervals.values()) {
@@ -97,5 +109,4 @@ public class IntervalTree4Matches {
         allMatches.addAll(reverseMatches.intervals());
         return allMatches;
     }
-
 }

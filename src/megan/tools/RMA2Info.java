@@ -93,11 +93,22 @@ public class RMA2Info {
         final boolean prefixRank = options.getOption("-r", "ranks", "When reporting taxonomy, report taxonomic rank using single letter (K for Kingdom, P for Phylum etc)", false);
         final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
         final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
+        final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
         final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments", "");
 
         options.done();
+
+        final int taxonomyRoot;
+        if (bacteriaOnly && viralOnly)
+            throw new UsageException("Please specify only one of -bo and -vo");
+        else if (bacteriaOnly)
+            taxonomyRoot = TaxonomyData.BACTERIA_ID;
+        else if (viralOnly)
+            taxonomyRoot = TaxonomyData.VIRUSES_ID;
+        else
+            taxonomyRoot = 0;
 
         final Document doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(daaFile, true);
@@ -126,7 +137,7 @@ public class RMA2Info {
                 }
             }
             if (listClass2Count.size() > 0 || listRead2Class.size() > 0) {
-                reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, bacteriaOnly, outs);
+                reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, taxonomyRoot, outs);
             }
         }
         if (extractSummaryFile.length() > 0) {
@@ -139,7 +150,6 @@ public class RMA2Info {
 
     /**
      * report the file content
-     *
      * @param doc
      * @param listGeneralInfo
      * @param listMoreStuff
@@ -150,10 +160,13 @@ public class RMA2Info {
      * @param majorRanksOnly
      * @param listClass2Count
      * @param listRead2Class
+     * @param taxonomyRoot if set, only report taxa on or below this node
      * @param outs
      * @throws IOException
      */
-    public static void reportFileContent(Document doc, boolean listGeneralInfo, boolean listMoreStuff, boolean reportPaths, boolean reportNames, boolean prefixRank, boolean ignoreUnassigned, boolean majorRanksOnly, Collection<String> listClass2Count, Collection<String> listRead2Class, boolean bacteriaOnly, Writer outs) throws IOException {
+    public static void reportFileContent(Document doc, boolean listGeneralInfo, boolean listMoreStuff, boolean reportPaths, boolean reportNames,
+                                         boolean prefixRank, boolean ignoreUnassigned, boolean majorRanksOnly, Collection<String> listClass2Count,
+                                         Collection<String> listRead2Class, int taxonomyRoot, Writer outs) throws IOException {
         final IConnector connector = doc.getConnector();
 
         final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
@@ -191,7 +204,7 @@ public class RMA2Info {
                 if (isTaxonomy && prefixRank) {
                     ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
                 }
-                if (isTaxonomy && bacteriaOnly) {
+                if (isTaxonomy && taxonomyRoot > 0) {
                     taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
                 }
 
@@ -200,12 +213,12 @@ public class RMA2Info {
                     final Map<Integer, Float> taxId2count = new HashMap<>();
                     if (!majorRanksOnly) {
                         for (int taxId : classificationBlock.getKeySet()) {
-                            if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2))
+                            if (taxonomyRoot == 0 || isDescendant(taxonomyTree, taxId, taxonomyRoot))
                                 taxId2count.put(taxId, classificationBlock.getWeightedSum(taxId));
                         }
                     } else { // major ranks only
                         for (int taxId : classificationBlock.getKeySet()) {
-                            if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2)) {
+                            if (taxonomyRoot == 0 || isDescendant(taxonomyTree, taxId, taxonomyRoot)) {
                                 int classId = TaxonomyData.getLowestAncestorWithMajorRank(taxId);
                                 Float count = taxId2count.get(classId);
                                 if (count == null)
@@ -218,7 +231,7 @@ public class RMA2Info {
                     }
                     for (Integer taxId : taxId2count.keySet()) {
                         if (taxId > 0 || !ignoreUnassigned) {
-                            if (!bacteriaOnly || isDescendant(taxonomyTree, taxId, 2)) {
+                            if (taxonomyRoot == 0 || isDescendant(taxonomyTree, taxId, taxonomyRoot)) {
                                 final String className;
                                 if (reportPaths) {
                                     className = TaxonomyData.getPathOrId(taxId, majorRanksOnly);
@@ -299,14 +312,14 @@ public class RMA2Info {
                 if (isTaxonomy && prefixRank) {
                     ClassificationManager.ensureTreeIsLoaded(Classification.Taxonomy);
                 }
-                if (isTaxonomy && bacteriaOnly) {
+                if (isTaxonomy && taxonomyRoot > 0) {
                     taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
                 }
 
                 final Set<Integer> ids = new TreeSet<>();
                 ids.addAll(connector.getClassificationBlock(classificationName).getKeySet());
                 for (Integer classId : ids) {
-                    if (isTaxonomy && bacteriaOnly && !isDescendant(taxonomyTree, classId, 2))
+                    if (taxonomyRoot == 0 || isDescendant(taxonomyTree, classId, taxonomyRoot))
                         continue;
                     if (classId > 0 || !ignoreUnassigned) {
                         final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, false);

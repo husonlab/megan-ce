@@ -48,7 +48,6 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
 import megan.fx.FXSwingUtilities;
-import megan.util.Table;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -109,8 +108,6 @@ public class ReadLayoutPane extends Pane {
         for (int i = 0; i < geneLabels.length; i++) {
             geneLabels[i] = new Group();
         }
-
-        final Table<Integer, Integer, Label>[] class2classId2Start2Label = new Table[cNames.length];
 
         preferredHeightUnlabeled.addListener(new ChangeListener<Number>() {
             @Override
@@ -509,7 +506,7 @@ public class ReadLayoutPane extends Pane {
      */
     public void colorByClassification(ChartColorManager colorManager, Collection<String> activeClassifications, String keyClassification, int keyClassId) {
 
-        if (activeClassifications.contains(keyClassification) && keyClassId > 0) {
+        if (/*activeClassifications.contains(keyClassification) && */ keyClassId > 0) {
             for (GeneArrow geneArrow : geneArrows) {
                 final Classification classification = ClassificationManager.get(keyClassification, false);
 
@@ -881,5 +878,9 @@ public class ReadLayoutPane extends Pane {
 
     public Set<String> getClassificationLabelsShowing() {
         return classificationLabelsShowing;
+    }
+
+    public GeneArrow getMatch2GeneArrow(IMatchBlock matchBlock) {
+        return match2GeneArrow.get(matchBlock);
     }
 }

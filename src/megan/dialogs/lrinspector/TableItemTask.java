@@ -25,6 +25,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
+import javafx.geometry.Orientation;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
@@ -34,6 +37,7 @@ import megan.data.IClassificationBlock;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.fx.FXUtilities;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -52,6 +56,7 @@ public class TableItemTask extends Task<Integer> {
     private final String classificationName;
     private final Set<Integer> classIds;
     private final TableView<TableItem> tableView;
+    private long previousSelectionTime = 0;
 
     private final FloatProperty maxBitScore;
     private final FloatProperty maxNormalizedBitScore;
@@ -103,7 +108,6 @@ public class TableItemTask extends Task<Integer> {
                 className = "[" + classId + "]";
 
             updateMessage("Loading '" + classification.getName2IdMap().get(classId) + "'... (" + doc.getConnector().getClassSize(classificationName, classId) + " reads)");
-            final int taxonId = (classificationName.equals(Classification.Taxonomy) ? classId : 0);
 
             try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                 while (it.hasNext()) {
@@ -147,6 +151,57 @@ public class TableItemTask extends Task<Integer> {
                                 if (c.next()) {
                                     if (!tableItem.getPane().getMatchSelection().isEmpty())
                                         tableView.getSelectionModel().select(tableItem);
+                                }
+                                if (false) { // TODO: trying to implement "scroll to selected item" here
+                                    if (System.currentTimeMillis() - 1000 > previousSelectionTime) {
+                                        System.err.println("Move!");
+                                        double leftMost = Double.MAX_VALUE;
+                                        for (IMatchBlock matchBlock : tableItem.getPane().getMatchSelection().getSelectedItems()) {
+                                            final GeneArrow geneArrow = tableItem.getPane().getMatch2GeneArrow(matchBlock);
+                                            if (geneArrow != null) {
+                                                leftMost = geneArrow.getStart();
+                                            }
+                                        }
+                                        if (leftMost < Double.MAX_VALUE) {
+                                            System.err.println("LeftMost: " + leftMost);
+                                            {
+                                                double leadingWidth = 0;
+                                                double lastWidth = 0;
+                                                double totalWidth = 0;
+                                                {
+                                                    int numberOfColumns = tableView.getColumns().size();
+                                                    int columns = 0;
+                                                    for (TableColumn col : tableView.getColumns()) {
+                                                        if (columns < numberOfColumns - 1)
+                                                            leadingWidth += col.getWidth();
+                                                        else
+                                                            lastWidth = col.getWidth();
+                                                        totalWidth += col.getWidth();
+                                                        columns++;
+                                                    }
+                                                }
+                                                double coordinateToShow = leadingWidth + lastWidth * (leftMost / tableItem.getReadLength());
+                                                System.err.println("coordinate to show: " + coordinateToShow);
+
+                                                final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
+                                                if (hScrollBar != null) {
+                                                    System.err.println("min: " + hScrollBar.getMin());
+                                                    System.err.println("max: " + hScrollBar.getMax());
+                                                    System.err.println("width: " + (hScrollBar.getMax() - hScrollBar.getMin()));
+                                                    System.err.println("visible: " + hScrollBar.getVisibleAmount());
+
+
+                                                    double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((leftMost + 100) / totalWidth);
+                                                    System.err.println("Scroll to: " + newPos);
+
+                                                    hScrollBar.setValue(newPos);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // find left most and move there
+                                    previousSelectionTime = System.currentTimeMillis();
                                 }
                             }
                         });

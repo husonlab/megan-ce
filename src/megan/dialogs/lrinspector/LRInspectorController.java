@@ -173,7 +173,7 @@ public class LRInspectorController {
             @Override
             public void handle(WorkerStateEvent event) {
                 headerField.textProperty().unbind();
-                headerField.setText("'" + viewer.getClassIdName() + "': " + computeReadStats() + " (may be incomplete)");
+                headerField.setText(viewer.getClassIdDisplayName() + ": " + computeReadStats() + " (may be incomplete)");
                 recolor();
                 setupSearcher();
                 viewer.setUptoDate(true);
@@ -183,7 +183,7 @@ public class LRInspectorController {
             @Override
             public void handle(WorkerStateEvent event) {
                 headerField.textProperty().unbind();
-                headerField.setText("'" + viewer.getClassIdName() + "': " + computeReadStats());
+                headerField.setText(viewer.getClassIdDisplayName() + ": " + computeReadStats());
                 tableView.sort();
                 recolor();
                 setupSearcher();
@@ -208,6 +208,7 @@ public class LRInspectorController {
         readNameCol.setCellValueFactory(new PropertyValueFactory<TableItem, String>("readName"));
         readLengthCol.setCellValueFactory(new PropertyValueFactory<TableItem, Integer>("readLength"));
         readLengthCol.setSortType(TableColumn.SortType.DESCENDING);
+
         assignmentCol.setCellValueFactory(new PropertyValueFactory<TableItem, String>("className"));
         coverageCol.setCellValueFactory(new PropertyValueFactory<TableItem, Float>("percentCoverage"));
         coverageCol.setSortType(TableColumn.SortType.DESCENDING);

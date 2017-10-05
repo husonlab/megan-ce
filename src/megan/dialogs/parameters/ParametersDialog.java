@@ -360,12 +360,15 @@ public class ParametersDialog extends JDialog {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
                             lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
+                            pairReadsCBox.setEnabled(true);
                             break;
                         case weighted:
                             lcaAlgorithmComboBox.setToolTipText("Weighted LCA for taxonomic binning: slower algorithm applicable to short reads, slightly more specific than naive LCA");
+                            pairReadsCBox.setEnabled(true);
                             break;
                         case longReads:
                             lcaAlgorithmComboBox.setToolTipText("Long Reads LCA for taxonomic and functional binning of long reads and contigs");
+                            pairReadsCBox.setEnabled(false);
                             break;
                         default:
                             lcaAlgorithmComboBox.setToolTipText("Select LCA algorithm");

@@ -47,7 +47,7 @@ import java.io.File;
 public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "export what=GFF file=<file-name> [classification={all|" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={false|true}]";
+        return "export what=GFF file=<file-name> [classification={all|" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={true|false}]";
     }
 
     /**
@@ -78,7 +78,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("excludeDominated=");
             excludeDominated = np.getBoolean();
         } else
-            excludeDominated = false;
+            excludeDominated = true;
 
         np.matchIgnoreCase(";");
 
@@ -178,19 +178,19 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
             aLine.setMaximumSize(new Dimension(256, 60));
             aLine.add(new JLabel("Classification:"));
             aLine.add(classificationCBox);
-            classificationCBox.setToolTipText("Choose classification to export");
+            classificationCBox.setToolTipText("Choose classification to export. Use 'all' to export all alignments.");
             middlePanel.add(aLine);
         }
 
         final JCheckBox excludeIncompatible = new JCheckBox("Exclude taxonomically incompatible genes");
         final JCheckBox excludeDominated = new JCheckBox("Exclude dominated genes");
         {
-            excludeIncompatible.setToolTipText("Don't report a gene if its taxon is incompatible with the taxon assigned to the read");
+            excludeIncompatible.setToolTipText("Don't report a gene if its taxon is incompatible with the taxon assigned to the read.");
             excludeIncompatible.setEnabled(canExport && canExcludeIncompatible);
             excludeIncompatible.setSelected(ProgramProperties.get("GFFExportExcludeIncompatible", false));
-            excludeDominated.setToolTipText("Don't report a gene if it is dominated by another.");
+            excludeDominated.setToolTipText("Don't report any genes that are dominated by better ones.");
             excludeDominated.setEnabled(canExport);
-            excludeDominated.setSelected(ProgramProperties.get("GFFExportExcludeDominated", false));
+            excludeDominated.setSelected(ProgramProperties.get("GFFExportExcludeDominated", true));
 
             middlePanel.add(excludeIncompatible);
             middlePanel.add(excludeDominated);

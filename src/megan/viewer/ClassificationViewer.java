@@ -277,10 +277,22 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     }
                     if (!ClassificationViewer.this.isLocked())
                         getCommandManager().updateEnableState();
+
                     if (getSelectedNodes().size() > 0) {
-                        statusBar.setToolTipText("Number of nodes selected: " + getSelectedNodes().size());
+                        double numberOfAssigned = 0;
+                        double numberOfSummarized = 0;
+                        for (Node v : getSelectedNodes()) {
+                            if (v.getData() instanceof NodeData) {
+                                NodeData nodeData = (NodeData) v.getData();
+                                numberOfAssigned += nodeData.getCountAssigned();
+                                numberOfSummarized += nodeData.getCountSummarized();
+                            }
+                        }
+                        statusBar.setToolTipText((String.format("Selection: %,d nodes, %,d assigned, %,d summarized", getSelectedNodes().size(),
+                                Math.round(numberOfAssigned), Math.round(numberOfSummarized))));
                     } else
                         statusBar.setToolTipText(null);
+
                     avoidSelectionBounce = false;
                 }
             }

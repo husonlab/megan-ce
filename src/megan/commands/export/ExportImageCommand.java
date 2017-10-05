@@ -19,6 +19,8 @@
 package megan.commands.export;
 
 import jloda.export.*;
+import jloda.fx.IHasJavaFXStageAndRoot;
+import jloda.fx.JPanelWithFXStageAndRoot;
 import jloda.graphview.GraphView;
 import jloda.graphview.NodeView;
 import jloda.gui.commands.ICommand;
@@ -115,6 +117,15 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                     GraphView graphView = ((ClusterViewer) viewer).getGraphView();
                     if (graphView != null)
                         scrollPane = graphView.getScrollPane();
+                } else if (viewer instanceof IHasJavaFXStageAndRoot) {
+                    final IHasJavaFXStageAndRoot component = (IHasJavaFXStageAndRoot) viewer;
+                    panel = new JPanelWithFXStageAndRoot(component.getJavaFXRoot(), component.getJavaFXStage()) {
+                        @Override
+                        public void paint(Graphics g) {
+                            if (viewer instanceof IViewerWithJComponent)
+                                ((IViewerWithJComponent) viewer).getComponent().paint(g);
+                        }
+                    };
                 } else if (viewer instanceof IViewerWithJComponent) {
                     final JComponent component = ((IViewerWithJComponent) viewer).getComponent();
                     System.err.println("Size: " + component.getSize());
@@ -165,7 +176,16 @@ public class ExportImageCommand extends CommandBase implements ICommand {
                         Basic.caught(ex);
                     }
                 }
+
+
                 try {
+                    /* todo: find out why no printer is found...
+                    if(graphicsType instanceof PDFExportType && panel instanceof IHasJavaFXStageAndRoot) {
+                            JavaFX2PDF javaFX2PDF = new JavaFX2PDF(((IHasJavaFXStageAndRoot) panel).getJavaFXRoot(), ((IHasJavaFXStageAndRoot) panel).getJavaFXStage());
+                            javaFX2PDF.print();
+                    }
+                    else
+                    */
                     graphicsType.writeToFile(file, panel, scrollPane, !visibleOnly);
                 } finally {
                     if (NodeView.descriptionWriter != null) {
@@ -199,10 +219,12 @@ public class ExportImageCommand extends CommandBase implements ICommand {
      * @param panel
      */
     private void ensureReasonableBounds(JScrollPane panel) {
-        panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));
-        final JViewport viewPort = panel.getViewport();
-        viewPort.setExtentSize(new Dimension((int) (viewPort.getExtentSize().getWidth() <= 0 || viewPort.getExtentSize().getWidth() > 100000 ? 1000 : viewPort.getExtentSize().getWidth()),
-                (int) (viewPort.getExtentSize().getHeight() <= 0 || viewPort.getExtentSize().getHeight() > 100000 ? 1000 : viewPort.getExtentSize().getHeight())));
+        if (panel != null) {
+            panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));
+            final JViewport viewPort = panel.getViewport();
+            viewPort.setExtentSize(new Dimension((int) (viewPort.getExtentSize().getWidth() <= 0 || viewPort.getExtentSize().getWidth() > 100000 ? 1000 : viewPort.getExtentSize().getWidth()),
+                    (int) (viewPort.getExtentSize().getHeight() <= 0 || viewPort.getExtentSize().getHeight() > 100000 ? 1000 : viewPort.getExtentSize().getHeight())));
+        }
     }
 
     public void actionPerformed(ActionEvent event) {

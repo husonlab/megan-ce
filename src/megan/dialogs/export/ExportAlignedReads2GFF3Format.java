@@ -164,7 +164,7 @@ public class ExportAlignedReads2GFF3Format {
                                         IntervalTree<IMatchBlock> intervals, final int readTaxonId, final boolean excludeIncompatible, final boolean excludeDominated) {
 
         if (excludeDominated) {
-            intervals = IntervalTree4Matches.extractDominatingIntervals(intervals, cNames);
+            intervals = IntervalTree4Matches.extractDominatingIntervals(intervals, cNames, classificationToReport);
         }
 
         final Classification[] classifications = new Classification[cNames.length];
@@ -258,7 +258,7 @@ public class ExportAlignedReads2GFF3Format {
                 if (id > 0 && classifications[i] != null) {
                     final String value = classifications[i].getName2IdMap().get(id);
                     if (value != null && value.length() > 0) {
-                        final String displayValue = Basic.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll(",", "%2C"), 80);
+                        final String displayValue = Basic.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll(",", "%2C").replaceAll("=", "%3D"), 80);
                         buf.append(String.format(" %s=%s;", shortName, displayValue));
                         if (taxRel != null) {
                             buf.append(" taxRel=").append(taxRel).append(";");

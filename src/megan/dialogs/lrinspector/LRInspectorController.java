@@ -20,10 +20,8 @@
 package megan.dialogs.lrinspector;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -42,7 +40,6 @@ import javafx.scene.layout.Pane;
 import jloda.gui.ToolBar;
 import jloda.gui.find.CompositeObjectSearcher;
 import jloda.gui.find.IObjectSearcher;
-import jloda.gui.find.SingleStringSearcher;
 import jloda.util.ProgramProperties;
 import jloda.util.Statistics;
 import megan.chart.ChartColorManager;
@@ -522,10 +519,6 @@ public class LRInspectorController {
     public void setupSearcher() {
         final List<IObjectSearcher> list = new ArrayList<>();
         for (final TableItem item : tableView.getItems()) {
-            if (false) {
-                BooleanProperty selection = new SimpleBooleanProperty(tableView.getSelectionModel().getSelectedItems().contains(item));
-                list.add(new SingleStringSearcher(viewer.getFrame(), item.toString(), selection));
-            }
             list.add(item.getPane().getSearcher().updateLists());
         }
         viewer.getSearcher().setSearchers(list.toArray(new IObjectSearcher[list.size()]));

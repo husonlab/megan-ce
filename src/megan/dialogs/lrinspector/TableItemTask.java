@@ -186,6 +186,7 @@ public class TableItemTask extends Task<Integer> {
                                                 Platform.runLater(new Runnable() {
                                                     @Override
                                                     public void run() {
+                                                        tableView.scrollTo(tableItem);
                                                         hScrollBar.setValue(newPos);
                                                     }
                                                 });

@@ -128,8 +128,9 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
             final Label label = labels.get(currentIndex);
             if (label.getUserData() instanceof IMatchBlock[]) {
                 for (IMatchBlock matchBlock : (IMatchBlock[]) label.getUserData()) {
-                    if (matchBlockSelectionModel.getSelectedItems().contains(matchBlock))
+                    if (matchBlockSelectionModel.getSelectedItems().contains(matchBlock)) {
                         return true;
+                    }
                 }
             }
         }
@@ -231,5 +232,12 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
             }
         });
         return this;
+    }
+
+    public double getCurrentLocation() {
+        if (isCurrentSet())
+            return labels.get(currentIndex).getLayoutX();
+        else
+            return 0;
     }
 }

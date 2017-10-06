@@ -522,24 +522,10 @@ public class LRInspectorController {
     public void setupSearcher() {
         final List<IObjectSearcher> list = new ArrayList<>();
         for (final TableItem item : tableView.getItems()) {
-            BooleanProperty selection = new SimpleBooleanProperty(tableView.getSelectionModel().getSelectedItems().contains(item));
-            selection.addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    if (newValue) {
-                        tableView.getSelectionModel().select(item);
-                        tableView.scrollTo(item);
-                    } else {
-                        ArrayList<TableItem> selected = new ArrayList<>(tableView.getSelectionModel().getSelectedItems());
-                        selected.remove(item);
-                        tableView.getSelectionModel().clearSelection();
-                        for (TableItem tableItem : selected)
-                            tableView.getSelectionModel().select(tableItem);
-                    }
-
-                }
-            });
-            list.add(new SingleStringSearcher(viewer.getFrame(), item.toString(), selection));
+            if (false) {
+                BooleanProperty selection = new SimpleBooleanProperty(tableView.getSelectionModel().getSelectedItems().contains(item));
+                list.add(new SingleStringSearcher(viewer.getFrame(), item.toString(), selection));
+            }
             list.add(item.getPane().getSearcher().updateLists());
         }
         viewer.getSearcher().setSearchers(list.toArray(new IObjectSearcher[list.size()]));

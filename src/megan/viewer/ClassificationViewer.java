@@ -278,21 +278,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     if (!ClassificationViewer.this.isLocked())
                         getCommandManager().updateEnableState();
 
-                    if (getSelectedNodes().size() > 0) {
-                        double numberOfAssigned = 0;
-                        double numberOfSummarized = 0;
-                        for (Node v : getSelectedNodes()) {
-                            if (v.getData() instanceof NodeData) {
-                                NodeData nodeData = (NodeData) v.getData();
-                                numberOfAssigned += nodeData.getCountAssigned();
-                                numberOfSummarized += nodeData.getCountSummarized();
-                            }
-                        }
-                        statusBar.setToolTipText((String.format("Selection: %,d nodes, %,d assigned, %,d summarized", getSelectedNodes().size(),
-                                Math.round(numberOfAssigned), Math.round(numberOfSummarized))));
-                    } else
-                        statusBar.setToolTipText(null);
-
+                    updateStatusBarTooltip();
                     avoidSelectionBounce = false;
                 }
             }
@@ -307,11 +293,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     }
                     if (!ClassificationViewer.this.isLocked())
                         getCommandManager().updateEnableState();
-                    if (getSelectedNodes().size() > 0) {
-                        statusBar.setToolTipText("Number of nodes selected: " + getSelectedNodes().size());
-
-                    } else
-                        statusBar.setToolTipText(null);
+                    updateStatusBarTooltip();
                     avoidSelectionBounce = false;
                 }
             }
@@ -359,6 +341,51 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         setupKeyListener();
         splitPane.setDividerLocation(1.0);
         getFrame().setVisible(visible);
+    }
+
+    private Thread thread = null;
+
+    /**
+     * display number of selected nodes etc as tooltip on status bar.
+     * Waits a while before doing so, because there may be multiple updates of the selection state
+     */
+    private void updateStatusBarTooltip() {
+        if (thread == null) {
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                    }
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (getSelectedNodes().size() > 0) {
+                                double numberOfAssigned = 0;
+                                double numberOfSummarized = 0;
+                                for (Node v : getSelectedNodes()) {
+                                    if (v.getData() instanceof NodeData) {
+                                        NodeData nodeData = (NodeData) v.getData();
+                                        numberOfAssigned += nodeData.getCountAssigned();
+                                        numberOfSummarized += nodeData.getCountSummarized();
+                                    }
+                                }
+
+                                final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
+                                        Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
+                                System.err.println(line);
+                                statusBar.setToolTipText(line);
+                            } else
+                                statusBar.setToolTipText(null);
+                            thread = null;
+                        }
+                    });
+
+                }
+            });
+            thread.run();
+        }
     }
 
     /**

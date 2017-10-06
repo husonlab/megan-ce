@@ -152,50 +152,43 @@ public class TableItemTask extends Task<Integer> {
                                     if (!tableItem.getPane().getMatchSelection().isEmpty())
                                         tableView.getSelectionModel().select(tableItem);
                                 }
-                                if (false) { // TODO: trying to implement "scroll to selected item" here
-                                    if (System.currentTimeMillis() - 1000 > previousSelectionTime) {
-                                        System.err.println("Move!");
-                                        double leftMost = Double.MAX_VALUE;
-                                        for (IMatchBlock matchBlock : tableItem.getPane().getMatchSelection().getSelectedItems()) {
-                                            final GeneArrow geneArrow = tableItem.getPane().getMatch2GeneArrow(matchBlock);
-                                            if (geneArrow != null) {
-                                                leftMost = geneArrow.getStart();
-                                            }
-                                        }
-                                        if (leftMost < Double.MAX_VALUE) {
-                                            System.err.println("LeftMost: " + leftMost);
+                                if (true) { // scroll to selected item
+                                    if (System.currentTimeMillis() - 100 > previousSelectionTime) {
+                                        final double focusCoordinate;
+                                        int focusIndex = tableItem.getPane().getMatchSelection().getFocusIndex();
+                                        if (focusIndex >= 0) {
+                                            IMatchBlock focusMatch = tableItem.getPane().getMatchSelection().getItems()[focusIndex];
+                                            focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
+                                            double leadingWidth = 0;
+                                            double lastWidth = 0;
+                                            double totalWidth = 0;
                                             {
-                                                double leadingWidth = 0;
-                                                double lastWidth = 0;
-                                                double totalWidth = 0;
-                                                {
-                                                    int numberOfColumns = tableView.getColumns().size();
-                                                    int columns = 0;
-                                                    for (TableColumn col : tableView.getColumns()) {
+                                                int numberOfColumns = tableView.getColumns().size();
+                                                int columns = 0;
+                                                for (TableColumn col : tableView.getColumns()) {
+                                                    if (col.isVisible()) {
                                                         if (columns < numberOfColumns - 1)
                                                             leadingWidth += col.getWidth();
                                                         else
                                                             lastWidth = col.getWidth();
                                                         totalWidth += col.getWidth();
-                                                        columns++;
                                                     }
+                                                    columns++;
                                                 }
-                                                double coordinateToShow = leadingWidth + lastWidth * (leftMost / tableItem.getReadLength());
-                                                System.err.println("coordinate to show: " + coordinateToShow);
+                                            }
 
-                                                final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
-                                                if (hScrollBar != null) {
-                                                    System.err.println("min: " + hScrollBar.getMin());
-                                                    System.err.println("max: " + hScrollBar.getMax());
-                                                    System.err.println("width: " + (hScrollBar.getMax() - hScrollBar.getMin()));
-                                                    System.err.println("visible: " + hScrollBar.getVisibleAmount());
+                                            double coordinateToShow = leadingWidth + lastWidth * (focusCoordinate / maxReadLength.get());
+                                            final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
 
+                                            if (hScrollBar != null) {
+                                                final double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((coordinateToShow) / totalWidth);
 
-                                                    double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((leftMost + 100) / totalWidth);
-                                                    System.err.println("Scroll to: " + newPos);
-
-                                                    hScrollBar.setValue(newPos);
-                                                }
+                                                Platform.runLater(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        hScrollBar.setValue(newPos);
+                                                    }
+                                                });
                                             }
                                         }
                                     }

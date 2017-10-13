@@ -54,47 +54,42 @@ public class CSVExportTaxonomy {
      */
     public static int exportTaxon2TotalLength(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        final MainViewer viewer = dir.getMainViewer();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final IConnector connector = viewer.getDir().getDocument().getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final IConnector connector = viewer.getDir().getDocument().getConnector();
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
-                progressListener.setSubtask("Taxa to total length");
-                progressListener.setMaximum(taxonIds.size());
-                progressListener.setProgress(0);
+            progressListener.setSubtask("Taxa to total length");
+            progressListener.setMaximum(taxonIds.size());
+            progressListener.setProgress(0);
 
-                for (int taxonId : taxonIds) {
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
-                    if (v.getOutDegree() == 0)
-                        allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                    else {
-                        allBelow = new HashSet<>();
-                        allBelow.add(taxonId);
-                    }
-                    final String name = getTaxonLabelSource(format, taxonId);
-                    if (name != null) {
-                        w.write(name);
-                        long length = 0L;
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        length += it.next().getReadLength();
-                                    }
-                                }
-                                totalLines++;
-                                progressListener.checkForCancel();
-                            }
-
-                        }
-                        w.write(separator + "" + length + "\n");
-                    }
-                    progressListener.incrementProgress();
+            for (int taxonId : taxonIds) {
+                Set<Integer> allBelow;
+                Node v = viewer.getTaxId2Node(taxonId);
+                if (v.getOutDegree() == 0)
+                    allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
+                else {
+                    allBelow = new HashSet<>();
+                    allBelow.add(taxonId);
                 }
+                final String name = getTaxonLabelSource(format, taxonId);
+                w.write(name);
+                long length = 0L;
+                for (int id : allBelow) {
+                    if (classificationBlock.getSum(id) > 0) {
+                        try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
+                                length += it.next().getReadLength();
+                            }
+                        }
+                        totalLines++;
+                        progressListener.checkForCancel();
+                    }
+                    w.write(separator + "" + length + "\n");
+                }
+                progressListener.incrementProgress();
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");
@@ -113,48 +108,46 @@ public class CSVExportTaxonomy {
      */
     public static int exportTaxon2Counts(String format, Director dir, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        final MainViewer viewer = dir.getMainViewer();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final List<String> names = viewer.getDir().getDocument().getSampleNames();
-                if (names.size() > 1) {
-                    w.write("#Datasets");
-                    for (String name : names) {
-                        if (name == null)
-                            System.err.println("Internal error, sample name is null");
-                        else {
-                            if (separator == ',')
-                                name = name.replaceAll(",", "_");
-                        }
-                        w.write(separator + name);
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final List<String> names = viewer.getDir().getDocument().getSampleNames();
+            if (names.size() > 1) {
+                w.write("#Datasets");
+                for (String name : names) {
+                    if (name == null)
+                        System.err.println("Internal error, sample name is null");
+                    else {
+                        if (separator == ',')
+                            name = name.replaceAll(",", "_");
                     }
-                    w.write("\n");
+                    w.write(separator + name);
                 }
+                w.write("\n");
+            }
 
-                final NodeSet selected = viewer.getSelectedNodes();
+            final NodeSet selected = viewer.getSelectedNodes();
 
-                progressListener.setSubtask("Taxa to counts");
-                progressListener.setMaximum(selected.size());
-                progressListener.setProgress(0);
+            progressListener.setSubtask("Taxa to counts");
+            progressListener.setMaximum(selected.size());
+            progressListener.setProgress(0);
 
-                for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
-                    Integer taxonId = (Integer) v.getInfo();
-                    if (taxonId != null) {
-                        final NodeData data = viewer.getNodeData(v);
-                        final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                        final String name = getTaxonLabelSource(format, taxonId);
-                            if (counts.length == names.size()) {
-                                w.write(name);
-                                for (float num : counts)
-                                    w.write(separator + "" + num);
-                                w.write("\n");
-                                totalLines++;
-                            } else
-                                System.err.println("Skipped " + name + ", number of values: " + counts.length);
-                    }
-                    progressListener.incrementProgress();
+            for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
+                Integer taxonId = (Integer) v.getInfo();
+                if (taxonId != null) {
+                    final NodeData data = viewer.getNodeData(v);
+                    final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                    final String name = getTaxonLabelSource(format, taxonId);
+                    if (counts.length == names.size()) {
+                        w.write(name);
+                        for (float num : counts)
+                            w.write(separator + "" + num);
+                        w.write("\n");
+                        totalLines++;
+                    } else
+                        System.err.println("Skipped " + name + ", number of values: " + counts.length);
                 }
+                progressListener.incrementProgress();
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");
@@ -173,49 +166,46 @@ public class CSVExportTaxonomy {
      */
     public static int exportReadName2Taxon(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
+        final MainViewer viewer = dir.getMainViewer();
 
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final IConnector connector = viewer.getDir().getDocument().getConnector();
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final IConnector connector = viewer.getDir().getDocument().getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            progressListener.setSubtask("Read names to taxa");
+            progressListener.setMaximum(taxonIds.size());
+            progressListener.setProgress(0);
 
-                progressListener.setSubtask("Read names to taxa");
-                progressListener.setMaximum(taxonIds.size());
-                progressListener.setProgress(0);
+            final boolean wantMatches = (format.endsWith("PathPercent"));
 
-                final boolean wantMatches = (format.endsWith("PathPercent"));
-
-                for (int taxonId : taxonIds) {
-                    Set<String> seen = new HashSet<>();
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
-                    if (v.getOutDegree() == 0)
-                        allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                    else {
-                        allBelow = new HashSet<>();
-                        allBelow.add(taxonId);
-                    }
-                    for (int id : allBelow) {
-                        if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, wantMatches)) {
-                                while (it.hasNext()) {
-                                    final IReadBlock readBlock = it.next();
-                                    final String readId = readBlock.getReadName();
-                                    if (!seen.contains(readId)) {
-                                        seen.add(readId);
-                                        w.write(readId + separator + getTaxonLabelTarget(dir, format, taxonId, readBlock) + "\n");
-                                        totalLines++;
-                                    }
+            for (int taxonId : taxonIds) {
+                Set<String> seen = new HashSet<>();
+                Set<Integer> allBelow;
+                Node v = viewer.getTaxId2Node(taxonId);
+                if (v.getOutDegree() == 0)
+                    allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
+                else {
+                    allBelow = new HashSet<>();
+                    allBelow.add(taxonId);
+                }
+                for (int id : allBelow) {
+                    if (classificationBlock.getSum(id) > 0) {
+                        try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, wantMatches)) {
+                            while (it.hasNext()) {
+                                final IReadBlock readBlock = it.next();
+                                final String readId = readBlock.getReadName();
+                                if (!seen.contains(readId)) {
+                                    seen.add(readId);
+                                    w.write(readId + separator + getTaxonLabelTarget(dir, format, taxonId, readBlock) + "\n");
+                                    totalLines++;
                                 }
                             }
-                            progressListener.checkForCancel();
                         }
+                        progressListener.checkForCancel();
                     }
-                    progressListener.incrementProgress();
                 }
+                progressListener.incrementProgress();
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");
@@ -234,61 +224,59 @@ public class CSVExportTaxonomy {
      */
     public static int exportReadName2Matches(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        final MainViewer viewer = dir.getMainViewer();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final IConnector connector = viewer.getDir().getDocument().getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final IConnector connector = viewer.getDir().getDocument().getConnector();
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
-                progressListener.setSubtask("Read names to matches");
+            progressListener.setSubtask("Read names to matches");
 
-                if (taxonIds.size() > 0) {
-                    progressListener.setMaximum(taxonIds.size());
-                    progressListener.setProgress(0);
+            if (taxonIds.size() > 0) {
+                progressListener.setMaximum(taxonIds.size());
+                progressListener.setProgress(0);
 
-                    for (int taxonId : taxonIds) {
-                        Set<String> seen = new HashSet<>();
-                        Set<Integer> allBelow;
-                        Node v = viewer.getTaxId2Node(taxonId);
-                        if (v.getOutDegree() == 0)
-                            allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                        else {
-                            allBelow = new HashSet<>();
-                            allBelow.add(taxonId);
-                        }
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, true)) {
-                                    while (it.hasNext()) {
-                                        IReadBlock readBlock = it.next();
-                                        String readId = readBlock.getReadName();
-                                        if (!seen.contains(readId)) {
-                                            seen.add(readId);
-                                            writeMatches(separator, readId, readBlock, w);
-                                            totalLines++;
-                                        }
+                for (int taxonId : taxonIds) {
+                    Set<String> seen = new HashSet<>();
+                    Set<Integer> allBelow;
+                    Node v = viewer.getTaxId2Node(taxonId);
+                    if (v.getOutDegree() == 0)
+                        allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
+                    else {
+                        allBelow = new HashSet<>();
+                        allBelow.add(taxonId);
+                    }
+                    for (int id : allBelow) {
+                        if (classificationBlock.getSum(id) > 0) {
+                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, true)) {
+                                while (it.hasNext()) {
+                                    IReadBlock readBlock = it.next();
+                                    String readId = readBlock.getReadName();
+                                    if (!seen.contains(readId)) {
+                                        seen.add(readId);
+                                        writeMatches(separator, readId, readBlock, w);
+                                        totalLines++;
                                     }
                                 }
-                                progressListener.checkForCancel();
                             }
+                            progressListener.checkForCancel();
                         }
-                        progressListener.incrementProgress();
                     }
-                } else // process all reads:
-                {
-                    progressListener.setMaximum(viewer.getDir().getDocument().getNumberOfReads());
-                    progressListener.setProgress(0);
+                    progressListener.incrementProgress();
+                }
+            } else // process all reads:
+            {
+                progressListener.setMaximum(viewer.getDir().getDocument().getNumberOfReads());
+                progressListener.setProgress(0);
 
-                    try (IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
-                        while (it.hasNext()) {
-                            IReadBlock readBlock = it.next();
-                            String readId = readBlock.getReadName();
-                            writeMatches(separator, readId, readBlock, w);
-                            totalLines++;
-                            progressListener.incrementProgress();
-                        }
+                try (IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+                    while (it.hasNext()) {
+                        IReadBlock readBlock = it.next();
+                        String readId = readBlock.getReadName();
+                        writeMatches(separator, readId, readBlock, w);
+                        totalLines++;
+                        progressListener.incrementProgress();
                     }
                 }
             }
@@ -336,44 +324,42 @@ public class CSVExportTaxonomy {
      */
     public static int exportTaxon2ReadNames(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        final MainViewer viewer = dir.getMainViewer();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final IConnector connector = viewer.getDir().getDocument().getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+        try (final BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final IConnector connector = viewer.getDir().getDocument().getConnector();
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
-                progressListener.setSubtask("Taxa to read names");
-                progressListener.setMaximum(taxonIds.size());
-                progressListener.setProgress(0);
+            progressListener.setSubtask("Taxa to read names");
+            progressListener.setMaximum(taxonIds.size());
+            progressListener.setProgress(0);
 
-                for (int taxonId : taxonIds) {
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
-                    if (v.getOutDegree() == 0)
-                        allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                    else {
-                        allBelow = new HashSet<>();
-                        allBelow.add(taxonId);
-                    }
-                    final String name = getTaxonLabelSource(format, taxonId);
-                        w.write(name);
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        String readId = it.next().getReadName();
-                                        w.write(separator + "" + readId);
-                                    }
-                                }
-                                w.write("\n");
-                                totalLines++;
-                                progressListener.checkForCancel();
+            for (int taxonId : taxonIds) {
+                Set<Integer> allBelow;
+                Node v = viewer.getTaxId2Node(taxonId);
+                if (v.getOutDegree() == 0)
+                    allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
+                else {
+                    allBelow = new HashSet<>();
+                    allBelow.add(taxonId);
+                }
+                final String name = getTaxonLabelSource(format, taxonId);
+                w.write(name);
+                for (int id : allBelow) {
+                    if (classificationBlock.getSum(id) > 0) {
+                        try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
+                                String readId = it.next().getReadName();
+                                w.write(separator + "" + readId);
                             }
                         }
-                    progressListener.incrementProgress();
+                        w.write("\n");
+                        totalLines++;
+                        progressListener.checkForCancel();
+                    }
                 }
+                progressListener.incrementProgress();
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");
@@ -393,44 +379,42 @@ public class CSVExportTaxonomy {
      */
     public static int exportTaxon2ReadIds(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
-        try {
-            final MainViewer viewer = dir.getMainViewer();
+        final MainViewer viewer = dir.getMainViewer();
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final IConnector connector = viewer.getDir().getDocument().getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            final IConnector connector = viewer.getDir().getDocument().getConnector();
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
-                progressListener.setSubtask("Taxa to read Ids");
-                progressListener.setMaximum(taxonIds.size());
-                progressListener.setProgress(0);
+            progressListener.setSubtask("Taxa to read Ids");
+            progressListener.setMaximum(taxonIds.size());
+            progressListener.setProgress(0);
 
-                for (int taxonId : taxonIds) {
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
-                    if (v.getOutDegree() == 0)
-                        allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                    else {
-                        allBelow = new HashSet<>();
-                        allBelow.add(taxonId);
-                    }
-                    final String name = getTaxonLabelSource(format, taxonId);
-                        w.write(name);
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        String readId = it.next().getReadName();
-                                        w.write(separator + "" + readId);
-                                    }
-                                }
-                                w.write("\n");
-                                totalLines++;
-                                progressListener.checkForCancel();
+            for (int taxonId : taxonIds) {
+                Set<Integer> allBelow;
+                Node v = viewer.getTaxId2Node(taxonId);
+                if (v.getOutDegree() == 0)
+                    allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
+                else {
+                    allBelow = new HashSet<>();
+                    allBelow.add(taxonId);
+                }
+                final String name = getTaxonLabelSource(format, taxonId);
+                w.write(name);
+                for (int id : allBelow) {
+                    if (classificationBlock.getSum(id) > 0) {
+                        try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
+                                String readId = it.next().getReadName();
+                                w.write(separator + "" + readId);
                             }
                         }
-                    progressListener.incrementProgress();
+                        w.write("\n");
+                        totalLines++;
+                        progressListener.checkForCancel();
+                    }
                 }
+                progressListener.incrementProgress();
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");

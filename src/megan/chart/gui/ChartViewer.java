@@ -683,6 +683,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         if (bottomToolBar != null)
             bottomToolBar.setEnabled(false);
         getCommandManager().setEnableCritical(false);
+        getJMenuBar().setEnableRecentFileMenuItems(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
@@ -698,6 +699,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             bottomToolBar.setEnabled(true);
         setCursor(Cursor.getDefaultCursor());
         getContentPane().setCursor(Cursor.getDefaultCursor());
+        getJMenuBar().setEnableRecentFileMenuItems(false);
     }
 
     /**

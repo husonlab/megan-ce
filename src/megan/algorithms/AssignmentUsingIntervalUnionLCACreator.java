@@ -52,9 +52,6 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        if (ProgramProperties.get("use-segment-lca", false)) {
-            return new AssignmentUsingSegmentLCA(document);
-        } else
-            return new AssignmentUsingIntervalUnionLCA(document);
+        return new AssignmentUsingIntervalUnionLCA(document);
     }
 }

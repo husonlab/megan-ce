@@ -19,7 +19,6 @@
 package megan.commands.show;
 
 import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.CommandManager;
 import jloda.gui.commands.ICommand;
 import jloda.util.Pair;
 import jloda.util.ResourceManager;
@@ -43,19 +42,6 @@ import java.util.Map;
  */
 public class ShowLRInspectorCommand extends CommandBase implements ICommand {
     private static Map<Pair<String, Integer>, LRInspectorViewer> classification2viewer = new HashMap<>();
-
-    public ShowLRInspectorCommand() {
-    }
-
-    /**
-     * constructor
-     *
-     * @param commandManager
-     */
-    public ShowLRInspectorCommand(CommandManager commandManager) {
-        super(commandManager);
-    }
-
 
     /**
      * parses the given command and executes it

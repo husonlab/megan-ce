@@ -674,6 +674,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
         frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         statusBar.setText2("Busy...");
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     /**
@@ -692,8 +693,9 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         getCommandManager().setEnableCritical(true);
         searchManager.getFindDialogAsToolBar().setEnableCritical(true);
         frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        isLocked = false;
         statusBar.setText2("");
+        menuBar.setEnableRecentFileMenuItems(true);
+        isLocked = false;
     }
 
     /**

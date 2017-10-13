@@ -89,7 +89,7 @@ public class DAAParser {
      *
      * @throws IOException
      */
-    public static boolean isMeganizedDAAFile(String fileName, boolean meganized) throws IOException {
+    public static boolean isMeganizedDAAFile(String fileName, boolean checkWhetherMeganized) throws IOException {
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(fileName))) {
             long magicNumber = ins.readLong();
             if (magicNumber != DAAHeader.MAGIC_NUMBER)
@@ -98,7 +98,7 @@ public class DAAParser {
             if (version > DAAHeader.DAA_VERSION)
                 throw new IOException("DAA version requires later version of MEGAN.");
 
-            if (!meganized)
+            if (!checkWhetherMeganized)
                 return true;
             ins.skip(76);
 

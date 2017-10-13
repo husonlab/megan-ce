@@ -28,6 +28,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * the files panel
@@ -98,6 +100,8 @@ public class FilesPanel extends JPanel {
 
         final JPanel readsFilePanel = new JPanel();
         final JTextArea readFileNameField = dialog.getReadFileNameField();
+
+        final AbstractButton longReadsCBox;
         {
             readFileNameField.setToolTipText("Add reads files (FastA or FastQ format) to import, not neccessary for DAA files");
 
@@ -132,7 +136,8 @@ public class FilesPanel extends JPanel {
             oneLine.add(Box.createHorizontalGlue());
             oneLine.add(commandManager.getButton(SetPairedReadsCommand.NAME));
             oneLine.add(Box.createHorizontalGlue());
-            oneLine.add(commandManager.getButton(SetLongReadsCommand.NAME));
+            longReadsCBox = commandManager.getButton(SetLongReadsCommand.NAME);
+            oneLine.add(longReadsCBox);
             oneLine.add(Box.createHorizontalGlue());
 
             JPanel twoLines = new JPanel();
@@ -216,6 +221,12 @@ public class FilesPanel extends JPanel {
             dialog.getMaxNumberOfMatchesPerReadField().setToolTipText("Specify the maximum number of matches to save per read." +
                     " A small value reduces the size of the MEGAN file, but may exclude some important matches.");
             below3.add(dialog.getMaxNumberOfMatchesPerReadField());
+            longReadsCBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialog.getMaxNumberOfMatchesPerReadField().setEnabled(!longReadsCBox.isSelected());
+                }
+            });
 
             below3.add(Box.createHorizontalGlue());
 

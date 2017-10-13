@@ -97,7 +97,7 @@ public class Document {
     public final static float DEFAULT_MIN_PERCENT_IDENTITY = 0f;
     public final static float DEFAULT_TOPPERCENT = 10; // in percent
     public final static int DEFAULT_MINSUPPORT = 0;
-    public final static float DEFAULT_MINSUPPORT_PERCENT = 0.01f; // in percent
+    public final static float DEFAULT_MINSUPPORT_PERCENT = 0.05f; // in percent
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.naive;
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.longReads;
 

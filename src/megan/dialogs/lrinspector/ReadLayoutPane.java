@@ -19,10 +19,7 @@
 
 package megan.dialogs.lrinspector;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -57,10 +54,12 @@ import java.util.*;
 
 /**
  * pane displaying all alignments to a read
- * Created by huson on 2/23/17.
+ * Daniel Huson, Feb 2017
  */
 public class ReadLayoutPane extends Pane {
     static public int DEFAULT_LABELED_HEIGHT = 110;
+
+    static public final Color LIGHTGRAY_SEMITRANSPARENT = Color.color(0.827451f, 0.827451f, 0.827451f, 0.5);
 
     public static Font font = new Font("Courier", ProgramProperties.get("LongReadLabelFontSize", 10));
     private static int arrowHeight = 10;
@@ -86,6 +85,9 @@ public class ReadLayoutPane extends Pane {
     private final ReadLayoutPaneSearcher readLayoutPaneSearcher;
 
     private boolean hasHidden = false;
+
+    private final LongProperty previousSelectionTime = new SimpleLongProperty(0);
+
 
 
     /**
@@ -530,7 +532,7 @@ public class ReadLayoutPane extends Pane {
                     }
                 }
                 if (!colored) {
-                    geneArrow.setFill(hasClass ? Color.LIGHTGRAY : Color.TRANSPARENT);
+                    geneArrow.setFill(hasClass ? LIGHTGRAY_SEMITRANSPARENT : Color.TRANSPARENT);
                 }
             }
         } else // key classification not showing
@@ -590,6 +592,7 @@ public class ReadLayoutPane extends Pane {
                 }
                 if (matchBlocks.size() > 0) {
                     for (IMatchBlock matchBlock : matchBlocks) {
+                        previousSelectionTimeProperty().set(System.currentTimeMillis()); // so that we don't scroll the table view
                         matchSelection.select(matchBlock);
                     }
                     event.consume();
@@ -882,5 +885,9 @@ public class ReadLayoutPane extends Pane {
 
     public GeneArrow getMatch2GeneArrow(IMatchBlock matchBlock) {
         return match2GeneArrow.get(matchBlock);
+    }
+
+    public LongProperty previousSelectionTimeProperty() {
+        return previousSelectionTime;
     }
 }

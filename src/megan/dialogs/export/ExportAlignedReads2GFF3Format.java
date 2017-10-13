@@ -57,7 +57,6 @@ public class ExportAlignedReads2GFF3Format {
 
         final String[] cNames = cViewer.getDocument().getActiveViewers().toArray(new String[cViewer.getDocument().getActiveViewers().size()]);
 
-
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             w.write(getHeader());
@@ -123,6 +122,8 @@ public class ExportAlignedReads2GFF3Format {
                     final String[] cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[item.getPane().getClassificationLabelsShowing().size()]);
                     if (cNames.length == 0)
                         System.err.println("Skipping '" + item.getReadName() + "': no classification showing");
+                    else if (classificationToReport != null && !Basic.contains(cNames, classificationToReport))
+                        System.err.println("Skipping '" + item.getReadName() + "': selected classification not showing");
                     else {
                         final String string = createGFFLines(blastMode, item.getReadName(), item.getReadLength(), cNames, classificationToReport, item.getPane().getIntervals(), taxonId, excludeIncompatible, excludeDominated);
                         w.write(string);
@@ -216,6 +217,9 @@ public class ExportAlignedReads2GFF3Format {
             } else
                 taxRel = null;
 
+            if (!reportAllClassifications && !(idToReport > 0 && classificationToReportIndex >= 0))
+                continue; // something wrong here...
+
             // seqname source feature start end score strand frame attribute
             final int start = interval.getStart();
             final int end = interval.getEnd();
@@ -235,46 +239,50 @@ public class ExportAlignedReads2GFF3Format {
             buf.append(String.format("%s\t%s\t%s\t%d\t%d\t%.0f\t%s\t%s",
                     readName, ProgramProperties.getProgramName(), "CDS", start, end, score, strand, frame));
 
-            final String acc = Basic.swallowLeadingGreaterSign(matchBlockFirstWord.replaceAll("\\s+", " "));
-            buf.append(String.format("\tId=%s; acc=%s;", acc, acc));
+            try {
+                final String acc = Basic.swallowLeadingGreaterSign(matchBlockFirstWord.replaceAll("\\s+", "_"));
+                buf.append(String.format("\tId=%s; acc=%s;", acc, acc));
 
-            final StringBuilder nameBuffer = new StringBuilder();
+                final StringBuilder nameBuffer = new StringBuilder();
 
-            // if not reporting all and have an id, then use it.
-            if (!reportAllClassifications) {
-                if (idToReport > 0 && classificationToReportIndex >= 0) {
-                    final String value = classifications[classificationToReportIndex].getName2IdMap().get(idToReport);
-                    nameBuffer.append(value != null ? value : getShortName(classificationToReport) + idToReport);
-                } else
-                    continue; // something not correct, skip this (shouldn't ever happen...)
-            }
+                // if not reporting all and have an id, then use it.
+                if (!reportAllClassifications) {
+                    if (idToReport > 0 && classificationToReportIndex >= 0) {
+                        final String value = classifications[classificationToReportIndex].getName2IdMap().get(idToReport);
+                        nameBuffer.append(value != null ? value.replaceAll("\\s+", "_") : getShortName(classificationToReport) + idToReport);
+                    } else
+                        continue; // something not correct, skip this (shouldn't ever happen...)
+                }
 
-            for (int i = 0; i < cNames.length; i++) {
-                final String cName = cNames[i];
+                for (int i = 0; i < cNames.length; i++) {
+                    final String cName = cNames[i];
 
-                String shortName = getShortName(cName);
+                    String shortName = getShortName(cName);
 
-                int id = matchBlock.getId(cName);
-                if (id > 0 && classifications[i] != null) {
-                    final String value = classifications[i].getName2IdMap().get(id);
-                    if (value != null && value.length() > 0) {
-                        final String displayValue = Basic.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll(",", "%2C").replaceAll("=", "%3D"), 80);
-                        buf.append(String.format(" %s=%s;", shortName, displayValue));
-                        if (taxRel != null) {
-                            buf.append(" taxRel=").append(taxRel).append(";");
+                    int id = matchBlock.getId(cName);
+                    if (id > 0 && classifications[i] != null) {
+                        final String value = classifications[i].getName2IdMap().get(id);
+                        if (value != null && value.length() > 0) {
+                            final String displayValue = Basic.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll("=", "%3D").replaceAll(" ", "_"), 80);
+                            buf.append(String.format(" %s=%s;", shortName, displayValue));
+                            if (taxRel != null) {
+                                buf.append(" taxRel=").append(taxRel).append(";");
+                            }
+                        }
+
+                        if (reportAllClassifications) {
+                            if (nameBuffer.length() > 0)
+                                nameBuffer.append(",_");
+                            nameBuffer.append(value != null ? value : shortName + id);
                         }
                     }
-
-                    if (reportAllClassifications) {
-                        if (nameBuffer.length() > 0)
-                            nameBuffer.append(", ");
-                        nameBuffer.append(value != null ? value : shortName + id);
-                    }
                 }
+
+                if (nameBuffer.length() > 0)
+                    buf.append(" Name=").append(nameBuffer.toString()).append(";");
+            } finally {
+                buf.append("\n");
             }
-            if (nameBuffer.length() > 0)
-                buf.append(" Name=").append(nameBuffer.toString()).append(";");
-            buf.append("\n");
         }
         return buf.toString();
     }

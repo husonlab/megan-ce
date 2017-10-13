@@ -168,6 +168,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         locked = true;
         commandManager.setEnableCritical(false);
         closeButton.setEnabled(false);
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     public void unlockUserInput() {
@@ -175,6 +176,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         closeButton.setEnabled(true);
         commandManager.setEnableCritical(true);
         locked = false;
+        menuBar.setEnableRecentFileMenuItems(true);
     }
 
     /**

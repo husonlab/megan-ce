@@ -254,10 +254,12 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
     public void lockUserInput() {
         locked = true;
         commandManager.setEnableCritical(false);
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     public void unlockUserInput() {
         commandManager.setEnableCritical(true);
+        menuBar.setEnableRecentFileMenuItems(true);
         locked = false;
     }
 

@@ -75,6 +75,8 @@ public class DataProcessorParallel {
      * @throws CanceledException
      */
     public int apply() throws CanceledException {
+        System.err.println("Using experimental parallel dataprocessor");
+
         final ProgressListener progress = doc.getProgressListener();
         try {
             progress.setTasks("Binning reads", "Initialization");

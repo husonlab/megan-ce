@@ -78,7 +78,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
 
         inputCBox.addItemsFromString(ProgramProperties.get(ProgramProperties.LASTCOMMAND, ""), "%%%");
 
-        JPanel topPanel = new JPanel();
+        final JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
 
         topPanel.add(new JLabel("Enter command to execute:"), BorderLayout.NORTH);
@@ -95,7 +95,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
 
         getContentPane().add(topPanel);
 
-        JPanel bottomPanel = new JPanel();
+        final JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         commandContextLabel = new JLabel();
         commandContextLabel.setForeground(Color.LIGHT_GRAY);
@@ -128,8 +128,9 @@ public class InputDialog extends JFrame implements IDirectableViewer {
             }
         }));
 
-        JButton applyButton = new JButton(applyAction);
+        final JButton applyButton = new JButton(applyAction);
         bottomPanel.add(applyButton);
+        bottomPanel.add(Box.createHorizontalStrut(20));
         getRootPane().setDefaultButton(applyButton);
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 

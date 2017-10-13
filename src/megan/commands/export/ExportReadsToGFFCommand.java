@@ -247,7 +247,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         return false;
     }
 
-    public static final String NAME = "Export Read Annotations in GFF Format...";
+    public static final String NAME = "Annotations in GFF Format...";
 
     public String getName() {
         return NAME;

@@ -311,6 +311,8 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         userTextField.setEnabled(false);
         passwordTextField.setEnabled(false);
         saveCredentialsCBox.setEnabled(false);
+
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     public void unlockUserInput() {
@@ -322,6 +324,8 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         userTextField.setEnabled(true);
         passwordTextField.setEnabled(true);
         saveCredentialsCBox.setEnabled(true);
+
+        menuBar.setEnableRecentFileMenuItems(true);
 
         locked = false;
     }

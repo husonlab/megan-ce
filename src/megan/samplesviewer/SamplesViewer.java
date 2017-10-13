@@ -308,19 +308,21 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         getCommandManager().setEnableCritical(false);
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
         samplesSpreadSheet.lockUserInput();
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     /**
      * ask view to allow user input
      */
     public void unlockUserInput() {
-        locked = false;
         samplesSpreadSheet.unlockUserInput();
         getCommandManager().setEnableCritical(true);
         frame.setCursor(Cursor.getDefaultCursor());
         searchManager.getFindDialogAsToolBar().setEnableCritical(true);
         frame.setCursor(Cursor.getDefaultCursor());
         updateStatusBar();
+        menuBar.setEnableRecentFileMenuItems(true);
+        locked = false;
     }
 
     /**

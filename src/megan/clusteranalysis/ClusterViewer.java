@@ -577,6 +577,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         statusBar.setText2("Busy...");
         getCommandManager().setEnableCritical(false);
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     /**
@@ -588,6 +589,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         setCursor(Cursor.getDefaultCursor());
         getCommandManager().setEnableCritical(true);
         getCommandManager().updateEnableState();
+        menuBar.setEnableRecentFileMenuItems(true);
     }
 
     public boolean isLocked() {

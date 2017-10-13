@@ -34,7 +34,8 @@ import java.util.*;
 
 /**
  * performs taxonId assignment using a segment-oriented algorithm
- * Created by huson on 4/12/17.
+ * Daniel Huson, 4.2017
+ * @deprecated
  */
 public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
     private final double topPercentFactor;

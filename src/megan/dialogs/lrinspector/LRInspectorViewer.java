@@ -64,7 +64,10 @@ import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 /**
@@ -699,5 +702,31 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     @Override
     public Stage getJavaFXStage() {
         return null;
+    }
+
+    /**
+     * save all selected reads
+     *
+     * @param outputFile
+     * @param progressListener
+     * @return number saved
+     * @throws IOException
+     */
+    public int exportSelectedReads(String outputFile, ProgressListener progressListener) throws IOException, CanceledException {
+        int count = 0;
+        if (getController() != null) {
+            try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
+                progressListener.setMaximum(getController().getTableView().getSelectionModel().getSelectedItems().size());
+                progressListener.setProgress(0);
+                for (TableItem item : getController().getTableView().getSelectionModel().getSelectedItems()) {
+                    w.write(">" + Basic.swallowLeadingGreaterSign(item.getReadName()) + "\n");
+                    w.write(item.getReadSequence() + "\n");
+                    count++;
+                    progressListener.incrementProgress();
+                }
+            }
+
+        }
+        return count;
     }
 }

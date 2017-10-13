@@ -42,7 +42,7 @@ import java.util.*;
  */
 public class RMA2Info {
     /**
-     * DAA 2 info
+     * RMA 2 info
      *
      * @param args
      * @throws UsageException

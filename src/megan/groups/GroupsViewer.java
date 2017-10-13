@@ -194,6 +194,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     public void lockUserInput() {
         locked = true;
         commandManager.setEnableCritical(false);
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     /**
@@ -210,6 +211,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
      */
     public void unlockUserInput() {
         commandManager.setEnableCritical(true);
+        menuBar.setEnableRecentFileMenuItems(true);
         locked = false;
     }
 

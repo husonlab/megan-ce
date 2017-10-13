@@ -24,12 +24,14 @@ import jloda.util.Basic;
 import jloda.util.FastaFileFilter;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.core.ClassificationType;
 import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.export.ReadsExporter;
+import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
 
@@ -40,6 +42,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ExportReadsCommand extends CommandBase implements ICommand {
+
     public String getSyntax() {
         return "export what=reads [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
     }
@@ -47,32 +50,36 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=reads");
 
-        Director dir = getDir();
-        Document doc = dir.getDocument();
-
-        String data = ClassificationType.Taxonomy.toString();
+        final String data;
         if (np.peekMatchIgnoreCase("data")) {
             np.matchIgnoreCase("data=");
             data = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
-        }
-        Set<Integer> classIds = new HashSet<>();
-        if (data.equals(ClassificationType.Taxonomy.toString()))
-            classIds.addAll(dir.getMainViewer().getSelectedIds());
-        else {
-            ClassificationViewer classificationViewer = (ClassificationViewer) getDir().getViewerByClassName(data);
-            if (classificationViewer != null)
-                classIds.addAll(classificationViewer.getSelectedIds());
-        }
-
+        } else
+            data = Classification.Taxonomy;
         np.matchIgnoreCase("file=");
+
         String outputFile = np.getAbsoluteFileName();
         np.matchIgnoreCase(";");
 
+        final Director dir = getDir();
+        final Document doc = dir.getDocument();
+
         int count;
-        if (classIds.size() == 0)
-            count = ReadsExporter.exportAll(doc.getConnector(), outputFile, doc.getProgressListener());
-        else
-            count = ReadsExporter.export(data, classIds, doc.getConnector(), outputFile, doc.getProgressListener());
+
+        if (getViewer() instanceof ClassificationViewer) {
+            final ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(data);
+            final Set<Integer> classIds = new HashSet<>();
+            if (classificationViewer != null)
+                classIds.addAll(classificationViewer.getSelectedIds());
+
+            if (classIds.size() == 0)
+                count = ReadsExporter.exportAll(doc.getConnector(), outputFile, doc.getProgressListener());
+            else
+                count = ReadsExporter.export(data, classIds, doc.getConnector(), outputFile, doc.getProgressListener());
+        } else if (getViewer() instanceof LRInspectorViewer) {
+            count = ((LRInspectorViewer) getViewer()).exportSelectedReads(outputFile, doc.getProgressListener());
+        } else
+            count = 0;
 
         NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + count + " reads to file: " + outputFile);
     }
@@ -94,16 +101,14 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
 
         final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new FastaFileFilter(), new FastaFileFilter(), event, "Save all READs to file", ".fasta");
 
-        String data;
+        final String data;
         if (getViewer() instanceof ClassificationViewer)
-            data = ((ClassificationViewer) getViewer()).getClassName();
+            data = getViewer().getClassName();
         else
             data = ClassificationType.Taxonomy.toString();
 
         if (file != null) {
-            String cmd;
-            cmd = ("export what=reads data=" + data + " file='" + file.getPath() + "';");
-            execute(cmd);
+            execute("export what=reads data=" + data + " file='" + file.getPath() + "';");
         }
     }
 
@@ -116,7 +121,7 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Export all reads to a text file (or only those for selected nodes, if any selected)";
+        return "Export reads to a text file";
     }
 }
 

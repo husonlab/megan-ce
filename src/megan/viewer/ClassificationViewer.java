@@ -350,14 +350,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * Waits a while before doing so, because there may be multiple updates of the selection state
      */
     private void updateStatusBarTooltip() {
-        if (thread == null) {
-            thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                    }
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
@@ -374,18 +366,13 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
                                 final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
                                         Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
-                                System.err.println(line);
+                                //System.err.println(line);
                                 statusBar.setToolTipText(line);
                             } else
                                 statusBar.setToolTipText(null);
                             thread = null;
                         }
                     });
-
-                }
-            });
-            thread.run();
-        }
     }
 
     /**
@@ -708,6 +695,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         getLegendPanel().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getCommandManager().setEnableCritical(false);
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
+        menuBar.setEnableRecentFileMenuItems(false);
     }
 
     /*
@@ -733,6 +721,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         getFrame().setCursor(Cursor.getDefaultCursor());
         getScrollPane().setCursor(Cursor.getDefaultCursor());
         getLegendPanel().setCursor(Cursor.getDefaultCursor());
+        menuBar.setEnableRecentFileMenuItems(true);
         updateStatusBar();
     }
 

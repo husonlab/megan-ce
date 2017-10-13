@@ -118,11 +118,10 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
                             if (ref2weight != null) {
                                 final String ref = matchBlock.getTextFirstWord();
-                                Integer weight = ref2weight.get(ref);
+                                Integer weight = ref != null ? ref2weight.get(ref) : null;
                                 if (weight == null)
                                     weight = 1;
                                 addressingArray[arrayLength++].set(address, weight);
-
                             } else {
                                 final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
                                 int weight = Math.max(1, refId2weight[refId]);

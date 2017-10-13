@@ -38,9 +38,10 @@ public class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Options;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Export Read Annotations in GFF Format...;|;Page Setup...;Print...;|;Close;|;Quit;");
+        menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;@Export;|;Page Setup...;Print...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Export", "Reads...;Annotations in GFF Format...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy Alignments;Paste;|;Find...;Find Again;|;Colors...;|;Select All;Select None;|;From Previous Window;|;Select Compatible;Invert Selection;|;Hide Selected Alignments;Show All Alignments;");
 

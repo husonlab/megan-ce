@@ -104,11 +104,13 @@ public class DAA2Info {
         else
             taxonomyRoot = 0;
 
-        final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, false);
+        final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, true);
 
         final Document doc = new Document();
-        doc.getMeganFile().setFileFromExistingFile(daaFile, true);
-        doc.loadMeganFile();
+        if (isMeganized) {
+            doc.getMeganFile().setFileFromExistingFile(daaFile, true);
+            doc.loadMeganFile();
+        }
 
         try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
             if (listGeneralInfo || listMoreStuff) {

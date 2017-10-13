@@ -325,7 +325,7 @@ public class DataProcessor {
 
             // If min support percentage is set, set the min support:
             if (doc.getMinSupportPercent() > 0) {
-                doc.setMinSupport((int) Math.max(1, (doc.getMinSupportPercent() / 100.0) * (numberOfReadsWithHits + numberAssignedViaMatePair)));
+                doc.setMinSupport((int) Math.max(1, (doc.getMinSupportPercent() / 100.0) * (totalWeight)));
                 System.err.println("MinSupport set to: " + doc.getMinSupport());
             }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.viewer.commands.zoom;
+package megan.commands.zoom;
 
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
@@ -28,37 +28,55 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * zoom to selection
+ * zoom to full
  * Daniel Huson, 2005
  */
-public class ZoomToSelectionCommand extends CommandBase implements ICommand {
+public class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return null;
+        return "zoom {fit|full|selection}";
     }
 
-    @Override
     public void apply(NexusStreamParser np) throws Exception {
+        np.matchIgnoreCase("zoom");
+        final String what = np.getWordMatchesIgnoringCase("fit full selected");
+        np.matchIgnoreCase(";");
 
+        if (getViewer() instanceof ViewerBase) {
+            final ViewerBase viewer = (ViewerBase) getViewer();
+            if (what.equalsIgnoreCase("fit")) {
+                viewer.fitGraphToWindow();
+                //viewer.trans.setScaleY(0.14); // no idea why this was here...
+            } else if (what.equalsIgnoreCase("full")) {
+                viewer.fitGraphToWindow();
+                viewer.trans.setScaleY(1);
+            } else { // selection
+                viewer.zoomToSelection();
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom selected;");
-    }
-
-    public boolean isApplicable() {
-        return getViewer() instanceof ViewerBase && ((ViewerBase) getViewer()).getSelectedNodes().size() > 0;
+        executeImmediately("zoom full;");
     }
 
     public String getName() {
-        return "Zoom To Selection";
+        return "Fully Expand";
     }
 
     public String getDescription() {
-        return "Zoom to the selection";
+        return "Expand tree";
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignCenter16.gif");
+        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignJustifyVertical16.gif");
+    }
+
+    public boolean isApplicable() {
+        return getViewer() instanceof ViewerBase;
+    }
+
+    public boolean isCritical() {
+        return true;
     }
 
     /**
@@ -68,11 +86,6 @@ public class ZoomToSelectionCommand extends CommandBase implements ICommand {
      */
     public KeyStroke getAcceleratorKey() {
         return null;
-    }
-
-    @Override
-    public boolean isCritical() {
-        return true;
     }
 }
 

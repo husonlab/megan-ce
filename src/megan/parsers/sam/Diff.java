@@ -56,7 +56,7 @@ public class Diff {
                 posRef++;
             }
             switch (element.type) {
-                case MATCH:
+                case MATCH: {
                     for (int i = 0; i < element.count; i++) {
                         while (isGap(gappedReferenceSequenceTemplate.charAt(posRef))) {
                             buffer.append(gappedReferenceSequenceTemplate.charAt(posRef));
@@ -68,16 +68,21 @@ public class Diff {
                         posRef++;
                     }
                     break;
-                case REPLACE:
-                    buffer.append(element.what.toUpperCase());
+                }
+                case REPLACE: {
+                    final String what = element.what.toLowerCase();
+                    buffer.append(what);
                     posQuery++;
                     posRef++;
                     break;
-                case INSERT:
-                    buffer.append(element.what.toUpperCase());
-                    posQuery += element.what.length();
-                    posRef += element.what.length();
+                }
+                case INSERT: {
+                    final String what = element.what.toLowerCase();
+                    buffer.append(what);
+                    posQuery += what.length();
+                    posRef += what.length();
                     break;
+                }
                 default:
                     System.err.println("Unknown Diff element: " + element);
             }

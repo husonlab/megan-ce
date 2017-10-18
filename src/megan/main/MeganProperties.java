@@ -68,6 +68,7 @@ public class MeganProperties {
     public static final String COMPARISON_STYLE = "CompareStyle";
 
     public static final String DISABLED_TAXA = "DisabledTaxa";
+    public static final int[] DISABLED_TAXA_DEFAULT = {32644, 37965, 134367, 2323, 28384, 61964, 48510, 47936, 186616, 12908, 48479, 156614, 367897};
 
     public static final String PVALUE_COLOR = "PValueColor";
 
@@ -119,7 +120,7 @@ public class MeganProperties {
         ProgramProperties.put(ExportImageDialog.GRAPHICSFORMAT, ".pdf");
         ProgramProperties.put(ExportImageDialog.GRAPHICSDIR, System.getProperty("user.dir"));
 
-        ProgramProperties.put(DISABLED_TAXA, new int[]{32644, 37965, 134367, 2323, 28384, 61964, 48510, 47936, 186616, 12908, 48479, 156614, 367897});
+        ProgramProperties.put(DISABLED_TAXA, DISABLED_TAXA_DEFAULT);
 
         // then read in file to override defaults:
         ProgramProperties.load(propertiesFile);

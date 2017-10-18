@@ -100,7 +100,8 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
         if (mapFile == null)
             mapFile = Basic.replaceFileSuffix(treeFile, ".map");
 
-        Classification classification = ClassificationManager.load(Classification.Taxonomy, treeFile, mapFile, getDoc().getProgressListener());
+        final Classification classification = ClassificationManager.load(Classification.Taxonomy, treeFile, mapFile, getDoc().getProgressListener());
+        TaxonomyData.ensureDisabledTaxaInitialized();
 
         Node v = classification.getFullTree().getRoot();
         if (v != null && (Integer) v.getInfo() == 0) {
@@ -110,8 +111,7 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
             classification.getIdMapper().getName2IdMap().put("Root", 1);
         }
 
-        Collection<Pair<String, String>> mappingFixes = new LinkedList<>();
-        mappingFixes = ProgramProperties.get(MeganProperties.TAXON_MAPPING_CHANGES, mappingFixes);
+        final Collection<Pair<String, String>> mappingFixes = ProgramProperties.get(MeganProperties.TAXON_MAPPING_CHANGES, new LinkedList<Pair<String, String>>());
         for (Pair<String, String> pair : mappingFixes) {
             String taxonName = pair.getFirst();
             int taxId = Integer.parseInt(pair.getSecond());

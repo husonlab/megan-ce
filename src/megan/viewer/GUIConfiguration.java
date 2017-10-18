@@ -50,7 +50,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Preferences", "Show Notifications;|;@Accession Parsing;@Fix Taxon Mapping;@Taxon Disabling;|;Use Alternative Taxonomy...;Use Default NCBI Taxonomy;|;Set Search URL...;");
 
         menuConfig.defineMenu("Accession Parsing", "First Word Is Accession;Set Accession Tags;");
-        menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;");
+        menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;Disable Default;");
 
         menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;|;Invert;|;Select By Rank;|;Scroll To Selected;");
 

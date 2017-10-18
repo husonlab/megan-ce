@@ -113,14 +113,10 @@
                 <TableColumn fx:id="readNameCol" prefWidth="75.0" text="Read"/>
                 <TableColumn fx:id="readLengthCol" prefWidth="75.0" text="Length"/>
                 <TableColumn fx:id="assignmentCol" editable="false" prefWidth="150.0" text="Assignment"/>
-                <TableColumn fx:id="scoreCol" editable="false" prefWidth="75.0" sortType="DESCENDING"
-                             style="-fx-alignment: CENTER-RIGHT;" text="Score"/>
                 <TableColumn fx:id="coverageCol" editable="false" prefWidth="73.0" sortType="DESCENDING"
                              style="-fx-alignment: CENTER-RIGHT;" text="\%Cover"/>
                 <TableColumn fx:id="hitsCol" editable="false" prefWidth="77.0" sortType="DESCENDING"
-                             style="-fx-alignment: CENTER-RIGHT;" text="#Hits"/>
-                <TableColumn fx:id="maxScoreCol" editable="false" prefWidth="75.0" sortType="DESCENDING"
-                             style="-fx-alignment: CENTER-RIGHT;" text="Max Score"/>
+                             style="-fx-alignment: CENTER-RIGHT;" text="#Alignments"/>
                 <TableColumn fx:id="layoutCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0"
                              prefWidth="300.0" sortable="false" text="Layout"/>
             </columns>

@@ -22,25 +22,20 @@ import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.MainViewer;
-import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class EnableAllTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "enable taxa=all;";
+        return null;
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase(getSyntax());
-
-        TaxonomyData.getDisabledTaxa().clear();
-        ((MainViewer) getViewer()).setDoReInduce(true);
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute(getSyntax());
+        execute("enable taxa=all;");
     }
 
     public boolean isApplicable() {
@@ -52,7 +47,7 @@ public class EnableAllTaxaCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Enable all taxa";
+        return "Enable taxa";
     }
 
     public ImageIcon getIcon() {

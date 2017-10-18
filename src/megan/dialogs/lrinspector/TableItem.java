@@ -33,8 +33,6 @@ public class TableItem {
     private StringProperty className;
     private IntegerProperty hits;
     private IntegerProperty percentCoverage;
-    private IntegerProperty score;
-    private IntegerProperty maxBitScore;
     private ObjectProperty<ReadLayoutPane> pane;
 
     /**
@@ -43,13 +41,11 @@ public class TableItem {
      * @param readName
      * @param classId
      * @param className
-     * @param score
-     * @param maxScore
      * @param hits
      * @param percentCoverage
      * @param pane
      */
-    public TableItem(String readName, String readSequence, String className, int classId, float score, float maxScore, int hits, int percentCoverage, ReadLayoutPane pane) {
+    public TableItem(String readName, String readSequence, String className, int classId, int hits, int percentCoverage, ReadLayoutPane pane) {
         setReadName(readName);
         setReadSequence(readSequence);
         if (readSequence != null)
@@ -59,8 +55,6 @@ public class TableItem {
             className = "Unknown";
         setClassName(className);
         setHits(hits);
-        setScore(Math.round(score));
-        setMaxBitScore(Math.round(maxScore));
         setPane(pane);
         setPercentCoverage(percentCoverage);
     }
@@ -157,33 +151,6 @@ public class TableItem {
         return percentCoverage;
     }
 
-    public void setScore(Integer value) {
-        scoreProperty().set(value);
-    }
-
-    public Integer getScore() {
-        return scoreProperty().get();
-    }
-
-    public IntegerProperty scoreProperty() {
-        if (score == null) score = new SimpleIntegerProperty(this, "score");
-        return score;
-    }
-
-
-    public void setMaxBitScore(Integer value) {
-        maxBitScoreProperty().set(value);
-    }
-
-    public Integer getMaxBitScore() {
-        return maxBitScoreProperty().get();
-    }
-
-    public IntegerProperty maxBitScoreProperty() {
-        if (maxBitScore == null) maxBitScore = new SimpleIntegerProperty(this, "maxBitScore");
-        return maxBitScore;
-    }
-
     public ReadLayoutPane getPane() {
         return paneProperty().get();
     }
@@ -198,6 +165,6 @@ public class TableItem {
     }
 
     public String toString() {
-        return getReadName() + "\tlength=" + getReadLength() + "\tassignment=" + getClassName() + "\talignments=" + getHits() + "\tpercentCovered=" + getPercentCoverage() + "\ttotalScore=" + getScore() + "\tmaxScore=" + +getMaxBitScore();
+        return getReadName() + "\tlength=" + getReadLength() + "\tassignment=" + getClassName() + "\talignments=" + getHits() + "\tpercentCovered=" + getPercentCoverage();
     }
 }

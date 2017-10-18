@@ -43,16 +43,21 @@ public class EnableTaxaCommand extends CommandBase implements ICommand {
         final MainViewer viewer = (MainViewer) getViewer();
 
         if (name.equalsIgnoreCase("selected")) {
+            np.matchIgnoreCase(";");
             NodeSet selected = viewer.getSelectedNodes();
             for (Node v : selected) {
                 int taxId = (Integer) v.getInfo();
-                if (taxId > 0)
-                    TaxonomyData.getDisabledTaxa().remove(taxId);
+                if (taxId > 0) {
+                    TaxonomyData.getDisabledInternalTaxa().remove(taxId);
+                }
             }
-            np.matchIgnoreCase(";");
-        } else if (name.equalsIgnoreCase("all")) {
             TaxonomyData.getDisabledTaxa().clear();
+            TaxonomyData.setDisabledInternalTaxa(TaxonomyData.getDisabledInternalTaxa());
+        } else if (name.equalsIgnoreCase("all")) {
             np.matchIgnoreCase(";");
+            TaxonomyData.getDisabledTaxa().clear();
+            TaxonomyData.getDisabledInternalTaxa().clear();
+
         } else {
             while (!name.equals(";")) {
                 int taxonId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);

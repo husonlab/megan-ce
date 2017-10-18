@@ -161,9 +161,8 @@ public class TableItemTask extends Task<Integer> {
                             maxNormalizedBitScore.set(Math.max(maxNormalizedBitScore.get(), matchBlock.getBitScore() / (float) readBlock.getReadLength()));
                         }
                         final ReadLayoutPane pane = new ReadLayoutPane(cNames, readBlock.getReadLength(), intervalTree, maxReadLength, layoutWidth);
-                        final Utilities.Values values = Utilities.analyze(intervalTree);
-                        final int percentCover = Math.min(100, (int) Math.round((100.0 * values.coverage) / readBlock.getReadLength()));
-                        final TableItem tableItem = new TableItem(readName, readBlock.getReadSequence(), className, classId, values.disjointScore, values.maxScore, values.hits, percentCover, pane);
+                        final int percentCover = Math.min(100, (int) Math.round((100.0 * intervalTree.getCovered()) / readBlock.getReadLength()));
+                        final TableItem tableItem = new TableItem(readName, readBlock.getReadSequence(), className, classId, readBlock.getNumberOfAvailableMatchBlocks(), percentCover, pane);
 
                         tableItem.getPane().getMatchSelection().getSelectedItems().addListener(createChangeListener(tableItem, pane.previousSelectionTimeProperty()));
 
@@ -184,7 +183,6 @@ public class TableItemTask extends Task<Integer> {
         flushBuffer(buffer);
         return count;
     }
-
 
     /**
      * flush the TableItem buffer by adding all the buffered TableItems to the table

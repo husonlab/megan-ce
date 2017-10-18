@@ -95,16 +95,10 @@ public class LRInspectorController {
     private TableColumn<TableItem, String> assignmentCol;
 
     @FXML
-    private TableColumn<TableItem, Float> scoreCol;
-
-    @FXML
     private TableColumn<TableItem, Float> coverageCol;
 
     @FXML
     private TableColumn<TableItem, Integer> hitsCol;
-
-    @FXML
-    private TableColumn<TableItem, Float> maxScoreCol;
 
     @FXML
     private TableColumn<TableItem, Node> layoutCol;
@@ -211,10 +205,6 @@ public class LRInspectorController {
         coverageCol.setSortType(TableColumn.SortType.DESCENDING);
         hitsCol.setCellValueFactory(new PropertyValueFactory<TableItem, Integer>("hits"));
         hitsCol.setSortType(TableColumn.SortType.DESCENDING);
-        scoreCol.setCellValueFactory(new PropertyValueFactory<TableItem, Float>("score"));
-        scoreCol.setSortType(TableColumn.SortType.DESCENDING);
-        maxScoreCol.setCellValueFactory(new PropertyValueFactory<TableItem, Float>("maxBitScore"));
-        maxScoreCol.setSortType(TableColumn.SortType.DESCENDING);
         layoutCol.setCellValueFactory(new PropertyValueFactory<TableItem, Node>("pane"));
 
         // setup buttons that control column visibility

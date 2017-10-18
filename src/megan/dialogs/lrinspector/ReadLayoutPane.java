@@ -519,14 +519,16 @@ public class ReadLayoutPane extends Pane {
                     final int classId = matchBlock.getId(keyClassification);
                     if (classId > 0) {
                         hasClass = true;
-                        final int colorClassId = classification.getFullTree().getChildAbove(keyClassId, classId);
-                        if (colorClassId > 0) {
-                            final String className = classification.getName2IdMap().get(colorClassId);
-                            if (className != null) {
-                                final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(className), 0.5);
-                                geneArrow.setFill(color);
-                                colored = true;
-                                break;
+                        if (!classification.getIdMapper().getDisabledIds().contains(classId)) {
+                            final int colorClassId = classification.getFullTree().getChildAbove(keyClassId, classId);
+                            if (colorClassId > 0) {
+                                final String className = classification.getName2IdMap().get(colorClassId);
+                                if (className != null) {
+                                    final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(className), 0.5);
+                                    geneArrow.setFill(color);
+                                    colored = true;
+                                    break;
+                                }
                             }
                         }
                     }

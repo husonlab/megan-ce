@@ -53,8 +53,10 @@ public class Classification {
         fullTree = new ClassificationFullTree(cName, name2IdMap);
         fullTree.setRoot(fullTree.newNode(-1));
         this.idMapper = new IdMapper(cName, fullTree, name2IdMap);
-        if (cName.equals(Taxonomy))
+        if (cName.equals(Taxonomy)) {
             TaxonomyData.setTaxonomyClassification(this);
+        }
+
     }
 
     /**

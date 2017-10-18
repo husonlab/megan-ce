@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -22,48 +22,32 @@ import jloda.gui.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.MainViewer;
-import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.Set;
 
-public class ListDisabledCommand extends CommandBase implements ICommand {
+public class DisableDefaultTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "list taxa=disabled;";
+        return null;
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase(getSyntax());
-
-        final Set<Integer> disabledTopLevelTaxa = TaxonomyData.getDisabledInternalTaxa();
-
-        if (disabledTopLevelTaxa != null) {
-            System.out.println(String.format("Total disabled taxa:%,12d", TaxonomyData.getDisabledTaxa().size()));
-            System.out.println(String.format("Disabled top-level taxa:%,8d", TaxonomyData.getDisabledInternalTaxa().size()));
-
-            for (Integer taxId : disabledTopLevelTaxa) {
-                String taxName = TaxonomyData.getName2IdMap().get(taxId);
-                System.out.println("[" + taxId + "] " + taxName);
-            }
-        }
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("show window=message;");
-        execute(getSyntax());
+        execute("disable taxa=default;");
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof MainViewer;
+        return getViewer() instanceof MainViewer && !getDoc().getMeganFile().isReadOnly();
     }
 
     public String getName() {
-        return "List Disabled...";
+        return "Disable Default";
     }
 
     public String getDescription() {
-        return "List all disabled taxa";
+        return "Reset disabling to default value, ignoring a lot of unclassified taxa";
     }
 
     public ImageIcon getIcon() {
@@ -74,5 +58,4 @@ public class ListDisabledCommand extends CommandBase implements ICommand {
         return true;
     }
 }
-
 

@@ -20,14 +20,12 @@ package megan.viewer;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.util.ProgramProperties;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
-import megan.main.MeganProperties;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -48,7 +46,7 @@ public class TaxonomyData {
      * explicitly load the taxonomy classification
      */
     public static void load() {
-        taxonomyClassification = ClassificationManager.get(Classification.Taxonomy, true);
+        setTaxonomyClassification(ClassificationManager.get(Classification.Taxonomy, true));
     }
 
     /**
@@ -103,10 +101,9 @@ public class TaxonomyData {
      * @return all disabled taxa
      */
     public static Set<Integer> getDisabledTaxa() {
-        if (taxonomyClassification != null && taxonomyClassification.getIdMapper() != null)
-            return taxonomyClassification.getIdMapper().getDisabledIds();
-        else
-            return new HashSet<>();
+        if (taxonomyClassification == null)
+            load();
+        return taxonomyClassification.getIdMapper().getDisabledIds();
     }
 
     public static int getTaxonomicRank(Integer id) {
@@ -274,7 +271,7 @@ public class TaxonomyData {
      * @param internal
      */
     public static void setDisabledInternalTaxa(Set<Integer> internal) {
-        final Node root = getTree().getRoot();
+        final Node root = taxonomyClassification.getFullTree().getRoot();
         if (root != null)
             setDisabledInternalTaxaRec(root, internal, internal.contains((int) root.getInfo()));
     }
@@ -291,10 +288,12 @@ public class TaxonomyData {
 
         if (!disable && internalDisabledIds.contains(id))
             disable = true;
+
         if (disable)
             taxonomyClassification.getIdMapper().getDisabledIds().add(id);
         else
             taxonomyClassification.getIdMapper().getDisabledIds().remove(id);
+
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             setDisabledInternalTaxaRec(e.getTarget(), internalDisabledIds, disable);
         }
@@ -335,12 +334,7 @@ public class TaxonomyData {
      * ensures that the disabled taxa have been initialized
      */
     public static void ensureDisabledTaxaInitialized() {
-        if (getDisabledTaxa().size() == 0) {
-            for (int i : ProgramProperties.get(MeganProperties.DISABLED_TAXA, new int[0])) {
-                getDisabledTaxa().add(i);
-            }
-            if (getDisabledTaxa().size() > 0)
-                TaxonomyData.setDisabledInternalTaxa(getDisabledTaxa());
-        }
+        if (getDisabledTaxa().size() == 0 && getDisabledInternalTaxa().size() > 0)
+            TaxonomyData.setDisabledInternalTaxa(getDisabledInternalTaxa());
     }
 }

@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class DisableTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "disable taxa={selected|<name,...>};";
+        return "disable taxa={default|selected|<name,...>};";
 
     }
 
@@ -44,32 +44,37 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("disable taxa=");
 
         final MainViewer viewer = (MainViewer) getViewer();
-        TaxonomyData.ensureDisabledTaxaInitialized();
-
         final Set<Integer> disabledInternalIds = TaxonomyData.getDisabledInternalTaxa();
 
         String name = np.getWordRespectCase();
-        if (name.equalsIgnoreCase("selected")) {
+
+        if (name.equalsIgnoreCase("default")) {
+            TaxonomyData.getDisabledTaxa().clear();
+            for (int t : MeganProperties.DISABLED_TAXA_DEFAULT) {
+                disabledInternalIds.add(t);
+            }
+            np.matchIgnoreCase(";");
+        } else if (name.equalsIgnoreCase("selected")) {
             NodeSet selected = viewer.getSelectedNodes();
             for (Node v : selected) {
                 int taxId = (Integer) v.getInfo();
                 if (taxId > 0)
                     disabledInternalIds.add(taxId);
             }
+            np.matchIgnoreCase(";");
         } else {
-            while (true) {
-                int taxId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
-                if (taxId > 0)
-                    disabledInternalIds.add(taxId);
+            while (!name.equals(";")) {
+                int taxonId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
+                if (taxonId > 0)
+                    disabledInternalIds.add(taxonId);
                 if (np.peekMatchIgnoreCase(",")) {
                     np.matchIgnoreCase(",");
-                    name = np.getWordRespectCase();
-                } else
-                    break;
+                }
+                name = np.getWordRespectCase();
             }
         }
-        np.matchIgnoreCase(";");
 
+        TaxonomyData.getDisabledTaxa().clear();
         TaxonomyData.setDisabledInternalTaxa(disabledInternalIds);
 
         ProgramProperties.put(MeganProperties.DISABLED_TAXA, Basic.toString(TaxonomyData.getDisabledInternalTaxa(), " "));

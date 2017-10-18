@@ -131,7 +131,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
 
         setTitle();
 
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         if (ProgramProperties.getProgramIcon() != null)
             setIconImage(ProgramProperties.getProgramIcon().getImage());
 
@@ -156,6 +156,15 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         commandManager.updateEnableState();
 
         getFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    destroyView();
+                } catch (CanceledException e1) {
+                    Basic.caught(e1);
+                }
+            }
+
             public void windowActivated(WindowEvent event) {
                 MainViewer.setLastActiveFrame(frame);
                 commandManager.updateEnableState(PasteCommand.ALT_NAME);
@@ -163,6 +172,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                 if (inputDialog != null) {
                     inputDialog.setViewer(dir, LRInspectorViewer.this);
                 }
+
             }
         });
 

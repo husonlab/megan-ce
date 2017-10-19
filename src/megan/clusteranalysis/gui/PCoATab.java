@@ -96,6 +96,9 @@ public class PCoATab extends JPanel implements ITab {
     private Pair<String, double[]>[] triplot;
     private final NodeArray<Point3D> node2point3D; // for external use
 
+    private Color axesColor = ProgramProperties.get("PCoAAxesColor", Colors.parseColor("lightgray"));
+    private Color biPlotColor = ProgramProperties.get("PCoABiPlotColor", Colors.parseColor("darkseagreen"));
+    private Color triPlotColor = ProgramProperties.get("PCoATriPlotColor", Colors.parseColor("sandybrown"));
 
     // 3D figure:
     private final Matrix3D transformation3D;
@@ -808,7 +811,6 @@ public class PCoATab extends JPanel implements ITab {
 
         // compute biplot arrows:
         final int top = Math.min(numberOfBiplotVectorsToShow, getPCoA().getLoadingVectorsBiPlot().size());
-        final Color color = Colors.parseColor(ProgramProperties.get("BiPlotColorName", "darkseagreen"));
 
         if (top > 0) {
             final Node zero = graph.newNode();
@@ -854,13 +856,13 @@ public class PCoATab extends JPanel implements ITab {
                 node2vector.set(v, new Vector3D(x, y, z));
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
-                nv.setLabelColor(color);
+                nv.setLabelColor(getBiPlotColor());
                 nv.setNodeShape(NodeShape.None);
                 final Edge e = graph.newEdge(zero, v);
                 biplotEdges.add(e);
                 final EdgeView ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
-                ev.setColor(color);
+                ev.setColor(getBiPlotColor());
                 graph.setInfo(e, EdgeView.DIRECTED);
             }
         }
@@ -880,8 +882,6 @@ public class PCoATab extends JPanel implements ITab {
 
         // compute triplot arrows:
         final int top = Math.min(numberOfTriplotVectorsToShow, getPCoA().getLoadingVectorsTriPlot().size());
-        final Color color = Colors.parseColor(ProgramProperties.get("TriPlotColorName", "sandybrown"));
-
 
         if (top > 0) {
             final Node zero = graph.newNode();
@@ -929,14 +929,14 @@ public class PCoATab extends JPanel implements ITab {
                 triplot[i].setSecond(new double[]{x, y, z});
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
-                nv.setLabelColor(color);
+                nv.setLabelColor(getTriPlotColor());
                 nv.setNodeShape(NodeShape.None);
 
                 final Edge e = graph.newEdge(zero, v);
                 triplotEdges.add(e);
                 final EdgeView ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
-                ev.setColor(color);
+                ev.setColor(getTriPlotColor());
                 graph.setInfo(e, EdgeView.DIRECTED);
             }
         }
@@ -1123,7 +1123,7 @@ public class PCoATab extends JPanel implements ITab {
                         final Vector3D centerVector = new Vector3D(0, 0, 0);
                         centerVector.transform(transformation3D);
 
-                        gc.setColor(Color.LIGHT_GRAY);
+                        gc.setColor(getAxesColor());
                         final Point center = graphView.trans.w2d(centerVector.get(0), centerVector.get(1));
                         final int axisLength = 50;
 
@@ -1337,4 +1337,27 @@ public class PCoATab extends JPanel implements ITab {
         }
     }
 
+    public Color getAxesColor() {
+        return axesColor;
+    }
+
+    public void setAxesColor(Color axesColor) {
+        this.axesColor = axesColor;
+    }
+
+    public Color getBiPlotColor() {
+        return biPlotColor;
+    }
+
+    public void setBiPlotColor(Color biPlotColor) {
+        this.biPlotColor = biPlotColor;
+    }
+
+    public Color getTriPlotColor() {
+        return triPlotColor;
+    }
+
+    public void setTriPlotColor(Color triPlotColor) {
+        this.triPlotColor = triPlotColor;
+    }
 }

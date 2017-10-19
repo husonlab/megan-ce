@@ -53,8 +53,11 @@ public class WindowUtilities {
      * @param frame
      */
     public static void toFront(final JFrame frame) {
+        // if (SwingUtilities.isEventDispatchThread())
+        //    System.err.println("HellO!");
+
         if (frame != null) {
-            Runnable runnable = new Runnable() {
+            final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     frame.setVisible(true);

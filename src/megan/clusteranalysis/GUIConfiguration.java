@@ -43,9 +43,11 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
 
-        menuConfig.defineMenu("Edit", "Copy;Copy Image;Copy Legend;Paste;|;Format...;Set Node Shape...;Set Color...;|;Group Nodes;Ungroup All;|;Find...;Find Again;|;Colors...;");
+        menuConfig.defineMenu("Edit", "Copy;Copy Image;Copy Legend;Paste;|;Format...;Set Node Shape...;Set Color...;|;@Axes Colors;|;Group Nodes;Ungroup All;|;Find...;Find Again;|;Colors...;");
 
         menuConfig.defineMenu("Node Shape", "Circle;Square;Triangle;Diamond;");
+        menuConfig.defineMenu("Axes Colors", "Set Axes Color...;Set BiPlot Color...;Set TriPlot Color...;");
+
 
         menuConfig.defineMenu("Select", "Select All;Select None;Invert Selection;|;From Previous Window;");
         menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Zoom to Fit;|;Flip Horizontally;Flip Vertically;@Rotate;|;" +

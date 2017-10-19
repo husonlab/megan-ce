@@ -19,6 +19,7 @@
 package megan.classification.data;
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import megan.data.IName2IdMap;
 
@@ -38,6 +39,8 @@ public class Name2IdMap implements IName2IdMap {
     private final Map<Integer, String> id2toolTip;
     private final Map<Integer, Integer> id2rank;
 
+    private final boolean allowUnderscoresInLookups;
+
     /**
      * constructor
      */
@@ -53,6 +56,8 @@ public class Name2IdMap implements IName2IdMap {
         id2name = new HashMap<>(approximateSize, 0.99f);
         id2toolTip = new HashMap<>(approximateSize, 0.99f);
         id2rank = new HashMap<>(approximateSize, 0.99f);
+
+        allowUnderscoresInLookups = ProgramProperties.get("allow-underscores-in-lookup", true);
     }
 
     /**
@@ -74,8 +79,12 @@ public class Name2IdMap implements IName2IdMap {
         Integer result = name2id.get(name);
         if (result != null)
             return result;
-        else
-            return 0;
+        else if (allowUnderscoresInLookups) {
+            result = name2id.get(name.replaceAll("_", " "));
+            if (result != null)
+                return result;
+        }
+        return 0;
     }
 
     /**

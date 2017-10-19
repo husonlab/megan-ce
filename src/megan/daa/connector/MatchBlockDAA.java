@@ -128,7 +128,8 @@ public class MatchBlockDAA implements IMatchBlock {
      * @return
      */
     public float getBitScore() {
-        return daaParser.getHeader().computeAlignmentBitScore(matchRecord.getScore());
+        return Math.round(daaParser.getHeader().computeAlignmentBitScore(matchRecord.getScore()));
+        // we round because otherwise there is a small difference between RMA and DAA files
     }
 
     public void setBitScore(float bitScore) {

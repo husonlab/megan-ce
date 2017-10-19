@@ -35,7 +35,7 @@ public class DisableDefaultTaxaCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute("disable taxa=default;");
+        execute("show window=message;disable taxa=default;list taxa=disabled;");
     }
 
     public boolean isApplicable() {

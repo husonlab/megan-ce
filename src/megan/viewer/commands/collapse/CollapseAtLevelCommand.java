@@ -19,12 +19,14 @@
 package megan.viewer.commands.collapse;
 
 import jloda.gui.commands.ICommand;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
+import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -42,8 +44,20 @@ public class CollapseAtLevelCommand extends CommandBase implements ICommand {
 
         final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
 
-        final Set<Integer> ids = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getAllAtLevel(level);
-        classificationViewer.setCollapsedIds(ids);
+        final Set<Integer> ids2collapse = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getAllAtLevel(level);
+        switch (ProgramProperties.get("KeepOthersCollapsed", " none")) {
+            case "prokaryotes":
+                ids2collapse.addAll(TaxonomyData.getNonProkaryotesToCollapse());
+                break;
+            case "eukaryotes":
+                ids2collapse.addAll(TaxonomyData.getNonEukaryotesToCollapse());
+                break;
+            case "viruses":
+                ids2collapse.addAll(TaxonomyData.getNonVirusesToCollapse());
+                break;
+        }
+        classificationViewer.setCollapsedIds(ids2collapse);
+
         getDoc().setDirty(true);
         classificationViewer.updateTree();
     }

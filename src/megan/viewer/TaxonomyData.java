@@ -27,10 +27,7 @@ import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * maintains static access to the taxonomy
@@ -336,5 +333,44 @@ public class TaxonomyData {
     public static void ensureDisabledTaxaInitialized() {
         if (getDisabledTaxa().size() == 0 && getDisabledInternalTaxa().size() > 0)
             TaxonomyData.setDisabledInternalTaxa(getDisabledInternalTaxa());
+    }
+
+    public static Collection<Integer> getNonProkaryotesToCollapse() {
+        final Node root = taxonomyClassification.getFullTree().getRoot();
+        final ArrayList<Integer> ids2collapse = new ArrayList<>();
+        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
+            Node w = e.getTarget();
+            Integer id = (Integer) w.getInfo();
+            if (id != 131567)// cellular organisms
+                ids2collapse.add(id);
+        }
+        ids2collapse.add(2759); // eukaryotes
+        return ids2collapse;
+    }
+
+    public static Collection<Integer> getNonEukaryotesToCollapse() {
+        final Node root = taxonomyClassification.getFullTree().getRoot();
+        final ArrayList<Integer> ids2collapse = new ArrayList<>();
+        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
+            Node w = e.getTarget();
+            Integer id = (Integer) w.getInfo();
+            if (id != 131567)// cellular organisms
+                ids2collapse.add(id);
+        }
+        ids2collapse.add(2); // bacteria
+        ids2collapse.add(2157); // archaea
+        return ids2collapse;
+    }
+
+    public static Collection<Integer> getNonVirusesToCollapse() {
+        final Node root = taxonomyClassification.getFullTree().getRoot();
+        final ArrayList<Integer> ids2collapse = new ArrayList<>();
+        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
+            Node w = e.getTarget();
+            Integer id = (Integer) w.getInfo();
+            if (id != 10239 && id != 12884)// virsuses  or viroids
+                ids2collapse.add(id);
+        }
+        return ids2collapse;
     }
 }

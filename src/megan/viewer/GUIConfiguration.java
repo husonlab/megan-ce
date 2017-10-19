@@ -64,7 +64,7 @@ public class GUIConfiguration {
                 "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;Open NCBI Web Page...;Inspect...;Inspect Long Reads...;");
 
         menuConfig.defineMenu("Tree", "Collapse;Collapse To Top;Collapse All Others;Collapse at Level...;Rank...;|;" +
-                "Uncollapse;Uncollapse Subtree;Uncollapse All;|;Show Names;Show IDs;Show Number of Assigned;" +
+                "Uncollapse;Uncollapse Subtree;Uncollapse All;|;Keep Non-Prokaryotes Collapsed;Keep Non-Eukaryotes Collapsed;Keep Non-Viruses Collapsed;|;Show Names;Show IDs;Show Number of Assigned;" +
                 "Show Number of Summarized;|;Node Labels On;Node Labels Off;|;Show Intermediate Labels;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;Show Info...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +

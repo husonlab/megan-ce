@@ -61,7 +61,6 @@ public class MatchSignaturesExporter {
 
 
         final Map<String, Integer> read2rank = new HashMap<>();
-
         final Set<Integer> allTaxa = new TreeSet<>();
 
         final List<Pair<String, Set<Integer>>> readsAndTaxa = new LinkedList<>();
@@ -72,7 +71,7 @@ public class MatchSignaturesExporter {
             String readName = readBlock.getReadName();
             read2rank.put(readName, readRank);
 
-            HashSet<Integer> taxa = new HashSet<>();
+            final HashSet<Integer> taxa = new HashSet<>();
             readsAndTaxa.add(new Pair<String, Set<Integer>>(readName, taxa));
 
             double useMinScore = -1;

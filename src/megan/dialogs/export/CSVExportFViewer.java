@@ -81,7 +81,7 @@ public class CSVExportFViewer {
                 progressListener.setProgress(0);
                 Set<Integer> seen = new HashSet<>();
                 for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
-                    Integer id = (Integer) v.getInfo();
+                    final Integer id = (Integer) v.getInfo();
                     if (id != null && !seen.contains(id)) {
                         seen.add(id);
                         final NodeData data = cViewer.getNodeData(v);
@@ -339,7 +339,7 @@ public class CSVExportFViewer {
 
                 if (classificationBlock != null) {
                     for (int classId : ids) {
-                        final Set<String> seen = new HashSet<>();
+                        final Set<Long> seen = new HashSet<>();
                         final Set<Integer> allBelow;
                         Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
@@ -353,10 +353,12 @@ public class CSVExportFViewer {
                             if (classificationBlock.getSum(id) > 0) {
                                 try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, false)) {
                                     while (it.hasNext()) {
-                                        String readId = it.next().getReadName();
-                                        if (!seen.contains(readId)) {
-                                            seen.add(readId);
-                                            w.write(readId + separator + " " + getLabelTarget(classification, format, v) + "\n");
+                                        final IReadBlock readBlock = it.next();
+                                        final long uid = readBlock.getUId();
+                                        if (!seen.contains(uid)) {
+                                            if (uid != 0)
+                                                seen.add(uid);
+                                            w.write(readBlock.getReadName() + separator + " " + getLabelTarget(classification, format, v) + "\n");
                                             totalLines++;
                                         }
                                     }

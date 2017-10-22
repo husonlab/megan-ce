@@ -63,7 +63,7 @@ public class CSVExportHeaders {
 
                 for (int taxonId : taxonIds) {
                     Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
+                    final Node v = viewer.getTaxId2Node(taxonId);
                     if (v.getOutDegree() == 0)
                         allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                     else {
@@ -77,7 +77,7 @@ public class CSVExportHeaders {
                                     IReadBlock readBlock = it.next();
                                     w.write(readBlock.getReadName() + separator);
                                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                                        IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                                        final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                         if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                                                 (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())
                                                 && matchBlock.getText() != null) {

@@ -88,7 +88,7 @@ public class TableItemTask extends Task<Integer> {
      */
     @Override
     protected Integer call() throws Exception {
-        final Set<String> seen = new HashSet<>();
+        final Set<Long> seen = new HashSet<>();
 
         final ArrayList<TableItem> buffer = new ArrayList<>(100);
 
@@ -143,8 +143,10 @@ public class TableItemTask extends Task<Integer> {
                         readBlock.setReadLength(readLength);
                     }
 
-                    if (!seen.contains(readName)) {
-                        seen.add(readName);
+                    final long uid = readBlock.getUId();
+                    if (!seen.contains(uid)) {
+                        if (uid != 0)
+                            seen.add(uid);
 
                         maxReadLength.set(Math.max(maxReadLength.get(), readBlock.getReadLength()));
 

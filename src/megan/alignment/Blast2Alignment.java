@@ -102,7 +102,7 @@ public class Blast2Alignment {
         if (!doc.getMeganFile().hasDataConnector())
             throw new IOException("Alignment requires archive");
 
-        final Map<String, Set<String>> reference2seen = new HashMap<>(100000);
+        final Map<String, Set<Long>> reference2seen = new HashMap<>(100000);
         int count = 0;
         boolean seenActiveMatch = false;
         try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(classificationName, classIds, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
@@ -160,14 +160,16 @@ public class Blast2Alignment {
                                 } else
                                     blastFormatUnknown = false;
                             }
-                            Set<String> seen = reference2seen.get(key);
+                            Set<Long> seen = reference2seen.get(key);
                             if (seen == null) {
                                 seen = new HashSet<>(10000);
                                 reference2seen.put(key, seen);
                             }
-                            if (!seen.contains(readName)) // this ensures that any given reference only contains one copy of a read
+                            final long uid = readBlock.getUId();
+                            if (!seen.contains(uid)) // this ensures that any given reference only contains one copy of a read
                             {
-                                seen.add(readName);
+                                if (uid != 0)
+                                    seen.add(uid);
                                 if (!matchesSeenForGivenRead.contains(key)) {
                                     matchesSeenForGivenRead.add(key);
 

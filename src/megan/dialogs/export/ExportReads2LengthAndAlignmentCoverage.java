@@ -64,7 +64,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
 
                 if (classificationBlock != null) {
                     for (int classId : ids) {
-                        final Set<String> seen = new HashSet<>();
+                        final Set<Long> seen = new HashSet<>();
                         final Set<Integer> allBelow;
                         Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
@@ -79,8 +79,10 @@ public class ExportReads2LengthAndAlignmentCoverage {
                                 try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, true)) {
                                     while (it.hasNext()) {
                                         final IReadBlock readBlock = it.next();
-                                        if (!seen.contains(readBlock.getReadName())) {
-                                            seen.add(readBlock.getReadName());
+                                        final long uid = readBlock.getUId();
+                                        if (!seen.contains(uid)) {
+                                            if (uid != 0)
+                                                seen.add(uid);
                                             w.write(createReportLine(readBlock));
                                             totalLines++;
                                         }

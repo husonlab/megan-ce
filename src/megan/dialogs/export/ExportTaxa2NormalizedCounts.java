@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,10 +73,8 @@ public class ExportTaxa2NormalizedCounts {
             progressListener.setProgress(0);
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-
-                Set<String> references = new HashSet<>();
-
-                java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final Set<String> references = new HashSet<>();
+                final Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 for (int taxonId : taxonIds) {
                     int countMatchedReads = 0;
@@ -87,32 +86,31 @@ public class ExportTaxa2NormalizedCounts {
                         allBelow = new HashSet<>();
                         allBelow.add(taxonId);
                     }
-                    IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(ClassificationType.Taxonomy.toString(), allBelow, doc.getMinScore(), doc.getMaxExpected(), false, true);
-                    while (it.hasNext()) {
-                        final IReadBlock readBlock = it.next();
+                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(ClassificationType.Taxonomy.toString(), allBelow, doc.getMinScore(), doc.getMaxExpected(), false, true)) {
+                        while (it.hasNext()) {
+                            final IReadBlock readBlock = it.next();
+                            final BitSet activeMatchesForTaxa = new BitSet();
 
-                        final BitSet activeMatchesForTaxa = new BitSet();
+                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
-                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-
-                        for (int i = activeMatchesForTaxa.nextSetBit(0); i >= 0; i = activeMatchesForTaxa.nextSetBit(i + 1)) {
-                            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                            String header = matchBlock.getText();
-                            if (header != null) {
-                                int pos = matchBlock.getText().indexOf("\n");
-                                if (pos > 0)
-                                    header = header.substring(0, pos);
+                            for (int i = activeMatchesForTaxa.nextSetBit(0); i >= 0; i = activeMatchesForTaxa.nextSetBit(i + 1)) {
+                                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                                String header = matchBlock.getText();
+                                if (header != null) {
+                                    int pos = matchBlock.getText().indexOf("\n");
+                                    if (pos > 0)
+                                        header = header.substring(0, pos);
+                                }
+                                if (header == null)
+                                    header = matchBlock.getRefSeqId();
+                                if (header != null) {
+                                    references.add(header);
+                                    countMatchedReads++;
+                                }
+                                progressListener.checkForCancel();
                             }
-                            if (header == null)
-                                header = matchBlock.getRefSeqId();
-                            if (header != null) {
-                                references.add(header);
-                                countMatchedReads++;
-                            }
-                            progressListener.checkForCancel();
                         }
                     }
-                    it.close();
                     progressListener.incrementProgress();
                     float normalizedCount = (references.size() > 0 ? (float) countMatchedReads / (float) references.size() : 0f);
                     w.write(String.format("%s%c%d/%d%c%g\n", CSVExportTaxonomy.getTaxonLabelSource(format, taxonId), separator, countMatchedReads, references.size(), separator, normalizedCount));

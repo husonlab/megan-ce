@@ -36,6 +36,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * export selected reads and their annotations in GFF format
@@ -60,13 +62,15 @@ public class ExportAlignedReads2GFF3Format {
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             w.write(getHeader());
-            IConnector connector = cViewer.getDocument().getConnector();
+            final IConnector connector = cViewer.getDocument().getConnector();
             java.util.Collection<Integer> ids = cViewer.getSelectedIds();
             progressListener.setSubtask("Reads to GFF");
             progressListener.setMaximum(ids.size());
             progressListener.setProgress(0);
 
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
+
+            final Set<Long> seen = new HashSet<>();
 
             if (classificationBlock != null) {
                 for (int classId : ids) {
@@ -75,11 +79,16 @@ public class ExportAlignedReads2GFF3Format {
                         try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), classId, 0, 10000, true, true)) {
                             while (it.hasNext()) {
                                 final IReadBlock readBlock = it.next();
-                                final String string = createGFFLines(blastMode, readBlock, cNames, classificationToReport, taxonId, excludeIncompatible, excludeDominated);
-                                w.write(string);
-                                countAlignments += Basic.countOccurrences(string, '\n');
-                                if (string.length() > 0)
-                                    countReads++;
+                                final long uid = readBlock.getUId();
+                                if (!seen.contains(uid)) {
+                                    if (uid != 0)
+                                        seen.add(uid);
+                                    final String string = createGFFLines(blastMode, readBlock, cNames, classificationToReport, taxonId, excludeIncompatible, excludeDominated);
+                                    w.write(string);
+                                    countAlignments += Basic.countOccurrences(string, '\n');
+                                    if (string.length() > 0)
+                                        countReads++;
+                                }
                             }
                         }
                     }
@@ -256,8 +265,7 @@ public class ExportAlignedReads2GFF3Format {
 
                 for (int i = 0; i < cNames.length; i++) {
                     final String cName = cNames[i];
-
-                    String shortName = getShortName(cName);
+                    final String shortName = getShortName(cName);
 
                     int id = matchBlock.getId(cName);
                     if (id > 0 && classifications[i] != null) {

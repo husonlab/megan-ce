@@ -69,7 +69,6 @@ public class CSVExportReads2WeightedTaxonPaths {
                         IReadBlock readBlock = it.next();
 
                         final BitSet activeMatchesForTaxa = new BitSet();
-
                         boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
 
                         final List<Pair<Integer, Float>> path;

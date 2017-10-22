@@ -180,7 +180,7 @@ public class CSVExportTaxonomy {
             final boolean wantMatches = (format.endsWith("PathPercent"));
 
             for (int taxonId : taxonIds) {
-                Set<String> seen = new HashSet<>();
+                Set<Long> seen = new HashSet<>();
                 Set<Integer> allBelow;
                 Node v = viewer.getTaxId2Node(taxonId);
                 if (v.getOutDegree() == 0)
@@ -194,10 +194,11 @@ public class CSVExportTaxonomy {
                         try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, wantMatches)) {
                             while (it.hasNext()) {
                                 final IReadBlock readBlock = it.next();
-                                final String readId = readBlock.getReadName();
-                                if (!seen.contains(readId)) {
-                                    seen.add(readId);
-                                    w.write(readId + separator + getTaxonLabelTarget(dir, format, taxonId, readBlock) + "\n");
+                                final long uid = readBlock.getUId();
+                                if (!seen.contains(uid)) {
+                                    if (uid != 0)
+                                        seen.add(uid);
+                                    w.write(readBlock.getReadName() + separator + getTaxonLabelTarget(dir, format, taxonId, readBlock) + "\n");
                                     totalLines++;
                                 }
                             }
@@ -238,7 +239,7 @@ public class CSVExportTaxonomy {
                 progressListener.setProgress(0);
 
                 for (int taxonId : taxonIds) {
-                    Set<String> seen = new HashSet<>();
+                    Set<Long> seen = new HashSet<>();
                     Set<Integer> allBelow;
                     Node v = viewer.getTaxId2Node(taxonId);
                     if (v.getOutDegree() == 0)
@@ -251,11 +252,12 @@ public class CSVExportTaxonomy {
                         if (classificationBlock.getSum(id) > 0) {
                             try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), id, 0, 10000, true, true)) {
                                 while (it.hasNext()) {
-                                    IReadBlock readBlock = it.next();
-                                    String readId = readBlock.getReadName();
-                                    if (!seen.contains(readId)) {
-                                        seen.add(readId);
-                                        writeMatches(separator, readId, readBlock, w);
+                                    final IReadBlock readBlock = it.next();
+                                    final long uid = readBlock.getUId();
+                                    if (!seen.contains(uid)) {
+                                        if (uid != 0)
+                                            seen.add(uid);
+                                        writeMatches(separator, readBlock.getReadName(), readBlock, w);
                                         totalLines++;
                                     }
                                 }
@@ -272,9 +274,8 @@ public class CSVExportTaxonomy {
 
                 try (IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
                     while (it.hasNext()) {
-                        IReadBlock readBlock = it.next();
-                        String readId = readBlock.getReadName();
-                        writeMatches(separator, readId, readBlock, w);
+                        final IReadBlock readBlock = it.next();
+                        writeMatches(separator, readBlock.getReadName(), readBlock, w);
                         totalLines++;
                         progressListener.incrementProgress();
                     }

@@ -46,8 +46,7 @@ public class ExportTree {
      * @throws IOException
      */
     public static int apply(ViewerBase viewer, Writer writer, boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
-        PhyloTree tree = viewer.getTree();
-
+        final PhyloTree tree = viewer.getTree();
         Node root = tree.getRoot();
 
         if (root == null)
@@ -77,7 +76,7 @@ public class ExportTree {
             }
         }
 
-        int countNodes = writeAsTreeRec(viewer, toUse, root, writer, showInternalLabels, showUnassignedLabels, simplify, 0);
+        final int countNodes = writeAsTreeRec(viewer, toUse, root, writer, showInternalLabels, showUnassignedLabels, simplify, 0);
         writer.write(";\n");
         return countNodes;
     }

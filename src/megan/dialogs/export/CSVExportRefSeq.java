@@ -64,8 +64,8 @@ public class CSVExportRefSeq {
                 progressListener.setProgress(0);
 
                 for (int taxonId : taxonIds) {
-                    Set<Integer> allBelow;
-                    Node v = viewer.getTaxId2Node(taxonId);
+                    final Node v = viewer.getTaxId2Node(taxonId);
+                    final Set<Integer> allBelow;
                     if (v.getOutDegree() == 0)
                         allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                     else {
@@ -76,10 +76,10 @@ public class CSVExportRefSeq {
                         if (classificationBlock.getSum(id) > 0) {
                             try (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), id, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                                 while (it.hasNext()) {
-                                    IReadBlock readBlock = it.next();
+                                    final IReadBlock readBlock = it.next();
                                     w.write(readBlock.getReadName() + separator);
                                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                                        IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                                        final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                         if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                                                 (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                                             iterator.restart(matchBlock.getTextFirstWord());

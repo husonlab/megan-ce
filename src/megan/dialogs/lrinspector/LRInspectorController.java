@@ -474,7 +474,7 @@ public class LRInspectorController {
                 javafx.application.Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        item.getPane().colorByClassification(colorManager, selectedCNames, viewer.getClassificationName(), viewer.getClassId());
+                        item.getPane().colorByClassification(colorManager, selectedCNames, viewer.getClassificationName(), viewer.getClassId(), viewer.getDir().getDocument().getChartColorManager().isColorByPosition());
                     }
                 });
             }
@@ -518,11 +518,13 @@ public class LRInspectorController {
      * update the searcher, e.g. after change of label
      */
     public void updateSearcher() {
-        final CompositeObjectSearcher tableSearcher = viewer.getSearcher();
-        if (tableSearcher != null) {
-            for (IObjectSearcher searcher : tableSearcher.getSearchers()) {
-                if (searcher instanceof ReadLayoutPaneSearcher)
-                    ((ReadLayoutPaneSearcher) searcher).updateLists();
+        if (viewer != null) {
+            final CompositeObjectSearcher tableSearcher = viewer.getSearcher();
+            if (tableSearcher != null) {
+                for (IObjectSearcher searcher : tableSearcher.getSearchers()) {
+                    if (searcher instanceof ReadLayoutPaneSearcher)
+                        ((ReadLayoutPaneSearcher) searcher).updateLists();
+                }
             }
         }
     }

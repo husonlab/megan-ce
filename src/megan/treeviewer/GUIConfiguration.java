@@ -42,8 +42,8 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Server", "Set Server Credentials...;;|;Add User...;Add Metadata...;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Export", "CSV Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Reads...;Matches...;Alignments...;|;MEGAN Summary File...;");
-        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Export", "Text (CSV) Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Reads...;Matches...;Alignments...;|;MEGAN Summary File...;");
+        menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Tree Viewer Cut;Tree Viewer Copy;Samples TRee Paste;|;Select All;Select None;Select Similar;From Previous Window;|;Find...;Find Again;");
 

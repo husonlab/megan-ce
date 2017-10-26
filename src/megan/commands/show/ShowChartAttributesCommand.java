@@ -34,7 +34,7 @@ public class ShowChartAttributesCommand extends CommandBase implements ICommand 
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute("show chart drawer=BarChart  data=attributes;");
+        execute("show chart drawer=BarChart data=attributes;");
     }
 
     public boolean isApplicable() {

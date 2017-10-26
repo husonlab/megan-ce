@@ -25,7 +25,6 @@ import megan.chart.data.DefaultChartData;
 import megan.chart.data.IChartData;
 import megan.chart.drawers.BarChartDrawer;
 import megan.chart.gui.ChartViewer;
-import megan.classification.data.Name2IdMap;
 import megan.commands.OpenWebPageCommand;
 import megan.core.Director;
 import megan.core.Document;
@@ -45,6 +44,7 @@ import java.util.LinkedList;
 public class FViewerChart extends ChartViewer {
     private boolean inSync = false;
     private final String cName;
+    private final ClassificationViewer viewer;
 
     /**
      * constructor
@@ -53,6 +53,7 @@ public class FViewerChart extends ChartViewer {
      */
     public FViewerChart(final Director dir, ClassificationViewer parent) {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
+        viewer = parent;
         cName = parent.getClassName();
 
         MeganProperties.addPropertiesListListener(getJMenuBar().getRecentFilesListener());
@@ -142,18 +143,18 @@ public class FViewerChart extends ChartViewer {
             setChartTitle(cName + " profile for " + doc.getTitle());
             int numberOfSamples = doc.getNumberOfSamples();
             if (numberOfSamples > 0) {
-                if (parentViewer.getSelectedNodes().size() == 0) {
-                    parentViewer.selectAllLeaves();
+                if (viewer.getSelectedNodes().size() == 0) {
+                    viewer.selectAllLeaves();
                 }
                 chartData.setAllSeries(doc.getSampleNames());
                 String[] sampleNames = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
 
-                java.util.Collection<Integer> ids = parentViewer.getSelectedIds();
+                java.util.Collection<Integer> ids = viewer.getSelectedIds();
                 LinkedList<String> classNames = new LinkedList<>();
                 for (Integer id : ids) {
-                    String className = parentViewer.getClassification().getName2IdMap().get(id);
+                    String className = viewer.getClassification().getName2IdMap().get(id);
                     classNames.add(className);
-                    float[] summarized = parentViewer.getSummarized(id);
+                    float[] summarized = viewer.getSummarized(id);
 
                     for (int i = 0; i < sampleNames.length; i++) {
                         chartData.putValue(sampleNames[i], className, summarized[i]);
@@ -161,7 +162,7 @@ public class FViewerChart extends ChartViewer {
                 }
                 chartData.setClassNames(classNames);
             }
-            chartData.setTree(parentViewer.getInducedTree(((Name2IdMap) parentViewer.getClassification().getName2IdMap()).getId2Name(), parentViewer.getSelectedNodes()));
+            chartData.setTree(viewer.getInducedTree(viewer.getClassification().getName2IdMap().getId2Name(), viewer.getSelectedNodes()));
             super.sync();
             inSync = false;
         }

@@ -229,11 +229,11 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "CSV Format...";
+        return "Text (CSV) Format...";
     }
 
     public String getAltName() {
-        return "Import CSV Format...";
+        return "Import Text (CSV) Format...";
     }
 
     public ImageIcon getIcon() {

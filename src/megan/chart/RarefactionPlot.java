@@ -51,6 +51,7 @@ import java.util.*;
 public class RarefactionPlot extends ChartViewer {
     private final Document doc;
     private final String cName;
+    private final ClassificationViewer viewer;
 
     private boolean inSync = false;
 
@@ -63,6 +64,7 @@ public class RarefactionPlot extends ChartViewer {
      */
     public RarefactionPlot(final Director dir, ClassificationViewer parent) throws CanceledException {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultPlot2DData(), ProgramProperties.isUseGUI());
+        viewer = parent;
         this.cName = parent.getClassName();
         doc = dir.getDocument();
 
@@ -115,9 +117,9 @@ public class RarefactionPlot extends ChartViewer {
                 ((Plot2DDrawer) getChartDrawer()).setShowDots(name, true);
             }
 
-            Map<String, Collection<Pair<Number, Number>>> name2counts = computeCounts(doc, 1, parentViewer, doc.getProgressListener());
+            final Map<String, Collection<Pair<Number, Number>>> name2counts = computeCounts(doc, 1, viewer, doc.getProgressListener());
 
-            IPlot2DData chartData = (IPlot2DData) getChartData();
+            final IPlot2DData chartData = (IPlot2DData) getChartData();
 
             chartData.clear();
             chartData.setDataSetName(doc.getTitle());

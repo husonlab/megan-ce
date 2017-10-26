@@ -41,7 +41,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Save As...;|;" +
                 "Export Image...;Export Legend...;Export Data...;|;Page Setup...;Print...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy Label;Copy Image;Copy Legend;Paste;|;Select All;Select None;Select Top...;|;From Previous Window;|;Show All;Show Selected;|;" +
                 "Hide Unselected;Hide Selected;|;Set Color...;|;Find...;Find Again;|;Colors...;");

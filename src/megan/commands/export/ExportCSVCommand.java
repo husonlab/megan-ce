@@ -126,7 +126,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
     }
 
     public String getName() {
-        return "CSV Format...";
+        return "Text (CSV) Format...";
     }
 
     public ImageIcon getIcon() {

@@ -996,12 +996,21 @@ public class SampleAttributeTable {
      * @return numerical attributes
      */
     public HashMap<String, float[]> getNumericalAttributes(List<String> samples) {
+        return getNumericalAttributes(samples, true);
+    }
+
+    /**
+     * determines which attributes have a numerical interpretation and returns their values
+     *
+     * @return numerical attributes
+     */
+    public HashMap<String, float[]> getNumericalAttributes(List<String> samples, boolean normalize) {
         if (samples == null)
             samples = getSampleOrder();
 
-        HashMap<String, float[]> result = new HashMap<>();
+        final HashMap<String, float[]> result = new HashMap<>();
 
-        Set<String> hiddenAttributes = new HashSet<>();
+        final Set<String> hiddenAttributes = new HashSet<>();
         hiddenAttributes.addAll(Arrays.asList("BarcodeSequence", "LinkerPrimerSequence", "Description"));
         for (String name : getAttributeOrder()) {
             if (isSecretAttribute(name) || isHiddenAttribute(name) || name.equals("Size") || hiddenAttributes.contains(name))
@@ -1025,7 +1034,7 @@ public class SampleAttributeTable {
                             array[i++] = 0;
                     }
 
-                    if (maxAbs > 0) {
+                    if (normalize && maxAbs > 0) {
                         for (i = 0; i < array.length; i++)
                             array[i] /= maxAbs;
                     }

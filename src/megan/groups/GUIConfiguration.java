@@ -40,7 +40,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Export Image...;Export Legend...;|;Page Setup...;Print...;|Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Find...;Find Again;|;Select All;Select None;|;From Previous Window;|;Add New Group;");
         // menuConfig.defineMenu("Options", "Taxonomy Contrasts...;|;SEED Contrasts...;EGGNOG Contrasts...;KEGG Contrasts...;");

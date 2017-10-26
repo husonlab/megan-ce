@@ -42,7 +42,7 @@ public class GUIConfiguration {
                 + "Export Image...;Export Legend...;|;Page Setup...;Print...;|;" +
                 "Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
-        menuConfig.defineMenu("Import", "Import CSV Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;");
 

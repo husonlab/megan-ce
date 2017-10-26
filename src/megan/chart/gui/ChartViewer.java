@@ -38,7 +38,6 @@ import megan.chart.drawers.*;
 import megan.core.Director;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
-import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -59,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * Daniel Huson, 5.2012
  */
 public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, IUsesHeatMapColors, Printable {
-    protected final ClassificationViewer parentViewer;
+    protected final IDirectableViewer parentViewer;
     protected final Director dir;
     private final IData chartData;
     private final CommandManager commandManager;
@@ -132,7 +131,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
      * @param chartData
      * @param useGUI
      */
-    public ChartViewer(ClassificationViewer parentViewer, final Director dir, final ILabelGetter seriesLabelGetter, IData chartData, boolean useGUI) {
+    public ChartViewer(IDirectableViewer parentViewer, final Director dir, final ILabelGetter seriesLabelGetter, IData chartData, boolean useGUI) {
         this.parentViewer = parentViewer;
         this.dir = dir;
         this.seriesLabelGetter = seriesLabelGetter;
@@ -683,7 +682,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         if (bottomToolBar != null)
             bottomToolBar.setEnabled(false);
         getCommandManager().setEnableCritical(false);
-        getJMenuBar().setEnableRecentFileMenuItems(true);
+        getJMenuBar().setEnableRecentFileMenuItems(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
@@ -699,7 +698,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             bottomToolBar.setEnabled(true);
         setCursor(Cursor.getDefaultCursor());
         getContentPane().setCursor(Cursor.getDefaultCursor());
-        getJMenuBar().setEnableRecentFileMenuItems(false);
+        getJMenuBar().setEnableRecentFileMenuItems(true);
     }
 
     /**
@@ -1208,7 +1207,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         this.popupMenuModifier = popupMenuModifier;
     }
 
-    public ClassificationViewer getParentViewer() {
+    public IDirectableViewer getParentViewer() {
         return parentViewer;
     }
 

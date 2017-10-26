@@ -276,7 +276,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
             return;
 
         final int numberOfClasses = getChartData().getNumberOfClasses();
-        double xStep = (x1 - x0) / (2 * numberOfClasses);
+        double xStep = (x1 - x0) / (2 * Math.max(1, numberOfClasses));
         final double bigSpace = Math.max(2, Math.min(10, xStep));
         xStep = (x1 - x0 - bigSpace * numberOfClasses) / numberOfClasses;
         Point[] previousPoint = new Point[getChartData().getNumberOfSeries()];

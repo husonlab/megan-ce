@@ -443,17 +443,8 @@ public class ReadLayoutPane extends Pane {
      * @return true, if label used
      */
     private static Label processLabel(int j, int lastJ, double xPos, double yPos, Interval<Label> interval, IntervalTree<Label> intervalTree, Group geneLabels) {
-        boolean isLastOrHasNoOverlaps = (j == lastJ);
-        final Collection<Interval<Label>> intervals;
-        if (isLastOrHasNoOverlaps)
-            intervals = null;
-        else {
-            intervals = intervalTree.getIntervals(interval);
-            if (intervals.size() == 0)
-                isLastOrHasNoOverlaps = true;
-        }
-
-        if (isLastOrHasNoOverlaps) {
+        final Collection<Interval<Label>> intervals = intervalTree.getIntervals(interval);
+        if (intervalTree.getIntervals(interval).size() == 0 /* || j==lastJ*/) {
             final Label label = interval.getData();
             geneLabels.getChildren().add(label);
             intervalTree.add(interval);
@@ -506,7 +497,7 @@ public class ReadLayoutPane extends Pane {
      * @param colorManager
      * @param activeClassifications
      */
-    public void colorByClassification(ChartColorManager colorManager, Collection<String> activeClassifications, String keyClassification, int keyClassId) {
+    public void colorByClassification(ChartColorManager colorManager, Collection<String> activeClassifications, String keyClassification, int keyClassId, boolean colorByPosition) {
 
         if (/*activeClassifications.contains(keyClassification) && */ keyClassId > 0) {
             for (GeneArrow geneArrow : geneArrows) {
@@ -520,7 +511,7 @@ public class ReadLayoutPane extends Pane {
                     if (classId > 0) {
                         hasClass = true;
                         if (!classification.getIdMapper().getDisabledIds().contains(classId)) {
-                            final int colorClassId = classification.getFullTree().getChildAbove(keyClassId, classId);
+                            final int colorClassId = (colorByPosition ? classification.getFullTree().getChildAbove(keyClassId, classId) : classId);
                             if (colorClassId > 0) {
                                 final String className = classification.getName2IdMap().get(colorClassId);
                                 if (className != null) {

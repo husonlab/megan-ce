@@ -54,14 +54,16 @@ public class MatchLineRMA6 {
 
         offset = skipTabs(matchesText, offset, 11);
 
-        String[] tokens = Utilities.split(matchesText, offset, end, (byte) '\t');
-        for (String token : tokens) {
-            if (token.startsWith("AS:i:"))
-                bitScore = Integer.parseInt(token.substring(5));
-            else if (token.startsWith("ZE:f:"))
-                expected = Float.parseFloat(token.substring(5));
-            else if (token.startsWith("ZI:i:"))
-                percentIdentity = Float.parseFloat(token.substring(5));
+        if (offset > -1) {
+            String[] tokens = Utilities.split(matchesText, offset, end, (byte) '\t');
+            for (String token : tokens) {
+                if (token.startsWith("AS:i:"))
+                    bitScore = Integer.parseInt(token.substring(5));
+                else if (token.startsWith("ZE:f:"))
+                    expected = Float.parseFloat(token.substring(5));
+                else if (token.startsWith("ZI:i:"))
+                    percentIdentity = Float.parseFloat(token.substring(5));
+            }
         }
     }
 
@@ -75,6 +77,8 @@ public class MatchLineRMA6 {
      */
     public static int skipTabs(byte[] text, int offset, int n) {
         while (n > 0) {
+            if (offset == text.length)
+                return -1;
             if (text[offset] == '\t')
                 n--;
             offset++;

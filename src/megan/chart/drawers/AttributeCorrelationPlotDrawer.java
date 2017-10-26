@@ -717,7 +717,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
 
                 menu.addSeparator();
                 {
-                    AbstractAction action = (new AbstractAction("Show Correlation Values...") {
+                    final AbstractAction action = (new AbstractAction("Show Correlation Values...") {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             final String classification = viewer.getParentViewer().getClassName();

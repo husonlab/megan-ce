@@ -47,10 +47,28 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     protected final ClassificationFullTree fullTree;
     protected final IdMapper idMapper;
     protected final Name2IdMap name2idMap;
+
+    protected final boolean ignoreAncestralTaxa;
+
     /**
      * constructor
+     * @param cName
+     * @param useIdentityFilter
+     * @param percentToCover
      */
     public AssignmentUsingLCAForTaxonomy(String cName, boolean useIdentityFilter, float percentToCover) {
+        this(cName, useIdentityFilter, percentToCover, true);
+    }
+
+    /**
+     * constructor
+     *
+     * @param cName
+     * @param useIdentityFilter
+     * @param percentToCover
+     * @param ignoreAncestralTaxa
+     */
+    public AssignmentUsingLCAForTaxonomy(String cName, boolean useIdentityFilter, float percentToCover, boolean ignoreAncestralTaxa) {
         fullTree = ClassificationManager.get(cName, false).getFullTree();
         idMapper = ClassificationManager.get(cName, true).getIdMapper();
         name2idMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();
@@ -60,6 +78,8 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
 
         this.useIdentityFilter = useIdentityFilter;
         this.proportionToCover = percentToCover / 100f;
+
+        this.ignoreAncestralTaxa = ignoreAncestralTaxa;
     }
 
     /**
@@ -122,7 +142,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
             if (numberOfAddresses > 0) {
                 final int id;
                 if (proportionToCover == 1) {
-                    final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
+                    final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, ignoreAncestralTaxa);
                     id = fullTree.getAddress2Id(address);
                 } else {
                     final int weightToCover = (int) Math.min(numberOfAddresses, Math.ceil(proportionToCover * numberOfAddresses));
@@ -168,7 +188,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
 
         // compute LCA using addresses:
         if (numberOfAddresses > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, true);
+            final String address = LCAAddressing.getCommonPrefix(addresses, numberOfAddresses, ignoreAncestralTaxa);
             return fullTree.getAddress2Id(address);
         }
         return IdMapper.UNASSIGNED_ID;
@@ -188,7 +208,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         else if (id2 == 0)
             return id1;
         else
-            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2, false));
+            return fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(new String[]{fullTree.getAddress(id1), fullTree.getAddress(id2)}, 2, ignoreAncestralTaxa));
     }
 
     /**
@@ -325,7 +345,5 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
         } else
             return "";
     }
-
-
 }
 

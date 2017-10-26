@@ -52,6 +52,7 @@ public class ComparisonPlot extends ChartViewer {
     private final String cName;
     private final Document doc;
     private boolean inSync = false;
+    private final ClassificationViewer viewer;
 
     /**
      * constructor
@@ -62,6 +63,7 @@ public class ComparisonPlot extends ChartViewer {
      */
     public ComparisonPlot(final Director dir, ClassificationViewer parent) throws CanceledException {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultPlot2DData(), ProgramProperties.isUseGUI());
+        viewer = parent;
         this.doc = dir.getDocument();
         this.cName = parent.getClassName();
 
@@ -114,7 +116,7 @@ public class ComparisonPlot extends ChartViewer {
 
             //setShowLegend(true);
 
-            Map<String, Collection<Pair<Number, Number>>> name2counts = computeCounts(doc, parentViewer, doc.getProgressListener());
+            Map<String, Collection<Pair<Number, Number>>> name2counts = computeCounts(doc, viewer, doc.getProgressListener());
 
             IPlot2DData chartData = (IPlot2DData) getChartData();
 

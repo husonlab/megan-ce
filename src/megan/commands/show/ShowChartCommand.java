@@ -25,6 +25,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.AttributesChart;
 import megan.chart.FViewerChart;
+import megan.chart.MetadataChart;
 import megan.chart.TaxaChart;
 import megan.chart.data.ChartCommandHelper;
 import megan.chart.drawers.BarChartDrawer;
@@ -49,7 +50,7 @@ import java.io.IOException;
 public class ShowChartCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "show chart drawer={" + Basic.toString(DrawerManager.getAllSupportedChartDrawers(), ",") + "} data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "|attributes};";
+        return "show chart drawer={" + Basic.toString(DrawerManager.getAllSupportedChartDrawers(), ",") + "} data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "|attributes|metadata};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -58,7 +59,7 @@ public class ShowChartCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("show chart drawer=");
         final String drawerType = np.getWordMatchesRespectingCase(Basic.toString(DrawerManager.getAllSupportedChartDrawers(), " "));
         np.matchIgnoreCase("data=");
-        final String data = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes");
+        final String data = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes metadata");
         np.matchIgnoreCase(";");
 
         ChartViewer chartViewer = null;
@@ -80,6 +81,17 @@ public class ShowChartCommand extends CommandBase implements ICommand {
             chartViewer = (AttributesChart) dir.getViewerByClass(AttributesChart.class);
             if (chartViewer == null) {
                 chartViewer = new AttributesChart(dir);
+                getDir().addViewer(chartViewer);
+                chartViewer.chooseDrawer(drawerType);
+            } else {
+                chartViewer.sync();
+                chartViewer.chooseDrawer(drawerType);
+                chartViewer.updateView(Director.ALL);
+            }
+        } else if (data.equalsIgnoreCase("metadata")) {
+            chartViewer = (MetadataChart) dir.getViewerByClass(AttributesChart.class);
+            if (chartViewer == null) {
+                chartViewer = new MetadataChart(dir, dir.getMainViewer());
                 getDir().addViewer(chartViewer);
                 chartViewer.chooseDrawer(drawerType);
             } else {

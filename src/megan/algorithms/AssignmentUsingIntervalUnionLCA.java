@@ -191,18 +191,18 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
      * @return root node
      */
     private Node computeInducedTree(HashMap<Integer, IntervalList> taxa2intervals, Set<Node> allNodes) {
-        // compute the root node:
-        final Node root;
+        // compute the local root node:
+        final Node rootOfAllNodes;
         {
             final ArrayList<String> addresses = new ArrayList<>(taxa2intervals.size());
             for (Integer taxId : taxa2intervals.keySet()) {
                 addresses.add(fullTree.getAddress(taxId));
             }
             final int rootId = fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(addresses, false));
-            root = fullTree.getANode(rootId);
+            rootOfAllNodes = fullTree.getANode(rootId);
         }
 
-        allNodes.add(root);
+        allNodes.add(rootOfAllNodes);
 
         // add all nodes between that taxa and the root:
         for (Integer taxId : taxa2intervals.keySet()) {
@@ -213,11 +213,11 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                     if (v.getInDegree() > 0)
                         v = v.getFirstInEdge().getSource();
                     else
-                        throw new RuntimeException("No root");
+                        break; // must be v==fullTree.getRoot()
                 }
             }
         }
-        return root;
+        return rootOfAllNodes;
     }
 
     /**

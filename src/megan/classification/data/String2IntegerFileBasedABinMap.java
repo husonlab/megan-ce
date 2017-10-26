@@ -43,7 +43,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     private final int size;
     private final int mask;
 
-    private final int cacheBits = 15;
+    private final int cacheBits = 20;
     private final int cacheSize = (1 << cacheBits);
     private final byte[][] cacheKeys = new byte[cacheSize][];
     private final int[] cacheValues = new int[cacheSize];
@@ -248,12 +248,5 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
 
         //System.err.println("Looking for: "+ Basic.toString(key,0,keyLength)+", got: "+Basic.toString(got,0,i));
         return (equal && i == keyLength) ? i : -i; // negative means no match
-    }
-
-    public static void main(String[] args) throws IOException {
-        try (String2IntegerFileBasedABinMap table = new String2IntegerFileBasedABinMap("/Users/huson/mapping/ncbi-June2016/prot_acc2tax-June2016.abin")) {
-            String accession = "NP_746135";
-            System.err.println(accession + " -> " + table.get(accession));
-        }
     }
 }

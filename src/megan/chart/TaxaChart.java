@@ -51,6 +51,7 @@ public class TaxaChart extends ChartViewer {
     private NodeSet syncedNodes;
     private boolean inSync = false;
     private String colorByRank = null;
+    private final MainViewer mainViewer;
 
     /**
      * constructor
@@ -59,6 +60,7 @@ public class TaxaChart extends ChartViewer {
      */
     public TaxaChart(final Director dir) {
         super(dir.getMainViewer(), dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
+        this.mainViewer = dir.getMainViewer();
         MeganProperties.addPropertiesListListener(getJMenuBar().getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
 
@@ -223,7 +225,7 @@ public class TaxaChart extends ChartViewer {
                 chartData.setClassNames(taxonNames);
             }
             updateColorByRank();
-            chartData.setTree(parentViewer.getInducedTree(TaxonomyData.getName2IdMap().getId2Name(), parentViewer.getSelectedNodes()));
+            chartData.setTree(mainViewer.getInducedTree(TaxonomyData.getName2IdMap().getId2Name(), mainViewer.getSelectedNodes()));
             super.sync();
             updateView(Director.ALL);
             inSync = false;

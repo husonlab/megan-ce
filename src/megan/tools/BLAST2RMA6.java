@@ -106,6 +106,7 @@ public class BLAST2RMA6 {
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
         final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", Document.DEFAULT_MAXEXPECTED);
+        final float minPercentIdentity = options.getOption("-mpi", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
         final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final int minSupport;
         final float minSupportPercent;
@@ -281,6 +282,7 @@ public class BLAST2RMA6 {
             doc.getActiveViewers().add(Classification.Taxonomy);
             doc.getActiveViewers().addAll(Arrays.asList(cNames));
             doc.setMinScore(minScore);
+            doc.setMinPercentIdentity(minPercentIdentity);
             doc.setMaxExpected(maxExpected);
             doc.setTopPercent(topPercent);
             doc.setMinSupportPercent(minSupportPercent);

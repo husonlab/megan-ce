@@ -52,6 +52,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
 
     /**
      * constructor
+     *
      * @param cName
      * @param useIdentityFilter
      * @param percentToCover

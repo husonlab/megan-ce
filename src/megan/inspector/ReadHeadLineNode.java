@@ -31,6 +31,7 @@ public class ReadHeadLineNode extends NodeBase {
 
     /**
      * constructor
+     *
      * @param readBlock
      */
     public ReadHeadLineNode(IReadBlock readBlock) {

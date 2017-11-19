@@ -227,7 +227,7 @@ public class MeganFile {
      */
     public boolean hasDataConnector() {
         return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE
-                || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size()>0));
+                || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size() > 0));
     }
 
     /**
@@ -383,6 +383,7 @@ public class MeganFile {
 
     /**
      * set the embedded source files
+     *
      * @param embeddedSourceFiles
      */
     public void setEmbeddedSourceFiles(ArrayList<String> embeddedSourceFiles) {

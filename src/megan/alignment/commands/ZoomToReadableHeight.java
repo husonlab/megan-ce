@@ -35,7 +35,7 @@ public class ZoomToReadableHeight extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=vertical what=reset;");
+        executeImmediately("expand axis=vertical what=reset;");
     }
 
     public boolean isApplicable() {

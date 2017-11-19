@@ -35,7 +35,7 @@ public class ExpandVerticalCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=vertical what=in;");
+        executeImmediately("expand axis=vertical what=in;");
     }
 
     public boolean isApplicable() {

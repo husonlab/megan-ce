@@ -52,6 +52,7 @@ public class AlignmentAssembler {
 
     /**
      * compute the overlap graph
+     *
      * @param minOverlap
      * @param alignment
      * @param progress

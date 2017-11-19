@@ -117,6 +117,7 @@ public class ClassificationManager {
     public static ArrayList<String> getDefaultClassificationsList() {
         return defaultClassificationsList;
     }
+
     public static ArrayList<String> getDefaultClassificationsListExcludingNCBITaxonomy() {
         return defaultClassificationsListExcludingNCBITaxonomy;
     }

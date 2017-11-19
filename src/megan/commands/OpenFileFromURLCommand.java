@@ -79,7 +79,7 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
                 final String fileName = token.trim();
                 if (fileName.length() > 0)
                     buf.append("open file='").append(fileName).append("';");
-                    count++;
+                count++;
             }
             if (count > 10) {
                 if (JOptionPane.showConfirmDialog(getViewer() != null ? getViewer().getFrame() : null, "Do you really want to open " + count + " new files?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)

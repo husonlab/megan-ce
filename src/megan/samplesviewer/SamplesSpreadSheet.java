@@ -202,7 +202,7 @@ public class SamplesSpreadSheet {
 
                                 rowContextMenu.hide();
                                 syncFromDocument();
-                                        samplesViewer.getDocument().getDir().notifyUpdateViewer(IDirector.ALL);
+                                samplesViewer.getDocument().getDir().notifyUpdateViewer(IDirector.ALL);
                             }
                         });
 
@@ -666,11 +666,11 @@ public class SamplesSpreadSheet {
         if (clipboard.getContent(fmt) != null) {
             spreadsheetView.pasteClipboard();
         } else {
-                String contents = clipboard.getString().trim().replaceAll("\r\n", "\n").replaceAll("\r", "\n");
-                String[] lines = contents.split("\n");
+            String contents = clipboard.getString().trim().replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+            String[] lines = contents.split("\n");
             paste(lines);
-            }
         }
+    }
 
     /**
      * pastes lines into table guided by an attribute

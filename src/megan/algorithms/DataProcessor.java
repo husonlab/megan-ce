@@ -22,6 +22,7 @@ import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
+import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.ReadAssignmentCalculator;
 import megan.core.SyncArchiveAndDataTable;
@@ -59,8 +60,16 @@ public class DataProcessor {
 
             System.err.println("Initializing binning...");
             if (doc.isUseIdentityFilter()) {
-                System.err.println("Using min percent-identity values for taxonomic assignment of 16S reads");
+                System.err.println("Using rank-specific min percent-identity values for taxonomic assignment of 16S reads");
             }
+
+            final ContaminantManager contaminantManager;
+            if (doc.getDataTable().getContaminants() != null) {
+                contaminantManager = new ContaminantManager();
+                contaminantManager.parse(doc.getDataTable().getContaminants());
+                System.err.println(String.format("Using contaminant filter for %,d taxa", contaminantManager.size()));
+            } else
+                contaminantManager = null;
 
             final int numberOfClassifications = doc.getActiveViewers().size();
             final String[] cNames = doc.getActiveViewers().toArray(new String[numberOfClassifications]);
@@ -72,7 +81,7 @@ public class DataProcessor {
                 } else {
                     ClassificationManager.ensureTreeIsLoaded(cNames[c]);
                     useLCAForClassification[c] = ProgramProperties.get(cNames[c] + "UseLCA", cNames[c].equals(Classification.Taxonomy));
-            }
+                }
 
             final UpdateItemList updateList = new UpdateItemList(numberOfClassifications);
 
@@ -217,6 +226,7 @@ public class DataProcessor {
                     if (taxonomyIndex >= 0) {
                         final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
                         ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
+
                         if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatchesForTaxa, intervals)) {
                             if (doMatePairs && readBlock.getMateUId() > 0) {
                                 mateReader.seek(readBlock.getMateUId());
@@ -243,11 +253,17 @@ public class DataProcessor {
                             }
                         } else
                             numberOfReadsFailedCoveredThreshold++;
+                        if (contaminantManager != null) {
+                            if ((usingLongReadAlgorithm && contaminantManager.isContaminantLongRead(taxId)) || (!usingLongReadAlgorithm && contaminantManager.isContaminantShortRead(readBlock, activeMatchesForTaxa)))
+                                taxId = IdMapper.CONTAMINANTS_ID;
+                        }
                     }
 
                     for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
-                        if (hasLowComplexity) {
+                        if (taxId == IdMapper.CONTAMINANTS_ID) {
+                            id = IdMapper.CONTAMINANTS_ID;
+                        } else if (hasLowComplexity) {
                             id = IdMapper.LOW_COMPLEXITY_ID;
                         } else if (c == taxonomyIndex) {
                             id = taxId;
@@ -380,7 +396,7 @@ public class DataProcessor {
      * @param minCoveredPercent percent of read that must be covered
      * @param readBlock
      * @param activeMatches
-     * @param intervals this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @param intervals         this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */
     private static boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {

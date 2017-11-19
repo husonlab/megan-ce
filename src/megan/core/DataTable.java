@@ -52,6 +52,8 @@ public class DataTable {
     public static final String COLOR_EDITS = "@ColorEdits";
 
     public static final String PARAMETERS = "@Parameters";
+    public static final String CONTAMINANTS = "@Contaminants";
+
     public static final String TOTAL_READS = "@TotalReads";
     public static final String ADDITIONAL_READS = "@AdditionalReads";
 
@@ -89,6 +91,7 @@ public class DataTable {
     private boolean colorByPosition = false;
 
     private String parameters;
+    private String contaminants;
 
     private final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
 
@@ -117,6 +120,7 @@ public class DataTable {
         classification2NodeFormats.clear();
         classification2EdgeFormats.clear();
         parameters = null;
+        contaminants = null;
         classification2class2counts.clear();
     }
 
@@ -262,7 +266,7 @@ public class DataTable {
                                 classification2EdgeFormats.put(data, buf.toString().trim());
                             }
                             break;
-                        case PARAMETERS:
+                        case PARAMETERS: {
                             if (tokens.length > 1) {
                                 StringBuilder buf = new StringBuilder();
                                 for (int i = 1; i < tokens.length; i++)
@@ -270,6 +274,16 @@ public class DataTable {
                                 parameters = buf.toString().trim();
                             }
                             break;
+                        }
+                        case CONTAMINANTS: {
+                            if (tokens.length > 1) {
+                                StringBuilder buf = new StringBuilder();
+                                for (int i = 1; i < tokens.length; i++)
+                                    buf.append(" ").append(tokens[i]);
+                                contaminants = buf.toString().trim();
+                            }
+                            break;
+                        }
                         default:
                             System.err.println("Line: " + lineNumber + ": Skipping unknown token: " + tokens[0]);
                             break;
@@ -425,6 +439,9 @@ public class DataTable {
 
         if (parameters != null)
             w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
+        if (contaminants != null)
+            w.write(String.format("%s\t%s\n", CONTAMINANTS, contaminants));
+
 
         for (String classification : classification2NodeStyle.keySet()) {
             String nodeType = classification2NodeStyle.get(classification);
@@ -503,6 +520,8 @@ public class DataTable {
 
         if (parameters != null)
             w.write(String.format("<b>%s:</b> %s<br>\n", PARAMETERS.substring(1), parameters));
+        if (contaminants != null)
+            w.write(String.format("<b>%s:</b> %d taxa<br>\n", CONTAMINANTS.substring(1), Basic.countWords(contaminants)));
         if (colorTable != null)
             w.write(String.format("<b>ColorTable:</b> %s%s <b>HeatMapColorTable:</b> %s<br>\n", colorTable, (colorByPosition ? " byPosition" : ""), colorTableHeatMap));
 
@@ -559,6 +578,9 @@ public class DataTable {
         if (parameters != null)
             w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
 
+        if (contaminants != null)
+            w.write(String.format("%s\t%s\n", CONTAMINANTS, contaminants));
+
         return w.toString();
     }
 
@@ -577,6 +599,7 @@ public class DataTable {
             sampleNames.clear();
             sampleNames.add(Basic.getFileBaseName(fileName));
             blastModes.clear();
+            contaminants = null;
             while ((aLine = r.readLine()) != null) {
                 lineNumber++;
                 aLine = aLine.trim();
@@ -790,8 +813,7 @@ public class DataTable {
                     blastModes.add(modes[0]);
             } else
                 blastModes.addAll(Arrays.asList(modes));
-        }
-        else {
+        } else {
             for (int i = 0; i < getNumberOfSamples(); i++)
                 blastModes.add(BlastMode.Unknown);
         }
@@ -844,6 +866,24 @@ public class DataTable {
      */
     public void setParameters(String parameters) {
         this.parameters = parameters;
+    }
+
+    /**
+     * get the contaminants string
+     *
+     * @return string or null
+     */
+    public String getContaminants() {
+        return contaminants;
+    }
+
+    /**
+     * set the contaminants string or null
+     *
+     * @param contaminants
+     */
+    public void setContaminants(String contaminants) {
+        this.contaminants = contaminants;
     }
 
     /**
@@ -1091,7 +1131,7 @@ public class DataTable {
         }
         totalReads = 0;
         for (float size : sampleSizes) {
-                totalReads += size;
+            totalReads += size;
         }
     }
 
@@ -1233,7 +1273,7 @@ public class DataTable {
             return;
 
         Set<Integer> pids = new HashSet<>();
-        BlastMode mode=null;
+        BlastMode mode = null;
         for (String name : samples) {
             int pid = Basic.getIndex(name, sampleNames);
             if (pid == -1) {
@@ -1275,7 +1315,7 @@ public class DataTable {
             }
         }
         for (float size : sampleSizes) {
-                totalReads += size;
+            totalReads += size;
         }
     }
 
@@ -1300,7 +1340,7 @@ public class DataTable {
         final Long[] uids = modify(order, getSampleUIds());
         final float[] sizes = modify(order, getSampleSizes());
         final BlastMode[] modes = modify(order, getBlastModes());
-        setSamples(datasetNames, uids, sizes,modes);
+        setSamples(datasetNames, uids, sizes, modes);
 
         final Map<String, Map<Integer, float[]>> classification2Class2Counts = getClassification2Class2Counts();
         for (String classification : classification2Class2Counts.keySet()) {

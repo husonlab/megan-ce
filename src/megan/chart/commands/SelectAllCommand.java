@@ -56,15 +56,15 @@ public class SelectAllCommand extends CommandBase implements ICommand {
         final ChartViewer viewer = (ChartViewer) getViewer();
         final LabelsJList list = viewer.getActiveLabelsJList();
         for (String name : labels) {
-                if (name.equalsIgnoreCase("all"))
-                    viewer.getChartSelection().setSelected(list.getName(), list.getAllLabels(), true);
-                else if (name.equalsIgnoreCase("none"))
-                    viewer.getChartSelection().clearSelection(list.getName());
-                else if (name.equals("previous"))
-                    viewer.getChartSelection().setSelected(list.getName(), ProjectManager.getPreviouslySelectedNodeLabels(), true);
-                else
-                    viewer.getChartSelection().setSelected(list.getName(), Collections.singletonList(name), true);
-            }
+            if (name.equalsIgnoreCase("all"))
+                viewer.getChartSelection().setSelected(list.getName(), list.getAllLabels(), true);
+            else if (name.equalsIgnoreCase("none"))
+                viewer.getChartSelection().clearSelection(list.getName());
+            else if (name.equals("previous"))
+                viewer.getChartSelection().setSelected(list.getName(), ProjectManager.getPreviouslySelectedNodeLabels(), true);
+            else
+                viewer.getChartSelection().setSelected(list.getName(), Collections.singletonList(name), true);
+        }
         viewer.repaint();
     }
 

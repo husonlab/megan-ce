@@ -63,11 +63,11 @@ public class UPGMATab extends TreeTabBase implements ITab {
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
-                getGraphView().setAutoLayoutLabels(false);
-                UPGMA.apply(taxa, distances, getGraphView());
-                getGraphView().setFixedNodeSize(true);
-                getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
-                clusterViewer.addFormatting(getGraphView());
+            getGraphView().setAutoLayoutLabels(false);
+            UPGMA.apply(taxa, distances, getGraphView());
+            getGraphView().setFixedNodeSize(true);
+            getGraphView().setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, clusterViewer.getFont()));
+            clusterViewer.addFormatting(getGraphView());
         }
     }
 }

@@ -438,6 +438,7 @@ public class CompareWindow extends JDialog {
         public Document.ReadAssignmentMode getReadAssignmentMode() {
             return readAssignmentMode;
         }
+
         public int compare(Object o, Object o1) {
             MyListItem one = (MyListItem) o;
             MyListItem other = (MyListItem) o1;

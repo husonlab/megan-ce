@@ -56,15 +56,15 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
 
         chartViewer = (ComparisonPlot) dir.getViewerByClassName(ComparisonPlot.getClassName(data));
-            if (chartViewer == null) {
-                ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(data));
-                if (classificationViewer == null)
-                    throw new IOException("Viewer must be open for chart to operate");
-                chartViewer = new ComparisonPlot(dir, classificationViewer);
-                getDir().addViewer(chartViewer);
-            } else {
-                chartViewer.sync();
-            }
+        if (chartViewer == null) {
+            ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(data));
+            if (classificationViewer == null)
+                throw new IOException("Viewer must be open for chart to operate");
+            chartViewer = new ComparisonPlot(dir, classificationViewer);
+            getDir().addViewer(chartViewer);
+        } else {
+            chartViewer.sync();
+        }
         WindowUtilities.toFront(chartViewer);
     }
 
@@ -83,6 +83,7 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
         return ((Director) getDir()).getDocument().getNumberOfSamples() > 1 && getViewer() instanceof ClassificationViewer;
 
     }
+
     public String getName() {
         return "Comparison Plot...";
     }

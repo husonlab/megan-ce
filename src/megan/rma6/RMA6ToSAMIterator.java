@@ -48,6 +48,7 @@ public class RMA6ToSAMIterator implements ISAMIterator {
 
     /**
      * constructor
+     *
      * @param classificationName
      * @param classIds
      * @param fileName
@@ -141,6 +142,7 @@ public class RMA6ToSAMIterator implements ISAMIterator {
 
     /**
      * gets the read text
+     *
      * @return read text
      */
     public String getReadText() {

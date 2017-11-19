@@ -39,7 +39,7 @@ public class ZoomCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("zoom axis=");
+        np.matchIgnoreCase("expand axis=");
         String axis = np.getWordMatchesIgnoringCase("horizontal vertical both");
         np.matchIgnoreCase("what=");
         String what;
@@ -59,7 +59,7 @@ public class ZoomCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "zoom axis={horizontal|vertical|both} what={in|out|reset|selection|fit|<number>};";
+        return "expand axis={horizontal|vertical|both} what={in|out|reset|selection|fit|<number>};";
     }
 
     /**

@@ -33,8 +33,32 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 6.2010
  */
 public abstract class EcologicalIndexCommand extends CommandBase {
-    private static final String[] METHODS = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
-            "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", UniFrac.TOPOLOGICAL_UNIFRAC, PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
+    private final String[] methods;
+
+    public EcologicalIndexCommand() {
+        if (ProgramProperties.get("enable-unifrac", false))
+            methods = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
+                    "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", UniFrac.UnweightedTaxonomicUniFrac, UniFrac.WeightedTaxonomicUniFrac, PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
+        else
+            methods = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
+                    "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
+    }
+
+    /**
+     * parses the given command and executes it
+     *
+     * @param np
+     * @throws java.io.IOException
+     */
+    public void apply(NexusStreamParser np) throws Exception {
+        np.matchIgnoreCase("set index=");
+        String method = np.getWordMatchesIgnoringCase(methods);
+        np.matchIgnoreCase(";");
+
+        ClusterViewer viewer = getViewer();
+        viewer.setEcologicalIndex(method);
+        execute("sync;");
+    }
 
     /**
      * get Command Syntax.... First two tokens are used to identify the command
@@ -54,7 +78,7 @@ public abstract class EcologicalIndexCommand extends CommandBase {
         final ClusterViewer viewer = getViewer();
 
         final String method = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Set Ecological Index", "Set Ecological Index", JOptionPane.QUESTION_MESSAGE,
-                ProgramProperties.getProgramIcon(), METHODS, viewer.getEcologicalIndex());
+                ProgramProperties.getProgramIcon(), methods, viewer.getEcologicalIndex());
         if (method != null)
             executeImmediately("set index=" + method + ";");
     }
@@ -76,22 +100,6 @@ public abstract class EcologicalIndexCommand extends CommandBase {
     public boolean isApplicable() {
         return getViewer().getParentViewer() != null && getViewer().getParentViewer().hasComparableData()
                 && getViewer().getParentViewer().getSelectedNodes().size() > 0;
-    }
-
-    /**
-     * parses the given command and executes it
-     *
-     * @param np
-     * @throws java.io.IOException
-     */
-    public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("set index=");
-        String method = np.getWordMatchesIgnoringCase(METHODS);
-        np.matchIgnoreCase(";");
-
-        ClusterViewer viewer = getViewer();
-        viewer.setEcologicalIndex(method);
-        execute("sync;");
     }
 
     /**

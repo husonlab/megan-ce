@@ -41,6 +41,7 @@ public class OverlapGraphBuilder {
 
     /**
      * constructor
+     *
      * @param minOverlap
      */
     public OverlapGraphBuilder(int minOverlap) {

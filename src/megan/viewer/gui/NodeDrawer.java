@@ -355,8 +355,6 @@ public class NodeDrawer implements INodeDrawer {
     }
 
 
-
-
     /**
      * draw the label of the node
      *
@@ -550,17 +548,17 @@ public class NodeDrawer implements INodeDrawer {
 
             for (int i = 0; i < array.length; i++) {
                 if (array[i] > 0) {
-                        total += array[i];
-                        double newAngle = total * delta;
-                        Arc2D arc = new Arc2D.Double(apt.x, apt.y, width, height, oldAngle, newAngle - oldAngle, Arc2D.PIE);
+                    total += array[i];
+                    double newAngle = total * delta;
+                    Arc2D arc = new Arc2D.Double(apt.x, apt.y, width, height, oldAngle, newAngle - oldAngle, Arc2D.PIE);
 
-                        gc.setColor(doc.getColorByIndex(i));
-                        gc.fill(arc);
-                        //gc.drawString(""+array[i],apt.x+30,apt.y+(i+1)*20);
+                    gc.setColor(doc.getColorByIndex(i));
+                    gc.fill(arc);
+                    //gc.drawString(""+array[i],apt.x+30,apt.y+(i+1)*20);
                     if (array.length < 120)
                         gc.setColor(Color.GRAY);
-                        gc.draw(arc);
-                        oldAngle = newAngle;
+                    gc.draw(arc);
+                    oldAngle = newAngle;
                 }
             }
             gc.setColor(Color.GRAY);

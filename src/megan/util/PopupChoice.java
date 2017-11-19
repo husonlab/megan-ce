@@ -51,6 +51,7 @@ public class PopupChoice<T> extends JPopupMenu {
     public static <T> void addToJMenu(JPopupMenu popupMenu, T[] choices, Icon[] icons, T initialChoice, final CallBack<T> callBack) {
         add(popupMenu, choices, initialChoice, icons, callBack);
     }
+
     /**
      * constructor
      *

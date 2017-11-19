@@ -53,13 +53,13 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
         np.matchIgnoreCase(";");
 
         chartViewer = (RarefactionPlot) dir.getViewerByClassName(RarefactionPlot.getClassName(data));
-            if (chartViewer == null) {
-                chartViewer = new RarefactionPlot(dir, (ClassificationViewer) dir.getViewerByClassName(data));
-                getDir().addViewer(chartViewer);
-            } else {
-                chartViewer.sync();
-                chartViewer.updateView(Director.ALL);
-            }
+        if (chartViewer == null) {
+            chartViewer = new RarefactionPlot(dir, (ClassificationViewer) dir.getViewerByClassName(data));
+            getDir().addViewer(chartViewer);
+        } else {
+            chartViewer.sync();
+            chartViewer.updateView(Director.ALL);
+        }
         WindowUtilities.toFront(chartViewer);
     }
 
@@ -77,6 +77,7 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
         return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
+
     public String getName() {
         return "Rarefaction Analysis...";
     }

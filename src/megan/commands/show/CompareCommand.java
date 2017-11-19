@@ -180,21 +180,21 @@ public class CompareCommand extends CommandBase implements ICommand {
         try {
             compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
 
-        if (!compareWindow.isCanceled()) {
-            String command = compareWindow.getCommand();
-            if (command != null) {
-                newDir.execute(command, newDir.getCommandManager());
-                ok = true;
+            if (!compareWindow.isCanceled()) {
+                String command = compareWindow.getCommand();
+                if (command != null) {
+                    newDir.execute(command, newDir.getCommandManager());
+                    ok = true;
+                }
             }
-        }
-        if (!ok) {
-            try {
-                newDir.close();
-            } catch (CanceledException e) {
-                e.printStackTrace();
+            if (!ok) {
+                try {
+                    newDir.close();
+                } catch (CanceledException e) {
+                    e.printStackTrace();
+                }
+                ProjectManager.removeProject(newDir);
             }
-            ProjectManager.removeProject(newDir);
-        }
         } catch (CanceledException e) {
             Basic.caught(e); // won't happen because we don't preload files here
         }

@@ -53,6 +53,7 @@ import java.util.Collection;
  */
 public class OpenFileCommand extends CommandBase implements ICommand {
     static long timeOfLastOpen = 0;
+
     /**
      * constructor
      */
@@ -182,8 +183,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                     MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
                     NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()), 5000);
-                }
-                else
+                } else
                     System.err.println(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()));
                 timeOfLastOpen = System.currentTimeMillis();
                 if (!ProgramProperties.isUseGUI())

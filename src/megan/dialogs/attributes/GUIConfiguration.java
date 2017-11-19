@@ -50,8 +50,8 @@ public class GUIConfiguration {
                 "Chart Microbial Attributes...;Show Definitions;|;Open NCBI Webpage Attributes;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
-                        "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
-                        ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;"
+                "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;" +
+                ChartCommandHelper.getOpenChartMenuString() + "|;Chart Microbial Attributes...;|;"
         );
         menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
 

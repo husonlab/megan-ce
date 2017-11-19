@@ -36,15 +36,15 @@ package megan.util;
 import java.util.Iterator;
 
 /**
- *  The <tt>BoyerMoore</tt> class finds the first occurrence of a pattern string
- *  in a text string.
- *  <p>
- *  This implementation uses the Boyer-Moore algorithm (with the bad-character
- *  rule, but not the strong good suffix rule).
- *  <p>
- *  For additional documentation,
- *  see <a href="http://algs4.cs.princeton.edu/53substring">Section 5.3</a> of
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+ * The <tt>BoyerMoore</tt> class finds the first occurrence of a pattern string
+ * in a text string.
+ * <p>
+ * This implementation uses the Boyer-Moore algorithm (with the bad-character
+ * rule, but not the strong good suffix rule).
+ * <p>
+ * For additional documentation,
+ * see <a href="http://algs4.cs.princeton.edu/53substring">Section 5.3</a> of
+ * <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
 public class BoyerMoore {
     private final int R;     // the radix
@@ -74,7 +74,7 @@ public class BoyerMoore {
      * Preprocesses the pattern string.
      *
      * @param pattern the pattern string
-     * @param R the alphabet size
+     * @param R       the alphabet size
      */
     public BoyerMoore(byte[] pattern, int offset, int length, int R) {
         this.R = R;
@@ -94,9 +94,9 @@ public class BoyerMoore {
      * Returns the index of the first occurrence of the pattern string
      * in the text string.
      *
-     * @param  txt the text string
+     * @param txt the text string
      * @return the index of the first occurrence of the pattern string
-     *         in the text string; -1 if no such match
+     * in the text string; -1 if no such match
      */
     public int search(String txt) {
         int M = pat.length();

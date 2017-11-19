@@ -45,7 +45,7 @@ import java.awt.event.WindowEvent;
 import java.util.*;
 
 /**
- *  Rarefaction plot
+ * Rarefaction plot
  * Daniel Huson, 7.2012, 4.2015
  */
 public class RarefactionPlot extends ChartViewer {

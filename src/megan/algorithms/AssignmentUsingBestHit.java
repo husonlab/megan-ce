@@ -52,6 +52,7 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
 
         // System.err.println("Using 'best hit'  assignment on " + cName);
     }
+
     /**
      * computes the id for a read from its matches
      * matches

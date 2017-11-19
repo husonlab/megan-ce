@@ -109,6 +109,7 @@ public interface IMatchBlock {
 
     /**
      * get the first word of the text
+     *
      * @return
      */
     String getTextFirstWord();

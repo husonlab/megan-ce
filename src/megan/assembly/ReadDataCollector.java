@@ -146,7 +146,7 @@ public class ReadDataCollector {
      *
      * @param start
      * @param text
-     * @param last if true, returns last such line rather than first
+     * @param last  if true, returns last such line rather than first
      * @return tokens
      */
     private static String[] getLineTokens(String start, String text, boolean last) {

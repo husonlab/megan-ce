@@ -169,6 +169,7 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
 
     /**
      * do these two SAM lines refer to the same query sequence?
+     *
      * @param samA
      * @param samB
      * @return true, if same query

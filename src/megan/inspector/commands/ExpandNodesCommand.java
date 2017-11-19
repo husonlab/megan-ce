@@ -48,8 +48,7 @@ public class ExpandNodesCommand extends CommandBase implements ICommand {
         final TreePath[] paths = inspectorWindow.getDataTree().getSelectionPaths();
         if (paths != null) {
             inspectorWindow.expand(paths);
-        }
-        else {
+        } else {
             for (NodeBase root : inspectorWindow.getClassification2RootNode().values()) {
                 inspectorWindow.expand(root);
             }

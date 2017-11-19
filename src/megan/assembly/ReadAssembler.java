@@ -204,7 +204,6 @@ public class ReadAssembler {
     /**
      * computes all pairwise overlaps between contigs and then merges contigs
      *
-     *
      * @param maxNumberOfThreads
      * @param progress
      * @param minPercentIdentityToMergeContigs

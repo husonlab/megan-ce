@@ -55,48 +55,48 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
             inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
 
         final LinkedList<Triplet<String, Float, Collection<Integer>>> name2Size2Ids = new LinkedList<>();
-            for (Integer id : classificationViewer.getSelectedIds()) {
-                String name = classificationViewer.getClassification().getName2IdMap().get(id);
-                Node v = classificationViewer.getANode(id);
-                if (v.getOutDegree() > 0) { // internal node
-                    float size = classificationViewer.getNodeData(v).getCountAssigned();
-                    name2Size2Ids.add(new Triplet<>(name, size, (Collection<Integer>) Collections.singletonList(id)));
-                } else {
-                    float size = classificationViewer.getNodeData(v).getCountSummarized();
-                    final Collection<Integer> ids = classificationViewer.getClassification().getFullTree().getAllDescendants(id);
-                    name2Size2Ids.add(new Triplet<>(name, size, ids));
-                }
+        for (Integer id : classificationViewer.getSelectedIds()) {
+            String name = classificationViewer.getClassification().getName2IdMap().get(id);
+            Node v = classificationViewer.getANode(id);
+            if (v.getOutDegree() > 0) { // internal node
+                float size = classificationViewer.getNodeData(v).getCountAssigned();
+                name2Size2Ids.add(new Triplet<>(name, size, (Collection<Integer>) Collections.singletonList(id)));
+            } else {
+                float size = classificationViewer.getNodeData(v).getCountSummarized();
+                final Collection<Integer> ids = classificationViewer.getClassification().getFullTree().getAllDescendants(id);
+                name2Size2Ids.add(new Triplet<>(name, size, ids));
             }
+        }
         WindowUtilities.toFront(inspectorWindow.getFrame());
 
         if (name2Size2Ids.size() > 0) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
-                        if (false) { // todo: without this, inspector window sometimes opens behind main windows...
-                            final Runnable job = new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(500);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    SwingUtilities.invokeLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            inspectorWindow.getFrame().toFront();
-                                        }
-                                    });
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
+                    if (false) { // todo: without this, inspector window sometimes opens behind main windows...
+                        final Runnable job = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
-                            };
-                            Thread thread = new Thread(job);
-                            thread.setDaemon(true);
-                            thread.start();
-                        }
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        inspectorWindow.getFrame().toFront();
+                                    }
+                                });
+                            }
+                        };
+                        Thread thread = new Thread(job);
+                        thread.setDaemon(true);
+                        thread.start();
                     }
-                });
+                }
+            });
         }
     }
 

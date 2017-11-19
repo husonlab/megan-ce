@@ -39,7 +39,7 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
      */
     public Fasta2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
-        if (!FastaFileFilter.accept(fileName,true)) {
+        if (!FastaFileFilter.accept(fileName, true)) {
             close();
             throw new IOException("Not a FastA file: " + fileName);
         }

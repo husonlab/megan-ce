@@ -199,6 +199,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 if (inputDialog != null)
                     inputDialog.setViewer(dir, InspectorWindow.this);
             }
+
             public void windowClosing(WindowEvent event) {
                 if (dir.getDocument().getProgressListener() != null)
                     dir.getDocument().getProgressListener().setUserCancelled(true);

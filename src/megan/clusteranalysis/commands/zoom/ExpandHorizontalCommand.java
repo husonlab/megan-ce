@@ -38,17 +38,17 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(getSyntax());
         ViewerBase viewer = (ViewerBase) ((ClusterViewer) getViewer()).getGraphView();
         if (viewer != null) {
-        double scale = 1.2 * viewer.trans.getScaleX();
-        if (scale < 10000) {
-            ScrollPaneAdjuster spa = new ScrollPaneAdjuster(viewer.getScrollPane(), viewer.trans);
-            if (viewer.trans.getLockXYScale()) {
-                viewer.trans.composeScale(1.2, 1.2);
-                spa.adjust(true, true);
-            } else {
-                viewer.trans.composeScale(1.2, 1);
-                spa.adjust(true, false);
+            double scale = 1.2 * viewer.trans.getScaleX();
+            if (scale < 10000) {
+                ScrollPaneAdjuster spa = new ScrollPaneAdjuster(viewer.getScrollPane(), viewer.trans);
+                if (viewer.trans.getLockXYScale()) {
+                    viewer.trans.composeScale(1.2, 1.2);
+                    spa.adjust(true, true);
+                } else {
+                    viewer.trans.composeScale(1.2, 1);
+                    spa.adjust(true, false);
+                }
             }
-        }
         }
     }
 

@@ -35,7 +35,7 @@ public class ResetZoomCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=both what=reset;");
+        executeImmediately("expand axis=vertical what=fit;");
     }
 
     public boolean isApplicable() {

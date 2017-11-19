@@ -35,7 +35,7 @@ public class ZoomToFitCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=both what=fit;");
+        executeImmediately("expand axis=both what=fit;");
     }
 
     public boolean isApplicable() {

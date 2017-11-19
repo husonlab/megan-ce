@@ -118,8 +118,10 @@ public class DAAMeganizer {
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
 
-        final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
+        final String contaminantsFile = (ProgramProperties.getIfEnabled("enable-contaminants", options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "")));
+
         options.comment("Functional classification:");
+        final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
         for (String cName : cNames) {
             if (!ClassificationManager.getAllSupportedClassifications().contains(cName))
@@ -226,7 +228,7 @@ public class DAAMeganizer {
             final String daaFile = daaFiles[i];
             System.err.println("Meganizing: " + daaFile);
             final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
-            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads, minPercentReadToCover);
+            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads, minPercentReadToCover, contaminantsFile);
         }
     }
 }

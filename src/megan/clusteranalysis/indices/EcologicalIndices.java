@@ -409,7 +409,7 @@ public class EcologicalIndices {
                 }
                 Double sum3 = 0.0;
                 for (int l = 0; l < len; l++) {
-                        sum3 += ((sum1 + sum2) / (d1[l] + d2[l])) * Math.pow((d1[l] / sum1) - (d2[l] / sum2), 2);
+                    sum3 += ((sum1 + sum2) / (d1[l] + d2[l])) * Math.pow((d1[l] / sum1) - (d2[l] / sum2), 2);
                 }
                 row.add(Math.sqrt(sum3));
 

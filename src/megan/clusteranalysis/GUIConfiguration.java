@@ -56,7 +56,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Rotate", "Rotate Left;Rotate Right;Rotate Up;Rotate Down;");
         menuConfig.defineMenu("Expand/Contract", "Expand Horizontal;Contract Horizontal;Expand Vertical;Contract Vertical;");
 
-        menuConfig.defineMenu("Options", "Apply Triangulation Test...;|;PCoA Tab;UPGMA Tree Tab;NJ Tree Tab;Network Tab;Matrix Tab;|;Use JSD;Use Bray-Curtis;Use Euclidean;|;Use Chi-Square;Use Kulczynski;Use Hellinger;|;Sync;");
+        menuConfig.defineMenu("Options", "Apply Triangulation Test...;|;PCoA Tab;UPGMA Tree Tab;NJ Tree Tab;Network Tab;Matrix Tab;|;Use JSD;Use Bray-Curtis;Use Euclidean;|;" + ProgramProperties.getIfEnabled("enable-unifrac", "Use Unweighted Uniform UniFrac;Use Weighted Uniform UniFrac;|;") + "Use Chi-Square;Use Kulczynski;Use Hellinger;|;Sync;");
 
 
         menuConfig.defineMenu("PCoA", "PCoA Tab;|;PC1 vs PC2;PC1 vs PC3;PC2 vs PC3;PCi vs PCj...;|;PC1 PC2 PC3;PCi PCj PCk...;|;Show Axes;|;Show BiPlot;BiPlot Size...;|;Show TriPlot;TriPlot Size...;");

@@ -23,6 +23,7 @@ import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
+import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.daa.connector.DAAConnector;
@@ -59,7 +60,7 @@ public class Meganize {
      * @throws CanceledException
      */
     public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final String[] cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
-                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover) throws IOException, CanceledException {
+                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover, String contaminantsFile) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
@@ -83,6 +84,12 @@ public class Meganize {
         doc.setMinPercentReadToCover(minPercentReadToCover);
         doc.setLongReads(longReads);
         doc.setReadAssignmentMode(readAssignmentMode);
+
+        if (contaminantsFile.length() > 0) {
+            ContaminantManager contaminantManager = new ContaminantManager();
+            contaminantManager.read(contaminantsFile);
+            doc.getDataTable().setContaminants(contaminantManager.toString());
+        }
 
         doc.setProgressListener(progress);
 

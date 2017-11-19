@@ -34,8 +34,8 @@ import java.util.Set;
  * Daniel Huson, 4.2015, 3.2016
  */
 public class IdParser {
-    public static final String[] GI_TAGS = new String[]{"gi|", "(gi:" };
-    public static final String[] ACCESSION_TAGS = new String[]{"gb|", "ref|" };
+    public static final String[] GI_TAGS = new String[]{"gi|", "(gi:"};
+    public static final String[] ACCESSION_TAGS = new String[]{"gb|", "ref|"};
     public static final String REFSEQ_TAG = "ref|";
 
     public static final String PROPERTIES_FIRST_WORD_IS_ACCESSION = "FirstWordIsAccession";
@@ -161,24 +161,24 @@ public class IdParser {
             accTaggedIds.restart(headerString);
             for (String label : accTaggedIds) {
                 final int id = idMapper.getAccessionMap().get(label);
-                    if (id != 0) {
-                        if (disabledIds.contains(id))
-                            disabled.add(id);
-                        else {
-                            switch (algorithm) {
-                                default:
-                                case First_Hit:
-                                    return id;
-                                case LCA:
-                                    ids.add(id);
-                                    break;
-                                case Majority:
-                                    final Integer count = id2count.get(id);
-                                    id2count.put(id, count == null ? 1 : count + 1);
-                                    break;
-                            }
+                if (id != 0) {
+                    if (disabledIds.contains(id))
+                        disabled.add(id);
+                    else {
+                        switch (algorithm) {
+                            default:
+                            case First_Hit:
+                                return id;
+                            case LCA:
+                                ids.add(id);
+                                break;
+                            case Majority:
+                                final Integer count = id2count.get(id);
+                                id2count.put(id, count == null ? 1 : count + 1);
+                                break;
                         }
                     }
+                }
             }
         }
 

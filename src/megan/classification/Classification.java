@@ -44,6 +44,7 @@ public class Classification {
 
     /**
      * constructor
+     *
      * @param cName
      */
     public Classification(String cName) {
@@ -61,6 +62,7 @@ public class Classification {
 
     /**
      * load the data
+     *
      * @param treeFile
      * @param mapFile
      * @param progress

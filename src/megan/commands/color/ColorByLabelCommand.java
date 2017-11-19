@@ -71,6 +71,7 @@ public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand
     }
 
     public static String NAME = "Color Classes By Label";
+
     public String getName() {
         return NAME;
     }

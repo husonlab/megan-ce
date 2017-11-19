@@ -33,6 +33,7 @@ public class SetLabelUp45Command extends CommandBase implements ICheckBoxCommand
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return chartViewer.getClassLabelAngle() == -Math.PI / 4;
     }
+
     public String getSyntax() {
         return null;
     }

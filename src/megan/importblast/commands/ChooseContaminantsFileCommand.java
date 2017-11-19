@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,33 +16,27 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.alignment.commands;
+package megan.importblast.commands;
 
-import jloda.gui.commands.CommandBase;
+import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.ICommand;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
+import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
+import megan.commands.CommandBase;
+import megan.importblast.ImportBlastDialog;
+import megan.main.MeganProperties;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
- * font size
- * Daniel Huson, 8.2011
+ * choose command
+ * Daniel Huson, 11.2017
  */
-public class ExpandHorizontalCommand extends CommandBase implements ICommand {
-    /**
-     * parses the given command and executes it
-     *
-     * @param np
-     * @throws java.io.IOException
-     */
-    @Override
-    public void apply(NexusStreamParser np) throws Exception {
-    }
-
+public class ChooseContaminantsFileCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *
@@ -54,23 +48,51 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
     }
 
     /**
+     * parses and applies the command
+     *
+     * @param np
+     * @throws Exception
+     */
+    @Override
+    public void apply(NexusStreamParser np) throws Exception {
+    }
+
+    /**
      * action to be performed
      *
      * @param ev
      */
-    @Override
     public void actionPerformed(ActionEvent ev) {
-        executeImmediately("expand axis=horizontal what=in;");
+        if (getViewer() instanceof ImportBlastDialog) {
+            File lastOpenFile = ProgramProperties.getFile(MeganProperties.CONTAMINANT_FILE);
+
+            getDir().notifyLockInput();
+            File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
+            getDir().notifyUnlockInput();
+
+            if (file != null && file.exists() && file.canRead()) {
+                ProgramProperties.put(MeganProperties.CONTAMINANT_FILE, file.getAbsolutePath());
+                ((ImportBlastDialog) getViewer()).setContaminantsFileName(file.getPath());
+                ((ImportBlastDialog) getViewer()).setUseContaminantsFilter(true);
+                getCommandManager().updateEnableState(UseContaminantsFilterCommand.NAME);
+            }
+        }
     }
 
-    public static final String NAME = "Expand Horizontal";
-
+    /**
+     * /**
+     * get the name to be used as a menu label
+     *
+     * @return name
+     */
     public String getName() {
-        return NAME;
+        return "Load...";
     }
+
+    final public static String ALTNAME = "Load Contaminants File";
 
     public String getAltName() {
-        return "Expand Horizontal Alignment";
+        return ALTNAME;
     }
 
     /**
@@ -79,7 +101,7 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Expand view horizontally";
+        return "Loads a list of contaminant taxon names or Ids from a file (one per line)";
     }
 
     /**
@@ -88,7 +110,7 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("ExpandHorizontal16.gif");
+        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif");
     }
 
     /**
@@ -97,7 +119,7 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_2, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return null;
     }
 
     /**
@@ -115,6 +137,6 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return true;
+        return getViewer() instanceof ImportBlastDialog;
     }
 }

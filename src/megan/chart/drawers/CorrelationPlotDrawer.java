@@ -508,27 +508,27 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
         if (numberOfClasses > 0) {
             SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
-        gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
+            gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
-        final boolean doDraw = (size == null);
-        Rectangle bbox = null;
+            final boolean doDraw = (size == null);
+            Rectangle bbox = null;
 
-        int x0 = leftMargin;
-        int x1 = getWidth() - rightMargin;
-        int y0 = getHeight() - bottomMargin;
-        int y1 = topMargin;
+            int x0 = leftMargin;
+            int x1 = getWidth() - rightMargin;
+            int y0 = getHeight() - bottomMargin;
+            int y1 = topMargin;
 
             if (viewer.getClassesList().isDoClustering())
                 y1 += topTreeSpace;
 
-        int longest = 0;
+            int longest = 0;
             for (String className : classNames) {
-            longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
-        }
-        int right = Math.max(leftMargin, longest + 5);
+                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+            }
+            int right = Math.max(leftMargin, longest + 5);
 
-        if (doDraw)
-            gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
+            if (doDraw)
+                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
 
             double yStep = (y0 - y1) / (double) numberOfClasses;
             int c = numberOfClasses - 1;
@@ -716,17 +716,17 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 public void run() {
                     try {
                         updateCoordinates();
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                public void run() {
-                                    if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
-                                        updateClassesJList();
-                                    previousClusterClasses = viewer.getClassesList().isDoClustering();
-                                    if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
-                                        updateSeriesJList();
-                                    previousClusterSeries = viewer.getSeriesList().isDoClustering();
-                                    viewer.repaint();
-                                }
-                            });
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            public void run() {
+                                if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                                    updateClassesJList();
+                                previousClusterClasses = viewer.getClassesList().isDoClustering();
+                                if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
+                                    updateSeriesJList();
+                                previousClusterSeries = viewer.getSeriesList().isDoClustering();
+                                viewer.repaint();
+                            }
+                        });
                     } catch (Exception e) {
                         // Basic.caught(e);
                     } finally {

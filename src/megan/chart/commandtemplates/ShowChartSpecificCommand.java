@@ -58,6 +58,7 @@ public class ShowChartSpecificCommand extends CommandBase implements ICommand {
         return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
+
     public static String getName(String displayName) {
         return "Show " + displayName + "";
     }

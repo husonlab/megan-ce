@@ -36,7 +36,7 @@ import java.util.*;
  * The equalOverShorterOfBoth angle algorithm for embedding a circular splits graph
  *
  * @author huson
- *         Date: 03-Jan-2004
+ * Date: 03-Jan-2004
  */
 public class EqualAngle {
     private boolean optionUseWeights = true;

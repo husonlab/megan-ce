@@ -192,8 +192,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 }
             } else
                 topY = 101;
-        }
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        } else if (scalingType == ChartViewer.ScalingType.LOG) {
             drawYAxisLog(gc, size);
             return;
         } else if (scalingType == ChartViewer.ScalingType.SQRT) {
@@ -532,7 +531,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                 }
-                    gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
+                gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
                 drawString(gc, label, apt.getX(), apt.getY(), classLabelAngle);
                 if (sgc != null)
                     sgc.clearCurrentItem();
@@ -634,8 +633,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
             percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
             topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
-        }
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        } else if (scalingType == ChartViewer.ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
             percentFactor = null;
         } else if (scalingType == ChartViewer.ScalingType.SQRT) {

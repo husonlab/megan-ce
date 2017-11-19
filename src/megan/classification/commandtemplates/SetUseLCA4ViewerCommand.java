@@ -131,6 +131,6 @@ public class SetUseLCA4ViewerCommand extends CommandBase implements ICheckBoxCom
      * @return description
      */
     public String getDescription() {
-        return "Use LCA algorithm for analyzing " + cName + " content (alternative is 'best hit')";
+        return "Use LCA algorithm for analyzing " + cName + " content. This option is not recommended for functional binning; stick to the default 'best hit'.";
     }
 }

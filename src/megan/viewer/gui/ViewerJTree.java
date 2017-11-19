@@ -54,8 +54,8 @@ public class ViewerJTree extends JTree {
 
     /**
      * constructor
-     *  @param classificationViewer
      *
+     * @param classificationViewer
      */
     public ViewerJTree(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;

@@ -52,7 +52,7 @@ public class GUIConfiguration {
                 "Show Nucleotides;Show Amino Acids;|;Show Reference;Show Consensus;Show Unaligned;|;Set Amino Acid Colors...;|;" +
                 "Matches Vs Reference;Mismatches Vs Reference;|;Matches Vs Consensus;Mismatches Vs Consensus;");
 
-        menuConfig.defineMenu("Layout", "As Mapping;By Start;By Name;By Contigs;Unsorted;|;@Expand/Contract;|;Zoom To Fit;|;Expand To Height;Reset Zoom;|;Zoom To Selection;");
+        menuConfig.defineMenu("Layout", "As Mapping;By Start;By Name;By Contigs;Unsorted;|;@Expand/Contract;|;Zoom To Fit;|;Expand To Height;Reset Zoom;");
 
         menuConfig.defineMenu("Expand/Contract", "Expand Horizontal Alignment;Contract Horizontal Alignment;Expand Vertical Alignment;Contract Vertical Alignment;");
 
@@ -72,7 +72,7 @@ public class GUIConfiguration {
     public static String getToolBarConfiguration() {
         return "Open...;Print...;Export Image...;|;Find...;|;" +
                 "Expand Horizontal Alignment;Contract Horizontal Alignment;Expand Vertical Alignment;Contract Vertical Alignment;|;" +
-                "Zoom To Fit;Zoom To Selection;|;Expand To Height;Reset Zoom;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;Chart Diversity...;|;" +
+                "Zoom To Fit;|;Expand To Height;Reset Zoom;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;Chart Diversity...;|;" +
                 "Contract Gaps;Show Reference;Show Consensus;Show Unaligned;|;" +
                 "Show Nucleotides;Show Amino Acids;|;By Start;As Mapping;";
     }

@@ -72,16 +72,16 @@ public class OverlapGraphBuilder {
         for (int r = 0; r < readDatas.length; r++) {
             final ReadData read = readDatas[r];
             if (read.getMatches() != null) {
-            for (int m = 0; m < read.getMatches().length; m++) {
-                final MatchData match = read.getMatches()[m];
-                SortedSet<MatchData> set = ref2matches.get(match.getRefName());
-                if (set == null) {
-                    set = new TreeSet<>(new MatchData());
-                    ref2matches.put(match.getRefName(), set);
+                for (int m = 0; m < read.getMatches().length; m++) {
+                    final MatchData match = read.getMatches()[m];
+                    SortedSet<MatchData> set = ref2matches.get(match.getRefName());
+                    if (set == null) {
+                        set = new TreeSet<>(new MatchData());
+                        ref2matches.put(match.getRefName(), set);
+                    }
+                    set.add(match);
+                    countPairs++;
                 }
-                set.add(match);
-                countPairs++;
-            }
             }
             progress.setProgress(r);
         }
@@ -157,7 +157,7 @@ public class OverlapGraphBuilder {
     }
 
     /**
-     *computess the number of matching letters, else returns 0
+     * computess the number of matching letters, else returns 0
      *
      * @param iMatch
      * @param jMatch

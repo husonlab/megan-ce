@@ -36,7 +36,7 @@ import java.util.List;
  * Daniel Huson, 6.2008
  */
 public class
-        ApplySignificanceTest {
+ApplySignificanceTest {
     public static final String NO_CORRECTION = "none";
     public static String BONFERRONI = "bonferroni";
     public static String HOLM_BONFERRONI = "holm_bonferroni";

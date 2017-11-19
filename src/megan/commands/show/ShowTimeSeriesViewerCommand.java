@@ -60,6 +60,7 @@ public class ShowTimeSeriesViewerCommand extends megan.commands.CommandBase impl
         return ((Director) getDir()).getDocument().getNumberOfSamples() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
+
     public String getName() {
         return "Time Series Viewer...";
     }

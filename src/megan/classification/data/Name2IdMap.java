@@ -99,6 +99,7 @@ public class Name2IdMap implements IName2IdMap {
 
     /**
      * remove an id from the map
+     *
      * @param id
      */
     public void remove(int id) {
@@ -161,8 +162,8 @@ public class Name2IdMap implements IName2IdMap {
                             continue; // Silva has such lines...
                         int id = Integer.parseInt(tokens[0]);
                         String name = tokens[1];
-                            name2id.put(name, id);
-                            id2name.put(id, name);
+                        name2id.put(name, id);
+                        id2name.put(id, name);
 
                         boolean hasToolTip = tokens.length > 2 && tokens[tokens.length - 1].startsWith("\"");
                         int tokensLengthWithoutToolTip = (hasToolTip ? tokens.length - 1 : tokens.length);

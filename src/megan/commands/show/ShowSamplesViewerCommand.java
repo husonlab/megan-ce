@@ -39,8 +39,8 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
         np.matchIgnoreCase(getSyntax());
         SamplesViewer samplesViewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
         if (samplesViewer == null) {
-                samplesViewer = new SamplesViewer(getDir());
-                getDir().addViewer(samplesViewer);
+            samplesViewer = new SamplesViewer(getDir());
+            getDir().addViewer(samplesViewer);
         }
         WindowUtilities.toFront(samplesViewer.getFrame());
     }
@@ -53,7 +53,9 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
         return ((Director) getDir()).getDocument().getNumberOfSamples() > 0;
 
     }
+
     public static final String NAME = "Samples Viewer...";
+
     public String getName() {
         return NAME;
     }

@@ -189,7 +189,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
      */
     @Override
     public boolean isApplicable() {
-        if (ProgramProperties.get("always-allow-open-fviewer", false))
+        if (ProgramProperties.get("always-allow-open-fviewer", false) || ProgramProperties.get("enable-open-empty-fviewer", false))
             return true;
         final Document doc = ((Director) getDir()).getDocument();
         return doc.getActiveViewers().contains(cName);

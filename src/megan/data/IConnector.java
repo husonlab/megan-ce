@@ -60,8 +60,9 @@ public interface IConnector {
 
     /**
      * get all reads with specified matches. If minScore=0 and topPercent=0, no filtering
-     * @param minScore ignore
-     * @param maxExpected ignore
+     *
+     * @param minScore         ignore
+     * @param maxExpected      ignore
      * @param wantReadSequence
      * @param wantMatches
      * @return
@@ -71,10 +72,11 @@ public interface IConnector {
 
     /**
      * get getLetterCodeIterator over all reads for given classification and classId. If minScore=0 and topPercent=0, no filtering
+     *
      * @param classification
      * @param classId
-     * @param minScore ignore
-     * @param maxExpected ignore
+     * @param minScore         ignore
+     * @param maxExpected      ignore
      * @param wantReadSequence
      * @param wantMatches
      * @return
@@ -96,8 +98,9 @@ public interface IConnector {
 
     /**
      * gets a read block accessor
-     * @param minScore ignored
-     * @param maxExpected ignored
+     *
+     * @param minScore         ignored
+     * @param maxExpected      ignored
      * @param wantReadSequence
      * @param wantMatches
      * @return

@@ -114,7 +114,7 @@ public class Biom1ImportTaxonomy {
                     if (previous != null)
                         value += previous;
                     //  if (class2count.get(row2class[row]) == null) // need this to avoid reading the number for the same node  more than once
-                        class2count.put(row2class[row], value);
+                    class2count.put(row2class[row], value);
                     // System.err.println(col2series[col] + " -> " + row2class[row] + " -> " + value);
                 }
                 row++;
@@ -139,7 +139,7 @@ public class Biom1ImportTaxonomy {
                 if (previous != null)
                     value += previous;
                 // if (class2count.get(row2class[row]) == null) // need this to avoid reading the number for the same node  more than once
-                    class2count.put(row2class[row], value);
+                class2count.put(row2class[row], value);
                 // System.err.println(col2series[col] + " -> " + row2class[row] + " -> " + value);
             }
         }

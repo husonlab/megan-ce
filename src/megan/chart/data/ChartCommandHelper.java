@@ -40,7 +40,7 @@ public class ChartCommandHelper {
     public static String getOpenChartMenuString() {
         final StringBuilder buf = new StringBuilder();
         for (String name : DrawerManager.getAllSupportedChartDrawers()) {
-                buf.append((new ShowChartSpecificCommand(name)).getName()).append(";");
+            buf.append((new ShowChartSpecificCommand(name)).getName()).append(";");
         }
         return buf.toString();
     }
@@ -53,7 +53,7 @@ public class ChartCommandHelper {
     public static String getSetDrawerCommandString() {
         final StringBuilder buf = new StringBuilder();
         for (String name : DrawerManager.getAllSupportedChartDrawers()) {
-                buf.append((new SetChartDrawerSpecificCommand(name)).getName()).append(";");
+            buf.append((new SetChartDrawerSpecificCommand(name)).getName()).append(";");
         }
         return buf.toString();
     }

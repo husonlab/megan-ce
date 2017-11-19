@@ -22,7 +22,7 @@ package megan.main;
  * Maintains the version string
  *
  * @author huson
- *         Date: 18.12.2003
+ * Date: 18.12.2003
  */
 public class Version {
     static public final String NAME = "MEGAN";

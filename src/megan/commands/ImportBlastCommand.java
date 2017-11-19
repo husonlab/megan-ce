@@ -25,10 +25,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.core.Director;
-import megan.core.Document;
-import megan.core.MeganFile;
-import megan.core.SampleAttributeTable;
+import megan.core.*;
 import megan.fx.NotificationsInSwing;
 import megan.inspector.InspectorWindow;
 import megan.main.MeganProperties;
@@ -61,9 +58,8 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[description=<text>];";
+                "\t" + ProgramProperties.getIfEnabled("enable-contaminants", "[contaminantsFile=<filename>] ") + "[description=<text>];";
     }
-
 
     /**
      * parses the given command and executes it
@@ -232,11 +228,20 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 }
             }
 
-            String description = null;
+            if (np.peekMatchIgnoreCase("contaminantsFile")) {
+                np.matchIgnoreCase("contaminantsFile=");
+                final String contaminantsFile = np.getWordFileNamePunctuation().trim();
+                ContaminantManager contaminantManager = new ContaminantManager();
+                contaminantManager.read(contaminantsFile);
+                doc.getDataTable().setContaminants(contaminantManager.toString());
+            }
+
+            String description;
             if (np.peekMatchIgnoreCase("description")) {
                 np.matchIgnoreCase("description=");
                 description = np.getWordFileNamePunctuation().trim();
-            }
+            } else
+                description = null;
 
             np.matchIgnoreCase(";");
 

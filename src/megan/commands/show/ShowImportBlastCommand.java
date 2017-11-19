@@ -72,6 +72,7 @@ public class ShowImportBlastCommand extends CommandBase implements ICommand {
     }
 
     public static final String NAME = "Import From BLAST...";
+
     /**
      * get the name to be used as a menu label
      *

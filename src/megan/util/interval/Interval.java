@@ -16,7 +16,7 @@ package megan.util.interval;
  *
  * @param <T> The type of data being stored
  * @author Kevin Dolan
- *         Modified by Daniel Huson, 2.2017
+ * Modified by Daniel Huson, 2.2017
  */
 public class Interval<T> implements Comparable<Interval<T>> {
     private final int start;

@@ -39,16 +39,16 @@ public class ExpandVerticalCommand extends CommandBase implements ICommand {
         ViewerBase viewer = (ViewerBase) ((ClusterViewer) getViewer()).getGraphView();
         if (viewer != null) {
             double scale = 2 * viewer.trans.getScaleY();
-        if (scale < 10000) {
-            ScrollPaneAdjuster spa = new ScrollPaneAdjuster(viewer.getScrollPane(), viewer.trans);
-            if (viewer.trans.getLockXYScale()) {
-                viewer.trans.composeScale(1.2, 1.2);
-                spa.adjust(true, true);
-            } else {
-                viewer.trans.composeScale(1, 1.2);
-                spa.adjust(false, true);
+            if (scale < 10000) {
+                ScrollPaneAdjuster spa = new ScrollPaneAdjuster(viewer.getScrollPane(), viewer.trans);
+                if (viewer.trans.getLockXYScale()) {
+                    viewer.trans.composeScale(1.2, 1.2);
+                    spa.adjust(true, true);
+                } else {
+                    viewer.trans.composeScale(1, 1.2);
+                    spa.adjust(false, true);
+                }
             }
-        }
         }
     }
 

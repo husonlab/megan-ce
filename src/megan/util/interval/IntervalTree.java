@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @param <T> the type of objects to associate
  * @author Kevin Dolan
- *         Extended by Daniel Huson, 2.2017
+ * Extended by Daniel Huson, 2.2017
  */
 public class IntervalTree<T> implements Iterable<Interval<T>> {
     private IntervalNode<T> head;
@@ -210,6 +210,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     /**
      * remove an interval
      * Will not rebuild until the next query or call to build
+     *
      * @param interval
      * @return true, if was contained
      */
@@ -252,6 +253,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     /**
      * remove a collection of intervals
      * Will not rebuild until the next query or call to build
+     *
      * @param intervals
      * @return true, if something was contained
      */

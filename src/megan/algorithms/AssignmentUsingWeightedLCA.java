@@ -36,7 +36,7 @@ import java.util.*;
 /**
  * computes the assignment for a read, using the Weighted LCA algorithm
  * This is essentially the same algorithm that is used in MetaScope
- *
+ * <p>
  * Daniel Huson, 3.2016
  */
 public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
@@ -62,6 +62,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     /**
      * constructor
+     *
      * @param cName
      * @param refId2Weight
      * @param ref2weight
@@ -194,6 +195,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
 
     /**
      * get the LCA of two ids
+     *
      * @param id1
      * @param id2
      * @return LCA of id1 and id2, not ignoring the case that one may be the lca of the other
@@ -331,8 +333,8 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         for (WeightedAddress a = headPtr.next; a != null; a = a.next) {
             for (WeightedAddress b = a.next; b != null; b = b.next) {
                 if (a.getAddress().equals(b.getAddress())) {
-                        if (b.weight > a.weight) // keep the maximum weight, NOT the sum
-                            a.weight = b.weight;
+                    if (b.weight > a.weight) // keep the maximum weight, NOT the sum
+                        a.weight = b.weight;
                     a.next = b.next;
                     length--;
                 } else

@@ -544,6 +544,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
 
     /**
      * create a new instance of the given type of drawer, sharing internal data structures
+     *
      * @return
      */
     public WordCloudDrawer createInstance() {

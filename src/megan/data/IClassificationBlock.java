@@ -48,6 +48,7 @@ public interface IClassificationBlock {
 
     /**
      * set the weighted sum
+     *
      * @param key
      * @param num
      */

@@ -46,6 +46,7 @@ public interface IByteGetter extends AutoCloseable {
 
     /**
      * gets next four bytes as a single integer
+     *
      * @param index
      * @return integer
      */

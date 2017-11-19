@@ -81,7 +81,7 @@ public class NaiveProjectionProfile {
             if (taxId > 0) {
                 float[] counts = profile.get(taxId);
                 for (int i = 0; i < counts.length; i++) {
-                        totalInitiallyAssigned[i] += counts[i];
+                    totalInitiallyAssigned[i] += counts[i];
                 }
             }
         }
@@ -108,7 +108,7 @@ public class NaiveProjectionProfile {
                     for (int i = 0; i < array.length; i++) {
                         if (array[i] != 0) {
                             if (array[i] < minSupport[i]) {
-                                    unassigned[i] += array[i];
+                                unassigned[i] += array[i];
                                 array[i] = 0;
                             } else {
                                 hasEntry = true;
@@ -132,7 +132,7 @@ public class NaiveProjectionProfile {
                 if (taxId > 0) {
                     float[] counts = profile.get(taxId);
                     for (int i = 0; i < counts.length; i++) {
-                            totalProjected[i] += counts[i];
+                        totalProjected[i] += counts[i];
                     }
                 }
             }

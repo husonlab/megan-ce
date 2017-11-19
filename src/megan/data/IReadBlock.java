@@ -80,6 +80,7 @@ public interface IReadBlock extends Serializable {
 
     /**
      * get mate type
+     *
      * @param type
      * @deprecated
      */

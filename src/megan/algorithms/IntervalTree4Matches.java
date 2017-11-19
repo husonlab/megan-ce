@@ -36,7 +36,7 @@ public class IntervalTree4Matches {
      * selects the matches to keep for a given read and puts them into an interval tree
      *
      * @param readBlock
-     * @param task        can be null
+     * @param task      can be null
      * @return interval tree
      */
     public static IntervalTree<IMatchBlock> computeIntervalTree(IReadBlock readBlock, Task task) {
@@ -55,7 +55,7 @@ public class IntervalTree4Matches {
      * extracts the set of dominating matches
      *
      * @param intervals
-     * @param cNames dominator must have value of each of these for which the dominated does
+     * @param cNames                 dominator must have value of each of these for which the dominated does
      * @param classificationToReport if this is set to some classification, check only this for domination
      * @return dominating intervals
      */

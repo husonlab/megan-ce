@@ -118,12 +118,12 @@ public class ColorTableExtractor {
             boolean ok = ((a.getThird().getRGB() & 0xffffff) != 0);
             for (int j = 0; ok && j < i; j++) {
                 Triplet<Integer, Integer, Color> b = array[j];
-                if (!dead.get(j) && similar(a.getThird(), b.getThird(),threshold)) {
+                if (!dead.get(j) && similar(a.getThird(), b.getThird(), threshold)) {
                     ok = false;
                     break;
                 }
             }
-            if (ok && !(noBlack && similar(a.getThird(), Color.BLACK, threshold)) && !(noWhite && similar(a.getThird(), Color.WHITE,threshold)))
+            if (ok && !(noBlack && similar(a.getThird(), Color.BLACK, threshold)) && !(noWhite && similar(a.getThird(), Color.WHITE, threshold)))
                 colors.add(a);
             else
                 dead.set(i);

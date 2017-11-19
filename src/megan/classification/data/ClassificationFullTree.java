@@ -52,6 +52,7 @@ public class ClassificationFullTree extends PhyloTree {
 
     /**
      * constructor
+     *
      * @param name2IdMap
      */
     public ClassificationFullTree(String cName, Name2IdMap name2IdMap) {
@@ -92,6 +93,15 @@ public class ClassificationFullTree extends PhyloTree {
             } else
                 throw new IOException("Node has illegal label: " + getLabel(v));
         }
+        if (id2Node.get(IdMapper.NOHITS_ID) == null) {
+            Node v = newNode();
+            addId2Node(IdMapper.NOHITS_ID, v);
+            name2IdMap.put(IdMapper.NOHITS_LABEL, IdMapper.NOHITS_ID);
+            name2IdMap.setRank(IdMapper.NOHITS_ID, 0);
+            newEdge(getRoot(), v);
+        }
+        setInfo(getANode(IdMapper.NOHITS_ID), IdMapper.NOHITS_ID);
+
 
         if (id2Node.get(IdMapper.UNASSIGNED_ID) == null) {
             Node v = newNode();
@@ -111,14 +121,14 @@ public class ClassificationFullTree extends PhyloTree {
         }
         setInfo(getANode(IdMapper.LOW_COMPLEXITY_ID), IdMapper.LOW_COMPLEXITY_ID);
 
-        if (id2Node.get(IdMapper.NOHITS_ID) == null) {
+        if (id2Node.get(IdMapper.CONTAMINANTS_ID) == null) {
             Node v = newNode();
-            addId2Node(IdMapper.NOHITS_ID, v);
-            name2IdMap.put(IdMapper.NOHITS_LABEL, IdMapper.NOHITS_ID);
-            name2IdMap.setRank(IdMapper.NOHITS_ID, 0);
+            addId2Node(IdMapper.CONTAMINANTS_ID, v);
+            name2IdMap.put(IdMapper.CONTAMINANTS_LABEL, IdMapper.CONTAMINANTS_ID);
+            name2IdMap.setRank(IdMapper.CONTAMINANTS_ID, 0);
             newEdge(getRoot(), v);
         }
-        setInfo(getANode(IdMapper.NOHITS_ID), IdMapper.NOHITS_ID);
+        setInfo(getANode(IdMapper.CONTAMINANTS_ID), IdMapper.CONTAMINANTS_ID);
 
         if (getName().equals(Classification.Taxonomy)) {
             // fix Domains:
@@ -193,7 +203,8 @@ public class ClassificationFullTree extends PhyloTree {
 
     /**
      * extract the induced tree
-     *  @param id2data
+     *
+     * @param id2data
      * @param collapsedIds
      * @param targetTree
      */
@@ -273,10 +284,11 @@ public class ClassificationFullTree extends PhyloTree {
 
     /**
      * induce the tree
-     *  @param v
+     *
+     * @param v
      * @param vCpy
      * @param keep
-     * @param stopIds don't induce below these ids
+     * @param stopIds   don't induce below these ids
      * @param node2copy
      */
     private void induceRec(Node v, Node vCpy, PhyloTree treeCpy, NodeSet keep, Set<Integer> stopIds, Map<Integer, NodeData> id2data, Map<Node, Node> node2copy) {
@@ -380,8 +392,8 @@ public class ClassificationFullTree extends PhyloTree {
         if (counts != null) {
             int top = Math.min(assigned.length, counts.length);
             for (int i = 0; i < top; i++) {
-                    assigned[i] = counts[i];
-                    total += counts[i];
+                assigned[i] = counts[i];
+                total += counts[i];
             }
         }
 
@@ -390,8 +402,8 @@ public class ClassificationFullTree extends PhyloTree {
             if (countBelow != null) {
                 int top = Math.min(summarized.length, countBelow.length);
                 for (int i = 0; i < top; i++) {
-                        summarized[i] += countBelow[i];
-                        total += countBelow[i];
+                    summarized[i] += countBelow[i];
+                    total += countBelow[i];
                 }
             }
         }
@@ -430,9 +442,9 @@ public class ClassificationFullTree extends PhyloTree {
         if (counts != null) {
             int top = Math.min(assigned.length, counts.length);
             for (int i = 0; i < top; i++) {
-                    assigned[i] = counts[i];
-                    summarized[i] = counts[i];
-                    total += counts[i];
+                assigned[i] = counts[i];
+                summarized[i] = counts[i];
+                total += counts[i];
             }
         }
 
@@ -552,7 +564,6 @@ public class ClassificationFullTree extends PhyloTree {
         }
         return 0;
     }
-
 
 
     /**

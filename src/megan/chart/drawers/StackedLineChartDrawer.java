@@ -318,7 +318,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                     case PERCENT: {
                         value *= percentFactor[i];
                         break;
-                        }
+                    }
                     case LOG: {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {
@@ -330,7 +330,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                         } else // no change in height
                             value = 0;
                         break;
-                        }
+                    }
                     case SQRT: {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {

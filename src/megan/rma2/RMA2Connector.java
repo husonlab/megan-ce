@@ -91,7 +91,7 @@ public class RMA2Connector implements IConnector {
      * @param classification
      * @param classId
      * @param minScore
-     * @param wantReadSequence   @param wantMatches  specifies what data to return  in ReadBlock
+     * @param wantReadSequence @param wantMatches  specifies what data to return  in ReadBlock
      * @return getLetterCodeIterator over reads in class
      * @throws java.io.IOException
      */
@@ -105,7 +105,7 @@ public class RMA2Connector implements IConnector {
      * @param classification
      * @param classIds
      * @param minScore
-     * @param wantReadSequence   @param wantMatches
+     * @param wantReadSequence @param wantMatches
      * @return getLetterCodeIterator over reads filtered by given parameters
      * @throws IOException
      */

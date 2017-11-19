@@ -61,9 +61,9 @@ public class AccessClassificationsDAA {
 
                             for (int c = 0; c < numberOfClasses; c++) {
                                 int classId = insKey.readInt();
-                                    insKey.skip(4); //  weight
+                                insKey.skip(4); //  weight
                                 int size = insKey.readInt();
-                                    final long offset = insKey.readLong();
+                                final long offset = insKey.readLong();
                                 if (classIds.contains(classId)) {
                                     insDump.seek(dumpBase + offset);
                                     for (int n = 0; n < size; n++) {

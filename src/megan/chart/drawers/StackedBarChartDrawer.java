@@ -161,13 +161,13 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
         double topY;
         final double[] percentFactor;
         if (scalingType == ChartViewer.ScalingType.PERCENT) {
-                final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
-                percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
-                topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
-            } else {
-                topY = 1.1 * getMaxValue();
-                percentFactor = null;
-            }
+            final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
+            percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
+            topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
+        } else {
+            topY = 1.1 * getMaxValue();
+            percentFactor = null;
+        }
 
         final double yFactor = (y0 - y1) / topY;
 
@@ -213,8 +213,8 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
 
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 if (scalingType == ChartViewer.ScalingType.PERCENT && percentFactor != null) {
-                        value *= percentFactor[i];
-                    }
+                    value *= percentFactor[i];
+                }
 
                 final double xBar = x0 + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + c * xStep;
                 final double height = value * yFactor;

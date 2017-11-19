@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * tracks mapping files for a named type of classification
- *
+ * <p>
  * Daniel Huson, 4.2015
  */
 public class IdMapper {
@@ -44,6 +44,8 @@ public class IdMapper {
     static public final String LOW_COMPLEXITY_LABEL = "Low complexity";
     static public final int UNCLASSIFIED_ID = -4;
     static public final String UNCLASSIFIED_LABEL = "Unclassified";
+    static public final int CONTAMINANTS_ID = -6; // -5 used by KEGG
+    static public final String CONTAMINANTS_LABEL = "Contaminants";
 
     public static ILong2IntegerMapFactory giMapFactory = new GI2IdMapFactory();
     public static IString2IntegerMapFactory accessionMapFactory = new Accession2IdMapFactory();
@@ -213,6 +215,7 @@ public class IdMapper {
 
     /**
      * creates a new id parser for this mapper
+     *
      * @return
      */
     public IdParser createIdParser() {

@@ -190,8 +190,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
                 classificationViewer.setFoundNode(nodes[countCurrent++]);
             } else
                 classificationViewer.setFoundNode(classificationViewer.getANode(currentId));
-        }
-        else
+        } else
             classificationViewer.setFoundNode(null);
     }
 
@@ -272,11 +271,11 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
             Set<Integer> toDelete = new HashSet<>();
             for (int t : needToBeUncollapsed) {
                 for (Node v : ClassificationManager.get(name, true).getFullTree().getNodes(t)) {
-                while (v.getInDegree() > 0) {
-                    v = v.getFirstInEdge().getSource();
-                    int vt = (Integer) v.getInfo();
-                    toDelete.add(vt);
-                }
+                    while (v.getInDegree() > 0) {
+                        v = v.getFirstInEdge().getSource();
+                        int vt = (Integer) v.getInfo();
+                        toDelete.add(vt);
+                    }
                 }
             }
             needToBeUncollapsed.removeAll(toDelete); // is above something that needs to be uncollapsed

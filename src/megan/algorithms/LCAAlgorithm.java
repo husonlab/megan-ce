@@ -30,6 +30,7 @@ import java.util.Map;
 /**
  * implements the naive and weighted LCA algorithms
  * Daniel Huson, 8.2014
+ *
  * @deprecated
  */
 public class LCAAlgorithm {

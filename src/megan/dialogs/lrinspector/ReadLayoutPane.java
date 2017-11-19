@@ -89,7 +89,6 @@ public class ReadLayoutPane extends Pane {
     private final LongProperty previousSelectionTime = new SimpleLongProperty(0);
 
 
-
     /**
      * creates the visualization pane
      *

@@ -36,12 +36,13 @@ import java.util.Collection;
 public class ExtractToNewDocumentRMA6 {
     /**
      * extract all named classes in the given classsification to a new RMA6 file
+     *
      * @param sourceRMA6FileName
      * @param sourceClassification
      * @param sourceClassIds
      * @param targetRMA6FileName
      * @param progressListener
-     * @param totalReads return the total reads extracted here
+     * @param totalReads           return the total reads extracted here
      * @throws IOException
      * @throws CanceledException
      */

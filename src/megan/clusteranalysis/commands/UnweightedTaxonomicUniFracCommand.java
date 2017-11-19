@@ -22,15 +22,16 @@ import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.indices.UniFrac;
+import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * UniFrac command
- * Daniel Huson, 7.2010
+ * UnweightedTaxonomicUniFrac command
+ * Daniel Huson, 11.2017
  */
-public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
+public class UnweightedTaxonomicUniFracCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *
@@ -38,7 +39,7 @@ public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(UniFrac.TOPOLOGICAL_UNIFRAC);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(UniFrac.UnweightedTaxonomicUniFrac);
     }
 
     /**
@@ -47,7 +48,7 @@ public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
      * @return name
      */
     public String getName() {
-        return "Use UniFrac";
+        return "Use Unweighted Uniform UniFrac";
     }
 
     /**
@@ -56,7 +57,7 @@ public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
      * @return description
      */
     public String getDescription() {
-        return "Use unweighted UniFrac metric";
+        return "Use uniform UniFrac metric based on unweighted presence/absence on nodes";
     }
 
     /**
@@ -83,7 +84,7 @@ public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + UniFrac.TOPOLOGICAL_UNIFRAC + ";");
+        execute("set index=" + UniFrac.UnweightedTaxonomicUniFrac + ";");
     }
 
     /**
@@ -112,7 +113,7 @@ public class UniFracCommand extends CommandBase implements ICheckBoxCommand {
 
     @Override
     public boolean isApplicable() {
-        return getViewer().getParentViewer() != null && getViewer().getParentViewer().hasComparableData()
+        return getViewer().getParentViewer() != null && getViewer().getParentViewer() instanceof MainViewer
                 && getViewer().getParentViewer().getSelectedNodes().size() > 0;
     }
 }

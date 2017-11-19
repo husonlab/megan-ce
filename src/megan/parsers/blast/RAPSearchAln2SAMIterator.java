@@ -105,12 +105,12 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                     matchesIntervalTree.add(new Interval<Match>(match.queryStart, match.queryEnd, match));
                 } else {
                     if (matches.size() < getMaxNumberOfMatchesPerRead() || match.bitScore > matches.last().bitScore) {
-                    match.id = matchId++;
-                    match.samLine = makeSAM(queryName, match.referenceName, -1, match.bitScore, match.expected, 0, match.identity, match.frame, match.queryStart, match.queryEnd, match.refStart, match.refEnd, match.querySequence, match.refSequence);
-                    matches.add(match);
-                    if (matches.size() > getMaxNumberOfMatchesPerRead())
-                        matches.remove(matches.last());
-                }
+                        match.id = matchId++;
+                        match.samLine = makeSAM(queryName, match.referenceName, -1, match.bitScore, match.expected, 0, match.identity, match.frame, match.queryStart, match.queryEnd, match.refStart, match.refEnd, match.querySequence, match.refSequence);
+                        matches.add(match);
+                        if (matches.size() > getMaxNumberOfMatchesPerRead())
+                            matches.remove(matches.last());
+                    }
                 }
 
             }
@@ -124,7 +124,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
     }
 
     /**
-     /**
+     * /**
      * gets the matches text
      *
      * @return matches text

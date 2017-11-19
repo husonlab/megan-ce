@@ -345,8 +345,7 @@ public class Director implements IDirectableViewer, IDirector {
                         if (commandManager != null) {
                             commandManager.execute(command);
                             ok = true;
-                        }
-                        else
+                        } else
                             throw new Exception("Internal error: commandManager==null");
                     } catch (CanceledException ex) {
                         System.err.println("USER CANCELED EXECUTE");
@@ -678,7 +677,7 @@ public class Director implements IDirectableViewer, IDirector {
             Basic.caught(e);
             return null;
         }
-        if(!dir.isInternalDocument()) {
+        if (!dir.isInternalDocument()) {
             dir.projectsChangedListener = new IProjectsChangedListener() {
                 public void doHasChanged() {
                     viewer.getCommandManager().updateEnableState("Compare...");

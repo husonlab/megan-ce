@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.commands.additional;
+package megan.commands.algorithms;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
@@ -45,7 +45,7 @@ public class ComputeCoreBiome {
      *
      * @param srcDoc
      * @param asUpperBound                   if true, keep rare taxa in which the threshold is an upper bound
-     * @param samplesThreshold                      number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
+     * @param samplesThreshold               number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
      * @param tarClassification2class2counts
      * @param progress
      * @return sampleSize
@@ -139,7 +139,8 @@ public class ComputeCoreBiome {
 
     /**
      * recursively compute the core biome
-     *  @param samplesThreshold
+     *
+     * @param samplesThreshold
      * @param detectionThreshold
      * @param v
      * @param srcClass2counts

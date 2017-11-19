@@ -125,6 +125,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
     /**
      * constructor
+     *
      * @param parentViewer
      * @param dir
      * @param seriesLabelGetter

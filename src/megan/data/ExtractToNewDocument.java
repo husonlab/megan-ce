@@ -35,7 +35,8 @@ import java.util.Collection;
 public class ExtractToNewDocument {
     /**
      * extract all named classes in the given classsification to a new RMA6 file
-     *  @param srcDoc
+     *
+     * @param srcDoc
      * @param srcClassification
      * @param srcClassIds
      * @param tarRMA6FileName

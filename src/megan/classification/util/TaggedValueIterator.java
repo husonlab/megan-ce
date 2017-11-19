@@ -170,6 +170,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     /**
      * does the query match the string starting at the offset
+     *
      * @param string
      * @param offset
      * @param query

@@ -58,7 +58,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>]  [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[description=<text>];";
+                "\t" + ProgramProperties.getIfEnabled("enable-contaminants", "[contaminantsFile=<filename>] ") + "[description=<text>];";
     }
 
     /**
@@ -187,6 +187,13 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             }
         }
 
+        final String contaminantsFile;
+        if (np.peekMatchIgnoreCase("contaminantsFile")) {
+            np.matchIgnoreCase("contaminantsFile=");
+            contaminantsFile = np.getWordFileNamePunctuation().trim();
+        } else
+            contaminantsFile = "";
+
         String description = null;
         if (np.peekMatchIgnoreCase("description")) {
             np.matchIgnoreCase("description=");
@@ -212,7 +219,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), minPercentReadToCover);
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), minPercentReadToCover, contaminantsFile);
                 // todo: save the description
 
                 {

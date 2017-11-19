@@ -44,6 +44,7 @@ public class ShowGroupsViewerCommand extends CommandBase implements ICommand {
         return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
+
     public String getName() {
         return "Groups Viewer...";
     }

@@ -304,16 +304,16 @@ public class ClusteringTree {
      * @param rect
      */
     public void paint(Graphics2D gc, Rectangle rect) {
-            try {
-                if (gc instanceof SelectionGraphics) {
-                    final SelectionGraphics sgc = (SelectionGraphics) gc;
-                    select(rect, sgc.getSelectionRectangle(), sgc.getMouseClicks());
-                } else if (!inUpdate) {
-                    doPaint(gc, rect);
-                }
-            } catch (Exception ex) {
-                // Basic.caught(ex);
+        try {
+            if (gc instanceof SelectionGraphics) {
+                final SelectionGraphics sgc = (SelectionGraphics) gc;
+                select(rect, sgc.getSelectionRectangle(), sgc.getMouseClicks());
+            } else if (!inUpdate) {
+                doPaint(gc, rect);
             }
+        } catch (Exception ex) {
+            // Basic.caught(ex);
+        }
     }
 
     /**

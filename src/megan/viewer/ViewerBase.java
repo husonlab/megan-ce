@@ -303,8 +303,7 @@ abstract public class ViewerBase extends PhyloTreeView {
      */
     private void selectSubTreeNodesRec(final Node v, final NodeSet selected) {
         selected.add(v);
-        for (Iterator it = v.getOutEdges(); it.hasNext(); ) {
-            Edge f = (Edge) it.next();
+        for (Edge f : v.outEdges()) {
             selectSubTreeNodesRec(f.getOpposite(v), selected);
         }
     }
@@ -373,8 +372,7 @@ abstract public class ViewerBase extends PhyloTreeView {
         if (v.getOutDegree() == 0)
             selected.add(v);
         else {
-            for (Iterator<Edge> it = v.getOutEdges(); it.hasNext(); ) {
-                Edge f = it.next();
+            for (Edge f : v.outEdges()) {
                 selectSubTreeLeavesRec(f.getOpposite(v), visited, selected);
             }
         }

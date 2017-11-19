@@ -24,6 +24,7 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.commands.algorithms.ComputeCoreBiome;
 import megan.core.*;
 import megan.dialogs.compare.Comparer;
 import megan.fx.NotificationsInSwing;

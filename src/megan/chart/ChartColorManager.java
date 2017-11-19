@@ -55,6 +55,7 @@ public class ChartColorManager {
 
     /**
      * constructor
+     *
      * @param colorTable
      */
     public ChartColorManager(ColorTable colorTable) {
@@ -268,6 +269,7 @@ public class ChartColorManager {
 
     /**
      * load color edits
+     *
      * @param colorEdits
      */
     public void loadColorEdits(String colorEdits) {

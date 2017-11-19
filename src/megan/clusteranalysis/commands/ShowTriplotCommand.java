@@ -128,6 +128,7 @@ public class ShowTriplotCommand extends CommandBase implements ICheckBoxCommand 
     public KeyStroke getAcceleratorKey() {
         return KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
     }
+
     /**
      * action to be performed
      *

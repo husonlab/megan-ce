@@ -285,6 +285,7 @@ public class Table<R, C, V> {
 
     /**
      * remove a given column
+     *
      * @param columnKey
      * @return true, if something removed
      */

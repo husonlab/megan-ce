@@ -35,7 +35,7 @@ public class ContractVerticalCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=vertical what=out;");
+        executeImmediately("expand axis=vertical what=out;");
     }
 
     public boolean isApplicable() {

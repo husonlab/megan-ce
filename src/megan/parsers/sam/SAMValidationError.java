@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package megan.parsers.sam;
+
 /**
  * Class that encapsulates a validation error message as well as a type code so that
  * errors can be aggregated by type.

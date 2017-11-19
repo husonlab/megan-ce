@@ -179,7 +179,6 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
     }
 
 
-
     /**
      * length of array
      *

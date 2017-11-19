@@ -74,8 +74,8 @@ public class ReadAssignmentCalculator {
         else
             intervals.clear();
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-                final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-                intervals.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
+            final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+            intervals.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
         }
         return intervals.getCovered();
     }

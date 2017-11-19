@@ -105,7 +105,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     /**
      * Classification viewer
      *
-     * @param dir the director
+     * @param dir     the director
      * @param visible
      * @throws Exception
      */
@@ -350,29 +350,29 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * Waits a while before doing so, because there may be multiple updates of the selection state
      */
     private void updateStatusBarTooltip() {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getSelectedNodes().size() > 0) {
-                                double numberOfAssigned = 0;
-                                double numberOfSummarized = 0;
-                                for (Node v : getSelectedNodes()) {
-                                    if (v.getData() instanceof NodeData) {
-                                        NodeData nodeData = (NodeData) v.getData();
-                                        numberOfAssigned += nodeData.getCountAssigned();
-                                        numberOfSummarized += nodeData.getCountSummarized();
-                                    }
-                                }
-
-                                final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
-                                        Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
-                                //System.err.println(line);
-                                statusBar.setToolTipText(line);
-                            } else
-                                statusBar.setToolTipText(null);
-                            thread = null;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (getSelectedNodes().size() > 0) {
+                    double numberOfAssigned = 0;
+                    double numberOfSummarized = 0;
+                    for (Node v : getSelectedNodes()) {
+                        if (v.getData() instanceof NodeData) {
+                            NodeData nodeData = (NodeData) v.getData();
+                            numberOfAssigned += nodeData.getCountAssigned();
+                            numberOfSummarized += nodeData.getCountSummarized();
                         }
-                    });
+                    }
+
+                    final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
+                            Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
+                    //System.err.println(line);
+                    statusBar.setToolTipText(line);
+                } else
+                    statusBar.setToolTipText(null);
+                thread = null;
+            }
+        });
     }
 
     /**
@@ -524,7 +524,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (tree.getRoot() != null) {
             for (Edge e = tree.getRoot().getFirstOutEdge(); e != null; e = tree.getRoot().getNextOutEdge(e)) {
                 Node v = e.getTarget();
-                if ((Integer) v.getInfo() >= -3 && (Integer) v.getInfo() <= -1) {
+                int id = (Integer) v.getInfo();
+                if (id == -1 || id == -2 || id == -3 || id == -6) {
                     setColor(e, Color.LIGHT_GRAY);
                     setColor(v, Color.LIGHT_GRAY);
                     setLabelColor(v, Color.LIGHT_GRAY);
@@ -1090,7 +1091,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     /**
      * recursively draw the tree
-     *  @param gc
+     *
+     * @param gc
      * @param v
      * @param enabled
      */
@@ -1157,7 +1159,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                         nextToV = getInternalPoints(f).get(0);
                         nextToW = getInternalPoints(f).get(getInternalPoints(f).size() - 1);
                     }
-                    }
+                }
                 final Point pv = (!drawLeavesOnly || v.getOutDegree() == 0 ? getNV(v).computeConnectPoint(nextToV, trans) :
                         trans.w2d(getNV(v).getLocation()));
                 final Point pw = (!drawLeavesOnly || w.getOutDegree() == 0 ? getNV(w).computeConnectPoint(nextToW, trans) :
@@ -1174,12 +1176,12 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 ev.setLabelReferenceLocation(nextToV, nextToW, trans);
 
                 if (ev.getLabel() != null && ev.isLabelVisible()) {
-                        ev.setLabelReferenceLocation(pv, pw, trans);
-                        ev.setLabelSize(gc);
-                        ev.drawLabel(gc, trans, false);
-                        if (getSelected(f))
-                            ev.drawLabel(gc, trans, true);
-                    }
+                    ev.setLabelReferenceLocation(pv, pw, trans);
+                    ev.setLabelSize(gc);
+                    ev.drawLabel(gc, trans, false);
+                    if (getSelected(f))
+                        ev.drawLabel(gc, trans, true);
+                }
 
                 paintRec(gc, w, drawableNodeLabels, enabled);
             }
@@ -1340,8 +1342,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             Node vFull = classification.getFullTree().getANode(id);
             if (!wholeSubtree)    // collapse all dependent nodes
             {
-                for (Iterator outEdgesFull = vFull.getOutEdges(); outEdgesFull.hasNext(); ) {
-                    Edge eFull = (Edge) outEdgesFull.next();
+                for (Edge eFull : vFull.outEdges()) {
                     Node wFull = eFull.getOpposite(vFull);
                     Integer wid = (Integer) wFull.getInfo();
                     getCollapsedIds().add(wid);
@@ -1354,7 +1355,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     /**
      * recursively does the work
-     *
      */
     private void uncollapseSelectedNodesRec(Node v, Set<Integer> ids, Set<Integer> seen) {
         Integer id = (Integer) v.getInfo();
@@ -1686,7 +1686,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         while (stack.size() > 0) {
             final Node v = stack.pop();
             Integer id = (Integer) v.getInfo();
-                list.add(id);
+            list.add(id);
 
             for (Edge e = v.getLastOutEdge(); e != null; e = v.getPrevOutEdge(e))
                 stack.push(e.getTarget());

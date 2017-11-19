@@ -125,18 +125,18 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
             x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
-                int yStart = y0 + ((y1 - y0) - height) / 2;
+            int yStart = y0 + ((y1 - y0) - height) / 2;
             final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
-                classesClusteringTree.paint(gc, rect);
-        } 
+            classesClusteringTree.paint(gc, rect);
+        }
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfSeries + 1.0) * numberOfSeries);
             int xStart = x0 + ((x1 - x0) - width) / 2;
             final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             seriesClusteringTree.paint(gc, rect);
-        } 
-        
+        }
+
         double xStep = (x1 - x0) / (double) numberOfSeries;
         double yStep = (y0 - y1) / (double) (numberOfClasses);
 
@@ -285,18 +285,18 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
             x1 -= rightTreeSpace;
-                int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
-                int yStart = y0 + ((y1 - y0) - height) / 2;
+            int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
+            int yStart = y0 + ((y1 - y0) - height) / 2;
             final Rectangle rect = new Rectangle(x1, yStart, rightTreeSpace, height);
-                seriesClusteringTree.paint(gc, rect);
-        } 
+            seriesClusteringTree.paint(gc, rect);
+        }
 
         if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
             int xStart = x0 + ((x1 - x0) - width) / 2;
             final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
             classesClusteringTree.paint(gc, rect);
-        } 
+        }
 
         double xStep = (x1 - x0) / (double) numberOfClasses;
         double yStep = (y0 - y1) / (double) numberOfSeries;
@@ -508,39 +508,39 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             if (numberOfClasses > 0) {
                 int longest = 0;
                 for (String className : classNames) {
-                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
-            }
-            int right = Math.max(leftMargin, longest + 5);
+                    longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+                }
+                int right = Math.max(leftMargin, longest + 5);
 
-            if (doDraw)
-                gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
+                if (doDraw)
+                    gc.setColor(getFontColor(ChartViewer.FontKeys.YAxisFont.toString(), Color.BLACK));
 
                 double yStep = (y0 - y1) / (double) numberOfClasses;
-            int c = numberOfClasses - 1;
+                int c = numberOfClasses - 1;
                 for (String className : classNames) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
-                int x = right - labelSize.width - 4;
-                int y = (int) Math.round(y0 - (c + 0.5) * yStep);
-                if (doDraw) {
-                    if (getChartData().getChartSelection().isSelectedClass(className)) {
-                        gc.setColor(ProgramProperties.SELECTION_COLOR);
-                        fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+                    Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                    int x = right - labelSize.width - 4;
+                    int y = (int) Math.round(y0 - (c + 0.5) * yStep);
+                    if (doDraw) {
+                        if (getChartData().getChartSelection().isSelectedClass(className)) {
+                            gc.setColor(ProgramProperties.SELECTION_COLOR);
+                            fillAndDrawRect(gc, x, y, labelSize.width, labelSize.height, 0, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
+                        }
+                        gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
+                        gc.drawString(className, x, y);
+                    } else {
+                        Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
+                        if (bbox == null)
+                            bbox = rect;
+                        else
+                            bbox.add(rect);
                     }
-                    gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
-                    gc.drawString(className, x, y);
-                } else {
-                    Rectangle rect = new Rectangle(x, y, labelSize.width, labelSize.height);
-                    if (bbox == null)
-                        bbox = rect;
-                    else
-                        bbox.add(rect);
-                }
-                c--;
-                if (sgc != null) {
-                    sgc.setCurrentItem(new String[]{null, className});
-                    drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
-                    sgc.clearCurrentItem();
-                }
+                    c--;
+                    if (sgc != null) {
+                        sgc.setCurrentItem(new String[]{null, className});
+                        drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
+                        sgc.clearCurrentItem();
+                    }
                 }
             }
         }

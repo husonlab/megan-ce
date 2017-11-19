@@ -97,9 +97,9 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
                     viewerBase.scrollToNode(v);
                     break;
                 }
-                }
             }
         }
+    }
 
     /**
      * is this a critical command that can only be executed when no other command is running?

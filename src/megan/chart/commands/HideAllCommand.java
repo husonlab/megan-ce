@@ -56,19 +56,19 @@ public class HideAllCommand extends CommandBase implements ICommand {
         }
         np.matchIgnoreCase(";");
 
-            if (what.equalsIgnoreCase("none")) {
-                list.enableLabels(list.getAllLabels());
-            } else if (what.equalsIgnoreCase("selected")) {
-                list.disableLabels(list.getSelectedLabels());
-            } else if (what.equalsIgnoreCase("unselected")) {
-                final Set<String> labels = new HashSet<>();
-                labels.addAll(list.getAllLabels());
-                labels.removeAll(list.getSelectedLabels());
-                list.disableLabels(labels);
-            } else  // all
-            {
-                list.disableLabels(list.getAllLabels());
-            }
+        if (what.equalsIgnoreCase("none")) {
+            list.enableLabels(list.getAllLabels());
+        } else if (what.equalsIgnoreCase("selected")) {
+            list.disableLabels(list.getSelectedLabels());
+        } else if (what.equalsIgnoreCase("unselected")) {
+            final Set<String> labels = new HashSet<>();
+            labels.addAll(list.getAllLabels());
+            labels.removeAll(list.getSelectedLabels());
+            list.disableLabels(labels);
+        } else  // all
+        {
+            list.disableLabels(list.getAllLabels());
+        }
         if (list.getName().equalsIgnoreCase("series"))
             viewer.getChartData().setEnabledSeries(list.getEnabledLabels());
         else if (list.getName().equalsIgnoreCase("classes"))

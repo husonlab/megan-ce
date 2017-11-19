@@ -21,10 +21,14 @@ package megan.importblast;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.gui.commands.ICommand;
+import jloda.util.ProgramProperties;
+import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.commandtemplates.*;
+import megan.importblast.commands.ChooseContaminantsFileCommand;
 import megan.importblast.commands.SetUseTextTaxonomyCommand;
+import megan.importblast.commands.UseContaminantsFilterCommand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,17 +65,6 @@ public class ViewerPanel extends JPanel {
         panel1.setLayout(new BorderLayout());
 
         final JPanel aPanel = new JPanel(new GridLayout(5, 1));
-
-
-        if (cName.equals("Taxonomy")) {
-            AbstractButton useParseTextButton = commandManager.getButton(SetUseTextTaxonomyCommand.NAME);
-            aPanel.add(useParseTextButton);
-            aPanel.add(new JLabel());
-        } else
-        {
-            aPanel.add(new JLabel());
-            aPanel.add(new JLabel());
-        }
 
         final ICommand useAccessionLookupCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.Accession));
         final AbstractButton ueseAccessionButton = commandManager.getButton(useAccessionLookupCommand);
@@ -127,6 +120,23 @@ public class ViewerPanel extends JPanel {
             useIdParsingButton.setSelected(((ICheckBoxCommand) useIDParsingCommand).isSelected());
         useIdParsingButton.setEnabled(useIDParsingCommand.isApplicable());
         aPanel.add(useIdParsingButton);
+
+        if (cName.equals(Classification.Taxonomy)) {
+            AbstractButton useParseTextButton = commandManager.getButton(SetUseTextTaxonomyCommand.NAME);
+            aPanel.add(useParseTextButton);
+
+            if (ProgramProperties.get("enable-contaminants", false)) // this is where we will put support for contaminant screening
+            {
+                aPanel.add(commandManager.getButton(UseContaminantsFilterCommand.NAME));
+                final JPanel butPanel = new JPanel();
+                butPanel.setLayout(new BoxLayout(butPanel, BoxLayout.X_AXIS));
+                butPanel.add(commandManager.getButton(ChooseContaminantsFileCommand.ALTNAME));
+                butPanel.add(new JLabel(" " + ChooseContaminantsFileCommand.ALTNAME));
+                butPanel.add(Box.createHorizontalGlue());
+                aPanel.add(butPanel);
+            }
+
+        }
 
         if (!ClassificationManager.getDefaultClassificationsList().contains(cName) && ClassificationManager.getAllSupportedClassifications().contains(cName)) {
             final ICommand useLCACommand = commandManager.getCommand(SetUseLCA4ViewerCommand.getAltName(cName));

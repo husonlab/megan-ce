@@ -87,14 +87,14 @@ public class CSVExportFViewer {
                         final NodeData data = cViewer.getNodeData(v);
                         final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                         final String name = getLabelSource(shortName, classification, format, v);
-                            if (counts.length == names.size()) {
-                                w.write(name);
-                                for (float a : counts)
-                                    w.write(separator + " " + a);
-                                w.write("\n");
-                                totalLines++;
-                            } else
-                                System.err.println("Skipped " + name + ", number of values: " + counts.length);
+                        if (counts.length == names.size()) {
+                            w.write(name);
+                            for (float a : counts)
+                                w.write(separator + " " + a);
+                            w.write("\n");
+                            totalLines++;
+                        } else
+                            System.err.println("Skipped " + name + ", number of values: " + counts.length);
                     }
                     progressListener.incrementProgress();
                 }
@@ -162,16 +162,16 @@ public class CSVExportFViewer {
                             final NodeData data = cViewer.getNodeData(v);
                             final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                             final String name = getLabelSource(shortName, classification, format, v);
-                                if (counts.length == names.size()) {
-                                    w.write(name);
-                                    for (int i = 0; i < counts.length; i++) {
-                                        double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
-                                        w.write(String.format("%c%f", separator, (float) value));
-                                    }
-                                    w.write("\n");
-                                    totalLines++;
-                                } else
-                                    System.err.println("Skipped " + name + ", number of values: " + counts.length);
+                            if (counts.length == names.size()) {
+                                w.write(name);
+                                for (int i = 0; i < counts.length; i++) {
+                                    double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
+                                    w.write(String.format("%c%f", separator, (float) value));
+                                }
+                                w.write("\n");
+                                totalLines++;
+                            } else
+                                System.err.println("Skipped " + name + ", number of values: " + counts.length);
                         }
                         progressListener.incrementProgress();
                     }

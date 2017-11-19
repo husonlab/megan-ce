@@ -25,6 +25,7 @@ import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.IdParser;
 import megan.classification.data.ClassificationCommandHelper;
+import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.daa.io.DAAParser;
@@ -133,15 +134,16 @@ public class DAA2RMA6 {
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
 
-        final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
+        final String contaminantsFile = (ProgramProperties.getIfEnabled("enable-contaminants", options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "")));
+
         options.comment("Functional classification:");
+        final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
         String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
         for (String cName : cNames) {
             if (!ClassificationManager.getAllSupportedClassifications().contains(cName))
                 throw new UsageException("--function: Unknown classification: " + cName);
             if (cName.equals(Classification.Taxonomy))
                 throw new UsageException("--function: Illegal argument: 'Taxonomy'");
-
         }
 
         options.comment("Classification support:");
@@ -287,6 +289,12 @@ public class DAA2RMA6 {
             doc.setLongReads(longReads);
             doc.setMinPercentReadToCover(minPercentReadToCover);
             doc.setReadAssignmentMode(readAssignmentMode);
+
+            if (contaminantsFile.length() > 0) {
+                ContaminantManager contaminantManager = new ContaminantManager();
+                contaminantManager.read(contaminantsFile);
+                doc.getDataTable().setContaminants(contaminantManager.toString());
+            }
 
             if (!processInPairs)
                 createRMA6FileFromDAA("DAA2RMA6", daaFiles[i], outputFiles[iOutput], useCompression, doc, maxMatchesPerRead, progressListener);

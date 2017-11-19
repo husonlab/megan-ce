@@ -168,7 +168,7 @@ public class ExportDataCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-            ClusterViewer viewer = getViewer();
+        ClusterViewer viewer = getViewer();
         if (viewer.getMatrixTab() != null) {
             TableModel model = viewer.getMatrixTab().getTable().getModel();
             return model.getRowCount() > 1;

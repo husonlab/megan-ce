@@ -53,6 +53,7 @@ import megan.dialogs.input.InputDialog;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.util.Appliable;
+import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
 
@@ -130,7 +131,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private Taxa taxa;
     private Distances distances;
 
-    private ViewerBase parentViewer;
+    private ClassificationViewer parentViewer;
 
     public static Appliable clusterViewerAddOn;
 
@@ -140,7 +141,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      *
      * @param dir
      */
-    public ClusterViewer(final Director dir, ViewerBase parentViewer, String dataType) {
+    public ClusterViewer(final Director dir, ClassificationViewer parentViewer, String dataType) {
         this.dataType = dataType;
         this.parentViewer = parentViewer;
 
@@ -506,8 +507,10 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         distances = new Distances(taxa.size());
 
-        if (ecologicalIndex.equalsIgnoreCase(UniFrac.TOPOLOGICAL_UNIFRAC))
-            numberOfNodesUsed = UniFrac.apply(getParentViewer(), UniFrac.TOPOLOGICAL_UNIFRAC, 1, distances);
+        if (ecologicalIndex.equalsIgnoreCase(UniFrac.UnweightedTaxonomicUniFrac))
+            numberOfNodesUsed = UniFrac.apply(getParentViewer(), UniFrac.UnweightedTaxonomicUniFrac, 1, distances);
+        else if (ecologicalIndex.equalsIgnoreCase(UniFrac.WeightedTaxonomicUniFrac))
+            numberOfNodesUsed = UniFrac.apply(getParentViewer(), UniFrac.WeightedTaxonomicUniFrac, 1, distances);
         else if (ecologicalIndex.equalsIgnoreCase(JensenShannonDivergence.SqrtJensenShannonDivergence))
             numberOfNodesUsed = JensenShannonDivergence.apply(getParentViewer(), JensenShannonDivergence.SqrtJensenShannonDivergence, distances);
         else if (ecologicalIndex.equalsIgnoreCase(PearsonDistance.PEARSON_DISTANCE))
@@ -830,7 +833,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      *
      * @return graphview
      */
-    public ViewerBase getParentViewer() {
+    public ClassificationViewer getParentViewer() {
         return parentViewer;
     }
 

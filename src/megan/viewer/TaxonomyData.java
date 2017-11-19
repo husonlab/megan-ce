@@ -265,6 +265,7 @@ public class TaxonomyData {
     /**
      * set total set of disabled nodes from a set of disabled nodes. This is used to set all disabled node from
      * the representation saved in the preferrences file
+     *
      * @param internal
      */
     public static void setDisabledInternalTaxa(Set<Integer> internal) {

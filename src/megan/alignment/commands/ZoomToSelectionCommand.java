@@ -38,7 +38,7 @@ public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=both what=selection;");
+        executeImmediately("expand axis=both what=selection;");
     }
 
     public boolean isApplicable() {

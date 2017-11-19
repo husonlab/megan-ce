@@ -93,16 +93,16 @@ public class RemoteBlastClient {
         actualTime = -1;
         startTime = System.currentTimeMillis();
 
-            final Map<String, Object> params = new HashMap<>();
-            params.put("CMD", "Put");
-            params.put("PROGRAM", program.toString());
-            params.put("DATABASE", database);
-            params.put("QUERY", query.toString());
-            final String response = postRequest(baseURL, params);
-            requestId = parseRequestId(response);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("CMD", "Put");
+        params.put("PROGRAM", program.toString());
+        params.put("DATABASE", database);
+        params.put("QUERY", query.toString());
+        final String response = postRequest(baseURL, params);
+        requestId = parseRequestId(response);
         if (requestId == null)
             throw new IOException("Failed to obtain valid requestId");
-            estimatedTime = parseEstimatedTime(response);
+        estimatedTime = parseEstimatedTime(response);
 
         return requestId;
     }

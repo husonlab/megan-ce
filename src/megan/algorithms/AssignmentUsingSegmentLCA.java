@@ -35,6 +35,7 @@ import java.util.*;
 /**
  * performs taxonId assignment using a segment-oriented algorithm
  * Daniel Huson, 4.2017
+ *
  * @deprecated
  */
 public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {

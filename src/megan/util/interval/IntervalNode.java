@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  * The Node class contains the interval tree information for one single node
  *
  * @author Kevin Dolan
- *         Extended by Daniel Huson, 2.2017
+ * Extended by Daniel Huson, 2.2017
  */
 public class IntervalNode<Type> {
     private final SortedMap<Interval<Type>, List<Interval<Type>>> intervals;

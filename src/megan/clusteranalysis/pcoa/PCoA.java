@@ -211,7 +211,8 @@ public class PCoA {
 
     /**
      * computes the loading vectors as used in biplot
-     *  @param numberOfSamples
+     *
+     * @param numberOfSamples
      * @param class2counts
      */
     public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float[]> class2counts) {
@@ -285,8 +286,8 @@ public class PCoA {
 
     /**
      * computes the loading vectors as used in biplot
-     *  @param numberOfSamples
      *
+     * @param numberOfSamples
      */
     public void computeLoadingVectorsTriPlot(final int numberOfSamples, final Map<String, float[]> attribute2counts) {
         loadingVectorsTriPlot.clear();

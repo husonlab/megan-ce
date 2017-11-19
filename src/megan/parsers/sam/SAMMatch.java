@@ -246,27 +246,27 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
     private int determineQueryStart() {
         int queryStart = 1;
-            Object obj = optionalFields.get("ZS");
-            if (obj != null && obj instanceof Integer) {
-                queryStart = (Integer) obj;
-            } else {
-                // first need to trim:
-                if (mode != BlastMode.BlastX) {
-                    if (getCigar().getCigarElements().size() > 0) {
-                        CigarElement element = getCigar().getCigarElement(0);
-                        if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
-                            queryStart = element.getLength() + 1;
-                        }
+        Object obj = optionalFields.get("ZS");
+        if (obj != null && obj instanceof Integer) {
+            queryStart = (Integer) obj;
+        } else {
+            // first need to trim:
+            if (mode != BlastMode.BlastX) {
+                if (getCigar().getCigarElements().size() > 0) {
+                    CigarElement element = getCigar().getCigarElement(0);
+                    if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
+                        queryStart = element.getLength() + 1;
                     }
-                } else {
-                    if (getCigar().getCigarElements().size() > 0) {
-                        CigarElement element = getCigar().getCigarElement(0);
-                        if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
-                            queryStart = 3 * element.getLength() + 1;
-                        }
+                }
+            } else {
+                if (getCigar().getCigarElements().size() > 0) {
+                    CigarElement element = getCigar().getCigarElement(0);
+                    if (element.getOperator() == CigarOperator.S || element.getOperator() == CigarOperator.H) {
+                        queryStart = 3 * element.getLength() + 1;
                     }
                 }
             }
+        }
         return queryStart;
     }
 
@@ -549,9 +549,9 @@ public class SAMMatch implements megan.rma3.IMatch {
                 int sAdd = Math.min(ALIGNMENT_FOLD, aligned[2].length() - pos);
                 String sPart = aligned[2].substring(pos, pos + sAdd);
                 int sGaps = countGapsDashDot(sPart);
-                    sEnd = sStart + (sAdd - sGaps) - 1;
+                sEnd = sStart + (sAdd - sGaps) - 1;
                 buffer.append(String.format("Sbjct:%9d  %s  %d\n", sStart, sPart, sEnd));
-                    sStart = sEnd + 1;
+                sStart = sEnd + 1;
             }
         }
         if (aligned[0] != null && qEnd > 0 && qEnd != (getAlignedQueryStart() + queryLength - 1) && warnAboutProblems)

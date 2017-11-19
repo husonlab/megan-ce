@@ -35,13 +35,13 @@ public class DAAQueryRecord {
 
     /**
      * constructor
-     *
      */
     public DAAQueryRecord() {
     }
 
     /**
      * constructor
+     *
      * @param daaParser
      */
     public DAAQueryRecord(DAAParser daaParser) {

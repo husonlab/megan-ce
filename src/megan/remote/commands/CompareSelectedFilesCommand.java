@@ -84,7 +84,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute(getSyntax());
-        }
+    }
 
     /**
      * get id of open file

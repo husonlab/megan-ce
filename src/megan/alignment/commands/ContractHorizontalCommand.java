@@ -35,7 +35,7 @@ public class ContractHorizontalCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom axis=horizontal what=out;");
+        executeImmediately("expand axis=horizontal what=out;");
     }
 
     public boolean isApplicable() {

@@ -23,7 +23,6 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
-import megan.commands.additional.ComputeCoreBiome;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;

@@ -108,17 +108,17 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                 }
                 if (list.size() > 0) {
                     list.sort(new Comparator<Pair<Integer, String>>() {
-                    @Override
-                    public int compare(Pair<Integer, String> a, Pair<Integer, String> b) {
-                        if (a.getFirst() > b.getFirst())
-                            return -1;
-                        else if (a.getFirst() < b.getFirst())
-                            return 1;
-                        else
-                            return a.getSecond().compareTo(b.getSecond());
-                    }
-                });
-                System.out.println(String.format("%s:", attribute));
+                        @Override
+                        public int compare(Pair<Integer, String> a, Pair<Integer, String> b) {
+                            if (a.getFirst() > b.getFirst())
+                                return -1;
+                            else if (a.getFirst() < b.getFirst())
+                                return 1;
+                            else
+                                return a.getSecond().compareTo(b.getSecond());
+                        }
+                    });
+                    System.out.println(String.format("%s:", attribute));
 
                     Pair<Integer, String> first = list.get(0);
                     if (first.getFirst() == 1) {

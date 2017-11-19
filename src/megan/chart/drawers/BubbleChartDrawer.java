@@ -101,7 +101,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                 }
-                    gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
+                gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{series, null});
                 drawString(gc, label, apt.getX(), apt.getY(), classLabelAngle);
@@ -221,7 +221,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     fillAndDrawRect(gc, apt.getX(), apt.getY(), labelSize.width, labelSize.height, classLabelAngle, ProgramProperties.SELECTION_COLOR, ProgramProperties.SELECTION_COLOR_DARKER);
                 }
-                    gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
+                gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.DARK_GRAY));
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{null, className});
                 drawString(gc, className, apt.getX(), apt.getY(), classLabelAngle);

@@ -64,8 +64,8 @@ public class SelectByRankCommand extends CommandBase implements ICommand {
             public void call(String choice) {
                 execute("select rank='" + choice + "';");
 
-                }
-            });
+            }
+        });
         popupChoice.showAtCurrentMouseLocation(getViewer().getFrame());
     }
 

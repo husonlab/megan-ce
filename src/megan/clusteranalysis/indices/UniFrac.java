@@ -20,16 +20,20 @@ package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
 import megan.clusteranalysis.tree.Distances;
-import megan.viewer.ViewerBase;
+import megan.viewer.ClassificationViewer;
+import megan.viewer.TaxonomicLevels;
+import megan.viewer.TaxonomyData;
 
 import java.io.IOException;
 
 /**
- * unweighted UniFrac distance
- * Daniel Huson, 9.2012
+ * unweighted UnweightedTaxonomicUniFrac distance
+ * todo: need to cleanup use of induced ranked taxonomy
+ * Daniel Huson, 9.2012, 11.2017
  */
 public class UniFrac {
-    public static final String TOPOLOGICAL_UNIFRAC = "Unweighted-UniFrac";
+    public static final String UnweightedTaxonomicUniFrac = "UnweightedTaxonomicUniFrac";
+    public static final String WeightedTaxonomicUniFrac = "WeightedTaxonomicUniFrac";
 
     /**
      * apply the named computation to the taxonomy
@@ -41,35 +45,89 @@ public class UniFrac {
      * @return number of nodes used to compute value
      * @throws IOException
      */
-    public static int apply(final ViewerBase viewer, String method, final int threshold, final Distances distances) throws IOException {
+    public static int apply(final ClassificationViewer viewer, String method, final int threshold, final Distances distances) throws IOException {
         System.err.println("Computing " + method + " distances");
 
-        for (int s = 1; s <= distances.getNtax(); s++) {
-            for (int t = s + 1; t <= distances.getNtax(); t++) {
-                distances.set(s, t, 0);
-            }
-        }
+        if (method.equalsIgnoreCase(UnweightedTaxonomicUniFrac))
+            return applyUnweighted(viewer, threshold, distances);
+        else
+            return applyWeighted(viewer, distances);
+    }
+
+    /**
+     * apply the unweighted taxonomic unifrac method
+     *
+     * @param viewer
+     * @param threshold
+     * @param distances
+     * @return number of nodes used to compute value
+     * @throws IOException
+     */
+    public static int applyUnweighted(final ClassificationViewer viewer, final int threshold, final Distances distances) throws IOException {
+        final int nTax = distances.getNtax();
+
         int countNodes = 0;
+
+        int[][] sum = new int[nTax][nTax];
+
         for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
-            if (v.getOutDegree() != 1 && (Integer) v.getInfo() > 0)  // only use proper nodes
+            final int taxonId = (Integer) v.getInfo();
+            if (taxonId > 0 && v.getOutDegree() != 1 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodes++;
                 final float[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
-                for (int s = 1; s <= distances.getNtax(); s++) {
-                    for (int t = s + 1; t <= distances.getNtax(); t++) {
-                        if ((counts[s - 1] < threshold) != (counts[t - 1] < threshold))
-                            distances.increment(s, t);
+                for (int s = 0; s < nTax; s++) {
+                    for (int t = s + 1; t < nTax; t++) {
+                        if ((counts[s] >= threshold) != (counts[t] >= threshold))
+                            sum[s][t]++;
                     }
                 }
             }
         }
-        if (countNodes > 0) {
-            for (int s = 1; s <= distances.getNtax(); s++) {
-                for (int t = s + 1; t <= distances.getNtax(); t++) {
-                    distances.set(s, t, distances.get(s, t) / countNodes);
+        for (int s = 0; s < nTax; s++) {
+            for (int t = s + 1; t < nTax; t++) {
+                distances.set(s + 1, t + 1, (countNodes > 0 ? (double) sum[s][t] / (double) countNodes : 0));
+            }
+        }
+
+        return countNodes;
+    }
+
+    /**
+     * apply the named computation to the taxonomy
+     *
+     * @param viewer
+     * @param distances
+     * @return number of nodes used to compute value
+     * @throws IOException
+     */
+    public static int applyWeighted(final ClassificationViewer viewer, final Distances distances) throws IOException {
+        final int nTax = distances.getNtax();
+
+        int countNodes = 0;
+        double[][] diff = new double[nTax][nTax];
+        double[][] sum = new double[nTax][nTax];
+
+        for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
+            final int taxonId = (Integer) v.getInfo();
+            if (taxonId > 0 && v.getOutDegree() != 1 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
+            {
+                countNodes++;
+                final float[] counts = (v.getOutDegree() == 0 ? viewer.getNodeData(v).getSummarized() : viewer.getNodeData(v).getAssigned());
+                for (int s = 0; s < nTax; s++) {
+                    for (int t = s + 1; t < nTax; t++) {
+                        diff[s][t] += Math.abs(counts[s] - counts[t]);
+                        sum[s][t] += counts[s] + counts[t];
+                    }
                 }
             }
         }
+        for (int s = 0; s < nTax; s++) {
+            for (int t = s + 1; t < nTax; t++) {
+                distances.set(s + 1, t + 1, (sum[s][t] > 0 ? diff[s][t] / sum[s][t] : 0));
+            }
+        }
+
         return countNodes;
     }
 }

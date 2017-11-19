@@ -85,6 +85,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     private boolean usePercentIdentityFilter = false;
 
+    private String contaminantsFileName = ProgramProperties.get(MeganProperties.CONTAMINANT_FILE, "");
+
+    private boolean useContaminantsFilter = false;
+
     private final JTextArea blastFileNameField = new JTextArea();
 
     private final FormatCBox formatCBox = new FormatCBox();
@@ -122,6 +126,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     /**
      * constructor
+     *
      * @param parent
      * @param dir
      * @param cNames
@@ -409,6 +414,23 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public void setParseTaxonNames(boolean parseTaxonNames) {
         this.parseTaxonNames = parseTaxonNames;
         ProgramProperties.put(MeganProperties.PARSE_TAXON_NAMES, parseTaxonNames);
+    }
+
+
+    public String getContaminantsFileName() {
+        return contaminantsFileName;
+    }
+
+    public void setContaminantsFileName(String contaminantsFileName) {
+        this.contaminantsFileName = contaminantsFileName;
+    }
+
+    public boolean isUseContaminantsFilter() {
+        return contaminantsFileName != null && useContaminantsFilter;
+    }
+
+    public void setUseContaminantsFilter(boolean useContaminantsFilter) {
+        this.useContaminantsFilter = useContaminantsFilter;
     }
 
     public String getResult() {
@@ -735,18 +757,18 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             if (blastFileName.length() > 0) {
                 final String fileName = Basic.getFirstLine(blastFileName);
                 if (blastFormat.equals(BlastFileFormat.Unknown.toString())) {
-                        String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
-                        if (formatName != null)
-                            blastFormat = BlastFileFormat.valueOf(formatName).toString();
-                        else
-                            throw new IOException("Failed to detect BLAST format for file: " + fileName);
+                    String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
+                    if (formatName != null)
+                        blastFormat = BlastFileFormat.valueOf(formatName).toString();
+                    else
+                        throw new IOException("Failed to detect BLAST format for file: " + fileName);
                 }
                 if (blastMode.equals(BlastMode.Unknown.toString())) {
                     BlastMode mode = BlastMode.detectMode(this, fileName, true);
                     if (mode == null) // user canceled
                         throw new CanceledException();
                     else if (mode == BlastMode.Unknown)
-                            throw new IOException("Failed to detect BLAST mode for file: " + fileName);
+                        throw new IOException("Failed to detect BLAST mode for file: " + fileName);
                     else
                         blastMode = mode.toString();
                 }
@@ -818,6 +840,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             String pattern1 = getPairedReadSuffix1();
             //String pattern2 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX2, "");
             buf.append(" pairSuffixLength=").append(pattern1.length());
+        }
+
+        if (isUseContaminantsFilter() && getContaminantsFileName() != null) {
+            buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
         }
 
         if (getShortDescription().length() > 0)

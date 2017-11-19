@@ -37,6 +37,7 @@ public class SetUseMapType4ViewerCommand extends CommandBase implements ICheckBo
 
     /**
      * constructor
+     *
      * @param cName
      * @param mapType
      */

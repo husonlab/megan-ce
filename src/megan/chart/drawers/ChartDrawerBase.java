@@ -124,26 +124,26 @@ public class ChartDrawerBase extends JPanel {
         Point2D apt = new Point2D.Float((float) x, (float) y);
         Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
 
-            // save current transform:
-            final AffineTransform saveTransform = gc.getTransform();
-            // rotate label to desired angle
-            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                apt = Geometry.translateByAngle(apt, labelAngle, labelSize.getWidth());
-                gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
-            } else {
-                gc.rotate(labelAngle, apt.getX(), apt.getY());
-            }
-            // double dy= 0.5 * labelSize.height;
-            double dy = 0;
-            if (true) { // fixes bug in Java7:
-                // see: http://stackoverflow.com/questions/14569475/java-rotated-text-has-reversed-characters-sequence
-                FontRenderContext frc = new FontRenderContext(gc.getTransform(), true, true);
-                gc.drawGlyphVector(gc.getFont().createGlyphVector(frc, label), (int) (apt.getX()), (int) (apt.getY() + dy));
-            } else
-                gc.drawString(label, (int) (apt.getX()), (int) (apt.getY() + dy));
+        // save current transform:
+        final AffineTransform saveTransform = gc.getTransform();
+        // rotate label to desired angle
+        if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+            apt = Geometry.translateByAngle(apt, labelAngle, labelSize.getWidth());
+            gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
+        } else {
+            gc.rotate(labelAngle, apt.getX(), apt.getY());
+        }
+        // double dy= 0.5 * labelSize.height;
+        double dy = 0;
+        if (true) { // fixes bug in Java7:
+            // see: http://stackoverflow.com/questions/14569475/java-rotated-text-has-reversed-characters-sequence
+            FontRenderContext frc = new FontRenderContext(gc.getTransform(), true, true);
+            gc.drawGlyphVector(gc.getFont().createGlyphVector(frc, label), (int) (apt.getX()), (int) (apt.getY() + dy));
+        } else
+            gc.drawString(label, (int) (apt.getX()), (int) (apt.getY() + dy));
 
-            gc.setColor(Color.BLACK);
-            gc.setTransform(saveTransform);
+        gc.setColor(Color.BLACK);
+        gc.setTransform(saveTransform);
     }
 
     /**

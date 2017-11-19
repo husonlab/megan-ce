@@ -232,6 +232,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
 
     /**
      * create a new instance of the given type of drawer, sharing internal data structures
+     *
      * @return
      */
     public PieChartDrawer createInstance() {

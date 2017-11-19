@@ -16,23 +16,56 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.alignment.commands;
+package megan.commands;
 
-import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 /**
- * font size
- * Daniel Huson, 8.2011
+ * enable feature command
+ * Daniel Huson, 11.2017
  */
-public class ExpandHorizontalCommand extends CommandBase implements ICommand {
+public class EnableFeatureCommand extends CommandBase implements ICommand {
+    /**
+     * get the name to be used as a menu label
+     *
+     * @return name
+     */
+    public String getName() {
+        return "Enable Software Feature...";
+    }
+
+    /**
+     * get description to be used as a tooltip
+     *
+     * @return description
+     */
+    public String getDescription() {
+        return "Enable an experimental feature";
+    }
+
+    /**
+     * get icon to be used in menu or button
+     *
+     * @return icon
+     */
+    public ImageIcon getIcon() {
+        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Preferences16.gif");
+    }
+
+    /**
+     * gets the accelerator key  to be used in menu
+     *
+     * @return accelerator key
+     */
+    public KeyStroke getAcceleratorKey() {
+        return null;
+    }
+
     /**
      * parses the given command and executes it
      *
@@ -44,60 +77,16 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
     }
 
     /**
-     * get command-line usage description
-     *
-     * @return usage
-     */
-    @Override
-    public String getSyntax() {
-        return null;
-    }
-
-    /**
      * action to be performed
      *
      * @param ev
      */
-    @Override
     public void actionPerformed(ActionEvent ev) {
-        executeImmediately("expand axis=horizontal what=in;");
-    }
-
-    public static final String NAME = "Expand Horizontal";
-
-    public String getName() {
-        return NAME;
-    }
-
-    public String getAltName() {
-        return "Expand Horizontal Alignment";
-    }
-
-    /**
-     * get description to be used as a tooltip
-     *
-     * @return description
-     */
-    public String getDescription() {
-        return "Expand view horizontally";
-    }
-
-    /**
-     * get icon to be used in menu or button
-     *
-     * @return icon
-     */
-    public ImageIcon getIcon() {
-        return ResourceManager.getIcon("ExpandHorizontal16.gif");
-    }
-
-    /**
-     * gets the accelerator key  to be used in menu
-     *
-     * @return accelerator key
-     */
-    public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_2, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        String feature = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter feature:", "");
+        if (feature != null) {
+            feature = feature.trim().split("\\s+")[0];
+            execute("setprop enable-" + feature + "=true;");
+        }
     }
 
     /**
@@ -116,5 +105,24 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
      */
     public boolean isApplicable() {
         return true;
+    }
+
+    /**
+     * get command-line usage description
+     *
+     * @return usage
+     */
+    @Override
+    public String getSyntax() {
+        return null;
+    }
+
+    /**
+     * gets the command needed to undo this command
+     *
+     * @return undo command
+     */
+    public String getUndo() {
+        return null;
     }
 }

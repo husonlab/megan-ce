@@ -41,6 +41,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
 
     /**
      * constructor
+     *
      * @param label2id
      * @param fileName
      * @param progress

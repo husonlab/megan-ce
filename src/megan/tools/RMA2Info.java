@@ -150,6 +150,7 @@ public class RMA2Info {
 
     /**
      * report the file content
+     *
      * @param doc
      * @param listGeneralInfo
      * @param listMoreStuff
@@ -160,7 +161,7 @@ public class RMA2Info {
      * @param majorRanksOnly
      * @param listClass2Count
      * @param listRead2Class
-     * @param taxonomyRoot if set, only report taxa on or below this node
+     * @param taxonomyRoot     if set, only report taxa on or below this node
      * @param outs
      * @throws IOException
      */

@@ -96,16 +96,16 @@ public class AlignmentExporter {
                 for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                             (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
-                            String key = Basic.getFirstLine(matchBlock.getText());
-                            if (!matchesSeenForGivenRead.contains(key)) {
-                                matchesSeenForGivenRead.add(key);
-                                List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.get(key);
-                                if (pairs == null) {
-                                    pairs = new LinkedList<>();
-                                    reference2ReadMatchPairs.put(key, pairs);
-                                }
-                                pairs.add(new Pair<>(readBlock, matchBlock));
-                                readUsed = true;
+                        String key = Basic.getFirstLine(matchBlock.getText());
+                        if (!matchesSeenForGivenRead.contains(key)) {
+                            matchesSeenForGivenRead.add(key);
+                            List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.get(key);
+                            if (pairs == null) {
+                                pairs = new LinkedList<>();
+                                reference2ReadMatchPairs.put(key, pairs);
+                            }
+                            pairs.add(new Pair<>(readBlock, matchBlock));
+                            readUsed = true;
                         }
                     }
                 }
@@ -328,8 +328,8 @@ public class AlignmentExporter {
                 final File outputFile = new File(fileName);
 
                 try (BufferedWriter w = new BufferedWriter(new FileWriter(outputFile))) {
-                     if (asConsensus) {
-                         System.err.println("Writing consensus of " + alignment.getNumberOfSequences() + " reads to file: '" + fileName + "'");
+                    if (asConsensus) {
+                        System.err.println("Writing consensus of " + alignment.getNumberOfSequences() + " reads to file: '" + fileName + "'");
                         String consensus = alignment.computeConsensus();
                         w.write("> Consensus\n" + consensus + "\n");
                         totalOutputSequences++;

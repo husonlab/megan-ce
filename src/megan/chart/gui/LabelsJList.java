@@ -56,6 +56,7 @@ public class LabelsJList extends JList<String> {
 
     /**
      * constructor
+     *
      * @param viewer
      * @param popupMenu
      */
@@ -73,6 +74,7 @@ public class LabelsJList extends JList<String> {
         getModel().addListDataListener(new ListDataListener() {
             public void intervalAdded(ListDataEvent event) {
             }
+
             public void intervalRemoved(ListDataEvent event) {
                 if (!inSync) {
                     syncListener.syncList2Viewer(getEnabledLabels());
@@ -80,6 +82,7 @@ public class LabelsJList extends JList<String> {
 
                 }
             }
+
             public void contentsChanged(ListDataEvent event) {
             }
         });
@@ -473,6 +476,6 @@ public class LabelsJList extends JList<String> {
 
     public void setDoClustering(boolean doClustering) {
         this.doClustering = doClustering;
-        ProgramProperties.put(getName() + "DoClustering",doClustering);
+        ProgramProperties.put(getName() + "DoClustering", doClustering);
     }
 }

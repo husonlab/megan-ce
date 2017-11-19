@@ -569,7 +569,7 @@ public class SampleAttributeTable {
      * set the color associated with a sample
      *
      * @param sampleName
-     * @param color or null
+     * @param color      or null
      */
     public void putSampleColor(String sampleName, Color color) {
         put(sampleName, SampleAttributeTable.HiddenAttribute.Color, color != null ? color.getRGB() : null);
@@ -652,6 +652,7 @@ public class SampleAttributeTable {
 
     /**
      * are there any groups defined?
+     *
      * @return true, if at least one sample has a group
      */
     public boolean hasGroups() {
@@ -952,7 +953,7 @@ public class SampleAttributeTable {
                             } else {
                                 System.err.println("Sample mentioned in metadata is not present in document, skipping: " + sample);
                                 countNotFound++;
-                                }
+                            }
                         }
                     }
                 }
@@ -981,6 +982,7 @@ public class SampleAttributeTable {
 
     /**
      * determines which non-hidden attributes have a numerical interpretation and returns them
+     *
      * @return numerical attributes
      */
     public Collection<String> getNumericalAttributes() {

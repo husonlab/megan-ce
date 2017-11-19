@@ -60,6 +60,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public static final String ALT_NAME = "Samples Viewer Paste";
+
     public String getAltName() {
         return ALT_NAME;
     }

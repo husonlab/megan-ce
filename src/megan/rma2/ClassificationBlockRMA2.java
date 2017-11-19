@@ -87,6 +87,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
 
     /**
      * set the number associated with a key -> just set not written to disk
+     *
      * @param key
      * @param sum
      */

@@ -336,9 +336,9 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
-                if (np.findIgnoreCase(tokens, "contaminationFilter=true", true, false))
+                if (np.findIgnoreCase(tokens, "contaminantFilter=true", true, false))
                     setUseContaminantFilter(true);
-                else if (np.findIgnoreCase(tokens, "contaminationFilter=false", true, false))
+                else if (np.findIgnoreCase(tokens, "contaminantFilter=false", true, false))
                     setUseContaminantFilter(false);
 
                 boolean readAssignmentModeWasSet = false;

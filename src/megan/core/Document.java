@@ -130,6 +130,8 @@ public class Document {
 
     private boolean longReads = DEFAULT_LONG_READS;
 
+    private boolean useContaminantFilter = false;
+
     private long lastRecomputeTime = 0;
 
     private final MeganFile meganFile = new MeganFile();
@@ -334,6 +336,11 @@ public class Document {
                 else if (np.findIgnoreCase(tokens, "identityFilter=false", true, false))
                     setUseIdentityFilter(false);
 
+                if (np.findIgnoreCase(tokens, "contaminationFilter=true", true, false))
+                    setUseContaminantFilter(true);
+                else if (np.findIgnoreCase(tokens, "contaminationFilter=false", true, false))
+                    setUseContaminantFilter(false);
+
                 boolean readAssignmentModeWasSet = false;
                 //legacy support:
                 {
@@ -403,6 +410,9 @@ public class Document {
         buf.append(" longReads=").append(isLongReads());
         buf.append(" pairedReads=").append(isPairedReads());
         buf.append(" identityFilter=").append(isUseIdentityFilter());
+        if (isUseContaminantFilter() && dataTable.hasContaminants())
+            buf.append(" contaminantFilter=").append(isUseContaminantFilter());
+
         buf.append(" readAssignmentMode=").append(getReadAssignmentMode().toString());
 
         if (getActiveViewers().size() > 0) {
@@ -648,6 +658,14 @@ public class Document {
 
     public LCAAlgorithm getLcaAlgorithm() {
         return lcaAlgorithm;
+    }
+
+    public void setUseContaminantFilter(boolean useContaminantFilter) {
+        this.useContaminantFilter = useContaminantFilter;
+    }
+
+    public boolean isUseContaminantFilter() {
+        return useContaminantFilter;
     }
 
     /**

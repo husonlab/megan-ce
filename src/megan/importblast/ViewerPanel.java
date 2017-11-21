@@ -27,6 +27,7 @@ import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.commandtemplates.*;
 import megan.importblast.commands.ChooseContaminantsFileCommand;
+import megan.importblast.commands.ListContaminantsCommand;
 import megan.importblast.commands.SetUseTextTaxonomyCommand;
 import megan.importblast.commands.UseContaminantsFilterCommand;
 
@@ -130,9 +131,11 @@ public class ViewerPanel extends JPanel {
                 aPanel.add(commandManager.getButton(UseContaminantsFilterCommand.NAME));
                 final JPanel butPanel = new JPanel();
                 butPanel.setLayout(new BoxLayout(butPanel, BoxLayout.X_AXIS));
-                butPanel.add(commandManager.getButton(ChooseContaminantsFileCommand.ALTNAME));
-                butPanel.add(new JLabel(" " + ChooseContaminantsFileCommand.ALTNAME));
+                butPanel.add(commandManager.getButton(ChooseContaminantsFileCommand.NAME));
+                butPanel.add(new JLabel(" " + ChooseContaminantsFileCommand.NAME));
+                butPanel.add(commandManager.getButton(ListContaminantsCommand.NAME));
                 butPanel.add(Box.createHorizontalGlue());
+
                 aPanel.add(butPanel);
             }
 

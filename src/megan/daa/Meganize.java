@@ -88,7 +88,7 @@ public class Meganize {
         if (contaminantsFile.length() > 0) {
             ContaminantManager contaminantManager = new ContaminantManager();
             contaminantManager.read(contaminantsFile);
-            doc.getDataTable().setContaminants(contaminantManager.toString());
+            doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
         }
 
         doc.setProgressListener(progress);

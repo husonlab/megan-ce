@@ -32,6 +32,9 @@ import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.dialogs.parameters.commands.ApplyCommand;
 import megan.dialogs.parameters.commands.CancelCommand;
+import megan.dialogs.parameters.commands.ChooseContaminantsFileCommand;
+import megan.dialogs.parameters.commands.UseContaminantFilterCommand;
+import megan.importblast.commands.ListContaminantsCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
 import megan.parsers.blast.BlastMode;
 
@@ -63,6 +66,10 @@ public class ParametersDialog extends JDialog {
 
     private final JTextField minPercentReadToCoverField = new JTextField(8);
 
+    private final AbstractButton useContaminantsFilter;
+    private final AbstractButton listContaminants;
+    private String contaminants;
+    private String contaminantsFileName;
 
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
 
@@ -70,7 +77,6 @@ public class ParametersDialog extends JDialog {
     private final JCheckBox longReadsCBox = new JCheckBox("Parse as Long Reads");
 
     private final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
-
 
     private final JCheckBox usePercentIdentityCBox = new JCheckBox("Use 16S Percent Identity Filter");
 
@@ -90,7 +96,7 @@ public class ParametersDialog extends JDialog {
     public ParametersDialog(Component parent, Director dir) {
         super();
 
-        commandManager = new CommandManager(dir, this, new String[]{"megan.dialogs.parameters.commands"}, !ProgramProperties.isUseGUI());
+        commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.dialogs.parameters.commands"}, !ProgramProperties.isUseGUI());
         commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(), true);
 
         setLocationRelativeTo(parent);
@@ -128,6 +134,12 @@ public class ParametersDialog extends JDialog {
 
         activeFNames.addAll(doc.getActiveViewers());
         activeFNames.remove(Classification.Taxonomy);
+
+        useContaminantsFilter = commandManager.getButton(UseContaminantFilterCommand.NAME);
+
+        useContaminantsFilter.setSelected(doc.isUseContaminantFilter());
+        contaminants = doc.getDataTable().getContaminants();
+        listContaminants = commandManager.getButton(ListContaminantsCommand.NAME);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(makeLCAParametersPanel(doc), BorderLayout.CENTER);
@@ -484,10 +496,6 @@ public class ParametersDialog extends JDialog {
             final JPanel aPanel = new JPanel();
             aPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Advanced settings:"), BorderFactory.createEmptyBorder(3, 10, 1, 10)));
             aPanel.setLayout(new BoxLayout(aPanel, BoxLayout.Y_AXIS));
-            aPanel.setToolTipText("These are application-wide settings determining the algorithm used for classification.\n" +
-                    "By default, the 'best hit' algorithm is used.\n" +
-                    "Select a box to use the 'LCA' algorithm instead.\n" +
-                    "We do not recommend selecting any of these boxes.\n");
 
             try {
                 for (String cName : doc.getConnector().getAllClassificationNames()) {
@@ -509,7 +517,7 @@ public class ParametersDialog extends JDialog {
             }
             aPanel.add(Box.createVerticalGlue());
             {
-                JPanel line = new JPanel();
+                final JPanel line = new JPanel();
                 line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
                 line.add(new JLabel("Min Percent Read To Cover: "));
                 minPercentReadToCoverField.setText("" + doc.getMinPercentReadToCover());
@@ -529,6 +537,20 @@ public class ParametersDialog extends JDialog {
                         commandManager.updateEnableState();
                     }
                 });
+                aPanel.add(line);
+            }
+
+            aPanel.add(Box.createVerticalStrut(20));
+
+            {
+                final JPanel line = new JPanel();
+                line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
+                line.add(useContaminantsFilter);
+                line.add(commandManager.getButton(ChooseContaminantsFileCommand.NAME));
+                line.add(listContaminants);
+                commandManager.updateEnableState(ChooseContaminantsFileCommand.NAME);
+                commandManager.updateEnableState(ListContaminantsCommand.NAME);
+
                 aPanel.add(line);
             }
             aPanel.add(Box.createVerticalGlue());
@@ -709,6 +731,18 @@ public class ParametersDialog extends JDialog {
         lcaCoveragePercent.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
+    public String getContaminants() {
+        return contaminants;
+    }
+
+    public void setUseContaminantsFilter(boolean state) {
+        useContaminantsFilter.setSelected(state);
+    }
+
+    public boolean isUseContaminantsFilter() {
+        return useContaminantsFilter != null && useContaminantsFilter.isSelected();
+    }
+
     public String getParameterString() {
         return " minSupportPercent=" + getMinSupportPercent() +
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
@@ -716,6 +750,8 @@ public class ParametersDialog extends JDialog {
                 " lcaAlgorithm=" + getLcaAlgorithm().toString() + " lcaCoveragePercent=" + getLCACoveragePercent() +
                 " minPercentReadToCover=" + getMinPercentReadToCover() + " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
+                + (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
+                + (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")
                 + " readAssignmentMode=" + getReadAssignmentMode()
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }
@@ -726,5 +762,22 @@ public class ParametersDialog extends JDialog {
 
     public void setCanceled(boolean canceled) {
         this.canceled = canceled;
+    }
+
+    public boolean hasContaminants() {
+        return contaminants != null && contaminants.length() > 0;
+    }
+
+    /**
+     * set the name of a new contaminants file to parse and use
+     *
+     * @param fileName
+     */
+    public void setContaminantsFileName(String fileName) {
+        contaminantsFileName = fileName;
+    }
+
+    public String getContaminantsFileName() {
+        return contaminantsFileName;
     }
 }

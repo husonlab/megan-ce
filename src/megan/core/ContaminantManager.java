@@ -29,6 +29,7 @@ import megan.viewer.TaxonomyData;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -49,8 +50,7 @@ public class ContaminantManager {
         contaminants.clear();
         contaminantsAndDescendants.clear();
 
-        System.err.println("Reading file: " + file);
-        try (FileInputIterator it = new FileInputIterator(file, true)) {
+        try (FileInputIterator it = new FileInputIterator(file)) {
             while (it.hasNext()) {
                 final String aLine = it.next();
                 final int taxonId;
@@ -84,6 +84,11 @@ public class ContaminantManager {
         }
     }
 
+    public int inputSize() {
+        return contaminants.size();
+    }
+
+
     public int size() {
         return contaminantsAndDescendants.size();
     }
@@ -93,7 +98,7 @@ public class ContaminantManager {
      *
      * @param taxonIdString
      */
-    public void parse(String taxonIdString) {
+    public void parseTaxonIdsString(String taxonIdString) {
         contaminants.clear();
         contaminantsAndDescendants.clear();
         for (String word : Basic.splitOnWhiteSpace(taxonIdString)) {
@@ -103,7 +108,8 @@ public class ContaminantManager {
                     contaminants.add(taxonId);
             }
         }
-        setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+        if (contaminants.size() > 0)
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**
@@ -136,7 +142,21 @@ public class ContaminantManager {
      *
      * @return taxon ids
      */
-    public String toString() {
+    public String getTaxonIdsString() {
         return Basic.toString(contaminants, " ");
+    }
+
+    /**
+     * get iterable over all contaminants
+     *
+     * @return iterable
+     */
+    public Iterable<Integer> getContaminants() {
+        return new Iterable<Integer>() {
+            @Override
+            public Iterator<Integer> iterator() {
+                return contaminants.iterator();
+            }
+        };
     }
 }

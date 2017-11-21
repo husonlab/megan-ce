@@ -120,8 +120,8 @@ public class DataTable {
         classification2NodeFormats.clear();
         classification2EdgeFormats.clear();
         parameters = null;
-        contaminants = null;
         classification2class2counts.clear();
+        // don't clear contaminants
     }
 
     /**
@@ -280,7 +280,7 @@ public class DataTable {
                                 StringBuilder buf = new StringBuilder();
                                 for (int i = 1; i < tokens.length; i++)
                                     buf.append(" ").append(tokens[i]);
-                                contaminants = buf.toString().trim();
+                                setContaminants(buf.toString().trim());
                             }
                             break;
                         }
@@ -439,8 +439,8 @@ public class DataTable {
 
         if (parameters != null)
             w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
-        if (contaminants != null)
-            w.write(String.format("%s\t%s\n", CONTAMINANTS, contaminants));
+        if (hasContaminants())
+            w.write(String.format("%s\t%s\n", CONTAMINANTS, getContaminants()));
 
 
         for (String classification : classification2NodeStyle.keySet()) {
@@ -520,8 +520,8 @@ public class DataTable {
 
         if (parameters != null)
             w.write(String.format("<b>%s:</b> %s<br>\n", PARAMETERS.substring(1), parameters));
-        if (contaminants != null)
-            w.write(String.format("<b>%s:</b> %d taxa<br>\n", CONTAMINANTS.substring(1), Basic.countWords(contaminants)));
+        if (hasContaminants())
+            w.write(String.format("<b>%s:</b> %d taxa<br>\n", CONTAMINANTS.substring(1), Basic.countWords(getContaminants())));
         if (colorTable != null)
             w.write(String.format("<b>ColorTable:</b> %s%s <b>HeatMapColorTable:</b> %s<br>\n", colorTable, (colorByPosition ? " byPosition" : ""), colorTableHeatMap));
 
@@ -578,8 +578,8 @@ public class DataTable {
         if (parameters != null)
             w.write(String.format("%s\t%s\n", PARAMETERS, parameters));
 
-        if (contaminants != null)
-            w.write(String.format("%s\t%s\n", CONTAMINANTS, contaminants));
+        if (hasContaminants())
+            w.write(String.format("%s\t%s\n", CONTAMINANTS, getContaminants()));
 
         return w.toString();
     }
@@ -884,6 +884,10 @@ public class DataTable {
      */
     public void setContaminants(String contaminants) {
         this.contaminants = contaminants;
+    }
+
+    public boolean hasContaminants() {
+        return contaminants != null && contaminants.length() > 0;
     }
 
     /**
@@ -1585,4 +1589,5 @@ public class DataTable {
         }
         return sampleIds;
     }
+
 }

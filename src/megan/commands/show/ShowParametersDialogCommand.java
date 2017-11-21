@@ -27,6 +27,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
+import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.dialogs.parameters.ParametersDialog;
@@ -44,6 +45,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
     public String getSyntax() {
         return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
                 "\t[weightedLCA={false|true}] [lcaCoveragePercent=<number>] [percentReadToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+                "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }
 
@@ -106,6 +108,22 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
             np.matchIgnoreCase("useIdentityFilter=");
             getDoc().setUseIdentityFilter(np.getBoolean());
         }
+        if (np.peekMatchIgnoreCase("useContaminantFilter")) {
+            np.matchIgnoreCase("useContaminantFilter=");
+            getDoc().setUseContaminantFilter(np.getBoolean());
+        } else
+            getDoc().setUseContaminantFilter(false);
+        if (np.peekMatchIgnoreCase("loadContaminantFile")) {
+            np.matchIgnoreCase("loadContaminantFile=");
+            final String fileName = np.getWordFileNamePunctuation();
+            final ContaminantManager contaminantManager = new ContaminantManager();
+            System.err.println("Loading contaminant file: " + fileName);
+            contaminantManager.read(fileName);
+            System.err.println("Contaminants: " + contaminantManager.inputSize());
+            getDoc().getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
+            getDoc().setUseContaminantFilter(true);
+        }
+
         if (np.peekMatchIgnoreCase("readAssignmentMode")) {
             np.matchIgnoreCase("readAssignmentMode=");
             getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " "))));

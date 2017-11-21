@@ -302,4 +302,13 @@ public class RMA6FromBlastCreator {
         SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), new RMA6Connector(rma6File), doc.getDataTable(), 0);
         doc.saveAuxiliaryData();
     }
+
+    /**
+     * set contaminants
+     *
+     * @param contaminantTaxonIdsString
+     */
+    public void setContaminants(String contaminantTaxonIdsString) {
+        doc.getDataTable().setContaminants(contaminantTaxonIdsString);
+    }
 }

@@ -45,6 +45,8 @@ public class UseContaminantsFilterCommand extends CommandBase implements ICheckB
         final ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
         if (isSelected() || importBlastDialog.getContaminantsFileName() != null)
             importBlastDialog.setUseContaminantsFilter(!isSelected());
+        getCommandManager().updateEnableState(ListContaminantsCommand.NAME);
+
         if (isSelected())
             NotificationsInSwing.showInformation("Contaminants file: " + importBlastDialog.getContaminantsFileName());
     }

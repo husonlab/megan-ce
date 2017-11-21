@@ -233,7 +233,8 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 final String contaminantsFile = np.getWordFileNamePunctuation().trim();
                 ContaminantManager contaminantManager = new ContaminantManager();
                 contaminantManager.read(contaminantsFile);
-                doc.getDataTable().setContaminants(contaminantManager.toString());
+                doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
+                doc.setUseContaminantFilter(true);
             }
 
             String description;
@@ -264,9 +265,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(ProgramProperties.getProgramName(), format, doc.getBlastMode(),
                     blastFileNames, readFileNames, doc.getMeganFile().getFileName(), useCompression, doc, maxMatchesPerRead);
 
+
             rma6Creator.parseFiles(doc.getProgressListener());
 
             doc.loadMeganFile();
+
+
             if (description != null && description.length() > 0) {
                 description = description.replaceAll("^ +| +$|( )+", "$1"); // replace all white spaces by a single space
                 final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "");

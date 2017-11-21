@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.importblast.commands;
+package megan.dialogs.parameters.commands;
 
 import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.ICommand;
@@ -25,7 +25,8 @@ import jloda.util.ResourceManager;
 import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
-import megan.importblast.ImportBlastDialog;
+import megan.dialogs.parameters.ParametersDialog;
+import megan.importblast.commands.ListContaminantsCommand;
 import megan.main.MeganProperties;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 /**
- * choose command
+ * choose a different contaminants file
  * Daniel Huson, 11.2017
  */
 public class ChooseContaminantsFileCommand extends CommandBase implements ICommand {
@@ -63,19 +64,20 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        if (getViewer() instanceof ImportBlastDialog) {
+        if (getParent() instanceof ParametersDialog) {
             File lastOpenFile = ProgramProperties.getFile(MeganProperties.CONTAMINANT_FILE);
 
             getDir().notifyLockInput();
-            File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
+            File file = ChooseFileDialog.chooseFileToOpen(null, lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
             getDir().notifyUnlockInput();
 
             if (file != null && file.exists() && file.canRead()) {
                 ProgramProperties.put(MeganProperties.CONTAMINANT_FILE, file.getAbsolutePath());
-                ((ImportBlastDialog) getViewer()).setContaminantsFileName(file.getPath());
-                ((ImportBlastDialog) getViewer()).setUseContaminantsFilter(true);
-                getCommandManager().updateEnableState(UseContaminantsFilterCommand.NAME);
+                ((ParametersDialog) getParent()).setContaminantsFileName(file.getPath());
+                ((ParametersDialog) getParent()).setUseContaminantsFilter(true);
                 getCommandManager().updateEnableState(ListContaminantsCommand.NAME);
+
+                getCommandManager().updateEnableState(megan.dialogs.parameters.commands.ListContaminantsCommand.NAME);
             }
         }
     }
@@ -83,23 +85,23 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
     final public static String NAME = "Load Contaminants File...";
 
     /**
+     * /**
      * get the name to be used as a menu label
      *
      * @return name
      */
+
     public String getName() {
         return NAME;
     }
 
-
-    final public static String DESCRIPTION = "Loads a list of contaminant taxon names or Ids from a file (one per line)";
     /**
      * get description to be used as a tooltip
      *
      * @return description
      */
     public String getDescription() {
-        return DESCRIPTION;
+        return megan.importblast.commands.ChooseContaminantsFileCommand.DESCRIPTION;
     }
 
     /**
@@ -135,6 +137,6 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return getViewer() instanceof ImportBlastDialog;
+        return getParent() instanceof ParametersDialog;
     }
 }

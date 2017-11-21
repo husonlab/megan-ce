@@ -64,9 +64,9 @@ public class DataProcessor {
             }
 
             final ContaminantManager contaminantManager;
-            if (doc.getDataTable().getContaminants() != null) {
+            if (doc.isUseContaminantFilter() && doc.getDataTable().hasContaminants()) {
                 contaminantManager = new ContaminantManager();
-                contaminantManager.parse(doc.getDataTable().getContaminants());
+                contaminantManager.parseTaxonIdsString(doc.getDataTable().getContaminants());
                 System.err.println(String.format("Using contaminant filter for %,d taxa", contaminantManager.size()));
             } else
                 contaminantManager = null;

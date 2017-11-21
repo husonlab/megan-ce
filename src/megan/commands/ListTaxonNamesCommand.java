@@ -16,27 +16,21 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.importblast.commands;
+package megan.commands;
 
-import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.ICommand;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
-import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
-import megan.commands.CommandBase;
-import megan.importblast.ImportBlastDialog;
-import megan.main.MeganProperties;
+import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
+import java.util.ArrayList;
 
 /**
- * choose command
+ * list taxon names
  * Daniel Huson, 11.2017
  */
-public class ChooseContaminantsFileCommand extends CommandBase implements ICommand {
+public class ListTaxonNamesCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *
@@ -44,7 +38,8 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      */
     @Override
     public String getSyntax() {
-        return null;
+        return "list taxa=<taxon-id ...> [title=<string>];";
+
     }
 
     /**
@@ -55,6 +50,25 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
+        np.matchIgnoreCase("list taxa=");
+        final ArrayList<Integer> taxonIds = new ArrayList<>();
+        String title = null;
+        while (!np.peekMatchIgnoreCase(";")) {
+            if (np.peekMatchIgnoreCase("title")) {
+                np.matchIgnoreCase("title=");
+                title = np.getWordFileNamePunctuation();
+                break;
+            } else {
+                taxonIds.add(np.getInt(1, Integer.MAX_VALUE));
+            }
+        }
+        np.matchIgnoreCase(";");
+
+        if (title != null)
+            System.out.println(title + "(" + taxonIds.size() + "):");
+        for (Integer taxId : taxonIds) {
+            System.out.println("[" + taxId + "] " + TaxonomyData.getName2IdMap().get(taxId));
+        }
     }
 
     /**
@@ -63,43 +77,25 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        if (getViewer() instanceof ImportBlastDialog) {
-            File lastOpenFile = ProgramProperties.getFile(MeganProperties.CONTAMINANT_FILE);
-
-            getDir().notifyLockInput();
-            File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
-            getDir().notifyUnlockInput();
-
-            if (file != null && file.exists() && file.canRead()) {
-                ProgramProperties.put(MeganProperties.CONTAMINANT_FILE, file.getAbsolutePath());
-                ((ImportBlastDialog) getViewer()).setContaminantsFileName(file.getPath());
-                ((ImportBlastDialog) getViewer()).setUseContaminantsFilter(true);
-                getCommandManager().updateEnableState(UseContaminantsFilterCommand.NAME);
-                getCommandManager().updateEnableState(ListContaminantsCommand.NAME);
-            }
-        }
     }
 
-    final public static String NAME = "Load Contaminants File...";
-
     /**
+     * /**
      * get the name to be used as a menu label
      *
      * @return name
      */
     public String getName() {
-        return NAME;
+        return null;
     }
 
-
-    final public static String DESCRIPTION = "Loads a list of contaminant taxon names or Ids from a file (one per line)";
     /**
      * get description to be used as a tooltip
      *
      * @return description
      */
     public String getDescription() {
-        return DESCRIPTION;
+        return "Lists the names of taxa";
     }
 
     /**
@@ -108,7 +104,7 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif");
+        return null;
     }
 
     /**
@@ -135,6 +131,6 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return getViewer() instanceof ImportBlastDialog;
+        return true;
     }
 }

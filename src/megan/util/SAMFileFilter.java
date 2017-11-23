@@ -63,6 +63,6 @@ public class SAMFileFilter extends FileFilterBase implements FilenameFilter {
         if (!super.accept(directory, fileName))
             return false;
         String firstLine = Basic.getFirstLineFromFile(new File(fileName));
-        return firstLine != null && firstLine.startsWith("@HD");
+        return firstLine != null && (firstLine.startsWith("@HD") || firstLine.startsWith("@PG"));
     }
 }

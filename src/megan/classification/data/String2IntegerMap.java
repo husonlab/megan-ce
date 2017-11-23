@@ -18,10 +18,16 @@
  */
 package megan.classification.data;
 
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.FileInputIterator;
+import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -38,13 +44,13 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
      */
     public void loadFile(IName2IdMap label2id, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         System.err.println("Loading map from file: " + fileName);
-        FileInputIterator it = new FileInputIterator(new InputStreamReader(ResourceManager.getFileAsStream(fileName)), fileName);
-        it.setSkipCommentLines(true);
-        it.setSkipEmptyLines(true);
-        progressListener.setProgress(0);
-        progressListener.setMaximum(it.getMaximumProgress());
 
-        try {
+        try (FileInputIterator it = new FileInputIterator(fileName)) {
+            it.setSkipCommentLines(true);
+            it.setSkipEmptyLines(true);
+            progressListener.setProgress(0);
+            progressListener.setMaximum(it.getMaximumProgress());
+
             while (it.hasNext()) {
                 String aLine = it.next();
                 String[] tokens = aLine.split("\t");
@@ -67,7 +73,6 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
                 progressListener.setProgress(it.getProgress());
             }
         } finally {
-            it.close();
             System.err.println("Lines loaded: " + size());
         }
     }

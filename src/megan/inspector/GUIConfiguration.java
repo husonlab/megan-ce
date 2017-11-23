@@ -43,7 +43,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Inspector Cut;Inspector Copy;Inspector Paste;|;Clear;|;Select All;Select None;|;Find...;Find Again;|;Show Taxon...;Show Reads...;");
 
-        menuConfig.defineMenu("Options", "BLAST on NCBI...;|;Collapse Inspector;Expand Inspector;|;Sort Reads Alphabetically;");
+        menuConfig.defineMenu("Options", "BLAST on NCBI...;|;Collapse Inspector;Expand Inspector;|;Disable Taxon For Match;|;Sort Reads Alphabetically;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
                 "Inspector Window...;|;Main Viewer...;" + ClassificationCommandHelper.getOpenViewerMenuString() + "|;Samples Viewer...;|;");
@@ -68,6 +68,6 @@ public class GUIConfiguration {
      * @return toolbar configuration
      */
     public static String getPopupMenuConfiguration() {
-        return "Inspector Copy;As Text...;|;Clear;";
+        return "Inspector Copy;As Text...;|;Disable Taxon For Match;|;Clear;";
     }
 }

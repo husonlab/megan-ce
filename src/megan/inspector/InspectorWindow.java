@@ -490,8 +490,9 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                     for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
                         IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                         final StringBuilder buf = new StringBuilder();
+                        final int taxId = matchBlock.getTaxonId();
+
                         {
-                            int taxId = matchBlock.getTaxonId();
                             String taxonName = TaxonomyData.getName2IdMap().get(taxId);
                             if (taxonName == null) {
                                 if (taxId > 0)
@@ -515,8 +516,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                             }
                         }
 
-                        final MatchHeadLineNode node = new MatchHeadLineNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(),
-                                activeMatches.get(m), matchBlock.getUId(), matchBlock.getText());
+                        final MatchHeadLineNode node = new MatchHeadLineNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(), activeMatches.get(m), matchBlock.getUId(), taxId, matchBlock.getText());
                         // add match node
 
                         final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
@@ -575,7 +575,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         loader.execute(new LoaderTask() {
             public void run(ProgressListener progressListener) throws Exception {
                 progressListener.setMaximum(-1);
-                final MatchTextNode node = new MatchTextNode(parent.matchText == null ? "Unknown" : parent.matchText);
+                final MatchTextNode node = new MatchTextNode(parent.getMatchText() == null ? "Unknown" : parent.getMatchText());
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
                         parent.add(node);
@@ -663,6 +663,9 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
         searchManager.getFindDialogAsToolBar().close();
+        // cancel anything that is running:
+        if (getDir().getDocument().getProgressListener() != null)
+            getDir().getDocument().getProgressListener().setUserCancelled(true);
         frame.dispose();
     }
 
@@ -889,16 +892,33 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     }
 
     /**
+     * returns the match head node in a path
+     *
+     * @param path
+     * @return read head node or null
+     */
+    public MatchHeadLineNode getMatchHeadLineNodeFromPath(TreePath path) {
+        Object[] components = path.getPath();
+        for (Object component : components) {
+            if (component instanceof MatchHeadLineNode)
+                return (MatchHeadLineNode) component;
+        }
+        return null;
+    }
+
+    /**
      * does window currently have a selected read headline node?
      *
      * @return true, if some read headline node is selected
      */
     public boolean hasSelectedReadHeadLineNodes() {
-        TreePath[] paths = dataTree.getSelectionPaths();
-        if (paths != null) {
-            for (TreePath path : paths) {
-                if (getReadHeadLineNodeFromPath(path) != null)
-                    return true;
+        if (dataTree != null) {
+            TreePath[] paths = dataTree.getSelectionPaths();
+            if (paths != null) {
+                for (TreePath path : paths) {
+                    if (getReadHeadLineNodeFromPath(path) != null)
+                        return true;
+                }
             }
         }
         return false;
@@ -915,6 +935,42 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         if (paths != null) {
             for (TreePath path : paths) {
                 ReadHeadLineNode node = getReadHeadLineNodeFromPath(path);
+                if (node != null)
+                    list.add(node);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * does window currently have a selected read headline node?
+     *
+     * @return true, if some match headline node is selected
+     */
+    public boolean hasSelectedMatchHeadLineNodes() {
+        if (dataTree != null) {
+            TreePath[] paths = dataTree.getSelectionPaths();
+            if (paths != null) {
+                for (TreePath path : paths) {
+                    if (getMatchHeadLineNodeFromPath(path) != null)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * get all selected read headline nodes
+     *
+     * @return all selected read headline nodes
+     */
+    public ArrayList<MatchHeadLineNode> getAllSelectedMatchHeadLineNodes() {
+        ArrayList<MatchHeadLineNode> list = new ArrayList<>();
+        TreePath[] paths = dataTree.getSelectionPaths();
+        if (paths != null) {
+            for (TreePath path : paths) {
+                MatchHeadLineNode node = getMatchHeadLineNodeFromPath(path);
                 if (node != null)
                     list.add(node);
             }

@@ -43,7 +43,7 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("disable taxa=");
 
-        final MainViewer viewer = (MainViewer) getViewer();
+        final MainViewer viewer = getDir().getMainViewer();
         final Set<Integer> disabledInternalIds = TaxonomyData.getDisabledInternalTaxa();
 
         String name = np.getWordRespectCase();
@@ -101,7 +101,7 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
                         int taxonId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
                         if (taxonId <= 0) {
                             NotificationsInSwing.showWarning(viewer.getFrame(), "Unknown taxon: " + name);
-                            return;
+                            continue;
                         }
                         if (first)
                             first = false;

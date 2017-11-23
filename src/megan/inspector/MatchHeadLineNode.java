@@ -25,17 +25,30 @@ import jloda.util.MultiLineCellRenderer;
  * Daniel Huson, 2.2006
  */
 public class MatchHeadLineNode extends NodeBase {
-    protected boolean ignore;
-    protected boolean isUsed;
-    protected long uId;
-    protected String matchText;
+    private final boolean ignore;
+    private final boolean isUsed;
+    private final long uId;
+    private final int taxId;
+    private final String matchText;
 
-    public MatchHeadLineNode(String name, float score, boolean ignore, boolean isUsed, long uId, String matchText) {
+    /**
+     * constructor
+     *
+     * @param name
+     * @param score
+     * @param ignore
+     * @param isUsed
+     * @param uId
+     * @param taxId
+     * @param matchText
+     */
+    public MatchHeadLineNode(String name, float score, boolean ignore, boolean isUsed, long uId, int taxId, String matchText) {
         super(name);
         this.rank = -score;
         this.ignore = ignore;
         this.isUsed = isUsed;
         this.uId = uId;
+        this.taxId=taxId;
         this.matchText = matchText;
     }
 
@@ -61,5 +74,13 @@ public class MatchHeadLineNode extends NodeBase {
 
     public long getUId() {
         return uId;
+    }
+
+    public int getTaxId() {
+        return taxId;
+    }
+
+    public String getMatchText() {
+        return matchText;
     }
 }

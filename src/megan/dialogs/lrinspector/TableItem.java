@@ -45,11 +45,10 @@ public class TableItem {
      * @param percentCoverage
      * @param pane
      */
-    public TableItem(String readName, String readSequence, String className, int classId, int hits, int percentCoverage, ReadLayoutPane pane) {
+    public TableItem(String readName, int readLength, String readSequence, String className, int classId, int hits, int percentCoverage, ReadLayoutPane pane) {
         setReadName(readName);
         setReadSequence(readSequence);
-        if (readSequence != null)
-            setReadLength(readSequence.length());
+        setReadLength(readLength);
         setClassId(classId);
         if (className == null)
             className = "Unknown";

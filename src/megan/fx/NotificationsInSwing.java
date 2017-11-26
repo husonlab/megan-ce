@@ -142,7 +142,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showWarning(String message) {
-        showNotification(title, message, Mode.warning, Pos.BOTTOM_LEFT, 60000);
+        showWarning(null, message);
     }
 
     /**
@@ -151,7 +151,16 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showWarning(Object parentIgnored, String message) {
-        showNotification(title, message, Mode.warning, Pos.BOTTOM_LEFT, 60000);
+        showWarning(parentIgnored, message, 60000);
+    }
+
+    /**
+     * show a warning notation
+     *
+     * @param message
+     */
+    public static void showWarning(Object parentIgnored, String message, long milliseconds) {
+        showNotification(title, message, Mode.warning, Pos.BOTTOM_LEFT, milliseconds);
     }
 
     /**

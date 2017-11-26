@@ -40,6 +40,7 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.fx.FXUtilities;
+import megan.fx.NotificationsInSwing;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -89,13 +90,14 @@ public class TableItemTask extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
         final Set<Long> seen = new HashSet<>();
-
         final ArrayList<TableItem> buffer = new ArrayList<>(100);
 
         final Classification classification = ClassificationManager.get(classificationName, true);
         final IClassificationBlock classificationBlock = doc.getConnector().getClassificationBlock(classificationName);
         classIds.retainAll(classificationBlock.getKeySet());
         updateProgress(-1, classIds.size());
+
+        boolean warnedAboutUnknownReadLength = false;
 
         int count = 0;
         int classCount = 0;
@@ -117,14 +119,19 @@ public class TableItemTask extends Task<Integer> {
                     while (it.hasNext()) {
                         final IReadBlock readBlock = it.next();
                         final String readName = readBlock.getReadName();
-                        final int readLength = readBlock.getReadLength();
+                        final int readLength;
+                        if (readBlock.getReadLength() > 0)
+                            readLength = readBlock.getReadLength();
+                        else if (readBlock.getReadSequence() != null)
+                            readLength = readBlock.getReadSequence().length();
+                        else
+                            readLength = 0;
                         longestReadsFilter.add(readName, readLength);
                     }
                 }
                 readsToUse = longestReadsFilter.computeValues();
             } else
                 readsToUse = null;
-
 
             try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                 while (it.hasNext()) {
@@ -133,22 +140,30 @@ public class TableItemTask extends Task<Integer> {
                     if (readsToUse != null && !readsToUse.contains(readName))
                         continue;
 
-                    if (readBlock.getReadLength() == 0) {
-                        int readLength = 0;
+                    // make sure we have a useful read length:
+                    int readLength = readBlock.getReadLength();
+                    if (readLength == 0 && readBlock.getReadSequence() != null && readBlock.getReadSequence().length() > 0)
+                        readLength = readBlock.getReadSequence().length();
+                    if (readLength == 0) {
                         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                             readLength = Math.max(readLength, matchBlock.getAlignedQueryStart());
                             readLength = Math.max(readLength, matchBlock.getAlignedQueryEnd());
                         }
-                        readBlock.setReadLength(readLength);
+                        if (readLength > 0 && !warnedAboutUnknownReadLength) {
+                            NotificationsInSwing.showWarning(null, "Precise read lengths unknown, using end of last alignments as lower bound", 10000);
+                            warnedAboutUnknownReadLength = true;
+                        }
                     }
+                    if (readLength == 0)
+                        readLength = 1;
 
                     final long uid = readBlock.getUId();
                     if (!seen.contains(uid)) {
                         if (uid != 0)
                             seen.add(uid);
 
-                        maxReadLength.set(Math.max(maxReadLength.get(), readBlock.getReadLength()));
+                        maxReadLength.set(Math.max(maxReadLength.get(), readLength));
 
                         //updateMessage("Processing read " + readBlock.getReadName());
 
@@ -160,11 +175,11 @@ public class TableItemTask extends Task<Integer> {
                         for (Interval<IMatchBlock> interval : intervalTree) {
                             final IMatchBlock matchBlock = interval.getData();
                             maxBitScore.set(Math.max(maxBitScore.get(), matchBlock.getBitScore()));
-                            maxNormalizedBitScore.set(Math.max(maxNormalizedBitScore.get(), matchBlock.getBitScore() / (float) readBlock.getReadLength()));
+                            maxNormalizedBitScore.set(Math.max(maxNormalizedBitScore.get(), matchBlock.getBitScore() / (float) readLength));
                         }
-                        final ReadLayoutPane pane = new ReadLayoutPane(cNames, readBlock.getReadLength(), intervalTree, maxReadLength, layoutWidth);
-                        final int percentCover = Math.min(100, (int) Math.round((100.0 * intervalTree.getCovered()) / readBlock.getReadLength()));
-                        final TableItem tableItem = new TableItem(readName, readBlock.getReadSequence(), className, classId, readBlock.getNumberOfAvailableMatchBlocks(), percentCover, pane);
+                        final ReadLayoutPane pane = new ReadLayoutPane(cNames, readLength, intervalTree, maxReadLength, layoutWidth);
+                        final int percentCover = Math.min(100, (int) Math.round((100.0 * intervalTree.getCovered()) / readLength));
+                        final TableItem tableItem = new TableItem(readName, readLength, readBlock.getReadSequence(), className, classId, readBlock.getNumberOfAvailableMatchBlocks(), percentCover, pane);
 
                         tableItem.getPane().getMatchSelection().getSelectedItems().addListener(createChangeListener(tableItem, pane.previousSelectionTimeProperty()));
 

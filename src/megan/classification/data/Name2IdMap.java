@@ -183,8 +183,6 @@ public class Name2IdMap implements IName2IdMap {
                     }
                 }
             }
-        } catch (Exception ex) {
-            Basic.caught(ex);
         }
         System.err.println(String.format("%,9d", id2name.size()));
     }

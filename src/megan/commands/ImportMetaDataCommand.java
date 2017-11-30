@@ -68,17 +68,24 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
         if (samplesViewer != null)
             samplesViewer.getSamplesTable().getDataGrid().save(samplesViewer.getSampleAttributeTable(), null);
 
-        final int old = doc.getSampleAttributeTable().getNumberOfAttributes();
+        final int oldNumberOfSamples = doc.getNumberOfSamples();
+        final int oldNumberOfAttributes = doc.getSampleAttributeTable().getNumberOfAttributes();
 
         doc.getSampleAttributeTable().read(new FileReader(fileName), doc.getSampleNames(), false);
-        doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
+        if (doc.getSampleAttributeTable().getSampleOrder().size() != oldNumberOfSamples) {
+            doc.getSampleAttributeTable().setSampleOrder(doc.getSampleNames());
+        }
+        
+        if (!doc.getSampleAttributeTable().getSampleOrder().equals(doc.getSampleNames())) {
+            doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
+        }
 
         doc.setDirty(true);
         if (samplesViewer != null) {
             samplesViewer.getSamplesTable().syncFromDocument();
         }
 
-        NotificationsInSwing.showInformation(getViewer().getFrame(), "Number of attributes imported: " + (doc.getSampleAttributeTable().getNumberOfAttributes() - old));
+        NotificationsInSwing.showInformation(getViewer().getFrame(), "Number of attributes imported: " + (doc.getSampleAttributeTable().getNumberOfAttributes() - oldNumberOfAttributes));
     }
 
     public void actionPerformed(ActionEvent event) {

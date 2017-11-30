@@ -237,6 +237,19 @@ public class IdMapper {
         return null;
     }
 
+    /**
+     * get a  id from an accession
+     *
+     * @param accession
+     * @return KO id or null
+     */
+    public Integer getIdFromAccession(String accession) throws IOException {
+        if (isLoaded(MapType.Accession)) {
+            return getAccessionMap().get(accession);
+        }
+        return null;
+    }
+
     public String getMappingFile(MapType mapType) {
         return map2Filename.get(mapType);
     }

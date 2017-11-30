@@ -141,4 +141,15 @@ public class Interval<T> implements Comparable<Interval<T>> {
     public double overlap(Interval<T> other) {
         return Math.max(0, Math.min(end, other.end) - Math.max(start, other.start) + 1);
     }
+
+    /**
+     * gets the amount covered
+     *
+     * @param a
+     * @param b
+     * @return amount covered
+     */
+    public int cover(int a, int b) {
+        return Math.min(end, Math.max(a, b)) - Math.max(start, Math.min(a, b));
+    }
 }

@@ -75,7 +75,7 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
         if (doc.getSampleAttributeTable().getSampleOrder().size() != oldNumberOfSamples) {
             doc.getSampleAttributeTable().setSampleOrder(doc.getSampleNames());
         }
-        
+
         if (!doc.getSampleAttributeTable().getSampleOrder().equals(doc.getSampleNames())) {
             doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
         }

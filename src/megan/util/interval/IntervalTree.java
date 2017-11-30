@@ -401,14 +401,13 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @param b
      * @return list
      */
-    public Interval<T>[] getIntervalsSortedByDecreasingCover(final int a, final int b) {
+    public Interval<T>[] getIntervalsSortedByDecreasingIntersectionLength(final int a, final int b) {
         final List<Interval<T>> intervals = getIntervals(a, b);
         final Interval<T>[] array = (Interval[]) intervals.toArray(new Interval[intervals.size()]);
-        // sort by decreasing amount covered
         Arrays.sort(array, new Comparator<Interval<T>>() {
             @Override
             public int compare(Interval<T> in1, Interval<T> in2) {
-                return Integer.compare(in2.cover(a, b), in1.cover(a, b));
+                return Integer.compare(in2.intersectionLength(a, b), in1.intersectionLength(a, b));
             }
         });
         return array;

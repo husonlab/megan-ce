@@ -143,13 +143,13 @@ public class Interval<T> implements Comparable<Interval<T>> {
     }
 
     /**
-     * gets the amount covered
+     * gets the length of the intersection with interval [a,b] or [b,a]
      *
      * @param a
      * @param b
-     * @return amount covered
+     * @return intersection length
      */
-    public int cover(int a, int b) {
+    public int intersectionLength(int a, int b) {
         return Math.min(end, Math.max(a, b)) - Math.max(start, Math.min(a, b));
     }
 }

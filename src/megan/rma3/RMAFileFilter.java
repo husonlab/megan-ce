@@ -19,17 +19,19 @@
 package megan.rma3;
 
 import jloda.util.Basic;
+import jloda.util.FileFilterBase;
 import megan.io.InputReader;
 import megan.rma2.RMA2File;
 
 import java.io.File;
-import java.io.FileFilter;
+import java.io.FilenameFilter;
+
 
 /**
  * RMA file filter
  * Created by huson on 10/3/14.
  */
-public class RMAFileFilter implements FileFilter {
+public class RMAFileFilter extends FileFilterBase implements FilenameFilter {
     private static RMAFileFilter instance;
 
     /**
@@ -64,5 +66,13 @@ public class RMAFileFilter implements FileFilter {
             }
         }
         return false;
+    }
+
+
+    /**
+     * @return description of file matching the filter
+     */
+    public String getBriefDescription() {
+        return "MEGAN RMA Files";
     }
 }

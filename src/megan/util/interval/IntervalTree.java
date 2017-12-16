@@ -89,6 +89,26 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
+     * gets the data for the longest interval at this position
+     *
+     * @param pos
+     * @return data or null
+     */
+    public T getOne(int pos) {
+        buildTree();
+        final ArrayList<Interval<T>> intervals = head.stab(pos);
+        Interval<T> result = null;
+        for (Interval<T> interval : intervals) {
+            if (result == null || interval.length() > result.length())
+                result = interval;
+        }
+        if (result != null)
+            return result.getData();
+        else
+            return null;
+    }
+
+    /**
      * Perform a stabbing query, returning the interval objects
      * Will rebuild the tree if out of sync
      *

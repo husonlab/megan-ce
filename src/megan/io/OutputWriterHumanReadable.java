@@ -62,6 +62,11 @@ public class OutputWriterHumanReadable implements IOutputWriter {
     }
 
     @Override
+    public void write(byte[] bytes) throws IOException {
+        writeString(Basic.toString(bytes));
+    }
+
+    @Override
     public void writeLong(long a) throws IOException {
         writeString(String.format("%d", a));
     }

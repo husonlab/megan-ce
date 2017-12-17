@@ -119,7 +119,6 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
         return io.skipBytes(bytes);
     }
 
-
     public int read() throws IOException {
         return io.read();
     }
@@ -263,6 +262,10 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
 
     public void write(byte[] bytes, int offset, int length) throws IOException {
         io.write(bytes, offset, length);
+    }
+
+    public void write(byte[] bytes) throws IOException {
+        io.write(bytes, 0, bytes.length);
     }
 
     public void write(int a) throws IOException {

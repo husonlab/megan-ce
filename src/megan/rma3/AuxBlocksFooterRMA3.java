@@ -81,7 +81,7 @@ public class AuxBlocksFooterRMA3 extends BaseRMA3 {
             writer.writeString(name);
             byte[] bytes = name2AuxData.get(name);
             writer.writeInt(bytes.length);
-            writer.write(bytes, 0, bytes.length);
+            writer.write(bytes);
         }
     }
 

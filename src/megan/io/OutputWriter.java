@@ -239,6 +239,17 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     }
 
     /**
+     * writes bytes
+     *
+     * @param bytes
+     * @throws IOException
+     */
+    public void write(byte[] bytes) throws IOException {
+        outs.write(bytes);
+        position += bytes.length;
+    }
+
+    /**
      * write a single byte
      *
      * @param a

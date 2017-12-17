@@ -53,7 +53,7 @@ public class IntervalNode<Type> {
             // set center to median:
             if (intervals.size() == 1) {
                 final Interval<Type> interval = intervals.iterator().next();
-                center = (interval.getStart() + interval.getEnd()) / 2;
+                center = (interval.getStart() + interval.getEnd()) >>> 1;
             } else {
                 final int[] endPoints = new int[2 * intervals.size()];
 

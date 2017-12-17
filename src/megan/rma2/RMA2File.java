@@ -353,8 +353,7 @@ public class RMA2File {
                     buf.append("<<<").append(label).append(">>>").append(new String(bytes));
                 }
             }
-            byte[] bytes = buf.toString().getBytes();
-            io.write(bytes, 0, bytes.length);
+            io.write(buf.toString().getBytes());
 
             infoSection.setAuxiliaryDataEnd(io.getPosition());
             infoSection.write(io);

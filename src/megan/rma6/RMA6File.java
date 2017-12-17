@@ -140,7 +140,7 @@ public class RMA6File implements Closeable {
                     readerWriter.writeInt(0);
                 else {
                     readerWriter.writeInt(data.length);
-                    readerWriter.write(data, 0, data.length);
+                    readerWriter.write(data);
                 }
             }
         }

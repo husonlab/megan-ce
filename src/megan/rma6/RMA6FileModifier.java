@@ -119,7 +119,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
             io.writeString(name);
             byte[] bytes = label2data.get(name);
             io.writeInt(bytes.length);
-            io.write(bytes, 0, bytes.length);
+            io.write(bytes);
         }
 
         footerSectionRMA6.setEndAuxDataSection(io.getPosition());

@@ -35,6 +35,8 @@ public interface IOutputWriter extends Closeable {
 
     void write(byte[] bytes, int offset, int length) throws IOException;
 
+    void write(byte[] bytes) throws IOException;
+
     void writeLong(long a) throws IOException;
 
     void writeFloat(float a) throws IOException;

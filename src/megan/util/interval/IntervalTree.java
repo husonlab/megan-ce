@@ -89,23 +89,23 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
-     * gets the data for the longest interval at this position
+     * gets an interval that has highest coverage of the given interval, and among those, is longest
      *
-     * @param pos
-     * @return data or null
+     * @param target
+     * @return interval or null
      */
-    public T getOne(int pos) {
-        buildTree();
-        final ArrayList<Interval<T>> intervals = head.stab(pos);
+    public Interval<T> getBestInterval(Interval target, double minCoverageProportion) {
+        final double toCover = minCoverageProportion * target.length();
+        final ArrayList<Interval<T>> intervals = head.query(target);
         Interval<T> result = null;
+        int bestCoverage = 0;
         for (Interval<T> interval : intervals) {
-            if (result == null || interval.length() > result.length())
+            final int coverage = interval.intersectionLength(target.getStart(), target.getEnd());
+            if (coverage >= toCover && (result == null || coverage > bestCoverage || coverage == bestCoverage && interval.length() > result.length())) {
                 result = interval;
+            }
         }
-        if (result != null)
-            return result.getData();
-        else
-            return null;
+        return result;
     }
 
     /**

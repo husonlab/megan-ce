@@ -32,6 +32,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * annotate a file of reference sequences
@@ -81,37 +83,27 @@ public class ReferencesAnnotator {
         final String inputFile = options.getOptionMandatory("-i", "in", "Input references file (gzipped ok)", "");
         String outputFile = options.getOptionMandatory("-o", "out", "Output file", "");
 
-        final String[] availableFNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
-        options.comment("Functional classification:");
-        String[] cNames = options.getOption("-fun", "function", "Function assignments (any of " + Basic.toString(availableFNames, " ") + ")", new String[0]);
-        for (String cName : cNames) {
-            if (!ClassificationManager.getAllSupportedClassifications().contains(cName))
-                throw new UsageException("--function: Unknown classification: " + cName);
-            if (cName.equals(Classification.Taxonomy))
-                throw new UsageException("--function: Illegal argument: 'Taxonomy'");
-        }
-
         options.comment("Classification support:");
-
-        if (options.isDoHelp())
-            cNames = availableFNames;
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String gi2TaxaFile = options.getOption("-g2t", "gi2taxa", "GI-to-Taxonomy mapping file", "");
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
 
-        String[] gi2FNames = new String[cNames.length];
-        String[] acc2FNames = new String[cNames.length];
-        String[] synonyms2FNames = new String[cNames.length];
+        final HashMap<String, String> class2GIFile = new HashMap<>();
+        final HashMap<String, String> class2AccessionFile = new HashMap<>();
+        final HashMap<String, String> class2SynonymsFile = new HashMap<>();
 
-        for (int i1 = 0; i1 < cNames.length; i1++) {
-            String cName = cNames[i1];
-            gi2FNames[i1] = options.getOption("-g2" + cName.toLowerCase(), "gi2" + cName.toLowerCase(), "GI-to-" + cName + " mapping file", "");
-            acc2FNames[i1] = options.getOption("-a2" + cName.toLowerCase(), "acc2" + cName.toLowerCase(), "Accession-to-" + cName + " mapping file", "");
-            synonyms2FNames[i1] = options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", "");
-            final boolean useLCA = options.getOption("-l_" + cName.toLowerCase(), "lca" + cName.toLowerCase(), "Use LCA for assigning to '" + cName + "', alternative: best hit", ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy)));
-            ProgramProperties.put(cName + "UseLCA", useLCA);
+        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+            class2GIFile.put(cName, options.getOption("-g2" + cName.toLowerCase(), "gi2" + cName.toLowerCase(), "GI-to-" + cName + " mapping file", ""));
+            class2AccessionFile.put(cName, options.getOption("-a2" + cName.toLowerCase(), "acc2" + cName.toLowerCase(), "Accession-to-" + cName + " mapping file", ""));
+            class2SynonymsFile.put(cName, options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", ""));
+            final String tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
+            if (tags.length() > 0)
+                ProgramProperties.put(cName + "Tags", tags);
+            ProgramProperties.put(cName + "ParseIds", tags.length() > 0);
+            // final boolean useLCA = options.getOption("-l_" + cName.toLowerCase(), "lca" + cName.toLowerCase(), "Use LCA for assigning to '" + cName + "', alternative: best hit", ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy)));
+            // ProgramProperties.put(cName + "UseLCA", useLCA);
         }
 
         options.comment(ArgsOptions.OTHER);
@@ -130,10 +122,18 @@ public class ReferencesAnnotator {
 
         Basic.checkFileReadableNonEmpty(inputFile);
 
+        final ArrayList<String> cNames = new ArrayList<>();
+        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+            if (class2GIFile.get(cName).length() > 0 || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+                cNames.add(cName);
+        }
+        if (cNames.size() > 0)
+            System.err.println("Functional classifications to use: " + Basic.toString(cNames, ", "));
 
-        final IdMapper[] idMappers = new IdMapper[cNames.length + 1];
+
+        final IdMapper[] idMappers = new IdMapper[cNames.size() + 1];
+        final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
         {
-            final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
 
             // Load all mapping files:
             ClassificationManager.get(Classification.Taxonomy, true);
@@ -148,20 +148,19 @@ public class ReferencesAnnotator {
             if (synonyms2TaxaFile.length() > 0) {
                 taxonIdMapper.loadMappingFile(synonyms2TaxaFile, IdMapper.MapType.Synonyms, false, new ProgressPercentage());
             }
-            idMappers[0] = taxonIdMapper;
+            idMappers[idMappers.length - 1] = taxonIdMapper;
         }
+        for (int i = 0; i < cNames.size(); i++) {
+            final String cName = cNames.get(i);
 
-        for (int i = 0; i < cNames.length; i++) {
-            idMappers[i + 1] = ClassificationManager.get(cNames[i], true).getIdMapper();
+            idMappers[i] = ClassificationManager.get(cName, true).getIdMapper();
 
-            if (gi2FNames[i].length() > 0)
-                idMappers[i].loadMappingFile(gi2FNames[i], IdMapper.MapType.GI, false, new ProgressPercentage());
-            if (gi2FNames[i].length() > 0)
-                idMappers[i].loadMappingFile(gi2FNames[i], IdMapper.MapType.GI, false, new ProgressPercentage());
-            if (acc2FNames[i].length() > 0)
-                idMappers[i].loadMappingFile(acc2FNames[i], IdMapper.MapType.Accession, false, new ProgressPercentage());
-            if (synonyms2FNames[i].length() > 0)
-                idMappers[i].loadMappingFile(synonyms2FNames[i], IdMapper.MapType.Synonyms, false, new ProgressPercentage());
+            if (class2GIFile.get(cName).length() > 0)
+                idMappers[i].loadMappingFile(class2GIFile.get(cName), IdMapper.MapType.GI, false, new ProgressPercentage());
+            if (class2AccessionFile.get(cName).length() > 0)
+                idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());
+            if (class2SynonymsFile.get(cName).length() > 0)
+                idMappers[i].loadMappingFile(class2SynonymsFile.get(cName), IdMapper.MapType.Synonyms, false, new ProgressPercentage());
         }
 
         final IdParser[] idParsers = new IdParser[idMappers.length];

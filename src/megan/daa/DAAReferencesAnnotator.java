@@ -26,7 +26,7 @@ import megan.daa.io.*;
 import megan.main.MeganProperties;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -44,7 +44,7 @@ public class DAAReferencesAnnotator {
      *
      * @throws IOException
      */
-    public static void apply(String daaFile, boolean doTaxonomy, String[] fNames0, final ProgressListener progress) throws IOException, CanceledException {
+    public static void apply(String daaFile, boolean doTaxonomy, Collection<String> fNames0, final ProgressListener progress) throws IOException, CanceledException {
         DAAModifier.removeAllMEGANData(daaFile);
 
         final DAAHeader header = new DAAHeader(daaFile);
@@ -54,7 +54,7 @@ public class DAAReferencesAnnotator {
         final String[] cNames;
         {
             final List<String> fNamesList = new LinkedList<>();
-            fNamesList.addAll(Arrays.asList(fNames0));
+            fNamesList.addAll(fNames0);
             if (doTaxonomy && !fNamesList.contains(Classification.Taxonomy)) {
                 fNamesList.add(Classification.Taxonomy);
             } else if (!doTaxonomy && fNamesList.contains(Classification.Taxonomy))

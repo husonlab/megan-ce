@@ -32,7 +32,7 @@ import megan.daa.io.DAAParser;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class Meganize {
      * @throws IOException
      * @throws CanceledException
      */
-    public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final String[] cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
+    public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
                              int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover, String contaminantsFile) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
@@ -69,7 +69,7 @@ public class Meganize {
         doc.setOpenDAAFileOnlyIfMeganized(false);
         doc.getMeganFile().setFileFromExistingFile(daaFile, false);
         doc.getActiveViewers().add(Classification.Taxonomy);
-        doc.getActiveViewers().addAll(Arrays.asList(cNames));
+        doc.getActiveViewers().addAll(cNames);
         doc.setMinScore(minScore);
         doc.setMaxExpected(maxExpected);
         doc.setMinPercentIdentity(minPercentIdentity);

@@ -161,7 +161,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         }
 
         final Collection<String> known = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
-        final ArrayList<String> list = new ArrayList<>();
+        final ArrayList<String> cNames = new ArrayList<>();
         if (np.peekMatchIgnoreCase("fNames=")) {
             np.matchIgnoreCase("fNames=");
             while (!np.peekMatchIgnoreCase(";")) {
@@ -170,10 +170,9 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                     np.pushBack();
                     break;
                 }
-                list.add(token);
+                cNames.add(token);
             }
         }
-        final String[] cNames = list.toArray(new String[list.size()]);
 
         boolean pairedReads = false;
         int pairSuffixLength = 0;

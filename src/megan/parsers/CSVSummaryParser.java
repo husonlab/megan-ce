@@ -174,7 +174,7 @@ public class CSVSummaryParser {
                     for (int i = 0; i < idParsers.length; i++) {
                         int id;
                         if (i == taxonomyIndex && Basic.isInteger(tokens[0]))
-                            id = Basic.parseInt(tokens[1]);
+                            id = Basic.parseInt(tokens[0]);
                         else
                             id = idParsers[i].getIdFromHeaderLine(tokens[0]);
                         if (id != 0) {

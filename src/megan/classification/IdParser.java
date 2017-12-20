@@ -220,7 +220,7 @@ public class IdParser {
         }
 
         // if text parsing is allowed and no ids have been found yet:
-        if (isTaxonomy && useTextParsing && ids.size() == 0 && disabled.size() == 0) {
+        if (true || isTaxonomy && useTextParsing && ids.size() == 0 && disabled.size() == 0) {
             // parse taxonomic path in which taxa are separated by ;
             final int countSemiColons = Basic.countOccurrences(headerString, ';');
             if (countSemiColons > 0 && countSemiColons >= (headerString.length() / 32)) // assume is taxonomy path e.g. Bacteria;Proteobacteria;

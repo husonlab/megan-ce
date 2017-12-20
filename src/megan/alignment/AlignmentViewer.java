@@ -719,7 +719,6 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
         this.alignmentLayout = alignmentLayout;
         ProgramProperties.put("AlignmentViewLayout", alignmentLayout.toString());
 
-
         switch (alignmentLayout) {
             case Unsorted:
                 getAlignmentViewerPanel().setNamesPanelVisible(true);

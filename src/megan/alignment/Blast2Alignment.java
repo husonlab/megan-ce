@@ -121,15 +121,14 @@ public class Blast2Alignment {
                 ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
 
                 if (activeMatches.cardinality() > 0) {
-                    String readHeader = readBlock.getReadHeader().replaceAll("[\r\n]", "");
-                    if (readHeader.startsWith(">"))
-                        readHeader = readHeader.substring(1).trim();
-                    String readName = Basic.getFirstWord(readHeader);
-                    String readSequence = readBlock.getReadSequence();
-                    if (readSequence == null)
-                        throw new IOException("Can't display alignments, reads sequences appear to be missing from RMA file");
-                    if (readSequence != null)
-                        readSequence = readSequence.replaceAll("[\t\r\n ]", "");
+                    final String readHeader = Basic.swallowLeadingGreaterSign(readBlock.getReadHeader().substring(1)).replaceAll("[\r\n]", "").trim();
+                    final String readSequence;
+                    {
+                        final String sequence = readBlock.getReadSequence();
+                        if (sequence == null)
+                            throw new IOException("Can't display alignments, reads sequences appear to be missing from RMA file");
+                        readSequence = sequence.replaceAll("[\t\r\n ]", "");
+                    }
 
                     for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                         IMatchBlock matchBlock = readBlock.getMatchBlock(i);
@@ -144,7 +143,13 @@ public class Blast2Alignment {
                             final String matchText = removeReferenceHeaderFromBlastMatch(truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
                             //  todo: not sure what the following was supposed to do, but it broke the code: .replaceAll("[\t\r\n ]+", " ");
 
-                            final String key = Basic.getFirstLine(matchBlock.getText());
+                            String key = Basic.getFirstLine(matchBlock.getText());
+                            // if this is an augmented DNA reference, remove everything from |pos| onward
+                            if (false) {
+                                int pos = key.indexOf("|pos|");
+                                if (pos != -1)
+                                    key = key.substring(0, pos);
+                            }
 
                             //  System.err.println("key:  "+key);
                             //  System.err.println("text: "+matchText);

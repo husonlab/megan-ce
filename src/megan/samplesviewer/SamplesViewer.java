@@ -201,7 +201,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        //updateView(Director.ENABLE_STATE);
+                        updateView(Director.ENABLE_STATE);
                     }
                 });
             }

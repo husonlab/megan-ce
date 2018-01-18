@@ -23,7 +23,6 @@
 
     <path id="build.classpath">
         <fileset dir="../../jloda/jars"  includes="*.jar"/>
-        <fileset dir="../../malt/jars"  includes="*.jar"/>
 	<fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
 
         <fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>

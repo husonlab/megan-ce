@@ -444,7 +444,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
             if (aligned[2] != null) {
                 int sAdd = Math.min(ALIGNMENT_FOLD, aligned[2].length() - pos);
-                String sPart = aligned[2].substring(pos, pos + sAdd);
+                String sPart = aligned[2].substring(pos, pos + sAdd).toUpperCase();
                 int sGaps = countGapsDashDotStar(sPart);
                 if (!isReverseComplemented())
                     sEnd = sStart + (sAdd - sGaps) - 1;
@@ -547,7 +547,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
             if (aligned[2] != null) {
                 int sAdd = Math.min(ALIGNMENT_FOLD, aligned[2].length() - pos);
-                String sPart = aligned[2].substring(pos, pos + sAdd);
+                String sPart = aligned[2].substring(pos, pos + sAdd).toUpperCase();
                 int sGaps = countGapsDashDot(sPart);
                 sEnd = sStart + (sAdd - sGaps) - 1;
                 buffer.append(String.format("Sbjct:%9d  %s  %d\n", sStart, sPart, sEnd));
@@ -661,7 +661,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
             if (aligned[2] != null) {
                 int sAdd = Math.min(ALIGNMENT_FOLD, aligned[2].length() - pos);
-                String sPart = aligned[2].substring(pos, pos + sAdd);
+                String sPart = aligned[2].substring(pos, pos + sAdd).toUpperCase();
                 int sGaps = countGapsDashDot(sPart);
                 if (!isReverseComplemented())
                     sEnd = sStartPart + (sAdd - sGaps) - 1;

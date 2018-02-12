@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -129,7 +129,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
     }
 
     /**

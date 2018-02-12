@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -20,6 +20,7 @@
 package megan.algorithms;
 
 import javafx.concurrent.Task;
+import jloda.util.ProgramProperties;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.interval.Interval;
@@ -60,6 +61,7 @@ public class IntervalTree4Matches {
      * @return dominating intervals
      */
     public static IntervalTree<IMatchBlock> extractDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames, String classificationToReport) {
+        final double dominationProportion = ProgramProperties.get("MinPercentCoverDominate", 50.0) / 100;
 
         if (!classificationToReport.equalsIgnoreCase("all")) {
             for (String cName : cNames) {
@@ -87,7 +89,7 @@ public class IntervalTree4Matches {
                 final IMatchBlock match = interval.getData();
                 for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
                     final IMatchBlock other = otherInterval.getData();
-                    if (otherInterval.overlap(interval) > 0.5 * interval.length() &&
+                    if (otherInterval.overlap(interval) > dominationProportion * interval.length() &&
                             (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId())) {
                         boolean ok = true; // check that other interval has all annotations that this one has, otherwise it doesn't really dominate
                         for (String cName : cNames) {

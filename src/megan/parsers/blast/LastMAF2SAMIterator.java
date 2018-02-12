@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -203,7 +203,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(firstQueryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return getPostProcessMatches().apply(firstQueryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**

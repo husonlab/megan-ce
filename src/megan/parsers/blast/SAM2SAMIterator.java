@@ -133,7 +133,7 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(firstQuery, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return getPostProcessMatches().apply(firstQuery, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**

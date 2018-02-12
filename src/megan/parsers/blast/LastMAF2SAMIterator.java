@@ -203,7 +203,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(firstQueryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return getPostProcessMatches().apply(firstQueryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 
     /**

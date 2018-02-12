@@ -120,7 +120,7 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
     }
 
     /**

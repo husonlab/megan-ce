@@ -41,14 +41,14 @@ public class PostProcessMatches {
      * constructor
      */
     public PostProcessMatches() {
-        final float minPercentCoverToDominate = (float) ProgramProperties.get("MinPercentCoverToDominate", defaultMinPercentToCoverToDominate);
+        final float minPercentCoverToDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToDominate);
         if (minPercentCoverToDominate != defaultMinPercentToCoverToDominate)
-            System.err.println("Using MinPercentCoverToDominate=" + minPercentCoverToDominate);
+            System.err.println("Using MinPercentCoverToStonglyDominate=" + minPercentCoverToDominate);
         minProportionCoverToDominate = minPercentCoverToDominate / 100.0f;
 
-        final float topPercentScoreToDominate = (float) ProgramProperties.get("TopPercentScoreToDominate", defaultTopPercentScoreToDominate);
+        final float topPercentScoreToDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToDominate);
         if (topPercentScoreToDominate != defaultTopPercentScoreToDominate)
-            System.err.println("Using TopPercentScoreToDominate=" + topPercentScoreToDominate);
+            System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToDominate);
         topProportionScoreToDominate = topPercentScoreToDominate / 100.0f;
     }
 

@@ -119,7 +119,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
                 throw new RuntimeException("Too many errors");
         }
 
-        return postProcessMatches.apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
     }
 
     /**

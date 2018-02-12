@@ -34,7 +34,7 @@ public class SAMIteratorBase {
     private int numberOfErrors = 0;
     private String pushedBackLine;
     private boolean parseLongReads;
-    protected final PostProcessMatches postProcessMatches;
+    private final PostProcessMatches postProcessMatches;
 
     /**
      * constructor
@@ -320,5 +320,9 @@ public class SAMIteratorBase {
 
     public void setParseLongReads(boolean parseLongReads) {
         this.parseLongReads = parseLongReads;
+    }
+
+    public final PostProcessMatches getPostProcessMatches() {
+        return postProcessMatches;
     }
 }

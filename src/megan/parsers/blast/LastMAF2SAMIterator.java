@@ -115,7 +115,6 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                         s HISEQ:457:C5366ACXX:2:1101:2641:2226  1 99 + 100 TAEANENERHWNDDKIERKNQDPTNHYDKSRMR
                      */
 
-
                     final String queryAligned = queryTokens[6];
                     int queryStart = Basic.parseInt(queryTokens[2]) + 1;
                     final int queryAlignmentLength = Basic.parseInt(queryTokens[3]);
@@ -202,7 +201,6 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
             if (incrementNumberOfErrors() >= getMaxNumberOfErrors())
                 throw new RuntimeException("Too many errors");
         }
-
         return getPostProcessMatches().apply(firstQueryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
     }
 

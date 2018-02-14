@@ -37,7 +37,7 @@ import java.util.Set;
 public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorithm {
     private final IntervalTree<IMatchBlock> allMatches;
     private final IntervalTree<IMatchBlock> reverseMatches;
-    private final Set<Integer> classIds = new HashSet<>();
+    private final Set<Integer> additionalClassIds = new HashSet<>();
 
     private final String cName;
 
@@ -63,21 +63,27 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
      * @return id or 0
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
-        classIds.clear();
-        if (activeMatches.cardinality() == 0)
+        additionalClassIds.clear();
+
+        if (readBlock.getNumberOfMatches() == 0)
             return IdMapper.NOHITS_ID;
+        if (activeMatches.cardinality() == 0)
+            return IdMapper.UNASSIGNED_ID;
+
+        int result = IdMapper.UNASSIGNED_ID;
         final IntervalTree<IMatchBlock> acceptedMatches = computeAcceptedMatches(activeMatches, readBlock);
         for (Interval<IMatchBlock> interval : acceptedMatches) {
-            classIds.add(interval.getData().getId(cName));
+            final int id = interval.getData().getId(cName);
+            if (result == IdMapper.UNASSIGNED_ID && id > 0)
+                result = id;
+            else
+                additionalClassIds.add(id);
         }
-        if (classIds.size() > 0)
-            return classIds.iterator().next();
-        else
-            return IdMapper.UNASSIGNED_ID;
+        return result;
     }
 
     /**
-     * get other classes found for this read
+     * get additional classes found for this read
      *
      * @param index
      * @param numberOfClassifications used to set length of arrays returned in list
@@ -85,13 +91,13 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
      * @return total number of classes
      */
     @Override
-    public int getOtherClassIds(int index, int numberOfClassifications, ArrayList<int[]> list) {
-        for (int classId : classIds) {
+    public int getAdditionalClassIds(int index, int numberOfClassifications, ArrayList<int[]> list) {
+        for (int classId : additionalClassIds) {
             final int[] array = new int[numberOfClassifications];
             array[index] = classId;
             list.add(array);
         }
-        return classIds.size();
+        return additionalClassIds.size();
     }
 
     /**
@@ -107,15 +113,13 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     }
 
     /**
-     * computes set of matches accepted for determing the classids for this read
+     * computes set of matches accepted for determining the class ids for this read
      *
      * @param activeMatches
      * @param readBlock
      * @return number of ids
      */
     public IntervalTree<IMatchBlock> computeAcceptedMatches(BitSet activeMatches, IReadBlock readBlock) {
-        classIds.clear();
-
         if (activeMatches == null) {
             activeMatches = new BitSet();
             for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {

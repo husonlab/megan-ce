@@ -50,6 +50,8 @@ public class PostProcessMatches {
         if (topPercentScoreToDominate != defaultTopPercentScoreToDominate)
             System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToDominate);
         topProportionScoreToDominate = topPercentScoreToDominate / 100.0f;
+
+        System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and defaultTopPercentScoreToDominate=%.1f", minPercentCoverToDominate, topPercentScoreToDominate));
     }
 
     /**
@@ -111,5 +113,13 @@ public class PostProcessMatches {
             //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.get2()));
             return matches.size();
         }
+    }
+
+    public float getMinProportionCoverToDominate() {
+        return minProportionCoverToDominate;
+    }
+
+    public float getTopProportionScoreToDominate() {
+        return topProportionScoreToDominate;
     }
 }

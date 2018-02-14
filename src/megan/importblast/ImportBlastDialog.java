@@ -32,10 +32,7 @@ import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
-import megan.importblast.commands.ApplyCommand;
-import megan.importblast.commands.CancelCommand;
-import megan.importblast.commands.NextTabCommand;
-import megan.importblast.commands.PreviousTabCommand;
+import megan.importblast.commands.*;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;
@@ -176,7 +173,12 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setLCACoveragePercent(doc.getLcaCoveragePercent());
         setLcaAlgorithm(doc.getLcaAlgorithm());
 
-        setLongReads(doc.isLongReads());
+        // set opposite then call command to toggle; this is to setup LCA for long reads
+        if (doc.isLongReads()) {
+            setLongReads(!doc.isLongReads());
+            dir.executeImmediately(SetLongReadsCommand.NAME, commandManager);
+        } else
+            setLongReads(false);
 
         ArrayList<String> toDelete = new ArrayList<>();
         for (String cName : doc.getActiveViewers()) { // turn of classifications for which mappers have not been loaded

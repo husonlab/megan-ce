@@ -149,7 +149,7 @@ public class RMA6FromBlastCreator {
         for (int fileNumber = 0; fileNumber < blastFiles.length; fileNumber++) {
             int missingReadWarnings = 0;
             final String blastFile = blastFiles[fileNumber];
-            progress.setTasks("Parsing file:", Basic.getFileNameWithoutPath(blastFile));
+            progress.setTasks("Parsing file", Basic.getFileNameWithoutPath(blastFile));
             System.err.println("Parsing file: " + blastFile);
 
             final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);

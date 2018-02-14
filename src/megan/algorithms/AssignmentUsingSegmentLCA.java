@@ -74,8 +74,6 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
      * @return taxonId id
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
-        // System.err.println("Read: "+readBlock.getReadName());
-
         if (readBlock.getNumberOfMatches() == 0)
             return IdMapper.NOHITS_ID;
         if (activeMatches.cardinality() == 0)

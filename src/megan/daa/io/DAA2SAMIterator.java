@@ -40,8 +40,8 @@ public class DAA2SAMIterator implements ISAMIterator {
      * @param fileName
      * @throws IOException
      */
-    public DAA2SAMIterator(String fileName, int maxMatchesPerRead) throws IOException {
-        this.daa2QuerySAMIterator = new DAA2QuerySAMIterator(fileName, maxMatchesPerRead, isParseLongReads());
+    public DAA2SAMIterator(String fileName, int maxMatchesPerRead, boolean parseLongReads) throws IOException {
+        this.daa2QuerySAMIterator = new DAA2QuerySAMIterator(fileName, maxMatchesPerRead, parseLongReads);
     }
 
     /**

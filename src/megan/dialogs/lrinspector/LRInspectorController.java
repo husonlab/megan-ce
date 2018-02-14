@@ -37,6 +37,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import jloda.gui.ToolBar;
 import jloda.gui.find.CompositeObjectSearcher;
 import jloda.gui.find.IObjectSearcher;
@@ -409,6 +410,7 @@ public class LRInspectorController {
         axis.setLowerBound(0);
         axis.prefHeightProperty().set(20);
         axis.prefWidthProperty().bind(widthProperty.subtract(60));
+        axis.setTickLabelFont(Font.font("Arial", 10));
 
         final ChangeListener<Number> changeListener = new ChangeListener<Number>() {
             @Override

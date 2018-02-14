@@ -420,7 +420,7 @@ public class DataProcessorParallel {
                         ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForFunction);
                         id = assignmentAlgorithm[c].computeId(activeMatchesForFunction, readBlock);
                         if (id > 0 && usingLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {
-                            int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getOtherClassIds(c, numberOfClassifications, moreClassIds[c]);
+                            int numberOfSegments = ((IMultiAssignmentAlgorithm) assignmentAlgorithm[c]).getAdditionalClassIds(c, numberOfClassifications, moreClassIds[c]);
                             multiGeneWeights[c] = (numberOfSegments > 0 ? (float) readBlock.getReadWeight() / (float) numberOfSegments : 0);
                         }
                     }

@@ -26,6 +26,7 @@ import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.dialogs.lrinspector.LRInspectorViewer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,36 +43,43 @@ public class PrintCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 
+        LRInspectorViewer viewer = ((LRInspectorViewer) getViewer());
+
         PrinterJob job = PrinterJob.createPrinterJob();
+
+        if (job != null) {
+            if (job.showPrintDialog(viewer.getJavaFXStage())) {
 //        Paper customPaper = PrintHelper.createPaper("Custom", printImage.getLayoutBounds().getWidth(),
 //                printImage.getLayoutBounds().getHeight(), Units.POINT);
 //        PageLayout layout = pdfPrinter.createPageLayout(customPaper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
-        // TODO: 30.05.2017 improve or wait until bug JDK-8088509 is fixed. Alternatively:
+                // TODO: 30.05.2017 improve or wait until bug JDK-8088509 is fixed. Alternatively:
 //        job.showPageSetupDialog(new Stage());
 //        Paper paper = PrintHelper.createPaper("CustomSize", 600,400, Units.POINT);
-        PageLayout layout = job.getPrinter().createPageLayout(Paper.A5, PageOrientation.LANDSCAPE, Printer.MarginType.DEFAULT);
+                PageLayout layout = job.getPrinter().createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
 //        job.showPageSetupDialog(stage);
-        job.getJobSettings().setPageLayout(layout);
+                job.getJobSettings().setPageLayout(layout);
 
-        final Node node = ((IHasJavaFXStageAndRoot) getViewer()).getJavaFXRoot();
-        // Scale image to paper size (A4)
-        double scaleX = layout.getPrintableWidth() / node.getLayoutBounds().getWidth();
-        double scaleY = layout.getPrintableHeight() / node.getLayoutBounds().getHeight();
-        if (scaleX > scaleY) {
-            scaleX = scaleY;
-        } else {
-            scaleY = scaleX;
-        }
-        node.getTransforms().add(new Scale(scaleX, scaleY));
+                final Node node = viewer.getController().getTableView();
+                // Scale image to paper size (A4)
+                double scaleX = layout.getPrintableWidth() / node.getLayoutBounds().getWidth();
+                double scaleY = layout.getPrintableHeight() / node.getLayoutBounds().getHeight();
+                if (scaleX > scaleY) {
+                    scaleX = scaleY;
+                } else {
+                    scaleY = scaleX;
+                }
+                node.getTransforms().add(new Scale(scaleX, scaleY));
 
-        boolean printSpooled = job.printPage(layout, node);
-        if (printSpooled) {
-            job.endJob();
-            System.err.println("Wrote Image to PDF successfully");
-        } else {
-            throw new IOException("Error writing PDF.");
+                boolean printSpooled = job.printPage(layout, node);
+                if (printSpooled) {
+                    job.endJob();
+                    System.err.println("Wrote Image to PDF successfully");
+                } else {
+                    throw new IOException("Error writing PDF.");
+                }
+                node.getTransforms().add(new Scale(1 / scaleX, 1 / scaleY));
+            }
         }
-        node.getTransforms().add(new Scale(1 / scaleX, 1 / scaleY));
     }
 
     public void actionPerformed(ActionEvent event) {

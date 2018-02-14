@@ -105,7 +105,7 @@
     </top>
     <center>
         <TableView fx:id="tableView"
-                   style="-fx-selection-bar: lemonchiffon; -fx-control-inner-background-alt: AliceBlue; -fx-selection-bar-non-focused: lemonchiffon;">
+                   style="-fx-selection-bar: lemonchiffon; -fx-control-inner-background-alt: AliceBlue; -fx-selection-bar-non-focused: lemonchiffon; -fx-font-family: Arial;">
             <opaqueInsets>
                 <Insets/>
             </opaqueInsets>

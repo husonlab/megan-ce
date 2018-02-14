@@ -34,5 +34,5 @@ public interface IMultiAssignmentAlgorithm extends IAssignmentAlgorithm {
      * @param classIds                all additional assignments returned here
      * @return the total number of gene segments detected
      */
-    int getOtherClassIds(int i, int numberOfClassifications, ArrayList<int[]> classIds);
+    int getAdditionalClassIds(int i, int numberOfClassifications, ArrayList<int[]> classIds);
 }

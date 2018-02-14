@@ -69,8 +69,11 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
                 return id;
         }
 
-        if (activeMatches.cardinality() == 0)
+        if (readBlock.getNumberOfMatches() == 0)
             return IdMapper.NOHITS_ID;
+        if (activeMatches.cardinality() == 0)
+            return IdMapper.UNASSIGNED_ID;
+
         for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
             IMatchBlock match = readBlock.getMatchBlock(i);
             int id = match.getId(cName);

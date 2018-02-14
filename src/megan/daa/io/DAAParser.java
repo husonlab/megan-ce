@@ -24,6 +24,7 @@ import jloda.util.Pair;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileRandomAccessReadOnlyAdapter;
 import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.PostProcessMatches;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -141,6 +142,16 @@ public class DAAParser {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
         final ByteOutputBuffer outputBuffer = new ByteOutputBuffer(100000);
 
+        final float minProportionCoverToDominate;
+        final float topProportionScoreToDominate;
+        if (parseLongReads) {
+            PostProcessMatches postProcessMatches = new PostProcessMatches();
+            minProportionCoverToDominate = postProcessMatches.getMinProportionCoverToDominate();
+            topProportionScoreToDominate = postProcessMatches.getTopProportionScoreToDominate();
+        } else {
+            minProportionCoverToDominate = 0;
+            topProportionScoreToDominate = 0;
+        }
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
              InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
@@ -173,7 +184,7 @@ public class DAAParser {
                     for (Interval<DAAMatchRecord> interval : intervalTree) {
                         boolean covered = false;
                         for (Interval<DAAMatchRecord> other : intervalTree.getIntervals(interval)) {
-                            if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().getScore() < 0.95 * other.getData().getScore()) {
+                            if (other.overlap(interval) >= minProportionCoverToDominate * interval.length() && topProportionScoreToDominate * other.getData().getScore() > interval.getData().getScore()) {
                                 covered = true;
                                 break;
                             }

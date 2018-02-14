@@ -42,7 +42,7 @@ public class IteratorManager {
         if (format == BlastFileFormat.SAM)
             iterator = new SAM2SAMIterator(blastFile, maxMatchesPerRead, blastMode);
         else if (format == BlastFileFormat.DAA) {
-            iterator = new DAA2SAMIterator(blastFile, maxMatchesPerRead);
+            iterator = new DAA2SAMIterator(blastFile, maxMatchesPerRead, longReads);
         } else if (format == BlastFileFormat.BlastText && blastMode == BlastMode.BlastX)
             iterator = new BlastX2SAMIterator(blastFile, maxMatchesPerRead);
         else if (format == BlastFileFormat.BlastText && blastMode == BlastMode.BlastP)

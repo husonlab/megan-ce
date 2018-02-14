@@ -93,6 +93,8 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
         if (readBlock.getNumberOfMatches() == 0)
             return IdMapper.NOHITS_ID;
+        if (activeMatches.cardinality() == 0)
+            return IdMapper.UNASSIGNED_ID;
 
         // compute addresses of all hit taxa:
         if (activeMatches.cardinality() > 0) {

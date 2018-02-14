@@ -23,6 +23,7 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
@@ -39,6 +40,15 @@ public class PrintCommand extends CommandBase implements ICommand {
     }
 
     public void apply(NexusStreamParser np) throws Exception {
+        if (getViewer() instanceof LRInspectorViewer) {
+            megan.dialogs.lrinspector.commands.PrintCommand command = new megan.dialogs.lrinspector.commands.PrintCommand();
+            command.setDir(getDir());
+            command.setViewer(getViewer());
+            command.setCommandManager(getCommandManager());
+            command.apply(np);
+            return;
+        }
+
         np.matchIgnoreCase(getSyntax());
 
         PrinterJob job = PrinterJob.getPrinterJob();

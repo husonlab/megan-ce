@@ -376,6 +376,12 @@ public class ReadLayoutPane extends Pane {
                                 int estimatedPreferredLabelWidth = (int) Math.round(0.6 * fontSize * abbreviatedLabel.length());
                                 double labelStartPos = Math.max(1, anchorX - 0.5 * estimatedPreferredLabelWidth);
                                 final Label label = createLabel(abbreviatedLabel, fullLabel, text2OldLabels);
+
+                                /* // todo: this highlights hydrazine synthase for the MEGAN-LR paper
+                                if(label.getText().startsWith("hydrazine syn"))
+                                    label.setFont(Font.font(label.getFont().getFamily(), FontWeight.BOLD,label.getFont().getSize()));
+                                */
+
                                 final Interval<Label> interval = new Interval<>((int) Math.round(labelStartPos), (int) Math.round(labelStartPos + estimatedPreferredLabelWidth), label);
                                 if (!geneArrow.isReverse()) {
                                     for (int j = numberOfTracksPerDirection - 1; j >= 0; j--) {
@@ -443,7 +449,7 @@ public class ReadLayoutPane extends Pane {
      */
     private static Label processLabel(int j, int lastJ, double xPos, double yPos, Interval<Label> interval, IntervalTree<Label> intervalTree, Group geneLabels) {
         final Collection<Interval<Label>> intervals = intervalTree.getIntervals(interval);
-        if (intervalTree.getIntervals(interval).size() == 0 /* || j==lastJ*/) {
+        if (intervalTree.getIntervals(interval).size() == 0 || j == lastJ) {
             final Label label = interval.getData();
             geneLabels.getChildren().add(label);
             intervalTree.add(interval);

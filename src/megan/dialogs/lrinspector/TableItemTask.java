@@ -94,6 +94,8 @@ public class TableItemTask extends Task<Integer> {
 
         final Classification classification = ClassificationManager.get(classificationName, true);
         final IClassificationBlock classificationBlock = doc.getConnector().getClassificationBlock(classificationName);
+        if (classificationBlock == null)
+            return 0;
         classIds.retainAll(classificationBlock.getKeySet());
         updateProgress(-1, classIds.size());
 

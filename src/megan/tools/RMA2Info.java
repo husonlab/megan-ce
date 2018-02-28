@@ -108,7 +108,7 @@ public class RMA2Info {
         else if (viralOnly)
             taxonomyRoot = TaxonomyData.VIRUSES_ID;
         else
-            taxonomyRoot = 0;
+            taxonomyRoot = 0; // means no root set
 
         final Document doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(daaFile, true);
@@ -321,11 +321,10 @@ public class RMA2Info {
                     taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
                 }
 
-                final Set<Integer> ids = new TreeSet<>();
+                final Set<Integer> ids = new TreeSet<>(connector.getClassificationBlock(classificationName).getKeySet());
 
-                ids.addAll(connector.getClassificationBlock(classificationName).getKeySet());
                 for (Integer classId : ids) {
-                    if (isTaxonomy && (taxonomyRoot == 0 || isDescendant(taxonomyTree, classId, taxonomyRoot)))
+                    if (isTaxonomy && !(taxonomyRoot == 0 || isDescendant(taxonomyTree, classId, taxonomyRoot)))
                         continue;
 
                     if (classId > 0 || !ignoreUnassigned) {

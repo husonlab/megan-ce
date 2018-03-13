@@ -65,8 +65,10 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
      */
     public ReadBlockGetterDAA(DAAHeader daaHeader, boolean wantReadSequences, boolean wantMatches, float minScore, float maxExpected, boolean streamOnly, boolean reuseReadBlockObject, boolean longReads) throws IOException {
         this.daaParser = new DAAParser(daaHeader);
-        daaParser.getHeader().loadReferences(!streamOnly || !wantMatches);
-        daaParser.getHeader().loadRefAnnotations();
+        if (daaHeader.getNumberOfReferences() == 0) {
+            daaHeader.loadReferences(!streamOnly || !wantMatches);
+            daaHeader.loadRefAnnotations();
+        }
 
         this.wantReadSequences = wantReadSequences;
         this.wantMatches = wantMatches;
@@ -74,8 +76,8 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
         this.maxExpected = maxExpected;
         this.streamOnly = streamOnly;
 
-        this.start = daaParser.getHeader().computeBlockStart(daaParser.getHeader().getAlignmentsBlockIndex());
-        this.end = start + daaParser.getHeader().getBlockSize(daaParser.getHeader().getAlignmentsBlockIndex());
+        this.start = daaHeader.computeBlockStart(daaHeader.getAlignmentsBlockIndex());
+        this.end = start + daaHeader.getBlockSize(daaHeader.getAlignmentsBlockIndex());
 
         reader = new InputReaderLittleEndian(streamOnly ? new FileInputStreamAdapter(daaHeader.getFileName()) : new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));
         refReader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(daaHeader.getFileName()));

@@ -99,7 +99,6 @@ public class IdMapper {
         this.name2IdMap = name2IdMap;
 
         algorithm = (ProgramProperties.get(cName + "UseLCAToParse", name.equals(Classification.Taxonomy)) ? IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
-
     }
 
     /**

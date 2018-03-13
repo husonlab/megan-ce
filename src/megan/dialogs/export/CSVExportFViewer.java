@@ -34,10 +34,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * methods for exporting FViewer data in csv format
@@ -208,27 +205,23 @@ public class CSVExportFViewer {
 
                 if (classificationBlock != null) {
                     for (int classId : classIds) {
-                        Set<Integer> allBelow;
-                        Node v = classification.getFullTree().getANode(classId);
+                        final Collection<Integer> allBelow;
+                        final Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
-                        else {
-                            allBelow = new HashSet<>();
-                            allBelow.add(classId);
-                        }
+                        else
+                            allBelow = Collections.singletonList(classId);
+
                         boolean hasSome = false;
                         long length = 0L;
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
+
+                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
                                 if (!hasSome) {
                                     w.write(getLabelSource(shortName, classification, format, v));
                                     hasSome = true;
                                 }
-                                try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        length += it.next().getReadLength();
-                                    }
-                                }
+                                length += it.next().getReadLength();
                                 progressListener.checkForCancel();
                             }
                         }
@@ -275,7 +268,7 @@ public class CSVExportFViewer {
 
                 if (classificationBlock != null) {
                     for (int classId : classIds) {
-                        final Set<Integer> allBelow = classification.getFullTree().getAllDescendants(classId);
+                        final Collection<Integer> allBelow = classification.getFullTree().getAllDescendants(classId);
                         boolean hasSome = false;
                         long length = 0L;
                         long count = 0L;
@@ -340,31 +333,25 @@ public class CSVExportFViewer {
                 if (classificationBlock != null) {
                     for (int classId : ids) {
                         final Set<Long> seen = new HashSet<>();
-                        final Set<Integer> allBelow;
-                        Node v = classification.getFullTree().getANode(classId);
+                        final Collection<Integer> allBelow;
+                        final Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
-                        else {
-                            allBelow = new HashSet<>();
-                            allBelow.add(classId);
-                        }
+                        else
+                            allBelow = Collections.singletonList(classId);
 
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        final IReadBlock readBlock = it.next();
-                                        final long uid = readBlock.getUId();
-                                        if (!seen.contains(uid)) {
-                                            if (uid != 0)
-                                                seen.add(uid);
-                                            w.write(readBlock.getReadName() + separator + " " + getLabelTarget(classification, format, v) + "\n");
-                                            totalLines++;
-                                        }
-                                    }
+                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
+                                final IReadBlock readBlock = it.next();
+                                final long uid = readBlock.getUId();
+                                if (!seen.contains(uid)) {
+                                    if (uid != 0)
+                                        seen.add(uid);
+                                    w.write(readBlock.getReadName() + separator + " " + getLabelTarget(classification, format, v) + "\n");
+                                    totalLines++;
                                 }
-                                progressListener.checkForCancel();
                             }
+                            progressListener.checkForCancel();
                         }
                         progressListener.incrementProgress();
                     }
@@ -401,28 +388,24 @@ public class CSVExportFViewer {
 
                 if (classificationBlock != null) {
                     for (int classId : ids) {
-                        final Set<Integer> allBelow;
-                        Node v = classification.getFullTree().getANode(classId);
+                        final Collection<Integer> allBelow;
+                        final Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
                         else {
-                            allBelow = new HashSet<>();
-                            allBelow.add(classId);
+                            allBelow = Collections.singletonList(classId);
                         }
                         boolean hasSome = false;
-                        for (int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
+
+                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
                                 if (!hasSome) {
                                     w.write(getLabelSource(shortName, classification, format, v));
                                     hasSome = true;
                                 }
 
-                                try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, false)) {
-                                    while (it.hasNext()) {
-                                        String readId = it.next().getReadName();
-                                        w.write(separator + " " + readId);
-                                    }
-                                }
+                                String readId = it.next().getReadName();
+                                w.write(separator + " " + readId);
                                 progressListener.checkForCancel();
                             }
                         }

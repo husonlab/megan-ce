@@ -32,6 +32,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,28 +67,22 @@ public class ExportReads2LengthAndAlignmentCoverage {
                 if (classificationBlock != null) {
                     for (int classId : ids) {
                         final Set<Long> seen = new HashSet<>();
-                        final Set<Integer> allBelow;
-                        Node v = classification.getFullTree().getANode(classId);
+                        final Collection<Integer> allBelow;
+                        final Node v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
-                        else {
-                            allBelow = new HashSet<>();
-                            allBelow.add(classId);
-                        }
+                        else
+                            allBelow = Collections.singletonList(classId);
 
-                        for (final int id : allBelow) {
-                            if (classificationBlock.getSum(id) > 0) {
-                                try (IReadBlockIterator it = connector.getReadsIterator(cViewer.getClassName(), id, 0, 10000, true, true)) {
-                                    while (it.hasNext()) {
-                                        final IReadBlock readBlock = it.next();
-                                        final long uid = readBlock.getUId();
-                                        if (!seen.contains(uid)) {
-                                            if (uid != 0)
-                                                seen.add(uid);
-                                            w.write(createReportLine(readBlock));
-                                            totalLines++;
-                                        }
-                                    }
+                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                            while (it.hasNext()) {
+                                final IReadBlock readBlock = it.next();
+                                final long uid = readBlock.getUId();
+                                if (!seen.contains(uid)) {
+                                    if (uid != 0)
+                                        seen.add(uid);
+                                    w.write(createReportLine(readBlock));
+                                    totalLines++;
                                 }
                                 progressListener.checkForCancel();
                             }

@@ -32,8 +32,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * export accession related data
@@ -65,36 +65,31 @@ public class CSVExportRefSeq {
 
                 for (int taxonId : taxonIds) {
                     final Node v = viewer.getTaxId2Node(taxonId);
-                    final Set<Integer> allBelow;
+                    final Collection<Integer> allBelow;
                     if (v.getOutDegree() == 0)
                         allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
-                    else {
-                        allBelow = new HashSet<>();
-                        allBelow.add(taxonId);
-                    }
-                    for (int id : allBelow) {
-                        if (classificationBlock.getSum(id) > 0) {
-                            try (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), id, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
-                                while (it.hasNext()) {
-                                    final IReadBlock readBlock = it.next();
-                                    w.write(readBlock.getReadName() + separator);
-                                    for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                                        final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                        if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
-                                                (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
-                                            iterator.restart(matchBlock.getTextFirstWord());
-                                            if (iterator.hasNext()) {
-                                                final String accessionId = iterator.next();
-                                                if (accessionId != null && accessionId.length() > 0) {
-                                                    w.write(" " + accessionId);
-                                                }
-                                            }
+                    else
+                        allBelow = Collections.singletonList(taxonId);
+
+                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                        while (it.hasNext()) {
+                            final IReadBlock readBlock = it.next();
+                            w.write(readBlock.getReadName() + separator);
+                            for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
+                                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                                if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                                        (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
+                                    iterator.restart(matchBlock.getTextFirstWord());
+                                    if (iterator.hasNext()) {
+                                        final String accessionId = iterator.next();
+                                        if (accessionId != null && accessionId.length() > 0) {
+                                            w.write(" " + accessionId);
                                         }
                                     }
-                                    w.write("\n");
-                                    totalLines++;
                                 }
                             }
+                            w.write("\n");
+                            totalLines++;
                             progressListener.checkForCancel();
                         }
                     }

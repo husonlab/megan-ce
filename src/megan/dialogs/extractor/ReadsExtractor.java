@@ -75,7 +75,7 @@ public class ReadsExtractor {
             final boolean useMultipleFileNames = outFileName.contains("%t");
 
             for (Integer classId : classIds) {
-                Set<Integer> all = new HashSet<>();
+                final Collection<Integer> all = new HashSet<>();
                 all.add(classId);
                 if (summarized && classId2Descendants.get(classId) != null)
                     all.addAll(classId2Descendants.get(classId));
@@ -87,31 +87,27 @@ public class ReadsExtractor {
                     outFileFinalName = outFileName;
                 File outFile = new File(outDirectory, outFileFinalName);
 
-                for (Integer id : all) {
-                    if (classificationBlock.getSum(id) > 0) {
-                        try (IReadBlockIterator it = connector.getReadsIterator(classificationName, id, 0, 10000, true, false)) {
-                            progressListener.setMaximum(it.getMaximumProgress());
-                            progressListener.setProgress(0);
-                            while (it.hasNext()) {
-                                if (w == null)
-                                    w = new BufferedWriter(new FileWriter(outFile));
-                                IReadBlock readBlock = it.next();
-                                String readHeader = readBlock.getReadHeader();
-                                if (!readHeader.startsWith(">"))
-                                    w.write(">");
-                                w.write(readHeader);
-                                if (!readHeader.endsWith("\n"))
-                                    w.write("\n");
-                                String readData = readBlock.getReadSequence();
-                                if (readData != null) {
-                                    w.write(readData);
-                                    if (!readData.endsWith("\n"))
-                                        w.write("\n");
-                                }
-                                numberOfReads++;
-                                progressListener.setProgress(it.getProgress());
-                            }
+                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
+                    progressListener.setMaximum(it.getMaximumProgress());
+                    progressListener.setProgress(0);
+                    while (it.hasNext()) {
+                        if (w == null)
+                            w = new BufferedWriter(new FileWriter(outFile));
+                        IReadBlock readBlock = it.next();
+                        String readHeader = readBlock.getReadHeader();
+                        if (!readHeader.startsWith(">"))
+                            w.write(">");
+                        w.write(readHeader);
+                        if (!readHeader.endsWith("\n"))
+                            w.write("\n");
+                        String readData = readBlock.getReadSequence();
+                        if (readData != null) {
+                            w.write(readData);
+                            if (!readData.endsWith("\n"))
+                                w.write("\n");
                         }
+                        numberOfReads++;
+                        progressListener.setProgress(it.getProgress());
                     }
                 }
                 if (useMultipleFileNames && w != null) {

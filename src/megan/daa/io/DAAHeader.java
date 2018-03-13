@@ -394,7 +394,7 @@ public class DAAHeader {
     }
 
     public int getNumberOfReferences() {
-        return references.length;
+        return references == null ? 0 : references.length;
     }
 
     private void setReference(int i, byte[] reference) {

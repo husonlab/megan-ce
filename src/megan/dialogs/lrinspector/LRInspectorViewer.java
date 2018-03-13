@@ -423,18 +423,17 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      * @return read block
      */
     public IReadBlock findReadBlock(String readName) {
-        final Set<Integer> ids = new HashSet<>(classificationIds);
+        final Collection<Integer> all = new HashSet<>(classificationIds);
         try {
             final Document doc = dir.getDocument();
             final IClassificationBlock classificationBlock = doc.getConnector().getClassificationBlock(classificationName);
-            ids.retainAll(classificationBlock.getKeySet());
-            for (Integer id : classificationIds) {
-                try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, id, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
-                    while (it.hasNext()) {
-                        final IReadBlock readBlock = it.next();
-                        if (readBlock.getReadName().equals(readName))
-                            return readBlock;
-                    }
+            all.retainAll(classificationBlock.getKeySet());
+
+            try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
+                while (it.hasNext()) {
+                    final IReadBlock readBlock = it.next();
+                    if (readBlock.getReadName().equals(readName))
+                        return readBlock;
                 }
             }
         } catch (IOException e) {

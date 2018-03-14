@@ -91,7 +91,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      */
     public int readInt() throws IOException {
         if (ins.read(bytes, 0, 4) < 4)
-            throw new IOException("buffer underflow");
+            throw new IOException("buffer underflow at file pos: " + ins.getPosition());
         return (((int) bytes[0] & 0xFF)) | (((int) bytes[1] & 0xFF) << 8) | (((int) bytes[2] & 0xFF) << 16) | (((int) bytes[3]) << 24);
     }
 

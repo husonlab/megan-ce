@@ -366,6 +366,7 @@ public class DataProcessor {
             progress.setTasks("Binning reads", "Writing classification tables");
 
             connector.updateClassifications(cNames, updateList, progress);
+
             connector.setNumberOfReads((int) doc.getNumberOfReads());
 
             // 4. sync

@@ -50,7 +50,7 @@ public class SyncArchiveAndDataTable {
      * @throws IOException
      */
     static public void syncRecomputedArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
-        String[] classifications = connector.getAllClassificationNames();
+        final String[] classifications = connector.getAllClassificationNames();
         table.clear();
         table.setCreator(ProgramProperties.getProgramName());
         table.setCreationDate((new Date()).toString());

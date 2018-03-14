@@ -103,7 +103,7 @@ public class TaxaChart extends ChartViewer {
                             return;
                         for (String label : selectedIds) {
                             try {
-                                command.apply("show webpage classification='Taxonomy' id='" + label + "';");
+                                command.apply("show webPage classification='Taxonomy' id='" + label + "';");
                             } catch (Exception e) {
                                 Basic.caught(e);
                             }
@@ -127,7 +127,7 @@ public class TaxaChart extends ChartViewer {
                             return;
                         for (String label : selectedIds) {
                             try {
-                                command.apply("show webpage taxon='" + label + "';");
+                                command.apply("show webPage taxon='" + label + "';");
                             } catch (Exception e) {
                                 Basic.caught(e);
                             }

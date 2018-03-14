@@ -216,7 +216,7 @@ public class ChartColorManager {
     public Color getAttributeStateColor(String attributeName, Object state) {
         if (state == null || state.toString().equals("NA"))
             return Color.GRAY;
-        String attributeState = attributeName + "::" + state;
+        final String attributeState = attributeName + "::" + state;
 
         if (attributeState2color.containsKey(attributeState))
             return attributeState2color.get(attributeState);

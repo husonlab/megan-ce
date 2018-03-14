@@ -542,8 +542,12 @@ public class DAAHeader {
         try (InputReaderLittleEndian reader = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(fileName))) {
             for (int i = 0; i < getBlockTypeRankArrayLength(); i++) {
                 if (getBlockType(i) == BlockType.megan_ref_annotations) {
-                    reader.seek(getLocationOfBlockInFile(i));
-                    list.add(reader.readNullTerminatedBytes());
+                    final long pos = getLocationOfBlockInFile(i);
+                    reader.seek(pos);
+                    final String name = reader.readNullTerminatedBytes();
+                    list.add(name);
+                    System.err.println(pos + " -> " + name);
+
                 }
             }
         } catch (IOException e) {

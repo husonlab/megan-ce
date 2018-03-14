@@ -63,6 +63,7 @@ public class Meganize {
                              int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover, String contaminantsFile) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
+
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
 
         final Document doc = new Document();

@@ -64,90 +64,93 @@ public class DAAReferencesAnnotator {
 
         final int[][] cName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
 
-        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS) / 2, Runtime.getRuntime().availableProcessors() / 2));
-        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+        final int numberOfThreads = Math.max(1, Math.min(header.getNumberOfReferences(), Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS) / 2, Runtime.getRuntime().availableProcessors() / 2)));
+        final ExecutorService service = Executors.newCachedThreadPool();
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 
-        progress.setTasks("Meganizing", "Annotating references");
-        progress.setMaximum(header.getNumberOfReferences() / numberOfThreads + cNames.length);
-        progress.setProgress(0);
+            progress.setTasks("Meganizing", "Annotating references");
+            progress.setMaximum(header.getNumberOfReferences() / numberOfThreads + cNames.length);
+            progress.setProgress(0);
 
-        // determine the names for references:
-        for (int t = 0; t < numberOfThreads; t++) {
-            final int task = t;
-            service.submit(new Runnable() {
-                public void run() {
-                    try {
-                        final IdParser[] idParsers = new IdParser[cNames.length];
+            // determine the names for references:
+            for (int t = 0; t < numberOfThreads; t++) {
+                final int task = t;
+                service.submit(new Runnable() {
+                    public void run() {
+                        try {
+                            final IdParser[] idParsers = new IdParser[cNames.length];
 
-                        for (int i = 0; i < cNames.length; i++) {
-                            idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
-                        }
-
-                        for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {
-                            String ref = Basic.toString(header.getReference(r, null));
-                            for (int i = 0; i < idParsers.length; i++) {
-                                try {
-                                    cName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);
-                                } catch (IOException e) {
-                                    Basic.caught(e);
-                                }
+                            for (int i = 0; i < cNames.length; i++) {
+                                idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
                             }
-                            if (task == 0)
-                                progress.incrementProgress();
+
+                            for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {
+                                String ref = Basic.toString(header.getReference(r, null));
+                                for (int i = 0; i < idParsers.length; i++) {
+                                    try {
+                                        cName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);
+                                    } catch (IOException e) {
+                                        Basic.caught(e);
+                                    }
+                                }
+                                if (task == 0)
+                                    progress.incrementProgress();
+                            }
+                        } catch (Exception ex) {
+                            Basic.caught(ex);
+                        } finally {
+                            countDownLatch.countDown();
                         }
-                    } catch (Exception ex) {
-                        Basic.caught(ex);
-                    } finally {
-                        countDownLatch.countDown();
                     }
-                }
-            });
-        }
+                });
+            }
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            Basic.caught(e);
-        }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
 
-        // get all into bytes:
-        final byte[][] cName2Bytes = new byte[cNames.length][];
-        final int[] cName2Size = new int[cNames.length];
+            // get all into bytes:
+            final byte[][] cName2Bytes = new byte[cNames.length][];
+            final int[] cName2Size = new int[cNames.length];
 
-        final CountDownLatch countDownLatch2 = new CountDownLatch(cNames.length);
-        for (int t = 0; t < cNames.length; t++) {
-            final int task = t;
-            service.submit(new Runnable() {
-                public void run() {
-                    try {
-                        final ByteOutputStream outs = new ByteOutputStream();
-                        final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
-                        w.writeNullTerminatedString(cNames[task].getBytes());
-                        final int[] ref2class = cName2ref2class[task];
-                        for (int classId : ref2class)
-                            w.writeInt(classId);
-                        cName2Bytes[task] = outs.getBytes();
-                        cName2Size[task] = outs.size();
-                        progress.incrementProgress();
-                    } catch (Exception ex) {
-                        Basic.caught(ex);
-                    } finally {
-                        countDownLatch2.countDown();
+            final CountDownLatch countDownLatch2 = new CountDownLatch(cNames.length);
+            for (int t = 0; t < cNames.length; t++) {
+                final int task = t;
+                service.submit(new Runnable() {
+                    public void run() {
+                        try {
+                            final ByteOutputStream outs = new ByteOutputStream();
+                            final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
+                            w.writeNullTerminatedString(cNames[task].getBytes());
+                            final int[] ref2class = cName2ref2class[task];
+                            for (int classId : ref2class)
+                                w.writeInt(classId);
+                            cName2Bytes[task] = outs.getBytes();
+                            cName2Size[task] = outs.size();
+                            progress.incrementProgress();
+                        } catch (Exception ex) {
+                            Basic.caught(ex);
+                        } finally {
+                            countDownLatch2.countDown();
+                        }
                     }
-                }
-            });
-        }
-        try {
-            countDownLatch2.await();
-        } catch (InterruptedException e) {
-            Basic.caught(e);
-        }
-        service.shutdownNow();
+                });
+            }
+            try {
+                countDownLatch2.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
 
-        DAAModifier.appendBlocks(header, BlockType.megan_ref_annotations, cName2Bytes, cName2Size);
-        if (progress instanceof ProgressPercentage) {
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            DAAModifier.appendBlocks(header, BlockType.megan_ref_annotations, cName2Bytes, cName2Size);
+            if (progress instanceof ProgressPercentage) {
+                ((ProgressPercentage) progress).reportTaskCompleted();
+            }
+        } finally {
+            service.shutdownNow();
         }
     }
 }

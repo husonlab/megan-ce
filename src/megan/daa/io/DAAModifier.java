@@ -70,7 +70,7 @@ public class DAAModifier {
                 if (type.toString().startsWith("megan") && !type.equals(BlockType.megan_ref_annotations)) {
                     hasMeganBlock = true;
                     header.setBlockTypeRank(i, BlockType.rank(BlockType.empty));
-                    header.setBlockSize(i, 0l);
+                    header.setBlockSize(i, 0L);
                 } else
                     meganStart += header.getBlockSize(i);
             }

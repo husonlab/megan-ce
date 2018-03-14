@@ -59,6 +59,9 @@ public class Biom2Importer {
             final TopLevelAttributes topLevelAttributes = new TopLevelAttributes(reader);
             System.err.println(topLevelAttributes.toString());
 
+            if (topLevelAttributes.getShape().length > 0 && topLevelAttributes.getShape()[0] > 10000)
+                throw new IOException("Too many rows,shape=" + Basic.toString(topLevelAttributes.getShape(), ", "));
+
             final String[] sampleIds = reader.readStringArray("/sample/ids"); // dataset of the sample IDs
             final int numberOfSamples = sampleIds.length;
 
@@ -82,7 +85,7 @@ public class Biom2Importer {
                 sizes = computeSizes(numberOfSamples, classification2class2sample2count.values().iterator().next());
             else {
                 sizes = null;
-                System.err.println("Unsupported data, please report on megan.informatik.uni-tuebingen.de");
+                throw new IOException("Unsupported data, please report on megan.informatik.uni-tuebingen.de");
             }
 
             final float totalReads;

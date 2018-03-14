@@ -151,21 +151,18 @@ public class Director implements IDirectableViewer, IDirector {
                         try {
                             d.setUptoDate(false);
                             d.updateView(what);
-                            d.setUptoDate(true);
                         } catch (Exception ex) {
                             Basic.caught(ex);
+                        } finally {
                             d.setUptoDate(true);
                         }
                     }
                 };
 
-                try {
-                    if (!SwingUtilities.isEventDispatchThread())
-                        SwingUtilities.invokeLater(runnable);
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                    d.setUptoDate(true);
-                }
+                if (SwingUtilities.isEventDispatchThread())
+                    runnable.run();
+                else
+                    SwingUtilities.invokeLater(runnable);
             }
         }
     }

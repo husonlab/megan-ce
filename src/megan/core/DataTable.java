@@ -749,8 +749,12 @@ public class DataTable {
      *
      * @return sample names
      */
-    public String[] getSampleNames() {
+    public String[] getSampleNamesArray() {
         return sampleNames.toArray(new String[sampleNames.size()]);
+    }
+
+    public Collection<String> getSampleNames() {
+        return new ArrayList<>(sampleNames);
     }
 
     /**
@@ -1178,7 +1182,7 @@ public class DataTable {
     public void addSample(String sample, DataTable source) {
         DataTable target = this;
 
-        if (!Arrays.asList(target.getSampleNames()).contains(sample)) {
+        if (!Arrays.asList(target.getSampleNamesArray()).contains(sample)) {
             int srcId = Basic.getIndex(sample, source.sampleNames);
             target.sampleSizes.add(source.sampleSizes.get(srcId));
             target.sampleNames.add(sample);
@@ -1219,7 +1223,7 @@ public class DataTable {
      * @param sourceClassification2class2counts
      */
     public void addSample(String sample, float sampleSize, BlastMode mode, int srcId, Map<String, Map<Integer, float[]>> sourceClassification2class2counts) {
-        if (!Arrays.asList(this.getSampleNames()).contains(sample)) {
+        if (!Arrays.asList(this.getSampleNamesArray()).contains(sample)) {
             this.sampleSizes.add(sampleSize);
             this.sampleNames.add(sample);
             this.sampleUIds.add(System.currentTimeMillis());
@@ -1334,13 +1338,13 @@ public class DataTable {
 
         int i = 0;
         for (String sample : newOrder) {
-            int pid = Basic.getIndex(sample, getSampleNames());
+            int pid = Basic.getIndex(sample, getSampleNamesArray());
             if (pid == -1)
                 throw new IOException("Can't reorder: unknown sample: " + sample);
             order[i++] = pid;
         }
 
-        final String[] datasetNames = modify(order, getSampleNames());
+        final String[] datasetNames = modify(order, getSampleNamesArray());
         final Long[] uids = modify(order, getSampleUIds());
         final float[] sizes = modify(order, getSampleSizes());
         final BlastMode[] modes = modify(order, getBlastModes());
@@ -1506,7 +1510,7 @@ public class DataTable {
     public void copyEnabled(Set<String> disabledSamples, DataTable originalData) {
         clear();
 
-        String[] origSampleNames = originalData.getSampleNames();
+        String[] origSampleNames = originalData.getSampleNamesArray();
         BitSet activeIndices = new BitSet();
         for (int i = 0; i < origSampleNames.length; i++) {
             if (!disabledSamples.contains(origSampleNames[i])) {
@@ -1569,9 +1573,9 @@ public class DataTable {
 
     public String[] getOriginalSamples() {
         if (disabledSamples.size() > 0 && originalData != null)
-            return originalData.getSampleNames();
+            return originalData.getSampleNamesArray();
         else
-            return getSampleNames();
+            return getSampleNamesArray();
     }
 
     /**
@@ -1582,7 +1586,7 @@ public class DataTable {
      */
     public BitSet getSampleIds(Collection<String> samples) {
         BitSet sampleIds = new BitSet();
-        String[] sampleNames = getSampleNames();
+        String[] sampleNames = getSampleNamesArray();
         for (int i = 0; i < sampleNames.length; i++) {
             if (samples.contains(sampleNames[i]))
                 sampleIds.set(i);

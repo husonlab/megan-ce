@@ -730,7 +730,7 @@ public class Document {
      * @return sample names
      */
     public List<String> getSampleNames() {
-        return Arrays.asList(getSampleNamesAsArray());
+        return Arrays.asList(getDataTable().getSampleNamesArray());
     }
 
     /**
@@ -740,7 +740,7 @@ public class Document {
      * @return array
      */
     public String[] getSampleNamesAsArray() {
-        return getDataTable().getSampleNames().clone();
+        return getDataTable().getSampleNamesArray();
     }
 
     /**
@@ -749,7 +749,7 @@ public class Document {
      * @return number of samples
      */
     public int getNumberOfSamples() {
-        return getSampleNamesAsArray().length;
+        return dataTable.getNumberOfSamples();
     }
 
     /**
@@ -971,7 +971,7 @@ public class Document {
     public void renameSample(Integer pid, String newName) throws IOException {
         if (getSampleNames().contains(newName))
             throw new IOException("Can't change sample name, name already used: " + newName);
-        String currentName = getDataTable().getSampleNames()[pid - 1];
+        String currentName = getDataTable().getSampleNamesArray()[pid - 1];
         getDataTable().changeSampleName(pid - 1, newName);
         getSampleAttributeTable().renameSample(currentName, newName, true);
         setDirty(true);
@@ -1039,7 +1039,7 @@ public class Document {
     }
 
     public float getNumberOfReads(String sample) {
-        int i = Basic.getIndex(sample, getDataTable().getSampleNames());
+        int i = Basic.getIndex(sample, getDataTable().getSampleNamesArray());
         if (i == -1)
             return -1;
         else

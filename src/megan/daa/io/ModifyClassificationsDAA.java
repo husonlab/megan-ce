@@ -39,41 +39,40 @@ public class ModifyClassificationsDAA {
      * @throws IOException
      */
     public static void saveClassifications(DAAHeader header, String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Float>[] fName2ClassId2Weight) throws IOException {
-
         DAAModifier.removeMEGANClassificationData(header);
 
-        for (int f = 0; f < cNames.length; f++) {
-            final String cName = cNames[f];
+        for (int c = 0; c < cNames.length; c++) {
+            final String cName = cNames[c];
 
-            final ByteOutputStream outKey = new ByteOutputStream(1000000);
-            final OutputWriterLittleEndian wKey = new OutputWriterLittleEndian(outKey);
+            final ByteOutputStream outputStreamClassKeys = new ByteOutputStream(1000000);
+            final OutputWriterLittleEndian writerClassKeys = new OutputWriterLittleEndian(outputStreamClassKeys);
 
-            final ByteOutputStream outDump = new ByteOutputStream(1000000);
-            final OutputWriterLittleEndian wDump = new OutputWriterLittleEndian(outDump);
+            final ByteOutputStream outputStreamClassReadLocationsDump = new ByteOutputStream(1000000);
+            final OutputWriterLittleEndian writerClassReadLocationsDump = new OutputWriterLittleEndian(outputStreamClassReadLocationsDump);
 
-            final Map<Integer, ListOfLongs> id2locations = fName2ClassId2Location[f];
+            final Map<Integer, ListOfLongs> id2locations = fName2ClassId2Location[c];
 
-            wKey.writeNullTerminatedString(cName.getBytes());
-            wKey.writeInt(id2locations.size());
+            writerClassKeys.writeNullTerminatedString(cName.getBytes());
+            writerClassKeys.writeInt(id2locations.size());
 
-            wDump.writeNullTerminatedString(cName.getBytes());
+            writerClassReadLocationsDump.writeNullTerminatedString(cName.getBytes());
 
             for (int classId : id2locations.keySet()) {
-                wKey.writeInt(classId);
-                float weight = fName2ClassId2Weight[f].get(classId);
-                wKey.writeInt((int) weight);
+                writerClassKeys.writeInt(classId);
+                float weight = fName2ClassId2Weight[c].get(classId);
+                writerClassKeys.writeInt((int) weight);
                 final ListOfLongs list = id2locations.get(classId);
-                wKey.writeInt(list.size());
-                wKey.writeLong(wDump.getPosition()); // offset
+                writerClassKeys.writeInt(list.size());
+                writerClassKeys.writeLong(writerClassReadLocationsDump.getPosition()); // offset
                 for (int i = 0; i < list.size(); i++) {
-                    wDump.writeLong(list.get(i));
+                    writerClassReadLocationsDump.writeLong(list.get(i));
                 }
             }
 
             DAAModifier.appendBlocks(header,
                     new BlockType[]{BlockType.megan_classification_key_block, BlockType.megan_classification_dump_block},
-                    new byte[][]{outKey.getBytes(), outDump.getBytes()},
-                    new int[]{outKey.size(), outDump.size()});
+                    new byte[][]{outputStreamClassKeys.getBytes(), outputStreamClassReadLocationsDump.getBytes()},
+                    new int[]{outputStreamClassKeys.size(), outputStreamClassReadLocationsDump.size()});
         }
     }
 }

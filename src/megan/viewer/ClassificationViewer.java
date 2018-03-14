@@ -398,8 +398,9 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (what.equals(Director.ALL)) {
             try {
                 // rescan colors
-                for (int i = 0; i < doc.getNumberOfSamples(); i++) {
-                    doc.getColorsArray()[i] = doc.getChartColorManager().getSampleColor(doc.getSampleNames().get(i));
+                final String[] sampleNames = doc.getSampleNamesAsArray();
+                for (int i = 0; i < sampleNames.length; i++) {
+                    doc.getColorsArray()[i] = doc.getChartColorManager().getSampleColor(sampleNames[i]);
                 }
 
                 setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));

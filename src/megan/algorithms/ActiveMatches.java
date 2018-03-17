@@ -48,7 +48,7 @@ public class ActiveMatches {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
             if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
                     (minPercentIdentity == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
-                if (matchBlock.getId(classificationName) > 0)
+                if (classificationName == null || matchBlock.getId(classificationName) > 0)
                     activeMatchesForClassification.set(i);
             }
         }

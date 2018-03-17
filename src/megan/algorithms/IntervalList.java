@@ -24,6 +24,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+/**
+ * list of intervals
+ * Daniel Huson, 2017
+ */
 class IntervalList {
     private final ArrayList<IntPair> list = new ArrayList<>();
     private int covered = 0;

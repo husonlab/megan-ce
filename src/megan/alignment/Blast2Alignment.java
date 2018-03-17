@@ -27,10 +27,9 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.main.MeganProperties;
+import megan.util.BlastParsingUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.*;
 
@@ -140,7 +139,7 @@ public class Blast2Alignment {
                             continue; // keep only high-identity alignments
 
                         if (activeMatches.get(i)) {
-                            final String matchText = removeReferenceHeaderFromBlastMatch(truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
+                            final String matchText = BlastParsingUtils.removeReferenceHeaderFromBlastMatch(BlastParsingUtils.truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
                             //  todo: not sure what the following was supposed to do, but it broke the code: .replaceAll("[\t\r\n ]+", " ");
 
                             String key = Basic.getFirstLine(matchBlock.getText());
@@ -155,7 +154,7 @@ public class Blast2Alignment {
                             //  System.err.println("text: "+matchText);
 
                             if (blastFormatUnknown) {
-                                setBlastType(guessBlastType(matchText));
+                                setBlastType(BlastParsingUtils.guessBlastType(matchText));
                                 if (getBlastType().equals(UNKNOWN)) {
                                     if (!warnedUnknownBlastFormatEncountered) {
                                         System.err.println("Error: Unknown BLAST format encountered");
@@ -260,7 +259,7 @@ public class Blast2Alignment {
             final IMatchBlock matchBlock = pair.getSecond();
             final String readSequence = readBlock.getReadSequence().replaceAll("[\t\r\n ]", "");
             final String readName = readBlock.getReadHeader();
-            final String matchText = removeReferenceHeaderFromBlastMatch(truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
+            final String matchText = BlastParsingUtils.removeReferenceHeaderFromBlastMatch(BlastParsingUtils.truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
             newList.add(new byte[][]{readName.getBytes(), readSequence.getBytes(), matchText.getBytes()});
 
         }
@@ -352,7 +351,7 @@ public class Blast2Alignment {
             totalReadsIn++;
 
             if (getBlastType().equals(UNKNOWN))
-                setBlastType(guessBlastType(matchText));
+                setBlastType(BlastParsingUtils.guessBlastType(matchText));
             // set sequence type
             switch (getBlastType()) {
                 case BLASTX:
@@ -547,7 +546,7 @@ public class Blast2Alignment {
      */
     private static void computeGappedSequenceBlastX(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Single<char[]> originalReferenceSequence, Alignment alignment) throws IOException {
-        int length = Basic.parseInt(grabNext(text, "Length =", "Length="));
+        int length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length == 0)
             length = 10000;
 
@@ -560,10 +559,10 @@ public class Blast2Alignment {
             }
         }
 
-        final int frame = Basic.parseInt(grabNext(text, "Frame =", "Frame="));
+        final int frame = Basic.parseInt(BlastParsingUtils.grabNext(text, "Frame =", "Frame="));
 
-        int startQuery = Basic.parseInt(grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(grabLastInLinePassedScore(text, "Query"));
+        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");
@@ -572,11 +571,11 @@ public class Blast2Alignment {
             throw new IOException("Read '" + readName + "': read length too short: " + readSequence.length() + " < " + Math.max(startQuery, endQuery));
         }
 
-        int startSubject = Basic.parseInt(grabNext(text, "Sbjct:", "Sbjct"));
-        int endSubject = Basic.parseInt(grabLastInLinePassedScore(text, "Sbjct"));
+        int startSubject = Basic.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
+        int endSubject = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
 
-        String queryString = grabQueryString(text);
-        String subjectString = grabSubjectString(text);
+        String queryString = BlastParsingUtils.grabQueryString(text);
+        String subjectString = BlastParsingUtils.grabSubjectString(text);
 
         int p = startSubject;
         for (int i = 0; i < subjectString.length(); i++) {
@@ -664,15 +663,15 @@ public class Blast2Alignment {
      */
     private static void computeGappedSequenceBlastP(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions, boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
 
-        int length = Basic.parseInt(grabNext(text, "Length =", "Length="));
+        int length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length == 0)
             length = 10000;
 
         if (referenceSequence.get() == null)
             referenceSequence.set(new char[length]);
 
-        int startQuery = Basic.parseInt(grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(grabLastInLinePassedScore(text, "Query"));
+        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");
@@ -681,12 +680,12 @@ public class Blast2Alignment {
             throw new IOException("Read '" + readName + "': read length too short: " + readSequence.length() + " < " + Math.max(startQuery, endQuery));
         }
 
-        int startSubject = Basic.parseInt(grabNext(text, "Sbjct:", "Sbjct"));
-        int endSubject = Basic.parseInt(grabLastInLinePassedScore(text, "Sbjct"));
+        int startSubject = Basic.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
+        int endSubject = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
 
-        String queryString = grabQueryString(text);
+        String queryString = BlastParsingUtils.grabQueryString(text);
 
-        String subjectString = grabSubjectString(text);
+        String subjectString = BlastParsingUtils.grabSubjectString(text);
 
         int p = startSubject;
         for (int i = 0; i < subjectString.length(); i++) {
@@ -750,12 +749,12 @@ public class Blast2Alignment {
     private static void computeGappedSequenceBlastN(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
         boolean hasExactLength;
-        Integer length = Basic.parseInt(grabNext(text, "Length =", "Length="));
+        Integer length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length > 0) {
             hasExactLength = true;
         } else {
             hasExactLength = false;
-            length = Basic.parseInt(grabNext(text, "Length >=", "Length>="));
+            length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length >=", "Length>="));
 
             if (referenceSequence.get() != null && referenceSequence.get().length < length) { // need to resize the reference sequence
                 char[] newRef = new char[length + 1];
@@ -765,18 +764,18 @@ public class Blast2Alignment {
         }
 
         String[] strand;
-        String tmpString = grabNext(text, "Strand =", "Strand=");
+        String tmpString = BlastParsingUtils.grabNext(text, "Strand =", "Strand=");
         if (tmpString != null && tmpString.contains("/")) {
             int pos = tmpString.indexOf("/");
             strand = new String[]{tmpString.substring(0, pos), "/", tmpString.substring(pos + 1)};
         } else
-            strand = grabNext3(text, "Strand =", "Strand=");
+            strand = BlastParsingUtils.grabNext3(text, "Strand =", "Strand=");
 
         if (referenceSequence.get() == null)
             referenceSequence.set(new char[length + 10000]);
 
-        int startQuery = Basic.parseInt(grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(grabLastInLinePassedScore(text, "Query"));
+        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");
@@ -785,11 +784,11 @@ public class Blast2Alignment {
             throw new IOException("Read '" + readName + "': read length too short: " + readSequence.length() + " < " + Math.max(startQuery, endQuery));
         }
 
-        int startSubject = Basic.parseInt(grabNext(text, "Sbjct:", "Sbjct"));
-        int endSubject = Basic.parseInt(grabLastInLinePassedScore(text, "Sbjct"));
+        int startSubject = BlastParsingUtils.getStartSubject(text);
+        int endSubject = BlastParsingUtils.getEndSubject(text);
 
-        String queryString = grabQueryString(text);
-        String subjectString = grabSubjectString(text);
+        String queryString = BlastParsingUtils.grabQueryString(text);
+        String subjectString = BlastParsingUtils.grabSubjectString(text);
 
         if (strand != null && strand[0].equalsIgnoreCase("Minus") && strand[2].equalsIgnoreCase("Minus")) {
             throw new IOException("Can't parse matches with Strand = Minus / Minus");
@@ -902,192 +901,4 @@ public class Blast2Alignment {
         }
     }
 
-    /**
-     * removes all of string from the second occurrence of the given word onward
-     *
-     * @param text
-     * @param word
-     * @return truncated string
-     */
-    public static String truncateBeforeSecondOccurrence(String text, String word) {
-        int pos = text.indexOf(word);
-        if (pos == -1)
-            return text;
-        pos = text.indexOf(word, pos + 1);
-        if (pos == -1)
-            return text;
-        else
-            return text.substring(0, pos);
-    }
-
-    /**
-     * grab the total query string
-     *
-     * @param text
-     * @return query string
-     * @throws java.io.IOException
-     */
-    public static String grabQueryString(String text) throws IOException {
-        BufferedReader r = new BufferedReader(new StringReader(text));
-        String aLine;
-        StringBuilder buf = new StringBuilder();
-        boolean passedScore = false;
-        while ((aLine = r.readLine()) != null) {
-            aLine = aLine.trim();
-            if (aLine.startsWith("Score")) {
-                if (!passedScore)
-                    passedScore = true;
-                else
-                    break;
-            }
-            if (aLine.startsWith("Query")) {
-                String[] words = aLine.split(" +");
-                buf.append(words[2]);
-            }
-        }
-        return buf.toString().replaceAll("\n", "").replaceAll("\r", "");
-    }
-
-    /**
-     * grab the total subject string
-     *
-     * @param text
-     * @return subject string
-     * @throws java.io.IOException
-     */
-    public static String grabSubjectString(String text) throws IOException {
-        BufferedReader r = new BufferedReader(new StringReader(text));
-        String aLine;
-        StringBuilder buf = new StringBuilder();
-        boolean passedScore = false;
-        while ((aLine = r.readLine()) != null) {
-            aLine = aLine.trim();
-            if (aLine.startsWith("Score")) {
-                if (!passedScore)
-                    passedScore = true;
-                else
-                    break;
-            }
-            if (aLine.startsWith("Sbjct")) {
-                String[] words = aLine.split(" +");
-                buf.append(words[2]);
-            }
-        }
-        return buf.toString().replaceAll("\n", "").replaceAll("\r", "");
-    }
-
-    /**
-     * grab the next  token after the one in key
-     *
-     * @param text
-     * @param key
-     * @return next token
-     */
-    public static String grabNext(String text, String key, String key2) {
-        int pos = text.indexOf(key);
-        int length = key.length();
-        if (pos == -1 && key2 != null) {
-            pos = text.indexOf(key2);
-            length = key2.length();
-        }
-        if (pos == -1)
-            return null;
-        else
-            return new StringTokenizer(text.substring(pos + length).trim()).nextToken();
-    }
-
-    /**
-     * grab the next three tokens after the one in key
-     *
-     * @param text
-     * @param key
-     * @return next token
-     */
-    public static String[] grabNext3(String text, String key, String key2) {
-        int pos = text.indexOf(key);
-        int length = key.length();
-        if (pos == -1 && key2 != null) {
-            pos = text.indexOf(key2);
-            length = key2.length();
-        }
-        if (pos == -1)
-            return null;
-        else {
-            String[] result = new String[3];
-            StringTokenizer st = new StringTokenizer(text.substring(pos + length).trim());
-            for (int i = 0; i < 3; i++) {
-                if (st.hasMoreTokens())
-                    result[i] = st.nextToken();
-                else
-                    return null; // ran out of tokens, return null
-            }
-            return result;
-        }
-    }
-
-    /**
-     * grab the last token of the last line that contains the given key and is passed the first occurrence of "Score"
-     *
-     * @param text
-     * @param key
-     * @return token
-     */
-    public static String grabLastInLinePassedScore(String text, String key) throws IOException {
-        int scorePos = text.indexOf("Score");
-        if (scorePos == -1)
-            throw new IOException("Token not found: 'Score'");
-
-        int end = text.lastIndexOf(key);
-        if (end == -1)
-            throw new IOException("Token not found: '" + key + "'");
-        if (end < scorePos)
-            throw new IOException("Token not found before 'Score': '" + key + "'");
-
-        end = text.indexOf("\n", end);
-        if (end == -1)
-            end = text.length() - 1;
-        // skip other preceding white space
-        while (end > 0 && Character.isWhitespace(text.charAt(end)))
-            end--;
-        // end is now last letter of token
-        int start = end;
-        // find white space before last token:
-        while (start > 0 && !Character.isWhitespace(text.charAt(start)))
-            start--;
-        start += 1;
-        // start is now first letter of token
-        return text.substring(start, end + 1);
-    }
-
-    /**
-     * remove the header from a blast text (but keeping Length statement, if present)
-     *
-     * @param blastText
-     * @return headerless blastText
-     */
-    public String removeReferenceHeaderFromBlastMatch(String blastText) {
-        int index = blastText.indexOf("Length");
-        if (index == -1)
-            index = blastText.indexOf("Score");
-        if (index > 0)
-            return blastText.substring(index);
-        else
-            return blastText;
-    }
-
-    /**
-     * guesses the blast type
-     *
-     * @param blastText
-     * @return blast type
-     */
-    public static String guessBlastType(String blastText) {
-        if (blastText == null || !blastText.contains("Query"))
-            return UNKNOWN;
-        if (blastText.contains("Frame=") || (blastText.contains("Frame =")))
-            return BLASTX;
-        if (blastText.contains("Strand=") || blastText.contains("Strand ="))
-            return BLASTN;
-        return BLASTP;
-    }
 }

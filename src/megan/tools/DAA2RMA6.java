@@ -127,6 +127,8 @@ public class DAA2RMA6 {
             }
         }
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
+        final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
+
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover", longReads ? 80 : Document.DEFAULT_LCA_COVERAGE_PERCENT);
@@ -286,6 +288,7 @@ public class DAA2RMA6 {
             doc.setBlastMode(DAAParser.getBlastMode(daaFiles[i]));
             doc.setLongReads(longReads);
             doc.setMinPercentReadToCover(minPercentReadToCover);
+            doc.setMinPercentReferenceToCover(minPercentReferenceToCover);
             doc.setReadAssignmentMode(readAssignmentMode);
 
             if (contaminantsFile.length() > 0) {

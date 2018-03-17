@@ -131,6 +131,13 @@ public class DataProcessor {
                     assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
             }
 
+            final ReferenceCoverFilter referenceCoverFilter;
+            if (doc.getMinPercentReferenceToCover() > 0) {
+                referenceCoverFilter = new ReferenceCoverFilter(doc.getMinPercentReferenceToCover());
+                referenceCoverFilter.compute(doc.getProgressListener(), doc.getConnector(), doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity());
+            } else
+                referenceCoverFilter = null;
+
             // step 1:  stream through reads and assign classes
 
             long numberOfReadsFound = 0;
@@ -227,6 +234,9 @@ public class DataProcessor {
                         final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
                         ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
+                        if (referenceCoverFilter != null)
+                            referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
+
                         if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatchesForTaxa, intervals)) {
                             if (doMatePairs && readBlock.getMateUId() > 0) {
                                 mateReader.seek(readBlock.getMateUId());
@@ -234,6 +244,9 @@ public class DataProcessor {
                                 taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForTaxa, readBlock);
                                 final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
                                 ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
+                                if (referenceCoverFilter != null)
+                                    referenceCoverFilter.applyFilter(readBlock, activeMatchesForMateTaxa);
+
                                 int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
                                 if (mateTaxId > 0) {
                                     if (taxId <= 0) {
@@ -270,6 +283,9 @@ public class DataProcessor {
                         } else {
                             final BitSet activeMatchesForFunction = new BitSet(); // pre filter matches for taxon identification
                             ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForFunction);
+                            if (referenceCoverFilter != null)
+                                referenceCoverFilter.applyFilter(readBlock, activeMatchesForFunction);
+
                             id = assignmentAlgorithm[c].computeId(activeMatchesForFunction, readBlock);
 
                             if (id > 0 && usingLongReadAlgorithm && assignmentAlgorithm[c] instanceof IMultiAssignmentAlgorithm) {

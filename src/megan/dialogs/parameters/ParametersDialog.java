@@ -65,6 +65,7 @@ public class ParametersDialog extends JDialog {
     private final JTextField lcaCoveragePercent = new JTextField(8);
 
     private final JTextField minPercentReadToCoverField = new JTextField(8);
+    private final JTextField minPercentReferenceToCoverField = new JTextField(8);
 
     private final AbstractButton useContaminantsFilter;
     private final AbstractButton listContaminants;
@@ -127,6 +128,7 @@ public class ParametersDialog extends JDialog {
         setReadAssignmentMode(doc.getReadAssignmentMode());
 
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
+        setMinPercentReferenceToCover(doc.getMinPercentReferenceToCover());
         setMinComplexity(doc.getMinComplexity());
         setLongReads(doc.isLongReads());
         setPairedReads(doc.isPairedReads());
@@ -519,12 +521,36 @@ public class ParametersDialog extends JDialog {
             {
                 final JPanel line = new JPanel();
                 line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
-                line.add(new JLabel("Min Percent Read To Cover: "));
+                line.add(new JLabel("Min Percent Read To Cover:        "));
                 minPercentReadToCoverField.setText("" + doc.getMinPercentReadToCover());
                 minPercentReadToCoverField.setMaximumSize(new Dimension(100, 26));
                 line.add(minPercentReadToCoverField);
                 minPercentReadToCoverField.setToolTipText("Minimum percent of read that has to be covered by alignments for read to be binned");
                 minPercentReadToCoverField.getDocument().addDocumentListener(new DocumentListener() {
+                    public void insertUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+
+                    public void removeUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+
+                    public void changedUpdate(DocumentEvent event) {
+                        commandManager.updateEnableState();
+                    }
+                });
+                aPanel.add(line);
+            }
+
+            {
+                final JPanel line = new JPanel();
+                line.setLayout(new BoxLayout(line, BoxLayout.X_AXIS));
+                line.add(new JLabel("Min Percent Reference To Cover: "));
+                minPercentReferenceToCoverField.setText("" + doc.getMinPercentReferenceToCover());
+                minPercentReferenceToCoverField.setMaximumSize(new Dimension(100, 26));
+                line.add(minPercentReferenceToCoverField);
+                minPercentReferenceToCoverField.setToolTipText("Minimum percent of references that has to be covered by alignments for references to be considered");
+                minPercentReferenceToCoverField.getDocument().addDocumentListener(new DocumentListener() {
                     public void insertUpdate(DocumentEvent event) {
                         commandManager.updateEnableState();
                     }
@@ -673,6 +699,20 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, Math.min(100, value));
     }
 
+    public void setMinPercentReferenceToCover(double value) {
+        minPercentReferenceToCoverField.setText("" + (float) value);
+    }
+
+    public double getMinPercentReferenceToCover() {
+        double value = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
+        try {
+            value = Double.parseDouble(minPercentReferenceToCoverField.getText());
+        } catch (NumberFormatException e) {
+            Basic.caught(e);
+        }
+        return Math.max(0, Math.min(100, value));
+    }
+
     public void setMinPercentIdentity(double value) {
         minPercentIdentityField.setText("" + (float) value);
     }
@@ -748,7 +788,9 @@ public class ParametersDialog extends JDialog {
                 " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
                 + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
                 " lcaAlgorithm=" + getLcaAlgorithm().toString() + " lcaCoveragePercent=" + getLCACoveragePercent() +
-                " minPercentReadToCover=" + getMinPercentReadToCover() + " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
+                " minPercentReadToCover=" + getMinPercentReadToCover() +
+                " minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
+                " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
                 " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
                 + (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
                 + (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")

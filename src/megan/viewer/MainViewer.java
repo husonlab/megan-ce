@@ -236,6 +236,10 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 buf2.append(" LCA=").append(doc.getLcaAlgorithm().toString());
                 if (doc.getLcaCoveragePercent() < 100f)
                     buf2.append(String.format(" lcaCoveragePercent=%d", Math.round(doc.getLcaCoveragePercent())));
+                if (doc.getMinPercentReadToCover() > 0)
+                    buf2.append(String.format(" MinPercentReadToCover=%d", Math.round(doc.getMinPercentReadToCover())));
+                if (doc.getMinPercentReferenceToCover() > 0)
+                    buf2.append(String.format(" MinPercentReferenceToCover=%d", Math.round(doc.getMinPercentReferenceToCover())));
             } else {
                 buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));
                 Comparer.COMPARISON_MODE mode = Comparer.parseMode(dataTable.getParameters());

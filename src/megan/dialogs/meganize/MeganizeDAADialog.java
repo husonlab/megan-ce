@@ -99,6 +99,8 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
             if (getMinPercentReadToCover() > 0)
                 buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
+            if (getMinPercentReferenceToCover() > 0)
+                buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
 
             buf.append(" minComplexity=").append(getMinComplexity());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());

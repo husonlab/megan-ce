@@ -47,7 +47,6 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.dialogs.input.InputDialog;
-import megan.fx.NotificationsInSwing;
 import megan.fx.SwingPanel4FX;
 import megan.main.MeganProperties;
 import megan.samplesviewer.commands.PasteCommand;
@@ -75,8 +74,6 @@ import java.util.*;
  * Created by huson on 2/21/17.
  */
 public class LRInspectorViewer extends JFrame implements IDirectableViewer, Printable, IViewerWithJComponent, IViewerWithFindToolBar, IUsesHeatMapColors, IReadsProvider, IHasJavaFXStageAndRoot {
-    private static boolean warned = false;
-
     private final Director dir;
     private boolean uptoDate = true;
     private boolean locked = false;
@@ -209,15 +206,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                 });
             }
         });
-
-        if (!warned) {
-            warned = true;
-            NotificationsInSwing.showWarning(this.getFrame(),
-                    "Long read analysis in MEGAN is under development.\n" +
-                            "This is an experimental feature.\n" +
-                            "A paper on MEGAN-LR (long read) is under review.");
         }
-    }
 
     public boolean isUptoDate() {
         return uptoDate;

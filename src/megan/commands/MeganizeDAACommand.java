@@ -138,6 +138,14 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             ProgramProperties.put("minPercentReadToCover", minPercentReadToCover);
         }
 
+
+        float minPercentReferenceToCover = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
+        if (np.peekMatchIgnoreCase("minPercentReferenceToCover")) {
+            np.matchIgnoreCase("minPercentReferenceToCover=");
+            minPercentReferenceToCover = (float) np.getDouble(0, 100);
+            ProgramProperties.put("minPercentReferenceToCover", minPercentReferenceToCover);
+        }
+
         float minComplexity = 0;
         if (np.peekMatchIgnoreCase("minComplexity")) {
             np.matchIgnoreCase("minComplexity=");
@@ -218,7 +226,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(), minPercentReadToCover, contaminantsFile);
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(),
+                        minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);
                 // todo: save the description
 
                 {

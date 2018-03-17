@@ -46,7 +46,7 @@ public class LCAParametersPanel extends JPanel {
         outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(17, 2));
+        centerPanel.setLayout(new GridLayout(18, 2));
 
         centerPanel.add(new JLabel("Min Score:"));
         centerPanel.add(dialog.getMinScoreField());
@@ -189,6 +189,11 @@ public class LCAParametersPanel extends JPanel {
             centerPanel.add(new JLabel("Min Percent Read To Cover:"));
             centerPanel.add(dialog.getMinPercentReadToCoverField());
             dialog.getMinSupportPercentField().setToolTipText("Minimum percent of read that has to be covered by alignments for read to be binned");
+        }
+        {
+            centerPanel.add(new JLabel("Min Percent Reference To Cover:"));
+            centerPanel.add(dialog.getMinPercentReferenceToCoverField());
+            dialog.getMinSupportPercentField().setToolTipText("Minimum percent of reference that has to be covered by alignments for reference to be considered");
         }
 
 

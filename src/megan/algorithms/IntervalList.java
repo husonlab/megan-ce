@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *  
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *  
@@ -24,6 +24,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+/**
+ * list of intervals
+ * Daniel Huson, 2017
+ */
 class IntervalList {
     private final ArrayList<IntPair> list = new ArrayList<>();
     private int covered = 0;

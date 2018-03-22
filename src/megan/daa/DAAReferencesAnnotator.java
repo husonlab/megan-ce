@@ -69,8 +69,8 @@ public class DAAReferencesAnnotator {
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 
-            progress.setTasks("Meganizing", "Annotating references");
-            progress.setMaximum(header.getNumberOfReferences() / numberOfThreads + cNames.length);
+            progress.setSubtask("Annotating references");
+            progress.setMaximum(header.getNumberOfReferences());
             progress.setProgress(0);
 
             // determine the names for references:
@@ -86,7 +86,7 @@ public class DAAReferencesAnnotator {
                             }
 
                             for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {
-                                String ref = Basic.toString(header.getReference(r, null));
+                                final String ref = Basic.toString(header.getReference(r, null));
                                 for (int i = 0; i < idParsers.length; i++) {
                                     try {
                                         cName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);
@@ -95,7 +95,7 @@ public class DAAReferencesAnnotator {
                                     }
                                 }
                                 if (task == 0)
-                                    progress.incrementProgress();
+                                    progress.setProgress(r);
                             }
                         } catch (Exception ex) {
                             Basic.caught(ex);
@@ -116,6 +116,7 @@ public class DAAReferencesAnnotator {
             final byte[][] cName2Bytes = new byte[cNames.length][];
             final int[] cName2Size = new int[cNames.length];
 
+
             final CountDownLatch countDownLatch2 = new CountDownLatch(cNames.length);
             for (int t = 0; t < cNames.length; t++) {
                 final int task = t;
@@ -126,11 +127,21 @@ public class DAAReferencesAnnotator {
                             final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
                             w.writeNullTerminatedString(cNames[task].getBytes());
                             final int[] ref2class = cName2ref2class[task];
-                            for (int classId : ref2class)
+
+                            if (task == 0) {
+                                progress.setSubtask("Writing");
+                                progress.setMaximum(ref2class.length);
+                                progress.setProgress(0);
+                            }
+
+                            for (int classId : ref2class) {
                                 w.writeInt(classId);
+                                if (task == 0)
+                                    progress.incrementProgress();
+                            }
+
                             cName2Bytes[task] = outs.getBytes();
                             cName2Size[task] = outs.size();
-                            progress.incrementProgress();
                         } catch (Exception ex) {
                             Basic.caught(ex);
                         } finally {

@@ -56,7 +56,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
         return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
                 "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minPercentReferenceToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t" + ProgramProperties.getIfEnabled("enable-contaminants", "[contaminantsFile=<filename>] ") + "[description=<text>];";
     }
@@ -180,6 +180,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 np.matchIgnoreCase("minPercentReadToCover=");
                 getDoc().setMinPercentReadToCover((float) np.getDouble(0, 100));
                 ProgramProperties.put("minPercentReadToCover", doc.getMinPercentReadToCover());
+            }
+
+            if (np.peekMatchIgnoreCase("minPercentReferenceToCover")) {
+                np.matchIgnoreCase("minPercentReferenceToCover=");
+                getDoc().setMinPercentReferenceToCover((float) np.getDouble(0, 100));
+                ProgramProperties.put("minPercentReferenceToCover", doc.getMinPercentReferenceToCover());
             }
 
             if (np.peekMatchIgnoreCase("minComplexity")) {

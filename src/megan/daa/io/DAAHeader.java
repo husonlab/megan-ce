@@ -546,8 +546,6 @@ public class DAAHeader {
                     reader.seek(pos);
                     final String name = reader.readNullTerminatedBytes();
                     list.add(name);
-                    System.err.println(pos + " -> " + name);
-
                 }
             }
         } catch (IOException e) {

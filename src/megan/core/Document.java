@@ -104,6 +104,8 @@ public class Document {
     public final static float DEFAULT_LCA_COVERAGE_PERCENT = 100f;
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public final static float DEFAULT_MIN_PERCENT_READ_TO_COVER = 0f;
+    public final static float DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER = 0f;
+
 
     public static final boolean DEFAULT_USE_IDENTITY = false;
 
@@ -125,6 +127,8 @@ public class Document {
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
     private float minPercentReadToCover = DEFAULT_MIN_PERCENT_READ_TO_COVER;
+    private float minPercentReferenceToCover = DEFAULT_MIN_PERCENT_READ_TO_COVER;
+
 
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
 
@@ -319,6 +323,9 @@ public class Document {
 
                 setMinPercentReadToCover(np.findIgnoreCase(tokens, "minPercentReadToCover=", getMinPercentReadToCover()));
 
+                setMinPercentReferenceToCover(np.findIgnoreCase(tokens, "minPercentReferenceToCover=", getMinPercentReferenceToCover()));
+
+
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
 
                 if (np.findIgnoreCase(tokens, "longReads=true", true, false))
@@ -406,6 +413,7 @@ public class Document {
         if (getLcaAlgorithm() == LCAAlgorithm.weighted || getLcaAlgorithm() == LCAAlgorithm.longReads)
             buf.append(" lcaCoveragePercent=").append(getLcaCoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
+        buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" longReads=").append(isLongReads());
         buf.append(" pairedReads=").append(isPairedReads());
@@ -650,6 +658,14 @@ public class Document {
 
     public void setMinPercentReadToCover(float minPercentReadToCover) {
         this.minPercentReadToCover = minPercentReadToCover;
+    }
+
+    public float getMinPercentReferenceToCover() {
+        return minPercentReferenceToCover;
+    }
+
+    public void setMinPercentReferenceToCover(float minPercentReferenceToCover) {
+        this.minPercentReferenceToCover = minPercentReferenceToCover;
     }
 
     public void setLcaAlgorithm(LCAAlgorithm lcaAlgorithm) {

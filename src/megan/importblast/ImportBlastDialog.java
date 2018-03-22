@@ -70,6 +70,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     final JTextField lcaCoveragePercentField = new JTextField(8);
     final JTextField minComplexityField = new JTextField(8);
     final JTextField minPercentReadCoveredField = new JTextField(8);
+    final JTextField minPercentReferenceCoveredField = new JTextField(8);
+
 
     private boolean usePairedReads = false;
     private String pairedReadSuffix1 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX1, "");
@@ -155,6 +157,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinSupportPercent(0);
         setMinSupport(Document.DEFAULT_MINSUPPORT);
         setMinPercentReadToCover(Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
+        setMinPercentReferenceToCover(Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
         setMinComplexity(Document.DEFAULT_MINCOMPLEXITY);
 
         final Document doc = dir.getDocument();
@@ -168,6 +171,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinSupportPercent(doc.getMinSupportPercent());
         setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
+        setMinPercentReferenceToCover(doc.getMinPercentReferenceToCover());
         setMinComplexity(doc.getMinComplexity());
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
         setLCACoveragePercent(doc.getLcaCoveragePercent());
@@ -507,6 +511,24 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         minPercentReadCoveredField.setText("" + (float) Math.max(0, Math.min(100, value)));
     }
 
+    public JTextField getMinPercentReferenceToCoverField() {
+        return minPercentReferenceCoveredField;
+    }
+
+    public double getMinPercentReferenceToCover() {
+        double value = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
+        try {
+            value = Basic.parseDouble(minPercentReferenceCoveredField.getText());
+        } catch (NumberFormatException e) {
+            Basic.caught(e);
+        }
+        return value;
+    }
+
+    public void setMinPercentReferenceToCover(double value) {
+        minPercentReferenceCoveredField.setText("" + (float) Math.max(0, Math.min(100, value)));
+    }
+
     public JTextField getMaxNumberOfMatchesPerReadField() {
         return maxNumberOfMatchesPerReadField;
     }
@@ -825,6 +847,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         if (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
             buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
+        buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
 

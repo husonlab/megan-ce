@@ -22,9 +22,11 @@ import jloda.graph.Node;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
-import megan.core.ClassificationType;
 import megan.core.Document;
-import megan.data.*;
+import megan.data.IConnector;
+import megan.data.IMatchBlock;
+import megan.data.IReadBlock;
+import megan.data.IReadBlockIterator;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
@@ -54,7 +56,6 @@ public class CSVExportHeaders {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final Document doc = viewer.getDir().getDocument();
                 final IConnector connector = doc.getConnector();
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
                 final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
 
                 progressListener.setSubtask("Read ids to reference sequence headers");

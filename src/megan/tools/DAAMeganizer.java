@@ -113,6 +113,8 @@ public class DAAMeganizer {
             }
         }
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
+        final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
+
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover", longReads ? 80 : Document.DEFAULT_LCA_COVERAGE_PERCENT);
@@ -224,7 +226,9 @@ public class DAAMeganizer {
             final String daaFile = daaFiles[i];
             System.err.println("Meganizing: " + daaFile);
             final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
-            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads, minPercentReadToCover, contaminantsFile);
+            Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity,
+                    topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads,
+                    minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);
         }
     }
 }

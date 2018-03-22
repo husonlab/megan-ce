@@ -43,9 +43,11 @@ public class CSVExporter {
     public static List<String> getFormats(String classificationName, boolean hasDataConnector) {
         final List<String> formats = new LinkedList<>();
 
-        String shortName = classificationName.toLowerCase();
-        if (shortName.equals("taxonomy"))
+        final String shortName;
+        if (classificationName.toLowerCase().equals("taxonomy"))
             shortName = "taxon";
+        else
+            shortName = classificationName.toLowerCase();
 
         formats.add(shortName + "Name_to_count");
         if (shortName.equals("taxon")) {
@@ -79,6 +81,7 @@ public class CSVExporter {
 
             if (shortName.equals("taxon")) {
                 formats.add("readName_to_taxonMatches");
+                formats.add("readName_to_frameShiftsPerKb");
             }
 
             formats.add(shortName + "Name_to_readName");
@@ -134,6 +137,8 @@ public class CSVExporter {
             count = CSVExportRefSeq.exportReadName2Accession(dir.getMainViewer(), file, separator, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_headers")) {
             count = CSVExportHeaders.exportReadName2Headers(dir.getMainViewer(), file, separator, progressListener);
+        } else if (format.equalsIgnoreCase("readName_to_frameShiftsPerKb")) {
+            count = CSVExportFrameShiftsPerKb.apply(dir.getMainViewer(), file, separator, dir.getDocument().isLongReads(), progressListener);
         } else if (format.equalsIgnoreCase("reference_to_readName")) {
             count = CSVExportReference2Read.exportReference2ReadName(dir.getMainViewer(), file, separator, progressListener);
         } else if (Basic.endsWithIgnoreCase(format, "Name_to_count") || Basic.endsWithIgnoreCase(format, "Path_to_count")) {

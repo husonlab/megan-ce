@@ -20,6 +20,7 @@
 package megan.algorithms;
 
 import javafx.concurrent.Task;
+import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
@@ -27,6 +28,8 @@ import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * computes interval tree of all matches to keep for a read block
@@ -53,10 +56,10 @@ public class IntervalTree4Matches {
     }
 
     /**
-     * extracts the set of dominating matches
+     * extracts the set of dominating matches. A match is considered dominated, if more than 50% (default value) is covered by a match that has a better bit score, or the same bit score, but shorter length
      *
-     * @param intervals
-     * @param cNames                 dominator must have value of each of these for which the dominated does
+     * @param intervals input
+     * @param cNames dominator must have value of each of these for which the dominated does
      * @param classificationToReport if this is set to some classification, check only this for domination
      * @return dominating intervals
      */
@@ -72,8 +75,8 @@ public class IntervalTree4Matches {
             }
         }
 
-        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>();
-        final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>();
+        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>(); // initially all foward matches, at the end, all resulting matches
+        final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>(); // all reverse matches
         for (IMatchBlock matchBlock : intervals.values()) {
             if (matchBlock.getAlignedQueryStart() <= matchBlock.getAlignedQueryEnd()) {
                 allMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
@@ -81,31 +84,147 @@ public class IntervalTree4Matches {
                 reverseMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
         }
 
-        // remove all matches covered by stronger ones
+        // these will be reused in the loop:
+        final ArrayList<Pair<Interval<IMatchBlock>, Interval<IMatchBlock>>> pairs = new ArrayList<>(); // dominator,dominated pairs
+        final Set<Interval<IMatchBlock>> dominated = new HashSet<>(); // dominated
+
+        // remove all dominated matches
         for (int i = 0; i < 2; i++) {
             final IntervalTree<IMatchBlock> matches = (i == 0 ? allMatches : reverseMatches);
-            final ArrayList<Interval<IMatchBlock>> toDelete = new ArrayList<>();
-            for (final Interval<IMatchBlock> interval : matches) {
-                final IMatchBlock match = interval.getData();
-                for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
-                    final IMatchBlock other = otherInterval.getData();
-                    if (otherInterval.overlap(interval) > dominationProportion * interval.length() &&
-                            (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId())) {
-                        boolean ok = true; // check that other interval has all annotations that this one has, otherwise it doesn't really dominate
-                        for (String cName : cNames) {
-                            if (match.getId(cName) > 0 && other.getId(cName) <= 0) {
-                                ok = false;
-                                break;
+
+            while (matches.size() > 1) {
+                // determine list of pairs of (dominator, dominated)
+                pairs.clear();
+                dominated.clear();
+
+                for (final Interval<IMatchBlock> interval : matches) {
+                    final IMatchBlock match = interval.getData();
+                    for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
+                        final IMatchBlock other = otherInterval.getData();
+                        if (otherInterval.overlap(interval) > dominationProportion * interval.length() &&
+                                (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() &&
+                                        (other.getLength() < match.getLength() || (other.getLength() == match.getLength() && other.getUId() < match.getUId())))) {
+                            boolean ok = true; // check that other interval has all annotations that this one has, otherwise it doesn't really dominate
+                            for (String cName : cNames) {
+                                if (match.getId(cName) > 0 && other.getId(cName) <= 0) {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                            if (ok) {
+                                pairs.add(new Pair<>(otherInterval, interval));
+                                dominated.add(interval);
+                                break; // found an other that dominates match...
                             }
                         }
-                        if (ok)
-                            toDelete.add(interval);
                     }
                 }
+
+                // remove any match that is dominated by an undominated match:
+                final Set<Interval<IMatchBlock>> toRemove = new HashSet<>();
+                for (Pair<Interval<IMatchBlock>, Interval<IMatchBlock>> pair : pairs) {
+                    if (!dominated.contains(pair.get1())) {
+                        toRemove.add(pair.get2()); // first is not dominated and it dominates the second, so remove second
+                    }
+                }
+                if (toRemove.size() > 0) {
+                    final ArrayList<Interval<IMatchBlock>> toKeep = new ArrayList<>(matches.size());
+                    for (Interval<IMatchBlock> interval : matches.getAllIntervals(false)) { // get unsorted intervals
+                        if (!toRemove.contains(interval))
+                            toKeep.add(interval);
+                    }
+                    matches.setAll(toKeep);
+                } else
+                    break; // no change
             }
-            if (toDelete.size() > 0) {
-                matches.removeAll(toDelete);
-                toDelete.clear();
+        }
+        allMatches.addAll(reverseMatches.intervals());
+        return allMatches;
+    }
+
+    /**
+     * extracts the set of dominating matches. A match is considered stronglt dominated, if  90% (default value) is covered by a match that has a bit score that is 10% better
+     *
+     * @param intervals              input
+     * @param cNames                 dominator must have value of each of these for which the dominated does
+     * @param classificationToReport if this is set to some classification, check only this for domination
+     * @return dominating intervals
+     */
+    public static IntervalTree<IMatchBlock> extractStronglyDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames, String classificationToReport) {
+        final float minPercentCoverToDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", 90f);
+        final float minProportionCoverToDominate = minPercentCoverToDominate / 100.0f;
+
+        final float topPercentScoreToDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", 10f);
+        final float scoreFactor = 1f - (topPercentScoreToDominate / 100.0f);
+
+        if (!classificationToReport.equalsIgnoreCase("all")) {
+            for (String cName : cNames) {
+                if (cName.equalsIgnoreCase(classificationToReport)) {
+                    cNames = new String[]{cName}; // only need to dominate on this classification
+                    break;
+                }
+            }
+        }
+
+        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>(); // initially all foward matches, at the end, all resulting matches
+        final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>(); // all reverse matches
+        for (IMatchBlock matchBlock : intervals.values()) {
+            if (matchBlock.getAlignedQueryStart() <= matchBlock.getAlignedQueryEnd()) {
+                allMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
+            } else
+                reverseMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
+        }
+
+        // these will be reused in the loop:
+        final ArrayList<Pair<Interval<IMatchBlock>, Interval<IMatchBlock>>> pairs = new ArrayList<>(); // dominator,dominated pairs
+        final Set<Interval<IMatchBlock>> dominated = new HashSet<>(); // dominated
+
+        // remove all dominated matches
+        for (int i = 0; i < 2; i++) {
+            final IntervalTree<IMatchBlock> matches = (i == 0 ? allMatches : reverseMatches);
+
+            while (matches.size() > 1) {
+                // determine list of pairs of (dominator, dominated)
+                pairs.clear();
+                dominated.clear();
+
+                for (final Interval<IMatchBlock> interval : matches) {
+                    final IMatchBlock match = interval.getData();
+                    for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
+                        final IMatchBlock other = otherInterval.getData();
+                        if (otherInterval.overlap(interval) > minProportionCoverToDominate * interval.length() && scoreFactor * other.getBitScore() > match.getBitScore()) {
+                            boolean ok = true; // check that other interval has all annotations that this one has, otherwise it doesn't really dominate
+                            for (String cName : cNames) {
+                                if (match.getId(cName) > 0 && other.getId(cName) <= 0) {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                            if (ok) {
+                                pairs.add(new Pair<>(otherInterval, interval));
+                                dominated.add(interval);
+                                break; // found an other that dominates match...
+                            }
+                        }
+                    }
+                }
+
+                // remove any match that is dominated by an undominated match:
+                final Set<Interval<IMatchBlock>> toRemove = new HashSet<>();
+                for (Pair<Interval<IMatchBlock>, Interval<IMatchBlock>> pair : pairs) {
+                    if (!dominated.contains(pair.get1())) {
+                        toRemove.add(pair.get2()); // first is not dominated and it dominates the second, so remove second
+                    }
+                }
+                if (toRemove.size() > 0) {
+                    final ArrayList<Interval<IMatchBlock>> toKeep = new ArrayList<>(matches.size());
+                    for (Interval<IMatchBlock> interval : matches.getAllIntervals(false)) { // get unsorted intervals
+                        if (!toRemove.contains(interval))
+                            toKeep.add(interval);
+                    }
+                    matches.setAll(toKeep);
+                } else
+                    break; // no change
             }
         }
         allMatches.addAll(reverseMatches.intervals());

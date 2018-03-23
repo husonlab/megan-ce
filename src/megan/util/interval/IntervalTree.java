@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class IntervalTree<T> implements Iterable<Interval<T>> {
     private IntervalNode<T> head;
-    private final ArrayList<Interval<T>> intervalList;
+    private final LinkedList<Interval<T>> intervalList;
     private boolean inSync;
     private boolean sorted;
 
@@ -35,7 +35,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     public IntervalTree() {
         this.head = new IntervalNode<>();
-        this.intervalList = new ArrayList<>();
+        this.intervalList = new LinkedList<>();
         this.inSync = true;
         this.sorted = true;
         covered = 0;
@@ -48,7 +48,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     public IntervalTree(Collection<Interval<T>> intervalList) {
         this.head = new IntervalNode<>(intervalList);
-        this.intervalList = new ArrayList<>(intervalList);
+        this.intervalList = new LinkedList<>(intervalList);
         this.inSync = true;
         this.sorted = false;
         covered = -1;

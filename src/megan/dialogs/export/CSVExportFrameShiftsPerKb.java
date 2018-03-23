@@ -24,6 +24,7 @@ import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.core.Document;
 import megan.data.*;
+import megan.fx.NotificationsInSwing;
 import megan.util.interval.IntervalTree;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
@@ -67,48 +68,52 @@ public class CSVExportFrameShiftsPerKb {
                 final Set<Long> seen = new HashSet<>();
 
                 int countsClasses = 0;
+                ArrayList<Float> values = new ArrayList<>();
 
-                for (int classId : ids) {
-                    final int numberOfReads = classificationBlock.getSum(classId);
+                try {
+                    for (int classId : ids) {
+                        final int numberOfReads = classificationBlock.getSum(classId);
 
-                    if (numberOfReads > 0) {
+                        if (numberOfReads > 0) {
 
-                        try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
-                            final ArrayList<Pair<String, Float>> pairs = new ArrayList<>(numberOfReads);
-                            while (it.hasNext()) {
-                                final IReadBlock readBlock = it.next();
-                                if (readBlock.getNumberOfAvailableMatchBlocks() > 0) {
-                                    final long uid = readBlock.getUId();
-                                    if (!seen.contains(uid)) {
-                                        if (uid != 0)
-                                            seen.add(uid);
-                                        float frameShiftsPerKb = computeFrameShiftsPerKb(readBlock, excludeDominated);
-                                        pairs.add(new Pair<String, Float>(readBlock.getReadName(), frameShiftsPerKb));
-                                        totalLines++;
+                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
+                                final ArrayList<Pair<String, Float>> pairs = new ArrayList<>(numberOfReads);
+                                while (it.hasNext()) {
+                                    final IReadBlock readBlock = it.next();
+                                    if (readBlock.getNumberOfAvailableMatchBlocks() > 0) {
+                                        final long uid = readBlock.getUId();
+                                        if (!seen.contains(uid)) {
+                                            if (uid != 0)
+                                                seen.add(uid);
+                                            float frameShiftsPerKb = computeFrameShiftsPerKb(readBlock, excludeDominated);
+                                            pairs.add(new Pair<>(readBlock.getReadName(), frameShiftsPerKb));
+                                            totalLines++;
+                                        }
                                     }
+                                    progress.setProgress((long) (1000.0 * (countsClasses + (double) pairs.size() / (double) numberOfReads)));
                                 }
-                                progress.setProgress((long) (1000.0 * (countsClasses + (double) pairs.size() / (double) numberOfReads)));
-                            }
 
-                            final Statistics statistics;
-                            {
-                                float[] values = new float[pairs.size()];
-                                int i = 0;
+                                final Statistics statistics = new Statistics(Pair.secondValues(pairs));
+                                w.write(String.format("# %s (count=%d, mean=%.1f, stddev=%.1f):\n", TaxonomyData.getName2IdMap().get(classId), statistics.getCount(), statistics.getMean(), statistics.getStdDev()));
                                 for (Pair<String, Float> pair : pairs) {
-                                    values[i++] = pair.getSecond();
+                                    w.write(String.format("%s%c%.1f\n", pair.getFirst(), separator, pair.getSecond()));
                                 }
-                                statistics = new Statistics(values);
-                            }
-                            w.write(String.format("# %s (count=%d, mean=%.1f, stddev=%.1f):\n", TaxonomyData.getName2IdMap().get(classId), pairs.size(), statistics.getMean(), statistics.getStdDev()));
-                            for (Pair<String, Float> pair : pairs) {
-                                w.write(String.format("%s%c%.1f\n", pair.getFirst(), separator, pair.getSecond()));
+                                for (Float value : Pair.secondValues(pairs))
+                                    values.add(value);
                             }
                         }
+                        countsClasses++;
                     }
-                    countsClasses++;
-
+                } finally {
+                    if (values.size() > 0) {
+                        final Statistics statistics = new Statistics(values);
+                        final String summary = String.format("# Total frame-shifts per kb-aligned-sequence (reads=%,d): mean=%.1f, stddev=%.1f", statistics.getCount(), statistics.getMean(), statistics.getStdDev());
+                        w.write(summary + "\n");
+                        NotificationsInSwing.showInformation(summary, 5000);
+                    }
                 }
             }
+
         } catch (CanceledException ex) {
             System.err.println("USER CANCELED");
         }
@@ -128,7 +133,7 @@ public class CSVExportFrameShiftsPerKb {
         int countAlignedBases = 0;
 
         if (excludeDominated) {
-            final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.extractDominatingIntervals(IntervalTree4Matches.computeIntervalTree(readBlock, null), new String[]{Classification.Taxonomy}, "all");
+            final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.extractStronglyDominatingIntervals(IntervalTree4Matches.computeIntervalTree(readBlock, null), new String[]{Classification.Taxonomy}, "all");
             for (IMatchBlock matchBlock : intervals.values()) {
                 for (String line : Basic.getLinesFromString(matchBlock.getText())) {
                     if (line.startsWith("Query:")) {

@@ -52,7 +52,7 @@ public class BIOM1Importer {
         doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
 
         if (!BiomFileFilter.isBiom1File(fileName)) {
-            throw new IOException("File not in BIOM1 format");
+            throw new IOException("File not in BIOM1 format (or incorrect file suffix?)");
         }
 
         System.err.println("Importing data from BIOM1 file");

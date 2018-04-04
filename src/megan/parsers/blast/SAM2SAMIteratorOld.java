@@ -55,7 +55,7 @@ public class SAM2SAMIteratorOld implements ISAMIterator {
         this.maxMatchesPerRead = maxMatchesPerRead;
 
         if (!SAMFileFilter.getInstance().accept(fileName))
-            throw new IOException("File not in SAM format: " + fileName);
+            throw new IOException("File not in SAM format (or incorrect file suffix?): " + fileName);
         samFileIterator = new FileIterator(fileName);
         // skip header lines:
         while (samFileIterator.hasNext() && samFileIterator.peekNextByte() == '@')

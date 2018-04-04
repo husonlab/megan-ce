@@ -176,7 +176,7 @@ public class DAA2RMA6 {
         for (String fileName : daaFiles) {
             Basic.checkFileReadableNonEmpty(fileName);
             if (!DAAFileFilter.getInstance().accept(fileName))
-                throw new IOException("File not in DAA format: " + fileName);
+                throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);
         }
 
         for (String fileName : metaDataFiles) {

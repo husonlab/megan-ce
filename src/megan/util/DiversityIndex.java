@@ -143,7 +143,7 @@ public class DiversityIndex {
     private static String toString(String[] sampleNames, double[] values) {
         final StringBuilder buf = new StringBuilder();
         for (int i = 0; i < sampleNames.length; i++) {
-            buf.append(String.format("%s\t^%.3f\n", sampleNames[i], i < values.length ? (values[i] + 0.00001) : 0));
+            buf.append(String.format("%s\t%.3f\n", sampleNames[i], i < values.length ? (values[i] + 0.00001) : 0));
         }
         return buf.toString();
     }

@@ -163,7 +163,7 @@ public class SAM2RMA6 {
         for (String fileName : samFiles) {
             Basic.checkFileReadableNonEmpty(fileName);
             if (!SAMFileFilter.getInstance().accept(fileName))
-                throw new IOException("File not in SAM format: " + fileName);
+                throw new IOException("File not in SAM format (or incorrect file suffix?): " + fileName);
         }
 
         for (String fileName : metaDataFiles) {

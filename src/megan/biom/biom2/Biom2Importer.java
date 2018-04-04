@@ -51,7 +51,7 @@ public class Biom2Importer {
      */
     static public void apply(String fileName, Document doc, String type, boolean ignorePathAbove) throws IOException {
         if (!BiomFileFilter.isBiom2File(fileName)) {
-            throw new IOException("File not in BIOM2 format");
+            throw new IOException("File not in BIOM2 format (or incorrect file suffix?)");
         }
 
         System.err.println("Importing data from BIOM2 file");

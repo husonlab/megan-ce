@@ -109,6 +109,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("minSupport")) {
             np.matchIgnoreCase("minSupport=");
             minSupport = np.getInt(0, Integer.MAX_VALUE);
+            if (minSupport > 0)
+                minSupportPercent = 0;
         }
 
         Document.LCAAlgorithm lcaAlgorithm = Document.DEFAULT_LCA_ALGORITHM_SHORT_READS;
@@ -137,7 +139,6 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             minPercentReadToCover = (float) np.getDouble(0, 100);
             ProgramProperties.put("minPercentReadToCover", minPercentReadToCover);
         }
-
 
         float minPercentReferenceToCover = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
         if (np.peekMatchIgnoreCase("minPercentReferenceToCover")) {

@@ -36,6 +36,8 @@ import java.util.Set;
  * Created by huson on 3/29/17.
  */
 public class IntervalTree4Matches {
+    private final static float defaultMinPercentCoverToDominate = 50f;
+
     /**
      * selects the matches to keep for a given read and puts them into an interval tree
      *
@@ -64,7 +66,7 @@ public class IntervalTree4Matches {
      * @return dominating intervals
      */
     public static IntervalTree<IMatchBlock> extractDominatingIntervals(IntervalTree<IMatchBlock> intervals, String[] cNames, String classificationToReport) {
-        final double dominationProportion = ProgramProperties.get("MinPercentCoverDominate", 50.0) / 100;
+        final double dominationProportion = ProgramProperties.get("MinPercentCoverToDominate", defaultMinPercentCoverToDominate) / 100;
 
         if (!classificationToReport.equalsIgnoreCase("all")) {
             for (String cName : cNames) {

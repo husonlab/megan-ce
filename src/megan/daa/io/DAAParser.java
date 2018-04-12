@@ -146,8 +146,8 @@ public class DAAParser {
         final float topProportionScoreToDominate;
         if (parseLongReads) {
             PostProcessMatches postProcessMatches = new PostProcessMatches();
-            minProportionCoverToDominate = postProcessMatches.getMinProportionCoverToDominate();
-            topProportionScoreToDominate = postProcessMatches.getTopProportionScoreToDominate();
+            minProportionCoverToDominate = postProcessMatches.getMinProportionCoverToStronglyDominate();
+            topProportionScoreToDominate = postProcessMatches.getTopProportionScoreToStronglyDominate();
         } else {
             minProportionCoverToDominate = 0;
             topProportionScoreToDominate = 0;

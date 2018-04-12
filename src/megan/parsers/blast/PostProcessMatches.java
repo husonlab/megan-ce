@@ -31,27 +31,27 @@ import java.util.Set;
  * Daniel Huson, Feb 2017
  */
 public class PostProcessMatches {
-    private final static float defaultMinPercentToCoverToDominate = 90f;
-    private final static float defaultTopPercentScoreToDominate = 90f;
+    private final static float defaultMinPercentToCoverToStronglyDominate = 90f;
+    private final static float defaultTopPercentScoreToStronglyDominate = 90f;
 
-    private final float minProportionCoverToDominate;
-    private final float topProportionScoreToDominate;
+    private final float minProportionCoverToStronglyDominate;
+    private final float topProportionScoreToStronglyDominate;
 
     /**
      * constructor
      */
     public PostProcessMatches() {
-        final float minPercentCoverToDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToDominate);
-        if (minPercentCoverToDominate != defaultMinPercentToCoverToDominate)
-            System.err.println("Using MinPercentCoverToStonglyDominate=" + minPercentCoverToDominate);
-        minProportionCoverToDominate = minPercentCoverToDominate / 100.0f;
+        final float minPercentCoverToStronglyDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToStronglyDominate);
+        if (minPercentCoverToStronglyDominate != defaultMinPercentToCoverToStronglyDominate)
+            System.err.println("Using MinPercentCoverToStonglyDominate=" + minPercentCoverToStronglyDominate);
+        minProportionCoverToStronglyDominate = minPercentCoverToStronglyDominate / 100.0f;
 
-        final float topPercentScoreToDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToDominate);
-        if (topPercentScoreToDominate != defaultTopPercentScoreToDominate)
-            System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToDominate);
-        topProportionScoreToDominate = topPercentScoreToDominate / 100.0f;
+        final float topPercentScoreToStronglyDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToStronglyDominate);
+        if (topPercentScoreToStronglyDominate != defaultTopPercentScoreToStronglyDominate)
+            System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToStronglyDominate);
+        topProportionScoreToStronglyDominate = topPercentScoreToStronglyDominate / 100.0f;
 
-        System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and defaultTopPercentScoreToDominate=%.1f", minPercentCoverToDominate, topPercentScoreToDominate));
+        System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and TopPercentScoreToStronglyDominate=%.1f", minPercentCoverToStronglyDominate, topPercentScoreToStronglyDominate));
     }
 
     /**
@@ -73,7 +73,7 @@ public class PostProcessMatches {
                 for (Interval<Match> other : matchesIntervalTree.getIntervals(interval)) {
                     final Match otherMatch = other.getData();
 
-                    if (other.overlap(interval) > minProportionCoverToDominate * interval.length() && topProportionScoreToDominate * otherMatch.bitScore > match.bitScore) {
+                    if (other.overlap(interval) > minProportionCoverToStronglyDominate * interval.length() && topProportionScoreToStronglyDominate * otherMatch.bitScore > match.bitScore) {
                         covered = true;
                         break;
                     }
@@ -115,11 +115,11 @@ public class PostProcessMatches {
         }
     }
 
-    public float getMinProportionCoverToDominate() {
-        return minProportionCoverToDominate;
+    public float getMinProportionCoverToStronglyDominate() {
+        return minProportionCoverToStronglyDominate;
     }
 
-    public float getTopProportionScoreToDominate() {
-        return topProportionScoreToDominate;
+    public float getTopProportionScoreToStronglyDominate() {
+        return topProportionScoreToStronglyDominate;
     }
 }

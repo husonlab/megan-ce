@@ -220,18 +220,20 @@ public class TableItemTask extends Task<Integer> {
     }
 
     private ListChangeListener<IMatchBlock> createChangeListener(final TableItem tableItem, final LongProperty previousSelectionTime) {
+        final ReadLayoutPane pane = tableItem.getPane();
         return new ListChangeListener<IMatchBlock>() {
             @Override
             public void onChanged(Change<? extends IMatchBlock> c) {
                 if (c.next()) {
-                    if (!tableItem.getPane().getMatchSelection().isEmpty())
+
+                    if (!pane.getMatchSelection().isEmpty())
                         tableView.getSelectionModel().select(tableItem);
                 }
                 if (System.currentTimeMillis() - 200 > previousSelectionTime.get()) { // only if sufficient time has passed since last scroll...
                     final double focusCoordinate;
-                    int focusIndex = tableItem.getPane().getMatchSelection().getFocusIndex();
-                    if (focusIndex >= 0) {
-                        IMatchBlock focusMatch = tableItem.getPane().getMatchSelection().getItems()[focusIndex];
+                    int focusIndex = pane.getMatchSelection().getFocusIndex();
+                    if (focusIndex >= 0 && pane.getMatchSelection().getItems()[focusIndex] != null) {
+                        final IMatchBlock focusMatch = pane.getMatchSelection().getItems()[focusIndex];
                         focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
                         double leadingWidth = 0;
                         double lastWidth = 0;

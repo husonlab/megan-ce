@@ -70,49 +70,50 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
         matchesTextAndLength.setSecond(0);
 
         String line = nextLine();
-        while (hasNextLine() && !line.startsWith(">")) {
+        while (hasNextLine() && line.startsWith("#")) {
             line = nextLine();
         }
 
-        if (line == null || !line.startsWith(">"))
+        if (line == null)
             return -1;
 
-        final String queryName = Basic.getReadName(line);
-        if (!hasNextLine())
-            return -1;
-        line = nextLine();
+        final String[] tokens = line.replaceAll("\t\t", "\t").split("\t");
 
-        final String[] tokens = Basic.split(line, ';');
+        if (tokens.length < 4) {
+            System.err.println("Too few tokens in line: " + line);
+            throw new RuntimeException("Too many errors");
+        }
+
+        int whichToken = 0;
+
+        final String queryName = tokens[whichToken++];
 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
 
-        int whichToken = 0;
-
-        StringBuilder path = new StringBuilder();
+        final StringBuilder path = new StringBuilder();
         // add one match block for each percentage given:
         try {
             while (whichToken < tokens.length) {
-                if (whichToken < tokens.length) {
-                    String name = tokens[whichToken++];
-                    if (name.equals("Root"))
-                        name = "root";
-                    path.append(name).append(";");
-                    String scoreString = tokens[whichToken++];
-                    float bitScore = 100 * Basic.parseFloat(scoreString);
+                String name = tokens[whichToken++];
+                if (name.startsWith("\""))
+                    name = name.substring(1, name.length() - 1);
+                if (name.equals("Root"))
+                    name = "root";
+                path.append(name).append(";");
+                final String rank = tokens[whichToken++];
+                // rank ignored...
 
-                    if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
-                        Match match = new Match();
-                        match.bitScore = bitScore;
-                        match.id = matchId++;
+                final String scoreString = tokens[whichToken++];
+                float bitScore = 100 * Basic.parseFloat(scoreString);
 
-                        String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
-                        match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
-                        matches.add(match);
-                        if (matches.size() > getMaxNumberOfMatchesPerRead())
-                            matches.remove(matches.last());
-                    }
-                }
+                final Match match = new Match();
+                match.bitScore = bitScore;
+                match.id = matchId++;
+
+                final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+                match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
+                matches.add(match);
             }
         } catch (Exception ex) {
             System.err.println("Error parsing file near line: " + getLineNumber());

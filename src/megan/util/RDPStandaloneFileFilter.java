@@ -63,8 +63,7 @@ public class RDPStandaloneFileFilter extends FileFilterBase implements FilenameF
     public boolean accept(File directory, String fileName) {
         if (!super.accept(directory, fileName))
             return false;
-        String[] firstLines = Basic.getFirstLinesFromFile(new File(fileName), 2);
-        return firstLines != null && firstLines.length == 2 && firstLines[0].startsWith(">") && Basic.contains(firstLines[1], ';', 2)
-                && firstLines[1].toLowerCase().contains("root");
+        final String firstLine = Basic.getFirstLineFromFile(new File(fileName));
+        return firstLine != null && firstLine.split("\t").length >= 4;
     }
 }

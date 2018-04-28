@@ -81,37 +81,31 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
         matches.clear();
 
         int whichToken = 0;
-        String queryName = tokens[whichToken++].trim();
-        String direction = tokens[whichToken++];
+        final String queryName = tokens[whichToken++].trim();
+        final String direction = tokens[whichToken++];
 
-        StringBuilder path = new StringBuilder();
+        final StringBuilder path = new StringBuilder();
         // add one match block for each percentage given:
         try {
             while (whichToken < tokens.length) {
-                if (whichToken < tokens.length) {
-                    String name = tokens[whichToken++];
-                    if (name.equals("Root"))
-                        name = "root";
-                    path.append(name).append(";");
-                    String scoreString = tokens[whichToken++];
-                    if (!scoreString.endsWith("%")) {
-                        System.err.println("Expected percentage in: " + line);
-                        break;
-                    }
-                    float bitScore = Basic.parseFloat(scoreString);
-
-                    if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
-                        Match match = new Match();
-                        match.bitScore = bitScore;
-                        match.id = matchId++;
-
-                        String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
-                        match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
-                        matches.add(match);
-                        if (matches.size() > getMaxNumberOfMatchesPerRead())
-                            matches.remove(matches.last());
-                    }
+                String name = tokens[whichToken++];
+                if (name.equals("Root"))
+                    name = "root";
+                path.append(name).append(";");
+                String scoreString = tokens[whichToken++];
+                if (!scoreString.endsWith("%")) {
+                    System.err.println("Expected percentage in: " + line);
+                    break;
                 }
+                float bitScore = Basic.parseFloat(scoreString);
+
+                final Match match = new Match();
+                match.bitScore = bitScore;
+                match.id = matchId++;
+
+                final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+                match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
+                matches.add(match);
             }
         } catch (Exception ex) {
             System.err.println("Error parsing file near line: " + getLineNumber());

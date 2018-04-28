@@ -106,7 +106,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     public void drawChart(Graphics2D gc) {
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+        SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
 
         int y0 = getHeight() - bottomMargin;
@@ -233,7 +233,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     public void drawChartTransposed(Graphics2D gc) {
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+        SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
 
         int y0 = getHeight() - bottomMargin;
@@ -571,7 +571,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     protected void drawYAxisTransposed(Graphics2D gc, Dimension size) {
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
         if (numberOfSeries > 0) {
-            SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+            SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics) gc : null);
             gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
             final boolean doDraw = (size == null);
@@ -664,8 +664,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         }
 
         {
-            final ArrayList<String> currentClasses = new ArrayList<>();
-            currentClasses.addAll(getChartData().getClassNames());
+            final ArrayList<String> currentClasses = new ArrayList<>(getChartData().getClassNames());
             if (!previousClasses.equals(currentClasses)) {
                 mustUpdate = true;
                 previousClasses.clear();
@@ -673,8 +672,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             }
         }
         {
-            final ArrayList<String> currentSamples = new ArrayList<>();
-            currentSamples.addAll(getChartData().getSeriesNames());
+            final ArrayList<String> currentSamples = new ArrayList<>(getChartData().getSeriesNames());
             if (!previousSamples.equals(currentSamples)) {
                 mustUpdate = true;
                 previousSamples.clear();
@@ -756,13 +754,13 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         final String[] currentClasses;
         {
             final Collection<String> list = getViewer().getClassesList().getEnabledLabels();
-            currentClasses = list.toArray(new String[list.size()]);
+            currentClasses = list.toArray(new String[0]);
         }
 
         final String[] currentSeries;
         {
             final Collection<String> list = getViewer().getSeriesList().getEnabledLabels();
-            currentSeries = list.toArray(new String[list.size()]);
+            currentSeries = list.toArray(new String[0]);
         }
         if (!isTranspose()) {
             for (int i = 0; i < currentClasses.length; i++) {
@@ -779,7 +777,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 rightClusteringTree.setType(ClusteringTree.TYPE.CLASSES);
                 rightClusteringTree.updateClustering(currentClasses, dataMatrix);
                 final Collection<String> list = topClusteringTree.getLabelOrder();
-                classNames = list.toArray(new String[list.size()]);
+                classNames = list.toArray(new String[0]);
             } else
                 classNames = currentClasses;
         } else {
@@ -796,7 +794,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                     rightClusteringTree.setType(ClusteringTree.TYPE.SERIES);
                     rightClusteringTree.updateClustering(currentSeries, dataMatrix);
                     final Collection<String> list = topClusteringTree.getLabelOrder();
-                    seriesNames = list.toArray(new String[list.size()]);
+                    seriesNames = list.toArray(new String[0]);
                 } else
                     seriesNames = currentSeries;
             }
@@ -841,8 +839,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     }
 
     private void updateClassesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedClasses());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedClasses());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(classNames));
         final Collection<String> others = viewer.getClassesList().getAllLabels();
         others.removeAll(ordered);
@@ -853,8 +850,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     }
 
     private void updateSeriesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedSeries());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedSeries());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(seriesNames));
         final Collection<String> others = viewer.getSeriesList().getAllLabels();
         others.removeAll(ordered);
@@ -925,10 +921,10 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                             rightClusteringTree.rotateSelectedSubTree();
                             final Collection<String> list = rightClusteringTree.getLabelOrder();
                             if (!isTranspose()) {
-                                classNames = list.toArray(new String[list.size()]);
+                                classNames = list.toArray(new String[0]);
                                 updateClassesJList();
                             } else {
-                                seriesNames = list.toArray(new String[list.size()]);
+                                seriesNames = list.toArray(new String[0]);
                                 updateSeriesJList();
                             }
                             getJPanel().repaint();
@@ -971,7 +967,6 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 }
                 w.write("\n");
             }
-
         }
     }
 

@@ -63,7 +63,7 @@ public class LayoutByContigsCommand extends CommandBase implements ICheckBoxComm
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByContigs.toString() + ";zoom axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByContigs.toString() + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "By Contigs";

@@ -63,7 +63,7 @@ public class LayoutByNameCommand extends CommandBase implements ICheckBoxCommand
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByName.toString() + ";zoom axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByName.toString() + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "By Name";

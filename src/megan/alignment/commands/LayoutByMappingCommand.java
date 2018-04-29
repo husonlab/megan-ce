@@ -63,7 +63,7 @@ public class LayoutByMappingCommand extends CommandBase implements ICheckBoxComm
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.Mapping.toString() + ";zoom axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.Mapping.toString() + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "As Mapping";

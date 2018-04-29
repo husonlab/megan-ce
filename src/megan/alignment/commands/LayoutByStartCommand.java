@@ -63,7 +63,7 @@ public class LayoutByStartCommand extends CommandBase implements ICheckBoxComman
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByStart.toString() + ";zoom axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByStart.toString() + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "By Start";

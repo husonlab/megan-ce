@@ -21,10 +21,7 @@ package megan.parsers.fasta;
 import jloda.util.Basic;
 import jloda.util.Pair;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedList;
 
 /**
@@ -59,7 +56,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     public FastAFileIterator(String fileName) throws IOException {
         maxProgress = Basic.guessUncompressedSizeOfFile(fileName);
         r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(fileName)));
-        endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName); // todo: WTF?
+        endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
         moveToFirst();
     }
 

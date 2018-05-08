@@ -34,24 +34,15 @@ public class PostProcessMatches {
     private final static float defaultMinPercentToCoverToStronglyDominate = 90f;
     private final static float defaultTopPercentScoreToStronglyDominate = 90f;
 
-    private final float minProportionCoverToStronglyDominate;
-    private final float topProportionScoreToStronglyDominate;
+    private float minProportionCoverToStronglyDominate = Math.min(1f, (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToStronglyDominate) / 100.0f);
+    private float topProportionScoreToStronglyDominate = Math.min(1f, (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToStronglyDominate) / 100.0f);
+
+    private boolean parseLongReads = false;
 
     /**
      * constructor
      */
     public PostProcessMatches() {
-        final float minPercentCoverToStronglyDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToStronglyDominate);
-        if (minPercentCoverToStronglyDominate != defaultMinPercentToCoverToStronglyDominate)
-            System.err.println("Using MinPercentCoverToStonglyDominate=" + minPercentCoverToStronglyDominate);
-        minProportionCoverToStronglyDominate = minPercentCoverToStronglyDominate / 100.0f;
-
-        final float topPercentScoreToStronglyDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToStronglyDominate);
-        if (topPercentScoreToStronglyDominate != defaultTopPercentScoreToStronglyDominate)
-            System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToStronglyDominate);
-        topProportionScoreToStronglyDominate = topPercentScoreToStronglyDominate / 100.0f;
-
-        System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and TopPercentScoreToStronglyDominate=%.1f", minPercentCoverToStronglyDominate, topPercentScoreToStronglyDominate));
     }
 
     /**
@@ -121,5 +112,26 @@ public class PostProcessMatches {
 
     public float getTopProportionScoreToStronglyDominate() {
         return topProportionScoreToStronglyDominate;
+    }
+
+    public boolean isParseLongReads() {
+        return parseLongReads;
+    }
+
+    public void setParseLongReads(boolean parseLongReads) {
+        this.parseLongReads = parseLongReads;
+        if (parseLongReads) {
+            final float minPercentCoverToStronglyDominate = (float) ProgramProperties.get("MinPercentCoverToStronglyDominate", defaultMinPercentToCoverToStronglyDominate);
+            if (minPercentCoverToStronglyDominate != defaultMinPercentToCoverToStronglyDominate)
+                System.err.println("Using MinPercentCoverToStonglyDominate=" + minPercentCoverToStronglyDominate);
+            minProportionCoverToStronglyDominate = minPercentCoverToStronglyDominate / 100.0f;
+
+            final float topPercentScoreToStronglyDominate = (float) ProgramProperties.get("TopPercentScoreToStronglyDominate", defaultTopPercentScoreToStronglyDominate);
+            if (topPercentScoreToStronglyDominate != defaultTopPercentScoreToStronglyDominate)
+                System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToStronglyDominate);
+            topProportionScoreToStronglyDominate = topPercentScoreToStronglyDominate / 100.0f;
+
+            System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and TopPercentScoreToStronglyDominate=%.1f", minPercentCoverToStronglyDominate, topPercentScoreToStronglyDominate));
+        }
     }
 }

@@ -320,9 +320,10 @@ public class SAMIteratorBase {
 
     public void setParseLongReads(boolean parseLongReads) {
         this.parseLongReads = parseLongReads;
+        postProcessMatches.setParseLongReads(parseLongReads);
     }
 
-    public final PostProcessMatches getPostProcessMatches() {
+    public PostProcessMatches getPostProcessMatches() {
         return postProcessMatches;
     }
 }

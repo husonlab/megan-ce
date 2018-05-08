@@ -159,8 +159,6 @@ public class IdParser {
         // Look for accession mapping
         if (accTaggedIds.isEnabled()) {
             accTaggedIds.restart(headerString);
-            if (headerString.contains("pos|"))
-                System.err.println(headerString);
             for (String label : accTaggedIds) {
                 final int id = idMapper.getAccessionMap().get(label);
                 if (id > 0) {

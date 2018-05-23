@@ -29,7 +29,7 @@ import java.util.Map;
  * Just an adapter for the MEGAN {@link IMatchBlock} with getters and setters.
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:06:58 PM - Oct 27, 2014
+ * 3:06:58 PM - Oct 27, 2014
  */
 public class MatchBlockServer {
 
@@ -54,8 +54,8 @@ public class MatchBlockServer {
     public MatchBlockServer(IMatchBlock mb, String[] classnames) {
         this.matchUid = mb.getUId();
         class2id = new HashMap<String, Integer>();
-        for(String classname : classnames){
-        	class2id.put(classname, mb.getId(classname));
+        for (String classname : classnames) {
+            class2id.put(classname, mb.getId(classname));
         }
         this.bitScore = mb.getBitScore();
         this.percentIdentity = mb.getPercentIdentity();
@@ -78,14 +78,14 @@ public class MatchBlockServer {
     }
 
     public Map<String, Integer> getClass2id() {
-		return class2id;
-	}
+        return class2id;
+    }
 
-	public void setClass2id(Map<String, Integer> class2id) {
-		this.class2id = class2id;
-	}
+    public void setClass2id(Map<String, Integer> class2id) {
+        this.class2id = class2id;
+    }
 
-	public float getBitScore() {
+    public float getBitScore() {
         return bitScore;
     }
 

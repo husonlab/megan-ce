@@ -28,7 +28,7 @@ import java.io.IOException;
  * Adapter to get reads from Megan5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         10:01:55 AM - Oct 28, 2014
+ * 10:01:55 AM - Oct 28, 2014
  */
 public class ReadBlockGetter implements IReadBlockGetter {
 

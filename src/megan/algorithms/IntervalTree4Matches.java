@@ -60,8 +60,8 @@ public class IntervalTree4Matches {
     /**
      * extracts the set of dominating matches. A match is considered dominated, if more than 50% (default value) is covered by a match that has a better bit score, or the same bit score, but shorter length
      *
-     * @param intervals input
-     * @param cNames dominator must have value of each of these for which the dominated does
+     * @param intervals              input
+     * @param cNames                 dominator must have value of each of these for which the dominated does
      * @param classificationToReport if this is set to some classification, check only this for domination
      * @return dominating intervals
      */

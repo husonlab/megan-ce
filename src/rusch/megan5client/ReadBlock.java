@@ -27,7 +27,7 @@ import megan.data.IReadBlock;
  * Adapter for Server ReadBlocks
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:28:14 PM - Oct 27, 2014
+ * 3:28:14 PM - Oct 27, 2014
  */
 public class ReadBlock implements IReadBlock {
     private final ReadBlockServer block;

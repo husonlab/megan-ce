@@ -48,7 +48,7 @@ import java.util.Map;
  * Get Auxblock (in ms):20
  *
  * @author Hans-Joachim Ruscheweyh
- *         11:33:17 AM - Oct 28, 2014
+ * 11:33:17 AM - Oct 28, 2014
  */
 public class TestRun {
 

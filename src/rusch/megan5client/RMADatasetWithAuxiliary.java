@@ -25,7 +25,7 @@ import java.util.Map;
  * An adapter to transport RMA Metadata via MEGAN and MEGAN5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:08:11 PM - July 28, 2015
+ * 3:08:11 PM - July 28, 2015
  */
 public class RMADatasetWithAuxiliary {
 
@@ -37,9 +37,7 @@ public class RMADatasetWithAuxiliary {
     private Map<String, String> aux;
 
 
-
-
-	public RMADatasetWithAuxiliary() {
+    public RMADatasetWithAuxiliary() {
         // Needed for Jackson
     }
 
@@ -83,13 +81,14 @@ public class RMADatasetWithAuxiliary {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Map<String, String> getAux() {
-		return aux;
-	}
 
-	public void setAux(Map<String, String> aux) {
-		this.aux = aux;
-	}
+    public Map<String, String> getAux() {
+        return aux;
+    }
+
+    public void setAux(Map<String, String> aux) {
+        this.aux = aux;
+    }
 
 
 }

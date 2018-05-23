@@ -90,6 +90,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
 
     /**
      * gets an interval that has highest coverage of the given interval, and among those, is longest
+     *
      * @param target
      * @param minCoverageProportion amount of target of interval that must be covered
      * @return best interval

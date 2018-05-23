@@ -31,7 +31,7 @@ import java.util.List;
  * Make {@link megan.data.DataSelection} and {@link FindSelection} readable for REST
  *
  * @author Hans-Joachim Ruscheweyh
- *         5:36:04 PM - Oct 28, 2014
+ * 5:36:04 PM - Oct 28, 2014
  */
 public class DataSelectionSerializer {
 

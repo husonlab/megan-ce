@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentMap;
  * The {@link IConnector} instance for datasets hosted at the Megan5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         4:08:22 PM - Nov 1, 2014
+ * 4:08:22 PM - Nov 1, 2014
  */
 public class Megan5ServerConnector implements IConnector {
     private RestTemplate restTemplate;

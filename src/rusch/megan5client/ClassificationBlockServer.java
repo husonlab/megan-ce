@@ -28,9 +28,9 @@ import java.util.Map;
 
 /**
  * @author Hans-Joachim Ruscheweyh
- *         3:02:58 PM - Oct 27, 2014
- *         <p/>
- *         Just an adapter for the MEGAN {@link IClassificationBlock} with getters and setters.
+ * 3:02:58 PM - Oct 27, 2014
+ * <p/>
+ * Just an adapter for the MEGAN {@link IClassificationBlock} with getters and setters.
  */
 public class ClassificationBlockServer implements Serializable {
 

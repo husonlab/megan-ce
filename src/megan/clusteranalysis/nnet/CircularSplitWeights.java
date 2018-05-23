@@ -377,8 +377,8 @@ public class CircularSplitWeights {
             calculateAtx(ntax, y, r); /* r = AtWAx */
 
             /* We check to see that we are at a constrained minimum.... that is that the gradient is positive for
-            * all i,j in the active set.
-            */
+             * all i,j in the active set.
+             */
             int min_i = -1;
             double min_grad = 1.0;
             for (int i = 0; i < npairs; i++) {
@@ -402,7 +402,7 @@ public class CircularSplitWeights {
         }
     }
 
-/* Compute the row sum in d. */
+    /* Compute the row sum in d. */
 
     static private double rowsum(int n, double[] d, int k) {
         double r = 0;
@@ -562,7 +562,7 @@ public class CircularSplitWeights {
                                                double[] W, double[] b,
                                                boolean[] active, double[] x) {
         int kmax = ntax * (ntax - 1) / 2;
-/* Maximum number of iterations of the cg algorithm (probably too many) */
+        /* Maximum number of iterations of the cg algorithm (probably too many) */
 
         calculateAb(ntax, x, y);
 
@@ -610,7 +610,7 @@ public class CircularSplitWeights {
                 alpha += p[i] * w[i];
             alpha = rho / alpha;
 
-/* Update x and the residual, r */
+            /* Update x and the residual, r */
             for (int i = 0; i < npairs; i++) {
                 x[i] += alpha * p[i];
                 r[i] -= alpha * w[i];

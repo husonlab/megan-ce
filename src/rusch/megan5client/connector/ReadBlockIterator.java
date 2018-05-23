@@ -27,7 +27,7 @@ import rusch.megan5client.ReadBlock;
  * Paginated ReadBlockIterator for Megan5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:36:46 PM - Oct 28, 2014
+ * 3:36:46 PM - Oct 28, 2014
  */
 public class ReadBlockIterator implements IReadBlockIterator {
     private ReadBlockPage currentPage;

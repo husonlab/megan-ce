@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * @author Hans-Joachim Ruscheweyh
- *         10:20:17 AM - Oct 29, 2014
+ * 10:20:17 AM - Oct 29, 2014
  */
 public class ClassificationBlock implements IClassificationBlock {
     private Map<Integer, Integer> taxId2Count = new HashMap<>();

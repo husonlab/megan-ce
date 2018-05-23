@@ -133,8 +133,8 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
     }
 
     /*
-      *  Save information of the cell about to be edited
-      */
+     *  Save information of the cell about to be edited
+     */
     private void processEditingStarted() {
         //  The invokeLater is necessary because the editing row and editing
         //  column of the table have not been set when the "tableCellEditor"
@@ -145,8 +145,8 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
     }
 
     /*
-      *  See above.
-      */
+     *  See above.
+     */
     public void run() {
         row = table.convertRowIndexToModel(table.getEditingRow());
         // row = table.getEditingRow();
@@ -158,8 +158,8 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
     }
 
     /*
-      *	Update the Cell history when necessary
-      */
+     *	Update the Cell history when necessary
+     */
     private void processEditingStopped() {
         if (row >= table.getRowCount() || column >= table.getColumnCount())
             return;

@@ -25,7 +25,7 @@ import java.util.Map;
  * An adapter to transport RMA Metadata via MEGAN and MEGAN5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:08:11 PM - Oct 27, 2014
+ * 3:08:11 PM - Oct 27, 2014
  */
 public class RMADataset {
 

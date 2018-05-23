@@ -642,20 +642,20 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jloda.director.IDirectableViewer#isUptoDate()
-      */
+     * (non-Javadoc)
+     *
+     * @see jloda.director.IDirectableViewer#isUptoDate()
+     */
 
     public boolean isUptoDate() {
         return uptodate;
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jloda.director.IDirectorListener#destroyView()
-      */
+     * (non-Javadoc)
+     *
+     * @see jloda.director.IDirectorListener#destroyView()
+     */
 
     public void destroyView() throws CanceledException {
         ProgramProperties.put(ClassificationManager.getWindowGeometryKey(getClassName()), new int[]{
@@ -683,10 +683,10 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jloda.director.IDirectorListener#lockUserInput()
-      */
+     * (non-Javadoc)
+     *
+     * @see jloda.director.IDirectorListener#lockUserInput()
+     */
 
     public void lockUserInput() {
         locked = true;
@@ -701,20 +701,20 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jloda.director.IDirectorListener#setUptoDate(boolean)
-      */
+     * (non-Javadoc)
+     *
+     * @see jloda.director.IDirectorListener#setUptoDate(boolean)
+     */
 
     public void setUptoDate(final boolean flag) {
         uptodate = flag;
     }
 
     /*
-      * (non-Javadoc)
-      *
-      * @see jloda.director.IDirectorListener#unlockUserInput()
-      */
+     * (non-Javadoc)
+     *
+     * @see jloda.director.IDirectorListener#unlockUserInput()
+     */
 
     public void unlockUserInput() {
         locked = false;

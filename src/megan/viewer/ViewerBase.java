@@ -82,11 +82,11 @@ abstract public class ViewerBase extends PhyloTreeView {
     protected final NodeDrawer nodeDrawer;
 
     /*
-    * constructor
-    *
-    * @param tree
-    * @param doEmbedding
-    */
+     * constructor
+     *
+     * @param tree
+     * @param doEmbedding
+     */
     public ViewerBase(Director dir, PhyloTree tree, boolean doEmbedding) {
         super(tree, doEmbedding);
         this.dir = dir;

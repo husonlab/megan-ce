@@ -93,6 +93,7 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
 
 
     final public static String DESCRIPTION = "Loads a list of contaminant taxon names or Ids from a file (one per line)";
+
     /**
      * get description to be used as a tooltip
      *

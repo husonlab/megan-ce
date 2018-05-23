@@ -25,7 +25,7 @@ import rusch.megan5client.ReadBlockServer;
  * A page containing a number of {@link ReadBlockServer}s
  *
  * @author Hans-Joachim Ruscheweyh
- *         10:20:53 AM - Oct 29, 2014
+ * 10:20:53 AM - Oct 29, 2014
  * @update Jan 30, 2015: added totalNumberOfReads and previouslySeenReads
  */
 public class ReadBlockPage {

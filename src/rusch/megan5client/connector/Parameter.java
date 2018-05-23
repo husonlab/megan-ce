@@ -23,7 +23,7 @@ package rusch.megan5client.connector;
  * A single parameter that comes with a http request
  *
  * @author Hans-Joachim Ruscheweyh
- *         10:20:47 AM - Oct 29, 2014
+ * 10:20:47 AM - Oct 29, 2014
  */
 public class Parameter {
 

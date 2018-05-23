@@ -206,7 +206,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                 });
             }
         });
-        }
+    }
 
     public boolean isUptoDate() {
         return uptoDate;

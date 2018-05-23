@@ -27,7 +27,7 @@ import megan.data.IMatchBlock;
  * Adapter for Server Matchblocks
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:28:28 PM - Oct 27, 2014
+ * 3:28:28 PM - Oct 27, 2014
  */
 public class MatchBlock implements IMatchBlock {
     private final MatchBlockServer block;
@@ -54,7 +54,7 @@ public class MatchBlock implements IMatchBlock {
 
     @Override
     public void setTaxonId(int taxonId) {
-    	setId(Classification.Taxonomy, taxonId);
+        setId(Classification.Taxonomy, taxonId);
 
     }
 
@@ -143,7 +143,7 @@ public class MatchBlock implements IMatchBlock {
 
     @Override
     public int getId(String cName) {
-    	Integer id = block.getClass2id().get(cName);
+        Integer id = block.getClass2id().get(cName);
         return id != null ? id : 0;
     }
 

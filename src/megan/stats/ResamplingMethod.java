@@ -63,12 +63,12 @@ public class ResamplingMethod {
     }
 
     /*
-    * create one new Map that save all keys(genenames) from m1 und m2
-    * (note:these 2 datasets must not include only the same gene, because the returned result is their union ),
-    * the with keys associated values will be saved in form of int[].
-    * @param m1
-    * @param m2
-    */
+     * create one new Map that save all keys(genenames) from m1 und m2
+     * (note:these 2 datasets must not include only the same gene, because the returned result is their union ),
+     * the with keys associated values will be saved in form of int[].
+     * @param m1
+     * @param m2
+     */
 
     public void setInput(Map<Integer, Float> input1, Map<Integer, Float> input2) {
         this.input1 = input1;
@@ -232,8 +232,8 @@ public class ResamplingMethod {
         //System.err.println("########################");
 
         /*
-           * convert datatype of the input data in array
-           */
+         * convert datatype of the input data in array
+         */
         Set<Integer> genelist = unionOfInputs.keySet();
         float[] sample1 = new float[unionOfInputs.size()];
         float[] sample2 = new float[unionOfInputs.size()];
@@ -249,8 +249,8 @@ public class ResamplingMethod {
         }
 
         /*
-           * now goto the old process
-           */
+         * now goto the old process
+         */
         float[] median = computeMedians(sample1, sample2, resamplingSize, repeatitions);
 
         float[][] p05_95 = computePercentileLimits(useSecond ? sample2 : sample1, resamplingSize, repeatitions, p_left, p_right);
@@ -361,9 +361,9 @@ public class ResamplingMethod {
         }
 
         /*
-        * added on 14.11.07
-        * if no values in the dataset, also all values are 0, return int[] mit 0;
-        */
+         * added on 14.11.07
+         * if no values in the dataset, also all values are 0, return int[] mit 0;
+         */
         if (sum == 0) return result;
         //
 
@@ -378,8 +378,8 @@ public class ResamplingMethod {
             //
             int bucket = Arrays.binarySearch(commulativeSum, r);
             /*
-                 * ?which positon for negativ Index
-                 */
+             * ?which positon for negativ Index
+             */
             if (bucket < 0) bucket = -bucket - 1;
             //			check count of bucket
             //System.err.println("Gene"+bucket+" is selected");
@@ -565,8 +565,8 @@ public class ResamplingMethod {
 
     }
     /*
-      * end of Part A
-      */
+     * end of Part A
+     */
 
     /**
      * compute the boundaries for the percentile interval
@@ -596,8 +596,8 @@ public class ResamplingMethod {
         assert ((leftPer > 0) && (leftPer <= diff_i.length) && (rightPer > 0) && (rightPer <= diff_i.length) && (leftPer <= rightPer));
 
         /*
-           * result[0]:leftlimit; result[1]:rightlimit; result[2]:middelvalue
-           */
+         * result[0]:leftlimit; result[1]:rightlimit; result[2]:middelvalue
+         */
         float[] result = new float[3];
 
         result[0] = sorted[leftPer - 1];
@@ -698,8 +698,8 @@ public class ResamplingMethod {
         return p5_95;
     }
     /*
-      * end of PartB
-      */
+     * end of PartB
+     */
 
     /**
      * compare the median values with the p5_95 intervals
@@ -769,13 +769,13 @@ public class ResamplingMethod {
         return result;
     }
     /*
-      * end of PartC
-      */
+     * end of PartC
+     */
 
     /*
-      * 20.08.2007 sort , operation direckt on the parameter "re"
-      * (Note: solved on 23.08.07)one problem is that, the indexes with the same absolute values can not be ordert from positve to negative
-      */
+     * 20.08.2007 sort , operation direckt on the parameter "re"
+     * (Note: solved on 23.08.07)one problem is that, the indexes with the same absolute values can not be ordert from positve to negative
+     */
 
     static private void quickSortInScale(Result[] re, int left_index, int right_index) {
         if (left_index > right_index) return;
@@ -899,10 +899,10 @@ public class ResamplingMethod {
 
 
     /*
-      * Input
-      * it has been realised, that *.txt data that contains only a split of int values would be read correctly.
-      * in plan.... read *.txt that contain more splits
-      */
+     * Input
+     * it has been realised, that *.txt data that contains only a split of int values would be read correctly.
+     * in plan.... read *.txt that contain more splits
+     */
 
     public float[] readInput(String fileName) {
         try {
@@ -927,14 +927,14 @@ public class ResamplingMethod {
         }
     }
     /*
-      * end of Input
-      */
+     * end of Input
+     */
 
     /*
-      * Output
-      * it has been realised, the result array in screen to display
-      * it has been realised,  output into a file
-      */
+     * Output
+     * it has been realised, the result array in screen to display
+     * it has been realised,  output into a file
+     */
 
     static public void print(Result[] result) {
         for (Result res : result) {

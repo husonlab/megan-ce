@@ -30,8 +30,8 @@ public class EcologicalIndices {
     static boolean inTest = false;
 
     /*
-    * evaluate range
-    */
+     * evaluate range
+     */
 
     private static Vector<Double> getRange(Vector<Double[]> numbers) {
         Vector<Double> range = new Vector<>();
@@ -51,10 +51,10 @@ public class EcologicalIndices {
     }
 
     /*
-      * transpose vector with Double[] inside
-      * species names excluded,so that type String is not to need
-      * then normalize the values in each column
-      */
+     * transpose vector with Double[] inside
+     * species names excluded,so that type String is not to need
+     * then normalize the values in each column
+     */
 
     public static Vector<Double[]> transpose(Vector<Double[]> numbers, boolean normalized) {
         int row_l = numbers.get(0).length;
@@ -88,9 +88,9 @@ public class EcologicalIndices {
     }
 
     /*
-      * half diagonal table of GowerCoefficient
-      * a Vector<Double[]> means one column of the table
-      */
+     * half diagonal table of GowerCoefficient
+     * a Vector<Double[]> means one column of the table
+     */
 
     private static Vector<Vector<Double[]>> getGowerCoefficient(Vector<Double[]> numbers, Vector<Double> range) {
         Vector<Vector<Double[]>> res = new Vector<>();
@@ -105,8 +105,8 @@ public class EcologicalIndices {
 
                 for (int k = 0; k < len; k++) {
                     /*
-                          * calculate s value
-                          */
+                     * calculate s value
+                     */
                     if (d1[k] == 0.0 && d2[k] == 0.0) s[k] = 0.0;
                     else s[k] = 1.0 - Math.abs(d1[k] - d2[k]) / range.get(k);
                 }
@@ -120,8 +120,8 @@ public class EcologicalIndices {
 
     private static Vector<Vector<Double>> evaluateGowerfromGowerCoeffi(Vector<Vector<Double[]>> gower) {
         /*
-           * calculate S value in form of half diagonal table
-           */
+         * calculate S value in form of half diagonal table
+         */
         Vector<Vector<Double>> res = new Vector<>();
         for (Vector<Double[]> column : gower) {
             /*in column level*/
@@ -145,8 +145,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * evaluate the pair ratio of one vector(one row)
-      */
+     * evaluate the pair ratio of one vector(one row)
+     */
 
     private static Double[] pairRatio(Double[] row) {
         Double[] res = new Double[row.length];
@@ -165,10 +165,10 @@ public class EcologicalIndices {
     }
 
     /*
-      * evaluate pair ratios of one table
-      * in the result:
-      * a array of Double means one row(values for a same spice) in table
-      */
+     * evaluate pair ratios of one table
+     * in the result:
+     * a array of Double means one row(values for a same spice) in table
+     */
 
     private static Vector<Double[]> getPairRatioMatrix(Vector<Double[]> gower) {
         Vector<Double[]> rowindouble = new Vector<>();
@@ -189,8 +189,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate product of each column
-      */
+     * calculate product of each column
+     */
 
     private static Vector<Double> getProductVector(Vector<Double[]> pairRatioMatrix) {
         Vector<Double> res = new Vector<>();
@@ -222,8 +222,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * evaluate site. sym. vector via pairRatio()
-      */
+     * evaluate site. sym. vector via pairRatio()
+     */
 
     private static Vector<Vector<Double>> getSiteSym(Vector<Double> productVector) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -234,12 +234,12 @@ public class EcologicalIndices {
         }
         Double[] pairratio = pairRatio(toArray);
         /*num is the number of data sets
-           * index is the pointer on the array
-           * */
+         * index is the pointer on the array
+         * */
         int num = (int) (1 + Math.sqrt(1 + 8 * productVector.size())) / 2;
         int index = 0;
         /*adding element in 2 dimension vector ,so that the
-           * result looks like half triangle*/
+         * result looks like half triangle*/
         for (int i = 0; i < num - 1; i++) {
             Vector<Double> newRow = new Vector<>();
             for (int j = i + 1; j < num; j++) {
@@ -251,8 +251,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * return inverse of vector
-      */
+     * return inverse of vector
+     */
 
     private static Vector<Vector<Double>> getSiteDist(Vector<Vector<Double>> siteSym) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -268,8 +268,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate Euclid difference
-      */
+     * calculate Euclid difference
+     */
 
     private static Vector<Vector<Double>> getEuclidDiff(Vector<Double[]> numbers) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -306,8 +306,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate Hellinger
-      */
+     * calculate Hellinger
+     */
 
     private static Vector<Vector<Double>> getDistHellinger(Vector<Double[]> numbers) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -335,8 +335,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate Bray Curtis
-      */
+     * calculate Bray Curtis
+     */
 
     private static Vector<Vector<Double>> getDistBrayCurtis(Vector<Double[]> numbers) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -363,8 +363,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate Kulczynski
-      */
+     * calculate Kulczynski
+     */
 
     private static Vector<Vector<Double>> getDistKulczynski(Vector<Double[]> numbers) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -390,8 +390,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * calculate Chi.Square
-      */
+     * calculate Chi.Square
+     */
 
     private static Vector<Vector<Double>> getDistChiSquare(Vector<Double[]> numbers) {
         Vector<Vector<Double>> res = new Vector<>();
@@ -420,8 +420,8 @@ public class EcologicalIndices {
     }
 
     /*
-      * round double values
-      */
+     * round double values
+     */
 
     static public double roundTwoDecimals(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#.###");
@@ -926,18 +926,18 @@ class InputData {
     }
 
     /*
-    * read Input File under
-    * @filePath
-    * return
-    * @numbers
-    */
+     * read Input File under
+     * @filePath
+     * return
+     * @numbers
+     */
 
     public Vector<Double[]> readInputFile(String filePath) throws IOException {
         Vector<Double[]> numbers = new Vector<>();
         BufferedReader r = new BufferedReader(new FileReader(filePath));
         /*
-        * register all values including species names in string array form
-        */
+         * register all values including species names in string array form
+         */
         String aline = r.readLine();
         if (aline.startsWith("Species,"))
             fileNameList = aline.split(",");
@@ -949,8 +949,8 @@ class InputData {
         while ((aline != null) && (aline.length() > 0)) {
             if (!aline.startsWith("#")) {
                 /*
-                * lines starting with # means commentary
-                */
+                 * lines starting with # means commentary
+                 */
                 String[] s = aline.split(",");
                 Double[] values = new Double[s.length];
                 for (int i = 1; i < s.length; i++)  // skip first entry, which is a label

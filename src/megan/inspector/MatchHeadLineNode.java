@@ -48,7 +48,7 @@ public class MatchHeadLineNode extends NodeBase {
         this.ignore = ignore;
         this.isUsed = isUsed;
         this.uId = uId;
-        this.taxId=taxId;
+        this.taxId = taxId;
         this.matchText = matchText;
     }
 

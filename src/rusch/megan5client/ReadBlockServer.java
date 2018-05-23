@@ -29,125 +29,125 @@ import java.util.List;
  * Just an adapter for the MEGAN {@link IReadBlock}
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:07:32 PM - Oct 27, 2014
+ * 3:07:32 PM - Oct 27, 2014
  */
 public class ReadBlockServer {
-	private long readUid;
-	private String readHeader;
-	private String readSequence;
-	private int readWeight;
-	private long mateReadUId;
-	private byte mateType;
-	private int readLength;
-	private float complexity;
-	private int numberOfMatches;
+    private long readUid;
+    private String readHeader;
+    private String readSequence;
+    private int readWeight;
+    private long mateReadUId;
+    private byte mateType;
+    private int readLength;
+    private float complexity;
+    private int numberOfMatches;
 
-	private MatchBlockServer[] matchBlocks = new MatchBlockServer[0];
-
-
-	public ReadBlockServer() {
-
-	}
-
-	public ReadBlockServer(IReadBlock block, String[] classnames) {
-		this.readUid = block.getUId();
-		this.readHeader = block.getReadHeader();
-		this.readSequence = block.getReadSequence();
-		this.readWeight = block.getReadWeight();
-		this.mateReadUId = block.getMateUId();
-		this.mateType = block.getMateType();
-		this.readLength = block.getReadLength();
-		this.complexity = block.getComplexity();
-		this.numberOfMatches = block.getNumberOfMatches();
-		List<MatchBlockServer> mbs = new ArrayList<>();
-		if(block.getMatchBlocks() != null){
-			for (IMatchBlock mb : block.getMatchBlocks()) {
-				mbs.add(new MatchBlockServer(mb, classnames));
-			}
-		}
-		this.matchBlocks = mbs.toArray(new MatchBlockServer[mbs.size()]);
-	}
+    private MatchBlockServer[] matchBlocks = new MatchBlockServer[0];
 
 
-	public long getReadUid() {
-		return readUid;
-	}
+    public ReadBlockServer() {
 
-	public void setReadUid(long uid) {
-		this.readUid = uid;
-	}
+    }
 
-	public String getReadHeader() {
-		return readHeader;
-	}
+    public ReadBlockServer(IReadBlock block, String[] classnames) {
+        this.readUid = block.getUId();
+        this.readHeader = block.getReadHeader();
+        this.readSequence = block.getReadSequence();
+        this.readWeight = block.getReadWeight();
+        this.mateReadUId = block.getMateUId();
+        this.mateType = block.getMateType();
+        this.readLength = block.getReadLength();
+        this.complexity = block.getComplexity();
+        this.numberOfMatches = block.getNumberOfMatches();
+        List<MatchBlockServer> mbs = new ArrayList<>();
+        if (block.getMatchBlocks() != null) {
+            for (IMatchBlock mb : block.getMatchBlocks()) {
+                mbs.add(new MatchBlockServer(mb, classnames));
+            }
+        }
+        this.matchBlocks = mbs.toArray(new MatchBlockServer[mbs.size()]);
+    }
 
-	public void setReadHeader(String readHeader) {
-		this.readHeader = readHeader;
-	}
 
-	public String getReadSequence() {
-		return readSequence;
-	}
+    public long getReadUid() {
+        return readUid;
+    }
 
-	public void setReadSequence(String readSequence) {
-		this.readSequence = readSequence;
-	}
+    public void setReadUid(long uid) {
+        this.readUid = uid;
+    }
 
-	public int getReadWeight() {
-		return readWeight;
-	}
+    public String getReadHeader() {
+        return readHeader;
+    }
 
-	public void setReadWeight(int readWeight) {
-		this.readWeight = readWeight;
-	}
+    public void setReadHeader(String readHeader) {
+        this.readHeader = readHeader;
+    }
 
-	public long getMateReadUId() {
-		return mateReadUId;
-	}
+    public String getReadSequence() {
+        return readSequence;
+    }
 
-	public void setMateReadUId(long mateReadUId) {
-		this.mateReadUId = mateReadUId;
-	}
+    public void setReadSequence(String readSequence) {
+        this.readSequence = readSequence;
+    }
 
-	public byte getMateType() {
-		return mateType;
-	}
+    public int getReadWeight() {
+        return readWeight;
+    }
 
-	public void setMateType(byte mateType) {
-		this.mateType = mateType;
-	}
+    public void setReadWeight(int readWeight) {
+        this.readWeight = readWeight;
+    }
 
-	public int getReadLength() {
-		return readLength;
-	}
+    public long getMateReadUId() {
+        return mateReadUId;
+    }
 
-	public void setReadLength(int readLength) {
-		this.readLength = readLength;
-	}
+    public void setMateReadUId(long mateReadUId) {
+        this.mateReadUId = mateReadUId;
+    }
 
-	public float getComplexity() {
-		return complexity;
-	}
+    public byte getMateType() {
+        return mateType;
+    }
 
-	public void setComplexity(float complexity) {
-		this.complexity = complexity;
-	}
+    public void setMateType(byte mateType) {
+        this.mateType = mateType;
+    }
 
-	public int getNumberOfMatches() {
-		return numberOfMatches;
-	}
+    public int getReadLength() {
+        return readLength;
+    }
 
-	public void setNumberOfMatches(int numberOfMatches) {
-		this.numberOfMatches = numberOfMatches;
-	}
+    public void setReadLength(int readLength) {
+        this.readLength = readLength;
+    }
 
-	public MatchBlockServer[] getMatchBlocks() {
-		return matchBlocks;
-	}
+    public float getComplexity() {
+        return complexity;
+    }
 
-	public void setMatchBlocks(MatchBlockServer[] matchBlocks) {
-		this.matchBlocks = matchBlocks;
-	}
+    public void setComplexity(float complexity) {
+        this.complexity = complexity;
+    }
+
+    public int getNumberOfMatches() {
+        return numberOfMatches;
+    }
+
+    public void setNumberOfMatches(int numberOfMatches) {
+        this.numberOfMatches = numberOfMatches;
+    }
+
+    public MatchBlockServer[] getMatchBlocks() {
+        return matchBlocks;
+    }
+
+    public void setMatchBlocks(MatchBlockServer[] matchBlocks) {
+        this.matchBlocks = matchBlocks;
+    }
 
 
 }

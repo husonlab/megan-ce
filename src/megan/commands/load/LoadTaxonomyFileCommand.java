@@ -22,7 +22,10 @@ import jloda.graph.Node;
 import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.ProjectManager;
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.ProgramProperties;
+import jloda.util.ResourceManager;
+import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -35,8 +38,6 @@ import megan.viewer.TaxonomyData;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * load command
@@ -109,16 +110,6 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
             classification.getFullTree().addId2Node(0, null);
             classification.getFullTree().addId2Node(1, v);
             classification.getIdMapper().getName2IdMap().put("Root", 1);
-        }
-
-        final Collection<Pair<String, String>> mappingFixes = ProgramProperties.get(MeganProperties.TAXON_MAPPING_CHANGES, new LinkedList<Pair<String, String>>());
-        for (Pair<String, String> pair : mappingFixes) {
-            String taxonName = pair.getFirst();
-            int taxId = Integer.parseInt(pair.getSecond());
-            System.err.println("Changing taxon mapping of '" + taxonName + "' from " + TaxonomyData.getName2IdMap().get(taxonName) + " to " + taxId);
-            TaxonomyData.getName2IdMap().put(taxonName, taxId);
-            classification.getIdMapper().getName2IdMap().put(taxonName, taxId);
-            classification.getId2Rank().put(taxId, 0);
         }
 
         ProgramProperties.put(MeganProperties.TAXONOMYFILE, treeFile);

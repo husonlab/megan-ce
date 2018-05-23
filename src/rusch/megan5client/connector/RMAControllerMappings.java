@@ -28,10 +28,10 @@ import java.util.Map;
  * Mapping Classes for Megan5Server
  *
  * @author Hans-Joachim Ruscheweyh
- *         3:03:13 PM - Oct 27, 2014
- *         <p/>
- *         <p/>
- *         Mapping file for all Connector requests
+ * 3:03:13 PM - Oct 27, 2014
+ * <p/>
+ * <p/>
+ * Mapping file for all Connector requests
  */
 public class RMAControllerMappings {
     //ADMIN

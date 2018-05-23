@@ -26,7 +26,7 @@ import java.util.Map;
  * Translates Metadata to a user friendly format
  *
  * @author Hans-Joachim Ruscheweyh
- *         2:17:16 PM - Dec 23, 2014
+ * 2:17:16 PM - Dec 23, 2014
  */
 public class Metadata {
 

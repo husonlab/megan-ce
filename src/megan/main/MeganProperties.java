@@ -44,8 +44,6 @@ public class MeganProperties {
     public static final String MICROBIALATTRIBUTESFILE = "MicrobialAttributesFiles";
     public static final String MAPPINGFILE = "MappingFile";
 
-    public static final String TAXON_MAPPING_CHANGES = "TaxonMappingChanges";
-
     public static final String TAXONOMY_SYNONYMS_FILE = "TaxonomySynonymsMapFile";
 
     public static final String PARSE_TAXON_NAMES = "UseParseTextTaxonomy";

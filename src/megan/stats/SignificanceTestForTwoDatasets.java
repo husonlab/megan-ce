@@ -91,12 +91,12 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-    * calculate chi square and p value for two dataset
-    * @param valuesD1        counts for first dataset in all child nodes
-    * @param valuesD2        counts for second dataset in all child nodes
-    * @return res: res[0]: chi square value; res[1]: p value
-    *         !Attention: if (valuesD1.length != valuesD2.length) res=[NaN,NaN]
-    */
+     * calculate chi square and p value for two dataset
+     * @param valuesD1        counts for first dataset in all child nodes
+     * @param valuesD2        counts for second dataset in all child nodes
+     * @return res: res[0]: chi square value; res[1]: p value
+     *         !Attention: if (valuesD1.length != valuesD2.length) res=[NaN,NaN]
+     */
 
     static public double[] runLowerBranchesTest(double[] valuesD1, double[] valuesD2) {
         SignificanceTestForTwoDatasets test = new SignificanceTestForTwoDatasets();
@@ -192,8 +192,8 @@ public class SignificanceTestForTwoDatasets {
      */
 
     /*
-      * get, set significance
-      */
+     * get, set significance
+     */
     public double getSignificance() {
         return significance;
     }
@@ -203,8 +203,8 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-      * read all values of input files into the attribute Vector<Vetor<Integer>> of this class
-      */
+     * read all values of input files into the attribute Vector<Vetor<Integer>> of this class
+     */
 
     public Vector<Vector<Double>> addSubfiles(LinkedList<String> filelist) throws IOException {
         String aLine;
@@ -246,9 +246,9 @@ public class SignificanceTestForTwoDatasets {
         }
 
         /*
-           * converte Vetor<long[]> to Vetor<Vecotr<Long>>
-           * so kann the result be in calss datafield "dataset" saved
-           */
+         * converte Vetor<long[]> to Vetor<Vecotr<Long>>
+         * so kann the result be in calss datafield "dataset" saved
+         */
         Vector<Vector<Double>> result = new Vector<>();
         for (double[] it : output) {
             Vector<Double> tmp = new Vector<>();
@@ -261,16 +261,16 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-      * add dataset into class atrribute "dataset"
-      */
+     * add dataset into class atrribute "dataset"
+     */
 
     public void addLastDataset(Vector<Double> data) {
         dataset.add(data);
     }
 
     /*
-      * erase content in "dataset"
-      */
+     * erase content in "dataset"
+     */
 
     public void clearDataset() {
         dataset.clear();
@@ -317,9 +317,9 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-    * die folgenden zwei Methoden geben erneut array zurueck, nicht einheitlich zu obigen Methoden.
-    * diese Umsetzung entstand aus nicht sorgfaeltigem Design
-    */
+     * die folgenden zwei Methoden geben erneut array zurueck, nicht einheitlich zu obigen Methoden.
+     * diese Umsetzung entstand aus nicht sorgfaeltigem Design
+     */
 
     protected double[][] getE_table() {
         double total = 0.0d;
@@ -352,8 +352,8 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-    * calculate Chi Square value of bigger array
-    */
+     * calculate Chi Square value of bigger array
+     */
 
     public double getChi_SquareValue() {
         double result = 0.0d;
@@ -370,8 +370,8 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-    * calculate p value for QA and QB with the class from colt.jar Copyright 1999 CERN - European Organization for Nuclear Research
-    */
+     * calculate p value for QA and QB with the class from colt.jar Copyright 1999 CERN - European Organization for Nuclear Research
+     */
 
     public double getPValueForChi_Squrare() {
         return Probability.chiSquareComplemented(getD_FValue(), getChi_SquareValue());
@@ -382,8 +382,8 @@ public class SignificanceTestForTwoDatasets {
     }
 
     /*
-    * Frage nach Akzeptibalitaet
-    */
+     * Frage nach Akzeptibalitaet
+     */
 
     public boolean isAcceptableForQA() {
         return getPValueForProportionTest() >= significance;

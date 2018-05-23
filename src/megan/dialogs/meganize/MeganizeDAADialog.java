@@ -108,6 +108,8 @@ public class MeganizeDAADialog extends ImportBlastDialog {
 
             buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
 
+            buf.append(" longReads=").append(isLongReads());
+
             buf.append(" paired=").append(isUsePairedReads());
 
             if (isUsePairedReads()) {

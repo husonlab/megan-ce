@@ -57,7 +57,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>]  [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
-                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [paired={false|true} [pairSuffixLength={number}]]\n" +
+                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t" + ProgramProperties.getIfEnabled("enable-contaminants", "[contaminantsFile=<filename>] ") + "[description=<text>];";
     }
 
@@ -183,6 +183,13 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             }
         }
 
+        final boolean longReads;
+        if (np.peekMatchIgnoreCase("longReads")) {
+            np.matchIgnoreCase("longReads=");
+            longReads = np.getBoolean();
+        } else
+            longReads = false;
+
         boolean pairedReads = false;
         int pairSuffixLength = 0;
         if (np.peekMatchIgnoreCase("paired")) {
@@ -227,14 +234,17 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 }
 
                 Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, doc.isLongReads(),
+                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads,
                         minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);
+
                 // todo: save the description
 
                 {
                     final Document tmpDoc = new Document();
                     tmpDoc.getMeganFile().setFileFromExistingFile(daaFile, false);
                     tmpDoc.loadMeganFile();
+                    ProgramProperties.put(MeganProperties.DEFAULT_PROPERTIES, tmpDoc.getParameterString());
+
                     if (description != null && description.length() > 0) {
                         description = description.replaceAll("^ +| +$|( )+", "$1"); // replace all white spaces by a single space
                         final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(tmpDoc.getMeganFile().getFileName()), "");

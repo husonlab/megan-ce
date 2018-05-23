@@ -69,7 +69,7 @@ public class SetLongReadsCommand extends CommandBase implements ICheckBoxCommand
     }
 
     public String getDescription() {
-        return "This is an EXPERIMENTAL feature under development.\nUse when input consists of long reads (more than 500bp) or contigs.\nThis effects how alignments are parsed and how binning is performed.";
+        return "Parse and bin long reads and contigs using MEGAN-LR features";
     }
 
     public ImageIcon getIcon() {

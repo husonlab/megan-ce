@@ -180,7 +180,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         // set opposite then call command to toggle; this is to setup LCA for long reads
         if (doc.isLongReads()) {
             setLongReads(!doc.isLongReads());
-            dir.executeImmediately(SetLongReadsCommand.NAME, commandManager);
+            commandManager.getCommand(SetLongReadsCommand.NAME).actionPerformed(null);
         } else
             setLongReads(false);
 
@@ -327,7 +327,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     }
 
     public void setMinSupport(int value) {
-        minSupportField.setText("" + Math.max(1, value));
+        minSupportField.setText("" + Math.max(0, value));
     }
 
     public float getMinSupportPercent() {

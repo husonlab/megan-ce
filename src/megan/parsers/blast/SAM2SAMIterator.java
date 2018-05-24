@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.parsers.sam.SAMMatch;
 import megan.util.SAMFileFilter;
 import megan.util.interval.Interval;
@@ -56,8 +57,7 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
         this.blastMode = blastMode;
         samMatch = new SAMMatch(blastMode);
         if (!SAMFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a SAM file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a SAM file: " + fileName);
         }
 
         // skip header lines

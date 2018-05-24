@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.RDPStandaloneFileFilter;
 
 import java.io.IOException;
@@ -43,8 +44,7 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
     public RDPStandalone2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RDPStandaloneFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("Not a standalone RDP file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a 'RDP standalone' file: " + fileName);
         }
     }
 

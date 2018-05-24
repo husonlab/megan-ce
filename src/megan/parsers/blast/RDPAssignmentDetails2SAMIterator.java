@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.RDPAssignmentDetailsFileFilter;
 
 import java.io.IOException;
@@ -43,8 +44,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
     public RDPAssignmentDetails2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RDPAssignmentDetailsFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("Not a RDP assignment details file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a 'RDP assignment details' file: " + fileName);
         }
         // skip all header lines:
         while (hasNextLine()) {

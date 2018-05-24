@@ -64,9 +64,9 @@ public class RDPStandaloneFileFilter extends FileFilterBase implements FilenameF
         if (!super.accept(directory, fileName))
             return false;
         final String firstLine = Basic.getFirstLineFromFile(new File(fileName));
-        if (firstLine != null) { // need to have at least 4 tokens and the 4-th must be a float <=1
+        if (firstLine != null) { // need to have at least 5 tokens and the 5-th must be a float <=1
             final String[] tokens = firstLine.split("\t");
-            return tokens.length >= 4 && Basic.isFloat(tokens[3]) && Basic.parseFloat(tokens[3]) <= 1.0;
+            return tokens.length >= 5 && Basic.isFloat(tokens[4]) && Basic.parseFloat(tokens[4]) <= 1f;
         }
         return false;
     }

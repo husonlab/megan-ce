@@ -56,8 +56,7 @@ public class BlastXML2SAMIterator implements ISAMIterator {
      */
     public BlastXML2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         if (!BlastXMLFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a BLAST file in XML format: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a BLAST file in XML format: " + fileName);
         }
 
         queue = new ArrayBlockingQueue<>(10000);

@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.FastaFileFilter;
+import megan.fx.NotificationsInSwing;
 
 import java.io.IOException;
 
@@ -40,8 +41,7 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     public Fasta2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!FastaFileFilter.accept(fileName, true)) {
-            close();
-            throw new IOException("Not a FastA file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be FastA format: " + fileName);
         }
     }
 

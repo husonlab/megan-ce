@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.IlluminaReporterFileFilter;
 
 import java.io.IOException;
@@ -50,8 +51,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
     public IlluminaReporter2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!IlluminaReporterFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("Not a Illumina Reporter file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be in Illumina reporter format: " + fileName);
         }
     }
 

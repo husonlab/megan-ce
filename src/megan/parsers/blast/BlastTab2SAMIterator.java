@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
@@ -49,8 +50,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         setSkipCommentLines(true);
         final String line = Basic.getFirstLineFromFile(new File(fileName), "#", 1000);
         if (line != null && line.split("\t").length < 12) {
-            close();
-            throw new IOException("File not a BLAST file in tabular format: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a BLAST file in TAB format: " + fileName);
         }
     }
 

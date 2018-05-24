@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.LastMAFFileFilter;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
@@ -55,8 +56,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
         super(fileName, maxNumberOfMatchesPerRead);
         this.blastMode = blastMode;
         if (!LastMAFFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a LAST file in MAF format: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a LAST file in MAF format: " + fileName);
         }
 
         while (hasNextLine()) {

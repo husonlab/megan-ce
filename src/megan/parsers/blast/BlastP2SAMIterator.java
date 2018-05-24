@@ -18,6 +18,7 @@
  */
 package megan.parsers.blast;
 
+import megan.fx.NotificationsInSwing;
 import megan.util.BlastPTextFileFilter;
 
 import java.io.IOException;
@@ -38,8 +39,7 @@ public class BlastP2SAMIterator extends BlastX2SAMIterator implements ISAMIterat
     public BlastP2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead, true);
         if (!BlastPTextFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a BLASTP file in text format: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a BLASTP file in TEXT format: " + fileName);
         }
     }
 }

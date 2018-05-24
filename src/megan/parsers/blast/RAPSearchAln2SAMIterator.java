@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.RAPSearch2AlnFileFilter;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
@@ -49,8 +50,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
     public RAPSearchAln2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RAPSearch2AlnFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a RAPSearch2 .aln file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a RapSearch2 .aln file: " + fileName);
         }
     }
 

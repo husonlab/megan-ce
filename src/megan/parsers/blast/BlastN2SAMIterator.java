@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.BlastNTextFileFilter;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
@@ -63,8 +64,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     public BlastN2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!BlastNTextFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("File not a BLASTN file in text format: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a BLASTN file in TEXT format: " + fileName);
         }
     }
 

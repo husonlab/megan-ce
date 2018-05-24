@@ -59,7 +59,7 @@ public class Biom2Importer {
             final TopLevelAttributes topLevelAttributes = new TopLevelAttributes(reader);
             System.err.println(topLevelAttributes.toString());
 
-            if (topLevelAttributes.getShape().length > 0 && topLevelAttributes.getShape()[0] > 10000)
+            if (topLevelAttributes.getShape().length > 0 && topLevelAttributes.getShape()[0] > 200000)
                 throw new IOException("Too many rows,shape=" + Basic.toString(topLevelAttributes.getShape(), ", "));
 
             final String[] sampleIds = reader.readStringArray("/sample/ids"); // dataset of the sample IDs

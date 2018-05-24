@@ -20,6 +20,7 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import megan.fx.NotificationsInSwing;
 import megan.util.MothurFileFilter;
 
 import java.io.IOException;
@@ -43,8 +44,7 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     public Mothur2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!MothurFileFilter.getInstance().accept(fileName)) {
-            close();
-            throw new IOException("Not a Mothur analysis file: " + fileName);
+            NotificationsInSwing.showWarning("Might not be a MOTHUR analysis file: " + fileName);
         }
     }
 

@@ -76,8 +76,13 @@ public abstract class BaseFileGetterPutter {
             case CREATE_READ_WRITE_IN_MEMORY:
             case CREATE_READ_WRITE: {
                 // create the file and ensure that it has the given size
-                RandomAccessFile raf = new RandomAccessFile(file, "rw");
-                raf.setLength(fileLength);
+                final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                try {
+                    raf.setLength(fileLength);
+                } catch (IOException ex) {
+                    System.err.println("Attempted file size: " + fileLength);
+                    throw ex;
+                }
                 raf.close();
                 // fall through to READ_WRITE case....
             }

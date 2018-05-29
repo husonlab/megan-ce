@@ -19,8 +19,10 @@
 package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
-import megan.viewer.ClassificationViewer;
+import megan.viewer.MainViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
@@ -36,22 +38,21 @@ public class UniFrac {
     public static final String WeightedTaxonomicUniFrac = "WeightedTaxonomicUniFrac";
 
     /**
-     * apply the named computation to the taxonomy
+     * apply the chosen UniFrac method method to the taxonomy
      *
      * @param viewer
      * @param method
      * @param threshold
      * @param distances
      * @return number of nodes used to compute value
-     * @throws IOException
      */
-    public static int apply(final ClassificationViewer viewer, String method, final int threshold, final Distances distances) throws IOException {
+    public static int apply(final MainViewer viewer, String method, final int threshold, final Distances distances) throws CanceledException {
         System.err.println("Computing " + method + " distances");
 
         if (method.equalsIgnoreCase(UnweightedTaxonomicUniFrac))
-            return applyUnweighted(viewer, threshold, distances);
+            return applyUnweightedUniformUniFrac(viewer, threshold, distances);
         else
-            return applyWeighted(viewer, distances);
+            return applyWeightedUniformUniFrac(viewer, distances);
     }
 
     /**
@@ -59,16 +60,20 @@ public class UniFrac {
      *
      * @param viewer
      * @param threshold
-     * @param distances
+     * @param distances for each pair of samples i and j, the proportion of nodes in which either sample i or j has a none-zero count, but not both
      * @return number of nodes used to compute value
-     * @throws IOException
      */
-    public static int applyUnweighted(final ClassificationViewer viewer, final int threshold, final Distances distances) throws IOException {
+    public static int applyUnweightedUniformUniFrac(final MainViewer viewer, final int threshold, final Distances distances) throws CanceledException {
         final int nTax = distances.getNtax();
 
         int countNodes = 0;
 
-        int[][] sum = new int[nTax][nTax];
+        int[][] diff = new int[nTax][nTax];
+
+        final ProgressListener progress = viewer.getDocument().getProgressListener();
+        progress.setSubtask("Unweighted uniform UniFrac");
+        progress.setProgress(0);
+        progress.setMaximum(viewer.getTree().getNumberOfNodes());
 
         for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
             final int taxonId = (Integer) v.getInfo();
@@ -79,14 +84,15 @@ public class UniFrac {
                 for (int s = 0; s < nTax; s++) {
                     for (int t = s + 1; t < nTax; t++) {
                         if ((counts[s] >= threshold) != (counts[t] >= threshold))
-                            sum[s][t]++;
+                            diff[s][t]++;
                     }
                 }
             }
+            progress.incrementProgress();
         }
         for (int s = 0; s < nTax; s++) {
             for (int t = s + 1; t < nTax; t++) {
-                distances.set(s + 1, t + 1, (countNodes > 0 ? (double) sum[s][t] / (double) countNodes : 0));
+                distances.set(s + 1, t + 1, (countNodes > 0 ? (double) diff[s][t] / (double) countNodes : 0));
             }
         }
 
@@ -97,16 +103,22 @@ public class UniFrac {
      * apply the named computation to the taxonomy
      *
      * @param viewer
-     * @param distances
+     * @param distances for each pair of samples i and j, the sum of absolute differences on each node, divided by the total counts for both samples
      * @return number of nodes used to compute value
      * @throws IOException
      */
-    public static int applyWeighted(final ClassificationViewer viewer, final Distances distances) throws IOException {
+    public static int applyWeightedUniformUniFrac(final MainViewer viewer, final Distances distances) throws CanceledException {
         final int nTax = distances.getNtax();
 
         int countNodes = 0;
         double[][] diff = new double[nTax][nTax];
         double[][] sum = new double[nTax][nTax];
+
+        final ProgressListener progress = viewer.getDocument().getProgressListener();
+        progress.setSubtask("Unweighted uniform UniFrac");
+        progress.setProgress(0);
+        progress.setMaximum(viewer.getTree().getNumberOfNodes());
+
 
         for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
             final int taxonId = (Integer) v.getInfo();
@@ -121,6 +133,7 @@ public class UniFrac {
                     }
                 }
             }
+            progress.incrementProgress();
         }
         for (int s = 0; s < nTax; s++) {
             for (int t = s + 1; t < nTax; t++) {

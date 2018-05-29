@@ -36,12 +36,8 @@ public abstract class EcologicalIndexCommand extends CommandBase {
     private final String[] methods;
 
     public EcologicalIndexCommand() {
-        if (ProgramProperties.get("enable-unifrac", false))
             methods = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
                     "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", UniFrac.UnweightedTaxonomicUniFrac, UniFrac.WeightedTaxonomicUniFrac, PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
-        else
-            methods = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
-                    "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
     }
 
     /**

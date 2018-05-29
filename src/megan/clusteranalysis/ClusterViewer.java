@@ -508,9 +508,9 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         distances = new Distances(taxa.size());
 
         if (ecologicalIndex.equalsIgnoreCase(UniFrac.UnweightedTaxonomicUniFrac))
-            numberOfNodesUsed = UniFrac.apply(getParentViewer(), UniFrac.UnweightedTaxonomicUniFrac, 1, distances);
+            numberOfNodesUsed = UniFrac.apply((MainViewer) getParentViewer(), UniFrac.UnweightedTaxonomicUniFrac, 1, distances);
         else if (ecologicalIndex.equalsIgnoreCase(UniFrac.WeightedTaxonomicUniFrac))
-            numberOfNodesUsed = UniFrac.apply(getParentViewer(), UniFrac.WeightedTaxonomicUniFrac, 1, distances);
+            numberOfNodesUsed = UniFrac.apply((MainViewer) getParentViewer(), UniFrac.WeightedTaxonomicUniFrac, 1, distances);
         else if (ecologicalIndex.equalsIgnoreCase(JensenShannonDivergence.SqrtJensenShannonDivergence))
             numberOfNodesUsed = JensenShannonDivergence.apply(getParentViewer(), JensenShannonDivergence.SqrtJensenShannonDivergence, distances);
         else if (ecologicalIndex.equalsIgnoreCase(PearsonDistance.PEARSON_DISTANCE))

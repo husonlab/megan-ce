@@ -53,7 +53,7 @@ public abstract class EcologicalIndexCommand extends CommandBase {
 
         ClusterViewer viewer = getViewer();
         viewer.setEcologicalIndex(method);
-        execute("sync;");
+        executeImmediately("sync;");
     }
 
     /**

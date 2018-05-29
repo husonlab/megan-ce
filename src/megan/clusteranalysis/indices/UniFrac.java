@@ -18,7 +18,10 @@
  */
 package megan.clusteranalysis.indices;
 
+import jloda.graph.Edge;
 import jloda.graph.Node;
+import jloda.graph.NodeSet;
+import jloda.phylo.PhyloTree;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
@@ -49,10 +52,14 @@ public class UniFrac {
     public static int apply(final MainViewer viewer, String method, final int threshold, final Distances distances) throws CanceledException {
         System.err.println("Computing " + method + " distances");
 
+        final int nodesUsed;
         if (method.equalsIgnoreCase(UnweightedTaxonomicUniFrac))
-            return applyUnweightedUniformUniFrac(viewer, threshold, distances);
+            nodesUsed = applyUnweightedUniformUniFrac(viewer, threshold, distances);
         else
-            return applyWeightedUniformUniFrac(viewer, distances);
+            nodesUsed = applyWeightedUniformUniFrac(viewer, distances);
+
+        System.err.println("Nodes used: " + nodesUsed + " (all selected nodes and their ancestors)");
+        return nodesUsed;
     }
 
     /**
@@ -70,12 +77,14 @@ public class UniFrac {
 
         int[][] diff = new int[nTax][nTax];
 
+        final NodeSet allAbove = getSelectedOrAbove(viewer.getTree(), viewer.getSelectedNodes());
+
         final ProgressListener progress = viewer.getDocument().getProgressListener();
         progress.setSubtask("Unweighted uniform UniFrac");
         progress.setProgress(0);
-        progress.setMaximum(viewer.getTree().getNumberOfNodes());
+        progress.setMaximum(allAbove.size());
 
-        for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
+        for (Node v : allAbove) {
             final int taxonId = (Integer) v.getInfo();
             if (taxonId > 0 && v.getOutDegree() != 1 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
@@ -99,6 +108,7 @@ public class UniFrac {
         return countNodes;
     }
 
+
     /**
      * apply the named computation to the taxonomy
      *
@@ -114,13 +124,15 @@ public class UniFrac {
         double[][] diff = new double[nTax][nTax];
         double[][] sum = new double[nTax][nTax];
 
+        final NodeSet allAbove = getSelectedOrAbove(viewer.getTree(), viewer.getSelectedNodes());
+
+
         final ProgressListener progress = viewer.getDocument().getProgressListener();
         progress.setSubtask("Unweighted uniform UniFrac");
         progress.setProgress(0);
-        progress.setMaximum(viewer.getTree().getNumberOfNodes());
+        progress.setMaximum(allAbove.size());
 
-
-        for (Node v = viewer.getTree().getFirstNode(); v != null; v = v.getNext()) {
+        for (Node v : allAbove) {
             final int taxonId = (Integer) v.getInfo();
             if (taxonId > 0 && v.getOutDegree() != 1 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
@@ -142,5 +154,42 @@ public class UniFrac {
         }
 
         return countNodes;
+    }
+
+    /**
+     * get all nodes that are selected or an ancestor of a selected node
+     *
+     * @param tree
+     * @param selectedNodes
+     * @return selected and above
+     */
+    private static NodeSet getSelectedOrAbove(PhyloTree tree, NodeSet selectedNodes) {
+        final NodeSet set = new NodeSet(tree);
+        set.addAll(selectedNodes);
+        getSelectedOrAboveRec(tree.getRoot(), set);
+        return set;
+    }
+
+    /**
+     * recursively does the work
+     *
+     * @param v
+     * @param set
+     * @return true, if anything below is selected
+     */
+    private static boolean getSelectedOrAboveRec(Node v, NodeSet set) {
+        if (v.getOutDegree() == 0) {
+            return set.contains(v);
+        } else {
+            boolean selectedBelow = false;
+            for (Edge e : v.outEdges()) {
+                final Node w = e.getTarget();
+                if (getSelectedOrAboveRec(w, set))
+                    selectedBelow = true;
+            }
+            if (selectedBelow)
+                set.add(v);
+            return selectedBelow;
+        }
     }
 }

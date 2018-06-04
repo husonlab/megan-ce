@@ -58,7 +58,7 @@ public class UnweightedTaxonomicUniFracCommand extends CommandBase implements IC
      */
     public String getDescription() {
         return "Use the unweighted uniform UniFrac metric.\n" +
-                "For any two samples, this is the proportion of taxonomic nodes on which exactly one node has a zero count.";
+                "For any two samples, this is the proportion of ranked taxonomic nodes on which exactly one sample has a zero count.";
     }
 
     /**

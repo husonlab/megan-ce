@@ -58,7 +58,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
      */
     public String getDescription() {
         return "Use the weighted uniform UniFrac metric.\n" +
-                "For any two samples, this is the sum of absolute differences over all nodes, divided by the total count for both samples.";
+                "For any two samples, this is the sum of absolute differences of summarized counts over all ranked nodes, normalized";
     }
 
     /**

@@ -18,9 +18,7 @@
  */
 package megan.clusteranalysis.indices;
 
-import jloda.graph.Edge;
-import jloda.graph.Node;
-import jloda.graph.NodeSet;
+import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
@@ -77,9 +75,15 @@ public class UniFrac {
 
         int countNodesUsed = 0;
 
-        int[][] diff = new int[nTax][nTax];
+        final PhyloTree tree = viewer.getTree();
 
-        final NodeSet inducedNodes = getSelectedOrAbove(viewer.getTree(), viewer.getSelectedNodes());
+        final NodeSet inducedNodes = new NodeSet(tree);
+        inducedNodes.addAll(viewer.getSelectedNodes());
+        final NodeArray<float[]> summarized = new NodeArray<>(tree);
+
+        computeSummarizedCountsOnInducedTreeRec(tree.getRoot(), inducedNodes, viewer, summarized, nTax);
+
+        int[][] diff = new int[nTax][nTax];
 
         final ProgressListener progress = viewer.getDocument().getProgressListener();
         progress.setSubtask("Unweighted uniform UniFrac");
@@ -91,7 +95,7 @@ public class UniFrac {
             if (taxonId > 0 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodesUsed++;
-                final float[] counts = viewer.getNodeData(v).getSummarized();
+                final float[] counts = summarized.get(v);
 
                 for (int s = 0; s < nTax; s++) {
                     for (int t = s + 1; t < nTax; t++) {
@@ -127,23 +131,32 @@ public class UniFrac {
 
         int countNodesUsed = 0;
 
-        final NodeSet inducedNodes = getSelectedOrAbove(viewer.getTree(), viewer.getSelectedNodes());
+        final PhyloTree tree = viewer.getTree();
+
+        final NodeSet inducedNodes = new NodeSet(tree);
+        inducedNodes.addAll(viewer.getSelectedNodes());
+        final NodeArray<float[]> summarized = new NodeArray<>(tree);
+
+        computeSummarizedCountsOnInducedTreeRec(tree.getRoot(), inducedNodes, viewer, summarized, nTax);
 
         final ProgressListener progress = viewer.getDocument().getProgressListener();
         progress.setSubtask("Weighted uniform UniFrac");
         progress.setProgress(0);
         progress.setMaximum(2 * inducedNodes.size());
 
-        final Node root = viewer.getTree().getRoot();
-
-        // setup total number of assigned for each sample:
+        // setup total number of reads in each sample summarized below the root
         final double[] total = new double[nTax];
         {
-            final float[] summarizedAtRoot = viewer.getNodeData(root).getSummarized();
-            final float[] assignedAtRoot = viewer.getNodeData(root).getAssigned();
-            for (int s = 0; s < nTax; s++)
-                total[s] = summarizedAtRoot[s] - assignedAtRoot[s];
+            for (Edge e : tree.getRoot().outEdges()) {
+                final Node w = e.getTarget();
+                if (inducedNodes.contains(w)) {
+                    for (int s = 0; s < nTax; s++)
+                        total[s] += summarized.get(w)[s];
+                }
+            }
         }
+
+        inducedNodes.remove(tree.getRoot()); // don't consider the root!
 
         final double[][] diff = new double[nTax][nTax]; // difference between two samples
         final double[][] sum = new double[nTax][nTax]; // largest possible difference between two samples
@@ -153,13 +166,12 @@ public class UniFrac {
             if (taxonId > 0 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodesUsed++;
-                final float[] counts = viewer.getNodeData(v).getSummarized(); // total number of reads that "descend" from node v
+                final float[] counts = summarized.get(v); // total number of reads that "descend" from node v
                 for (int s = 0; s < nTax; s++) {
                     for (int t = s + 1; t < nTax; t++) {
                         if (total[s] > 0 && total[t] > 0)
                             diff[s][t] += Math.abs((counts[s] / total[s]) - (counts[t] / total[t])); // normalized differences between datasets
-                        if (v != root) // // root does not contribute to sum
-                            sum[s][t] += ((counts[s] / total[s]) + (counts[t] / total[t]));
+                        sum[s][t] += ((counts[s] / total[s]) + (counts[t] / total[t]));
                     }
                 }
             }
@@ -175,39 +187,40 @@ public class UniFrac {
     }
 
     /**
-     * get all nodes that are selected or an ancestor of a selected node
-     *
-     * @param tree
-     * @param selectedNodes
-     * @return selected and above
-     */
-    private static NodeSet getSelectedOrAbove(PhyloTree tree, NodeSet selectedNodes) {
-        final NodeSet set = new NodeSet(tree);
-        set.addAll(selectedNodes);
-        getSelectedOrAboveRec(tree.getRoot(), set);
-        return set;
-    }
-
-    /**
-     * recursively does the work
+     * recursively compute the summarized counts for all nodes in tree induced by user selection
      *
      * @param v
-     * @param set
-     * @return true, if anything below is selected
+     * @param selected
+     * @param summarized
+     * @return true, if selected nodes on or below v
      */
-    private static boolean getSelectedOrAboveRec(Node v, NodeSet set) {
-        if (v.getOutDegree() == 0) {
-            return set.contains(v);
-        } else {
-            boolean selectedBelow = false;
-            for (Edge e : v.outEdges()) {
-                final Node w = e.getTarget();
-                if (getSelectedOrAboveRec(w, set))
-                    selectedBelow = true;
+    private static boolean computeSummarizedCountsOnInducedTreeRec(Node v, NodeSet selected, ClassificationViewer viewer, NodeArray<float[]> summarized, int ntax) {
+        float[] currentSummarized = null;
+
+        for (Edge e : v.outEdges()) {
+            if (computeSummarizedCountsOnInducedTreeRec(e.getTarget(), selected, viewer, summarized, ntax)) {
+                if (currentSummarized == null) {
+                    currentSummarized = new float[ntax];
+                }
+                final float[] childSummarized = summarized.get(e.getTarget());
+                for (int s = 0; s < ntax; s++) {
+                    currentSummarized[s] += childSummarized[s];
+                }
             }
-            if (selectedBelow)
-                set.add(v);
-            return selectedBelow;
         }
+
+        final NodeData nodeData = viewer.getNodeData(v);
+
+        if (currentSummarized != null) { // has selected below
+            for (int s = 0; s < ntax; s++) // add counts for current node
+                currentSummarized[s] += nodeData.getAssigned()[s];
+            summarized.set(v, currentSummarized);
+            selected.add(v);
+            return true;
+        } else if (selected.contains(v)) { // nothing selected below, but this node is selected, so it is a selection leaf
+            summarized.set(v, nodeData.getSummarized());
+            return true;
+        }
+        return false;
     }
 }

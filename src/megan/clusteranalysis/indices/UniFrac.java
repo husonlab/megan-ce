@@ -20,6 +20,7 @@ package megan.clusteranalysis.indices;
 
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
+import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
@@ -35,32 +36,9 @@ import java.io.IOException;
  * Daniel Huson, 9.2012, 11.2017, 6.2018
  */
 public class UniFrac {
-    public final static String UnweightedTaxonomicUniFrac = "UnweightedTaxonomicUniFrac";
-    public final static String WeightedTaxonomicUniFrac = "WeightedTaxonomicUniFrac";
+    public final static String UnweightedUniformUniFrac = "UnweightedUniformUniFrac";
+    public final static String WeightedUniformUniFrac = "WeightedUniformUniFrac";
 
-    /**
-     * apply the chosen UniFrac method method to the taxonomy
-     *
-     * @param viewer
-     * @param method
-     * @param threshold
-     * @param distances
-     * @return number of nodes used to compute value
-     */
-    public static int apply(final MainViewer viewer, String method, final int threshold, final Distances distances) throws CanceledException, IOException {
-        System.err.println("Computing " + method + " distances");
-
-        final int nodesUsed;
-        if (method.equalsIgnoreCase(UnweightedTaxonomicUniFrac))
-            nodesUsed = applyUnweightedUniformUniFrac(viewer, threshold, distances);
-        else if (method.equalsIgnoreCase(WeightedTaxonomicUniFrac))
-            nodesUsed = applyWeightedUniformUniFrac(viewer, distances);
-        else
-            throw new IOException("Method not implemented: " + method.toString());
-
-        System.err.println("Nodes used: " + nodesUsed);
-        return nodesUsed;
-    }
 
     /**
      * apply the unweighted taxonomic unifrac method
@@ -71,6 +49,8 @@ public class UniFrac {
      * @return number of nodes used to compute value
      */
     public static int applyUnweightedUniformUniFrac(final MainViewer viewer, final int threshold, final Distances distances) throws CanceledException {
+        System.err.println("Computing " + Basic.fromCamelCase(UnweightedUniformUniFrac) + " distances");
+
         final int nTax = distances.getNtax();
 
         int countNodesUsed = 0;
@@ -79,14 +59,17 @@ public class UniFrac {
 
         final NodeSet inducedNodes = new NodeSet(tree);
         inducedNodes.addAll(viewer.getSelectedNodes());
+
         final NodeArray<float[]> summarized = new NodeArray<>(tree);
 
         computeSummarizedCountsOnInducedTreeRec(tree.getRoot(), inducedNodes, viewer, summarized, nTax);
 
+        removeRootNodeAndNodesOnPathLeadingToIt(tree.getRoot(), inducedNodes);
+
         int[][] diff = new int[nTax][nTax];
 
         final ProgressListener progress = viewer.getDocument().getProgressListener();
-        progress.setSubtask("Unweighted uniform UniFrac");
+        progress.setTasks("Computing", "Unweighted uniform UniFrac");
         progress.setProgress(0);
         progress.setMaximum(inducedNodes.size());
 
@@ -108,10 +91,11 @@ public class UniFrac {
         }
         for (int s = 0; s < nTax; s++) {
             for (int t = s + 1; t < nTax; t++) {
-                distances.set(s + 1, t + 1, (countNodesUsed > 1 ? (double) diff[s][t] / (double) (countNodesUsed - 1) : 0));
-                // subtract 1 from countNodesUsed because root will always contribute 0, even on disjoint profiles
+                distances.set(s + 1, t + 1, (countNodesUsed > 0 ? (double) diff[s][t] / (double) countNodesUsed : 0));
             }
         }
+
+        System.err.println("Nodes used: " + countNodesUsed);
         return countNodesUsed;
     }
 
@@ -126,6 +110,7 @@ public class UniFrac {
      * @throws IOException
      */
     public static int applyWeightedUniformUniFrac(final ClassificationViewer viewer, final Distances distances) throws CanceledException {
+        System.err.println("Computing " + Basic.fromCamelCase(WeightedUniformUniFrac) + " distances");
 
         final int nTax = distances.getNtax();
 
@@ -135,19 +120,22 @@ public class UniFrac {
 
         final NodeSet inducedNodes = new NodeSet(tree);
         inducedNodes.addAll(viewer.getSelectedNodes());
+
         final NodeArray<float[]> summarized = new NodeArray<>(tree);
 
         computeSummarizedCountsOnInducedTreeRec(tree.getRoot(), inducedNodes, viewer, summarized, nTax);
 
         final ProgressListener progress = viewer.getDocument().getProgressListener();
-        progress.setSubtask("Weighted uniform UniFrac");
+        progress.setTasks("Computing", "Weighted uniform UniFrac");
         progress.setProgress(0);
         progress.setMaximum(2 * inducedNodes.size());
+
+        final Node root = removeRootNodeAndNodesOnPathLeadingToIt(tree.getRoot(), inducedNodes);
 
         // setup total number of reads in each sample summarized below the root
         final double[] total = new double[nTax];
         {
-            for (Edge e : tree.getRoot().outEdges()) {
+            for (Edge e : root.outEdges()) {
                 final Node w = e.getTarget();
                 if (inducedNodes.contains(w)) {
                     for (int s = 0; s < nTax; s++)
@@ -155,8 +143,6 @@ public class UniFrac {
                 }
             }
         }
-
-        inducedNodes.remove(tree.getRoot()); // don't consider the root!
 
         final double[][] diff = new double[nTax][nTax]; // difference between two samples
         final double[][] sum = new double[nTax][nTax]; // largest possible difference between two samples
@@ -166,12 +152,14 @@ public class UniFrac {
             if (taxonId > 0 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodesUsed++;
-                final float[] counts = summarized.get(v); // total number of reads that "descend" from node v
+                final float[] count = summarized.get(v); // total number of reads that "descend" from node v
                 for (int s = 0; s < nTax; s++) {
+                    final double p = (total[s] > 0 ? count[s] / total[s] : 0);
                     for (int t = s + 1; t < nTax; t++) {
-                        if (total[s] > 0 && total[t] > 0)
-                            diff[s][t] += Math.abs((counts[s] / total[s]) - (counts[t] / total[t])); // normalized differences between datasets
-                        sum[s][t] += ((counts[s] / total[s]) + (counts[t] / total[t]));
+                        final double q = (total[t] > 0 ? count[t] / total[t] : 0);
+
+                        diff[s][t] += Math.abs(p - q); // normalized differences between datasets
+                        sum[s][t] += (p + q);
                     }
                 }
             }
@@ -220,7 +208,34 @@ public class UniFrac {
         } else if (selected.contains(v)) { // nothing selected below, but this node is selected, so it is a selection leaf
             summarized.set(v, nodeData.getSummarized());
             return true;
+        } else
+            return false;
+    }
+
+    /**
+     * remove the root node and root path
+     *
+     * @param v
+     * @param induced
+     * @return the root
+     */
+    private static Node removeRootNodeAndNodesOnPathLeadingToIt(Node v, NodeSet induced) {
+
+        while (true) {
+            induced.remove(v);
+            Node selectedChild = null;
+            for (Edge e : v.outEdges()) {
+                if (induced.contains(e.getTarget())) {
+                    if (selectedChild == null)
+                        selectedChild = e.getTarget();
+                    else
+                        return v;  // more than one selected child, done
+                }
+            }
+            if (selectedChild == null) // no selected children below, then degenerate case...
+                return v;
+            else
+                v = selectedChild;
         }
-        return false;
     }
 }

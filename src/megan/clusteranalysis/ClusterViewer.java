@@ -40,10 +40,8 @@ import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.clusteranalysis.gui.*;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
-import megan.clusteranalysis.indices.JensenShannonDivergence;
-import megan.clusteranalysis.indices.PearsonDistance;
-import megan.clusteranalysis.indices.UniFrac;
+import megan.clusteranalysis.indices.BrayCurtisDissimilarity;
+import megan.clusteranalysis.indices.DistancesManager;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 import megan.core.Director;
@@ -109,7 +107,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private int numberOfNodesUsed = 0;
 
     private String dataType;
-    private String ecologicalIndex = CalculateEcologicalIndices.BRAYCURTIS;
+    private String ecologicalIndex = BrayCurtisDissimilarity.NAME;
 
     private boolean locked = false;
     private boolean uptodate = true;
@@ -506,17 +504,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             throw new IOException("Too few samples: " + taxa.size());
 
         distances = new Distances(taxa.size());
-
-        if (ecologicalIndex.equalsIgnoreCase(UniFrac.UnweightedTaxonomicUniFrac))
-            numberOfNodesUsed = UniFrac.apply((MainViewer) getParentViewer(), UniFrac.UnweightedTaxonomicUniFrac, 1, distances);
-        else if (ecologicalIndex.equalsIgnoreCase(UniFrac.WeightedTaxonomicUniFrac))
-            numberOfNodesUsed = UniFrac.apply((MainViewer) getParentViewer(), UniFrac.WeightedTaxonomicUniFrac, 1, distances);
-        else if (ecologicalIndex.equalsIgnoreCase(JensenShannonDivergence.SqrtJensenShannonDivergence))
-            numberOfNodesUsed = JensenShannonDivergence.apply(getParentViewer(), JensenShannonDivergence.SqrtJensenShannonDivergence, distances);
-        else if (ecologicalIndex.equalsIgnoreCase(PearsonDistance.PEARSON_DISTANCE))
-            numberOfNodesUsed = PearsonDistance.apply(doc, getParentViewer(), ecologicalIndex, distances);
-        else
-            numberOfNodesUsed = CalculateEcologicalIndices.apply(doc, getParentViewer(), ecologicalIndex, distances, !getEcologicalIndex().contains("Goodall"));
+        DistancesManager.apply(ecologicalIndex, getParentViewer(), distances);
 
         if (distances.replaceNaNByZero()) {
             NotificationsInSwing.showWarning(getFrame(), "Undefined distances detected, replaced by 0");

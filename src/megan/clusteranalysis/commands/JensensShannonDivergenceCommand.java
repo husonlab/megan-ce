@@ -38,7 +38,7 @@ public class JensensShannonDivergenceCommand extends CommandBase implements IChe
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(JensenShannonDivergence.SqrtJensenShannonDivergence);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(JensenShannonDivergence.NAME);
     }
 
     public static final String NAME = "Use JSD";
@@ -85,7 +85,7 @@ public class JensensShannonDivergenceCommand extends CommandBase implements IChe
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + JensenShannonDivergence.SqrtJensenShannonDivergence + ";");
+        execute("set index=" + JensenShannonDivergence.NAME + ";");
     }
 
     /**

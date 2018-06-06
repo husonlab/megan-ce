@@ -20,10 +20,8 @@ package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
 import megan.clusteranalysis.tree.Distances;
-import megan.core.Document;
-import megan.viewer.ViewerBase;
+import megan.viewer.ClassificationViewer;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -32,21 +30,20 @@ import java.util.LinkedList;
  * Daniel Huson, 9.2012
  */
 public class PearsonDistance {
-    public static final String PEARSON_DISTANCE = "Pearsons-Correlation";
+    public static final String NAME = "Pearsons-Correlation";
 
     /**
      * apply the named computation to the taxonomy
      *
      * @param viewer
-     * @param method
      * @param distances
      * @return number of nodes used to compute value
      * @throws java.io.IOException
      */
-    public static int apply(Document doc, final ViewerBase viewer, String method, final Distances distances) throws IOException {
-        System.err.println("Computing " + method + " distances");
+    public static int apply(final ClassificationViewer viewer, final Distances distances) {
+        System.err.println("Computing " + NAME + " distances");
 
-        double[][] vectors = computeVectors(doc, viewer);
+        double[][] vectors = computeVectors(viewer, distances.getNtax());
         int rank = distances.getNtax();
         computeCorrelationMatrix(rank, vectors, distances);
         convertCorrelationsToDistances(distances);
@@ -57,12 +54,10 @@ public class PearsonDistance {
     /**
      * compute vectors for  analysis
      *
-     * @param doc
      * @return vectors. First index is class, second is sample
      */
-    public static double[][] computeVectors(Document doc, ViewerBase graphView) {
-        int numberOfDataSets = doc.getNumberOfSamples();
-        double[] total = new double[numberOfDataSets];
+    public static double[][] computeVectors(ClassificationViewer graphView, int numberOfSamples) {
+        double[] total = new double[numberOfSamples];
 
         HashSet<Integer> seen = new HashSet<>();
         LinkedList<double[]> rows = new LinkedList<>();
@@ -70,7 +65,7 @@ public class PearsonDistance {
             if (graphView.getSelected(v)) {
                 if (!seen.contains((Integer) v.getInfo())) {
                     seen.add((Integer) v.getInfo());
-                    double[] row = new double[numberOfDataSets];
+                    double[] row = new double[numberOfSamples];
                     final float[] values = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
                     for (int i = 0; i < values.length; i++) {
                         row[i] = values[i];

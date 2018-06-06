@@ -39,7 +39,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(UniFrac.WeightedTaxonomicUniFrac);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(UniFrac.WeightedUniformUniFrac);
     }
 
     /**
@@ -58,7 +58,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
      */
     public String getDescription() {
         return "Use the weighted uniform UniFrac metric.\n" +
-                "For any two samples, this is the sum of absolute differences of summarized counts over all ranked nodes, normalized";
+                "For any two samples, this is the sum of absolute differences of summarized counts over all ranked nodes, normalized (Lozupone and Knight, 2005)";
     }
 
     /**
@@ -85,7 +85,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + UniFrac.WeightedTaxonomicUniFrac + ";");
+        execute("set index=" + UniFrac.WeightedUniformUniFrac + ";");
     }
 
     /**

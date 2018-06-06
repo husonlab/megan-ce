@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
+import megan.clusteranalysis.indices.EuclideanDistance;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ public class EcologicalIndexEuclideanCommand extends CommandBase implements IChe
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(CalculateEcologicalIndices.EUCLIDEAN);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(EuclideanDistance.NAME);
     }
 
     /**
@@ -83,7 +83,7 @@ public class EcologicalIndexEuclideanCommand extends CommandBase implements IChe
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + CalculateEcologicalIndices.EUCLIDEAN + ";");
+        execute("set index=" + EuclideanDistance.NAME + ";");
     }
 
     /**

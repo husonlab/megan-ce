@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
+import megan.clusteranalysis.indices.BrayCurtisDissimilarity;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ public class EcologicalIndexBrayCurtisCommand extends CommandBase implements ICh
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(CalculateEcologicalIndices.BRAYCURTIS);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(BrayCurtisDissimilarity.NAME);
     }
 
     /**
@@ -56,7 +56,7 @@ public class EcologicalIndexBrayCurtisCommand extends CommandBase implements ICh
      * @return description
      */
     public String getDescription() {
-        return "Use Bray-Curtis ecological index";
+        return "Use Bray-Curtis ecological index (Bray and Curtis, 1957)";
     }
 
     /**
@@ -83,7 +83,7 @@ public class EcologicalIndexBrayCurtisCommand extends CommandBase implements ICh
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + CalculateEcologicalIndices.BRAYCURTIS + ";");
+        execute("set index=" + BrayCurtisDissimilarity.NAME + ";");
     }
 
     /**

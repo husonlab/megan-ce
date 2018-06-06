@@ -21,9 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.JensenShannonDivergence;
-import megan.clusteranalysis.indices.PearsonDistance;
-import megan.clusteranalysis.indices.UniFrac;
+import megan.clusteranalysis.indices.DistancesManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -33,13 +31,6 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 6.2010
  */
 public abstract class EcologicalIndexCommand extends CommandBase {
-    private final String[] methods;
-
-    public EcologicalIndexCommand() {
-            methods = new String[]{"Goodall", "Goodall-Normalized", "ChiSquare", "Kulczynski",
-                    "BrayCurtis", "Hellinger", "Euclidean", "Euclidean-Normalized", UniFrac.UnweightedTaxonomicUniFrac, UniFrac.WeightedTaxonomicUniFrac, PearsonDistance.PEARSON_DISTANCE, JensenShannonDivergence.SqrtJensenShannonDivergence};
-    }
-
     /**
      * parses the given command and executes it
      *
@@ -48,7 +39,7 @@ public abstract class EcologicalIndexCommand extends CommandBase {
      */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set index=");
-        String method = np.getWordMatchesIgnoringCase(methods);
+        String method = np.getWordMatchesIgnoringCase(DistancesManager.getAllNames());
         np.matchIgnoreCase(";");
 
         ClusterViewer viewer = getViewer();
@@ -74,7 +65,7 @@ public abstract class EcologicalIndexCommand extends CommandBase {
         final ClusterViewer viewer = getViewer();
 
         final String method = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Set Ecological Index", "Set Ecological Index", JOptionPane.QUESTION_MESSAGE,
-                ProgramProperties.getProgramIcon(), methods, viewer.getEcologicalIndex());
+                ProgramProperties.getProgramIcon(), DistancesManager.getAllNames(), viewer.getEcologicalIndex());
         if (method != null)
             executeImmediately("set index=" + method + ";");
     }

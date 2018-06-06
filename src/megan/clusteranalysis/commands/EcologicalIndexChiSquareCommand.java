@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
+import megan.clusteranalysis.indices.ChiSquareDistance;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ public class EcologicalIndexChiSquareCommand extends CommandBase implements IChe
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(CalculateEcologicalIndices.CHISSQUARE);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(ChiSquareDistance.NAME);
     }
 
     /**
@@ -56,7 +56,7 @@ public class EcologicalIndexChiSquareCommand extends CommandBase implements IChe
      * @return description
      */
     public String getDescription() {
-        return "Use ChiSquare ecological index";
+        return "Use ChiSquare ecological index (Lebart et al, 1979)";
     }
 
     /**
@@ -83,7 +83,7 @@ public class EcologicalIndexChiSquareCommand extends CommandBase implements IChe
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + CalculateEcologicalIndices.CHISSQUARE + ";");
+        execute("set index=" + ChiSquareDistance.NAME + ";");
     }
 
     /**

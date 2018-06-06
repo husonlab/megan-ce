@@ -37,7 +37,7 @@ public class PearsonsCorrelationsDistanceCommand extends EcologicalIndexCommand 
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(PearsonDistance.PEARSON_DISTANCE);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(PearsonDistance.NAME);
     }
 
     /**
@@ -82,7 +82,7 @@ public class PearsonsCorrelationsDistanceCommand extends EcologicalIndexCommand 
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + PearsonDistance.PEARSON_DISTANCE + ";");
+        execute("set index=" + PearsonDistance.NAME + ";");
     }
 
     /**

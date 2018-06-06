@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
+import megan.clusteranalysis.indices.KulczynskiDistance;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICh
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(CalculateEcologicalIndices.KULCZYNSKI);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(KulczynskiDistance.NAME);
     }
 
     /**
@@ -56,7 +56,7 @@ public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICh
      * @return description
      */
     public String getDescription() {
-        return "Use Kulczynski ecological index";
+        return "Use Kulczynski ecological index (Odum, 1950)";
     }
 
     /**
@@ -83,7 +83,7 @@ public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICh
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + CalculateEcologicalIndices.KULCZYNSKI + ";");
+        execute("set index=" + KulczynskiDistance.NAME + ";");
     }
 
     /**

@@ -19,11 +19,10 @@
 package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
+import jloda.util.Basic;
 import megan.clusteranalysis.tree.Distances;
 import megan.core.Document;
 import megan.viewer.ViewerBase;
-
-import java.io.IOException;
 
 /**
  * Jensen shannon divergence
@@ -31,21 +30,20 @@ import java.io.IOException;
  * Daniel Huson, 9.2014
  */
 public class JensenShannonDivergence {
-    public static final String SqrtJensenShannonDivergence = "SqrtJensenShannonDivergence";
+    public static final String NAME = "SqrtJensenShannonDivergence";
 
     /**
      * apply the named computation to the taxonomy
      *
      * @param viewer
-     * @param method
      * @param distances
      * @return number of nodes used to compute value
      * @throws java.io.IOException
      */
-    public static int apply(final ViewerBase viewer, String method, final Distances distances) throws IOException {
-        System.err.println("Computing " + method + " distances");
+    public static int apply(final ViewerBase viewer, final Distances distances) {
+        System.err.println("Computing " + Basic.fromCamelCase(NAME) + " distances");
 
-        double[][] profiles = computeProfiles(viewer.getDocument(), viewer);
+        final double[][] profiles = computeProfiles(viewer.getDocument(), viewer);
 
         System.err.println("Samples: " + profiles.length + " classes: " + profiles[0].length);
 
@@ -123,14 +121,12 @@ public class JensenShannonDivergence {
 
         int classCount = 0;
 
-        for (Node v = graphView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
-            if (graphView.getSelected(v)) {
+        for (Node v : graphView.getSelectedNodes()) {
                 float[] counts = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());
                 for (int sampleCount = 0; sampleCount < totalSamples; sampleCount++) {
                     profiles[sampleCount][classCount] = counts[sampleCount];
                 }
                 classCount++;
-            }
         }
 
         for (double[] profile : profiles) {

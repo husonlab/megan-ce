@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.indices.CalculateEcologicalIndices;
+import megan.clusteranalysis.indices.GoodallsDistance;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
      */
     public boolean isSelected() {
         ClusterViewer viewer = getViewer();
-        return viewer.getEcologicalIndex().equalsIgnoreCase(CalculateEcologicalIndices.GOODALL);
+        return viewer.getEcologicalIndex().equalsIgnoreCase(GoodallsDistance.NAME);
     }
 
     /**
@@ -56,7 +56,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
      * @return description
      */
     public String getDescription() {
-        return "Use Goodall's ecological index";
+        return "Use Goodall's ecological index (Goodall 1964, 1966)";
     }
 
     /**
@@ -83,7 +83,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        execute("set index=" + CalculateEcologicalIndices.GOODALL + ";");
+        execute("set index=" + GoodallsDistance.NAME + ";");
     }
 
     /**

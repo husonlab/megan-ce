@@ -33,7 +33,7 @@ public class PearsonDistance {
     public static final String NAME = "Pearsons-Correlation";
 
     /**
-     * apply the named computation to the taxonomy
+     * apply the PearsonDistance computation to the given classification
      *
      * @param viewer
      * @param distances

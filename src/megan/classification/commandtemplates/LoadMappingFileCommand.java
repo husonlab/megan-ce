@@ -47,7 +47,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "load mapFile=<filename> mapType=<mapType> cName=<name> [parseTaxonNames={false|true}];";
+        return "load mapFile=<filename> mapType=<" + Basic.toString(IdMapper.MapType.values(), "|") + "> cName=<" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "> [parseTaxonNames={false|true}];";
     }
 
     /**

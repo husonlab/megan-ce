@@ -64,11 +64,11 @@ public class Megan5ServerConnector implements IConnector {
      * @param password
      */
     public Megan5ServerConnector(String url, String userName, String password) {
-        String plainCreds = userName + ":" + password;
-        byte[] plainCredsBytes = plainCreds.getBytes();
-        byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-        String base64Creds = new String(base64CredsBytes);
-        HttpHeaders headers = new HttpHeaders();
+        final String plainCreds = userName + ":" + password;
+        final byte[] plainCredsBytes = plainCreds.getBytes();
+        final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+        final String base64Creds = new String(base64CredsBytes);
+        final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + base64Creds);
         request = new HttpEntity<>(headers);
         restTemplate = new RestTemplate();
@@ -85,7 +85,6 @@ public class Megan5ServerConnector implements IConnector {
             url2response.put(requestURL, restTemplate.exchange(requestURL, HttpMethod.GET, request, RMADataset[].class).getBody());
         return (RMADataset[]) url2response.get(requestURL);
     }
-
 
     @Override
     public void setFile(String filename) throws IOException {
@@ -111,28 +110,27 @@ public class Megan5ServerConnector implements IConnector {
 
     @Override
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_ALL_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
-        ReadBlockPage blocks = response.getBody();
+        final ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_ALL_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
+        final ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
     public IReadBlockIterator getReadsIterator(String classification, int classId, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classId=" + classId + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
-        ReadBlockPage blocks = response.getBody();
+        final ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classId=" + classId + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
+        final ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
     public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classIds=" + httpArray(classIds) + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
-        ReadBlockPage blocks = response.getBody();
+        final ResponseEntity<ReadBlockPage> response = restTemplate.exchange(url + RMAControllerMappings.GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING + "?fileId=" + fileId + "&minScore=" + minScore + "&maxExpected=" + maxExpected + "&classification=" + classification + "&classIds=" + httpArray(classIds) + "&dataSelection=" + httpArray2(DataSelectionSerializer.serializeDataSelection(wantReadSequence, wantMatches)), HttpMethod.GET, request, ReadBlockPage.class);
+        final ReadBlockPage blocks = response.getBody();
         return new ReadBlockIterator(this, blocks);
     }
 
     @Override
-    public IReadBlockGetter getReadBlockGetter(float minScore,
-                                               float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
+    public IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         return new ReadBlockGetter(fileId, minScore, maxExpected, wantReadSequence, wantMatches, this);
     }
 
@@ -307,7 +305,6 @@ public class Megan5ServerConnector implements IConnector {
         return response.getBody();
     }
 
-
     /**
      * Get log entries
      *
@@ -333,5 +330,4 @@ public class Megan5ServerConnector implements IConnector {
     public static void clearCache() {
         url2response.clear();
     }
-
 }

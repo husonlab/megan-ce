@@ -128,7 +128,7 @@ public class DAAMeganizer {
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String gi2TaxaFile = options.getOption("-g2t", "gi2taxa", "GI-to-Taxonomy mapping file", "");
-        final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accessopm-to-Taxonomy mapping file", "");
+        final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
 
         final HashMap<String, String> class2GIFile = new HashMap<>();

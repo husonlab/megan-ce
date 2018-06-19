@@ -21,7 +21,6 @@ package megan.importblast;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.commands.ICheckBoxCommand;
 import jloda.gui.commands.ICommand;
-import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -126,7 +125,6 @@ public class ViewerPanel extends JPanel {
             AbstractButton useParseTextButton = commandManager.getButton(SetUseTextTaxonomyCommand.NAME);
             aPanel.add(useParseTextButton);
 
-            if (ProgramProperties.get("enable-contaminants", false)) // this is where we will put support for contaminant screening
             {
                 aPanel.add(commandManager.getButton(UseContaminantsFilterCommand.NAME));
                 final JPanel butPanel = new JPanel();

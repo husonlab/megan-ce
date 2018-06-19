@@ -24,7 +24,6 @@ import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
@@ -122,7 +121,6 @@ public class ClassificationFullTree extends PhyloTree {
         }
         setInfo(getANode(IdMapper.LOW_COMPLEXITY_ID), IdMapper.LOW_COMPLEXITY_ID);
 
-        if (ProgramProperties.get("enable-contaminants", false)) {
             if (id2Node.get(IdMapper.CONTAMINANTS_ID) == null) {
                 Node v = newNode();
                 addId2Node(IdMapper.CONTAMINANTS_ID, v);
@@ -131,7 +129,6 @@ public class ClassificationFullTree extends PhyloTree {
                 newEdge(getRoot(), v);
             }
             setInfo(getANode(IdMapper.CONTAMINANTS_ID), IdMapper.CONTAMINANTS_ID);
-        }
 
         if (getName().equals(Classification.Taxonomy)) {
             // fix Domains:

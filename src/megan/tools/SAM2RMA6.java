@@ -120,7 +120,7 @@ public class SAM2RMA6 {
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
 
-        final String contaminantsFile = (ProgramProperties.getIfEnabled("enable-contaminants", options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "")));
+        final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
 
         options.comment("Classification support:");
 

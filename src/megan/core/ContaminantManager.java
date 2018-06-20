@@ -62,6 +62,8 @@ public class ContaminantManager {
                     contaminants.add(taxonId);
             }
         }
+        if (contaminants.size() > 0)
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**

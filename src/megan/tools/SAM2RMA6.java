@@ -276,7 +276,9 @@ public class SAM2RMA6 {
             if (contaminantsFile.length() > 0) {
                 ContaminantManager contaminantManager = new ContaminantManager();
                 contaminantManager.read(contaminantsFile);
+                System.err.println(String.format("Contaminants profile: %,d input, %,d total", contaminantManager.inputSize(), contaminantManager.size()));
                 doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
+                doc.setUseContaminantFilter(contaminantManager.size() > 0);
             }
 
             createRMA6FileFromSAM("SAM2RMA6", samFiles[i], readsFiles[i], outputFiles[i], useCompression, doc, maxMatchesPerRead, progressListener);

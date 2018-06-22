@@ -20,7 +20,6 @@ package megan.commands.algorithms;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -44,7 +43,7 @@ public class ComputeCoreBiome {
      * computes core biome for a given threshold
      *
      * @param srcDoc
-     * @param asUpperBound                   if true, keep rare taxa in which the threshold is an upper bound
+     * @param asUpperBound                   if true, keep rare taxa in which the sample threshold is an upper bound
      * @param samplesThreshold               number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
      * @param tarClassification2class2counts
      * @param progress
@@ -70,7 +69,7 @@ public class ComputeCoreBiome {
                 final Map<Integer, float[]> tarClass2counts = new HashMap<>();
                 tarClassification2class2counts.put(classificationName, tarClass2counts);
 
-                final int[] detectionThreshold = computeDetectionThreshold(srcDoc.getNumberOfSamples(), srcClass2counts, taxonDetectionThresholdPercent);
+                final int[] detectionThreshold = computeDetectionThreshold(classificationName, srcDoc.getNumberOfSamples(), srcClass2counts, taxonDetectionThresholdPercent);
 
                 computeCoreBiomeRec(sampleIds, asUpperBound, srcDoc.getNumberOfSamples(), samplesThreshold, detectionThreshold, root, srcClass2counts, tarClass2counts);
                 // System.err.println(classificationName + ": " + tarClassification2class2counts.size());
@@ -113,7 +112,7 @@ public class ComputeCoreBiome {
      * @param detectionThresholdPercent
      * @return thresholds
      */
-    private static int[] computeDetectionThreshold(int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
+    private static int[] computeDetectionThreshold(String classificationName, int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
         final int[] array = new int[numberOfSamples];
         if (detectionThresholdPercent > 0) {
             for (Integer id : srcClass2counts.keySet()) {
@@ -129,7 +128,13 @@ public class ComputeCoreBiome {
             for (int i = 0; i < array.length; i++) {
                 array[i] *= detectionThresholdPercent / 100.0;
             }
-            System.err.println("Read detection thresholds: " + Basic.toString(array, ", "));
+            if (true) {
+                System.err.println("Read detection thresholds for " + classificationName + ":");
+                for (float value : array) {
+                    System.err.print(String.format(" %,12.0f", value));
+                }
+                System.err.println();
+            }
         }
         for (int i = 0; i < array.length; i++) { // need at least 1 to detect
             array[i] = Math.max(1, array[i]);
@@ -182,7 +187,7 @@ public class ComputeCoreBiome {
                     value += countsV[i];
             }
         }
-        if (countsV != null && ((!asUpperBound && numberOfSamplesWithClass >= samplesThreshold) || (asUpperBound && numberOfSamplesWithClass <= samplesThreshold))) {
+        if (countsV != null && numberOfSamplesWithClass > 0 && ((!asUpperBound && numberOfSamplesWithClass >= samplesThreshold) || (asUpperBound && numberOfSamplesWithClass <= samplesThreshold))) {
             tarClass2counts.put(classId, new float[]{value});
         }
         return summarized;

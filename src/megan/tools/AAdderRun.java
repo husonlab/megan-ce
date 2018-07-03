@@ -38,17 +38,17 @@ import java.util.zip.GZIPOutputStream;
  * add functional annotations to DNA alignments
  * Daniel Huson, 5.2018
  */
-public class AAddRun {
+public class AAdderRun {
     /**
      * add functional annotations to DNA alignments
      */
     public static void main(String[] args) {
         try {
-            ProgramProperties.setProgramName("AAddRun");
+            ProgramProperties.setProgramName("AAdderRun");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 
             PeakMemoryUsageMonitor.start();
-            (new AAddRun()).run(args);
+            (new AAdderRun()).run(args);
             System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
             System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
             System.exit(0);
@@ -88,7 +88,7 @@ public class AAddRun {
         final File indexFile = new File(indexDirectory, "aadd.idx");
 
         try (InputReader ins = new InputReader(indexFile); ProgressPercentage progress = new ProgressPercentage("Reading file: " + indexFile)) {
-            readAndVerifyMagicNumber(ins, AAddBuild.MAGIC_NUMBER_IDX);
+            readAndVerifyMagicNumber(ins, AAdderBuild.MAGIC_NUMBER_IDX);
             final String creator = ins.readString();
             System.err.println("Index created by: " + creator);
             final int entries = ins.readInt();
@@ -111,7 +111,7 @@ public class AAddRun {
         try (InputReader dbxIns = new InputReader(dbFile)) {
             System.err.println("Opening file: " + dbFile);
 
-            readAndVerifyMagicNumber(dbxIns, AAddBuild.MAGIC_NUMBER_DBX);
+            readAndVerifyMagicNumber(dbxIns, AAdderBuild.MAGIC_NUMBER_DBX);
             final String[] cNames = new String[dbxIns.readInt()];
             for (int i = 0; i < cNames.length; i++) {
                 cNames[i] = dbxIns.readString();

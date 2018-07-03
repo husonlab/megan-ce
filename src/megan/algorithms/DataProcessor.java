@@ -94,16 +94,16 @@ public class DataProcessor {
 
             // step 0: set up classification algorithms
 
-            final double minCoveredPercent = doc.getMinPercentReadToCover();
+            final double minPercentReadToCover = doc.getMinPercentReadToCover();
             int numberOfReadsFailedCoveredThreshold = 0;
             final IntervalTree<Object> intervals;
-            if (minCoveredPercent > 0 && doc.isLongReads() || doc.getReadAssignmentMode() == Document.ReadAssignmentMode.alignedBases)
+            if (minPercentReadToCover > 0 && doc.isLongReads() || doc.getReadAssignmentMode() == Document.ReadAssignmentMode.alignedBases)
                 intervals = new IntervalTree<>();
             else
                 intervals = null;
 
-            if (minCoveredPercent > 0)
-                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minCoveredPercent));
+            if (minPercentReadToCover > 0)
+                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minPercentReadToCover));
 
             final boolean usingLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads);
 
@@ -237,7 +237,7 @@ public class DataProcessor {
                         if (referenceCoverFilter != null)
                             referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
 
-                        if (minCoveredPercent == 0 || ensureCovered(minCoveredPercent, readBlock, activeMatchesForTaxa, intervals)) {
+                        if (minPercentReadToCover == 0 || ensureCovered(minPercentReadToCover, readBlock, activeMatchesForTaxa, intervals)) {
                             if (doMatePairs && readBlock.getMateUId() > 0) {
                                 mateReader.seek(readBlock.getMateUId());
                                 mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
@@ -414,7 +414,7 @@ public class DataProcessor {
      * @param minCoveredPercent percent of read that must be covered
      * @param readBlock
      * @param activeMatches
-     * @param intervals         this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @param intervals this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */
     private static boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {
@@ -427,7 +427,7 @@ public class DataProcessor {
 
         for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-            if (Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryStart()) >= lengthToCover)
+            if (Math.abs(matchBlock.getAlignedQueryEnd() - matchBlock.getAlignedQueryStart()) >= lengthToCover)
                 return true;
             if (intervals != null) {
                 Interval<Object> interval = new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), null);

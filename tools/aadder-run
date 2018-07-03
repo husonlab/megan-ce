@@ -1,5 +1,5 @@
 #!/bin/bash
-# Runs the AAdd tool
+# Runs the AAdder tool
 #
 # Copyright (C) 2018 Daniel H. Huson
 # This program is free software: you can redistribute it and/or modify
@@ -40,4 +40,4 @@ fi
 
 java_flags="-server -Duser.language=en -Duser.region=US -Djava.awt.headless=true $vmOptions"
 
-$java $java_flags -cp "$classpath" megan.tools.AAddRun  $options
+$java $java_flags -cp "$classpath" megan.tools.AAdderRun  $options

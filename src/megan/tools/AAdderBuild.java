@@ -34,10 +34,10 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * build the aadd index
+ * build the aadder index
  * Daniel Huson, 5.2018
  */
-public class AAddBuild {
+public class AAdderBuild {
     final public static byte[] MAGIC_NUMBER_IDX = "AAddIdxV0.1.".getBytes();
     final public static byte[] MAGIC_NUMBER_DBX = "AAddDbxV0.1.".getBytes();
 
@@ -48,11 +48,11 @@ public class AAddBuild {
      */
     public static void main(String[] args) {
         try {
-            ProgramProperties.setProgramName("AAddBuild");
+            ProgramProperties.setProgramName("AAdderBuild");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 
             PeakMemoryUsageMonitor.start();
-            (new AAddBuild()).run(args);
+            (new AAdderBuild()).run(args);
             System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
             System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
             System.exit(0);

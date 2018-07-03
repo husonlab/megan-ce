@@ -181,6 +181,44 @@ public class CSVExportFViewer {
     }
 
     /**
+     * export names
+     *
+     * @param cViewer
+     * @param file
+     * @param progressListener
+     * @return lines written
+     */
+    public static int exportNames(String format, ViewerBase cViewer, File file, ProgressListener progressListener) throws IOException {
+        int totalLines = 0;
+        try {
+            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
+
+
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+                final NodeSet selected = cViewer.getSelectedNodes();
+                progressListener.setSubtask(format);
+                progressListener.setMaximum(selected.size());
+                progressListener.setProgress(0);
+
+                final boolean names = format.contains("Name");
+
+                for (Node v : selected) {
+                    if (names)
+                        w.write(classification.getName2IdMap().get((Integer) v.getInfo()) + "\n");
+                    else
+                        w.write("" + v.getInfo() + "\n");
+                    progressListener.incrementProgress();
+                    totalLines++;
+
+                }
+            }
+        } catch (CanceledException canceled) {
+            System.err.println("USER CANCELED");
+        }
+        return totalLines;
+    }
+
+    /**
      * export name to read length mapping
      *
      * @param cViewer

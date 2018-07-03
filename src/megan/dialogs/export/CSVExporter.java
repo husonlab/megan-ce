@@ -98,9 +98,11 @@ public class CSVExporter {
             formats.add("readName_to_lengthAndCoverage");
         }
 
-        if (shortName.equals("taxon"))
+        if (shortName.equals("taxon")) {
             formats.add("ko_to_taxon");
-
+            formats.add("listTaxonNames");
+            formats.add("listTaxonIds");
+        }
 
         return formats;
     }
@@ -151,6 +153,8 @@ public class CSVExporter {
             }
         } else if (format.equalsIgnoreCase("ko_to_taxon")) {
             count = ExportKO2TaxaTable.export(format, dir, file, separator, progressListener);
+        } else if (format.startsWith("listTaxon")) {
+            count = CSVExportFViewer.exportNames(format, dir.getMainViewer(), file, progressListener);
         } else {
             for (String cName : cNames) {
                 if (format.startsWith(cName.toLowerCase())) {

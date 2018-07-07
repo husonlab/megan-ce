@@ -80,7 +80,7 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof ClassificationViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
+        return (getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getDocument().getNumberOfSamples() > 1) || (getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1);
     }
 
     public String getName() {

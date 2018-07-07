@@ -1731,6 +1731,15 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     public boolean useHeatMapColors() {
         return getNodeDrawer().getStyle() == NodeDrawer.Style.HeatMap;
     }
+
+    public void selectNodesPositiveAssigned() {
+        for (Object o : getGraph().nodes()) {
+            final Node v = (Node) o;
+            if (!getSelected(v) && getNodeData(v).getCountAssigned() > 0) {
+                setSelected(v, true);
+            }
+        }
+    }
 }
 
 

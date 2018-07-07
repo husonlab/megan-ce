@@ -24,7 +24,9 @@ import jloda.gui.director.ProjectManager;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
+import megan.fx.NotificationsInSwing;
 import megan.groups.GroupsViewer;
+import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
@@ -51,7 +53,7 @@ public class SelectAllNodesCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
 
         np.matchIgnoreCase("select nodes=");
-        String what = np.getWordMatchesIgnoringCase("all none leaves internal previous subTree leavesBelow subLeaves nodesAbove intermediate invert");
+        String what = np.getWordMatchesIgnoringCase("all none leaves internal previous subTree leavesBelow subLeaves nodesAbove intermediate invert positiveAssigned");
         np.matchRespectCase(";");
 
         final ViewerBase viewer;
@@ -98,6 +100,12 @@ public class SelectAllNodesCommand extends CommandBase implements ICommand {
             viewer.selectAllIntermediateNodes();
         else if (what.equals("invert"))
             viewer.invertNodeSelection();
+        else if (what.equals("positiveAssigned")) {
+            if (viewer instanceof ClassificationViewer)
+                ((ClassificationViewer) viewer).selectNodesPositiveAssigned();
+            else
+                NotificationsInSwing.showWarning("select nodes=" + what + ": not implemented for this type of viewer");
+        }
         System.err.println("Number of nodes selected: " + viewer.getNumberSelectedNodes());
         viewer.repaint();
 

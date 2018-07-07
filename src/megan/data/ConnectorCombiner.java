@@ -88,11 +88,12 @@ public class ConnectorCombiner implements IConnector {
 
     @Override
     public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        final IReadBlockIterator[] iterators = new IReadBlockIterator[connectors.length];
+        final ArrayList<IReadBlockIterator> iterators = new ArrayList<>();
         for (int i = 0; i < connectors.length; i++) {
-            iterators[i] = connectors[i].getReadsIteratorForListOfClassIds(classification, classIds, minScore, maxExpected, wantReadSequence, wantMatches);
+            if (connectors[i] != null)
+                iterators.add(connectors[i].getReadsIteratorForListOfClassIds(classification, classIds, minScore, maxExpected, wantReadSequence, wantMatches));
         }
-        return new ReadBlockIteratorCombiner(iterators);
+        return new ReadBlockIteratorCombiner(iterators.toArray(new IReadBlockIterator[0]));
     }
 
     @Override

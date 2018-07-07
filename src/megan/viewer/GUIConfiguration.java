@@ -52,7 +52,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Accession Parsing", "First Word Is Accession;Set Accession Tags;");
         menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;Disable Default;");
 
-        menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;|;Invert;|;Select By Rank;|;Scroll To Selected;");
+        menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;Has Assigned;|;Invert;|;Select By Rank;|;Scroll To Selected;");
 
         menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Layout Labels;|;Scale Nodes By Assigned;Scale Nodes By Summarized;"
                 + "Set Max Node Height...;|;Zoom To Selection;|;Fully Contract;Fully Expand;|;"

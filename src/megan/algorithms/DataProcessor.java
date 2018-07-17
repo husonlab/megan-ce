@@ -195,7 +195,7 @@ public class DataProcessor {
                 final ReadBlockRMA6 mateReadBlock;
                 if (doMatePairs) {
                     try (RMA6File RMA6File = new RMA6File(doc.getMeganFile().getFileName(), "r")) {
-                        String[] matchClassificationNames = RMA6File.getHeaderSectionRMA6().getMatchClassNames();
+                        final String[] matchClassificationNames = RMA6File.getHeaderSectionRMA6().getMatchClassNames();
                         mateReadBlock = new ReadBlockRMA6(doc.getBlastMode(), true, matchClassificationNames);
                     }
                 } else

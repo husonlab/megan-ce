@@ -31,8 +31,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * assignment using best hit
- * Created by huson on 1/22/16.
+ * assignment using multi-gene best hit
+ * Daniel Huson, 2017
  */
 public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorithm {
     private final IntervalTree<IMatchBlock> allMatches;

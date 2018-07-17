@@ -209,7 +209,7 @@ public class TableItemTask extends Task<Integer> {
      * @param buffer
      */
     private void flushBuffer(Collection<TableItem> buffer) {
-        final TableItem[] items = buffer.toArray(new TableItem[buffer.size()]);
+        final TableItem[] items = buffer.toArray(new TableItem[0]);
         buffer.clear();
         Platform.runLater(new Runnable() {
             @Override
@@ -230,43 +230,46 @@ public class TableItemTask extends Task<Integer> {
                         tableView.getSelectionModel().select(tableItem);
                 }
                 if (System.currentTimeMillis() - 200 > previousSelectionTime.get()) { // only if sufficient time has passed since last scroll...
-                    final double focusCoordinate;
-                    int focusIndex = pane.getMatchSelection().getFocusIndex();
-                    if (focusIndex >= 0 && pane.getMatchSelection().getItems()[focusIndex] != null) {
-                        final IMatchBlock focusMatch = pane.getMatchSelection().getItems()[focusIndex];
-                        focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
-                        double leadingWidth = 0;
-                        double lastWidth = 0;
-                        double totalWidth = 0;
-                        {
-                            int numberOfColumns = tableView.getColumns().size();
-                            int columns = 0;
-                            for (TableColumn col : tableView.getColumns()) {
-                                if (col.isVisible()) {
-                                    if (columns < numberOfColumns - 1)
-                                        leadingWidth += col.getWidth();
-                                    else
-                                        lastWidth = col.getWidth();
-                                    totalWidth += col.getWidth();
+                    try {
+                        final double focusCoordinate;
+                        int focusIndex = pane.getMatchSelection().getFocusIndex();
+                        if (focusIndex >= 0 && pane.getMatchSelection().getItems()[focusIndex] != null) {
+                            final IMatchBlock focusMatch = pane.getMatchSelection().getItems()[focusIndex];
+                            focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
+                            double leadingWidth = 0;
+                            double lastWidth = 0;
+                            double totalWidth = 0;
+                            {
+                                int numberOfColumns = tableView.getColumns().size();
+                                int columns = 0;
+                                for (TableColumn col : tableView.getColumns()) {
+                                    if (col.isVisible()) {
+                                        if (columns < numberOfColumns - 1)
+                                            leadingWidth += col.getWidth();
+                                        else
+                                            lastWidth = col.getWidth();
+                                        totalWidth += col.getWidth();
+                                    }
+                                    columns++;
                                 }
-                                columns++;
+                            }
+
+                            final double coordinateToShow = leadingWidth + lastWidth * (focusCoordinate / maxReadLength.get());
+                            final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
+
+                            if (hScrollBar != null) { // should never be null, but best to check...
+                                final double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((coordinateToShow) / totalWidth);
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tableView.scrollTo(tableItem);
+                                        hScrollBar.setValue(newPos);
+                                    }
+                                });
                             }
                         }
-
-                        final double coordinateToShow = leadingWidth + lastWidth * (focusCoordinate / maxReadLength.get());
-                        final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
-
-                        if (hScrollBar != null) { // should never be null, but best to check...
-                            final double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((coordinateToShow) / totalWidth);
-
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tableView.scrollTo(tableItem);
-                                    hScrollBar.setValue(newPos);
-                                }
-                            });
-                        }
+                    } catch (Exception ex) {
                     }
                 }
                 previousSelectionTime.set(System.currentTimeMillis());

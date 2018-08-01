@@ -288,13 +288,14 @@ public class DAAParser {
                         break;
                     }
                 }
-                if (!covered)
-                    if (numberOfMatches == matchRecords.length) {
+                if (!covered) {
+                    if (numberOfMatches + 1 >= matchRecords.length) {
                         final DAAMatchRecord[] tmp = new DAAMatchRecord[2 * numberOfMatches];
                         System.arraycopy(matchRecords, 0, tmp, 0, matchRecords.length);
                         matchRecords = tmp;
                     }
-                matchRecords[numberOfMatches++] = interval.getData();
+                    matchRecords[numberOfMatches++] = interval.getData();
+                }
             }
         }
 

@@ -150,15 +150,15 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                             }
                         }
                         // determine the top-percent threshold on the current segment:
-                        float topPercenThreshold = 0;
+                        float topPercentThreshold = 0;
                         for (Float value : taxon2BestScore.values()) {
-                            topPercenThreshold = Math.max(topPercenThreshold, value);
+                            topPercentThreshold = Math.max(topPercentThreshold, value);
                         }
-                        topPercenThreshold = (100.0f - topPercent) / 100.0f * topPercenThreshold;
+                        topPercentThreshold = (100.0f - topPercent) / 100.0f * topPercentThreshold;
 
                         // add the segments for all taxa whose best match exceeds the threshold:
                         for (Integer taxonId : taxon2BestScore.keySet()) {
-                            if (taxon2BestScore.get(taxonId) >= topPercenThreshold) {
+                            if (taxon2BestScore.get(taxonId) >= topPercentThreshold) {
                                 IntervalList intervals = taxa2intervals.get(taxonId);
                                 if (intervals == null) {
                                     intervals = new IntervalList();

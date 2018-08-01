@@ -19,6 +19,7 @@
 
 package megan.dialogs.export;
 
+import jloda.graph.Node;
 import jloda.util.*;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
@@ -33,10 +34,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * exports the average number of frame-shifts per kilo-base of aligned sequence
@@ -72,12 +70,17 @@ public class CSVExportFrameShiftsPerKb {
 
                 try {
                     for (int classId : ids) {
-                        final int numberOfReads = classificationBlock.getSum(classId);
+                        final Collection<Integer> allBelow;
+                        final Node v = viewer.getTaxId2Node(classId);
 
-                        if (numberOfReads > 0) {
+                        if (v.getOutDegree() == 0)
+                            allBelow = TaxonomyData.getTree().getAllDescendants(classId);
+                        else
+                            allBelow = Collections.singletonList(classId);
 
-                            try (IReadBlockIterator it = connector.getReadsIterator(viewer.getClassName(), classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
-                                final ArrayList<Pair<String, Float>> pairs = new ArrayList<>(numberOfReads);
+                        if (viewer.getNodeData(v).getCountSummarized() > 0) {
+                            try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
+                                final ArrayList<Pair<String, Float>> pairs = new ArrayList<>();
                                 while (it.hasNext()) {
                                     final IReadBlock readBlock = it.next();
                                     if (readBlock.getNumberOfAvailableMatchBlocks() > 0) {
@@ -90,7 +93,7 @@ public class CSVExportFrameShiftsPerKb {
                                             totalLines++;
                                         }
                                     }
-                                    progress.setProgress((long) (1000.0 * (countsClasses + (double) pairs.size() / (double) numberOfReads)));
+                                    progress.setProgress((long) (1000.0 * (countsClasses + (double) it.getProgress() / (double) it.getMaximumProgress())));
                                 }
 
                                 final Statistics statistics = new Statistics(Pair.secondValues(pairs));

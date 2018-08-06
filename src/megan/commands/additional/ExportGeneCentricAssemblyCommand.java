@@ -398,7 +398,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                 String fileName = (new File(outfile.getText().trim())).getPath();
 
                 if (fileName.length() > 0) {
-                    if (Basic.getSuffix(fileName) == null)
+                    if (Basic.getFileSuffix(fileName) == null)
                         fileName = Basic.replaceFileSuffix(fileName, ".fasta");
                     if (!askedToOverwrite.get() && (new File(fileName)).exists()) {
                         switch (JOptionPane.showConfirmDialog(getViewer().getFrame(), "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {

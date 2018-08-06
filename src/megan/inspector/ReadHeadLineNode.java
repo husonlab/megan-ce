@@ -51,13 +51,13 @@ public class ReadHeadLineNode extends NodeBase {
             if (rank <= 0)
                 return getName();
             else
-                return getName() + " [matches=" + (int) rank + "]";
+                return String.format("%s [matches=%,d]", getName(), (int) rank);
         } else // readLength>0
         {
             if (rank <= 0)
-                return getName() + " [length=" + getReadLength() + "]";
+                return String.format("%s [length=%,d]", getName(), getReadLength());
             else
-                return getName() + " [length=" + getReadLength() + ", matches=" + (int) rank + "]";
+                return String.format("%s [length=%,d, matches=%,d]", getName(), getReadLength(), (int) rank);
         }
     }
 

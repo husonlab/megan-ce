@@ -55,7 +55,7 @@ public class RMAFileFilter extends FileFilterBase implements FilenameFilter {
      */
     @Override
     public boolean accept(File pathname) {
-        String suffix = Basic.getSuffix(pathname.getName()).toLowerCase();
+        String suffix = Basic.getFileSuffix(pathname.getName()).toLowerCase();
         if (suffix.startsWith(".rma")) {
             try (InputReader r = new InputReader(pathname, null, null, true)) {
                 int magicNumber = r.readInt();

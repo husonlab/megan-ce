@@ -45,7 +45,10 @@ public class TopLevelNode extends NodeBase {
     }
 
     public String toString() {
-        return getName() + (rank > -1 ? " [" + (int) rank + "]" : "");
+        if (rank > -1)
+            return String.format("%s [%,d]", getName(), (int) rank);
+        else
+            return getName();
     }
 
     public boolean isLeaf() {

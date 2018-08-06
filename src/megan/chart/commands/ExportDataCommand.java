@@ -75,7 +75,7 @@ public class ExportDataCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(lastOpenFile), new TextFileFilter(), new TextFileFilter(), event, "Save data file", ".txt");
 
         if (file != null) {
-            if (Basic.getSuffix(file.getName()) == null)
+            if (Basic.getFileSuffix(file.getName()) == null)
                 file = Basic.replaceFileSuffix(file, ".txt");
             ProgramProperties.put("DataFile", file.getPath());
             execute("export what=chartData file='" + file.getPath() + "';");

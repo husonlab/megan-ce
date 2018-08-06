@@ -97,7 +97,7 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save contigs file", ".fasta");
 
         if (file != null) {
-            if (Basic.getSuffix(file.getName()) == null)
+            if (Basic.getFileSuffix(file.getName()) == null)
                 file = Basic.replaceFileSuffix(file, ".gml");
             ProgramProperties.put("OverlapGraphFile", file);
             execute("export overlapGraph file='" + file.getPath() + "' minOverlap=" + ProgramProperties.get("AssemblyMinOverlap", 20) + " showGraph=false;");

@@ -95,7 +95,7 @@ public class ExportAlignmentCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save alignment file", ".fasta");
 
         if (file != null) {
-            if (Basic.getSuffix(file.getName()) == null)
+            if (Basic.getFileSuffix(file.getName()) == null)
                 file = Basic.replaceFileSuffix(file, ".txt");
             ProgramProperties.put("SaveAlignment", file);
             SelectedBlock selectedBlock = ((AlignmentViewer) getViewer()).getSelectedBlock();

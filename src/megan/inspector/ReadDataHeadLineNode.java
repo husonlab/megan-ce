@@ -36,7 +36,7 @@ public class ReadDataHeadLineNode extends NodeBase {
         if (readLength > 0) {
             builder.append("[");
             first = false;
-            builder.append("length=").append(readLength);
+            builder.append(String.format("length=%,d", readLength));
         }
         if (weight > 1) {
             if (first) {
@@ -44,7 +44,7 @@ public class ReadDataHeadLineNode extends NodeBase {
                 first = false;
             } else
                 builder.append(", ");
-            builder.append("weight=").append(weight);
+            builder.append(String.format("weight=%,d", weight));
         }
 
         if (complexity > 0) {

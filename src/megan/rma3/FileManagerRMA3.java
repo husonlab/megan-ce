@@ -64,7 +64,7 @@ public class FileManagerRMA3 {
         final String fileName = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getAlignmentFile();
         if (fileName == null || fileName.length() == 0)
             return null;
-        final String suffix = Basic.getSuffix(fileName);
+        final String suffix = Basic.getFileSuffix(fileName);
         final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getAlignmentFileFormat();
 
         return getFile(rma3File, fileName, suffix, type, true);
@@ -80,7 +80,7 @@ public class FileManagerRMA3 {
         final String fileName = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getReadsFile();
         if (fileName == null || fileName.length() == 0)
             return null;
-        final String suffix = Basic.getSuffix(fileName);
+        final String suffix = Basic.getFileSuffix(fileName);
         final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getReadsFileFormat();
 
         return getFile(rma3File, fileName, suffix, type, false);

@@ -870,8 +870,8 @@ public class SAMMatch implements megan.rma3.IMatch {
             case BlastX:
             case BlastP:
                 for (int i = 0; i < top; i++) {
-                    byte a = (byte) gappedQuerySequence.charAt(i);
-                    byte b = (byte) gappedReferenceSequence.charAt(i);
+                    byte a = (byte) Character.toUpperCase(gappedQuerySequence.charAt(i));
+                    byte b = (byte) Character.toUpperCase(gappedReferenceSequence.charAt(i));
                     if (Character.isLetter(a) && Character.isLetter(b)) {
                         if (a == b)
                             midBuffer.append((char) a);

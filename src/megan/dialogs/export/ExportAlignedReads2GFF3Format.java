@@ -57,7 +57,7 @@ public class ExportAlignedReads2GFF3Format {
         long countAlignments = 0;
         final BlastMode blastMode = cViewer.getDir().getDocument().getBlastMode();
 
-        final String[] cNames = cViewer.getDocument().getActiveViewers().toArray(new String[cViewer.getDocument().getActiveViewers().size()]);
+        final String[] cNames = cViewer.getDocument().getActiveViewers().toArray(new String[0]);
 
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
@@ -128,7 +128,7 @@ public class ExportAlignedReads2GFF3Format {
                 progressListener.setProgress(0);
                 w.write(ExportAlignedReads2GFF3Format.getHeader());
                 for (TableItem item : viewer.getController().getTableView().getSelectionModel().getSelectedItems()) {
-                    final String[] cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[item.getPane().getClassificationLabelsShowing().size()]);
+                    final String[] cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[0]);
                     if (cNames.length == 0)
                         System.err.println("Skipping '" + item.getReadName() + "': no classification showing");
                     else if (classificationToReport != null && !Basic.contains(cNames, classificationToReport))

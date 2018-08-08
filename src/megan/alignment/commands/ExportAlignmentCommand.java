@@ -47,7 +47,7 @@ import java.io.Writer;
  */
 public class ExportAlignmentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "export alignment file=<filename> [what={all|selection}];";
+        return "export alignment file=<filename> [what={all|selected}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -100,7 +100,7 @@ public class ExportAlignmentCommand extends CommandBase implements ICommand {
             ProgramProperties.put("SaveAlignment", file);
             SelectedBlock selectedBlock = ((AlignmentViewer) getViewer()).getSelectedBlock();
 
-            executeImmediately("export alignment file='" + file.getPath() + "' what=" + (selectedBlock == null || !selectedBlock.isSelected() ? "all" : "Selected") + ";");
+            executeImmediately("export alignment file='" + file.getPath() + "' what=" + (selectedBlock == null || !selectedBlock.isSelected() ? "all" : "selected") + ";");
         }
     }
 

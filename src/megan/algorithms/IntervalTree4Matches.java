@@ -145,7 +145,7 @@ public class IntervalTree4Matches {
     }
 
     /**
-     * extracts the set of dominating matches. A match is considered stronglt dominated, if  90% (default value) is covered by a match that has a bit score that is 10% better
+     * extracts the set of strongly dominating matches. A match is considered strongly dominated, if  90% (default value) is covered by a match that has a bit score that is 10% better
      *
      * @param intervals              input
      * @param cNames                 dominator must have value of each of these for which the dominated does

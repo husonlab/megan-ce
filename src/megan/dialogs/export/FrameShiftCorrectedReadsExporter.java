@@ -44,22 +44,22 @@ public class FrameShiftCorrectedReadsExporter {
      *
      * @param connector
      * @param fileName
-     * @param progressListener
+     * @param progress
      * @throws IOException
      */
-    public static int exportAll(IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
+    public static int exportAll(IConnector connector, String fileName, ProgressListener progress) throws IOException {
         int total = 0;
         try {
-            progressListener.setTasks("Export", "Writing all corrected reads");
+            progress.setTasks("Export", "Writing all corrected reads");
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
                 final IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true);
-                progressListener.setMaximum(it.getMaximumProgress());
-                progressListener.setProgress(0);
+                progress.setMaximum(it.getMaximumProgress());
+                progress.setProgress(0);
                 while (it.hasNext()) {
                     total++;
-                    correctAndWrite(it.next(), w);
-                    progressListener.setProgress(it.getProgress());
+                    correctAndWrite(progress, it.next(), w);
+                    progress.setProgress(it.getProgress());
                 }
             }
         } catch (CanceledException ex) {
@@ -75,16 +75,16 @@ public class FrameShiftCorrectedReadsExporter {
      * @param classIds
      * @param connector
      * @param fileName
-     * @param progressListener
+     * @param progress
      * @throws IOException
      * @throws CanceledException
      */
-    public static int export(String classificationName, Collection<Integer> classIds, IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
+    public static int export(String classificationName, Collection<Integer> classIds, IConnector connector, String fileName, ProgressListener progress) throws IOException {
         int total = 0;
         try {
-            progressListener.setTasks("Export", "Writing selected corrected reads");
+            progress.setTasks("Export", "Writing selected corrected reads");
 
-            final boolean useOneOutputFile = (!fileName.contains("%t"));
+            final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
             final Classification classification;
             BufferedWriter w;
@@ -99,24 +99,30 @@ public class FrameShiftCorrectedReadsExporter {
 
             int maxProgress = 100000 * classIds.size();
 
-            progressListener.setMaximum(maxProgress);
-            progressListener.setProgress(0);
+            progress.setMaximum(maxProgress);
+            progress.setProgress(0);
 
             int countClassIds = 0;
             for (Integer classId : classIds) {
-                if (!useOneOutputFile) {
-                    if (w != null)
-                        w.close();
-                    final String cName = classification.getName2IdMap().get(classId);
-                    w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName))));
-                }
-
                 countClassIds++;
+
+                boolean first = true;
+
                 final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10000, true, true);
                 while (it.hasNext()) {
+                    // open file here so that we only create a file if there is actually something to iterate over...
+                    if (first) {
+                        if (!useOneOutputFile) {
+                            if (w != null)
+                                w.close();
+                            final String cName = classification.getName2IdMap().get(classId);
+                            w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                        }
+                        first = false;
+                    }
                     total++;
-                    correctAndWrite(it.next(), w);
-                    progressListener.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
+                    correctAndWrite(progress, it.next(), w);
+                    progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                 }
             }
             if (w != null)
@@ -135,12 +141,12 @@ public class FrameShiftCorrectedReadsExporter {
      * @return number of reads written
      * @throws IOException
      */
-    private static void correctAndWrite(IReadBlock readBlock, Writer w) throws IOException {
-        final Pair<String, String> headerAndSequence = correctFrameShiftsInSequence(readBlock);
+    private static void correctAndWrite(ProgressListener progress, IReadBlock readBlock, Writer w) throws IOException, CanceledException {
+        final Pair<String, String> headerAndSequence = correctFrameShiftsInSequence(progress, readBlock);
         if (headerAndSequence != null) {
             w.write(headerAndSequence.getFirst());
             w.write("\n");
-            w.write(headerAndSequence.getSecond());
+            w.write(Basic.foldHard(headerAndSequence.getSecond(), 140));
             w.write("\n");
         } else
             w.write("null\n");
@@ -152,7 +158,7 @@ public class FrameShiftCorrectedReadsExporter {
      * @param readBlock
      * @return corrected sequence or null
      */
-    private static Pair<String, String> correctFrameShiftsInSequence(IReadBlock readBlock) {
+    private static Pair<String, String> correctFrameShiftsInSequence(ProgressListener progress, IReadBlock readBlock) throws CanceledException {
         final String originalSequence = readBlock.getReadSequence();
         if (originalSequence == null)
             return null;
@@ -187,6 +193,7 @@ public class FrameShiftCorrectedReadsExporter {
                 break;
             sortedIntervals.removeAll(intervals.getIntervals(interval));
             computeEdits(interval.getData(), edits);
+            progress.checkForCancel();
         }
 
         edits.sort(new Comparator<Edit>() {

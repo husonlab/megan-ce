@@ -77,23 +77,23 @@ public class TestRun {
 
         if (true) {
             time = System.currentTimeMillis();
-            IReadBlockIterator it = connector.getAllReadsIterator(500, 0, true, false);
-            int pos = 0;
-            while (it.hasNext()) {
-                IReadBlock block = it.next();
-                pos++;
-                if (pos % 5000 == 0) {
-                    long t = System.currentTimeMillis() - time;
-                    double rpms = (double) pos / ((double) t / 1000);
-                    System.out.println(String.format("%s Reads in %s. This means %s reads per second.", pos, t, rpms));
+            try (IReadBlockIterator it = connector.getAllReadsIterator(500, 0, true, false)) {
+                int pos = 0;
+                while (it.hasNext()) {
+                    IReadBlock block = it.next();
+                    pos++;
+                    if (pos % 5000 == 0) {
+                        long t = System.currentTimeMillis() - time;
+                        double rpms = (double) pos / ((double) t / 1000);
+                        System.out.println(String.format("%s Reads in %s. This means %s reads per second.", pos, t, rpms));
+                    }
+                    for (IMatchBlock mblock : block.getMatchBlocks()) {
+                        //System.out.println(mblock);
+                    }
                 }
-                for (IMatchBlock mblock : block.getMatchBlocks()) {
-                    //System.out.println(mblock);
-                }
+                now = System.currentTimeMillis();
+                System.out.println(String.format("Loading readblocks(Allreadblockit) (number of readblocks %s)(in ms): %s", pos, (now - time)));
             }
-            it.close();
-            now = System.currentTimeMillis();
-            System.out.println(String.format("Loading readblocks(Allreadblockit) (number of readblocks %s)(in ms): %s", pos, (now - time)));
         }
 
 
@@ -104,18 +104,18 @@ public class TestRun {
 
         {
             time = System.currentTimeMillis();
-            IReadBlockIterator it = connector.getReadsIterator("Taxonomy", 1735, 200, 0, true, false);
-            int pos = 0;
-            while (it.hasNext()) {
-                IReadBlock block = it.next();
-                pos++;
-                for (IMatchBlock mblock : block.getMatchBlocks()) {
-                    //System.out.println(mblock);
+            try (IReadBlockIterator it = connector.getReadsIterator("Taxonomy", 1735, 200, 0, true, false)) {
+                int pos = 0;
+                while (it.hasNext()) {
+                    IReadBlock block = it.next();
+                    pos++;
+                    for (IMatchBlock mblock : block.getMatchBlocks()) {
+                        //System.out.println(mblock);
+                    }
                 }
+                now = System.currentTimeMillis();
+                System.out.println(String.format("Loading readblocks readblockit (number of blocks %s)(in ms): %s", pos, (now - time)));
             }
-            it.close();
-            now = System.currentTimeMillis();
-            System.out.println(String.format("Loading readblocks readblockit (number of blocks %s)(in ms): %s", pos, (now - time)));
         }
         List<Long> readUids = new ArrayList<>();
         {
@@ -123,19 +123,19 @@ public class TestRun {
             List<Integer> classIds = new ArrayList<>();
             classIds.add(1735);
             classIds.add(-1);
-            IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds("Taxonomy", classIds, 200, 0, true, false);
-            int pos = 0;
-            while (it.hasNext()) {
-                IReadBlock block = it.next();
-                readUids.add(block.getUId());
-                pos++;
-                for (IMatchBlock mblock : block.getMatchBlocks()) {
-                    //System.out.println(mblock);
+            try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds("Taxonomy", classIds, 200, 0, true, false)) {
+                int pos = 0;
+                while (it.hasNext()) {
+                    IReadBlock block = it.next();
+                    readUids.add(block.getUId());
+                    pos++;
+                    for (IMatchBlock mblock : block.getMatchBlocks()) {
+                        //System.out.println(mblock);
+                    }
                 }
+                now = System.currentTimeMillis();
+                System.out.println(String.format("Loading Multiple class (Number of reads %s)(in ms): %s", pos, (now - time)));
             }
-            it.close();
-            now = System.currentTimeMillis();
-            System.out.println(String.format("Loading Multiple class (Number of reads %s)(in ms): %s", pos, (now - time)));
 
         }
         {
@@ -169,14 +169,15 @@ public class TestRun {
             FindSelection findsel = new FindSelection();
             findsel.useMatchText = true;
             time = System.currentTimeMillis();
-            IReadBlockIterator it = connector.getFindAllReadsIterator("Bacteria", findsel, new Single<>(false));
-            int pos = 0;
-            while (it.hasNext()) {
-                IReadBlock block = it.next();
-                pos++;
+            try (IReadBlockIterator it = connector.getFindAllReadsIterator("Bacteria", findsel, new Single<>(false))) {
+                int pos = 0;
+                while (it.hasNext()) {
+                    IReadBlock block = it.next();
+                    pos++;
+                }
+                now = System.currentTimeMillis();
+                System.out.println(String.format("Searching in remote file for \"Bacteria\"(number of blocks %s)(in ms): %s", pos, (now - time)));
             }
-            now = System.currentTimeMillis();
-            System.out.println(String.format("Searching in remote file for \"Bacteria\"(number of blocks %s)(in ms): %s", pos, (now - time)));
         }
 
         {

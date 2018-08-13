@@ -56,14 +56,13 @@ public class NaiveMatchBasedProfile {
         final BitSet activeTaxa = new BitSet();
 
         int totalAssigned = 0;
-        final IReadBlockIterator it = doc.getConnector().getAllReadsIterator(0, 10, true, true);
+        try (IReadBlockIterator it = doc.getConnector().getAllReadsIterator(0, 10, true, true)) {
 
-        final ProgressListener progressListener = doc.getProgressListener();
-        progressListener.setTasks("Computing profile", "Processing all reads and matches");
-        progressListener.setMaximum(it.getMaximumProgress());
-        progressListener.setProgress(0);
+            final ProgressListener progressListener = doc.getProgressListener();
+            progressListener.setTasks("Computing profile", "Processing all reads and matches");
+            progressListener.setMaximum(it.getMaximumProgress());
+            progressListener.setProgress(0);
 
-        try {
             while (it.hasNext()) {
                 final IReadBlock readBlock = it.next();
 
@@ -102,8 +101,6 @@ public class NaiveMatchBasedProfile {
                 }
                 progressListener.setProgress(it.getProgress());
             }
-        } finally {
-            it.close();
         }
 
         int minSupport = (int) (totalAssigned / 100.0 * minPercent);

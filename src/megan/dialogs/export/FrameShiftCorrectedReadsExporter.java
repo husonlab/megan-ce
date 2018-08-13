@@ -52,8 +52,7 @@ public class FrameShiftCorrectedReadsExporter {
         try {
             progress.setTasks("Export", "Writing all corrected reads");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
-                final IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true);
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
                 progress.setMaximum(it.getMaximumProgress());
                 progress.setProgress(0);
                 while (it.hasNext()) {
@@ -108,21 +107,22 @@ public class FrameShiftCorrectedReadsExporter {
 
                 boolean first = true;
 
-                final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10000, true, true);
-                while (it.hasNext()) {
-                    // open file here so that we only create a file if there is actually something to iterate over...
-                    if (first) {
-                        if (!useOneOutputFile) {
-                            if (w != null)
-                                w.close();
-                            final String cName = classification.getName2IdMap().get(classId);
-                            w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10000, true, true)) {
+                    while (it.hasNext()) {
+                        // open file here so that we only create a file if there is actually something to iterate over...
+                        if (first) {
+                            if (!useOneOutputFile) {
+                                if (w != null)
+                                    w.close();
+                                final String cName = classification.getName2IdMap().get(classId);
+                                w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                            }
+                            first = false;
                         }
-                        first = false;
+                        total++;
+                        correctAndWrite(progress, it.next(), w);
+                        progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                     }
-                    total++;
-                    correctAndWrite(progress, it.next(), w);
-                    progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                 }
             }
             if (w != null)

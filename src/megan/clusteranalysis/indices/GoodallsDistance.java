@@ -68,13 +68,13 @@ public class GoodallsDistance {
                 }
             }
         }
-            for (Double[] numbers : input) {
-                for (int i = 0; i < numbers.length; i++) {
-                    if (total[i] > 0) {
-                        numbers[i] /= total[i];
-                    }
+        for (Double[] numbers : input) {
+            for (int i = 0; i < numbers.length; i++) {
+                if (total[i] > 0) {
+                    numbers[i] /= total[i];
                 }
             }
+        }
 
         System.err.println("Nodes used: " + seen.size());
 

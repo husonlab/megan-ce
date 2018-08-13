@@ -95,19 +95,21 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
 
         Map<String, Integer> matched2count = new HashMap<>();
 
-        for (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), classId, doc.getMinScore(), doc.getMaxExpected(), false, true); it.hasNext(); ) {
-            IReadBlock readBlock = it.next();
-            for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
-                        (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
-                    String firstLine = matchBlock.getText().split("\n")[0];
+        try (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), classId, doc.getMinScore(), doc.getMaxExpected(), false, true)) {
+            while (it.hasNext()) {
+                final IReadBlock readBlock = it.next();
+                for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
+                    IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                    if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
+                            (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
+                        String firstLine = matchBlock.getText().split("\n")[0];
 
-                    Integer count = matched2count.get(firstLine);
-                    if (count == null)
-                        matched2count.put(firstLine, 1);
-                    else
-                        matched2count.put(firstLine, count + 1);
+                        Integer count = matched2count.get(firstLine);
+                        if (count == null)
+                            matched2count.put(firstLine, 1);
+                        else
+                            matched2count.put(firstLine, count + 1);
+                    }
                 }
             }
         }

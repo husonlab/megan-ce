@@ -414,7 +414,7 @@ public class DataProcessor {
      * @param minCoveredPercent percent of read that must be covered
      * @param readBlock
      * @param activeMatches
-     * @param intervals this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
+     * @param intervals         this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */
     private static boolean ensureCovered(double minCoveredPercent, IReadBlock readBlock, BitSet activeMatches, IntervalTree<Object> intervals) {

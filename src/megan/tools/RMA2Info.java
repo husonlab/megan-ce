@@ -328,48 +328,49 @@ public class RMA2Info {
                         continue;
 
                     if (classId > 0 || !ignoreUnassigned) {
-                        final IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, false);
-                        while (it.hasNext()) {
-                            final IReadBlock readBlock = it.next();
-                            final String className;
+                        try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10, true, false)) {
+                            while (it.hasNext()) {
+                                final IReadBlock readBlock = it.next();
+                                final String className;
 
-                            if (isTaxonomy) {
-                                if (majorRanksOnly)
-                                    classId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
+                                if (isTaxonomy) {
+                                    if (majorRanksOnly)
+                                        classId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
 
-                                if (reportPaths) {
-                                    className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
-                                } else if (name2IdMap == null || name2IdMap.get(classId) == null)
-                                    className = "" + classId;
-
-                                else
-                                    className = name2IdMap.get(classId);
-                                if (prefixRank) {
-                                    int rank = TaxonomyData.getTaxonomicRank(classId);
-                                    String rankLabel = TaxonomicLevels.getName(rank);
-                                    if (rankLabel == null || rankLabel.length() == 0)
-                                        rankLabel = "?";
-                                    outs.write(readBlock.getReadName() + "\t" + rankLabel.charAt(0) + "\t" + className + "\n");
-                                } else
-                                    outs.write(readBlock.getReadName() + "\t" + className + "\n");
-
-                            } else {
-                                if (reportPaths) {
-                                    Collection<Node> nodes = classification.getFullTree().getNodes(classId);
-                                    if (nodes != null) {
-                                        for (Node v : nodes) {
-                                            String label = CSVExportFViewer.getPath(classification, v);
-                                            outs.write(readBlock.getReadName() + "\t" + label + "\n");
-                                        }
-                                    }
-                                } else {
-                                    if (name2IdMap == null || name2IdMap.get(classId) == null)
+                                    if (reportPaths) {
+                                        className = TaxonomyData.getPathOrId(classId, majorRanksOnly);
+                                    } else if (name2IdMap == null || name2IdMap.get(classId) == null)
                                         className = "" + classId;
+
                                     else
                                         className = name2IdMap.get(classId);
-                                    outs.write(readBlock.getReadName() + "\t" + className + "\n");
-                                }
+                                    if (prefixRank) {
+                                        int rank = TaxonomyData.getTaxonomicRank(classId);
+                                        String rankLabel = TaxonomicLevels.getName(rank);
+                                        if (rankLabel == null || rankLabel.length() == 0)
+                                            rankLabel = "?";
+                                        outs.write(readBlock.getReadName() + "\t" + rankLabel.charAt(0) + "\t" + className + "\n");
+                                    } else
+                                        outs.write(readBlock.getReadName() + "\t" + className + "\n");
 
+                                } else {
+                                    if (reportPaths) {
+                                        Collection<Node> nodes = classification.getFullTree().getNodes(classId);
+                                        if (nodes != null) {
+                                            for (Node v : nodes) {
+                                                String label = CSVExportFViewer.getPath(classification, v);
+                                                outs.write(readBlock.getReadName() + "\t" + label + "\n");
+                                            }
+                                        }
+                                    } else {
+                                        if (name2IdMap == null || name2IdMap.get(classId) == null)
+                                            className = "" + classId;
+                                        else
+                                            className = name2IdMap.get(classId);
+                                        outs.write(readBlock.getReadName() + "\t" + className + "\n");
+                                    }
+
+                                }
                             }
                         }
                     }

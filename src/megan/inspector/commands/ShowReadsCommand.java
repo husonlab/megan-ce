@@ -70,35 +70,36 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
         progress.setProgress(0);
         final Single<Boolean> canceled = new Single<>(false);
         final Single<Integer> matchesFound = new Single<>(0);
-        final IReadBlockIterator it = doc.getConnector().getFindAllReadsIterator(regExpression, findSelection, canceled);
-        progress.setMaximum(it.getMaximumProgress());
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        executor.submit(new Runnable() {
-            public void run() {
-                try {
-                    while (!canceled.get()) {
-                        progress.setProgress(it.getProgress());
-                        Thread.sleep(100);
+        try (IReadBlockIterator it = doc.getConnector().getFindAllReadsIterator(regExpression, findSelection, canceled)) {
+            progress.setMaximum(it.getMaximumProgress());
+            final ExecutorService executor = Executors.newFixedThreadPool(1);
+            executor.submit(new Runnable() {
+                public void run() {
+                    try {
+                        while (!canceled.get()) {
+                            progress.setProgress(it.getProgress());
+                            Thread.sleep(100);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (CanceledException ex) {
+                        System.err.println("USER CANCELED EXECUTE");
+                    } finally {
+                        canceled.set(true);
+                        executor.shutdownNow();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (CanceledException ex) {
-                    System.err.println("USER CANCELED EXECUTE");
-                } finally {
-                    canceled.set(true);
-                    executor.shutdownNow();
                 }
-            }
-        });
+            });
 
-        try {
-            while (it.hasNext()) {
-                inspectorWindow.addTopLevelReadNode(it.next(), Classification.Taxonomy);
-                matchesFound.set(matchesFound.get() + 1);
-                progress.setSubtask(matchesFound.get() + " found");
+            try {
+                while (it.hasNext()) {
+                    inspectorWindow.addTopLevelReadNode(it.next(), Classification.Taxonomy);
+                    matchesFound.set(matchesFound.get() + 1);
+                    progress.setSubtask(matchesFound.get() + " found");
+                }
+            } finally {
+                canceled.set(true);
             }
-        } finally {
-            canceled.set(true);
         }
 
         System.err.println("Found: " + matchesFound.get());

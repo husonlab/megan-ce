@@ -53,103 +53,102 @@ public class MatchSignaturesExporter {
     public static void export(IConnector connector, int taxonId, String rank, float minScore, float maxExpected, float minPercentIdentity, float topPercent, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         final String name = TaxonomyData.getName2IdMap().get(taxonId);
 
-        final IReadBlockIterator it = connector.getReadsIterator(Classification.Taxonomy, taxonId, minScore, maxExpected, true, true);
-
-        progressListener.setTasks("Export", "Computing match signatures for '" + name + "'");
-        progressListener.setMaximum(it.getMaximumProgress());
-        progressListener.setProgress(0);
-
-
         final Map<String, Integer> read2rank = new HashMap<>();
         final Set<Integer> allTaxa = new TreeSet<>();
 
         final List<Pair<String, Set<Integer>>> readsAndTaxa = new LinkedList<>();
 
         int readRank = 0;
-        while (it.hasNext()) {
-            IReadBlock readBlock = it.next();
-            String readName = readBlock.getReadName();
-            read2rank.put(readName, readRank);
+        try (IReadBlockIterator it = connector.getReadsIterator(Classification.Taxonomy, taxonId, minScore, maxExpected, true, true)) {
+            progressListener.setTasks("Export", "Computing match signatures for '" + name + "'");
+            progressListener.setMaximum(it.getMaximumProgress());
+            progressListener.setProgress(0);
 
-            final HashSet<Integer> taxa = new HashSet<>();
-            readsAndTaxa.add(new Pair<String, Set<Integer>>(readName, taxa));
 
-            double useMinScore = -1;
-            for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
-                        (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
-                    {
-                        if (useMinScore == -1)
-                            useMinScore = Math.max(minScore, (1f - topPercent) * matchBlock.getBitScore());
-                        if (matchBlock.getBitScore() >= useMinScore) {
-                            int taxId = mapToRank(rank, matchBlock.getTaxonId());
-                            if (taxId > 0)
-                                taxa.add(taxId);
+            while (it.hasNext()) {
+                final IReadBlock readBlock = it.next();
+                String readName = readBlock.getReadName();
+                read2rank.put(readName, readRank);
+
+                final HashSet<Integer> taxa = new HashSet<>();
+                readsAndTaxa.add(new Pair<String, Set<Integer>>(readName, taxa));
+
+                double useMinScore = -1;
+                for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
+                    IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                    if (matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+                            (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
+                        {
+                            if (useMinScore == -1)
+                                useMinScore = Math.max(minScore, (1f - topPercent) * matchBlock.getBitScore());
+                            if (matchBlock.getBitScore() >= useMinScore) {
+                                int taxId = mapToRank(rank, matchBlock.getTaxonId());
+                                if (taxId > 0)
+                                    taxa.add(taxId);
+                            }
                         }
                     }
                 }
+                allTaxa.addAll(taxa);
+                progressListener.setProgress(it.getProgress());
             }
-            allTaxa.addAll(taxa);
-            progressListener.setProgress(it.getProgress());
-        }
 
-        if (fileName.contains("%t"))
-            fileName = fileName.replaceAll("%t", Basic.replaceSpaces(name, '_'));
-        if (fileName.contains("%i"))
-            fileName = fileName.replaceAll("%i", "" + taxonId);
+            if (fileName.contains("%t"))
+                fileName = fileName.replaceAll("%t", Basic.replaceSpaces(name, '_'));
+            if (fileName.contains("%i"))
+                fileName = fileName.replaceAll("%i", "" + taxonId);
 
-        progressListener.setTasks("Export", "Writing to file: " + Basic.getFileBaseName(fileName));
-        progressListener.setMaximum(readsAndTaxa.size());
-        progressListener.setProgress(0);
+            progressListener.setTasks("Export", "Writing to file: " + Basic.getFileBaseName(fileName));
+            progressListener.setMaximum(readsAndTaxa.size());
+            progressListener.setProgress(0);
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
-            w.write("# " + rank + "-level patterns for '" + name + "'\n");
-            w.write("# Number of reads: " + read2rank.keySet().size() + "\n");
-            w.write("# Taxon ids:");
-            for (Integer taxon : allTaxa) {
-                w.write(String.format("\t%d", taxon));
-            }
-            w.write("\n");
-            w.write("# Taxon names:");
-            for (Integer taxon : allTaxa) {
-                w.write(String.format("\t%s", TaxonomyData.getName2IdMap().get(taxon)));
-            }
-            w.write("\n");
-
-            // write read to signature:
-            Map<String, List<String>> signature2reads = new TreeMap<>();
-            for (Pair<String, Set<Integer>> pair : readsAndTaxa) {
-                w.write(pair.get1() + "\t");
-                StringBuilder buf = new StringBuilder();
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
+                w.write("# " + rank + "-level patterns for '" + name + "'\n");
+                w.write("# Number of reads: " + read2rank.keySet().size() + "\n");
+                w.write("# Taxon ids:");
                 for (Integer taxon : allTaxa) {
-                    if (pair.get2().contains(taxon))
-                        buf.append("1");
-                    else
-                        buf.append("0");
-                }
-                String signature = buf.toString();
-                w.write(signature);
-                List<String> reads = signature2reads.get(signature);
-                if (reads == null) {
-                    reads = new LinkedList<>();
-                    signature2reads.put(signature, reads);
-                }
-                reads.add(pair.get1());
-                w.write("\n");
-            }
-
-            w.write("# Number of unique signatures: " + signature2reads.keySet().size() + "\n");
-            // write signature to reads:
-            for (String signature : signature2reads.keySet()) {
-                List<String> reads = signature2reads.get(signature);
-                w.write(String.format("%s\t%d", signature, reads.size()));
-                for (String read : reads) {
-                    w.write("\t" + read);
+                    w.write(String.format("\t%d", taxon));
                 }
                 w.write("\n");
-            }
+                w.write("# Taxon names:");
+                for (Integer taxon : allTaxa) {
+                    w.write(String.format("\t%s", TaxonomyData.getName2IdMap().get(taxon)));
+                }
+                w.write("\n");
 
+                // write read to signature:
+                Map<String, List<String>> signature2reads = new TreeMap<>();
+                for (Pair<String, Set<Integer>> pair : readsAndTaxa) {
+                    w.write(pair.get1() + "\t");
+                    StringBuilder buf = new StringBuilder();
+                    for (Integer taxon : allTaxa) {
+                        if (pair.get2().contains(taxon))
+                            buf.append("1");
+                        else
+                            buf.append("0");
+                    }
+                    String signature = buf.toString();
+                    w.write(signature);
+                    List<String> reads = signature2reads.get(signature);
+                    if (reads == null) {
+                        reads = new LinkedList<>();
+                        signature2reads.put(signature, reads);
+                    }
+                    reads.add(pair.get1());
+                    w.write("\n");
+                }
+
+                w.write("# Number of unique signatures: " + signature2reads.keySet().size() + "\n");
+                // write signature to reads:
+                for (String signature : signature2reads.keySet()) {
+                    List<String> reads = signature2reads.get(signature);
+                    w.write(String.format("%s\t%d", signature, reads.size()));
+                    for (String read : reads) {
+                        w.write("\t" + read);
+                    }
+                    w.write("\n");
+                }
+            }
         }
         System.err.println("Total reads: " + readsAndTaxa.size());
         System.err.println("Total taxa:  " + allTaxa.size());

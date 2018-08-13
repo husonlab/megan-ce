@@ -48,8 +48,7 @@ public class ReadsExporter {
         try {
             progressListener.setTasks("Export", "Writing all reads");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
-                IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false);
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false)) {
                 progressListener.setMaximum(it.getMaximumProgress());
                 progressListener.setProgress(0);
                 while (it.hasNext()) {
@@ -89,14 +88,15 @@ public class ReadsExporter {
                 for (Integer classId : classIds) {
                     countClassIds++;
                     currentProgress = 100000 * countClassIds;
-                    IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10000, true, false);
-                    long progressIncrement = 100000 / (it.getMaximumProgress() + 1);
+                    try (IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10000, true, false)) {
+                        long progressIncrement = 100000 / (it.getMaximumProgress() + 1);
 
-                    while (it.hasNext()) {
-                        total++;
-                        write(it.next(), w);
-                        progressListener.setProgress(currentProgress);
-                        currentProgress += progressIncrement;
+                        while (it.hasNext()) {
+                            total++;
+                            write(it.next(), w);
+                            progressListener.setProgress(currentProgress);
+                            currentProgress += progressIncrement;
+                        }
                     }
                 }
             }

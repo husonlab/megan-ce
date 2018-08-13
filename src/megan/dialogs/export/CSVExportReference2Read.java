@@ -66,11 +66,10 @@ public class CSVExportReference2Read {
             Map<String, List<String>> reference2reads = new HashMap<>();
 
             if (taxonIds.size() == 0) {
-                IReadBlockIterator it = connector.getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), true, false);
-                progressListener.setMaximum(it.getMaximumProgress());
-                progressListener.setProgress(0);
+                try (IReadBlockIterator it = connector.getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), true, false)) {
+                    progressListener.setMaximum(it.getMaximumProgress());
+                    progressListener.setProgress(0);
 
-                try {
                     while (it.hasNext()) {
                         IReadBlock readBlock = it.next();
                         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
@@ -90,8 +89,6 @@ public class CSVExportReference2Read {
                         }
                         progressListener.setProgress(it.getProgress());
                     }
-                } finally {
-                    it.close();
                 }
             } else {
                 int maxProgress = taxonIds.size();
@@ -100,12 +97,11 @@ public class CSVExportReference2Read {
 
                 for (int id : taxonIds) {
                     if (classificationBlock.getSum(id) > 0) {
-                        IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), id, doc.getMinScore(), doc.getMaxExpected(), true, false);
-                        progressListener.setMaximum(it.getMaximumProgress());
-                        progressListener.setProgress(0);
-                        try {
+                        try (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), id, doc.getMinScore(), doc.getMaxExpected(), true, false)) {
+                            progressListener.setMaximum(it.getMaximumProgress());
+                            progressListener.setProgress(0);
                             while (it.hasNext()) {
-                                IReadBlock readBlock = it.next();
+                                final IReadBlock readBlock = it.next();
                                 for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                                     IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
@@ -122,8 +118,6 @@ public class CSVExportReference2Read {
                                 }
                                 progressListener.setProgress(it.getProgress());
                             }
-                        } finally {
-                            it.close();
                         }
                     }
                 }

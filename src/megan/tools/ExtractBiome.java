@@ -18,6 +18,7 @@
  */
 package megan.tools;
 
+import jloda.gui.director.ProjectManager;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.SaveCommand;
@@ -99,8 +100,9 @@ public class ExtractBiome {
 
         TaxonomyData.load();
 
-        final Director dir = Director.newProject();
-        final Document doc = dir.getDocument();
+        final Document doc = new Document();
+        final Director dir = new Director(doc);
+        ProjectManager.addProject(dir, null);
         doc.setProgressListener(new ProgressSilent());
 
         doc.getMeganFile().setFile(inputFile, MeganFile.Type.MEGAN_SUMMARY_FILE);

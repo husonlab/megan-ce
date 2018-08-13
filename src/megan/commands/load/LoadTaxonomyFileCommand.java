@@ -138,7 +138,7 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
             StringBuilder buf = new StringBuilder();
             buf.append("load taxonomyFile='").append(file.getPath()).append("'");
             if (mappingFile != null)
-                buf.append(" mapfile='").append(mappingFile).append("';");
+                buf.append(" mapFile='").append(mappingFile).append("';");
             else
                 buf.append(";");
             buf.append("collapse level=2;");

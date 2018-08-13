@@ -74,7 +74,8 @@ public class SaveCommand extends CommandBase implements ICommand {
                     sampleViewer.getSamplesTable().getDataGrid().reload(doc.getSampleAttributeTable());
                 }
 
-                SyncDataTableAndTaxonomy.syncFormattingFromViewer2Summary(viewer, doc.getDataTable());
+                if (viewer != null)
+                    SyncDataTableAndTaxonomy.syncFormattingFromViewer2Summary(viewer, doc.getDataTable());
                 for (String cName : ClassificationManager.getAllSupportedClassifications()) {
                     if (dir.getViewerByClassName(ClassificationViewer.getClassName(cName)) != null && dir.getViewerByClassName(ClassificationViewer.getClassName(cName)) instanceof ClassificationViewer) {
                         ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));

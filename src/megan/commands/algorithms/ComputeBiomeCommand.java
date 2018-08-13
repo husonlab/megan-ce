@@ -43,6 +43,8 @@ import java.util.Set;
  * Daniel Huson, 2.2013
  */
 public class ComputeBiomeCommand extends CommandBase implements ICommand {
+    private Director newDir;
+
     public String getSyntax() {
         return "compute biome={core|total|rare} [classThreshold=<percentage>] [sampleThreshold=<percentage>] samples=<name name...>;";
     }
@@ -82,10 +84,12 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
 
         System.err.println("Number of samples: " + selectedSamples.size());
 
-        final Director newDir = Director.newProject();
-        newDir.getMainViewer().getFrame().setVisible(true);
-        newDir.getMainViewer().setDoReInduce(true);
-        newDir.getMainViewer().setDoReset(true);
+        newDir = Director.newProject();
+        if (dir.getMainViewer() != null) {
+            newDir.getMainViewer().getFrame().setVisible(true);
+            newDir.getMainViewer().setDoReInduce(true);
+            newDir.getMainViewer().setDoReset(true);
+        }
         final Document newDocument = newDir.getDocument();
 
         final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
@@ -128,7 +132,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
             if (newDocument.getNumberOfSamples() > 1) {
                 newDir.getMainViewer().getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.PieChart);
             }
-            NotificationsInSwing.showInformation(String.format("Wrote %,d reads to file '%s'", newDocument.getNumberOfReads(), fileName));
+            NotificationsInSwing.showInformation(String.format(Basic.capitalizeFirstLetter(what) + " biome has %,d reads", newDocument.getNumberOfReads()));
 
             newDir.execute("update reprocess=true reinduce=true;", newDir.getMainViewer().getCommandManager());
         }
@@ -155,6 +159,15 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
 
     public String getDescription() {
         return "Compute the core biome for a set of samples";
+    }
+
+    /**
+     * gets the new director created by running this command
+     *
+     * @return new dir
+     */
+    public Director getNewDir() {
+        return newDir;
     }
 }
 

@@ -45,8 +45,9 @@ import java.util.LinkedList;
 
 public class CompareCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "compare mode={" + Basic.toString(Comparer.COMPARISON_MODE.values(), "|") + "} [keep1={false|true}]"
-                + " [ignoreUnassigned={false|true}] [pid=<number> ...] [meganFile=<filename> ...];";
+        return "compare mode={" + Basic.toString(Comparer.COMPARISON_MODE.values(), "|") + "}" +
+                " readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}" +
+                " [keep1={false|true}] [ignoreUnassigned={false|true}] [pid=<number> ...] [meganFile=<filename> ...];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -150,13 +151,15 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.setDirty(true);
             doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
             final MainViewer mainViewer = dir.getMainViewer();
-            mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
-            mainViewer.collapseToDefault();
-            mainViewer.setDoReInduce(true);
-            mainViewer.setDoReset(true);
-            mainViewer.setVisible(true);
-            mainViewer.updateData();
-            doc.loadColorTableFromDataTable();
+            if (mainViewer != null) {
+                mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
+                mainViewer.collapseToDefault();
+                mainViewer.setDoReInduce(true);
+                mainViewer.setDoReset(true);
+                mainViewer.setVisible(true);
+                mainViewer.updateData();
+                doc.loadColorTableFromDataTable();
+            }
         } finally {
             for (Director aDir : toDelete) {
                 aDir.close();

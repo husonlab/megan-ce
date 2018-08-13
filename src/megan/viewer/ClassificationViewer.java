@@ -176,7 +176,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         frame = new JFrame();
 
-        getFrame().setIconImage(ProgramProperties.getProgramIcon().getImage());
+        if (ProgramProperties.getProgramIcon() != null)
+            getFrame().setIconImage(ProgramProperties.getProgramIcon().getImage());
 
         this.menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), getCommandManager());
         getFrame().setJMenuBar(menuBar);

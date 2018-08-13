@@ -64,7 +64,6 @@ public class MatchSignaturesExporter {
             progressListener.setMaximum(it.getMaximumProgress());
             progressListener.setProgress(0);
 
-
             while (it.hasNext()) {
                 final IReadBlock readBlock = it.next();
                 String readName = readBlock.getReadName();

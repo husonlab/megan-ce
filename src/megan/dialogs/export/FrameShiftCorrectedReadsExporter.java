@@ -33,11 +33,11 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Uses frame-shift aware protein alignments to "correct" problems in long reads
+ * Uses frame-shift aware protein alignments to "correct" frame-shift problems in long reads
  * Daniel Huson, 8.2018
  */
 public class FrameShiftCorrectedReadsExporter {
-    private enum EditType {frameShiftRight, frameShiftLeft, frameShiftRight2Bases, frameShiftLeft2Bases}
+    private enum EditType {positiveFrameShift, negativeFrameShift}
 
     /**
      * export all matches in file
@@ -93,7 +93,6 @@ public class FrameShiftCorrectedReadsExporter {
             } else {
                 w = null;
                 classification = ClassificationManager.get(classificationName, true);
-
             }
 
             int maxProgress = 100000 * classIds.size();
@@ -199,50 +198,45 @@ public class FrameShiftCorrectedReadsExporter {
             progress.checkForCancel();
         }
 
+        int countPositiveFrameShifts = 0;
+        int countNegativeFrameShift = 0;
+
         edits.sort(new Comparator<Edit>() {
             @Override
             public int compare(Edit a, Edit b) {
-                if (a.pos > b.pos)
+                if (a.pos < b.pos)
                     return -1;
-                else if (a.pos < b.pos)
+                else if (a.pos > b.pos)
                     return 1;
                 else return a.type.compareTo(b.type);
             }
         });
 
-        int countInsertions = 0;
-        int countDeletions = 0;
+        final StringBuilder buf = new StringBuilder();
 
-        int prevPos = -1;
+        int prev = 0;
+        for (Edit edit : edits) {
+            final int pos = edit.getPos();
 
-        // apply edits: // todo: need to implement this more efficiently!
-        final StringBuilder buf = new StringBuilder(originalSequence);
-        for (Edit edit : edits) { // we are going through edits from back of sequence to front, so that positions stay valid
+            if (pos > prev)
+                buf.append(originalSequence, prev, pos);
+            prev = pos;
+
             switch (edit.getType()) {
-                case frameShiftRight: // insert an extra nucleotide
-                    buf.insert(edit.getPos(), 'N');
-                    countInsertions++;
+                case positiveFrameShift:
+                    buf.append("N");
+                    countPositiveFrameShifts++;
                     break;
-                case frameShiftLeft: // remove the current nucleotide
-                    buf.deleteCharAt(edit.getPos());
-                    countDeletions++;
+                case negativeFrameShift:
+                    buf.append("NN");
+                    countNegativeFrameShift++;
                     break;
-                case frameShiftRight2Bases: //insert two extra nucleotides
-                    buf.insert(edit.getPos(), 'N');
-                    buf.insert(edit.getPos() + 1, 'N');
-                    countInsertions += 2;
-                    break;
-                case frameShiftLeft2Bases: //remove two nucleotides from current position
-                    buf.deleteCharAt(edit.getPos());
-                    buf.deleteCharAt(edit.getPos() + 1);
-                    countDeletions += 2;
-                    break;
+                default:
+                    System.err.println("Illegal edit: " + edit);
             }
-            if (edit.getPos() == prevPos)
-                System.err.println("Warning: FrameShiftCorrection: multiple edits at same position: " + edit.getPos());
-            else
-                prevPos = edit.getPos();
         }
+        if (prev < originalSequence.length())
+            buf.append(originalSequence, prev, originalSequence.length());
 
         final String originalHeader = readBlock.getReadHeader();
         final StringBuilder headerBuf = new StringBuilder();
@@ -250,7 +244,7 @@ public class FrameShiftCorrectedReadsExporter {
             headerBuf.append(">unnamed");
         else
             headerBuf.append(originalHeader.startsWith(">") ? originalHeader.trim() : ">" + originalHeader.trim());
-        headerBuf.append(String.format("|corrected+%d-%d", countInsertions, countDeletions));
+        headerBuf.append(String.format("|corrected+%d-%d", countPositiveFrameShifts, countNegativeFrameShift));
         return new Pair<>(headerBuf.toString(), buf.toString());
     }
 
@@ -278,22 +272,14 @@ public class FrameShiftCorrectedReadsExporter {
 
             int pos = start - 1; // want this to be 0-based
             for (int i = 0; i < queryString.length(); i++) {
-                final boolean nextToQueryGap = ((i > 0 && queryString.charAt(i - 1) == '-') || (i + 1 < queryString.length() && queryString.charAt(i + 1) == '-'));
                 final char ch = queryString.charAt(i);
 
-                if (ch == '/') {
-                    // something needs to be inserted to query for the alignment to work, so frame-shift right
-                    edits.add(new Edit(EditType.frameShiftRight, pos - 1)); // minus 1 because insertion happens after pos
+                if (ch == '/') { // aligner postulates a positive frame shift, will have to insert one nucleotide in query fix frame
+                    edits.add(new Edit(EditType.positiveFrameShift, pos - 1));
                     pos -= 1; // move back one nucleotide
-                    System.err.println("A " + edits.get(edits.size() - 1));
-                } else if (ch == '\\') {
-                    if (nextToQueryGap) { //two bases needs to be added
-                        edits.add(new Edit(EditType.frameShiftRight2Bases, pos - 1));
-                    } else {
-                        edits.add(new Edit(EditType.frameShiftLeft, pos));
-                    }
-                    pos += 1; // move back two nucleotides
-                    System.err.println("A " + edits.get(edits.size() - 1));
+                } else if (ch == '\\') { // aligner postulates a negative frame shift, will have to insert two nucleotides in query to fix frame
+                    edits.add(new Edit(EditType.negativeFrameShift, pos));
+                    pos += 1; // move forward one nucleotide
                 } else if (ch != '-') { // if not a gap or a frame-shift, move along 3 nucleotides in the original sequence
                     pos += 3;
                 }
@@ -333,38 +319,12 @@ public class FrameShiftCorrectedReadsExporter {
             return null;
     }
 
-    private static Triplet<String, Integer, Integer> getSubject(String matchText) {
-        final StringBuilder buf = new StringBuilder();
-        String startString = null;
-        String endString = null;
-
-        try (final BufferedReader reader = new BufferedReader(new StringReader(matchText))) {
-            String aLine;
-            while ((aLine = reader.readLine()) != null) {
-                aLine = aLine.trim();
-                if (aLine.startsWith("Sbjct:")) {
-                    final String[] tokens = Basic.splitOnWhiteSpace(aLine);
-                    if (startString == null)
-                        startString = tokens[1];
-                    buf.append(tokens[2]);
-                    endString = tokens[3];
-                }
-            }
-        } catch (IOException e) {
-            Basic.caught(e); // can't happen
-        }
-        if (startString != null && endString != null)
-            return new Triplet<>(buf.toString(), Integer.parseInt(startString), Integer.parseInt(endString));
-        else
-            return null;
-    }
-
     /**
      * a sequence edit
      */
     private static class Edit {
         private final EditType type;
-        private final int pos; // 0-based position
+        private int pos; // 0-based position
 
         public Edit(EditType type, int pos) {
             this.type = type;
@@ -381,6 +341,10 @@ public class FrameShiftCorrectedReadsExporter {
 
         public String toString() {
             return String.format("%s-%,d", type.toString(), pos);
+        }
+
+        public void incrementPos(int add) {
+            pos += add;
         }
     }
 }

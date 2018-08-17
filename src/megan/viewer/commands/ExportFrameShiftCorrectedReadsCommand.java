@@ -26,11 +26,10 @@ import jloda.util.Basic;
 import jloda.util.FastaFileFilter;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.classification.Classification;
 import megan.core.Document;
 import megan.dialogs.export.FrameShiftCorrectedReadsExporter;
 import megan.fx.NotificationsInSwing;
-import megan.viewer.MainViewer;
+import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -53,13 +52,13 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
         np.matchIgnoreCase(";");
 
         try {
-            int count = 0;
-            final MainViewer viewer = (MainViewer) getViewer();
+            final int count;
+            final ClassificationViewer viewer = (ClassificationViewer) getViewer();
             final Document doc = viewer.getDocument();
             if (saveAll)
                 count = FrameShiftCorrectedReadsExporter.exportAll(doc.getConnector(), fileName, doc.getProgressListener());
             else
-                count = FrameShiftCorrectedReadsExporter.export(Classification.Taxonomy, viewer.getSelectedIds(), doc.getConnector(), fileName, doc.getProgressListener());
+                count = FrameShiftCorrectedReadsExporter.export(viewer.getClassification().getName(), viewer.getSelectedIds(), doc.getConnector(), fileName, doc.getProgressListener());
 
             NotificationsInSwing.showInformation("Exported corrected reads: " + count);
 
@@ -69,8 +68,8 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public void actionPerformed(ActionEvent event) {
-        if (getViewer() instanceof MainViewer) {
-            final MainViewer viewer = (MainViewer) getViewer();
+        if (getViewer() instanceof ClassificationViewer) {
+            final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
             final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-corrected.fasta");
             File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save corrected reads file", ".fasta");
@@ -84,8 +83,8 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public boolean isApplicable() {
-        if (getViewer() instanceof MainViewer) {
-            final MainViewer viewer = (MainViewer) getViewer();
+        if (getViewer() instanceof ClassificationViewer) {
+            final ClassificationViewer viewer = (ClassificationViewer) getViewer();
             return viewer.getDocument().getMeganFile().hasDataConnector();
 
         } else

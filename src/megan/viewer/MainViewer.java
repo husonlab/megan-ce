@@ -251,7 +251,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 buf2.append(String.format(" (%s)", doc.getReadAssignmentMode().toString()));
             }
             if (doc.getBlastMode() != BlastMode.Unknown)
-                buf2.append(" blast=").append(doc.getBlastMode().toString());
+                buf2.append(" mode=").append(doc.getBlastMode().toString());
         }
 
         getStatusBar().setText2(buf2.toString());

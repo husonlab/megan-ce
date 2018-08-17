@@ -45,22 +45,24 @@ public class ReadsExtractor {
     /**
      * extracts all reads for the given classes
      *
-     * @param progressListener
+     * @param progress
      * @param classificationName
      * @param classIds
      * @param classId2Name
      * @param classId2Descendants
      * @param outDirectory
-     * @param outFileName
+     * @param fileName
      * @param doc
      * @param summarized
      * @throws IOException
      * @throws CanceledException
      */
-    private static int extractReads(final ProgressListener progressListener, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
+    private static int extractReads(final ProgressListener progress, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
                                     Map<Integer, Collection<Integer>> classId2Descendants,
-                                    final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
-        progressListener.setSubtask("Extracting by " + classificationName);
+                                    final String outDirectory, final String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
+        progress.setSubtask("Extracting by " + classificationName);
+
+        final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
         final IConnector connector = doc.getConnector();
         int numberOfReads = 0;
@@ -70,30 +72,46 @@ public class ReadsExtractor {
         if (classificationBlock == null)
             return 0;
 
-        BufferedWriter w = null;
+        BufferedWriter w;
+        if (useOneOutputFile) {
+            w = new BufferedWriter(new FileWriter(fileName));
+
+        } else {
+            w = null;
+        }
+
+        final int maxProgress = 100000 * classIds.size();
+
+        progress.setMaximum(maxProgress);
+        progress.setProgress(0);
+
+        int countClassIds = 0;
         try {
-            final boolean useMultipleFileNames = outFileName.contains("%t");
 
             for (Integer classId : classIds) {
+                countClassIds++;
+
                 final Collection<Integer> all = new HashSet<>();
                 all.add(classId);
                 if (summarized && classId2Descendants.get(classId) != null)
                     all.addAll(classId2Descendants.get(classId));
 
-                final String outFileFinalName;
-                if (useMultipleFileNames)
-                    outFileFinalName = outFileName.replaceAll("%t", Basic.toCleanName(classId2Name.get(classId)));
-                else
-                    outFileFinalName = outFileName;
-                File outFile = new File(outDirectory, outFileFinalName);
+                boolean first = true;
 
                 try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
-                    progressListener.setMaximum(it.getMaximumProgress());
-                    progressListener.setProgress(0);
+                    ;
                     while (it.hasNext()) {
-                        if (w == null)
-                            w = new BufferedWriter(new FileWriter(outFile));
-                        IReadBlock readBlock = it.next();
+                        if (first) {
+                            if (!useOneOutputFile) {
+                                if (w != null)
+                                    w.close();
+                                final String cName = classId2Name.get(classId);
+                                w = new BufferedWriter(new FileWriter(new File(outDirectory, fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId))));
+                            }
+                            first = false;
+                        }
+
+                        final IReadBlock readBlock = it.next();
                         String readHeader = readBlock.getReadHeader();
                         if (!readHeader.startsWith(">"))
                             w.write(">");
@@ -107,12 +125,8 @@ public class ReadsExtractor {
                                 w.write("\n");
                         }
                         numberOfReads++;
-                        progressListener.setProgress(it.getProgress());
+                        progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                     }
-                }
-                if (useMultipleFileNames && w != null) {
-                    w.close();
-                    w = null;
                 }
             }
         } catch (CanceledException ex) {

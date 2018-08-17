@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -37,7 +37,7 @@ import java.util.*;
  * Daniel Huson, 8.2018
  */
 public class FrameShiftCorrectedReadsExporter {
-    private static enum EditType {frameShiftRight, frameShiftLeft}
+    private enum EditType {frameShiftRight, frameShiftLeft, frameShiftRight2Bases, frameShiftLeft2Bases}
 
     /**
      * export all matches in file
@@ -102,31 +102,34 @@ public class FrameShiftCorrectedReadsExporter {
             progress.setProgress(0);
 
             int countClassIds = 0;
-            for (Integer classId : classIds) {
-                countClassIds++;
+            try {
+                for (Integer classId : classIds) {
+                    countClassIds++;
 
-                boolean first = true;
+                    boolean first = true;
 
-                try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10000, true, true)) {
-                    while (it.hasNext()) {
-                        // open file here so that we only create a file if there is actually something to iterate over...
-                        if (first) {
-                            if (!useOneOutputFile) {
-                                if (w != null)
-                                    w.close();
-                                final String cName = classification.getName2IdMap().get(classId);
-                                w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                    try (IReadBlockIterator it = connector.getReadsIterator(classificationName, classId, 0, 10000, true, true)) {
+                        while (it.hasNext()) {
+                            // open file here so that we only create a file if there is actually something to iterate over...
+                            if (first) {
+                                if (!useOneOutputFile) {
+                                    if (w != null)
+                                        w.close();
+                                    final String cName = classification.getName2IdMap().get(classId);
+                                    w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                                }
+                                first = false;
                             }
-                            first = false;
+                            total++;
+                            correctAndWrite(progress, it.next(), w);
+                            progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                         }
-                        total++;
-                        correctAndWrite(progress, it.next(), w);
-                        progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                     }
                 }
+            } finally {
+                if (w != null)
+                    w.close();
             }
-            if (w != null)
-                w.close();
         } catch (CanceledException ex) {
             System.err.println("USER CANCELED");
         }
@@ -224,6 +227,16 @@ public class FrameShiftCorrectedReadsExporter {
                     buf.deleteCharAt(edit.getPos());
                     countDeletions++;
                     break;
+                case frameShiftRight2Bases: //insert two extra nucleotides
+                    buf.insert(edit.getPos(), 'N');
+                    buf.insert(edit.getPos() + 1, 'N');
+                    countInsertions += 2;
+                    break;
+                case frameShiftLeft2Bases: //remove two nucleotides from current position
+                    buf.deleteCharAt(edit.getPos());
+                    buf.deleteCharAt(edit.getPos() + 1);
+                    countDeletions += 2;
+                    break;
             }
             if (edit.getPos() == prevPos)
                 System.err.println("Warning: FrameShiftCorrection: multiple edits at same position: " + edit.getPos());
@@ -248,27 +261,39 @@ public class FrameShiftCorrectedReadsExporter {
      * @param edits
      */
     private static void computeEdits(IMatchBlock matchBlock, ArrayList<Edit> edits) {
+
         final Triplet<String, Integer, Integer> queryStartEnd = getQuery(matchBlock.getText());
+
         if (queryStartEnd != null) {
-            final int start;
             final String queryString;
+            final int start;
+
             if (queryStartEnd.getSecond() < queryStartEnd.getThird()) { // start < end
                 start = queryStartEnd.getSecond();
                 queryString = queryStartEnd.getFirst();
             } else { // end<start, so reverse alignment
                 start = queryStartEnd.getThird();
-                queryString = SequenceUtils.getReverse(queryStartEnd.getFirst()); // not reverse complement!
+                queryString = SequenceUtils.getReverse(queryStartEnd.getFirst()); // NOT reverse complement!
             }
 
             int pos = start - 1; // want this to be 0-based
             for (int i = 0; i < queryString.length(); i++) {
-                char ch = queryString.charAt(i);
-                if (ch == '/') { // something needs to inserted to query for the alignment to work, so frame-shift right
+                final boolean nextToQueryGap = ((i > 0 && queryString.charAt(i - 1) == '-') || (i + 1 < queryString.length() && queryString.charAt(i + 1) == '-'));
+                final char ch = queryString.charAt(i);
+
+                if (ch == '/') {
+                    // something needs to be inserted to query for the alignment to work, so frame-shift right
                     edits.add(new Edit(EditType.frameShiftRight, pos - 1)); // minus 1 because insertion happens after pos
                     pos -= 1; // move back one nucleotide
-                } else if (ch == '\\') { // // something needs to deleted from query for the alignment to work, so frame-shift left
-                    edits.add(new Edit(EditType.frameShiftLeft, pos));
-                    pos += 1; // deletion: move forward nucleotide
+                    System.err.println("A " + edits.get(edits.size() - 1));
+                } else if (ch == '\\') {
+                    if (nextToQueryGap) { //two bases needs to be added
+                        edits.add(new Edit(EditType.frameShiftRight2Bases, pos - 1));
+                    } else {
+                        edits.add(new Edit(EditType.frameShiftLeft, pos));
+                    }
+                    pos += 1; // move back two nucleotides
+                    System.err.println("A " + edits.get(edits.size() - 1));
                 } else if (ch != '-') { // if not a gap or a frame-shift, move along 3 nucleotides in the original sequence
                     pos += 3;
                 }
@@ -308,6 +333,32 @@ public class FrameShiftCorrectedReadsExporter {
             return null;
     }
 
+    private static Triplet<String, Integer, Integer> getSubject(String matchText) {
+        final StringBuilder buf = new StringBuilder();
+        String startString = null;
+        String endString = null;
+
+        try (final BufferedReader reader = new BufferedReader(new StringReader(matchText))) {
+            String aLine;
+            while ((aLine = reader.readLine()) != null) {
+                aLine = aLine.trim();
+                if (aLine.startsWith("Sbjct:")) {
+                    final String[] tokens = Basic.splitOnWhiteSpace(aLine);
+                    if (startString == null)
+                        startString = tokens[1];
+                    buf.append(tokens[2]);
+                    endString = tokens[3];
+                }
+            }
+        } catch (IOException e) {
+            Basic.caught(e); // can't happen
+        }
+        if (startString != null && endString != null)
+            return new Triplet<>(buf.toString(), Integer.parseInt(startString), Integer.parseInt(endString));
+        else
+            return null;
+    }
+
     /**
      * a sequence edit
      */
@@ -326,6 +377,10 @@ public class FrameShiftCorrectedReadsExporter {
 
         public int getPos() {
             return pos;
+        }
+
+        public String toString() {
+            return String.format("%s-%,d", type.toString(), pos);
         }
     }
 }

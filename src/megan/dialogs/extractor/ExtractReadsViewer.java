@@ -112,7 +112,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         m2.setLayout(new BorderLayout());
         m2.add(new JLabel("File name:"), BorderLayout.WEST);
         m2.add(outFileTemplate, BorderLayout.CENTER);
-        outFileTemplate.setToolTipText("Set name of file to save to. Any occurrence of %t will be replaced by the name of the node");
+        outFileTemplate.setToolTipText("Set name of file to save to. Any occurrence of %t, or %i, will be replaced by the name or id of the node, respectively");
         middlePanel.add(m2);
 
         JPanel buttons = new JPanel();

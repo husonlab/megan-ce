@@ -84,7 +84,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
 
         System.err.println("Number of samples: " + selectedSamples.size());
 
-        newDir = Director.newProject();
+        newDir = Director.newProject(false);
         if (dir.getMainViewer() != null) {
             newDir.getMainViewer().getFrame().setVisible(true);
             newDir.getMainViewer().setDoReInduce(true);

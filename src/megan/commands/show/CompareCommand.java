@@ -152,13 +152,14 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
             final MainViewer mainViewer = dir.getMainViewer();
             if (mainViewer != null) {
-                mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
-                mainViewer.collapseToDefault();
-                mainViewer.setDoReInduce(true);
-                mainViewer.setDoReset(true);
-                mainViewer.setVisible(true);
-                mainViewer.updateData();
-                doc.loadColorTableFromDataTable();
+                if (mainViewer.isVisible()) {
+                    mainViewer.getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.BarChart);
+                    mainViewer.collapseToDefault();
+                    mainViewer.setDoReInduce(true);
+                    mainViewer.setDoReset(true);
+                    mainViewer.setVisible(true);
+                    doc.loadColorTableFromDataTable();
+                }
             }
         } finally {
             for (Director aDir : toDelete) {
@@ -174,9 +175,6 @@ public class CompareCommand extends CommandBase implements ICommand {
      */
     public void actionPerformed(ActionEvent event) {
         final Director newDir = Director.newProject();
-        newDir.getMainViewer().getFrame().setVisible(true);
-        newDir.getMainViewer().setDoReInduce(true);
-        newDir.getMainViewer().setDoReset(true);
 
         boolean ok = false;
         final CompareWindow compareWindow;

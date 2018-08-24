@@ -77,7 +77,7 @@ public class IntervalTree4Matches {
             }
         }
 
-        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>(); // initially all foward matches, at the end, all resulting matches
+        final IntervalTree<IMatchBlock> allMatches = new IntervalTree<>(); // initially all forward matches, at the end, all resulting matches
         final IntervalTree<IMatchBlock> reverseMatches = new IntervalTree<>(); // all reverse matches
         for (IMatchBlock matchBlock : intervals.values()) {
             if (matchBlock.getAlignedQueryStart() <= matchBlock.getAlignedQueryEnd()) {

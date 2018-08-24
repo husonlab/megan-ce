@@ -40,11 +40,13 @@ public class GUIConfiguration {
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Save As...;|;"
                 + "Export Image...;Export Legend...;@Export;|;Page Setup...;Print...;|;Extract To New Document...;Extract Reads...;|;Properties...;|;Close;|;Quit;");
 
-        menuConfig.defineMenu("Server", "Set Server Credentials...;;|;Add User...;Add Metadata...;");
+        menuConfig.defineMenu("Server", "Set Server Credentials...;|;Add User...;Add Metadata...;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Export", "Text (CSV) Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;" +
-                "Annotations in GFF Format...;Export Read Lengths and Coverage...;" + ProgramProperties.getIfEnabled("enable-frameshift-correction", "Export Frame-Shift Corrected Reads...;") + "|;" +
-                "Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
+                "Annotations in GFF Format...;Export Read Lengths and Coverage...;"
+                + ProgramProperties.getIfEnabled("enable-frameshift-correction", "Export Frame-Shift Corrected Reads...;")
+                + ProgramProperties.getIfEnabled("enable-segment-reads", "Export Segmented Reads...;")
+                + "|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Edit Node Label;Edit Edge Label;Description...;|;Format...;|;Find...;Find Again;|;Colors...;|;@Preferences;");
@@ -99,7 +101,7 @@ public class GUIConfiguration {
      */
     public static String getNodePopupConfiguration() {
         return "Inspect...;Inspect Long Reads...;|;Show Alignment...;Extract Reads...;Gene-Centric Assembly...;Correlate To Attributes...;|;Edit Node Label;Copy Node Label;|;Collapse;|;Uncollapse;Uncollapse Subtree;|;" +
-                "Node Labels On;Node Labels Off;|;Open Web Page...;Web Search...;";
+                "Node Labels On;Node Labels Off;|;" + ProgramProperties.getIfEnabled("enable-show-read-length-distribution", "Show Read Length Distribution...;") + "|;Open Web Page...;Web Search...;";
     }
 
     public static String getJTreePopupConfiguration() {

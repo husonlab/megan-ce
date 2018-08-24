@@ -27,7 +27,7 @@ import jloda.util.FastaFileFilter;
 import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
-import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
+import megan.dialogs.export.analysis.SegmentedReadsExporter;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
 
@@ -36,13 +36,17 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implements ICommand {
+/**
+ * export taxonomic segmentation of reads
+ * Daniel Huson, 8.2018
+ */
+public class ExportSegmentedReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "export correctedReads file=<filename> [what={all|selected}];";
+        return "export segmentedReads file=<filename> [what={all|selected}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("export correctedReads file=");
+        np.matchIgnoreCase("export segmentedReads file=");
         String fileName = np.getAbsoluteFileName();
         boolean saveAll = true;
         if (np.peekMatchIgnoreCase("what")) {
@@ -56,14 +60,14 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
             final ClassificationViewer viewer = (ClassificationViewer) getViewer();
             final Document doc = viewer.getDocument();
             if (saveAll)
-                count = FrameShiftCorrectedReadsExporter.exportAll(doc.getConnector(), fileName, doc.getProgressListener());
+                count = SegmentedReadsExporter.exportAll(doc, doc.getConnector(), fileName);
             else
-                count = FrameShiftCorrectedReadsExporter.export(viewer.getClassification().getName(), viewer.getSelectedIds(), doc.getConnector(), fileName, doc.getProgressListener());
+                count = SegmentedReadsExporter.export(doc, viewer.getClassification().getName(), viewer.getSelectedIds(), doc.getConnector(), fileName);
 
-            NotificationsInSwing.showInformation("Exported corrected reads: " + count);
+            NotificationsInSwing.showInformation("Exported segmented reads: " + count);
 
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export corrected reads failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export segmented reads failed: " + e.getMessage());
         }
     }
 
@@ -77,7 +81,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
             if (file != null) {
                 if (Basic.getFileSuffix(file.getName()) == null)
                     file = Basic.replaceFileSuffix(file, ".fasta");
-                execute("export correctedReads file='" + file.getPath() + "' what=" + (viewer.hasSelectedNodes() ? "selected" : "all") + ";");
+                execute("export segmentedReads file='" + file.getPath() + "' what=" + (viewer.hasSelectedNodes() ? "selected" : "all") + ";");
             }
         }
     }
@@ -92,7 +96,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public String getName() {
-        return "Export Frame-Shift Corrected Reads...";
+        return "Export Segmented Reads...";
     }
 
     public ImageIcon getIcon() {
@@ -100,7 +104,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public String getDescription() {
-        return "Export frame-shift corrected reads, use %t or %i in filename for to save each class into a different file";
+        return "Export segmented reads, use %t or %i in filename for to save each class into a different file";
     }
 
     public boolean isCritical() {

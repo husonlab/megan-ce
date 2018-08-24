@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.dialogs.export;
+package megan.dialogs.export.analysis;
 
 import jloda.util.*;
 import megan.algorithms.IntervalTree4Matches;
@@ -33,7 +33,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Uses frame-shift aware protein alignments to "correct" frame-shift problems in long reads
+ * Uses frame-shift aware protein alignments to correct frame-shift problems in long reads
  * Daniel Huson, 8.2018
  */
 public class FrameShiftCorrectedReadsExporter {

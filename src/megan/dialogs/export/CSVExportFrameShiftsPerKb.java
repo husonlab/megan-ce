@@ -136,15 +136,19 @@ public class CSVExportFrameShiftsPerKb {
         int countAlignedBases = 0;
 
         if (excludeDominated) {
-            final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.extractStronglyDominatingIntervals(IntervalTree4Matches.computeIntervalTree(readBlock, null), new String[]{Classification.Taxonomy}, "all");
-            for (IMatchBlock matchBlock : intervals.values()) {
-                for (String line : Basic.getLinesFromString(matchBlock.getText())) {
-                    if (line.startsWith("Query:")) {
-                        countFrameShifts += Basic.countOccurrences(line, '\\');
-                        countFrameShifts += Basic.countOccurrences(line, '/');
+            try {
+                final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.extractStronglyDominatingIntervals(IntervalTree4Matches.computeIntervalTree(readBlock, null, null), new String[]{Classification.Taxonomy}, "all");
+                for (IMatchBlock matchBlock : intervals.values()) {
+                    for (String line : Basic.getLinesFromString(matchBlock.getText())) {
+                        if (line.startsWith("Query:")) {
+                            countFrameShifts += Basic.countOccurrences(line, '\\');
+                            countFrameShifts += Basic.countOccurrences(line, '/');
+                        }
                     }
+                    countAlignedBases += Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
                 }
-                countAlignedBases += Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
+            } catch (CanceledException ex) {
+                // can't happen
             }
         } else {
             for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {

@@ -46,18 +46,19 @@ public class TaxonomicSegmentation {
     public static final float defaultIncompatibleFactor = 0.2f;
 
     private int rank = defaultRank;
-    private final Map<Integer, Integer> tax2ancestor;
+    private final Map<Integer, Integer> tax2taxAtRank;
     private float switchPenalty = defaultSwitchPenalty;
     private float compatibleFactor = defaultCompatibleFactor;
     private float incompatibleFactor = defaultIncompatibleFactor;
 
-    private boolean verbose = true;
+    private boolean verbose = false;
 
     /**
      * constructor
      */
     public TaxonomicSegmentation() {
-        tax2ancestor = new HashMap<>();
+        tax2taxAtRank = new HashMap<>();
+        rank = TaxonomicLevels.getId(TaxonomicLevels.Phylum);
     }
 
     /**
@@ -73,7 +74,7 @@ public class TaxonomicSegmentation {
 
         progress.setSubtask("Computing intervals");
 
-        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null); // todo: use dominated only?
+        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null, progress); // todo: use dominated only?
 
         final TreeSet<Integer> positions = new TreeSet<>();
         for (Interval<IMatchBlock> interval : intervals) {
@@ -83,79 +84,23 @@ public class TaxonomicSegmentation {
 
         int rank = TaxonomicLevels.getId(TaxonomicLevels.Phylum);
 
-        final ArrayList<DataPoint> dataPoints = computeDataPoints(intervals, positions, rank);
+        final ArrayList<DPColumn> columns = computeDPColumns(intervals, positions, rank);
 
         final Set<Integer> allTaxa = new TreeSet<>();
         for (IMatchBlock matchBlock : intervals.values()) {
             if (matchBlock.getTaxonId() > 0) {
-                int tax = getAncestor(matchBlock.getTaxonId());
+                int tax = getTaxonAtRank(matchBlock.getTaxonId());
                 if (tax > 0)
                     allTaxa.add(tax);
             }
         }
 
-        final ArrayList<Segment> segments = computeSegments(progress, allTaxa, 1, readBlock.getReadLength(), dataPoints);
-
-        final String originalHeader = readBlock.getReadHeader();
-        final StringBuilder headerBuf = new StringBuilder();
-        if (originalHeader == null)
-            headerBuf.append(">unnamed");
-        else
-            headerBuf.append(originalHeader.startsWith(">") ? originalHeader.trim() : ">" + originalHeader.trim());
-
-        return segments;
-    }
-
-    /**
-     * compute the datapoints
-     *
-     * @param intervals
-     * @param positions
-     * @param rank
-     * @return DP data points
-     */
-    private ArrayList<DataPoint> computeDataPoints(IntervalTree<IMatchBlock> intervals, TreeSet<Integer> positions, int rank) {
-        final ArrayList<DataPoint> dataPoints = new ArrayList<>();
-
-        DataPoint prevDataPoint = null;
-
-        for (Integer pos : positions) {
-            final DataPoint dataPoint = new DataPoint(pos);
-            if (prevDataPoint == null) { // initialized first
-                dataPoints.add(dataPoint);
-            } else {
-                for (Interval<IMatchBlock> interval : intervals.getIntervals(pos)) {
-                    final IMatchBlock matchBlock = interval.getData();
-                    final int segmentLength = pos - prevDataPoint.getPos() + 1;
-                    if (segmentLength >= 5) {
-                        final float score = matchBlock.getBitScore() * segmentLength / matchBlock.getLength();
-                        final int tax = getAncestor(matchBlock.getTaxonId());
-                        if (tax > 0)
-                            dataPoint.add(tax, score);
-                    }
-                }
-                dataPoints.add(dataPoint);
-            }
-            prevDataPoint = dataPoint;
-        }
-        return dataPoints;
-    }
-
-    /**
-     * create segments using dynamic programming
-     *
-     * @param readEnd
-     * @param dataPoints
-     * @return segments
-     */
-    private ArrayList<Segment> computeSegments(ProgressListener progress, final Set<Integer> allTaxa, int readStart, int readEnd, ArrayList<DataPoint> dataPoints) throws CanceledException {
         if (allTaxa.size() == 0)
             return new ArrayList<>();
 
         progress.setSubtask("Running dynamic program");
-        progress.setMaximum(dataPoints.size());
+        progress.setMaximum(columns.size());
         progress.setProgress(0);
-
 
         final float changePenalty = 10000.0f;
         final float compatibleFactor = 1.0f;
@@ -169,14 +114,14 @@ public class TaxonomicSegmentation {
             }
         }
 
-        final float[][] scoreMatrix = new float[dataPoints.size()][allTaxa.size()];
-        final int[][] traceBackMatrix = new int[dataPoints.size()][allTaxa.size()];
+        final float[][] scoreMatrix = new float[columns.size()][allTaxa.size()];
+        final int[][] traceBackMatrix = new int[columns.size()][allTaxa.size()];
 
         {
-            for (int col = 1; col < dataPoints.size(); col++) { // skip the first point
-                final DataPoint dataPoint = dataPoints.get(col);
+            for (int col = 1; col < columns.size(); col++) { // skip the first point
+                final DPColumn column = columns.get(col);
                 if (verbose)
-                    System.err.println(String.format("DataPoint@ %,d", dataPoint.getPos()) + ":");
+                    System.err.println(String.format("DPColumn@ %,d", column.getPos()) + ":");
                 for (Integer tax : allTaxa) {
                     final int row = tax2row.get(tax);
 
@@ -187,10 +132,10 @@ public class TaxonomicSegmentation {
                         final int otherRow = tax2row.get(otherTax);
                         if (otherTax.equals(tax)) { // look at staying with tax
                             final float score;
-                            if (dataPoint.getScore(tax) > 0) // there is an alignment using tax
-                                score = scoreMatrix[col - 1][row] + compatibleFactor * dataPoint.getScore(tax);
+                            if (column.getScore(tax) > 0) // there is an alignment using tax
+                                score = scoreMatrix[col - 1][row] + compatibleFactor * column.getScore(tax);
                             else // no current alignment using tax, use the lowest scoring alternative
-                                score = scoreMatrix[col - 1][row] + incompatibleFactor * dataPoint.getMinAlignmentScore();
+                                score = scoreMatrix[col - 1][row] + incompatibleFactor * column.getMinAlignmentScore();
 
                             if (score > maxScore) {
                                 maxScore = score;
@@ -198,10 +143,10 @@ public class TaxonomicSegmentation {
                             }
                         } else { // other != tax, look at switching from tax to other
                             final float score;
-                            if (dataPoint.getScore(otherTax) > 0)
-                                score = scoreMatrix[col - 1][otherRow] + compatibleFactor * dataPoint.getScore(otherTax) - changePenalty;
+                            if (column.getScore(otherTax) > 0)
+                                score = scoreMatrix[col - 1][otherRow] + compatibleFactor * column.getScore(otherTax) - changePenalty;
                             else
-                                score = scoreMatrix[col - 1][otherRow] + incompatibleFactor * dataPoint.getMinAlignmentScore() - changePenalty;
+                                score = scoreMatrix[col - 1][otherRow] + incompatibleFactor * column.getMinAlignmentScore() - changePenalty;
 
                             if (score > maxScore) {
                                 maxScore = score;
@@ -221,7 +166,7 @@ public class TaxonomicSegmentation {
         }
 
         final List<Pair<Float, Integer>> bestScores;
-        if (dataPoints.size() > 0)
+        if (columns.size() > 0)
             bestScores = computeBestScores(allTaxa, tax2row, scoreMatrix, 0.1);
         else
             bestScores = new ArrayList<>();
@@ -233,7 +178,7 @@ public class TaxonomicSegmentation {
         }
 
         // trace back:
-        ArrayList<Segment> segments = new ArrayList<>();
+        final ArrayList<Segment> segments = new ArrayList<>();
 
         if (bestScores.size() > 0) {
             int tax = bestScores.get(0).getSecond();
@@ -241,13 +186,13 @@ public class TaxonomicSegmentation {
             int col = scoreMatrix.length - 1;
 
             while (col > 0) {
-                final DataPoint currentDataPoint = dataPoints.get(col);
+                final DPColumn currentColumn = columns.get(col);
                 int prevCol = col - 1;
                 while (prevCol > 0 && traceBackMatrix[prevCol][row] == tax)
                     prevCol--;
-                final DataPoint prevDataPoint = dataPoints.get(prevCol);
+                final DPColumn prevColumn = columns.get(prevCol);
                 if (tax > 0)
-                    segments.add(new Segment(prevDataPoint.getPos(), currentDataPoint.getPos(), tax));
+                    segments.add(new Segment(prevColumn.getPos(), currentColumn.getPos(), tax));
                 if (prevCol > 0) {
                     tax = traceBackMatrix[prevCol][row];
                     row = tax2row.get(tax);
@@ -256,12 +201,49 @@ public class TaxonomicSegmentation {
             }
         }
         // reverse:
-        segments = Basic.reverse(segments);
+        Basic.reverseInPlace(segments);
 
         System.err.println("Segments: " + Basic.toString(segments, " "));
 
         return segments;
     }
+
+
+    /**
+     * compute the columns for the DP
+     *
+     * @param intervals
+     * @param positions
+     * @param rank
+     * @return DP data points
+     */
+    private ArrayList<DPColumn> computeDPColumns(IntervalTree<IMatchBlock> intervals, TreeSet<Integer> positions, int rank) {
+        final ArrayList<DPColumn> columns = new ArrayList<>();
+
+        DPColumn prevColumn = null;
+
+        for (Integer pos : positions) {
+            final DPColumn column = new DPColumn(pos);
+            if (prevColumn == null) { // initialized first
+                columns.add(column);
+            } else {
+                for (Interval<IMatchBlock> interval : intervals.getIntervals(pos)) {
+                    final IMatchBlock matchBlock = interval.getData();
+                    final int segmentLength = pos - prevColumn.getPos() + 1;
+                    if (segmentLength >= 5) {
+                        final float score = matchBlock.getBitScore() * segmentLength / matchBlock.getLength();
+                        final int tax = getTaxonAtRank(matchBlock.getTaxonId());
+                        if (tax > 0)
+                            column.add(tax, score);
+                    }
+                }
+                columns.add(column);
+            }
+            prevColumn = column;
+        }
+        return columns;
+    }
+
 
     /**
      * determine the best scores seen
@@ -306,7 +288,7 @@ public class TaxonomicSegmentation {
 
     public void setRank(int rank) {
         if (rank != this.rank) {
-            tax2ancestor.clear();
+            tax2taxAtRank.clear();
             this.rank = rank;
         }
     }
@@ -342,7 +324,7 @@ public class TaxonomicSegmentation {
      * @param taxonId
      * @return ancestor or 0
      */
-    private Integer getAncestor(Integer taxonId) {
+    private Integer getTaxonAtRank(Integer taxonId) {
         // todo: cache values
         if (taxonId == 0)
             return 0;
@@ -350,15 +332,15 @@ public class TaxonomicSegmentation {
         if (rank == 0 || TaxonomyData.getTaxonomicRank(taxonId) == rank)
             return taxonId;
 
-        if (tax2ancestor.containsKey(taxonId))
-            return tax2ancestor.get(taxonId);
+        if (tax2taxAtRank.containsKey(taxonId))
+            return tax2taxAtRank.get(taxonId);
 
         int ancestorId = taxonId;
         Node v = TaxonomyData.getTree().getANode(ancestorId);
         while (v != null) {
             int vLevel = TaxonomyData.getTaxonomicRank(ancestorId);
             if (vLevel == rank) {
-                tax2ancestor.put(taxonId, ancestorId);
+                tax2taxAtRank.put(taxonId, ancestorId);
                 return ancestorId;
             }
             if (v.getInDegree() > 0) {
@@ -402,15 +384,14 @@ public class TaxonomicSegmentation {
     }
 
     /**
-     * summarizes all taxa currently alive at the end of a segment, together with their best scores
+     * a column in the dynamic program: all alignments that are available at the given position
      */
-    private class DataPoint {
-        // this is the data associated with the DP cell:
+    private class DPColumn {
         private int pos;
         private final Map<Integer, Float> taxon2AlignmentScore; // todo: replace by array and rows
         private float minAlignmentScore = 0;
 
-        public DataPoint(int pos) {
+        public DPColumn(int pos) {
             this.pos = pos;
             taxon2AlignmentScore = new TreeMap<>();
         }

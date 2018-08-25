@@ -169,7 +169,7 @@ public class TableItemTask extends Task<Integer> {
 
                         //updateMessage("Processing read " + readBlock.getReadName());
 
-                        final IntervalTree<IMatchBlock> intervalTree = IntervalTree4Matches.computeIntervalTree(readBlock, this);
+                        final IntervalTree<IMatchBlock> intervalTree = IntervalTree4Matches.computeIntervalTree(readBlock, this, null);
 
                         if (isCancelled())
                             break loop;

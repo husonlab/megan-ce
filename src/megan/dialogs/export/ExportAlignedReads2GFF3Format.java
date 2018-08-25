@@ -156,8 +156,9 @@ public class ExportAlignedReads2GFF3Format {
      * @param cNames
      * @return
      */
-    private static String createGFFLines(final BlastMode blastMode, final IReadBlock readBlock, final String[] cNames, final String classificationToReport, final int taxonId, boolean excludeIncompatible, boolean excludeDominated) {
-        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null);
+    private static String createGFFLines(final BlastMode blastMode, final IReadBlock readBlock, final String[] cNames, final String classificationToReport, final int taxonId, boolean excludeIncompatible, boolean excludeDominated) throws CanceledException {
+        final IntervalTree<IMatchBlock> intervals;
+        intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null, null);
         return createGFFLines(blastMode, readBlock.getReadName(), readBlock.getReadLength(), cNames, classificationToReport, intervals, taxonId, excludeIncompatible, excludeDominated);
     }
 

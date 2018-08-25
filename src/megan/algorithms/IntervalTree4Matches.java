@@ -20,8 +20,10 @@
 package megan.algorithms;
 
 import javafx.concurrent.Task;
+import jloda.util.CanceledException;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.ProgressListener;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.interval.Interval;
@@ -43,16 +45,24 @@ public class IntervalTree4Matches {
      *
      * @param readBlock
      * @param task      can be null
+     * @param progress
      * @return interval tree
      */
-    public static IntervalTree<IMatchBlock> computeIntervalTree(IReadBlock readBlock, Task task) {
+    public static IntervalTree<IMatchBlock> computeIntervalTree(IReadBlock readBlock, Task task, ProgressListener progress) throws CanceledException {
         final IntervalTree<IMatchBlock> intervalTree = new IntervalTree<>();
+
+        if (progress != null) {
+            progress.setMaximum(readBlock.getNumberOfAvailableMatchBlocks());
+            progress.setProgress(0);
+        }
 
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
             intervalTree.add(new Interval<>(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock));
             if (task != null && task.isCancelled())
                 break;
+            if (progress != null)
+                progress.incrementProgress();
         }
         return intervalTree;
     }

@@ -165,7 +165,7 @@ public class FrameShiftCorrectedReadsExporter {
         if (originalSequence == null)
             return null;
 
-        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null);
+        final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null, null);
 
         final SortedSet<Interval<IMatchBlock>> sortedIntervals = new TreeSet<>(new Comparator<Interval<IMatchBlock>>() { // sort by decreasing bit score, then by decreasing length
             @Override

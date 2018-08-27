@@ -30,7 +30,6 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
-import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
 import java.util.*;
@@ -40,12 +39,13 @@ import java.util.*;
  * Daniel Huson, 8.2018
  */
 public class TaxonomicSegmentation {
-    public static final int defaultRank = TaxonomicLevels.getSpeciesId();
-    public static final float defaultSwitchPenalty = 5000f;
-    public static final float defaultCompatibleFactor = 1f;
-    public static final float defaultIncompatibleFactor = 0.2f;
+    public static final int defaultRank = 0; // use next down
+    public static final float defaultSwitchPenalty = 10000f; // always non-negative
+    public static final float defaultCompatibleFactor = 1f; // always non-negative
+    public static final float defaultIncompatibleFactor = 0.2f; // always non-negative
 
-    private int rank = defaultRank;
+    private int rank = defaultRank; // rank 0 means use rank one below class id rank
+    private int classId = 0; // class id to which read is taxonomically assigned, or 0
     private final Map<Integer, Integer> tax2taxAtRank;
     private float switchPenalty = defaultSwitchPenalty;
     private float compatibleFactor = defaultCompatibleFactor;
@@ -58,7 +58,6 @@ public class TaxonomicSegmentation {
      */
     public TaxonomicSegmentation() {
         tax2taxAtRank = new HashMap<>();
-        rank = TaxonomicLevels.getId(TaxonomicLevels.Phylum);
     }
 
     /**
@@ -82,16 +81,16 @@ public class TaxonomicSegmentation {
             positions.add(interval.getEnd() - 1);
         }
 
-        int rank = TaxonomicLevels.getId(TaxonomicLevels.Phylum);
-
-        final ArrayList<DPColumn> columns = computeDPColumns(intervals, positions, rank);
+        final ArrayList<DPColumn> columns = computeDPColumns(intervals, positions);
 
         final Set<Integer> allTaxa = new TreeSet<>();
         for (IMatchBlock matchBlock : intervals.values()) {
             if (matchBlock.getTaxonId() > 0) {
-                int tax = getTaxonAtRank(matchBlock.getTaxonId());
+                final int tax = getTaxonAtRank(matchBlock.getTaxonId());
                 if (tax > 0)
                     allTaxa.add(tax);
+                else if (classId > 0 && TaxonomyData.isAncestor(tax, classId)) // if alignment lies on or above the target taxon, use it
+                    allTaxa.add(classId);
             }
         }
 
@@ -101,10 +100,6 @@ public class TaxonomicSegmentation {
         progress.setSubtask("Running dynamic program");
         progress.setMaximum(columns.size());
         progress.setProgress(0);
-
-        final float changePenalty = 10000.0f;
-        final float compatibleFactor = 1.0f;
-        final float incompatibleFactor = -0.2f;
 
         final Map<Integer, Integer> tax2row = new HashMap<>();
         {
@@ -123,45 +118,50 @@ public class TaxonomicSegmentation {
                 if (verbose)
                     System.err.println(String.format("DPColumn@ %,d", column.getPos()) + ":");
                 for (Integer tax : allTaxa) {
-                    final int row = tax2row.get(tax);
+                    if (tax != classId) { // don't use current assigned class, just need to use its alignments
+                        final int row = tax2row.get(tax);
 
-                    float maxScore = -1000000.0f;
-                    int maxScoreTax = 0;
+                        float maxScore = -10000000.0f;
+                        int maxScoreTax = 0;
 
-                    for (Integer otherTax : allTaxa) {
-                        final int otherRow = tax2row.get(otherTax);
-                        if (otherTax.equals(tax)) { // look at staying with tax
-                            final float score;
-                            if (column.getScore(tax) > 0) // there is an alignment using tax
-                                score = scoreMatrix[col - 1][row] + compatibleFactor * column.getScore(tax);
-                            else // no current alignment using tax, use the lowest scoring alternative
-                                score = scoreMatrix[col - 1][row] + incompatibleFactor * column.getMinAlignmentScore();
+                        for (Integer otherTax : allTaxa) {
+                            final int otherRow = tax2row.get(otherTax);
 
-                            if (score > maxScore) {
-                                maxScore = score;
-                                maxScoreTax = tax;
-                            }
-                        } else { // other != tax, look at switching from tax to other
-                            final float score;
-                            if (column.getScore(otherTax) > 0)
-                                score = scoreMatrix[col - 1][otherRow] + compatibleFactor * column.getScore(otherTax) - changePenalty;
-                            else
-                                score = scoreMatrix[col - 1][otherRow] + incompatibleFactor * column.getMinAlignmentScore() - changePenalty;
+                            if (otherTax.equals(tax)) { // look at staying with tax
+                                final float score;
+                                if (column.getScore(tax) > 0 || column.getScore(classId) > 0) {
+                                    score = scoreMatrix[col - 1][row] + compatibleFactor * Math.max(column.getScore(tax), column.getScore(classId));
+                                } else {
+                                    score = scoreMatrix[col - 1][row] - incompatibleFactor * column.getMinAlignmentScore();
+                                }
+                                if (score > maxScore) {
+                                    maxScore = score;
+                                    maxScoreTax = tax;
+                                }
 
-                            if (score > maxScore) {
-                                maxScore = score;
-                                maxScoreTax = otherTax;
+                            } else { // other != tax, look at switching from tax to other
+                                final float score;
+                                if (column.getScore(otherTax) > 0 || column.getScore(classId) > 0)
+                                    score = scoreMatrix[col - 1][otherRow] - switchPenalty + compatibleFactor * Math.max(column.getScore(otherTax), column.getScore(classId));
+                                else
+                                    score = scoreMatrix[col - 1][otherRow] - switchPenalty - incompatibleFactor * column.getMinAlignmentScore();
+
+                                if (score > maxScore) {
+                                    maxScore = score;
+                                    maxScoreTax = otherTax;
+                                }
                             }
                         }
-                    }
-                    if (verbose)
-                        System.err.println(String.format("Traceback %d (%s) %.1f from %d (%s) %.1f", tax, TaxonomyData.getName2IdMap().get(tax),
-                                maxScore, maxScoreTax, TaxonomyData.getName2IdMap().get(maxScoreTax), scoreMatrix[col - 1][tax2row.get(maxScoreTax)]));
 
-                    scoreMatrix[col][row] = maxScore;
-                    traceBackMatrix[col][row] = maxScoreTax;
+                        if (verbose)
+                            System.err.println(String.format("Traceback %d (%s) %.1f from %d (%s) %.1f", tax, TaxonomyData.getName2IdMap().get(tax),
+                                    maxScore, maxScoreTax, TaxonomyData.getName2IdMap().get(maxScoreTax), scoreMatrix[col - 1][tax2row.get(maxScoreTax)]));
+
+                        scoreMatrix[col][row] = maxScore;
+                        traceBackMatrix[col][row] = maxScoreTax;
+                    }
+                    progress.incrementProgress();
                 }
-                progress.incrementProgress();
             }
         }
 
@@ -203,7 +203,7 @@ public class TaxonomicSegmentation {
         // reverse:
         Basic.reverseInPlace(segments);
 
-        System.err.println("Segments: " + Basic.toString(segments, " "));
+        System.err.println(">" + Basic.swallowLeadingGreaterSign(readBlock.getReadName()) + ": segments: " + Basic.toString(segments, " "));
 
         return segments;
     }
@@ -214,10 +214,9 @@ public class TaxonomicSegmentation {
      *
      * @param intervals
      * @param positions
-     * @param rank
      * @return DP data points
      */
-    private ArrayList<DPColumn> computeDPColumns(IntervalTree<IMatchBlock> intervals, TreeSet<Integer> positions, int rank) {
+    private ArrayList<DPColumn> computeDPColumns(IntervalTree<IMatchBlock> intervals, TreeSet<Integer> positions) {
         final ArrayList<DPColumn> columns = new ArrayList<>();
 
         DPColumn prevColumn = null;
@@ -235,6 +234,8 @@ public class TaxonomicSegmentation {
                         final int tax = getTaxonAtRank(matchBlock.getTaxonId());
                         if (tax > 0)
                             column.add(tax, score);
+                        else if (classId > 0 && TaxonomyData.isAncestor(tax, classId)) // if alignment lies on or above the target taxon, use it
+                            column.add(classId, score);
                     }
                 }
                 columns.add(column);
@@ -293,11 +294,21 @@ public class TaxonomicSegmentation {
         }
     }
 
+    public int getClassId() {
+        return classId;
+    }
+
+    public void setClassId(int classId) {
+        this.classId = classId;
+    }
+
     public float getSwitchPenalty() {
         return switchPenalty;
     }
 
     public void setSwitchPenalty(float switchPenalty) {
+        if (switchPenalty < 0)
+            throw new IllegalArgumentException("negative switchPenalty");
         this.switchPenalty = switchPenalty;
     }
 
@@ -306,6 +317,8 @@ public class TaxonomicSegmentation {
     }
 
     public void setCompatibleFactor(float compatibleFactor) {
+        if (compatibleFactor < 0)
+            throw new IllegalArgumentException("negative compatibleFactor");
         this.compatibleFactor = compatibleFactor;
     }
 
@@ -314,9 +327,10 @@ public class TaxonomicSegmentation {
     }
 
     public void setIncompatibleFactor(float incompatibleFactor) {
+        if (incompatibleFactor < 0)
+            throw new IllegalArgumentException("negative incompatibleFactor");
         this.incompatibleFactor = incompatibleFactor;
     }
-
 
     /**
      * gets the ancestor tax id at the set rank or 0
@@ -325,7 +339,6 @@ public class TaxonomicSegmentation {
      * @return ancestor or 0
      */
     private Integer getTaxonAtRank(Integer taxonId) {
-        // todo: cache values
         if (taxonId == 0)
             return 0;
 
@@ -399,7 +412,6 @@ public class TaxonomicSegmentation {
         public void add(int tax, float score) {
             if (score <= 0)
                 throw new RuntimeException("Score must be positive, got: " + score); // should never happen
-
             final Float prev = taxon2AlignmentScore.get(tax);
             if (prev == null || prev < score)
                 taxon2AlignmentScore.put(tax, score);

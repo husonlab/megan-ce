@@ -19,16 +19,18 @@
 
 package megan.dialogs.export.analysis;
 
+import jloda.graph.Node;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.analysis.TaxonomicSegmentation;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.core.Document;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.viewer.TaxonomicLevels;
+import megan.viewer.TaxonomyData;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -38,40 +40,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *  export taxonomic segmentationm
+ *  export taxonomic segmentation
  * Daniel Huson, 8.2018
  */
 public class SegmentedReadsExporter {
-    /**
-     * export all matches in file
-     *
-     * @param connector
-     * @param fileName
-     * @throws IOException
-     */
-    public static int exportAll(Document doc, IConnector connector, String fileName) throws IOException {
-        int total = 0;
-        try {
-            final ProgressListener progress = doc.getProgressListener();
-            progress.setTasks("Export", "Writing all segmented reads");
-
-            final TaxonomicSegmentation taxonomicSegmentation = new TaxonomicSegmentation();
-
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
-                progress.setMaximum(it.getMaximumProgress());
-                progress.setProgress(0);
-                while (it.hasNext()) {
-                    total++;
-                    segmentAndWrite(doc, progress, it.next(), taxonomicSegmentation, w);
-                    progress.setProgress(it.getProgress());
-                }
-            }
-        } catch (CanceledException ex) {
-            System.err.println("USER CANCELED");
-        }
-        return total;
-    }
-
     /**
      * Compute segmentation of long reads for given set of classids in the given classification
      *
@@ -82,14 +54,10 @@ public class SegmentedReadsExporter {
      * @throws IOException
      * @throws CanceledException
      */
-    public static int export(Document doc, String classificationName, Collection<Integer> classIds, IConnector connector, String fileName) throws IOException {
+    public static int export(ProgressListener progress, String classificationName, Collection<Integer> classIds, int rank, IConnector connector, String fileName, TaxonomicSegmentation taxonomicSegmentation) throws IOException {
         int total = 0;
         try {
-            final TaxonomicSegmentation taxonomicSegmentation = new TaxonomicSegmentation();
-
-            final ProgressListener progress = doc.getProgressListener();
-
-            progress.setTasks("Segmentation", "Writing segmentation of reads");
+            progress.setTasks("Segmentation", "Initializing");
 
             final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
@@ -108,10 +76,23 @@ public class SegmentedReadsExporter {
             progress.setMaximum(maxProgress);
             progress.setProgress(0);
 
+            if (rank > 0) {
+                taxonomicSegmentation.setRank(rank);
+                System.err.println("Using rank: " + TaxonomicLevels.getName(taxonomicSegmentation.getRank()));
+            }
+
+
             int countClassIds = 0;
             try {
                 for (Integer classId : classIds) {
                     countClassIds++;
+
+                    if (rank == 0) {
+                        int classRank = TaxonomicLevels.getNextRank(getRank(classId));
+                        taxonomicSegmentation.setRank(classRank > 0 ? classRank : TaxonomicLevels.getSpeciesId());
+                        System.err.println("Taxon " + classId + " (" + TaxonomyData.getName2IdMap().get(classId) + "), using rank: " + TaxonomicLevels.getName(taxonomicSegmentation.getRank()));
+                    }
+                    taxonomicSegmentation.setClassId(classId);
 
                     boolean first = true;
 
@@ -128,7 +109,9 @@ public class SegmentedReadsExporter {
                                 first = false;
                             }
                             total++;
-                            segmentAndWrite(doc, progress, it.next(), taxonomicSegmentation, w);
+
+
+                            segmentAndWrite(progress, it.next(), taxonomicSegmentation, w);
                             progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                         }
                     }
@@ -144,6 +127,27 @@ public class SegmentedReadsExporter {
     }
 
     /**
+     * get the rank of the class id (or next above)
+     *
+     * @param classId
+     * @return rank id
+     */
+    private static int getRank(Integer classId) {
+        Node v = TaxonomyData.getTree().getANode(classId);
+        while (v != null) {
+            final int rank = TaxonomyData.getTaxonomicRank(classId);
+            if (rank > 0)
+                return rank;
+            if (v.getInDegree() > 0) {
+                v = v.getFirstInEdge().getSource();
+                classId = (Integer) v.getInfo();
+            } else
+                v = null;
+        }
+        return 0;
+    }
+
+    /**
      * segment and write a read
      *
      * @param readBlock
@@ -151,7 +155,7 @@ public class SegmentedReadsExporter {
      * @return number of reads written
      * @throws IOException
      */
-    private static void segmentAndWrite(Document doc, ProgressListener progress, IReadBlock readBlock, TaxonomicSegmentation taxonomicSegmentation, Writer w) throws IOException, CanceledException {
+    private static void segmentAndWrite(ProgressListener progress, IReadBlock readBlock, TaxonomicSegmentation taxonomicSegmentation, Writer w) throws IOException, CanceledException {
         final ArrayList<TaxonomicSegmentation.Segment> segmentation = taxonomicSegmentation.computeTaxonomicSegmentation(progress, readBlock);
 
         String header = readBlock.getReadHeader();

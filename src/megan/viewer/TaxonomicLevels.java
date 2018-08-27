@@ -105,6 +105,22 @@ public class TaxonomicLevels {
         return getInstance().majorRanks.get(rank);
     }
 
+    /**
+     * get the next major rank
+     *
+     * @param rank
+     * @return next major rank
+     */
+    public static int getNextRank(int rank) {
+        if (rank == 100)
+            return 0;
+        if (rank == 127)
+            return 1;
+        int nextRank = getInstance().majorRanks.nextSetBit(rank + 1);
+        return nextRank > 0 ? nextRank : 0
+                ;
+    }
+
     /* used to set up table
      */
 

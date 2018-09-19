@@ -238,7 +238,7 @@ public class CSVExportTaxonomy {
                     else
                         allBelow = Collections.singletonList(taxonId);
 
-                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, true)) {
                         while (it.hasNext()) {
                             final IReadBlock readBlock = it.next();
                             final long uid = readBlock.getUId();

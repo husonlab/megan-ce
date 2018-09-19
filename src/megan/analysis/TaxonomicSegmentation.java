@@ -221,11 +221,10 @@ public class TaxonomicSegmentation {
 
         DPColumn prevColumn = null;
 
+
         for (Integer pos : positions) {
             final DPColumn column = new DPColumn(pos);
-            if (prevColumn == null) { // initialized first
-                columns.add(column);
-            } else {
+            if (prevColumn != null) {
                 for (Interval<IMatchBlock> interval : intervals.getIntervals(pos)) {
                     final IMatchBlock matchBlock = interval.getData();
                     final int segmentLength = pos - prevColumn.getPos() + 1;
@@ -238,7 +237,8 @@ public class TaxonomicSegmentation {
                             column.add(classId, score);
                     }
                 }
-                columns.add(column);
+                if (column.getTaxa().size() > 0)
+                    columns.add(column);
             }
             prevColumn = column;
         }

@@ -279,11 +279,40 @@ public class ReadBlockRMA6 implements IReadBlock {
 
             // read the text for all matches:
             final String matchesText = reader.readString(); // assume each line is in SAM format and ends on \n
+
+            String querySequence = getReadSequence();
+            String queryQuality = null;
+
+            // if the read is not given, find the longest reported sequence, inserting any hard clip that it might have
+            if (querySequence == null) {
+                int offset = 0;
+                int queryHardClip = 0;
+                for (int i = 0; i < numberOfMatches; i++) {
+                    int end = matchesText.indexOf('\n', offset + 1);
+                    if (end == -1)
+                        end = matchesText.length();
+                    final String aLine = matchesText.substring(offset, end);
+                    offset = end + 1;
+                    final String[] tokens = Basic.split(aLine, '\t');
+                    if (tokens.length > 10) {
+                        final String query = tokens[9];
+                        if (query != null && (querySequence == null || querySequence.length() < query.length())) {
+                            querySequence = query;
+                            queryQuality = tokens[10];
+                            queryHardClip = parseLeadingHardClip(tokens[5]);
+                        }
+                    }
+                }
+                // note: must insert 0's here because SAMMatch looks for initial 0 to identify queries that have had the hard-clipped sequence inserted as 0's
+                querySequence = insertLeading0Characters(querySequence, queryHardClip);
+                // todo: if we want to use the quality values, then we must uncomment the next line:
+                // queryQuality=insertLeading0Characters(queryQuality,queryHardClip);
+            }
+
+            // parse and copy the matches that we want to keep
             int offset = 0;
             int matchCount = 0;
             final IMatchBlock[] copies = new MatchBlockRMA6[numberOfMatches]; // need to copy matches we want to keep
-
-            String[] firstSamMatch = null;
 
             for (int i = 0; i < numberOfMatches; i++) {
                 int end = matchesText.indexOf('\n', offset + 1);
@@ -294,14 +323,12 @@ public class ReadBlockRMA6 implements IReadBlock {
                 try {
                     final SAMMatch samMatch = new SAMMatch(blastMode);
                     final String[] tokens = Basic.split(aLine, '\t');
-                    if (tokens.length >= 10) {
-                        if (firstSamMatch != null) {
-                            if (tokens[9] == null || tokens[9].equals("*")) {
-                                tokens[9] = firstSamMatch[9];
-                                tokens[10] = firstSamMatch[10];
-                            }
-                        } else
-                            firstSamMatch = tokens;
+                    if (tokens.length > 10) {
+                        if ((tokens[9].equals("*") || tokens[9].length() == 0) && querySequence != null) {
+                            tokens[9] = querySequence;
+                            if (queryQuality != null)
+                                tokens[10] = queryQuality;
+                        }
                     }
 
                     samMatch.parse(tokens, tokens.length);
@@ -324,5 +351,39 @@ public class ReadBlockRMA6 implements IReadBlock {
             reader.skipBytes(cNames.length * numberOfMatches * 4); // skip taxon and cName ids
             reader.skipBytes(Math.abs(reader.readInt())); // skip text
         }
+    }
+
+
+    /**
+     * gets the leading hard clip
+     *
+     * @param cigar
+     * @return leading hard clip or 0
+     */
+    private static int parseLeadingHardClip(String cigar) {
+        for (int i = 0; i < cigar.length(); i++) {
+            char ch = cigar.charAt(i);
+            if (!Character.isDigit(ch)) {
+                if (Character.toUpperCase(ch) == 'H' && i > 0)
+                    return Integer.parseInt(cigar.substring(0, i));
+                else
+                    return 0;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * inserts the given number of 0 characters
+     *
+     * @param sequence
+     * @param numberOfLeading0Characters
+     * @return extended string
+     */
+    private static String insertLeading0Characters(String sequence, int numberOfLeading0Characters) {
+        if (numberOfLeading0Characters == 0)
+            return sequence;
+        else
+            return new String(new char[numberOfLeading0Characters]) + sequence;
     }
 }

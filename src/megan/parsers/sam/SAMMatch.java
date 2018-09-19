@@ -909,8 +909,11 @@ public class SAMMatch implements megan.rma3.IMatch {
         {
             return new String[]{"No alignment", "mapQ=0 (not uniquely mapped)", ""};
         }
-        if (query.equals("*"))
+        if (query.equals("*") || query.length() == 0)
             return new String[]{"No alignment", "no string stored"};
+
+        boolean hardClippedPositionsHaveBeenInserted = (query.charAt(0) == 0);
+        // hard clipped positions have been inserted into query string as 0's, must advance position when parsing leading hard clip
 
         final StringBuilder gappedQueryBuffer = new StringBuilder();
         final StringBuilder gappedReferenceBuffer = new StringBuilder();
@@ -942,6 +945,8 @@ public class SAMMatch implements megan.rma3.IMatch {
                         posQuery++;
                         break;
                     case H:
+                        if (hardClippedPositionsHaveBeenInserted)
+                            posQuery++; //hard clipped positions have been inserted into query string (as 0's), must advance position
                         break;
                     case P:
                         gappedQueryBuffer.append("*");
@@ -983,8 +988,9 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @return aligned query length
      */
     public int computeAlignedQuerySegmentLength(String query) {
-        if (query.equals("*"))
+        if (query.equals("*") || query.length() == 0)
             return 0;
+
         int length = 0;
         for (CigarElement element : getCigar().getCigarElements()) {
             for (int i = 0; i < element.getLength(); i++) {

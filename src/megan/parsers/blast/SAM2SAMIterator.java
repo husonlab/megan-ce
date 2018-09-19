@@ -142,6 +142,14 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     private void moveToNextSAMLine() {
         if (hasNextLine()) {
             currentMatchLine = nextLine();
+            // this skips over any empty lines:
+            while (currentMatchLine != null && currentMatchLine.trim().length() == 0) {
+                if (hasNextLine())
+                    currentMatchLine = nextLine();
+                else
+                    currentMatchLine = null;
+            }
+
         } else {
             currentMatchLine = null;
         }

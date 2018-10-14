@@ -638,34 +638,44 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      * copy all selected alignments
      */
     public void copy() {
-        Collection<TableItem> tableItems = getController().getTableView().getSelectionModel().getSelectedItems();
-        if (tableItems.size() == 0)
-            tableItems = getController().getTableView().getItems();
-        final StringBuilder buf = new StringBuilder();
-        for (TableItem tableItem : tableItems) {
-            final ReadLayoutPane pane = tableItem.getPane();
-            if (!pane.getMatchSelection().isEmpty()) {
-                buf.append("Query=").append(tableItem.toString()).append("\n");
-                buf.append("# Selected alignments: ").append(pane.getMatchSelection().getSelectedItems().size()).append("\n\n");
-                for (IMatchBlock matchBlock : pane.getMatchSelection().getSelectedItems()) {
-                    buf.append(matchBlock.getText()).append("\n");
-                }
-            }
-        }
-        if (buf.toString().isEmpty()) { // nothing selected, so just report the reads
-            for (TableItem tableItem : tableItems) {
-                buf.append("Query=").append(tableItem.toString()).append("\n");
-            }
-        }
+        final String selection = getSelection(dir.getDocument().getProgressListener());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 final Clipboard clipboard = Clipboard.getSystemClipboard();
                 final ClipboardContent content = new ClipboardContent();
-                content.putString(buf.toString());
+                content.putString(selection);
                 clipboard.setContent(content);
             }
         });
+    }
+
+    public String getSelection(ProgressListener progress) {
+        final StringBuilder buf = new StringBuilder();
+        try {
+            Collection<TableItem> tableItems = getController().getTableView().getSelectionModel().getSelectedItems();
+            if (tableItems.size() == 0)
+                tableItems = getController().getTableView().getItems();
+            for (TableItem tableItem : tableItems) {
+                final ReadLayoutPane pane = tableItem.getPane();
+                if (!pane.getMatchSelection().isEmpty()) {
+                    buf.append("Query=").append(tableItem.toString()).append("\n");
+                    buf.append("# Selected alignments: ").append(pane.getMatchSelection().getSelectedItems().size()).append("\n\n");
+                    for (IMatchBlock matchBlock : pane.getMatchSelection().getSelectedItems()) {
+                        buf.append(matchBlock.getText()).append("\n");
+                        progress.checkForCancel();
+                    }
+                }
+            }
+            if (buf.toString().isEmpty()) { // nothing selected, so just report the reads
+                for (TableItem tableItem : tableItems) {
+                    buf.append("Query=").append(tableItem.toString()).append("\n");
+                    progress.checkForCancel();
+                }
+            }
+        } catch (CanceledException ex) {
+        }
+        return buf.toString();
     }
 
     public boolean someSelectedItemHasTaxonLabelsShowing() {
@@ -678,7 +688,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         return false;
     }
 
-    public boolean soSelectedItemHasAnyLabelsShowing() {
+    public boolean someSelectedItemHasAnyLabelsShowing() {
         if (getController() != null) {
             for (TableItem item : getController().getTableView().getItems()) {
                 if (item.getPane().getClassificationLabelsShowing().size() > 0)

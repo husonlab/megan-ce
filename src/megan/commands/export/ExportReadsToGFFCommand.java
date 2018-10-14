@@ -109,7 +109,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
             } else if (getViewer() instanceof LRInspectorViewer) {
                 final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
                 canExcludeIncompatible = viewer.getClassificationName().equals(Classification.Taxonomy) && viewer.someSelectedItemHasTaxonLabelsShowing();
-                canExport = viewer.soSelectedItemHasAnyLabelsShowing();
+                canExport = viewer.someSelectedItemHasAnyLabelsShowing();
             } else {
                 canExcludeIncompatible = false;
                 canExport = false;

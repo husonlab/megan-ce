@@ -91,14 +91,12 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
         else
             choice = (getViewer()).getClassName();
 
-        boolean allTaxonomicLevels = false;
-        if (choice.equals(Classification.Taxonomy)) {
-            switch (JOptionPane.showConfirmDialog(viewer.getFrame(), "Export taxonomic levels above selected nodes as well?", "Export to STAMP option", JOptionPane.YES_NO_CANCEL_OPTION)) {
+        boolean allLevels = false;
+        switch (JOptionPane.showConfirmDialog(viewer.getFrame(), "Export all levels above selected nodes as well?", "Export to STAMP option", JOptionPane.YES_NO_CANCEL_OPTION)) {
                 case JOptionPane.CANCEL_OPTION:
                     return;
                 case JOptionPane.YES_OPTION:
-                    allTaxonomicLevels = true;
-            }
+                    allLevels = true;
         }
 
         String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".spf");
@@ -115,7 +113,7 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
             if (viewer.getSelectedNodes().size() == 0)
                 executeImmediately("select nodes=leaves;");
             ProgramProperties.put("StampDirectory", file.getParent());
-            execute("export format=stamp data=" + choice + " file='" + file.getPath() + "' allLevels=" + allTaxonomicLevels + ";");
+            execute("export format=stamp data=" + choice + " file='" + file.getPath() + "' allLevels=" + allLevels + ";");
         }
     }
 

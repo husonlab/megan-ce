@@ -25,10 +25,11 @@ import jloda.graph.NodeSet;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
+import megan.classification.Classification;
 import megan.core.Director;
+import megan.viewer.ClassificationViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
-import megan.viewer.ViewerBase;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -58,14 +59,15 @@ public class ExportStamp {
      * @param dir
      * @param cName
      * @param file
-     * @param allTaxonomicLevels
+     * @param allLevels
      * @param progressListener
      * @return lines exported
      * @throws IOException
      * @throws CanceledException
      */
-    public static int apply(Director dir, String cName, File file, boolean allTaxonomicLevels, ProgressListener progressListener) throws IOException, CanceledException {
-        final ViewerBase viewer = (ViewerBase) dir.getViewerByClassName(cName);
+    public static int apply(Director dir, String cName, File file, boolean allLevels, ProgressListener progressListener) throws IOException, CanceledException {
+        final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(cName);
+        final boolean taxonomy = cName.equalsIgnoreCase(Classification.Taxonomy);
         if (viewer == null)
             throw new IOException(cName + " Viewer not open");
 
@@ -79,9 +81,14 @@ public class ExportStamp {
         progressListener.setProgress(0);
 
         int maxRankIndex = 0;
-        if (allTaxonomicLevels) {
-            maxRankIndex = determineMaxTaxonomicRankIndex(selectedNodes);
-            System.err.println("Exporting " + (maxRankIndex + 1) + " taxonomic levels down to rank of '" + ranks[maxRankIndex] + "'");
+        if (allLevels) {
+            if (taxonomy) {
+                maxRankIndex = determineMaxTaxonomicRankIndex(selectedNodes);
+                System.err.println("Exporting " + (maxRankIndex + 1) + " taxonomic levels down to rank of '" + ranks[maxRankIndex] + "'");
+            } else {
+                maxRankIndex = determineMaxFunctionalIndex(selectedNodes);
+                System.err.println("Exporting " + (maxRankIndex + 1) + " functional levels");
+            }
         }
 
         final int numberOfLevels = maxRankIndex + 1;
@@ -105,11 +112,11 @@ public class ExportStamp {
             w.write("\n");
             for (Node v : selectedNodes) {
                 final String name = viewer.getLabel(v);
-                final Integer taxonId = (Integer) v.getInfo();
+                final Integer classId = (Integer) v.getInfo();
                 if (maxRankIndex > 1) {
-                    final String path = makePath(v, maxRankIndex);
+                    final String path = taxonomy ? makePath(v, maxRankIndex) : makeFunctionalPath(viewer, v, maxRankIndex);
                     if (path != null)
-                        w.write(String.format("%s\tID%d", path, taxonId));
+                        w.write(String.format("%s\tID%d", path, classId));
                     else {
                         if (nodesSkipped < 5)
                             System.err.println("Skipping node: " + name);
@@ -119,7 +126,7 @@ public class ExportStamp {
                         continue;
                     }
                 } else
-                    w.write(String.format("%s\tID%d", name, taxonId));
+                    w.write(String.format("%s\tID%d", name, classId));
                 NodeData data = viewer.getNodeData(v);
                 if (v.getOutDegree() == 0) {
                     for (int i = 0; i < numberOfColumns; i++)
@@ -135,6 +142,7 @@ public class ExportStamp {
         System.err.println("Nodes skipped: " + nodesSkipped);
         return numberOfRows;
     }
+
 
     /**
      * get all ranks above, or null, if incomplete
@@ -154,7 +162,7 @@ public class ExportStamp {
             Node w = v;
             while (topRankIndex == -1) {
                 final Integer taxonId = (Integer) w.getInfo();
-                final Integer rank = TaxonomyData.getTaxonomicRank(taxonId);
+                final int rank = TaxonomyData.getTaxonomicRank(taxonId);
                 if (rank != 0) {
                     final String rankName = TaxonomicLevels.getName(rank);
                     final int index = Basic.getIndex(rankName, ranks);
@@ -178,7 +186,7 @@ public class ExportStamp {
         Node w = v;
         while (rankIndex >= 0) {
             final Integer taxonId = (Integer) w.getInfo();
-            final Integer rank = TaxonomyData.getTaxonomicRank(taxonId);
+            final int rank = TaxonomyData.getTaxonomicRank(taxonId);
             if (rank != 0) {
                 final String rankName = TaxonomicLevels.getName(rank);
                 final int index = Basic.getIndex(rankName, ranks);
@@ -223,4 +231,62 @@ public class ExportStamp {
         }
         return maxRankIndex;
     }
+
+    /**
+     * determine the number of levels
+     *
+     * @param selectedNodes
+     * @return number of levels
+     */
+    private static int determineMaxFunctionalIndex(NodeSet selectedNodes) {
+        int levels = 0;
+        for (Node v : selectedNodes) {
+            int distance2root = 0;
+            while (true) {
+                distance2root++;
+                if (v.getFirstInEdge() != null)
+                    v = v.getFirstInEdge().getSource();
+                else
+                    break;
+            }
+            levels = Math.max(levels, distance2root);
+        }
+        return levels - 1; // substract 1 because we will suppress the root
+    }
+
+    /**
+     * make a functional path
+     *
+     * @param viewer
+     * @param v
+     * @param maxRankIndex
+     * @return path
+     */
+    private static String makeFunctionalPath(ClassificationViewer viewer, Node v, int maxRankIndex) {
+        final ArrayList<String> path = new ArrayList<>(maxRankIndex);
+
+        while (true) {
+            path.add(viewer.getLabel(v));
+            if (v.getFirstInEdge() != null)
+                v = v.getFirstInEdge().getSource();
+            else
+                break;
+            if (v.getFirstInEdge() == null)
+                break; // this node is the root and we want to suppress the root
+        }
+
+        final StringBuilder buf = new StringBuilder();
+
+        int missing = maxRankIndex - path.size();
+        buf.append(path.remove(path.size() - 1));
+        for (int i = 0; i < missing; i++)
+            buf.append("\t-");
+        while (path.size() > 0) {
+            buf.append("\t").append(path.remove(path.size() - 1));
+        }
+        return buf.toString();
+    }
+
+
+
 }

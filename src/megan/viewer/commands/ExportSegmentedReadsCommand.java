@@ -197,7 +197,7 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
     }
 
     public boolean isCritical() {
-        return false;
+        return true;
     }
 
     public KeyStroke getAcceleratorKey() {

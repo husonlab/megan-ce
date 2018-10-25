@@ -146,6 +146,6 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
     }
 
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

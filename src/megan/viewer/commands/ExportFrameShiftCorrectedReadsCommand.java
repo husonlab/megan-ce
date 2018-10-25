@@ -104,7 +104,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public boolean isCritical() {
-        return false;
+        return true;
     }
 
     public KeyStroke getAcceleratorKey() {

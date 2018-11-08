@@ -296,7 +296,7 @@ public class DataProcessor {
 
                         if (id <= 0 && readBlock.getNumberOfAvailableMatchBlocks() == 0)
                             id = IdMapper.NOHITS_ID;
-                        else if (!knownIds[c].contains(id))
+                        else if (!knownIds[c].contains(id) && (!usingLongReadAlgorithm || !nonEmptyIntersection(knownIds[c], c, moreClassIds[c])))
                             id = IdMapper.UNASSIGNED_ID;
 
                         classIds[c] = id;
@@ -406,6 +406,22 @@ public class DataProcessor {
             NotificationsInSwing.showInternalError("Data Processor failed: " + ex.getMessage());
         }
         return 0;
+    }
+
+    /**
+     * is one of the class ids known?
+     *
+     * @param knownIds
+     * @param classId
+     * @param moreClassIds
+     * @return
+     */
+    private static boolean nonEmptyIntersection(Set<Integer> knownIds, int classId, ArrayList<int[]> moreClassIds) {
+        for (int[] array : moreClassIds) {
+            if (knownIds.contains(array[classId]))
+                return true;
+        }
+        return false;
     }
 
     /**

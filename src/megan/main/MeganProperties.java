@@ -23,6 +23,7 @@ import jloda.util.ProgramProperties;
 import jloda.util.PropertiesListListener;
 import jloda.util.ResourceManager;
 import megan.util.ReadMagnitudeParser;
+import megan.viewer.TaxonomyData;
 
 import java.awt.*;
 import java.io.File;
@@ -139,6 +140,11 @@ public class MeganProperties {
 
         ReadMagnitudeParser.setEnabled(ProgramProperties.get("allow-read-weights", false));
         ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));
+
+
+        for (int t : ProgramProperties.get(DISABLED_TAXA, new int[0])) {
+            TaxonomyData.getDisabledTaxa().add(t);
+        }
     }
 
     /**

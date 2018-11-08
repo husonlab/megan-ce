@@ -73,8 +73,8 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
      * @param panelHeight
      */
     public void rescale(int maxReadLength, int arrowHeight, double panelWidth, double panelHeight, final Set<Integer> starts) {
-        final double a = panelWidth / maxReadLength * getStart();
-        final double b = panelWidth / maxReadLength * getEnd();
+        final double a = (panelWidth * getStart()) / maxReadLength;
+        final double b = (panelWidth * getEnd()) / maxReadLength;
 
         getPoints().clear();
 

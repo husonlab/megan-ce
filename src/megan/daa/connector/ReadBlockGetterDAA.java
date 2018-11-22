@@ -122,7 +122,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
             }
             final ReadBlockDAA readBlock = (reuseableReadBlock == null ? new ReadBlockDAA() : reuseableReadBlock);
 
-            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, refReader, daaMatchRecords.length, inputBuffer, daaMatchRecords, longReads);
+            final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = daaParser.readQueryAndMatches(reader, refReader, wantMatches, daaMatchRecords.length, inputBuffer, daaMatchRecords, longReads);
             readBlock.setFromQueryAndMatchRecords(pair.get1(), pair.get2(), wantReadSequences, wantMatches, minScore, maxExpected);
             return readBlock;
         }

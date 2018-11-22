@@ -31,6 +31,8 @@ import megan.util.interval.IntervalTree;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -165,6 +167,7 @@ public class DAAParser {
                 queryRecord.setLocation(ins.getPosition());
                 ins.readSizePrefixedBytes(inputBuffer);
                 queryRecord.parseBuffer(inputBuffer);
+
                 if (!parseLongReads) {
                     int numberOfMatches = 0;
                     while (inputBuffer.getPosition() < inputBuffer.size()) {
@@ -221,7 +224,7 @@ public class DAAParser {
      * @param outputQueue
      * @throws IOException
      */
-    void getAllQueriesAndMatches(int maxMatchesPerRead, BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> outputQueue, boolean longReads) throws IOException {
+    void getAllQueriesAndMatches(boolean wantMatches, int maxMatchesPerRead, BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> outputQueue, boolean longReads) throws IOException {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
@@ -231,7 +234,7 @@ public class DAAParser {
             DAAMatchRecord[] matchRecords = new DAAMatchRecord[maxMatchesPerRead];
 
             for (int a = 0; a < header.getQueryRecords(); a++) {
-                final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = readQueryAndMatches(ins, refIns, maxMatchesPerRead, inputBuffer, matchRecords, longReads);
+                final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = readQueryAndMatches(ins, refIns, wantMatches, maxMatchesPerRead, inputBuffer, matchRecords, longReads);
                 outputQueue.put(pair);
             }
             outputQueue.put(SENTINEL_QUERY_MATCH_BLOCKS);
@@ -250,7 +253,7 @@ public class DAAParser {
      * @return query and matches
      * @throws IOException
      */
-    public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, int maxMatchesPerRead, ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords, boolean longReads) throws IOException {
+    public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, boolean wantMatches, int maxMatchesPerRead, ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords, boolean longReads) throws IOException {
         final DAAQueryRecord queryRecord = new DAAQueryRecord(this);
         if (inputBuffer == null)
             inputBuffer = new ByteInputBuffer();
@@ -263,38 +266,58 @@ public class DAAParser {
         ins.readSizePrefixedBytes(inputBuffer);
         queryRecord.parseBuffer(inputBuffer);
 
+
         int numberOfMatches = 0;
-        if (!longReads) {
-            while (inputBuffer.getPosition() < inputBuffer.size()) {
-                DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
-                matchRecord.parseBuffer(inputBuffer, refIns);
-                if (numberOfMatches < maxMatchesPerRead)
-                    matchRecords[numberOfMatches++] = matchRecord;
-                else
-                    break;
-            }
-        } else {
-            intervalTree.clear();
-            while (inputBuffer.getPosition() < inputBuffer.size()) {
-                DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
-                aMatchRecord.parseBuffer(inputBuffer, refIns);
-                intervalTree.add(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
-            }
-            for (Interval<DAAMatchRecord> interval : intervalTree) {
-                boolean covered = false;
-                for (Interval<DAAMatchRecord> other : intervalTree.getIntervals(interval)) {
-                    if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().getScore() < 0.95 * other.getData().getScore()) {
-                        covered = true;
+        if (wantMatches) {
+            if (!longReads) {
+                while (inputBuffer.getPosition() < inputBuffer.size()) {
+                    DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
+                    matchRecord.parseBuffer(inputBuffer, refIns);
+                    if (numberOfMatches < maxMatchesPerRead)
+                        matchRecords[numberOfMatches++] = matchRecord;
+                    else
                         break;
+                }
+            } else {
+                intervalTree.clear();
+                final Set<Interval<DAAMatchRecord>> alive = new HashSet<>();
+
+                while (inputBuffer.getPosition() < inputBuffer.size()) {
+                    DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
+                    aMatchRecord.parseBuffer(inputBuffer, refIns);
+
+                    final Interval<DAAMatchRecord> interval = new Interval<>(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
+
+                    if (interval.getStart() > 10 && interval.getEnd() < queryRecord.getQueryLength() - 10 && aMatchRecord.getSubjectLen() < 0.8 * aMatchRecord.getTotalSubjectLen())
+                        continue; // skip mini alignment that are not at the beginning or end of the read
+
+                    boolean covered = false;
+
+                    for (Interval<DAAMatchRecord> other : intervalTree.getIntervals(interval)) {
+                        if (alive.contains(other)) {
+                            if (interval.overlap(other) >= 0.5 * interval.length() && interval.getData().getScore() < 0.95 * other.getData().getScore()) {
+                                covered = true;
+                                break;
+                            } else if (interval.overlap(other) >= 0.5 * other.length() && other.getData().getScore() < 0.95 * interval.getData().getScore()) {
+                                alive.remove(other);
+                            }
+                        }
+                    }
+                    if (!covered) {
+                        alive.add(interval);
+                        intervalTree.add(interval);
                     }
                 }
-                if (!covered) {
-                    if (numberOfMatches + 1 >= matchRecords.length) {
-                        final DAAMatchRecord[] tmp = new DAAMatchRecord[2 * numberOfMatches];
-                        System.arraycopy(matchRecords, 0, tmp, 0, matchRecords.length);
-                        matchRecords = tmp;
-                    }
-                    matchRecords[numberOfMatches++] = interval.getData();
+
+                numberOfMatches = alive.size();
+
+                if (numberOfMatches >= matchRecords.length)
+                    matchRecords = new DAAMatchRecord[numberOfMatches];
+
+                int i = 0;
+                for (Interval<DAAMatchRecord> interval : intervalTree.getAllIntervals(true)) {
+                    if (alive.contains(interval))
+                        matchRecords[i++] = interval.getData();
                 }
             }
         }

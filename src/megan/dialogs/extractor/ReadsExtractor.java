@@ -99,7 +99,6 @@ public class ReadsExtractor {
                 boolean first = true;
 
                 try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
-                    ;
                     while (it.hasNext()) {
                         if (first) {
                             if (!useOneOutputFile) {
@@ -152,8 +151,8 @@ public class ReadsExtractor {
      */
     public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
                                              final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
-        Map<Integer, String> classId2Name = new HashMap<>();
-        Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
+        final Map<Integer, String> classId2Name = new HashMap<>();
+        final Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
         for (Integer id : taxIds) {
             classId2Name.put(id, TaxonomyData.getName2IdMap().get(id));
             if (summarized)

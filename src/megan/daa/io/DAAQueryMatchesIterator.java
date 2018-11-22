@@ -48,7 +48,7 @@ public class DAAQueryMatchesIterator implements ICloseableIterator<Pair<DAAQuery
      * @param maxMatchesPerRead
      * @throws IOException
      */
-    public DAAQueryMatchesIterator(String daaFile, final int maxMatchesPerRead, final boolean longReads) throws IOException {
+    public DAAQueryMatchesIterator(String daaFile, final boolean wantMatches, final int maxMatchesPerRead, final boolean longReads) throws IOException {
         this.daaParser = new DAAParser(daaFile);
         daaParser.getHeader().loadReferences(true);
 
@@ -59,7 +59,7 @@ public class DAAQueryMatchesIterator implements ICloseableIterator<Pair<DAAQuery
         executorService.submit(new Runnable() {
             public void run() {
                 try {
-                    daaParser.getAllQueriesAndMatches(maxMatchesPerRead, queue, longReads);
+                    daaParser.getAllQueriesAndMatches(wantMatches, maxMatchesPerRead, queue, longReads);
                 } catch (IOException e) {
                     Basic.caught(e);
                 }

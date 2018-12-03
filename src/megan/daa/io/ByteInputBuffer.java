@@ -107,7 +107,7 @@ public class ByteInputBuffer {
     }
 
     public byte[] readBytes(int size) {
-        byte[] result = new byte[size];
+        final byte[] result = new byte[size];
         System.arraycopy(bytes, pos, result, 0, size);
         pos += size;
         return result;
@@ -134,7 +134,7 @@ public class ByteInputBuffer {
 
     private void ensureSize(int n) {
         if (bytes.length <= n) {
-            byte[] tmp = new byte[Math.max(n, 2 * bytes.length)];
+            final byte[] tmp = new byte[Math.max(n, Math.min(Basic.MAX_ARRAY_SIZE, 2 * bytes.length))];
             System.arraycopy(bytes, 0, tmp, 0, size);
             bytes = tmp;
         }

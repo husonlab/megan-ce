@@ -157,10 +157,10 @@ public class DAAParser {
         }
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
-             InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
+             final InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
             ins.seek(header.getLocationOfBlockInFile(header.getAlignmentsBlockIndex()));
-            DAAQueryRecord queryRecord = new DAAQueryRecord(this);
-            DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
+            final DAAQueryRecord queryRecord = new DAAQueryRecord(this);
+            final DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
 
             for (int a = 0; a < header.getQueryRecords(); a++) {
                 inputBuffer.rewind();
@@ -180,7 +180,7 @@ public class DAAParser {
                 {
                     intervalTree.clear();
                     while (inputBuffer.getPosition() < inputBuffer.size()) {
-                        DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
+                        final DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
                         aMatchRecord.parseBuffer(inputBuffer, refIns);
                         intervalTree.add(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
                     }
@@ -209,7 +209,6 @@ public class DAAParser {
 
             outputQueue.put(SENTINEL_SAM_ALIGNMENTS);
 
-
             // System.err.println(String.format("Total reads:   %,15d", header.getQueryRecords()));
             // System.err.println(String.format("Alignments:    %,15d", alignmentCount));
         } catch (InterruptedException e) {
@@ -228,10 +227,10 @@ public class DAAParser {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
 
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(header.getFileName()));
-             InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
+             final InputReaderLittleEndian refIns = new InputReaderLittleEndian(new FileRandomAccessReadOnlyAdapter(header.getFileName()))) {
             ins.seek(header.getLocationOfBlockInFile(header.getAlignmentsBlockIndex()));
 
-            DAAMatchRecord[] matchRecords = new DAAMatchRecord[maxMatchesPerRead];
+            final DAAMatchRecord[] matchRecords = new DAAMatchRecord[maxMatchesPerRead];
 
             for (int a = 0; a < header.getQueryRecords(); a++) {
                 final Pair<DAAQueryRecord, DAAMatchRecord[]> pair = readQueryAndMatches(ins, refIns, wantMatches, maxMatchesPerRead, inputBuffer, matchRecords, longReads);
@@ -255,21 +254,23 @@ public class DAAParser {
      */
     public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, boolean wantMatches, int maxMatchesPerRead, ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords, boolean longReads) throws IOException {
         final DAAQueryRecord queryRecord = new DAAQueryRecord(this);
+
         if (inputBuffer == null)
             inputBuffer = new ByteInputBuffer();
         else
             inputBuffer.rewind();
-        if (matchRecords == null)
-            matchRecords = new DAAMatchRecord[maxMatchesPerRead];
 
         queryRecord.setLocation(ins.getPosition());
         ins.readSizePrefixedBytes(inputBuffer);
-        queryRecord.parseBuffer(inputBuffer);
 
+        queryRecord.parseBuffer(inputBuffer);
 
         int numberOfMatches = 0;
         if (wantMatches) {
             if (!longReads) {
+                if (matchRecords == null)
+                    matchRecords = new DAAMatchRecord[maxMatchesPerRead];
+
                 while (inputBuffer.getPosition() < inputBuffer.size()) {
                     DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
                     matchRecord.parseBuffer(inputBuffer, refIns);
@@ -283,7 +284,7 @@ public class DAAParser {
                 final Set<Interval<DAAMatchRecord>> alive = new HashSet<>();
 
                 while (inputBuffer.getPosition() < inputBuffer.size()) {
-                    DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
+                    final DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
                     aMatchRecord.parseBuffer(inputBuffer, refIns);
 
                     final Interval<DAAMatchRecord> interval = new Interval<>(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
@@ -311,19 +312,22 @@ public class DAAParser {
 
                 numberOfMatches = alive.size();
 
-                if (numberOfMatches >= matchRecords.length)
+                if (matchRecords == null || numberOfMatches >= matchRecords.length) {
                     matchRecords = new DAAMatchRecord[numberOfMatches];
+                }
 
-                int i = 0;
-                for (Interval<DAAMatchRecord> interval : intervalTree.getAllIntervals(true)) {
-                    if (alive.contains(interval))
-                        matchRecords[i++] = interval.getData();
+                {
+                    int i = 0;
+                    for (Interval<DAAMatchRecord> interval : intervalTree.getAllIntervals(true)) {
+                        if (alive.contains(interval))
+                            matchRecords[i++] = interval.getData();
+                    }
                 }
             }
         }
 
         if (numberOfMatches > 0) {
-            DAAMatchRecord[] usedMatchRecords = new DAAMatchRecord[numberOfMatches];
+            final DAAMatchRecord[] usedMatchRecords = new DAAMatchRecord[numberOfMatches];
             System.arraycopy(matchRecords, 0, usedMatchRecords, 0, numberOfMatches);
             return new Pair<>(queryRecord, usedMatchRecords);
         } else

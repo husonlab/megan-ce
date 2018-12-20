@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package megan.samplesviewer.commands.attributes;
+package megan.commands.color;
 
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
@@ -24,6 +24,7 @@ import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.ChartColorManager;
 import megan.core.Director;
+import megan.core.Document;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * show all
+ * set color by attribute
  * Daniel Huson, 7.2012
  */
 public class SetAttributeColorCommand extends CommandBase implements ICommand {
@@ -43,20 +44,24 @@ public class SetAttributeColorCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        final ChartColorManager chartColorManager = ((Director) getDir()).getDocument().getChartColorManager();
 
         np.matchIgnoreCase("set color=");
-        Color color = np.getColor();
+        final Color color = np.getColor();
         np.matchIgnoreCase("attribute=");
-        String attribute = np.getLabelRespectCase();
-        np.matchIgnoreCase(";");
-
+        final String attribute = np.getLabelRespectCase();
         np.matchIgnoreCase("state=");
-        String state = np.getLabelRespectCase();
+        final String state = np.getLabelRespectCase();
         if (attribute != null && state != null) {
+            final Document doc = ((Director) getDir()).getDocument();
+            final ChartColorManager chartColorManager = doc.getChartColorManager();
             chartColorManager.setAttributeStateColor(attribute, state, color);
-            ((Director) getDir()).getDocument().setDirty(true);
+            for (String sample : doc.getSampleNames()) {
+                chartColorManager.setSampleColor(sample, chartColorManager.getAttributeStateColor(attribute, doc.getSampleAttributeTable().get(sample, attribute)));
+            }
+            doc.setDirty(true);
+            ((Director) getDir()).updateView(Director.ALL);
         }
+        np.matchIgnoreCase(";");
     }
 
     /**

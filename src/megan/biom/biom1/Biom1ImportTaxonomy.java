@@ -58,8 +58,8 @@ public class Biom1ImportTaxonomy {
                 if (obj == null)
                     obj = metaData.get("ontology");
                 if (obj != null && obj instanceof ArrayList) {
-                    ArrayList<String> orig = ((ArrayList<String>) obj);
-                    taxonId = QIIMETaxonParser.parseTaxon(orig.toArray(new String[orig.size()]), taxonomyIgnorePath);
+                    final ArrayList<String> orig = ((ArrayList<String>) obj);
+                    taxonId = QIIMETaxonParser.parseTaxon(orig.toArray(new String[0]), taxonomyIgnorePath);
                 }
             }
             if (taxonId == null) {

@@ -373,7 +373,7 @@ public class DataGrid {
     }
 
     public void resetGridBase() {
-        gridBase = new GridBase(0, 0);
+        gridBase.setRows(FXCollections.<ObservableList<SpreadsheetCell>>emptyObservableList());
     }
 
     public GridBase getGridBase() {

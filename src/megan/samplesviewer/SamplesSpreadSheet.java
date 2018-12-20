@@ -51,8 +51,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Samples metadata spreadsheet
@@ -131,6 +131,7 @@ public class SamplesSpreadSheet {
     public void updateView() {
         if (!Platform.isFxApplicationThread())
             System.err.println("updateView(): Not in FX thread!");
+
         spreadsheetView.getColumnPickers().clear();
         if (dataGrid.getRowCount() > 0) {
             spreadsheetView.getFixedRows().add(0);
@@ -157,22 +158,23 @@ public class SamplesSpreadSheet {
                 });
             }
         }
+
         spreadsheetView.getRowPickers().clear();
         if (dataGrid.getRowCount() > 0) {
-            for (int row = 1; row < dataGrid.getRowCount(); row++) {
+            for (int r = 1; r < dataGrid.getRowCount(); r++) {
+                final int row = r;
                 final String sample = dataGrid.getRowName(row);
-                final int theRow = row;
+
                 spreadsheetView.getRowPickers().put(row, new Picker() {
                     public void onClick() {
                         final BitSet selectedRows = getSelectedSampleIndices();
-                        if (!selectedRows.get(theRow) /* || getNumberOfSelectedCols() > 0*/) {
+                        if (!selectedRows.get(row) /* || getNumberOfSelectedCols() > 0*/) {
                             spreadsheetView.getSelectionModel().clearSelection();
                             selectedRows.clear();
-                            selectRow(theRow);
-                            selectedRows.set(theRow);
+                            selectRow(row);
+                            selectedRows.set(row);
                         }
                         samplesViewer.getCommandManager().updateEnableStateFXItems();
-
 
                         while (rowContextMenu.getItems().size() > originalRowContextMenuLength) { // remove previous copy of color menu item
                             rowContextMenu.getItems().remove(rowContextMenu.getItems().size() - 1);
@@ -187,9 +189,9 @@ public class SamplesSpreadSheet {
                         changeColor.setHideOnClick(false);
                         colorPicker.setOnAction(new EventHandler<ActionEvent>() {
                             public void handle(ActionEvent t) {
-                                if (!selectedRows.get(theRow)) {
+                                if (!selectedRows.get(row)) {
                                     spreadsheetView.getSelectionModel().clearSelection();
-                                    selectRow(theRow);
+                                    selectRow(row);
                                 }
 
                                 final Color color = colorPicker.getValue();
@@ -212,6 +214,7 @@ public class SamplesSpreadSheet {
                         rowContextMenu.show(spreadsheetView.getScene().getWindow(), p.x + 5, p.y + 5);
                     }
                 });
+
                 spreadsheetView.getGrid().getRows().get(row).get(0).setGraphic(GraphicsUtilities.makeSampleIconFX(samplesViewer.getDocument(), sample, true, true, 12));
             }
         }

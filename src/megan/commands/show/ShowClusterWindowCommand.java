@@ -25,6 +25,7 @@ import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.TaxonomyClusterViewer;
 import megan.commands.CommandBase;
 import megan.core.Director;
+import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -41,27 +42,25 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(getSyntax());
         final Director dir = getDir();
 
-        ClusterViewer viewer = null;
         if (getViewer() instanceof MainViewer) {
-            viewer = (ClusterViewer) dir.getViewerByClass(TaxonomyClusterViewer.class);
+            ClusterViewer viewer = (ClusterViewer) dir.getViewerByClass(TaxonomyClusterViewer.class);
             if (viewer == null) {
                 viewer = new TaxonomyClusterViewer((MainViewer) getViewer());
                 if (ClusterViewer.clusterViewerAddOn != null)
                     ClusterViewer.clusterViewerAddOn.apply(viewer);
                 dir.addViewer(viewer);
             }
-            viewer.getFrame().toFront();
-
+            WindowUtilities.toFront(viewer);
         } else if (getViewer() instanceof ClassificationViewer) {
             final String name = getViewer().getClassName().toUpperCase() + "ClusterViewer";
-            viewer = (ClusterViewer) dir.getViewerByClassName(name);
+            ClusterViewer viewer = (ClusterViewer) dir.getViewerByClassName(name);
             if (viewer == null) {
                 viewer = new ClusterViewer(dir, (ClassificationViewer) getViewer(), getViewer().getClassName());
                 if (ClusterViewer.clusterViewerAddOn != null)
                     ClusterViewer.clusterViewerAddOn.apply(viewer);
                 dir.addViewer(viewer);
             }
-            viewer.getFrame().toFront();
+            WindowUtilities.toFront(viewer);
         }
     }
 

@@ -150,7 +150,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         frame.getContentPane().setLayout(new BorderLayout());
         frame.setSize(600, 600);
         frame.setLocationRelativeTo(parentViewer.getFrame());
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.clusteranalysis.commands"}, !ProgramProperties.isUseGUI());
 
@@ -284,6 +284,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             }
 
             public void windowClosing(WindowEvent e) {
+                getDir().executeImmediately("close what=current;", getCommandManager());
                 if (dir.getDocument().getProgressListener() != null)
                     dir.getDocument().getProgressListener().setUserCancelled(true);
                 if (MainViewer.getLastActiveFrame() == frame)

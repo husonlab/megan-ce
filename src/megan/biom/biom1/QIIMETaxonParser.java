@@ -37,27 +37,28 @@ public class QIIMETaxonParser {
         String genus = null;
 
         for (String name : taxonPath) {
-            if (name.indexOf("__") == 1) {
-                if (name.startsWith("g")) {
-                    genus = name.substring(3);
-                    name = name.substring(3);
-                } else if (name.startsWith("s") && genus != null)
-                    name = genus + " " + name.substring(3);
-                else
-                    name = name.substring(3);
-            }
-            if (name.startsWith("[") && name.endsWith("]") || name.startsWith("(") && name.endsWith(")"))
-                name = name.substring(1, name.length() - 1);
-            name = name.replaceAll("_", " ");
+            if (name != null) {
+                if (name.indexOf("__") == 1) {
+                    if (name.startsWith("g")) {
+                        genus = name.substring(3);
+                        name = name.substring(3);
+                    } else if (name.startsWith("s") && genus != null)
+                        name = genus + " " + name.substring(3);
+                    else
+                        name = name.substring(3);
+                }
+                if (name.startsWith("[") && name.endsWith("]") || name.startsWith("(") && name.endsWith(")"))
+                    name = name.substring(1, name.length() - 1);
+                name = name.replaceAll("_", " ");
 
-            if (name.equals("Root"))
-                name = "root";
+                if (name.equals("Root"))
+                    name = "root";
 
-            if (name.length() > 0) {
-                final int taxonId = TaxonomyData.getName2IdMap().get(name);
-                if (taxonId > 0 && (bestId == IdMapper.UNASSIGNED_ID || ignorePathAbove || TaxonomyData.getTree().isDescendant(bestId, taxonId)))
-                    bestId = taxonId;
-
+                if (name.length() > 0) {
+                    final int taxonId = TaxonomyData.getName2IdMap().get(name);
+                    if (taxonId > 0 && (bestId == IdMapper.UNASSIGNED_ID || ignorePathAbove || TaxonomyData.getTree().isDescendant(bestId, taxonId)))
+                        bestId = taxonId;
+                }
             }
         }
         return bestId;

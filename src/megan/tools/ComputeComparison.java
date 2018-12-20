@@ -36,7 +36,7 @@ import java.io.StringReader;
  */
 public class ComputeComparison {
     /**
-     * ComputeComparison, ultimate edition
+     * ComputeComparison
      *
      * @param args
      * @throws UsageException

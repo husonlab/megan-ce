@@ -25,7 +25,6 @@ import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.TaxonomyClusterViewer;
 import megan.commands.CommandBase;
 import megan.core.Director;
-import megan.util.WindowUtilities;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
@@ -50,7 +49,7 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
                     ClusterViewer.clusterViewerAddOn.apply(viewer);
                 dir.addViewer(viewer);
             }
-            WindowUtilities.toFront(viewer);
+            viewer.toFront();
         } else if (getViewer() instanceof ClassificationViewer) {
             final String name = getViewer().getClassName().toUpperCase() + "ClusterViewer";
             ClusterViewer viewer = (ClusterViewer) dir.getViewerByClassName(name);
@@ -60,7 +59,7 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
                     ClusterViewer.clusterViewerAddOn.apply(viewer);
                 dir.addViewer(viewer);
             }
-            WindowUtilities.toFront(viewer);
+            viewer.toFront();
         }
     }
 

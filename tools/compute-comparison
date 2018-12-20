@@ -1,7 +1,7 @@
 #!/bin/bash
-# Runs the gene-centric-assembly command-line program
+# Extracts information from a DAA file
 #
-# Copyright (C) 2018 Daniel H. Huson
+# Copyright (C) 2019 Daniel H. Huson
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -25,11 +25,12 @@ bin_dir=`dirname "$0"`       # may be relative path
 bin_dir=`cd "$bin_dir" && pwd`    # ensure absolute path
 jars_dir="$bin_dir/../jars"
 
+jre_dir=${installer:sys.preferredJre}
 
 if [ -z $jre_dir ]
 then
 	java=java
-	vmOptions="-Xmx12G"
+	vmOptions="-Xmx8G"
 	classpath="../antbuild/MEGAN.jar:$jars_dir/MALT.jar:$jars_dir/data.jar:"
 else
 	java=$jre_dir/bin/java
@@ -37,7 +38,6 @@ else
 	classpath="$jars_dir/MEGAN.jar:$jars_dir/MALT.jar:$jars_dir/data.jar:"
 fi
 
-java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
-
+java_flags="-server -Duser.language=en -Duser.region=US -Djava.awt.headless=true $vmOptions"
 
 $java $java_flags -cp "$classpath" megan.tools.ComputeComparison $options

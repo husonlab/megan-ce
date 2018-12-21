@@ -43,8 +43,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Server", "Set Server Credentials...;|;Add User...;Add Metadata...;");
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Export", "Text (CSV) Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;" +
-                "Annotations in GFF Format...;Export Read Lengths and Coverage...;"
-                + ProgramProperties.getIfEnabled("enable-frameshift-correction", "Export Frame-Shift Corrected Reads...;")
+                "Annotations in GFF Format...;Export Read Lengths and Coverage...;Export Frame-Shift Corrected Reads...;"
                 + ProgramProperties.getIfEnabled("enable-segment-reads", "Export Segmented Reads...;")
                 + "|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");

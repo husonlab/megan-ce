@@ -58,7 +58,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         else
             classificationName = Classification.Taxonomy;
 
-        final List<String> formats = CSVExporter.getFormats(classificationName, doc.getMeganFile().hasDataConnector());
+        final List<String> formats = CSVExporter.getFormats(classificationName, doc);
 
         np.matchIgnoreCase("format=");
         final String format = np.getWordMatchesIgnoringCase(Basic.toString(formats, " "));
@@ -147,7 +147,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
     private static String[] showChoices(Component parent, Document doc, String classification) {
         final boolean doTaxonomy = classification.equalsIgnoreCase(Classification.Taxonomy);
 
-        final List<String> formats = CSVExporter.getFormats(classification, doc.getMeganFile().hasDataConnector());
+        final List<String> formats = CSVExporter.getFormats(classification, doc);
         final JLabel label0 = new JLabel("Choose data to export:  ");
         label0.setToolTipText("Choose data to export");
         final RememberingComboBox choice0 = new RememberingComboBox();

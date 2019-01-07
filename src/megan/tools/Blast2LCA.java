@@ -21,8 +21,8 @@ package megan.tools;
 
 import jloda.util.*;
 import megan.algorithms.ActiveMatches;
-import megan.algorithms.KeggTopAssignment;
 import megan.algorithms.TaxonPathAssignment;
+import megan.algorithms.TopAssignment;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -205,7 +205,7 @@ public class Blast2LCA {
                             } else {
                                 if (keggW != null) {
                                     ActiveMatches.compute(minScore, applyTopPercentFilterToKEGGAnalysis ? topPercent : 0, maxExpected, minPercentIdentity, readBlock, "KEGG", activeMatchesForGenes);
-                                    keggW.write(readBlock.getReadName() + "; ;" + KeggTopAssignment.compute(activeMatchesForGenes, readBlock, keggRanksToReport) + "\n");
+                                    keggW.write(readBlock.getReadName() + "; ;" + TopAssignment.compute("KEGG", activeMatchesForGenes, readBlock, keggRanksToReport) + "\n");
                                 }
 
                                 ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);

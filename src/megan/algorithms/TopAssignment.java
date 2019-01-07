@@ -26,38 +26,42 @@ import megan.data.IReadBlock;
 import java.util.*;
 
 /**
- * computes the top KEGG assignments for a read
+ * computes the top classification assignments for a read
  * Daniel Huson, 5.2012
  */
-public class KeggTopAssignment {
+public class TopAssignment {
     /**
      * computes the top KEGG assignments for a read
      *
+     *
+     * @param classificationName
      * @param readBlock
      * @return top assignments
      */
-    public static String compute(BitSet activeMatches, IReadBlock readBlock, int ranksToReport) {
+    public static String compute(String classificationName, BitSet activeMatches, IReadBlock readBlock, int ranksToReport) {
 
         if (activeMatches.cardinality() == 0)
             return "";
 
-        int totalKEGGMatches = 0;
-        Map<Integer, Integer> ko2count = new HashMap<>();
+
+        int totalClassMatches = 0;
+        Map<Integer, Integer> classId2Count = new HashMap<>();
         for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            int keggId = matchBlock.getId("KEGG");
-            if (keggId > 0) {
-                Integer count = ko2count.get(keggId);
-                ko2count.put(keggId, count == null ? 1 : count + 1);
-                totalKEGGMatches++;
+            int classId = matchBlock.getId(classificationName);
+            if (classId > 0) {
+                Integer count = classId2Count.get(classId);
+                classId2Count.put(classId, count == null ? 1 : count + 1);
+                totalClassMatches++;
             }
         }
 
-        if (ko2count.size() == 0)
+        if (classId2Count.size() == 0)
             return "";
-        else if (ko2count.size() == 1) {
-            Integer keggId = ko2count.keySet().iterator().next();
-            return String.format(" [1] K%05d: 100 # %d", keggId, ko2count.get(keggId));
+        else if (classId2Count.size() == 1) {
+            final Integer classId = classId2Count.keySet().iterator().next();
+            final String classificationLetter = classificationName.substring(0, 1);
+            return String.format(" [1] %s%05d: 100 # %d", classificationLetter, classId, classId2Count.get(classId));
         } else {
             SortedSet<Pair<Integer, Integer>> sorted = new TreeSet<>(new Comparator<Pair<Integer, Integer>>() {
                 public int compare(Pair<Integer, Integer> idAndCount1, Pair<Integer, Integer> idAndCount2) {
@@ -70,22 +74,23 @@ public class KeggTopAssignment {
                 }
             });
 
-            for (Map.Entry<Integer, Integer> entry : ko2count.entrySet()) {
+            for (Map.Entry<Integer, Integer> entry : classId2Count.entrySet()) {
                 sorted.add(new Pair<>(entry.getKey(), entry.getValue()));
             }
-            int top = Math.min(sorted.size(), ranksToReport);
+            final int top = Math.min(sorted.size(), ranksToReport);
             if (top == 0)
                 return "";
             else {
+                final String classificationLetter = classificationName.substring(0, 1);
                 int countItems = 0;
                 StringBuilder buf = new StringBuilder();
                 for (Pair<Integer, Integer> idAndCount : sorted) {
                     countItems++;
-                    buf.append(String.format(" [%d] K%05d: %.1f", countItems, idAndCount.getFirst(), (100.0 * idAndCount.get2()) / totalKEGGMatches));
+                    buf.append(String.format(" [%d] %s%05d: %.1f", countItems, classificationLetter, idAndCount.getFirst(), (100.0 * idAndCount.get2()) / totalClassMatches));
                     if (countItems >= top)
                         break;
                 }
-                buf.append(" # ").append(totalKEGGMatches);
+                buf.append(" # ").append(totalClassMatches);
                 return buf.toString();
             }
         }

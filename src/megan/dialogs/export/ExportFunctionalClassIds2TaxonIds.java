@@ -23,7 +23,8 @@ import jloda.graph.NodeSet;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
-import megan.algorithms.KeggTopAssignment;
+import megan.algorithms.TopAssignment;
+import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.core.ClassificationType;
@@ -39,20 +40,22 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.BitSet;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * exports a KO to taxa table
- * Daniel Huson, 12.2011
+ * exports a functional classification to taxa table
+ * Daniel Huson, 12.2011, 1.2019
  */
-public class ExportKO2TaxaTable {
+public class ExportFunctionalClassIds2TaxonIds {
 
     /**
-     * export a table of KO to taxa
+     * export a table of functional classification ids to taxa
      *
+     *
+     * @param classificationName
+     * @param format
      * @param dir
      * @param file
      * @param separator
@@ -60,45 +63,48 @@ public class ExportKO2TaxaTable {
      * @return
      * @throws IOException
      */
-    public static int export(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
+    public static int export(String classificationName, String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
+        final boolean useClassId = format.contains("Id_to");
+        final boolean useTaxonId = format.endsWith("Id");
+
+        if (classificationName.equals(Classification.Taxonomy))
+            throw new IOException("Not a functional classification: Taxonomy");
         int totalLines = 0;
         try {
             final Document doc = dir.getDocument();
             final MainViewer mainViewer = dir.getMainViewer();
             final IConnector connector = doc.getConnector();
 
-            ClassificationManager.ensureTreeIsLoaded("KEGG");
+            final Classification classification = ClassificationManager.get(classificationName, true);
 
             int numberOfTaxa = mainViewer.getSelectedNodes().size();
 
-            progressListener.setSubtask("KEGG to taxa");
+            progressListener.setSubtask(classificationName + " to taxa");
             progressListener.setMaximum(numberOfTaxa);
             progressListener.setProgress(0);
 
-            String[] taxonNames = new String[numberOfTaxa];
-            SortedMap<Integer, int[]> ko2counts = new TreeMap<>();
+            final int[] taxonIds = new int[numberOfTaxa];
+            final SortedMap<Integer, int[]> classId2Counts = new TreeMap<>();
 
-            NodeSet selectedNodes = mainViewer.getSelectedNodes();
+            final NodeSet selectedNodes = mainViewer.getSelectedNodes();
 
             int countTaxa = 0;
             for (Node v = selectedNodes.getFirstElement(); v != null; v = selectedNodes.getNextElement(v)) {
-                Integer taxonId = (Integer) v.getInfo();
-                taxonNames[countTaxa] = TaxonomyData.getName2IdMap().get(taxonId);
+                final Integer taxonId = (Integer) v.getInfo();
+                taxonIds[countTaxa] = taxonId;
                 try (IReadBlockIterator it = connector.getReadsIterator(ClassificationType.Taxonomy.toString(), taxonId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                     while (it.hasNext()) {
-                        IReadBlock readBlock = it.next();
+                        final IReadBlock readBlock = it.next();
 
-                        final BitSet activeMatchesForTaxa = new BitSet();
-
-                        int keggId;
+                        final int classId;
                         if (readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity())
-                            keggId = IdMapper.LOW_COMPLEXITY_ID;
+                            classId = IdMapper.LOW_COMPLEXITY_ID;
                         else
-                            keggId = KeggTopAssignment.computeId("KEGG", doc.getMinScore(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock);
-                        int[] counts = ko2counts.get(keggId);
+                            classId = TopAssignment.computeId(classificationName, doc.getMinScore(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock);
+                        int[] counts = classId2Counts.get(classId);
                         if (counts == null) {
                             counts = new int[numberOfTaxa];
-                            ko2counts.put(keggId, counts);
+                            classId2Counts.put(classId, counts);
                         }
                         counts[countTaxa]++;
                         progressListener.checkForCancel();
@@ -109,14 +115,33 @@ public class ExportKO2TaxaTable {
             }
 
             progressListener.setSubtask("Writing output");
-            progressListener.setMaximum(ko2counts.size());
+            progressListener.setMaximum(classId2Counts.size());
             progressListener.setProgress(0);
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                w.write("#KO-toTaxa" + separator + Basic.toString(taxonNames, separator + "") + "\n");
-                for (Map.Entry<Integer, int[]> entry : ko2counts.entrySet()) {
-                    int ko = entry.getKey();
-                    w.write(String.format("%d", ko));
+                if (useTaxonId)
+                    w.write("#" + format + separator + Basic.toString(taxonIds, "" + separator) + "\n");
+                else {
+                    String[] taxonNames = new String[taxonIds.length];
+                    for (int i = 0; i < taxonIds.length; i++) {
+                        taxonNames[i] = TaxonomyData.getName2IdMap().get(taxonIds[i]);
+                        if (taxonNames[i] == null)
+                            taxonNames[i] = "" + taxonIds[i];
+                    }
+                    w.write("#" + format + separator + Basic.toString(taxonNames, "" + separator) + "\n");
+                }
+                for (Map.Entry<Integer, int[]> entry : classId2Counts.entrySet()) {
+                    final int classId = entry.getKey();
+                    if (useClassId) {
+                        w.write("" + classId);
+                    } else {
+                        final String name = classification.getName2IdMap().get(classId);
+                        if (name != null)
+                            w.write(name);
+                        else
+                            w.write("" + classId);
+                    }
+
                     for (int x : entry.getValue()) {
                         w.write(String.format("%c%d", separator, x));
                     }

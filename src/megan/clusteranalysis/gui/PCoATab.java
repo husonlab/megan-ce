@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -51,8 +51,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * tab that shows a PCoA plot of the data

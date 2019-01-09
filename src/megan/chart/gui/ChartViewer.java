@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -18,8 +18,8 @@
  */
 package megan.chart.gui;
 
-import jloda.gui.*;
 import jloda.gui.MenuBar;
+import jloda.gui.*;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.director.*;
 import jloda.gui.find.FindToolBar;

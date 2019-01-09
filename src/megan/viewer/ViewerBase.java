@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -42,8 +42,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * contains methods used both by a number of different viewers

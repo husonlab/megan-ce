@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,8 +19,6 @@
 package megan.tools;
 
 import jloda.util.*;
-import megan.parsers.fasta.FastAFileIterator;
-import megan.parsers.fasta.IFastAIterator;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -63,7 +61,7 @@ public class HMM2Blastx {
     public void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Converts HMM output to BLASTX");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2018 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String[] inputFiles = options.getOptionMandatory("-i", "input", "HMM  files", new String[0]);

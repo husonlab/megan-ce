@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -29,10 +29,7 @@ import jloda.gui.ProgressDialog;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.gui.director.IDirector;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.blastclient.BlastService;
 import megan.blastclient.RemoteBlastClient;
@@ -41,7 +38,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
 import megan.importblast.ImportBlastDialog;
-import megan.parsers.fasta.FastAFileIterator;
 import megan.util.IReadsProvider;
 import megan.util.MeganFileFilter;
 

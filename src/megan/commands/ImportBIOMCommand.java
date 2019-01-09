@@ -98,6 +98,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
             viewer.getNodeDrawer().setStyle(doc.getNumberOfSamples() > 1 ? NodeDrawer.Style.PieChart : NodeDrawer.Style.Circle);
             viewer.setDoReInduce(true);
             viewer.setDoReset(true);
+            doc.getSampleAttributeTable().setSampleOrder(doc.getSampleNames());
         } else {
             final Director newDir = Director.newProject();
             newDir.getMainViewer().getFrame().setVisible(true);

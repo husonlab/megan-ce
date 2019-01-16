@@ -652,7 +652,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 final String sample = graph.getLabel(v);
                 final NodeView nv = graphView.getNV(v);
                 boolean showThisLabel = showLabels;
-                if (!showThisLabel && !pcoaTab.isSampleNode(v))
+                if (!showThisLabel && graphView == pcoaTab.getGraphView() && !pcoaTab.isSampleNode(v))
                     showThisLabel = true;
 
                 if (sample != null) {

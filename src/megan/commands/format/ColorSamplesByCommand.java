@@ -75,7 +75,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
         } else {
             for (String sample : samples) {
                 final Object value = doc.getSampleAttributeTable().get(sample, attribute);
-                final Color color = doc.getChartColorManager().getAttributeStateColor(attribute, value.toString());
+                final Color color = (value != null ? doc.getChartColorManager().getAttributeStateColor(attribute, value.toString()) : Color.WHITE);
                 doc.getSampleAttributeTable().putSampleColor(sample, color);
             }
         }

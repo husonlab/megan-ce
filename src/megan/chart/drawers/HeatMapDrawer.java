@@ -194,7 +194,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
                         color = colorTable.getColor((int) value, (int) maxValue);
                     } else if (scalingType == ChartViewer.ScalingType.ZSCORE) {
-                        double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className)));
+                        double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className) != null ? zScores.get(series, className) : 0));
                         color = colorTable.getColor((int) (value + zScoreCutoff), (int) (2 * zScoreCutoff));
                     } else {
                         double value = getChartData().getValueAsDouble(series, className);

@@ -54,21 +54,21 @@ public class CollapseByRankCommand extends CommandBase implements ICommand {
             NotificationsInSwing.showError(getViewer().getFrame(), "Unknown rank: " + rankName);
         else {
             final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
-            final Set<Integer> ids2collapse = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getNodeIdsAtGivenRank(rank, true);
+            final Set<Integer> toCollapse = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getNodeIdsAtGivenRank(rank, true);
 
             switch (ProgramProperties.get("KeepOthersCollapsed", " none")) {
                 case "prokaryotes":
-                    ids2collapse.addAll(TaxonomyData.getNonProkaryotesToCollapse());
+                    toCollapse.addAll(TaxonomyData.getNonProkaryotesToCollapse());
                     break;
                 case "eukaryotes":
-                    ids2collapse.addAll(TaxonomyData.getNonEukaryotesToCollapse());
+                    toCollapse.addAll(TaxonomyData.getNonEukaryotesToCollapse());
                     break;
                 case "viruses":
-                    ids2collapse.addAll(TaxonomyData.getNonVirusesToCollapse());
+                    toCollapse.addAll(TaxonomyData.getNonVirusesToCollapse());
                     break;
             }
 
-            classificationViewer.setCollapsedIds(ids2collapse);
+            classificationViewer.setCollapsedIds(toCollapse);
             getDoc().setDirty(true);
             classificationViewer.updateTree();
         }

@@ -25,8 +25,6 @@ import megan.commands.clipboard.ClipboardBase;
 import megan.inspector.InspectorWindow;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -41,20 +39,9 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
-        JTree dataTree = inspectorWindow.getDataTree();
-
-        StringBuilder builder = new StringBuilder();
-
-        TreePath[] selectedPaths = dataTree.getSelectionPaths();
-        if (selectedPaths != null) {
-            for (TreePath selectedPath : selectedPaths) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-                builder.append(node.toString()).append("\n");
-            }
-        }
-        if (builder.toString().length() > 0) {
-            StringSelection selection = new StringSelection(builder.toString());
+        final String selected = ((InspectorWindow) getViewer()).getSelection();
+        if (selected.length() > 0) {
+            StringSelection selection = new StringSelection(selected);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
         }
     }

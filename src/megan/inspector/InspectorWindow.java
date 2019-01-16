@@ -1091,6 +1091,18 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         return searchManager;
     }
 
+    public String getSelection() {
+        final StringBuilder buf = new StringBuilder();
+        final TreePath[] selectedPaths = dataTree.getSelectionPaths();
+        if (selectedPaths != null) {
+            for (TreePath selectedPath : selectedPaths) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+                buf.append(node.toString()).append("\n");
+            }
+        }
+        return buf.toString();
+    }
+
     /**
      * get name for this type of viewer
      *

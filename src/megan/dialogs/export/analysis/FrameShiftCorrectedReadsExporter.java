@@ -31,6 +31,7 @@ import megan.util.interval.IntervalTree;
 
 import java.io.*;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Uses frame-shift aware protein alignments to correct frame-shift problems in long reads
@@ -88,7 +89,7 @@ public class FrameShiftCorrectedReadsExporter {
             final Classification classification;
             BufferedWriter w;
             if (useOneOutputFile) {
-                w = new BufferedWriter(new FileWriter(fileName));
+                w = new BufferedWriter(fileName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName))) : new FileWriter(fileName));
                 classification = null;
             } else {
                 w = null;
@@ -115,7 +116,8 @@ public class FrameShiftCorrectedReadsExporter {
                                     if (w != null)
                                         w.close();
                                     final String cName = classification.getName2IdMap().get(classId);
-                                    w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                                    final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
+                                    w = new BufferedWriter(fName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fName))) : new FileWriter(fName));
                                 }
                                 first = false;
                             }

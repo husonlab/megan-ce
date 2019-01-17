@@ -31,11 +31,9 @@ import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.viewer.TaxonomyData;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * extract reads using the IConnector
@@ -74,7 +72,7 @@ public class ReadsExtractor {
 
         BufferedWriter w;
         if (useOneOutputFile) {
-            w = new BufferedWriter(new FileWriter(fileName));
+            w = new BufferedWriter(fileName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName))) : new FileWriter(fileName));
 
         } else {
             w = null;
@@ -105,7 +103,8 @@ public class ReadsExtractor {
                                 if (w != null)
                                     w.close();
                                 final String cName = classId2Name.get(classId);
-                                w = new BufferedWriter(new FileWriter(new File(outDirectory, fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId))));
+                                final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
+                                w = new BufferedWriter(fName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fName))) : new FileWriter(fName));
                             }
                             first = false;
                         }

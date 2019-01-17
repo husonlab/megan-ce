@@ -30,6 +30,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * provides info on a DAA files
@@ -50,8 +51,7 @@ public class DAA2Info {
 
             PeakMemoryUsageMonitor.start();
             (new DAA2Info()).run(args);
-            System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
-            System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+            PeakMemoryUsageMonitor.report();
             System.exit(0);
         } catch (Exception ex) {
             Basic.caught(ex);
@@ -75,7 +75,7 @@ public class DAA2Info {
 
         options.comment("Input and Output");
         final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file or '-' for stdout", "-");
+        final String outputFile = options.getOption("-o", "out", "Output file or '-' for stdout (.gz ok)", "-");
 
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
@@ -112,7 +112,9 @@ public class DAA2Info {
             doc.loadMeganFile();
         }
 
-        try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
+        try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) :
+                outputFile.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outputFile))) :
+                        new FileWriter(outputFile))) {
             if (listGeneralInfo || listMoreStuff) {
                 final DAAHeader daaHeader = new DAAHeader(daaFile, true);
                 outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));

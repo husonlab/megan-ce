@@ -84,7 +84,7 @@ public class ReadExtractorTool {
         final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads for (default: extract all classes)", new String[0])));
 
         options.comment(ArgsOptions.OTHER);
-        final boolean ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore expections and continue processing", false);
+        final boolean ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);
         final boolean gzOutputFiles = options.getOption("-gz", "gzipOutputFiles", "If output directory is given, gzip files written to directory", true);
         options.done();
 

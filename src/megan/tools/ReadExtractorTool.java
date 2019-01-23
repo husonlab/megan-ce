@@ -83,7 +83,7 @@ public class ReadExtractorTool {
         final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
         final String classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
         final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
-        final boolean all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
+        final boolean all = false; // options.getOption("-a", "all", "Extract all reads (not by class)", false);
 
         options.comment(ArgsOptions.OTHER);
         final boolean ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);

@@ -96,8 +96,6 @@ public class CSVExporter {
                 formats.add(shortName + "Id_to_RPK");
                 formats.add(shortName + "Path_to_RPK");
             }
-
-            formats.add("readName_to_lengthAndCoverage");
         }
 
         if (shortName.equals("taxon")) {

@@ -74,7 +74,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
                         else
                             allBelow = Collections.singletonList(classId);
 
-                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, true)) {
                             while (it.hasNext()) {
                                 final IReadBlock readBlock = it.next();
                                 final long uid = readBlock.getUId();
@@ -103,7 +103,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
      * @return header
      */
     public static String getHeader() {
-        return "# seqname number-of-bases number-of-alignments number-of-bases-covered\n";
+        return "#seqname number-of-bases number-of-alignments number-of-bases-covered\n";
     }
 
     /**

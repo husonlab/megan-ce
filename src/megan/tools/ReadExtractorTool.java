@@ -101,11 +101,16 @@ public class ReadExtractorTool {
             final String directory = outputFiles.get(0);
             outputFiles.clear();
             for (String name : inputFiles) {
-                outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+                if (all)
+                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+                else
+                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
             }
         } else if (inputFiles.size() != outputFiles.size()) {
             throw new UsageException("Number of input and output files must be equal, or output must be '-' or a directory");
         }
+
+        int totalReads = 0;
 
         for (int i = 0; i < inputFiles.size(); i++) {
             final String inputFile = inputFiles.get(i);
@@ -115,7 +120,7 @@ public class ReadExtractorTool {
                 if (inputFile.toLowerCase().endsWith("daa") && !DAAParser.isMeganizedDAAFile(inputFile, true)) {
                     throw new IOException("Warning: non-meganized DAA file: " + inputFile);
                 } else {
-                    extract(extractCorrectedReads, classificationName, classNames, all, inputFile, outputFile);
+                    totalReads += extract(extractCorrectedReads, classificationName, classNames, all, inputFile, outputFile);
                 }
             } catch (Exception ex) {
                 if (ignoreExceptions)
@@ -124,6 +129,7 @@ public class ReadExtractorTool {
                     throw ex;
             }
         }
+        System.err.println(String.format("Reads extracted: %,d", totalReads));
     }
 
     /**
@@ -137,7 +143,7 @@ public class ReadExtractorTool {
      * @throws IOException
      * @throws CanceledException
      */
-    private void extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames, boolean all, String inputFile, String outputFile) throws IOException, CanceledException {
+    private int extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames, boolean all, String inputFile, String outputFile) throws IOException, CanceledException {
         final Document doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(inputFile, true);
         doc.loadMeganFile();
@@ -150,9 +156,9 @@ public class ReadExtractorTool {
         if (all) {
             try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
                 if (extractCorrectedReads) {
-                    FrameShiftCorrectedReadsExporter.exportAll(connector, outputFile, progress);
+                    return FrameShiftCorrectedReadsExporter.exportAll(connector, outputFile, progress);
                 } else {
-                    ReadsExporter.exportAll(connector, outputFile, progress);
+                    return ReadsExporter.exportAll(connector, outputFile, progress);
                 }
             }
         } else {
@@ -193,9 +199,9 @@ public class ReadExtractorTool {
 
             try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
                 if (!extractCorrectedReads) {
-                    ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc, false);
+                    return ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc, false);
                 } else {
-                    FrameShiftCorrectedReadsExporter.export(classificationName, classIds, connector, outputFile, progress);
+                    return FrameShiftCorrectedReadsExporter.export(classificationName, classIds, connector, outputFile, progress);
                 }
             }
         }

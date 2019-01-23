@@ -25,6 +25,7 @@ import megan.core.Document;
 import megan.daa.io.DAAParser;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
+import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
 import megan.parsers.blast.BlastMode;
@@ -81,12 +82,17 @@ public class ReadExtractorTool {
         options.comment("Commands");
         final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
         final String classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
-        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads for (default: extract all classes)", new String[0])));
+        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
+        final boolean all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
 
         options.comment(ArgsOptions.OTHER);
         final boolean ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);
         final boolean gzOutputFiles = options.getOption("-gz", "gzipOutputFiles", "If output directory is given, gzip files written to directory", true);
         options.done();
+
+        if (classificationName.equals("") != all) {
+            throw new UsageException("Must specific either option --classification or --all");
+        }
 
 
         final boolean useStdout = (outputFiles.size() == 1 && outputFiles.get(0).equals("-"));
@@ -109,7 +115,7 @@ public class ReadExtractorTool {
                 if (inputFile.toLowerCase().endsWith("daa") && !DAAParser.isMeganizedDAAFile(inputFile, true)) {
                     throw new IOException("Warning: non-meganized DAA file: " + inputFile);
                 } else {
-                    extract(extractCorrectedReads, classificationName, classNames, inputFile, outputFile);
+                    extract(extractCorrectedReads, classificationName, classNames, all, inputFile, outputFile);
                 }
             } catch (Exception ex) {
                 if (ignoreExceptions)
@@ -131,58 +137,66 @@ public class ReadExtractorTool {
      * @throws IOException
      * @throws CanceledException
      */
-    private void extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames, String inputFile, String outputFile) throws IOException, CanceledException {
+    private void extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames, boolean all, String inputFile, String outputFile) throws IOException, CanceledException {
         final Document doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(inputFile, true);
         doc.loadMeganFile();
 
         final IConnector connector = doc.getConnector();
 
-        if (!Arrays.asList(connector.getAllClassificationNames()).contains(classificationName)) {
-            throw new IOException("Input file does not contain the requested classification '" + classificationName + "'");
-        }
-
         if (extractCorrectedReads && doc.getBlastMode() != BlastMode.BlastX)
             throw new IOException("Frame-shift correction only possible when BlastMode is BLASTX");
 
-        final SortedSet<Integer> classIds = new TreeSet<>();
-
-        final Classification classification = ClassificationManager.get(classificationName, true);
-
-        final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
-
-        if (classNames.size() == 0)// no class names given, use all
-        {
-            for (Integer classId : classificationBlock.getKeySet()) {
-                if (classId > 0)
-                    classIds.add(classId);
+        if (all) {
+            try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
+                if (extractCorrectedReads) {
+                    FrameShiftCorrectedReadsExporter.exportAll(connector, outputFile, progress);
+                } else {
+                    ReadsExporter.exportAll(connector, outputFile, progress);
+                }
             }
         } else {
-            int warnings = 0;
+            if (!Arrays.asList(connector.getAllClassificationNames()).contains(classificationName)) {
+                throw new IOException("Input file does not contain the requested classification '" + classificationName + "'");
+            }
 
-            for (String name : classNames) {
-                if (Basic.isInteger(name))
-                    classIds.add(Basic.parseInt(name));
-                else {
-                    int id = classification.getName2IdMap().get(name);
-                    if (id > 0)
-                        classIds.add(id);
+            final SortedSet<Integer> classIds = new TreeSet<>();
+            final Classification classification = ClassificationManager.get(classificationName, true);
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
+
+            if (classNames.size() == 0)// no class names given, use all
+            {
+                for (Integer classId : classificationBlock.getKeySet()) {
+                    if (classId > 0)
+                        classIds.add(classId);
+                }
+            } else {
+                int warnings = 0;
+
+                for (String name : classNames) {
+                    if (Basic.isInteger(name))
+                        classIds.add(Basic.parseInt(name));
                     else {
-                        if (warnings++ < 5) {
-                            System.err.println("Warning: unknown class: '" + name + "'");
-                            if (warnings == 5)
-                                System.err.println("No further warnings");
+                        int id = classification.getName2IdMap().get(name);
+                        if (id > 0)
+                            classIds.add(id);
+                        else {
+                            if (warnings++ < 5) {
+                                System.err.println("Warning: unknown class: '" + name + "'");
+                                if (warnings == 5)
+                                    System.err.println("No further warnings");
+                            }
                         }
                     }
                 }
             }
-        }
 
-        try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
-            if (!extractCorrectedReads) {
-                ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc);
-            } else {
-                FrameShiftCorrectedReadsExporter.export(classificationName, classIds, connector, outputFile, progress);
+            try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
+                if (!extractCorrectedReads) {
+                    ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc, false);
+                } else {
+                    FrameShiftCorrectedReadsExporter.export(classificationName, classIds, connector, outputFile, progress);
+                }
             }
         }
     }

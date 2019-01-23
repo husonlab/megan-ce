@@ -127,7 +127,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
         if (cName.equalsIgnoreCase(Classification.Taxonomy)) {
             count = ReadsExtractor.extractReadsByTaxonomy(doc.getProgressListener(), ids, outDirectory, outFile, doc, summary);
         } else {
-            count = ReadsExtractor.extractReadsByFViewer(cName, doc.getProgressListener(), ids, outDirectory, outFile, doc);
+            count = ReadsExtractor.extractReadsByFViewer(cName, doc.getProgressListener(), ids, outDirectory, outFile, doc, true);
         }
         if (count != -1)
             NotificationsInSwing.showInformation(getViewer().getFrame(), "Number of reads written: " + count);

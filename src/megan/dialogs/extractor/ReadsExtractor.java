@@ -168,11 +168,12 @@ public class ReadsExtractor {
      * @param outDirectory
      * @param outFileName
      * @param doc
+     * @param summarized
      * @throws IOException
      * @throws CanceledException
      */
     public static int extractReadsByFViewer(final String cName, final ProgressListener progressListener, final Collection<Integer> classIds,
-                                            final String outDirectory, final String outFileName, final Document doc) throws IOException, CanceledException {
+                                            final String outDirectory, final String outFileName, final Document doc, boolean summarized) throws IOException, CanceledException {
 
         final Classification classification = ClassificationManager.get(cName, true);
         Map<Integer, String> classId2Name = new HashMap<>();
@@ -181,6 +182,6 @@ public class ReadsExtractor {
             classId2Name.put(id, classification.getName2IdMap().get(id));
             classId2Descendants.put(id, classification.getFullTree().getAllDescendants(id));
         }
-        return extractReads(progressListener, cName, classIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, true);
+        return extractReads(progressListener, cName, classIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
     }
 }

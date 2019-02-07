@@ -920,20 +920,25 @@ public class SAMMatch implements megan.rma3.IMatch {
 
         int posQuery = 0;
 
+
         for (CigarElement element : getCigar().getCigarElements()) {
             for (int i = 0; i < element.getLength(); i++) {
+                final char queryChar = (posQuery < query.length() ? query.charAt(posQuery) : 0);
+                // todo: should not need to check whether posQuery is in range, but minimap produces files that cause this problem
+
+
                 switch (element.getOperator()) {
                     case D:
                         gappedQueryBuffer.append("-");
                         gappedReferenceBuffer.append("?");
                         break;
                     case M:
-                        gappedQueryBuffer.append(posQuery < query.length() ? query.charAt(posQuery) : 0);
+                        gappedQueryBuffer.append(queryChar);
                         gappedReferenceBuffer.append("?");
                         posQuery++;
                         break;
                     case I:
-                        gappedQueryBuffer.append(posQuery < query.length() ? query.charAt(posQuery) : 0);
+                        gappedQueryBuffer.append(queryChar);
                         gappedReferenceBuffer.append("-");
                         posQuery++;
                         break;
@@ -954,12 +959,12 @@ public class SAMMatch implements megan.rma3.IMatch {
                         gappedReferenceBuffer.append("*");
                         break;
                     case EQ:
-                        gappedQueryBuffer.append(posQuery < query.length() ? query.charAt(posQuery) : 0);
-                        gappedReferenceBuffer.append(posQuery < query.length() ? query.charAt(posQuery) : 0);
+                        gappedQueryBuffer.append(queryChar);
+                        gappedReferenceBuffer.append(queryChar);
                         posQuery++;
                         break;
                     case X:
-                        gappedQueryBuffer.append(posQuery < query.length() ? query.charAt(posQuery) : 0);
+                        gappedQueryBuffer.append(queryChar);
                         gappedReferenceBuffer.append("?");
                         posQuery++;
                         break;

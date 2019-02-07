@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -72,6 +72,7 @@ public class AAdderRun {
         final String indexDirectory = options.getOptionMandatory("-d", "index", "AAdd index directory", "");
         final String[] outputFiles = options.getOptionMandatory("-o", "output", "Output file(s) (.gz ok) or directory", new String[0]);
         options.comment(ArgsOptions.OTHER);
+        final double minCoverageProportion = options.getOption("-c", "percentToCover", "Percent of alignment that must be covered by protein", 90.00) / 100.0;
         final boolean reportUnmappedAccessions = options.getOption("-rnf", "reportNotFound", "Report the names of DNA reference for which no functional accession is available", false);
         options.done();
 
@@ -194,7 +195,7 @@ public class AAdderRun {
                                 final int startSubject = Basic.parseInt(tokens[3]);
                                 final int endSubject = startSubject + getRefLength(tokens[5]) - 1;
 
-                                final Interval<GeneItem> refInterval = tree.getBestInterval(new Interval<GeneItem>(startSubject, endSubject, null), 0.9);
+                                final Interval<GeneItem> refInterval = tree.getBestInterval(new Interval<GeneItem>(startSubject, endSubject, null), minCoverageProportion);
 
                                 String annotatedRef = tokens[2];
                                 if (refInterval != null) {

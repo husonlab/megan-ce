@@ -57,8 +57,10 @@ public class ReadsExtractor {
      */
     private static int extractReads(final ProgressListener progress, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
                                     Map<Integer, Collection<Integer>> classId2Descendants,
-                                    final String outDirectory, final String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
+                                    final String outDirectory, String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
         progress.setSubtask("Extracting by " + classificationName);
+
+        fileName = new File(outDirectory, fileName).getPath();
 
         final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 

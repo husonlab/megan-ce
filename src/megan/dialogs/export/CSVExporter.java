@@ -96,6 +96,8 @@ public class CSVExporter {
                 formats.add(shortName + "Id_to_RPK");
                 formats.add(shortName + "Path_to_RPK");
             }
+            if (shortName.equals("taxon"))
+                formats.add("readName_to_GC");
         }
 
         if (shortName.equals("taxon")) {
@@ -137,6 +139,8 @@ public class CSVExporter {
         final Collection<String> cNames = ClassificationManager.getAllSupportedClassifications();
         int count = 0;
 
+        if (format.equalsIgnoreCase("readName_to_GC"))
+            count = CSVExportGCPercent.apply(dir.getMainViewer(), file, separator, progressListener);
         if (format.equalsIgnoreCase("taxonName_to_count") || format.equalsIgnoreCase("taxonId_to_count") || format.equalsIgnoreCase("taxonRank_to_count") || format.equalsIgnoreCase("taxonPath_to_count")) {
             count = CSVExportTaxonomy.exportTaxon2Counts(format, dir, file, separator, reportSummarized, progressListener);
         } else if (format.equalsIgnoreCase("taxonName_to_readName") || format.equalsIgnoreCase("taxonId_to_ReadName") || format.equalsIgnoreCase("taxonPath_to_readName")) {

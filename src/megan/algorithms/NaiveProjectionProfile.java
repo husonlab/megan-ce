@@ -194,7 +194,7 @@ public class NaiveProjectionProfile {
             if (!hasChild) { // has no child, these reads will be lost
             } else { // there are some children push down counts:
                 for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-                    Node w = e.getTarget();
+                    final Node w = e.getTarget();
                     if (((Integer) w.getInfo()) > 0) {
                         final NodeData wData = (NodeData) w.getData();
                         float[] count = new float[numberOfSamples];

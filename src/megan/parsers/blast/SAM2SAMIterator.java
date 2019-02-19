@@ -35,7 +35,7 @@ import java.util.TreeSet;
  * Daniel Huson, 2.2017
  */
 public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
-    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
+    private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000000], 0);
 
     private final BlastMode blastMode;
 

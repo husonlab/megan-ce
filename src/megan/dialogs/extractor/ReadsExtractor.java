@@ -20,6 +20,7 @@ package megan.dialogs.extractor;
 
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -97,6 +98,7 @@ public class ReadsExtractor {
                     all.addAll(classId2Descendants.get(classId));
 
                 boolean first = true;
+                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extract-reads", false);
 
                 try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
                     while (it.hasNext()) {
@@ -112,12 +114,16 @@ public class ReadsExtractor {
                         }
 
                         final IReadBlock readBlock = it.next();
-                        String readHeader = readBlock.getReadHeader();
+                        String readHeader = readBlock.getReadHeader().trim();
                         if (!readHeader.startsWith(">"))
                             w.write(">");
                         w.write(readHeader);
-                        if (!readHeader.endsWith("\n"))
-                            w.write("\n");
+                        if (reportTaxa && classId > 0) {
+                            if (!readHeader.endsWith("|"))
+                                w.write("|");
+                            w.write("tax|" + classId);
+                        }
+                        w.write("\n");
                         String readData = readBlock.getReadSequence();
                         if (readData != null) {
                             w.write(readData);

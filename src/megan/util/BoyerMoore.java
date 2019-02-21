@@ -192,6 +192,11 @@ public class BoyerMoore {
                     next = search(text, result + 1);
                 return result;
             }
+
+            @Override
+            public void remove() {
+
+            }
         };
     }
 

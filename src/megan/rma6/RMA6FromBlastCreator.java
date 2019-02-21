@@ -274,7 +274,7 @@ public class RMA6FromBlastCreator {
             if (progress instanceof ProgressPercentage)
                 ((ProgressPercentage) progress).reportTaskCompleted();
             try (InputOutputReaderWriter raf = new InputOutputReaderWriter(rma6File, "rw");
-                 IReadBlockIterator it = (new RMA6Connector(rma6File)).getAllReadsIterator(0, 1000, false, false)) {
+                 IReadBlockIterator it = (new RMA6Connector(rma6File)).getAllReadsIterator(0, 10, false, false)) {
                 progress.setSubtask("Linking paired reads");
                 progress.setProgress(0);
                 progress.setProgress(it.getMaximumProgress());

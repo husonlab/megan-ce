@@ -27,6 +27,7 @@ import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 
@@ -52,6 +53,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
 
     private TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
+    private List<Match> listOfMatches = null; // if we want to iterate over all matches in the order they were obtained, then must set this to non-null
 
     private long numberOfReads = 0;
 
@@ -98,6 +100,8 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
 
         matchesTextAndLength.setSecond(0);
         matches.clear();
+        if (listOfMatches != null)
+            listOfMatches.clear();
         matchesIntervalTree.clear();
 
         int matchId = 0; // used to distinguish between matches when sorting
@@ -219,7 +223,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 throw new RuntimeException("Too many errors");
         }
 
-        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches, listOfMatches);
     }
 
     /**
@@ -308,5 +312,14 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         Utilities.appendMDString(alignedQuery, alignedReference, buffer);
 
         return buffer.toString();
+    }
+
+
+    public void setReportAllMatchesInOriginalOrder(boolean report) {
+        listOfMatches = (report ? new ArrayList<Match>() : null);
+    }
+
+    public boolean isReportAllMatchesInOriginalOrder() {
+        return listOfMatches != null;
     }
 }

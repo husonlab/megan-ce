@@ -61,24 +61,29 @@ public class ExtractToNewDocument {
 
                 while (iterator.hasNext()) {
                     final IReadBlock readBlock = iterator.next();
+                    totalReads.set(totalReads.get() + 1);
+
+                    final int numberOfMatches = readBlock.getNumberOfAvailableMatchBlocks();
+
+
                     final StringBuilder blastTextBuf = new StringBuilder();
                     blastTextBuf.append(FileInputIterator.PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING);
                     blastTextBuf.append("Query= ").append(readBlock.getReadHeader()).append("\n");
 
-                    int[][] match2classification2id = new int[readBlock.getNumberOfAvailableMatchBlocks()][classifications.length];
+                    final int[][] match2classification2id = new int[numberOfMatches][classifications.length];
 
-                    for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
-                        final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+                    for (int m = 0; m < numberOfMatches; m++) {
+                        final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+
                         blastTextBuf.append(matchBlock.getText());
                         for (int k = 0; k < classifications.length; k++) {
-                            match2classification2id[i][k] = matchBlock.getId(classifications[k]);
+                            match2classification2id[m][k] = matchBlock.getId(classifications[k]);
                         }
                     }
-                    totalReads.set(totalReads.get() + 1);
 
                     final byte[] readBytes = (">" + readBlock.getReadHeader() + "\n" + readBlock.getReadSequence()).getBytes();
-                    final byte[] matchBytes = computeSAM(srcDoc.getBlastMode(), 1000, blastTextBuf.toString());
-                    rma6FileCreator.addQuery(readBytes, readBytes.length, readBlock.getNumberOfAvailableMatchBlocks(), matchBytes, matchBytes.length, match2classification2id, 0L);
+                    final byte[] matchBytes = computeSAM(srcDoc.getBlastMode(), numberOfMatches, blastTextBuf.toString());
+                    rma6FileCreator.addQuery(readBytes, readBytes.length, numberOfMatches, matchBytes, matchBytes.length, match2classification2id, 0L);
                     progress.setProgress(iterator.getProgress());
                 }
             }
@@ -106,19 +111,29 @@ public class ExtractToNewDocument {
     private static byte[] computeSAM(BlastMode blastMode, int maxNumberOfReads, String matchesText) throws IOException {
         final ISAMIterator iterator;
         switch (blastMode) {
-            case BlastN:
-                iterator = new BlastN2SAMIterator(matchesText, maxNumberOfReads);
+            case BlastN: {
+                final BlastN2SAMIterator blastN2SAMIterator = new BlastN2SAMIterator(matchesText, maxNumberOfReads);
+                blastN2SAMIterator.setReportAllMatchesInOriginalOrder(true);
+                iterator = blastN2SAMIterator;
                 break;
-            case BlastP:
-                iterator = new BlastP2SAMIterator(matchesText, maxNumberOfReads);
+            }
+            case BlastP: {
+                final BlastP2SAMIterator blastP2SAMIterator = new BlastP2SAMIterator(matchesText, maxNumberOfReads);
+                blastP2SAMIterator.setReportAllMatchesInOriginalOrder(true);
+                iterator = blastP2SAMIterator;
                 break;
-            case BlastX:
-                iterator = new BlastX2SAMIterator(matchesText, maxNumberOfReads);
+            }
+            case BlastX: {
+                final BlastX2SAMIterator blastX2SAMIterator = new BlastX2SAMIterator(matchesText, maxNumberOfReads);
+                blastX2SAMIterator.setReportAllMatchesInOriginalOrder(true);
+                iterator = blastX2SAMIterator;
                 break;
+            }
             default:
                 throw new IOException("Invalid BLAST mode: " + blastMode.toString());
         }
         try {
+            // don't want any long read optimizations as they will change the order of the reads!
             iterator.next();
             return iterator.getMatchesText();
         } finally {

@@ -120,7 +120,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                 throw new RuntimeException("Too many errors");
         }
 
-        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), matchesIntervalTree, matches, null);
     }
 
     /**

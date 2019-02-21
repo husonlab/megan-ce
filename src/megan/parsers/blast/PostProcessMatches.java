@@ -24,6 +24,7 @@ import jloda.util.ProgramProperties;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -55,7 +56,27 @@ public class PostProcessMatches {
      * @param matches
      * @return number of matches returned
      */
-    public int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches) {
+    public int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches, List<Match> listOfMatches) {
+        if (listOfMatches != null && listOfMatches.size() > 0) // this overrides all other considerations
+        {
+            byte[] matchesText = matchesTextAndLength.getFirst();
+            int matchesTextLength = 0;
+            for (Match match : listOfMatches) {
+                byte[] bytes = match.samLine.getBytes();
+                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
+                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
+                    System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
+                    matchesText = tmp;
+                }
+                System.arraycopy(bytes, 0, matchesText, matchesTextLength, bytes.length);
+                matchesTextLength += bytes.length;
+                matchesText[matchesTextLength++] = '\n';
+            }
+            matchesTextAndLength.set(matchesText, matchesTextLength);
+            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.get2()));
+            return matches.size();
+        }
+
         if (parseLongReads && matchesIntervalTree != null) {
             matches.clear();
             for (Interval<Match> interval : matchesIntervalTree) {

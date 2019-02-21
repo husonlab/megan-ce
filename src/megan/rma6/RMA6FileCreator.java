@@ -108,8 +108,7 @@ public class RMA6FileCreator extends RMA6File {
      * @return the location of the read in the file
      * @throws IOException
      */
-    public long addQuery(byte[] queryText, int queryTextLength, int numberOfMatches, byte[] matchesText, int matchesTextLength,
-                         int[][] match2Classification2Id, long mateLocation) throws IOException {
+    public long addQuery(byte[] queryText, int queryTextLength, int numberOfMatches, byte[] matchesText, int matchesTextLength, int[][] match2Classification2Id, long mateLocation) throws IOException {
         final long location = readerWriter.getPosition();
 
         if (isPairedReads)

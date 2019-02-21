@@ -129,7 +129,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
                 throw new RuntimeException("Too many errors");
         }
 
-        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches);
+        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches, null);
     }
 
     /**

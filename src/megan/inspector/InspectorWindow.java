@@ -775,6 +775,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
             for (Enumeration descendants = v.breadthFirstEnumeration(); descendants.hasMoreElements(); ) {
                 v = (NodeBase) descendants.nextElement();
                 dataTree.expandPath(new TreePath(v.getPath()));
+
             }
         }
     }
@@ -785,51 +786,18 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param paths
      */
     public void expand(TreePath[] paths) {
+        boolean first = true;
         for (TreePath path : paths) {
-            expandJTreeNode(dataTree, dataTree.getModel(), path.getLastPathComponent(), dataTree.getRowForPath(path), 0);
-            // expand((NodeBase) path.getLastPathComponent());
-        }
-    }
-
-    /**
-     * Expands a given node in a JTree.
-     *
-     * @param tree  The JTree to expand.
-     * @param model The TreeModel for tree.
-     * @param node  The node within tree to expand.
-     * @param row   The displayed row in tree that represents
-     *              node.
-     * @param depth The depth to which the tree should be expanded.
-     *              Zero will just expand node, a negative
-     *              value will fully expand the tree, and a positive
-     *              value will recursively expand the tree to that
-     *              depth relative to node.
-     */
-    public static int expandJTreeNode(javax.swing.JTree tree, javax.swing.tree.TreeModel model, Object node, int row, int depth) {
-        if (node != null && !model.isLeaf(node)) {
-            tree.expandRow(row);
-            if (depth != 0) {
-                for (int index = 0;
-                     row + 1 < tree.getRowCount() &&
-                             index < model.getChildCount(node);
-                     index++) {
-                    row++;
-                    Object child = model.getChild(node, index);
-                    if (child == null)
-                        break;
-                    javax.swing.tree.TreePath path;
-                    while ((path = tree.getPathForRow(row)) != null &&
-                            path.getLastPathComponent() != child)
-                        row++;
-                    if (path == null)
-                        break;
-                    row = expandJTreeNode(tree, model, child, row, depth - 1);
+            if (!dataTree.isExpanded(path)) {
+                dataTree.expandPath(path);
+                if (first) {
+                    dataTree.repaint();
+                    dataTree.scrollRowToVisible(dataTree.getRowForPath(path));
+                    first = false;
                 }
             }
         }
-        return row;
     }
-
 
     /**
      * collapse the given node   or root

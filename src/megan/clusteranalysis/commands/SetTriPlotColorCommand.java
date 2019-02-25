@@ -18,8 +18,9 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.ChooseColorDialog;
+import jloda.gui.ChooseColorLineWidthDialog;
 import jloda.gui.commands.ICommand;
+import jloda.util.Pair;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.gui.PCoATab;
 
@@ -76,7 +77,7 @@ public class SetTriPlotColorCommand extends CommandBase implements ICommand {
      * @return name
      */
     public String getName() {
-        return "Set TriPlot Color...";
+        return "Set TriPlot Linewidth and Color...";
     }
 
     /**
@@ -113,9 +114,15 @@ public class SetTriPlotColorCommand extends CommandBase implements ICommand {
      */
     public void actionPerformed(ActionEvent ev) {
         final PCoATab pCoATab = getViewer().getPcoaTab();
-        final Color color = ChooseColorDialog.showChooseColorDialog(getViewer().getFrame(), "Choose tri-plot color", pCoATab.getTriPlotColor());
-        if (color != null && !color.equals(pCoATab.getTriPlotColor()))
-            execute("setColor target=triplot color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + ";sync;");
+        final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose tri-plot line-width and color",
+                pCoATab.getTriPlotLineWidth(), pCoATab.getTriPlotColor());
+        if (pair != null) {
+            final int lineWidth = pair.getFirst();
+            final Color color = pair.getSecond();
+            if (lineWidth != pCoATab.getTriPlotLineWidth() || !color.equals(pCoATab.getTriPlotColor())) {
+                executeImmediately("setColor target=triPlot color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " lineWidth=" + lineWidth + ";");
+            }
+        }
     }
 
     /**

@@ -97,8 +97,14 @@ public class PCoATab extends JPanel implements ITab {
     private final NodeArray<Point3D> node2point3D; // for external use
 
     private Color axesColor = ProgramProperties.get("PCoAAxesColor", Colors.parseColor("lightgray"));
+    private byte axesLineWidth = (byte) ProgramProperties.get("PCoAAxesLineWidth", 1);
     private Color biPlotColor = ProgramProperties.get("PCoABiPlotColor", Colors.parseColor("darkseagreen"));
+    private byte biPlotLineWidth = (byte) ProgramProperties.get("PCoABiPlotLineWidth", 1);
     private Color triPlotColor = ProgramProperties.get("PCoATriPlotColor", Colors.parseColor("sandybrown"));
+    private byte triPlotLineWidth = (byte) ProgramProperties.get("PCoATriPlotLineWidth", 1);
+
+    private Color groupsColor = ProgramProperties.get("PCoAGroupColor", Colors.parseColor("lightblue"));
+    private byte groupLineWidth = (byte) ProgramProperties.get("PCoAGroupLineWidth", 1);
 
     // 3D figure:
     private final Matrix3D transformation3D;
@@ -190,6 +196,9 @@ public class PCoATab extends JPanel implements ITab {
 
             public void paint(Graphics g) {
                 super.paint(g);
+
+                g.setColor(getGroupsColor());
+                ((Graphics2D) g).setStroke(new BasicStroke(getGroupLineWidth()));
 
                 if (showGroupsAsEllipses) {
                     for (Ellipse ellipse : ellipses) {
@@ -714,24 +723,15 @@ public class PCoATab extends JPanel implements ITab {
                 final LinkedList<Node> nodes = group2Nodes.get(joinId);
                 if (nodes.size() > 1) {
                     ArrayList<Point2D> points = new ArrayList<>(nodes.size());
-                    long r = 0;
-                    long g = 0;
-                    long b = 0;
-
                     for (Node v : nodes) {
                         if (v == null)
                             continue;
 
                         final Point2D aPt = new PointNode(Math.round(graphView.getLocation(v).getX()), Math.round(graphView.getLocation(v).getY()), v);
                         points.add(aPt);
-                        final String sample = graph.getLabel(v);
-                        final Color color = graphView.getDocument().getChartColorManager().getSampleColor(sample);
-                        r += color.getRed();
-                        g += color.getGreen();
-                        b += color.getBlue();
+
                     }
                     if (points.size() > 1) {
-                        final Color color = new Color((int) (r / nodes.size()), (int) (g / nodes.size()), (int) (b / nodes.size()));
                         final ArrayList<Point2D> hull = ConvexHull.quickHull(points);
 
                         if (showGroupsAsEllipses) {
@@ -743,7 +743,7 @@ public class PCoATab extends JPanel implements ITab {
                                 points4.add(new Point2D.Double(p.getX() + 32, p.getY() + 32));
                             }
                             final Ellipse ellipse = ComputeEllipse.computeEllipse(points4);
-                            ellipse.setColor(color);
+                            ellipse.setColor(getGroupsColor());
                             ellipses.add(ellipse);
                         }
 
@@ -755,7 +755,7 @@ public class PCoATab extends JPanel implements ITab {
                             final Node w = ((PointNode) hull.get(i)).getNode(); // current node in polygon
                             if (v != w) {
                                 final Edge e = graph.newEdge(v, w, EdgeView.UNDIRECTED);
-                                graphView.setColor(e, color);
+                                graphView.setColor(e, getGroupsColor());
                                 graphView.setDirection(e, EdgeView.UNDIRECTED);
                                 convexHullEdges.add(e);
                             }
@@ -863,6 +863,7 @@ public class PCoATab extends JPanel implements ITab {
                 final EdgeView ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
                 ev.setColor(getBiPlotColor());
+                ev.setLineWidth((byte) getBiPlotLineWidth());
                 graph.setInfo(e, EdgeView.DIRECTED);
             }
         }
@@ -913,7 +914,6 @@ public class PCoATab extends JPanel implements ITab {
 
             double scaleFactor = computeLoadingsScaleFactor(triplot[0].getSecond());
 
-
             for (int i = 0; i < top; i++) {
                 final Pair<String, double[]> pair = triplot[i];
                 final double x = (flipH ? -1 : 1) * scaleFactor * pair.getSecond()[0];
@@ -937,6 +937,7 @@ public class PCoATab extends JPanel implements ITab {
                 final EdgeView ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
                 ev.setColor(getTriPlotColor());
+                ev.setLineWidth((byte) getTriPlotLineWidth());
                 graph.setInfo(e, EdgeView.DIRECTED);
             }
         }
@@ -1009,6 +1010,9 @@ public class PCoATab extends JPanel implements ITab {
         final Font oldFont = gc.getFont();
         try {
             if (pcoa.isDone() && pcoa.getNumberOfPositiveEigenValues() >= 2) {
+                gc.setColor(getAxesColor());
+                gc.setStroke(new BasicStroke(getAxesLineWidth()));
+
                 final Rectangle grid = new Rectangle(rect.x + 40, rect.y + 20, rect.width - 60, rect.height - 40);
 
                 gc.setStroke(new BasicStroke(1));
@@ -1018,13 +1022,11 @@ public class PCoATab extends JPanel implements ITab {
                         gc.setFont(Font.decode("Dialog-PLAIN-12"));
                         String label = getTitle2D();
                         Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
-                        gc.setColor(Color.DARK_GRAY);
                         gc.drawString(label, grid.x + grid.width / 2 - labelSize.width / 2, grid.y - 4);
                     }
 
                     if (isShowAxes()) {
                         gc.setFont(Font.decode("Dialog-PLAIN-11"));
-                        gc.setColor(Color.LIGHT_GRAY);
 
                         final Point zeroDC = graphView.trans.w2d(0, 0);
                         final DecimalFormat tickNumberFormat = new DecimalFormat("#.####");
@@ -1042,7 +1044,7 @@ public class PCoATab extends JPanel implements ITab {
                             }
 
                             for (Boolean top : Arrays.asList(true, false)) {
-                                Integer v0;
+                                final int v0;
                                 if (top)
                                     v0 = Math.round(grid.y);
                                 else
@@ -1083,7 +1085,7 @@ public class PCoATab extends JPanel implements ITab {
                             int yTickStart = grid.y;
 
                             for (Boolean left : Arrays.asList(true, false)) {
-                                Integer h0;
+                                final int h0;
                                 if (left)
                                     h0 = Math.round(grid.x);
                                 else
@@ -1345,12 +1347,24 @@ public class PCoATab extends JPanel implements ITab {
         this.axesColor = axesColor;
     }
 
+    public int getAxesLineWidth() {
+        return axesLineWidth;
+    }
+
+    public void setAxesLineWidth(byte axesLineWidth) {
+        this.axesLineWidth = axesLineWidth;
+    }
+
     public Color getBiPlotColor() {
         return biPlotColor;
     }
 
     public void setBiPlotColor(Color biPlotColor) {
         this.biPlotColor = biPlotColor;
+        for (Edge e : biplotEdges) {
+            graphView.getEV(e).setColor(biPlotColor);
+            graphView.getNV(e.getTarget()).setLabelColor(biPlotColor);
+        }
     }
 
     public Color getTriPlotColor() {
@@ -1359,5 +1373,58 @@ public class PCoATab extends JPanel implements ITab {
 
     public void setTriPlotColor(Color triPlotColor) {
         this.triPlotColor = triPlotColor;
+        for (Edge e : triplotEdges) {
+            graphView.getEV(e).setColor(triPlotColor);
+            graphView.getNV(e.getTarget()).setLabelColor(triPlotColor);
+        }
+    }
+
+    public byte getBiPlotLineWidth() {
+        return biPlotLineWidth;
+    }
+
+    public void setBiPlotLineWidth(byte biPlotLineWidth) {
+        this.biPlotLineWidth = biPlotLineWidth;
+        for (Edge e : biplotEdges)
+            graphView.getEV(e).setLineWidth(biPlotLineWidth);
+    }
+
+    public int getTriPlotLineWidth() {
+        return triPlotLineWidth;
+    }
+
+    public void setTriPlotLineWidth(byte triPlotLineWidth) {
+        this.triPlotLineWidth = triPlotLineWidth;
+        for (Edge e : triplotEdges)
+            graphView.getEV(e).setLineWidth(triPlotLineWidth);
+    }
+
+    public Color getGroupsColor() {
+        return groupsColor;
+    }
+
+    public void setGroupsColor(Color groupsColor) {
+        this.groupsColor = groupsColor;
+        for (Edge e : convexHullEdges) {
+            if (!convexHullCenters.contains(e.getSource()) && !convexHullCenters.contains(e.getTarget()))
+                graphView.getEV(e).setColor(groupsColor);
+        }
+        for (Ellipse ellipse : ellipses) {
+            ellipse.setColor(groupsColor);
+        }
+        repaint();
+    }
+
+    public byte getGroupLineWidth() {
+        return groupLineWidth;
+    }
+
+    public void setGroupLineWidth(byte groupLineWidth) {
+        this.groupLineWidth = groupLineWidth;
+        for (Edge e : convexHullEdges) {
+            if (!convexHullCenters.contains(e.getSource()) && !convexHullCenters.contains(e.getTarget()))
+                graphView.getEV(e).setLineWidth(groupLineWidth);
+        }
+        repaint();
     }
 }

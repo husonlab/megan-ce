@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -21,7 +21,6 @@ package megan.clusteranalysis.commands;
 import jloda.gui.ChooseColorLineWidthDialog;
 import jloda.gui.commands.ICommand;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.gui.PCoATab;
 
@@ -30,10 +29,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
- * set axes color
+ * set group color
  * Daniel Huson, 10.2017
  */
-public class SetAxisColorCommand extends CommandBase implements ICommand {
+public class SetGroupColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
@@ -42,47 +41,6 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
      * @throws java.io.IOException
      */
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("setColor target=");
-        final String target = np.getWordMatchesIgnoringCase("axes biplot triplot groups");
-        np.matchIgnoreCase("color=");
-        final Color color = np.getColor();
-        final byte lineWidth;
-        if (np.peekMatchIgnoreCase("lineWidth")) {
-            np.matchIgnoreCase("lineWidth=");
-            lineWidth = (byte) Math.min(127, np.getInt());
-        } else
-            lineWidth = 1;
-        np.matchIgnoreCase(";");
-
-        final PCoATab pCoATab = getViewer().getPcoaTab();
-
-        switch (target) {
-            case "axes":
-                pCoATab.setAxesColor(color);
-                ProgramProperties.put("PCoAAxesColor", color);
-                pCoATab.setAxesLineWidth(lineWidth);
-                ProgramProperties.put("PCoAAxesLineWidth", lineWidth);
-                break;
-            case "biplot":
-                pCoATab.setBiPlotColor(color);
-                ProgramProperties.put("PCoABiPlotColor", color);
-                pCoATab.setBiPlotLineWidth(lineWidth);
-                ProgramProperties.put("PCoABiPlotLineWidth", lineWidth);
-                break;
-            case "triplot":
-                pCoATab.setTriPlotColor(color);
-                ProgramProperties.put("PCoATriPlotColor", color);
-                pCoATab.setTriPlotLineWidth(lineWidth);
-                ProgramProperties.put("PCoATriPlotLineWidth", lineWidth);
-                break;
-            case "groups":
-                pCoATab.setGroupsColor(color);
-                ProgramProperties.put("PCoAGroupColor", color);
-                pCoATab.setGroupLineWidth(lineWidth);
-                ProgramProperties.put("PCoAGroupLineWidth", lineWidth);
-                break;
-
-        }
     }
 
     /**
@@ -92,7 +50,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "setColor target={axes|biplot|triplot} color=<color>;";
+        return null;
     }
 
     /**
@@ -119,7 +77,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
      * @return name
      */
     public String getName() {
-        return "Set Axes Linewidth and Color...";
+        return "Set Groups Linewidth and Color...";
     }
 
     /**
@@ -128,7 +86,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Set axes color";
+        return "Set group line-width and color";
     }
 
     /**
@@ -156,12 +114,13 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
      */
     public void actionPerformed(ActionEvent ev) {
         final PCoATab pCoATab = getViewer().getPcoaTab();
-        final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose axes line-width and color", pCoATab.getAxesLineWidth(), pCoATab.getAxesColor());
+        final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose group line-width and color",
+                pCoATab.getGroupLineWidth(), pCoATab.getGroupsColor());
         if (pair != null) {
             final int lineWidth = pair.getFirst();
             final Color color = pair.getSecond();
-            if (lineWidth != pCoATab.getAxesLineWidth() || !color.equals(pCoATab.getAxesColor())) {
-                execute("setColor target=axes color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " lineWidth=" + lineWidth + ";");
+            if (lineWidth != pCoATab.getGroupLineWidth() || !color.equals(pCoATab.getGroupsColor())) {
+                executeImmediately("setColor target=groups color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " lineWidth=" + lineWidth + ";");
             }
         }
     }

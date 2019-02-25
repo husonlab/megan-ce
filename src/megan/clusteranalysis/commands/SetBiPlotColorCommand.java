@@ -18,8 +18,9 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.ChooseColorDialog;
+import jloda.gui.ChooseColorLineWidthDialog;
 import jloda.gui.commands.ICommand;
+import jloda.util.Pair;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.gui.PCoATab;
 
@@ -76,7 +77,7 @@ public class SetBiPlotColorCommand extends CommandBase implements ICommand {
      * @return name
      */
     public String getName() {
-        return "Set BiPlot Color...";
+        return "Set BiPlot Linewidth and Color...";
     }
 
     /**
@@ -85,7 +86,7 @@ public class SetBiPlotColorCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Set bi-plot color";
+        return "Set bi-plot line-width and color";
     }
 
     /**
@@ -113,9 +114,13 @@ public class SetBiPlotColorCommand extends CommandBase implements ICommand {
      */
     public void actionPerformed(ActionEvent ev) {
         final PCoATab pCoATab = getViewer().getPcoaTab();
-        final Color color = ChooseColorDialog.showChooseColorDialog(getViewer().getFrame(), "Choose bi-plot color", pCoATab.getBiPlotColor());
-        if (color != null && !color.equals(pCoATab.getBiPlotColor())) {
-            executeImmediately("setColor target=biplot color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + ";sync;");
+        final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose bi-plot line-width and color", pCoATab.getBiPlotLineWidth(), pCoATab.getBiPlotColor());
+        if (pair != null) {
+            final int lineWidth = pair.getFirst();
+            final Color color = pair.getSecond();
+            if (lineWidth != pCoATab.getBiPlotLineWidth() || !color.equals(pCoATab.getBiPlotColor())) {
+                executeImmediately("setColor target=biPlot color=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " lineWidth=" + lineWidth + ";");
+            }
         }
     }
 

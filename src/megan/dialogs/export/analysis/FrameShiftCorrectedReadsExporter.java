@@ -246,7 +246,7 @@ public class FrameShiftCorrectedReadsExporter {
             headerBuf.append(">unnamed");
         else
             headerBuf.append(originalHeader.startsWith(">") ? originalHeader.trim() : ">" + originalHeader.trim());
-        headerBuf.append(String.format("|corrected+%d-%d", countPositiveFrameShifts, countNegativeFrameShift));
+        headerBuf.append(String.format(" corrected+%d-%d", countPositiveFrameShifts, countNegativeFrameShift));
         return new Pair<>(headerBuf.toString(), buf.toString());
     }
 

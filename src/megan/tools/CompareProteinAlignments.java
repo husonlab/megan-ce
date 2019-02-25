@@ -81,6 +81,8 @@ public class CompareProteinAlignments {
 
         final Writer w = new BufferedWriter(outputFileName.equalsIgnoreCase("stdout") ? new OutputStreamWriter(System.out) : new FileWriter(outputFileName));
         try {
+            w.write("# " + new ComparisonResult().getFormatString() + "\n");
+
             for (int i = 0; i < inputFiles.length; i++) {
                 final MeganFile file1 = new MeganFile();
                 file1.setFileFromExistingFile(inputFiles[i], true);
@@ -93,11 +95,12 @@ public class CompareProteinAlignments {
 
                     final Map<String, Long> name2Uid = getName2Uid(connector2, normalizer);
                     final IReadBlockGetter getter2 = connector2.getReadBlockGetter(0, 10, true, true);
-                    final ComparisonResult total = new ComparisonResult("total", 0);
+                    final ComparisonResult total = new ComparisonResult("total", 0, 0);
 
+                    int count = 0;
                     try (IReadBlockIterator it = connector1.getAllReadsIterator(0, 10, true, true);
                          ProgressPercentage progress = new ProgressPercentage("Comparing files " + inputFiles[i] + " and " + inputFiles[j], it.getMaximumProgress())) {
-                        w.write("#name length covered-A (%) only-A (bp) longer-A (bp) both (bp) longer-B (bp) only-B (bp) covered-B (%)\n");
+                        w.write("# Comparison " + Basic.getFileNameWithoutPath(inputFiles[i]) + " and " + Basic.getFileNameWithoutPath(inputFiles[j]) + ":\n");
                         while (it.hasNext()) {
                             final IReadBlock readBlock1 = it.next();
 
@@ -111,9 +114,11 @@ public class CompareProteinAlignments {
                             total.add(comparison);
                             w.write(comparison + "\n");
                             progress.setProgress(it.getProgress());
+                            count++;
                         }
                     }
-                    w.write(total + "\n");
+                    if (count > 1)
+                        w.write(total + "\n");
                 }
             }
             w.flush();
@@ -127,7 +132,7 @@ public class CompareProteinAlignments {
         final Map<String, ArrayList<IMatchBlock>> accession2Matches1 = computeAccession2Matches(readBlock1);
         final Map<String, ArrayList<IMatchBlock>> accession2Matches2 = computeAccession2Matches(readBlock2);
 
-        final ComparisonResult comparison = new ComparisonResult(name, readBlock1.getReadLength());
+        final ComparisonResult comparison = new ComparisonResult(name, readBlock1.getReadLength(), readBlock2.getReadLength());
         comparison.coveredInA = computeIntervalTreeOnQuery(getAllMatches(readBlock1)).getCovered();
         comparison.coveredInB = computeIntervalTreeOnQuery(getAllMatches(readBlock2)).getCovered();
 
@@ -136,7 +141,7 @@ public class CompareProteinAlignments {
 
             if (!accession2Matches2.containsKey(accession)) {
                 comparison.matchesOnlyInA += matches1.size();
-                comparison.alignedBasesOnlyInA += computeAlignedBases(matches1);
+                comparison.alignedAAOnlyInA += computeAlignedBases(matches1);
             } else {
                 final IntervalTree<IMatchBlock> intervalTree1 = computeIntervalTreeOnReference(matches1);
 
@@ -146,23 +151,26 @@ public class CompareProteinAlignments {
                 {
                     int[] count = computeOnlyInFirst(matches1, intervalTree2);
                     comparison.matchesOnlyInA += count[0];
-                    comparison.alignedBasesOnlyInA += count[1];
+                    comparison.alignedAAOnlyInA += count[1];
                 }
 
                 {
                     int[] count = computeLongerInFirst(matches1, intervalTree2);
                     comparison.matchesLongerInA += count[0];
-                    comparison.alignedBasesLongerInA += count[1];
+                    comparison.alignedAALongerInA += count[1];
+                    comparison.diffAALongerInA += count[2];
+
                 }
                 {
                     int[] count = computeLongerInFirst(matches2, intervalTree1);
                     comparison.matchesLongerInB += count[0];
-                    comparison.alignedBasesLongerInB += count[1];
+                    comparison.alignedAALongerInB += count[1];
+                    comparison.diffAALongerInB += count[2];
                 }
                 {
                     int[] count = computeSameInBoth(matches2, intervalTree1);
                     comparison.matchesInBoth += count[0];
-                    comparison.alignedBasesInBoth += count[1];
+                    comparison.alignedAAInBoth += count[1];
                 }
             }
         }
@@ -170,7 +178,7 @@ public class CompareProteinAlignments {
             final ArrayList<IMatchBlock> matches2 = accession2Matches2.get(accession);
             if (!accession2Matches1.containsKey(accession)) {
                 comparison.matchesOnlyInB += matches2.size();
-                comparison.alignedBasesOnlyInB += computeAlignedBases(matches2);
+                comparison.alignedAAOnlyInB += computeAlignedBases(matches2);
             }
 
         }
@@ -212,7 +220,7 @@ public class CompareProteinAlignments {
      * @return number of alignments and bases
      */
     private static int[] computeLongerInFirst(ArrayList<IMatchBlock> matches, IntervalTree<IMatchBlock> tree) {
-        int[] count = {0, 0};
+        int[] count = {0, 0, 0};
         for (IMatchBlock matchBlock : matches) {
             int a = getSubjStart(matchBlock);
             int b = getSubjEnd(matchBlock);
@@ -223,6 +231,7 @@ public class CompareProteinAlignments {
                 if (diff > 0) {
                     count[0]++;
                     count[1] += Math.abs(a - b) + 1;
+                    count[2] += diff;
                 }
             }
         }
@@ -373,53 +382,88 @@ public class CompareProteinAlignments {
      * reports the result of a comparison
      */
     public class ComparisonResult {
-        final String name;
+        String name;
 
-        int length;
+        int lengthA;
+        int coveredInA;
 
         int matchesOnlyInA;
-        int matchesLongerInA;
-        int matchesInBoth;
-        int matchesLongerInB;
-        int matchesOnlyInB;
+        int alignedAAOnlyInA;
 
-        int coveredInA;
+        int matchesLongerInA;
+        int alignedAALongerInA;
+        int diffAALongerInA;
+
+        int matchesInBoth;
+        int alignedAAInBoth;
+
+        int matchesLongerInB;
+        int alignedAALongerInB;
+        int diffAALongerInB;
+
+        int matchesOnlyInB;
+        int alignedAAOnlyInB;
+
+        int lengthB;
         int coveredInB;
 
-        int alignedBasesOnlyInA;
-        int alignedBasesLongerInA;
-        int alignedBasesInBoth;
-        int alignedBasesLongerInB;
-        int alignedBasesOnlyInB;
+        public ComparisonResult() {
+        }
 
-        public ComparisonResult(String name, int length) {
+        public ComparisonResult(String name, int lengthA, int lengthB) {
             this.name = name;
-            this.length = length;
+            this.lengthA = lengthA;
+            this.lengthB = lengthB;
         }
 
         public void add(ComparisonResult that) {
-            this.length += that.length;
+            this.lengthA += that.lengthA;
+
             this.coveredInA += that.coveredInA;
+
             this.matchesOnlyInA += that.matchesOnlyInA;
+            this.alignedAAOnlyInA += that.alignedAAOnlyInA;
+
             this.matchesLongerInA += that.matchesLongerInA;
+            this.alignedAALongerInA += that.alignedAALongerInA;
+            this.diffAALongerInA += that.diffAALongerInA;
+
             this.matchesInBoth += that.matchesInBoth;
+            this.alignedAAInBoth += that.alignedAAInBoth;
+
             this.matchesLongerInB += that.matchesLongerInB;
+            this.alignedAALongerInB += that.alignedAALongerInB;
+            this.diffAALongerInB += that.diffAALongerInB;
+
             this.matchesOnlyInB += that.matchesOnlyInB;
-            this.alignedBasesOnlyInA += that.alignedBasesOnlyInA;
-            this.alignedBasesLongerInA += that.alignedBasesLongerInA;
-            this.alignedBasesInBoth += that.alignedBasesInBoth;
-            this.alignedBasesLongerInB += that.alignedBasesLongerInB;
-            this.alignedBasesOnlyInB += that.alignedBasesOnlyInB;
+            this.alignedAAOnlyInB += that.alignedAAOnlyInB;
+
+            this.lengthB += that.lengthB;
             this.coveredInB = that.coveredInB;
         }
 
         public String toString() {
-            return String.format("%s\t%,d %,d (%.1f%%) %d (%,d) %,d (%,d) %,d (%,d) %,d (%,d) %,d (%,d) %,d (%.1f%%)",
-                    name, length,
-                    coveredInA, (100.0 * coveredInA) / length,
-                    matchesOnlyInA, alignedBasesOnlyInA, matchesLongerInA, alignedBasesLongerInA, matchesInBoth,
-                    alignedBasesInBoth, matchesLongerInB, alignedBasesLongerInB, matchesOnlyInB, alignedBasesOnlyInB,
-                    coveredInB, (100.0 * coveredInB) / length);
+            final int totalAA = alignedAAOnlyInA + alignedAALongerInA + alignedAAInBoth + alignedAALongerInB + alignedAAOnlyInB;
+
+            return String.format("%s\t%,d (%,d %.1f%%) %d (%,d %.1f%%) %,d (%,d +%d, %.1f%%) %,d (%,d %.1f%%) %,d (%,d +%,d %.1f%%) %,d (%,d  %.1f%%) %,d (%,d %.1f%%)",
+                    name, lengthA,
+                    coveredInA, (100.0 * coveredInA) / lengthA,
+                    matchesOnlyInA, alignedAAOnlyInA,
+                    (100.0 * alignedAAOnlyInA) / totalAA,
+                    matchesLongerInA, alignedAALongerInA, diffAALongerInA,
+                    (100.0 * alignedAALongerInA) / totalAA,
+                    matchesInBoth, alignedAAInBoth,
+                    (100.0 * alignedAAInBoth) / totalAA,
+                    matchesLongerInB, alignedAALongerInB, diffAALongerInB,
+                    (100.0 * alignedAALongerInB) / totalAA,
+                    matchesOnlyInB, alignedAAOnlyInB,
+                    (100.0 * alignedAAOnlyInB) / totalAA,
+                    lengthB,
+                    coveredInB, (100.0 * coveredInB) / lengthB);
+        }
+
+        public String getFormatString() {
+            return "name length-A (covered-A %) only-A (aa %) longer-A (aa + %) both (aa %) longer-B (aa + %) only-B (a %) length-B (covered-B %)";
         }
     }
 

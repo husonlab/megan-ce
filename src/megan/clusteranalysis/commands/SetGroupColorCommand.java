@@ -77,7 +77,7 @@ public class SetGroupColorCommand extends CommandBase implements ICommand {
      * @return name
      */
     public String getName() {
-        return "Set Groups Linewidth and Color...";
+        return "Set groups line-width and color...";
     }
 
     /**

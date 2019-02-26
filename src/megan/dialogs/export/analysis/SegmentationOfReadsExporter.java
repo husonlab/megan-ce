@@ -40,7 +40,7 @@ import java.util.Collection;
  *  export taxonomic segmentation
  * Daniel Huson, 8.2018
  */
-public class SegmentedReadsExporter {
+public class SegmentationOfReadsExporter {
     /**
      * Compute segmentation of long reads for given set of classids in the given classification
      *

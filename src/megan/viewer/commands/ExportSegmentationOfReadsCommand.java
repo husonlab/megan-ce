@@ -29,7 +29,7 @@ import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.analysis.TaxonomicSegmentation;
 import megan.core.Document;
-import megan.dialogs.export.analysis.SegmentedReadsExporter;
+import megan.dialogs.export.analysis.SegmentationOfReadsExporter;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomicLevels;
@@ -46,7 +46,7 @@ import java.io.IOException;
  * export taxonomic segmentation of reads
  * Daniel Huson, 8.2018
  */
-public class ExportSegmentedReadsCommand extends CommandBase implements ICommand {
+public class ExportSegmentationOfReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export segmentedReads file=<filename> [rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "|next}" +
                 " [switchPenalty=<number>] [compatibleFactor=<number>] [incompatibleFactor=<number>];";
@@ -82,7 +82,7 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
         try {
             final MainViewer viewer = (MainViewer) getViewer();
             final Document doc = viewer.getDocument();
-            final int count = SegmentedReadsExporter.export(doc.getProgressListener(), viewer.getClassification().getName(), viewer.getSelectedIds(), rank, doc.getConnector(), fileName, taxonomicSegmentation);
+            final int count = SegmentationOfReadsExporter.export(doc.getProgressListener(), viewer.getClassification().getName(), viewer.getSelectedIds(), rank, doc.getConnector(), fileName, taxonomicSegmentation);
 
             NotificationsInSwing.showInformation("Exported segmentation of reads: " + count);
 

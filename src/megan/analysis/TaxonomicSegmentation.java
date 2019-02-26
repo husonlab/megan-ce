@@ -30,6 +30,7 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
+import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
 import java.util.*;
@@ -52,6 +53,14 @@ public class TaxonomicSegmentation {
     private float incompatibleFactor = defaultIncompatibleFactor;
 
     private boolean verbose = false;
+
+    public String getParamaterString() {
+        return "rank=" + TaxonomicLevels.getName(rank) + " classId=" + TaxonomyData.getName2IdMap().get(classId) + " switchPenalty=" + Basic.removeTrailingZerosAfterDot("" + switchPenalty)
+                + " compatibleFactor=" + Basic.removeTrailingZerosAfterDot("" + compatibleFactor)
+                + " incompatibleFactor=" + Basic.removeTrailingZerosAfterDot("" + incompatibleFactor);
+    }
+
+
 
     /**
      * constructor
@@ -203,7 +212,7 @@ public class TaxonomicSegmentation {
         // reverse:
         Basic.reverseInPlace(segments);
 
-        System.err.println(">" + Basic.swallowLeadingGreaterSign(readBlock.getReadName()) + ": segments: " + Basic.toString(segments, " "));
+        //System.err.println(">" + Basic.swallowLeadingGreaterSign(readBlock.getReadName()) + ": segments: " + Basic.toString(segments, " "));
 
         return segments;
     }

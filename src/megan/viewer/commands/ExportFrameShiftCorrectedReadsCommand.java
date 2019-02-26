@@ -71,7 +71,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
         if (getViewer() instanceof ClassificationViewer) {
             final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
-            final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-corrected.fasta");
+            final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-%i-%t-fs_corrected.fasta");
             File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save corrected reads file", ".fasta");
 
             if (file != null) {

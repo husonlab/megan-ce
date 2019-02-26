@@ -65,6 +65,7 @@ public class SetScaleCommand extends CommandBase implements ICommand {
             if (viewer.getSelectedComponent() instanceof PCoATab)
                 scale /= PCoATab.COORDINATES_SCALE_FACTOR;
             GraphView graphView = viewer.getGraphView();
+            graphView.centerGraph();
             graphView.trans.setScale(scale, scale);
         }
     }

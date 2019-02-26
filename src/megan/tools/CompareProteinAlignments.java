@@ -467,34 +467,4 @@ public class CompareProteinAlignments {
         }
     }
 
-    /**
-     * normalizes names for contigs/reads using a simple edit
-     */
-    class NameNormalizer {
-        private final String a;
-        private final String b;
-
-        public NameNormalizer(String expression) {
-            if (expression.startsWith("/"))
-                expression = expression.substring(1);
-            if (expression.endsWith("/"))
-                expression = expression.substring(0, expression.length() - 1);
-            final String[] tokens = expression.split("/");
-            if (tokens.length == 1) {
-                a = tokens[0].trim();
-                b = "";
-            } else if (tokens.length == 2) {
-                a = tokens[0].trim();
-                b = tokens[1].trim();
-            } else
-                a = b = null;
-        }
-
-        public String apply(String name) {
-            if (a == null)
-                return name;
-            else
-                return name.replaceAll(a, b);
-        }
-    }
 }

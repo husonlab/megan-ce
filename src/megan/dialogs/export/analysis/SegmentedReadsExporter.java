@@ -20,9 +20,7 @@
 package megan.dialogs.export.analysis;
 
 import jloda.graph.Node;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.*;
 import megan.analysis.TaxonomicSegmentation;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -32,10 +30,9 @@ import megan.data.IReadBlockIterator;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import javax.swing.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -65,6 +62,7 @@ public class SegmentedReadsExporter {
             BufferedWriter w;
             if (useOneOutputFile) {
                 w = new BufferedWriter(new FileWriter(fileName));
+                w.write("#Segmentation parameters: " + taxonomicSegmentation.getParamaterString() + "\n");
                 classification = null;
             } else {
                 w = null;
@@ -80,7 +78,6 @@ public class SegmentedReadsExporter {
                 taxonomicSegmentation.setRank(rank);
                 System.err.println("Using rank: " + TaxonomicLevels.getName(taxonomicSegmentation.getRank()));
             }
-
 
             int countClassIds = 0;
             try {
@@ -104,12 +101,33 @@ public class SegmentedReadsExporter {
                                     if (w != null)
                                         w.close();
                                     final String cName = classification.getName2IdMap().get(classId);
-                                    w = new BufferedWriter(new FileWriter(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId)));
+                                    final File file = new File(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId));
+                                    if (ProgramProperties.isUseGUI() && file.exists()) {
+                                        final Single<Boolean> ok = new Single<>(true);
+                                        try {
+                                            SwingUtilities.invokeAndWait(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                                                        case JOptionPane.NO_OPTION:
+                                                        case JOptionPane.CANCEL_OPTION: // close and abort
+                                                            ok.set(false);
+                                                        default:
+                                                    }
+                                                }
+                                            });
+                                        } catch (InterruptedException | InvocationTargetException e) {
+                                            Basic.caught(e);
+                                        }
+                                        if (!ok.get())
+                                            throw new CanceledException();
+                                    }
+                                    w = new BufferedWriter(new FileWriter(file));
+                                    w.write("#Segmentation parameters: " + taxonomicSegmentation.getParamaterString() + "\n");
                                 }
                                 first = false;
                             }
                             total++;
-
 
                             segmentAndWrite(progress, it.next(), taxonomicSegmentation, w);
                             progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
@@ -160,9 +178,8 @@ public class SegmentedReadsExporter {
 
         String header = readBlock.getReadHeader();
         if (header == null)
-            header = ">untitled";
-        w.write((header.startsWith(">") ? header : ">" + header) + "\n");
-        w.write("Segmentation: " + Basic.toString(segmentation, " ") + "\n");
+            header = "untitled";
+        w.write(Basic.swallowLeadingGreaterSign(header) + "\t" + Basic.toString(segmentation, "\t") + "\n");
     }
 
 }

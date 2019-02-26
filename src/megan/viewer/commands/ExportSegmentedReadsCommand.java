@@ -23,9 +23,9 @@ import jloda.gui.ChooseFileDialog;
 import jloda.gui.commands.CommandBase;
 import jloda.gui.commands.ICommand;
 import jloda.util.Basic;
-import jloda.util.FastaFileFilter;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
+import jloda.util.TextFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.analysis.TaxonomicSegmentation;
 import megan.core.Document;
@@ -84,10 +84,10 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
             final Document doc = viewer.getDocument();
             final int count = SegmentedReadsExporter.export(doc.getProgressListener(), viewer.getClassification().getName(), viewer.getSelectedIds(), rank, doc.getConnector(), fileName, taxonomicSegmentation);
 
-            NotificationsInSwing.showInformation("Exported segmented reads: " + count);
+            NotificationsInSwing.showInformation("Exported segmentation of reads: " + count);
 
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export segmented reads failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export segmentation of reads failed: " + e.getMessage());
         }
     }
 
@@ -103,7 +103,7 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
             pane.setLayout(new BorderLayout());
             pane.setBorder(new EmptyBorder(2, 5, 2, 3));
             frame.getContentPane().add(pane);
-            pane.add(new JLabel("Setup segmentation DP"), BorderLayout.NORTH);
+            pane.add(new JLabel("Setup read-segmentation DP"), BorderLayout.NORTH);
             final JPanel center = new JPanel();
             center.setLayout(new GridLayout(4, 2));
             center.setBorder(new EtchedBorder());
@@ -147,8 +147,8 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.setVisible(false);
-                    final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-corrected.fasta");
-                    File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), e, "Save corrected reads file", ".fasta");
+                    final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-%i-%t-segmentation.txt");
+                    File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(), new TextFileFilter(), e, "Save segmentation of reads file", ".txt");
 
                     if (file != null) {
                         if (Basic.getFileSuffix(file.getName()) == null)
@@ -185,7 +185,7 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
     }
 
     public String getName() {
-        return "Export Segmented Reads...";
+        return "Export Segmentation of Reads...";
     }
 
     public ImageIcon getIcon() {
@@ -193,7 +193,7 @@ public class ExportSegmentedReadsCommand extends CommandBase implements ICommand
     }
 
     public String getDescription() {
-        return "Export segmented reads, use %t or %i in filename for to save each class into a different file";
+        return "Export segmentation of reads, use %t or %i in filename for to save each class into a different file";
     }
 
     public boolean isCritical() {

@@ -29,7 +29,9 @@ import megan.data.IReadBlockIterator;
 import megan.util.interval.Interval;
 import megan.util.interval.IntervalTree;
 
+import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
@@ -117,6 +119,28 @@ public class FrameShiftCorrectedReadsExporter {
                                         w.close();
                                     final String cName = classification.getName2IdMap().get(classId);
                                     final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
+                                    final File file = new File(fName);
+                                    if (ProgramProperties.isUseGUI() && file.exists()) {
+                                        final Single<Boolean> ok = new Single<>(true);
+                                        try {
+                                            SwingUtilities.invokeAndWait(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                                                        case JOptionPane.NO_OPTION:
+                                                        case JOptionPane.CANCEL_OPTION: // close and abort
+                                                            ok.set(false);
+                                                        default:
+                                                    }
+                                                }
+                                            });
+                                        } catch (InterruptedException | InvocationTargetException e) {
+                                            Basic.caught(e);
+                                        }
+                                        if (!ok.get())
+                                            throw new CanceledException();
+                                    }
+
                                     w = new BufferedWriter(fName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fName))) : new FileWriter(fName));
                                 }
                                 first = false;

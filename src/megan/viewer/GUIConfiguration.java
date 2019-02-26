@@ -44,7 +44,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Export", "Text (CSV) Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;" +
                 "Annotations in GFF Format...;Export Read Lengths and Coverage...;Export Frame-Shift Corrected Reads...;"
-                + ProgramProperties.getIfEnabled("enable-segment-reads", "Export Segmented Reads...;")
+                + ProgramProperties.getIfEnabled("enable-segment-reads", "Export Segmentation of Reads...;")
                 + "|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 

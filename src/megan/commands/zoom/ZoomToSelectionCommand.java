@@ -42,7 +42,7 @@ public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom selected;");
+        executeImmediately("zoom what=selected;");
     }
 
     public boolean isApplicable() {

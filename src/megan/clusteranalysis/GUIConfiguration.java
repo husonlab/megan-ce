@@ -48,7 +48,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Node Shape", "Circle;Square;Triangle;Diamond;");
 
         menuConfig.defineMenu("Select", "Select All;Select None;Invert Selection;|;From Previous Window;");
-        menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Zoom to Fit;|;Flip Horizontally;Flip Vertically;@Rotate;|;" +
+        menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Zoom to Fit;Set Scale...;|;Flip Horizontally;Flip Vertically;@Rotate;|;" +
                 "Show Groups;Show Groups As Convex Hulls;|;Use Colors;Show Labels;Set Node Radius...;");
 
         menuConfig.defineMenu("Rotate", "Rotate Left;Rotate Right;Rotate Up;Rotate Down;");

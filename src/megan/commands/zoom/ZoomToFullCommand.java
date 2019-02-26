@@ -33,11 +33,11 @@ import java.awt.event.ActionEvent;
  */
 public class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "zoom {fit|full|selection}";
+        return "zoom what={fit|full|selection}";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("zoom");
+        np.matchIgnoreCase("zoom what=");
         final String what = np.getWordMatchesIgnoringCase("fit full selected");
         np.matchIgnoreCase(";");
 
@@ -56,7 +56,7 @@ public class ZoomToFullCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom full;");
+        executeImmediately("zoom what=full;");
     }
 
     public String getName() {

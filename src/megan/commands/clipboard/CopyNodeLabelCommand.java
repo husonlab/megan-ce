@@ -59,7 +59,7 @@ public class CopyNodeLabelCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return ((GraphView) getViewer()).getSelectedNodes().size() > 0;
+        return getViewer() instanceof GraphView && ((GraphView) getViewer()).getSelectedNodes().size() > 0;
     }
 
     public String getName() {

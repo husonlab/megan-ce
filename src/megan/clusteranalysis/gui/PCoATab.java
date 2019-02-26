@@ -59,7 +59,7 @@ import java.util.*;
  * Daniel Huson, 5.2010, 4.2015
  */
 public class PCoATab extends JPanel implements ITab {
-    private final double COORDINATES_SCALE_FACTOR = 10000;
+    public static final double COORDINATES_SCALE_FACTOR = 10000;
 
     private final ClusterViewer clusterViewer;
     private final ViewerBase graphView;
@@ -159,10 +159,10 @@ public class PCoATab extends JPanel implements ITab {
                             }
                         };
                         if (SwingUtilities.isEventDispatchThread()) {
-                            System.err.println("RUN");
+                            //System.err.println("RUN");
                             runnable.run(); // already in the swing thread, just run
                         } else {
-                            System.err.println("INVOKE");
+                            //System.err.println("INVOKE");
                             SwingUtilities.invokeAndWait(runnable);
                         }
                     } catch (InterruptedException | InvocationTargetException e) {
@@ -622,8 +622,7 @@ public class PCoATab extends JPanel implements ITab {
             return;
         }
         this.biplotSize = biplotSize;
-        if (biplotSize > 0)
-            ProgramProperties.put("BiplotSize", biplotSize);
+        ProgramProperties.put("BiplotSize", biplotSize);
         computeBiPlotVectors(biplotSize);
     }
 
@@ -635,8 +634,7 @@ public class PCoATab extends JPanel implements ITab {
             return;
         }
         this.triplotSize = triplotSize;
-        if (triplotSize > 0)
-            ProgramProperties.put("TriplotSize", triplotSize);
+        ProgramProperties.put("TriplotSize", triplotSize);
         computeTriPlotVectors(triplotSize);
     }
 
@@ -1035,7 +1033,7 @@ public class PCoATab extends JPanel implements ITab {
                             final double factor = COORDINATES_SCALE_FACTOR / pcoa.getEigenValues()[firstPC];
                             double step = 0.0000001d;
                             int jump = 5;
-                            while (step < 100000 && graphView.trans.w2d(step * factor, 0).getX() - zeroDC.getX() < 50) {
+                            while (step < 100000 && graphView.trans.w2d(step * factor, 0).getX() - zeroDC.getX() < 35) {
                                 step *= jump;
                                 if (jump == 5)
                                     jump = 2;
@@ -1073,7 +1071,7 @@ public class PCoATab extends JPanel implements ITab {
                             final double factor = COORDINATES_SCALE_FACTOR / pcoa.getEigenValues()[secondPC];
                             double step = 0.0000001d;
                             int jump = 5;
-                            while (step < 100000 && graphView.trans.w2d(0, step * factor).getY() - zeroDC.getY() < 50) {
+                            while (step < 100000 && graphView.trans.w2d(0, step * factor).getY() - zeroDC.getY() < 25) {
                                 step *= jump;
                                 if (jump == 5)
                                     jump = 2;
@@ -1081,21 +1079,16 @@ public class PCoATab extends JPanel implements ITab {
                                     jump = 5;
                             }
 
-
                             int yTickStart = grid.y;
 
                             for (Boolean left : Arrays.asList(true, false)) {
-                                final int h0;
-                                if (left)
-                                    h0 = Math.round(grid.x);
-                                else
-                                    h0 = Math.round(grid.x + grid.width);
+                                final int h0 = (left ? Math.round(grid.x) : Math.round(grid.x + grid.width));
 
                                 gc.drawLine(h0, grid.y, h0, grid.y + grid.height);
                                 for (Integer sign : Arrays.asList(-1, 1)) {
                                     for (int i = (sign == 1 ? 0 : 1); i < 1000; i++) {
-                                        Point2D tickWC = new Point2D.Double(0, sign * i * step * factor);
-                                        Point tickDC = graphView.trans.w2d(tickWC);
+                                        final Point2D tickWC = new Point2D.Double(0, sign * i * step * factor);
+                                        final Point tickDC = graphView.trans.w2d(tickWC);
                                         final String label = (i == 0 ? String.format("PC%d", secondPC + 1) : tickNumberFormat.format(sign * i * step));
                                         final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
                                         if (tickDC.y - labelSize.height / 2 >= yTickStart && tickDC.y + labelSize.height / 2 <= grid.y + grid.height) {

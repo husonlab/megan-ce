@@ -51,7 +51,8 @@ public class FlipHCommand extends CommandBase implements ICheckBoxCommand {
         np.matchIgnoreCase(";");
         getViewer().getPcoaTab().setFlipH(flip);
         try {
-            getViewer().updateDistances();
+            getViewer().getGraphView().getGraph().clear();
+            getViewer().updateGraph();
         } catch (Exception ex) {
             Basic.caught(ex);
         }

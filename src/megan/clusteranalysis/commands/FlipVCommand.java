@@ -51,7 +51,8 @@ public class FlipVCommand extends CommandBase implements ICheckBoxCommand {
         np.matchIgnoreCase(";");
         getViewer().getPcoaTab().setFlipV(flip);
         try {
-            getViewer().updateDistances();
+            getViewer().getGraphView().getGraph().clear();
+            getViewer().updateGraph();
         } catch (Exception ex) {
             Basic.caught(ex);
         }

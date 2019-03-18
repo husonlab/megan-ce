@@ -20,9 +20,9 @@ package megan.parsers.blast;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.fx.NotificationsInSwing;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.io.File;
 import java.io.IOException;

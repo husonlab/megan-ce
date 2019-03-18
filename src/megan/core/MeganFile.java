@@ -226,9 +226,14 @@ public class MeganFile {
      * @return true, if data connector present
      */
     public boolean hasDataConnector() {
-        return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE
-                || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size() > 0));
+        try {
+            return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE
+                    || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size() > 0 && ConnectorCombiner.canOpenAllConnectors(embeddedSourceFiles)));
+        } catch (IOException e) {
+            return false;
+        }
     }
+
 
     /**
      * get the data connector associated with the file

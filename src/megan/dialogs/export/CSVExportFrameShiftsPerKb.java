@@ -21,12 +21,12 @@ package megan.dialogs.export;
 
 import jloda.graph.Node;
 import jloda.util.*;
+import jloda.util.interval.IntervalTree;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.core.Document;
 import megan.data.*;
 import megan.fx.NotificationsInSwing;
-import megan.util.interval.IntervalTree;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 

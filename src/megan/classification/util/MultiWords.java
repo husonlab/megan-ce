@@ -67,7 +67,7 @@ public class MultiWords {
         int countEnds = 0;
 
         for (int i = 0; i < line.length(); i++) {
-            if ((i == 0 || !Character.isLetterOrDigit(line.charAt(i - 1))) && (Character.isLetter(line.charAt(i)))) {
+            if ((i == 0 || !Character.isLetterOrDigit(line.charAt(i - 1))) && (Character.isLetterOrDigit(line.charAt(i)))) {
                 if (countStarts == starts.length)
                     starts = grow(starts);
                 starts[countStarts++] = i;

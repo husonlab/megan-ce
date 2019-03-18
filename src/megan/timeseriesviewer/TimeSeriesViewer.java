@@ -27,6 +27,7 @@ import jloda.gui.director.ProjectManager;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.RememberingComboBox;
+import jloda.util.Table;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;
 import megan.core.SelectionSet;
@@ -34,7 +35,6 @@ import megan.main.MeganProperties;
 import megan.timeseriesviewer.commands.CompareSamplesCommand;
 import megan.timeseriesviewer.commands.CompareSubjectsCommand;
 import megan.timeseriesviewer.commands.CompareTimePointsCommand;
-import megan.util.Table;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

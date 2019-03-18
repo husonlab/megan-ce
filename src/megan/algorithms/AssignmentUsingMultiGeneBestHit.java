@@ -19,11 +19,11 @@
 
 package megan.algorithms;
 
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.util.ArrayList;
 import java.util.BitSet;

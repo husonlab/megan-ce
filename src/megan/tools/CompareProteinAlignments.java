@@ -20,10 +20,10 @@
 package megan.tools;
 
 import jloda.util.*;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.core.MeganFile;
 import megan.data.*;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.io.*;
 import java.util.ArrayList;

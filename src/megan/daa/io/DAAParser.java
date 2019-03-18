@@ -21,12 +21,12 @@ package megan.daa.io;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileRandomAccessReadOnlyAdapter;
 import megan.parsers.blast.BlastMode;
 import megan.parsers.blast.PostProcessMatches;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

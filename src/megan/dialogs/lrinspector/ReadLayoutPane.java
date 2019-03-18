@@ -40,13 +40,13 @@ import jloda.fx.ASelectionModel;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.chart.ChartColorManager;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
 import megan.fx.FXSwingUtilities;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.net.MalformedURLException;
 import java.net.URL;

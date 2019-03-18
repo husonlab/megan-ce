@@ -21,8 +21,8 @@ package megan.parsers.blast;
 
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 
 import java.util.List;
 import java.util.Set;

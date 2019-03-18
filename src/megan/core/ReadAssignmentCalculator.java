@@ -20,10 +20,10 @@
 package megan.core;
 
 import jloda.util.ProgramProperties;
+import jloda.util.interval.IntervalTree;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.util.ReadMagnitudeParser;
-import megan.util.interval.IntervalTree;
 
 /**
  * calcuates the values that appear is assigned reads in tree representations

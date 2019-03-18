@@ -22,10 +22,10 @@ package megan.dialogs.export;
 import jloda.graph.Node;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
+import jloda.util.interval.IntervalTree;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.*;
-import megan.util.interval.IntervalTree;
 import megan.viewer.ClassificationViewer;
 
 import java.io.BufferedWriter;

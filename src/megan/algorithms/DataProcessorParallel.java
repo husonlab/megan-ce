@@ -19,6 +19,8 @@
 package megan.algorithms;
 
 import jloda.util.*;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -34,8 +36,6 @@ import megan.io.InputOutputReaderWriter;
 import megan.main.MeganProperties;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;

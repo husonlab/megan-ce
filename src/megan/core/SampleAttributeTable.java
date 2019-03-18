@@ -20,8 +20,8 @@ package megan.core;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.Table;
 import megan.fx.NotificationsInSwing;
-import megan.util.Table;
 import megan.viewer.MainViewer;
 
 import java.awt.*;

@@ -20,6 +20,7 @@
 package megan.algorithms;
 
 import jloda.util.*;
+import jloda.util.interval.IntervalChain;
 import megan.daa.connector.ReadBlockDAA;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
@@ -27,7 +28,6 @@ import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.main.MeganProperties;
 import megan.util.BlastParsingUtils;
-import megan.util.interval.IntervalChain;
 
 import java.io.IOException;
 import java.util.*;

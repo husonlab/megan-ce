@@ -25,12 +25,12 @@ import jloda.phylo.PhyloTree;
 import jloda.phylo.PhyloTreeView;
 import jloda.util.Correlation;
 import jloda.util.ProgramProperties;
+import jloda.util.Table;
 import megan.chart.gui.ChartSelection;
 import megan.chart.gui.SelectionGraphics;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 import megan.clusteranalysis.tree.UPGMA;
-import megan.util.Table;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

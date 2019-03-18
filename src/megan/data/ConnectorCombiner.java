@@ -44,13 +44,27 @@ public class ConnectorCombiner implements IConnector {
      */
     public ConnectorCombiner(ArrayList<String> fileNames) throws IOException {
         System.err.println("Using experimental comparison data access");
-        connectors = new IConnector[fileNames.size()];
-        for (int i = 0; i < fileNames.size(); i++) {
+        final ArrayList<IConnector> list = new ArrayList<>();
+        for (String fileName : fileNames) {
             final MeganFile meganFile = new MeganFile();
-            meganFile.setFileFromExistingFile(fileNames.get(i), true);
-            if (meganFile.isOkToRead())
-                connectors[i] = meganFile.getConnector();
+            meganFile.setFileFromExistingFile(fileName, true);
+            if (meganFile.isOkToRead()) {
+                final IConnector connector = meganFile.getConnector();
+                if (connector != null)
+                    list.add(connector);
+            }
         }
+        connectors = list.toArray(new IConnector[0]);
+    }
+
+    public static boolean canOpenAllConnectors(ArrayList<String> fileNames) throws IOException {
+        for (String fileName : fileNames) {
+            final MeganFile meganFile = new MeganFile();
+            meganFile.setFileFromExistingFile(fileName, true);
+            if (!meganFile.isOkToRead() || meganFile.getConnector() == null)
+                return false;
+        }
+        return fileNames.size() > 0;
     }
 
     @Override
@@ -59,12 +73,12 @@ public class ConnectorCombiner implements IConnector {
     }
 
     @Override
-    public boolean isReadOnly() throws IOException {
+    public boolean isReadOnly() {
         return true;
     }
 
     @Override
-    public long getUId() throws IOException {
+    public long getUId() {
         return 0;
     }
 
@@ -89,9 +103,9 @@ public class ConnectorCombiner implements IConnector {
     @Override
     public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         final ArrayList<IReadBlockIterator> iterators = new ArrayList<>();
-        for (int i = 0; i < connectors.length; i++) {
-            if (connectors[i] != null)
-                iterators.add(connectors[i].getReadsIteratorForListOfClassIds(classification, classIds, minScore, maxExpected, wantReadSequence, wantMatches));
+        for (IConnector connector : connectors) {
+            if (connector != null)
+                iterators.add(connector.getReadsIteratorForListOfClassIds(classification, classIds, minScore, maxExpected, wantReadSequence, wantMatches));
         }
         return new ReadBlockIteratorCombiner(iterators.toArray(new IReadBlockIterator[0]));
     }
@@ -134,7 +148,7 @@ public class ConnectorCombiner implements IConnector {
         for (IConnector connector : connectors) {
             names.addAll(Arrays.asList(connector.getAllClassificationNames()));
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     @Override

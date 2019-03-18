@@ -20,6 +20,8 @@
 package megan.dialogs.export;
 
 import jloda.util.*;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -27,8 +29,6 @@ import megan.data.*;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.dialogs.lrinspector.TableItem;
 import megan.parsers.blast.BlastMode;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.TaxonomyData;
 

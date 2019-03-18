@@ -127,8 +127,7 @@ public class Megan6 {
                     final MainViewer viewer = newDir.getMainViewer();
                     viewer.getFrame().setVisible(true);
                     if (MessageWindow.getInstance() == null) {
-                        MessageWindow.setInstance(
-                                new MessageWindow(ProgramProperties.getProgramIcon(), "Messages - MEGAN", viewer.getFrame(), false));
+                        MessageWindow.setInstance(new MessageWindow(ProgramProperties.getProgramIcon(), "Messages - MEGAN", viewer.getFrame(), false));
                         MessageWindow.getInstance().getTextArea().setFont(new Font("Monospaced", Font.PLAIN, 12));
                     }
                     if (showMessageWindow)

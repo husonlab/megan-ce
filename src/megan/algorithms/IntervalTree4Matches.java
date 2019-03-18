@@ -24,10 +24,10 @@ import jloda.util.CanceledException;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import java.util.ArrayList;
 import java.util.HashSet;

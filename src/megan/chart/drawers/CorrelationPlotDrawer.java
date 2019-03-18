@@ -20,17 +20,13 @@ package megan.chart.drawers;
 
 import jloda.gui.IPopupMenuModifier;
 import jloda.gui.commands.CommandManager;
-import jloda.util.Basic;
-import jloda.util.Correlation;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
 import megan.util.CallBack;
 import megan.util.PopupChoice;
-import megan.util.Table;
 
 import javax.swing.*;
 import java.awt.*;

@@ -19,6 +19,8 @@
 package megan.dialogs.export.analysis;
 
 import jloda.util.*;
+import jloda.util.interval.Interval;
+import jloda.util.interval.IntervalTree;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -26,8 +28,6 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
-import megan.util.interval.Interval;
-import megan.util.interval.IntervalTree;
 
 import javax.swing.*;
 import java.io.*;

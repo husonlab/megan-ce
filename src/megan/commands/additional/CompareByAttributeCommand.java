@@ -111,7 +111,7 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
                 final List<String> samples = tarSample2SrcSamples.get(tarSample);
                 Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
 
-                int sampleSize = ComputeCoreBiome.apply(doc, samples, false, 0, 0, classification2class2counts, doc.getProgressListener());
+                final int sampleSize = ComputeCoreBiome.apply(doc, samples, false, 0, 0, classification2class2counts, doc.getProgressListener());
 
                 if (classification2class2counts.size() > 0) {
                     newDocument.addSample(tarSample, sampleSize, 0, doc.getBlastMode(), classification2class2counts);

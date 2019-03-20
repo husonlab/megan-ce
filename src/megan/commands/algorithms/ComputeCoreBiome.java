@@ -20,6 +20,7 @@ package megan.commands.algorithms;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
+import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -50,7 +51,7 @@ public class ComputeCoreBiome {
      * @return sampleSize
      */
     public static int apply(Document srcDoc, Collection<String> samplesToUse, boolean asUpperBound, int samplesThreshold,
-                            float taxonDetectionThresholdPercent, Map<String, Map<Integer, float[]>> tarClassification2class2counts, ProgressListener progress) {
+                            float taxonDetectionThresholdPercent, Map<String, Map<Integer, float[]>> tarClassification2class2counts, ProgressListener progress) throws CanceledException {
         final BitSet sampleIds = srcDoc.getDataTable().getSampleIds(samplesToUse);
         int size = 0;
 
@@ -64,14 +65,13 @@ public class ComputeCoreBiome {
                     root = TaxonomyData.getTree().getRoot();
                 else {
                     root = ClassificationManager.get(classificationName, true).getFullTree().getRoot();
-
                 }
                 final Map<Integer, float[]> tarClass2counts = new HashMap<>();
                 tarClassification2class2counts.put(classificationName, tarClass2counts);
 
                 final int[] detectionThreshold = computeDetectionThreshold(classificationName, srcDoc.getNumberOfSamples(), srcClass2counts, taxonDetectionThresholdPercent);
 
-                computeCoreBiomeRec(sampleIds, asUpperBound, srcDoc.getNumberOfSamples(), samplesThreshold, detectionThreshold, root, srcClass2counts, tarClass2counts);
+                computeCoreBiomeRec(sampleIds, asUpperBound, srcDoc.getNumberOfSamples(), samplesThreshold, detectionThreshold, root, srcClass2counts, tarClass2counts, progress);
                 // System.err.println(classificationName + ": " + tarClassification2class2counts.size());
             }
 
@@ -151,7 +151,8 @@ public class ComputeCoreBiome {
      * @param srcClass2counts
      * @param tarClass2counts
      */
-    private static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold, Node v, Map<Integer, float[]> srcClass2counts, Map<Integer, float[]> tarClass2counts) {
+    private static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold,
+                                               Node v, Map<Integer, float[]> srcClass2counts, Map<Integer, float[]> tarClass2counts, ProgressListener progress) throws CanceledException {
         final float[] summarized = new float[numberOfSamples];
 
         final int classId = (Integer) v.getInfo();
@@ -169,7 +170,7 @@ public class ComputeCoreBiome {
 
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             final Node w = e.getTarget();
-            final float[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, samplesThreshold, detectionThreshold, w, srcClass2counts, tarClass2counts);
+            final float[] countsBelow = computeCoreBiomeRec(sampleIds, asUpperBound, numberOfSamples, samplesThreshold, detectionThreshold, w, srcClass2counts, tarClass2counts, progress);
             for (int i = 0; i < numberOfSamples; i++) {
                 if (sampleIds.get(i)) {
                     summarized[i] += countsBelow[i];
@@ -190,6 +191,7 @@ public class ComputeCoreBiome {
         if (countsV != null && numberOfSamplesWithClass > 0 && ((!asUpperBound && numberOfSamplesWithClass >= samplesThreshold) || (asUpperBound && numberOfSamplesWithClass <= samplesThreshold))) {
             tarClass2counts.put(classId, new float[]{value});
         }
+        progress.checkForCancel();
         return summarized;
     }
 }

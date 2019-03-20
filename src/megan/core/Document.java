@@ -1040,6 +1040,7 @@ public class Document {
      */
     public void addSample(String sample, float sampleSize, int srcId, BlastMode blastMode, Map<String, Map<Integer, float[]>> classification2class2counts) {
         getDataTable().addSample(sample, sampleSize, blastMode, srcId, classification2class2counts);
+        activeViewers.addAll(classification2class2counts.keySet());
     }
 
     public void reorderSamples(Collection<String> newOrder) throws IOException {

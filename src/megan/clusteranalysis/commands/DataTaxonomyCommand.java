@@ -18,7 +18,7 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.commands.ICheckBoxCommand;
+import jloda.swing.commands.ICheckBoxCommand;
 import megan.clusteranalysis.ClusterViewer;
 import megan.core.ClassificationType;
 import megan.viewer.MainViewer;

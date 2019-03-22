@@ -18,8 +18,9 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
-import jloda.util.ProgramProperties;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -78,11 +79,11 @@ public class SetAPropertyCommand extends CommandBase implements ICommand {
         String label = np.getWordRespectCase();
         np.matchIgnoreCase("=");
         String value = np.getWordRespectCase();
-        if (NexusStreamParser.isBoolean(value)) {
+        if (Basic.isBoolean(value)) {
             ProgramProperties.put(label, Boolean.parseBoolean(value));
-        } else if (NexusStreamParser.isInteger(value)) {
+        } else if (Basic.isInteger(value)) {
             ProgramProperties.put(label, Integer.parseInt(value));
-        } else if (NexusStreamParser.isFloat(value)) {
+        } else if (Basic.isFloat(value)) {
             ProgramProperties.put(label, Float.parseFloat(value));
         } else
             ProgramProperties.put(label, value);

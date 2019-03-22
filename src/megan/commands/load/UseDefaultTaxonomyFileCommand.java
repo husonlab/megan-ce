@@ -18,8 +18,8 @@
  */
 package megan.commands.load;
 
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.ProjectManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;

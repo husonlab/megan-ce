@@ -18,8 +18,8 @@
  */
 package megan.dialogs.parameters.commands;
 
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.dialogs.parameters.ParametersDialog;

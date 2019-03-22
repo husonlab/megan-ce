@@ -18,9 +18,14 @@
  */
 package megan.core;
 
-import jloda.gui.ColorTableManager;
-import jloda.gui.ILabelGetter;
-import jloda.util.*;
+import jloda.swing.util.ColorTableManager;
+import jloda.swing.util.ILabelGetter;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressCmdLine;
+import jloda.util.ProgressListener;
 import jloda.util.parse.NexusStreamParser;
 import megan.algorithms.DataProcessor;
 import megan.chart.ChartColorManager;

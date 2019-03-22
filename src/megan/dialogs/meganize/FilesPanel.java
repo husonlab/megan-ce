@@ -18,7 +18,7 @@
  */
 package megan.dialogs.meganize;
 
-import jloda.gui.commands.CommandManager;
+import jloda.swing.commands.CommandManager;
 import megan.dialogs.meganize.commands.ChooseDAAFilesCommand;
 import megan.importblast.commands.SetLongReadsCommand;
 import megan.parsers.blast.BlastFileFormat;

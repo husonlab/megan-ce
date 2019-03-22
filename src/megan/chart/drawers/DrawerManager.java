@@ -18,7 +18,7 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.PluginClassLoader;
+import jloda.swing.util.PluginClassLoader;
 import megan.chart.IChartDrawer;
 
 import java.util.HashMap;

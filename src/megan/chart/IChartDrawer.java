@@ -18,8 +18,8 @@
  */
 package megan.chart;
 
-import jloda.gui.ILabelGetter;
-import jloda.gui.IPopupMenuModifier;
+import jloda.swing.util.ILabelGetter;
+import jloda.swing.util.IPopupMenuModifier;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.data.IData;
 import megan.chart.gui.ChartSelection;

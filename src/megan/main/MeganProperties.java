@@ -18,10 +18,10 @@
  */
 package megan.main;
 
-import jloda.export.ExportImageDialog;
-import jloda.util.ProgramProperties;
+import jloda.swing.export.ExportImageDialog;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.PropertiesListListener;
-import jloda.util.ResourceManager;
 import megan.util.ReadMagnitudeParser;
 import megan.viewer.TaxonomyData;
 

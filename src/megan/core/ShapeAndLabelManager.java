@@ -18,7 +18,7 @@
  */
 package megan.core;
 
-import jloda.graphview.NodeShape;
+import jloda.swing.graphview.NodeShape;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 

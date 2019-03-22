@@ -18,8 +18,8 @@
  */
 package megan.parsers.blast;
 
-import jloda.util.FastaFileFilter;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ProgramProperties;
 import megan.util.*;
 
 import javax.swing.*;

@@ -18,10 +18,12 @@
  */
 package megan.core;
 
-import jloda.gui.ProgressDialog;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.*;
-import jloda.gui.message.MessageWindow;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.*;
+import jloda.swing.message.MessageWindow;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ProgressDialog;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.fx.NotificationsInSwing;
 import megan.util.WindowUtilities;

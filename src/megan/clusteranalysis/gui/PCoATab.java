@@ -20,15 +20,15 @@ package megan.clusteranalysis.gui;
 
 import javafx.geometry.Point3D;
 import jloda.graph.*;
-import jloda.graphview.*;
-import jloda.gui.GraphViewPopupListener;
-import jloda.gui.PopupMenu;
-import jloda.gui.director.IDirector;
-import jloda.gui.find.IObjectSearcher;
-import jloda.gui.find.NodeLabelSearcher;
-import jloda.gui.find.SearchManager;
-import jloda.phylo.PhyloGraph;
+import jloda.phylo.PhyloSplitsGraph;
 import jloda.phylo.PhyloTree;
+import jloda.swing.director.IDirector;
+import jloda.swing.find.IObjectSearcher;
+import jloda.swing.find.NodeLabelSearcher;
+import jloda.swing.find.SearchManager;
+import jloda.swing.graphview.*;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.*;
 import jloda.util.*;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.GUIConfiguration;
@@ -63,7 +63,7 @@ public class PCoATab extends JPanel implements ITab {
 
     private final ClusterViewer clusterViewer;
     private final ViewerBase graphView;
-    private final PhyloGraph graph;
+    private final PhyloSplitsGraph graph;
     private PCoA pcoa;
     private int firstPC = 0;
     private int secondPC = 1;
@@ -207,7 +207,7 @@ public class PCoATab extends JPanel implements ITab {
                 }
             }
         };
-        graph = (PhyloGraph) graphView.getGraph();
+        graph = (PhyloSplitsGraph) graphView.getGraph();
         graphView.setCanvasColor(Color.WHITE);
 
         graphView.trans.setLockXYScale(true);
@@ -488,8 +488,8 @@ public class PCoATab extends JPanel implements ITab {
                         (flipV ? -1 : 1) * COORDINATES_SCALE_FACTOR * coordinates[1]);
                 // nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
                 final double z = coordinates.length >= 2 ? COORDINATES_SCALE_FACTOR * coordinates[2] : 0;
-                node2vector.set(v, new Vector3D(graphView.getLocation(v).getX(), graphView.getLocation(v).getY(), z));
-                node2point3D.set(v, new Point3D(graphView.getLocation(v).getX(), graphView.getLocation(v).getY(), z));
+                node2vector.put(v, new Vector3D(graphView.getLocation(v).getX(), graphView.getLocation(v).getY(), z));
+                node2point3D.put(v, new Point3D(graphView.getLocation(v).getX(), graphView.getLocation(v).getY(), z));
 
                 nv.setWidth(clusterViewer.getNodeRadius());
                 nv.setHeight(clusterViewer.getNodeRadius());
@@ -720,21 +720,20 @@ public class PCoATab extends JPanel implements ITab {
             for (String joinId : group2Nodes.keySet()) {
                 final LinkedList<Node> nodes = group2Nodes.get(joinId);
                 if (nodes.size() > 1) {
-                    ArrayList<Point2D> points = new ArrayList<>(nodes.size());
+                    ArrayList<APoint2D> points = new ArrayList<>(nodes.size());
                     for (Node v : nodes) {
                         if (v == null)
                             continue;
 
-                        final Point2D aPt = new PointNode(Math.round(graphView.getLocation(v).getX()), Math.round(graphView.getLocation(v).getY()), v);
-                        points.add(aPt);
+                        points.add(new APoint2D<>(Math.round(graphView.getLocation(v).getX()), Math.round(graphView.getLocation(v).getY()), v));
 
                     }
                     if (points.size() > 1) {
-                        final ArrayList<Point2D> hull = ConvexHull.quickHull(points);
+                        final ArrayList<APoint2D> hull = ConvexHull.getInstance().quickHull(points);
 
                         if (showGroupsAsEllipses) {
                             final ArrayList<Point2D> points4 = new ArrayList<>(4 * points.size());
-                            for (Point2D p : points) {
+                            for (APoint2D p : points) {
                                 points4.add(new Point2D.Double(p.getX() - 32, p.getY() - 32));
                                 points4.add(new Point2D.Double(p.getX() - 32, p.getY() + 32));
                                 points4.add(new Point2D.Double(p.getX() + 32, p.getY() - 32));
@@ -749,8 +748,8 @@ public class PCoATab extends JPanel implements ITab {
                             continue;
 
                         for (int i = 0; i < hull.size(); i++) {
-                            final Node v = ((PointNode) hull.get(i > 0 ? i - 1 : hull.size() - 1)).getNode(); // prev node in polygon
-                            final Node w = ((PointNode) hull.get(i)).getNode(); // current node in polygon
+                            final Node v = (Node) hull.get(i > 0 ? i - 1 : hull.size() - 1).getUserData(); // prev node in polygon
+                            final Node w = (Node) hull.get(i).getUserData(); // current node in polygon
                             if (v != w) {
                                 final Edge e = graph.newEdge(v, w, EdgeView.UNDIRECTED);
                                 graphView.setColor(e, getGroupsColor());
@@ -761,7 +760,7 @@ public class PCoATab extends JPanel implements ITab {
                         final Node center = graph.newNode();
                         convexHullCenters.add(center);
                         graphView.setLocation(center, computeCenter(points));
-                        node2vector.set(center, new Vector3D(graphView.getLocation(center).getX(), graphView.getLocation(center).getY(), 0));
+                        node2vector.put(center, new Vector3D(graphView.getLocation(center).getX(), graphView.getLocation(center).getY(), 0));
                         graphView.setWidth(center, 0);
                         graphView.setHeight(center, 0);
                         for (Node v : nodes) {
@@ -783,10 +782,10 @@ public class PCoATab extends JPanel implements ITab {
      * @param points
      * @return center
      */
-    private Point2D computeCenter(ArrayList<Point2D> points) {
+    private Point2D computeCenter(ArrayList<APoint2D> points) {
         final Point center = new Point(0, 0);
         if (points.size() > 0) {
-            for (Point2D aPt : points) {
+            for (APoint2D aPt : points) {
                 center.x += (int) aPt.getX();
                 center.y += (int) aPt.getY();
             }
@@ -851,7 +850,7 @@ public class PCoATab extends JPanel implements ITab {
                 graphView.setLabel(v, pair.getFirst());
                 final NodeView nv = graphView.getNV(v);
                 nv.setLocation(x, y);
-                node2vector.set(v, new Vector3D(x, y, z));
+                node2vector.put(v, new Vector3D(x, y, z));
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
                 nv.setLabelColor(getBiPlotColor());
@@ -923,7 +922,7 @@ public class PCoATab extends JPanel implements ITab {
                 graphView.setLabel(v, pair.getFirst());
                 final NodeView nv = graphView.getNV(v);
                 nv.setLocation(x, y);
-                node2vector.set(v, new Vector3D(x, y, z));
+                node2vector.put(v, new Vector3D(x, y, z));
                 triplot[i].setSecond(new double[]{x, y, z});
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
@@ -1019,7 +1018,7 @@ public class PCoATab extends JPanel implements ITab {
                     {
                         gc.setFont(Font.decode("Dialog-PLAIN-12"));
                         String label = getTitle2D();
-                        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                        Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                         gc.drawString(label, grid.x + grid.width / 2 - labelSize.width / 2, grid.y - 4);
                     }
 
@@ -1054,7 +1053,7 @@ public class PCoATab extends JPanel implements ITab {
                                         Point2D tickWC = new Point2D.Double(sign * i * step * factor, 0);
                                         Point tickDC = graphView.trans.w2d(tickWC);
                                         final String label = (i == 0 ? String.format("PC%d", firstPC + 1) : tickNumberFormat.format(sign * i * step));
-                                        final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                                        final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                                         if (tickDC.x - labelSize.width / 2 >= grid.x && tickDC.x + labelSize.width / 2 <= grid.x + grid.width) {
                                             gc.drawLine(tickDC.x, v0, tickDC.x, v0 + (top ? 2 : -2));
                                             if (!top)
@@ -1090,7 +1089,7 @@ public class PCoATab extends JPanel implements ITab {
                                         final Point2D tickWC = new Point2D.Double(0, sign * i * step * factor);
                                         final Point tickDC = graphView.trans.w2d(tickWC);
                                         final String label = (i == 0 ? String.format("PC%d", secondPC + 1) : tickNumberFormat.format(sign * i * step));
-                                        final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                                        final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                                         if (tickDC.y - labelSize.height / 2 >= yTickStart && tickDC.y + labelSize.height / 2 <= grid.y + grid.height) {
                                             gc.drawLine(h0, tickDC.y, h0 + (left ? 2 : -2), tickDC.y);
                                             if (left)
@@ -1108,7 +1107,7 @@ public class PCoATab extends JPanel implements ITab {
                     {
                         gc.setFont(Font.decode("Dialog-PLAIN-12"));
                         String label = getTitle3D();
-                        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                        Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                         gc.setColor(Color.DARK_GRAY);
                         gc.drawString(label, grid.x + grid.width / 2 - labelSize.width / 2, grid.y - 4);
                     }

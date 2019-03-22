@@ -18,7 +18,7 @@
  */
 package megan.viewer;
 
-import jloda.util.Basic;
+import jloda.swing.util.BasicSwing;
 import megan.core.Document;
 import megan.viewer.gui.NodeDrawer;
 
@@ -110,7 +110,7 @@ public class LegendPanel extends JPanel {
                 String legend = "Legend:";
                 gc.setColor(Color.BLACK);
                 gc.drawString(legend, x, yStart);
-                Dimension labelSize = Basic.getStringSize(gc, legend, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, legend, gc.getFont()).getSize();
                 maxX = Math.max(maxX, labelSize.width);
             }
             int y = yStart + (int) (1.5 * gc.getFont().getSize());
@@ -124,7 +124,7 @@ public class LegendPanel extends JPanel {
                 if (style == NodeDrawer.Style.HeatMap) {
                     label = count + ": " + label;
                 }
-                final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 int boxSize = 0;
                 if (style != NodeDrawer.Style.HeatMap)
                     boxSize = labelSize.height - 2;

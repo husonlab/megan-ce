@@ -18,15 +18,11 @@
  */
 package megan.clusteranalysis.nnet;
 
-import jloda.graph.Edge;
-import jloda.graph.EdgeSet;
-import jloda.graph.Node;
-import jloda.graph.NodeSet;
-import jloda.phylo.PhyloGraph;
+import jloda.graph.*;
+import jloda.phylo.PhyloSplitsGraph;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.PhyloTreeView;
-import jloda.util.Geometry;
-import jloda.util.NotOwnerException;
+import jloda.swing.graphview.PhyloTreeView;
+import jloda.swing.util.Geometry;
 import megan.clusteranalysis.tree.Taxa;
 
 import java.awt.geom.Point2D;
@@ -106,7 +102,7 @@ public class EqualAngle {
      * @param cycle
      * @param graph
      */
-    private void initGraph(Taxa taxa, SplitSystem splits, int[] cycle, PhyloGraph graph) {
+    private void initGraph(Taxa taxa, SplitSystem splits, int[] cycle, PhyloSplitsGraph graph) {
         // map from each taxon to it's trivial split in splits
         int[] taxon2split = new int[ntax + 1];
 
@@ -129,8 +125,7 @@ public class EqualAngle {
             Node v = graph.newNode();
 
             graph.setLabel(v, taxa.getLabel(t));
-            graph.setNode2Taxa(v, t);
-            graph.setTaxon2Node(t, v);
+            graph.addTaxon(v, t);
 
             Edge e = graph.newEdge(center, v);
             if (taxon2split[t] != 0) {
@@ -219,7 +214,7 @@ public class EqualAngle {
      * @param s
      * @param graph
      */
-    private void wrapSplit(Taxa taxa, SplitSystem splits, int s, int[] cycle, PhyloGraph graph) throws Exception {
+    private void wrapSplit(Taxa taxa, SplitSystem splits, int s, int[] cycle, PhyloSplitsGraph graph) throws Exception {
         BitSet part = (BitSet) (splits.getSplit(s).getA().clone());
         if (part.get(1))
             part = (BitSet) (splits.getSplit(s).getB().clone());
@@ -308,7 +303,7 @@ public class EqualAngle {
      * @param graph
      * @return is leaf edge
      */
-    private boolean isLeafEdge(Edge f, PhyloGraph graph) {
+    private boolean isLeafEdge(Edge f, PhyloSplitsGraph graph) {
         return graph.getDegree(graph.getSource(f)) == 1 || graph.getDegree(graph.getTarget(f)) == 1;
 
     }
@@ -317,10 +312,10 @@ public class EqualAngle {
      * this removes all temporary trivial edges added to the graph
      *
      * @param graph
-     * @throws jloda.util.NotOwnerException
+     * @throws NotOwnerException
      */
     private void removeTemporaryTrivialEdges
-    (PhyloGraph
+    (PhyloSplitsGraph
              graph) throws NotOwnerException {
         EdgeSet tempEdges = new EdgeSet(graph);
         for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
@@ -337,16 +332,15 @@ public class EqualAngle {
                 w = graph.getSource(e);
                 v = graph.getTarget(e);
             }
-            for (int t : graph.getNode2Taxa(v)) {
-                graph.setNode2Taxa(w, t);
-                graph.setTaxon2Node(t, w);
+            for (int t : graph.getTaxa(v)) {
+                graph.addTaxon(w, t);
             }
 
             if (graph.getLabel(w) != null && graph.getLabel(w).length() > 0)
                 graph.setLabel(w, graph.getLabel(w) + ", " + graph.getLabel(v));
             else
                 graph.setLabel(w, graph.getLabel(v));
-            graph.getNode2Taxa(v).clear();
+            graph.clearTaxa(v);
             graph.setLabel(v, null);
             graph.deleteNode(v);
         }
@@ -360,7 +354,7 @@ public class EqualAngle {
      * @param graph
      * @param forbiddenSplits : set of all the splits such as their edges won't have their angles changed
      */
-    private void assignAnglesToEdges(SplitSystem splits, int[] cycle, PhyloGraph graph, Set forbiddenSplits)
+    private void assignAnglesToEdges(SplitSystem splits, int[] cycle, PhyloSplitsGraph graph, Set forbiddenSplits)
             throws NotOwnerException {
 
         //We create the list of angles representing the taxas on a circle.
@@ -471,9 +465,7 @@ public class EqualAngle {
         if (!nodesVisited.contains(v)) {
             //Deleted so that the user can cancel and it doesn't destroy everything: doc.getProgressListener().checkForCancel();
             nodesVisited.add(v);
-            Iterator it = graph.getAdjacentEdges(v);
-            while (it.hasNext()) {
-                Edge e = (Edge) it.next();
+            for (Edge e : v.adjacentEdges()) {
                 int s = graph.getSplit(e);
                 if (!splitsInPath.get(s)) {
                     Node w = graph.getOpposite(v, e);

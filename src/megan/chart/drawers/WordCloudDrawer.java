@@ -18,7 +18,11 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.*;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.RTree;
+import jloda.util.Pair;
+import jloda.util.Triplet;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;
 import megan.chart.data.DefaultChartData;
@@ -113,7 +117,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
                 x = factor * (x - worldBBox.x) + deviceBBox.x;
                 y = factor * (y - worldBBox.y) + deviceBBox.y;
                 if (getChartData().getChartSelection().isSelected(null, label)) {
-                    Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                    Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                     gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
 
                     gc.setStroke(NORMAL_STROKE);
@@ -283,7 +287,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
                     sgc.clearCurrentItem();
 
                 if (getChartData().getChartSelection().isSelected(label, null)) {
-                    Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                    Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                     gc.setStroke(HEAVY_STROKE);
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     drawRect(gc, x, y, labelSize.width, labelSize.height, 0);
@@ -402,7 +406,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         int y = center.y;
 
         Rectangle bbox = new Rectangle();
-        Dimension labelSize = Basic.getStringSize(gc, label, font).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, label, font).getSize();
         if (labelSize.height < 1)
             return;
         bbox.setSize(labelSize);

@@ -18,8 +18,8 @@
  */
 package megan.viewer;
 
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Document;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public class PropertiesWindow extends JDialog {
         setModal(true);
         setup();
         setContent(doc);
-        Basic.centerDialogInParent(this, parent);
+        BasicSwing.centerDialogInParent(this, parent);
         setVisible(true);
     }
 

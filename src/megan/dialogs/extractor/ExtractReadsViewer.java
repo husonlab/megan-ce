@@ -18,14 +18,14 @@
  */
 package megan.dialogs.extractor;
 
-import jloda.gui.MenuBar;
-import jloda.gui.StatusBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.StatusBar;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.commands.CloseCommand;
 import megan.core.ClassificationType;
 import megan.core.Director;

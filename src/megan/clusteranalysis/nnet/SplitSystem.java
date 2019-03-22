@@ -202,7 +202,7 @@ public class SplitSystem {
                     prevSplit.setWeight(prevSplit.getWeight() + split.getWeight());
                 }
             } else
-                reticulateNode2Taxa.set(w, f_taxa);
+                reticulateNode2Taxa.put(w, f_taxa);
 
             e_taxa.or(f_taxa);
         }
@@ -238,7 +238,7 @@ public class SplitSystem {
                 v = f.getTarget();
             } else if (edgesToPush.size() > 1) { // more than one subtree contains taxa from the set, time to split
                 Node u = tree.newNode();
-                node2taxa.set(u, partB);
+                node2taxa.put(u, partB);
                 Edge h = tree.newEdge(v, u);
                 tree.setWeight(h, weight);
 

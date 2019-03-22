@@ -19,7 +19,12 @@
 
 package megan.tools;
 
-import jloda.util.*;
+import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressPercentage;
+import jloda.util.UsageException;
 import megan.algorithms.ActiveMatches;
 import megan.algorithms.TaxonPathAssignment;
 import megan.algorithms.TopAssignment;

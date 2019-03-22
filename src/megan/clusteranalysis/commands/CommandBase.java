@@ -24,7 +24,7 @@ import megan.clusteranalysis.ClusterViewer;
  * base class for NetworkViewer commands
  * Daniel Huson, 6.2010
  */
-public abstract class CommandBase extends jloda.gui.commands.CommandBase {
+public abstract class CommandBase extends jloda.swing.commands.CommandBase {
     public ClusterViewer getViewer() {
         return (ClusterViewer) super.getViewer();
     }

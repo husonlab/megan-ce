@@ -18,10 +18,10 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.data.WhiskerData;
 import megan.chart.gui.ChartViewer;
@@ -55,7 +55,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (classLabelAngle != 0) {
             double sin = Math.abs(Math.sin(classLabelAngle));
             for (String className : getChartData().getClassNames()) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 theHeight = Math.max(theHeight, gc.getFont().getSize() + sin * labelSize.width);
             }
         }
@@ -69,7 +69,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (classLabelAngle != 0) {
             double sin = Math.abs(Math.sin(classLabelAngle));
             for (String className : getChartData().getClassNames()) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 theHeight = Math.max(theHeight, gc.getFont().getSize() + sin * labelSize.width);
             }
         }
@@ -185,7 +185,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
             if (isShowXAxis()) {
                 final double xLabel = leftMargin + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + ((d + 0.5) * numberOfClasses) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - 2);
-                Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, groupName, gc.getFont()).getSize();
                 apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
                 drawString(gc, groupName, apt.getX(), apt.getY(), 0);
@@ -199,7 +199,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
 
                 if (isShowXAxis()) {
                     Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                    Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                    Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                     if (classLabelAngle == 0) {
                         apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                     } else if (classLabelAngle > Math.PI / 2) {
@@ -415,7 +415,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                 if (isShowXAxis()) {
                     if (group2index.size() > 1) {
                         Point2D bpt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                        final Dimension labelSize = Basic.getStringSize(gc, groupName, gc.getFont()).getSize();
+                        final Dimension labelSize = BasicSwing.getStringSize(gc, groupName, gc.getFont()).getSize();
                         if (classLabelAngle == 0) {
                             bpt.setLocation(bpt.getX() - labelSize.getWidth() / 2, bpt.getY() + getFont().getSize() + 1);
                         } else {
@@ -429,7 +429,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                     }
 
                     Point2D apt = new Point2D.Double(xPos, getHeight() - bottomMargin + 10);
-                    final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                    final Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                     if (classLabelAngle == 0) {
                         apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                     } else if (classLabelAngle > Math.PI / 2) {

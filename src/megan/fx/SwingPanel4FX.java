@@ -22,11 +22,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import jloda.fx.ExtendedFXMLLoader;
-import jloda.util.Basic;
 import jloda.util.Single;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,8 +90,6 @@ public class SwingPanel4FX<C> {
                     final ExtendedFXMLLoader<C> extendedFXMLLoader = new ExtendedFXMLLoader<>(viewerClass);
                     controller = extendedFXMLLoader.getController();
                     jFXPanel.setScene(new Scene(extendedFXMLLoader.getRoot()));
-                } catch (IOException ex) {
-                    Basic.caught(ex);
                 } finally {
                     initialized.set(true);
                     for (Runnable runnable : toRunLaterInSwing) {

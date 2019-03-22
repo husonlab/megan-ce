@@ -21,7 +21,7 @@ package megan.assembly;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
-import jloda.graph.NodeMap;
+import jloda.graph.NodeArray;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
@@ -35,7 +35,7 @@ import java.util.*;
  */
 public class OverlapGraphBuilder {
     private final Graph overlapGraph = new Graph();
-    private final NodeMap<String> node2readName = new NodeMap<>(overlapGraph);
+    private final NodeArray<String> node2readName = new NodeArray<>(overlapGraph);
     private List<Integer>[] readId2ContainedReads;
     private ReadData[] readDatas;
     private int minOverlap;
@@ -106,7 +106,7 @@ public class OverlapGraphBuilder {
         final BitSet containedReadIds = new BitSet();
 
         for (String refName : ref2matches.keySet()) {
-            final MatchData[] matches = ref2matches.get(refName).toArray(new MatchData[ref2matches.get(refName).size()]);
+            final MatchData[] matches = ref2matches.get(refName).toArray(new MatchData[0]);
 
             for (int i = 0; i < matches.length; i++) {
                 final MatchData iMatch = matches[i];
@@ -115,7 +115,7 @@ public class OverlapGraphBuilder {
                     Node v = nodes[iMatch.getRead().getId()];
                     if (v == null) {
                         v = nodes[iMatch.getRead().getId()] = overlapGraph.newNode(iMatch.getRead().getId());
-                        node2readName.set(v, iMatch.getRead().getName());
+                        node2readName.setValue(v, iMatch.getRead().getName());
                     }
 
                     for (int j = i + 1; j < matches.length; j++) {
@@ -135,7 +135,7 @@ public class OverlapGraphBuilder {
                             Node w = nodes[jMatch.getRead().getId()];
                             if (w == null) {
                                 w = nodes[jMatch.getRead().getId()] = overlapGraph.newNode(jMatch.getRead().getId());
-                                node2readName.set(w, jMatch.getRead().getName());
+                                node2readName.setValue(w, jMatch.getRead().getName());
                             }
 
                             final Edge e = overlapGraph.getCommonEdge(v, w);
@@ -212,7 +212,7 @@ public class OverlapGraphBuilder {
      *
      * @return read name
      */
-    public NodeMap<String> getNode2ReadNameMap() {
+    public NodeArray<String> getNode2ReadNameMap() {
         return node2readName;
     }
 

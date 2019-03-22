@@ -19,7 +19,7 @@
 
 package megan.viewer.gui;
 
-import jloda.util.Geometry;
+import jloda.swing.util.Geometry;
 
 import javax.swing.*;
 import java.awt.*;

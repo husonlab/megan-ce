@@ -23,12 +23,11 @@ import jloda.graph.EdgeDoubleArray;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.PhyloTreeView;
+import jloda.swing.graphview.PhyloTreeView;
+import jloda.swing.util.Geometry;
 import jloda.util.Basic;
-import jloda.util.Geometry;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -271,12 +270,10 @@ public class NJ {
         if (leaves.contains(root))
             return num + 1;
         else {
-            Iterator edges = tree.getAdjacentEdges(root);
             // edges.permute(); // look at children in random order
             int a = num; // is number of nodes seen so far
             int b = 0;     // number of nodes after visiting subtree
-            while (edges.hasNext()) {
-                Edge e = (Edge) edges.next();
+            for (Edge e : root.adjacentEdges()) {
                 if (e != entry) {
                     b = setAnglesRec(tree, a, tree.getOpposite(root, e), e, leaves, angle, rand);
 
@@ -299,17 +296,13 @@ public class NJ {
      * @param angle EdgeDouble
      */
     private void setCoordsRec(PhyloTreeView treeView, PhyloTree tree, Node root, Edge entry, EdgeDoubleArray angle) {
-        Iterator edges = tree.getAdjacentEdges(root);
-
-        while (edges.hasNext()) {
-            Edge e = (Edge) edges.next();
-
+        for (Edge e : root.adjacentEdges()) {
             if (e != entry) {
                 Node v = tree.getOpposite(root, e);
 
                 // translate in the computed direction by the given amount
                 treeView.setLocation(v,
-                        Geometry.translateByAngle(treeView.getLocation(root), angle.getValue(e),
+                        Geometry.translateByAngle(treeView.getLocation(root), angle.get(e),
                                 tree.getWeight(e)));
                 setCoordsRec(treeView, tree, v, e, angle);
             }

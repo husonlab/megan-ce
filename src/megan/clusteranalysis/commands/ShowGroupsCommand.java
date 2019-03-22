@@ -18,8 +18,8 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.director.IDirector;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.director.IDirector;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;

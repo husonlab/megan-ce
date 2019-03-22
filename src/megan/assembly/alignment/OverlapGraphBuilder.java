@@ -34,9 +34,9 @@ import java.util.*;
  */
 public class OverlapGraphBuilder {
     private final Graph overlapGraph = new Graph();
-    private final NodeMap<String> node2readName = new NodeMap<>(overlapGraph);
+    private final NodeArray<String> node2readName = new NodeArray<>(overlapGraph);
     private List<Integer>[] readId2ContainedReads;
-    private EdgeMap<Integer> edgeWeights;
+    private EdgeArray<Integer> edgeWeights;
     private final int minOverlap;
 
     /**
@@ -77,7 +77,7 @@ public class OverlapGraphBuilder {
 
         //  overlap graph. Each node is a read, each edge is a suffix-prefix overlap
         readId2ContainedReads = new List[alignment.getNumberOfSequences()];
-        edgeWeights = new EdgeMap<>(overlapGraph);
+        edgeWeights = new EdgeArray<>(overlapGraph);
 
         {
             final Set<Integer> toDelete = new HashSet<>();
@@ -85,7 +85,7 @@ public class OverlapGraphBuilder {
             final Node[] i2node = new Node[alignment.getNumberOfSequences()];
             for (int i = 0; i < alignment.getNumberOfSequences(); i++) {
                 i2node[i] = overlapGraph.newNode(i);
-                node2readName.set(i2node[i], Basic.getFirstWord(alignment.getLane(i).getName()));
+                node2readName.put(i2node[i], Basic.getFirstWord(alignment.getLane(i).getName()));
             }
             // compute edges and mark contained reads for removal
             for (int il = 0; il < list.length; il++) {
@@ -181,13 +181,13 @@ public class OverlapGraphBuilder {
      * @param v
      * @return path length
      */
-    private int visitNodesRec(Node v, EdgeMap<Integer> edgeWeight) {
+    private int visitNodesRec(Node v, EdgeArray<Integer> edgeWeight) {
         int maxValue = 0;
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-            if (edgeWeight.get(e) == null) {
-                edgeWeight.set(e, visitNodesRec(e.getTarget(), edgeWeight) + 1);
+            if (edgeWeight.getValue(e) == null) {
+                edgeWeight.put(e, visitNodesRec(e.getTarget(), edgeWeight) + 1);
             }
-            maxValue = Math.max(maxValue, edgeWeight.get(e));
+            maxValue = Math.max(maxValue, edgeWeight.getValue(e));
         }
         return maxValue;
     }
@@ -221,7 +221,7 @@ public class OverlapGraphBuilder {
      *
      * @return read name
      */
-    public NodeMap<String> getNode2ReadNameMap() {
+    public NodeArray<String> getNode2ReadNameMap() {
         return node2readName;
     }
 }

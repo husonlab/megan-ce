@@ -18,7 +18,7 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.indices.DistancesManager;

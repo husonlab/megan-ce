@@ -18,7 +18,7 @@
  */
 package megan.clusteranalysis;
 
-import jloda.gui.find.IObjectSearcher;
+import jloda.swing.find.IObjectSearcher;
 import megan.clusteranalysis.gui.ITab;
 import megan.clusteranalysis.gui.MatrixTab;
 

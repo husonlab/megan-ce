@@ -18,15 +18,15 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ResetWindowCommand extends jloda.gui.commands.CommandBase implements ICommand {
+public class ResetWindowCommand extends jloda.swing.commands.CommandBase implements ICommand {
     public String getSyntax() {
         return "reset windowLocation;";
     }

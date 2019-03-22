@@ -18,9 +18,9 @@
  */
 package megan.tools;
 
-import jloda.util.ArgsOptions;
+import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;

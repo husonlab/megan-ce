@@ -18,7 +18,7 @@
  */
 package megan.inspector;
 
-import jloda.util.MultiLineCellRenderer;
+import jloda.swing.util.MultiLineCellRenderer;
 
 /**
  * Node representing headline for match

@@ -18,10 +18,10 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.data.IPlot2DData;
 import megan.chart.gui.ChartViewer;
@@ -111,7 +111,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
      */
     private void drawTitle(Graphics2D gc) {
         if (chartTitle != null) {
-            Dimension labelSize = Basic.getStringSize(gc, chartTitle, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, chartTitle, gc.getFont()).getSize();
             int x = (getWidth() - labelSize.width) / 2;
             int y = labelSize.height + 5;
             gc.setFont(getFont(ChartViewer.FontKeys.TitleFont.toString()));
@@ -214,7 +214,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
                 if (maxDisplayedXValue != null && value > maxDisplayedXValue)
                     break;
                 String label = "" + value;
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 double xPos = x0 + value * xFactor - offsetX;
                 //  if (xPos - x0 > tickStepX)
                 if (false) {
@@ -239,7 +239,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         double theHeight = 2 * gc.getFont().getSize();
         if (classLabelAngle != 0) {
             double sin = Math.abs(Math.sin(classLabelAngle));
-            Dimension labelSize = Basic.getStringSize(gc, "" + maxDisplayedXValue, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, "" + maxDisplayedXValue, gc.getFont()).getSize();
             theHeight = gc.getFont().getSize() + sin * labelSize.width;
         }
         return theHeight;
@@ -269,7 +269,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             if (scalingType == ChartViewer.ScalingType.PERCENT)
                 label += " (%)";
 
-            Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             int x = 15;
             int y = (y0 + y1) / 2 - labelSize.width / 2;
             gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
@@ -343,7 +343,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
                 if (maxDisplayedYValue != null && value > maxDisplayedYValue)
                     break;
                 String label = "" + value;
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 double y = y0 - value * yFactor + offsetY;
                 if (y < y1)
                     break;
@@ -382,7 +382,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             double yPos = y0 - (value > 0 ? Math.sqrt(value) : 0) * yFactor;
             if ((mantisse <= 1 || mantisse == 5) && Math.abs(yPos - previousY) >= 20) {
                 String label = "" + (long) value;
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 previousY = yPos;
                 int x = leftMargin - (int) (labelSize.getWidth() + 3);
                 int y = (int) (yPos + labelSize.getHeight() / 2.0);
@@ -403,7 +403,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         String axisLabel = getChartData().getCountsLabel() + " (sqrt scale)";
-        Dimension labelSize = Basic.getStringSize(gc, axisLabel, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, axisLabel, gc.getFont()).getSize();
         int x = 10;
         int y = (y0 + y1) / 2 - labelSize.width;
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
@@ -443,7 +443,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             double yPos = y0 - (value > 0 ? Math.log10(value) : 0) * yFactor;
             if ((mantisse <= 1 || mantisse == 5) && Math.abs(yPos - previousY) >= 20) {
                 String label = "" + (long) value;
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 previousY = yPos;
                 int x = leftMargin - (int) (labelSize.getWidth() + 3);
                 int y = (int) (yPos + labelSize.getHeight() / 2.0);

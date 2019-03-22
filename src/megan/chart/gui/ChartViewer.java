@@ -18,16 +18,15 @@
  */
 package megan.chart.gui;
 
-import jloda.gui.MenuBar;
-import jloda.gui.*;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.*;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.SearchManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.*;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.SearchManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.*;
 import jloda.util.CanceledException;
-import jloda.util.Cursors;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;
@@ -416,7 +415,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         contentPanel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent me) {
                 if (me.isPopupTrigger()) {
-                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager);
+                    final PopupMenu menu = new PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager);
                     if (popupMenuModifier != null)
                         popupMenuModifier.apply(menu, commandManager);
                     menu.show(contentPanel, me.getX(), me.getY());
@@ -425,7 +424,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
             public void mouseReleased(MouseEvent me) {
                 if (me.isPopupTrigger()) {
-                    final jloda.gui.PopupMenu menu = new jloda.gui.PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager);
+                    final PopupMenu menu = new PopupMenu(this, GUIConfiguration.getMainPanelPopupConfiguration(), commandManager);
                     if (popupMenuModifier != null)
                         popupMenuModifier.apply(menu, commandManager);
                     menu.show(contentPanel, me.getX(), me.getY());
@@ -433,7 +432,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
             }
         });
 
-        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
+        legendPanel.setPopupMenu(new PopupMenu(this, GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         addWindowListener(new WindowListenerAdapter() {
             public void windowDeactivated(WindowEvent event) {

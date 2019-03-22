@@ -18,8 +18,8 @@
  */
 package megan.util;
 
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
 import megan.core.Director;
 
 import javax.swing.*;

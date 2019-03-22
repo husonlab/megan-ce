@@ -19,7 +19,7 @@
 
 package megan.core;
 
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.interval.IntervalTree;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;

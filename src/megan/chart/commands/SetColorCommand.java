@@ -18,11 +18,11 @@
  */
 package megan.chart.commands;
 
-import jloda.gui.ChooseColorDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirector;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirector;
+import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.ChartColorManager;
 import megan.chart.gui.ChartViewer;

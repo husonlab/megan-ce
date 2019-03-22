@@ -19,6 +19,9 @@
 
 package megan.tools;
 
+import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import malt.genes.CDS;
@@ -114,7 +117,7 @@ public class AAdderBuild {
             if (file.isDirectory()) {
                 System.err.println("Looking for GFF3 files in directory: " + file);
                 gffFiles.clear();
-                for (File aFile : Basic.getAllFilesInDirectory(file, new GFF3FileFilter(true, lookInside), true)) {
+                for (File aFile : BasicSwing.getAllFilesInDirectory(file, new GFF3FileFilter(true, lookInside), true)) {
                     gffFiles.add(aFile.getPath());
                 }
                 if (gffFiles.size() == 0)

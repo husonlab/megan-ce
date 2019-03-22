@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
@@ -91,7 +91,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -210,7 +210,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
             if (isShowXAxis()) {
 
                 double xLabel = x0 + (c + 0.5) * xStep;
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
@@ -326,7 +326,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         if (!isTranspose()) {
             int longest = 0;
             for (String className : getChartData().getClassNames()) {
-                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, className, gc.getFont()).getSize().width);
             }
             int colorRectTotalWidth = gc.getFont().getSize() + 4;
             int right = Math.max(leftMargin, longest + maxRadius / 2 + 2);
@@ -335,7 +335,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
             double yStep = (y0 - y1) / (0.5 + numberOfClasses);
             int c = 0;
             for (String className : getChartData().getClassNames()) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 int x = right - maxRadius / 2 - 2 - labelSize.width - colorRectTotalWidth;
                 int y = (int) Math.round(y0 - (c + 1) * yStep);
                 int height = gc.getFont().getSize();
@@ -369,7 +369,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
             int longest = 0;
             for (String series : getChartData().getSeriesNames()) {
                 String label = seriesLabelGetter.getLabel(series);
-                longest = Math.max(longest, Basic.getStringSize(gc, label, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, label, gc.getFont()).getSize().width);
 
             }
             int colorRectTotalWidth = gc.getFont().getSize() + 4;
@@ -380,7 +380,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
             int d = 0;
             for (String series : getChartData().getSeriesNames()) {
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 int x = right - maxRadius / 2 - 2 - labelSize.width - colorRectTotalWidth;
                 int y = (int) Math.round(y0 - (d + 1) * yStep);
                 int height = gc.getFont().getSize();

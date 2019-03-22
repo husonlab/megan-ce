@@ -21,7 +21,7 @@ package megan.fx;
 
 import javafx.application.Platform;
 import javafx.scene.control.TablePosition;
-import jloda.gui.find.IObjectSearcher;
+import jloda.swing.find.IObjectSearcher;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import org.controlsfx.control.spreadsheet.SpreadsheetColumn;

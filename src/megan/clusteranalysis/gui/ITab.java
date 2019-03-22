@@ -19,8 +19,8 @@
 
 package megan.clusteranalysis.gui;
 
-import jloda.graphview.GraphView;
-import jloda.gui.find.IObjectSearcher;
+import jloda.swing.find.IObjectSearcher;
+import jloda.swing.graphview.GraphView;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 

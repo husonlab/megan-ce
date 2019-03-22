@@ -21,9 +21,9 @@ package megan.viewer;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
-import jloda.gui.find.IObjectSearcher;
 import jloda.phylo.PhyloTree;
-import jloda.util.ProgramProperties;
+import jloda.swing.find.IObjectSearcher;
+import jloda.swing.util.ProgramProperties;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 

@@ -18,9 +18,9 @@
  */
 package megan.stats;
 
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
-import jloda.util.ProgramProperties;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Director;
 import megan.fx.NotificationsInSwing;
 

@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
@@ -87,7 +87,7 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -253,7 +253,7 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
             if (isShowXAxis()) {
 
                 double xLabel = x0 + (c + 0.5) * xStep;
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());

@@ -18,12 +18,12 @@
  */
 package megan.chart.gui;
 
-import jloda.gui.ListTransferHandler;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.find.JListSearcher;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.find.JListSearcher;
+import jloda.swing.util.ListTransferHandler;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
 
 import javax.swing.*;

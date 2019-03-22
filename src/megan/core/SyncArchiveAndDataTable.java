@@ -18,8 +18,8 @@
  */
 package megan.core;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;

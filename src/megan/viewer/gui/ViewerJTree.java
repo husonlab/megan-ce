@@ -21,8 +21,9 @@ package megan.viewer.gui;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.gui.IPopupMenuModifier;
 import jloda.phylo.PhyloTree;
+import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.util.PopupMenu;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;
 
@@ -72,7 +73,7 @@ public class ViewerJTree extends JTree {
         addTreeExpansionListener(treeListener);
         addMouseListener(new MyMouseListener());
 
-        popupMenu = new jloda.gui.PopupMenu(this, GUIConfiguration.getJTreePopupConfiguration(), classificationViewer.getCommandManager());
+        popupMenu = new PopupMenu(this, GUIConfiguration.getJTreePopupConfiguration(), classificationViewer.getCommandManager());
     }
 
     /**

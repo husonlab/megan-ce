@@ -18,9 +18,9 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 
@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.StringTokenizer;
 
-public class SetWindowSizeCommand extends jloda.gui.commands.CommandBase implements ICommand {
+public class SetWindowSizeCommand extends jloda.swing.commands.CommandBase implements ICommand {
     public String getSyntax() {
         return "set windowSize=<width> x <height>;";
     }

@@ -19,9 +19,13 @@
 
 package megan.blastclient;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.director.IDirectableViewer;
-import jloda.util.*;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.Basic;
+import jloda.util.Pair;
+import jloda.util.Single;
 import megan.core.Director;
 import megan.core.MeganFile;
 import megan.fx.NotificationsInSwing;

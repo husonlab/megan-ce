@@ -18,9 +18,10 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -41,7 +42,7 @@ public class ShowWebsiteCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         try {
-            Basic.openWebPage(new URL("http://megan.informatik.uni-tuebingen.de"));
+            BasicSwing.openWebPage(new URL("http://megan.informatik.uni-tuebingen.de"));
         } catch (Exception e1) {
             Basic.caught(e1);
         }

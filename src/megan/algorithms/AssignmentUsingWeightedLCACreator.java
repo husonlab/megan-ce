@@ -18,7 +18,11 @@
  */
 package megan.algorithms;
 
-import jloda.util.*;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
+import jloda.util.ProgressPercentage;
 import megan.classification.Classification;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;

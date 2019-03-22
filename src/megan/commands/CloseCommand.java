@@ -19,14 +19,14 @@
 package megan.commands;
 
 
-import jloda.graphview.GraphView;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.viewer.MainViewer;

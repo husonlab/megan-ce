@@ -20,7 +20,7 @@ package megan.classification.data;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.util.NotOwnerException;
+import jloda.graph.NotOwnerException;
 import jloda.util.Pair;
 import megan.core.DataTable;
 import megan.viewer.ClassificationViewer;

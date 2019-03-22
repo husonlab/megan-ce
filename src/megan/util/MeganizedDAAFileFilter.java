@@ -18,7 +18,7 @@
  */
 package megan.util;
 
-import jloda.util.FileFilterBase;
+import jloda.swing.util.FileFilterBase;
 import megan.daa.io.DAAParser;
 
 import java.io.File;

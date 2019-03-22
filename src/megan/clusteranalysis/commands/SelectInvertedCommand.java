@@ -18,7 +18,7 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import megan.clusteranalysis.ClusterViewer;
 
 import javax.swing.*;

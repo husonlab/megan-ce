@@ -18,15 +18,15 @@
  */
 package megan.timeseriesviewer;
 
-import jloda.gui.MenuBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.RememberingComboBox;
+import jloda.swing.util.ToolBar;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.RememberingComboBox;
 import jloda.util.Table;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;

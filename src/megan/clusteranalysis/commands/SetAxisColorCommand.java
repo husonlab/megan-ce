@@ -18,10 +18,10 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.ChooseColorLineWidthDialog;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseColorLineWidthDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.gui.PCoATab;
 

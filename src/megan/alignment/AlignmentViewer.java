@@ -18,17 +18,18 @@
  */
 package megan.alignment;
 
-import jloda.gui.MenuBar;
-import jloda.gui.StatusBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.IViewerWithFindToolBar;
-import jloda.gui.director.ProjectManager;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.JListSearcher;
-import jloda.gui.find.SearchManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.IViewerWithFindToolBar;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.JListSearcher;
+import jloda.swing.find.SearchManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.StatusBar;
+import jloda.swing.util.ToolBar;
 import jloda.util.*;
 import megan.alignment.commands.*;
 import megan.alignment.gui.*;

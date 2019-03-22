@@ -25,6 +25,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.shape.Polygon;
+import jloda.swing.util.BasicSwing;
 import jloda.util.Basic;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
@@ -202,7 +203,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
                     public void handle(ActionEvent event) {
                         try {
                             final String query = accession.replaceAll("gi\\|[0-9]*", "").replaceAll("[a-zA-Z]*\\|", " ").replaceAll("[/\\| ]*]", " ").replaceAll("^\\s+", "").replaceAll("\\s+", "+");
-                            Basic.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/protein/" + query));
+                            BasicSwing.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/protein/" + query));
                         } catch (MalformedURLException e) {
                             Basic.caught(e);
                         }

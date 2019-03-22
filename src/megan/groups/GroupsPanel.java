@@ -19,12 +19,12 @@
 package megan.groups;
 
 
-import jloda.gui.ActionJList;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.util.ActionJList;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.core.Document;
 
 import javax.swing.*;

@@ -19,8 +19,8 @@
 package megan.clusteranalysis.commands;
 
 import jloda.graph.Node;
-import jloda.gui.commands.ICommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.commands.CommandBase;

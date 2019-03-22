@@ -19,11 +19,11 @@
 package megan.commands.color;
 
 
-import jloda.gui.ColorTableManager;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IUsesHeatMapColors;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IUsesHeatMapColors;
+import jloda.swing.util.ColorTableManager;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.commands.ColorByRankCommand;
 import megan.core.Director;

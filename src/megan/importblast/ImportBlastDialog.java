@@ -18,13 +18,13 @@
  */
 package megan.importblast;
 
-import jloda.gui.StatusBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.director.IDirectableViewer;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.StatusBar;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.commandtemplates.SetAnalyse4ViewerCommand;

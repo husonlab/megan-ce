@@ -20,9 +20,9 @@ package megan.commands.additional;
 
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.classification.data.Name2IdMap;

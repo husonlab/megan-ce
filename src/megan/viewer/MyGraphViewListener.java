@@ -26,11 +26,10 @@ package megan.viewer;
  */
 
 import jloda.graph.*;
-import jloda.graphview.*;
 import jloda.phylo.PhyloTree;
+import jloda.swing.graphview.*;
+import jloda.swing.util.Cursors;
 import jloda.util.Basic;
-import jloda.util.Cursors;
-import jloda.util.NotOwnerException;
 
 import javax.swing.*;
 import java.awt.*;

@@ -19,8 +19,8 @@
 
 package megan.chart.gui;
 
-import jloda.gui.ListTransferHandler;
-import jloda.gui.PopupMenu;
+import jloda.swing.util.ListTransferHandler;
+import jloda.swing.util.PopupMenu;
 import megan.chart.ChartColorManager;
 import megan.chart.data.IChartData;
 

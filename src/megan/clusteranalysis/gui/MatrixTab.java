@@ -18,8 +18,8 @@
  */
 package megan.clusteranalysis.gui;
 
-import jloda.gui.find.IObjectSearcher;
-import jloda.gui.find.TableSearcher;
+import jloda.swing.find.IObjectSearcher;
+import jloda.swing.find.TableSearcher;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 

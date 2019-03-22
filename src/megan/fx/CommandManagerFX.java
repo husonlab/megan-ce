@@ -27,12 +27,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.util.ResourceManager;
 
 import javax.swing.*;
 import java.awt.*;

@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.data.IChartData;
@@ -69,7 +69,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             gc.setColor(Color.LIGHT_GRAY);
             String label = "No data to show: please select nodes in main viewer and then press 'sync'";
             gc.setFont(getFont("Default"));
-            Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             gc.drawString(label, (getWidth() - labelSize.width) / 2, 50);
             return;
         }
@@ -128,7 +128,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     private void drawTitle(Graphics2D gc, Dimension size) {
         gc.setFont(getFont(ChartViewer.FontKeys.TitleFont.toString()));
         if (chartTitle != null) {
-            Dimension labelSize = Basic.getStringSize(gc, chartTitle, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, chartTitle, gc.getFont()).getSize();
             if (size != null) {
                 size.setSize(labelSize.getWidth(), labelSize.getHeight() + 20);
                 return;
@@ -227,7 +227,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             if (maxDisplayedYValue != null && value > maxDisplayedYValue)
                 break;
             String label = String.format("%,d", value);
-            Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             double yPos = y0 - value * yFactor;
             int x = leftMargin - (int) (labelSize.getWidth() + 3);
             int y = (int) (yPos + labelSize.getHeight() / 2.0);
@@ -248,7 +248,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         String axisLabel = getChartData().getCountsLabel() + (scalingType == ChartViewer.ScalingType.PERCENT ? " (%)" : "");
-        Dimension labelSize = Basic.getStringSize(gc, axisLabel, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, axisLabel, gc.getFont()).getSize();
         int x = 10;
         int y = (y0 + y1) / 2 - labelSize.width;
         if (doDraw) {
@@ -305,7 +305,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             if ((mantisse <= 1 || mantisse == 5) && Math.abs(yPos - previousY) >= 20) {
                 String label = String.format("%,d", (long) value);
 
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 previousY = yPos;
                 int x = leftMargin - (int) (labelSize.getWidth() + 3);
                 int y = (int) (yPos + labelSize.getHeight() / 2.0);
@@ -334,7 +334,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         String axisLabel = getChartData().getCountsLabel();
-        Dimension labelSize = Basic.getStringSize(gc, axisLabel, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, axisLabel, gc.getFont()).getSize();
         int x = 10;
         int y = (y0 + y1) / 2 - labelSize.width;
         if (doDraw) {
@@ -390,7 +390,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             double yPos = y0 - (value > 0 ? Math.sqrt(value) : 0) * yFactor;
             if ((mantisse <= 1 || mantisse == 5) && Math.abs(yPos - previousY) >= 20) {
                 String label = String.format("%,d", (long) value);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 previousY = yPos;
                 int x = leftMargin - (int) (labelSize.getWidth() + 3);
                 int y = (int) (yPos + labelSize.getHeight() / 2.0);
@@ -419,7 +419,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         String axisLabel = getChartData().getCountsLabel();
-        Dimension labelSize = Basic.getStringSize(gc, axisLabel, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, axisLabel, gc.getFont()).getSize();
         int x = 10;
         int y = (y0 + y1) / 2 - labelSize.width;
         if (doDraw) {
@@ -453,7 +453,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 String label = seriesLabelGetter.getLabel(series);
                 if (label.length() > 50)
                     label = label.substring(0, 50) + "...";
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 theHeight = Math.max(theHeight, gc.getFont().getSize() + sin * labelSize.width);
             }
         }
@@ -466,7 +466,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         if (classLabelAngle != 0) {
             double sin = Math.abs(Math.sin(classLabelAngle));
             for (String className : getChartData().getClassNames()) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 theHeight = Math.max(theHeight, gc.getFont().getSize() + sin * labelSize.width);
             }
         }
@@ -519,7 +519,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 final double xLabel = leftMargin + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + ((d + 0.5) * numberOfClasses) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -663,7 +663,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             if (isShowXAxis()) {
                 final double xLabel = leftMargin + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + ((c + 0.5) * numberOfDataSets) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {

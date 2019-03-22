@@ -37,9 +37,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import jloda.fx.ASelectionModel;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.chart.ChartColorManager;
@@ -710,7 +711,7 @@ public class ReadLayoutPane extends Pane {
                     final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
                     final URL url = new URL(String.format(searchURL, text.trim().replaceAll("\\s+", "+")));
                     //System.err.println(url);
-                    Basic.openWebPage(url);
+                    BasicSwing.openWebPage(url);
                 } catch (MalformedURLException e) {
                     Basic.caught(e);
                 }

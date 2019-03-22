@@ -24,7 +24,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import jloda.fx.ASelectionModel;
-import jloda.gui.find.IObjectSearcher;
+import jloda.swing.find.IObjectSearcher;
 import megan.data.IMatchBlock;
 
 import javax.swing.*;

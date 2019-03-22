@@ -18,10 +18,10 @@
  */
 package megan.chart.drawers;
 
-import jloda.gui.ILabelGetter;
-import jloda.gui.IPopupMenuModifier;
-import jloda.util.Basic;
-import jloda.util.Geometry;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ILabelGetter;
+import jloda.swing.util.IPopupMenuModifier;
 import jloda.util.Pair;
 import megan.chart.ChartColorManager;
 import megan.chart.cluster.ClusteringTree;
@@ -122,7 +122,7 @@ public class ChartDrawerBase extends JPanel {
     public static void drawString(Graphics2D gc, String label, double x, double y, double labelAngle) {
         labelAngle = Geometry.moduloTwoPI(labelAngle);
         Point2D apt = new Point2D.Float((float) x, (float) y);
-        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
 
         // save current transform:
         final AffineTransform saveTransform = gc.getTransform();
@@ -156,7 +156,7 @@ public class ChartDrawerBase extends JPanel {
      * @param addHeight if true, y is used as bottom coordinate, not top
      */
     public static void drawStringCentered(Graphics gc, String label, double x, double y, boolean addHeight) {
-        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+        Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
         gc.drawString(label, (int) Math.round(x - labelSize.getWidth() / 2), (int) Math.round(addHeight ? y + labelSize.getHeight() : y));
     }
 

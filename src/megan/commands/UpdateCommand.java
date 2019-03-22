@@ -18,9 +18,9 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.MainViewer;
 

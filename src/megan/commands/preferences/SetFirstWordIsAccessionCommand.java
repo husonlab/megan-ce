@@ -18,9 +18,9 @@
  */
 package megan.commands.preferences;
 
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.IdParser;
 import megan.commands.CommandBase;

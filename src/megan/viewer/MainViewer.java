@@ -19,12 +19,13 @@
 package megan.viewer;
 
 import jloda.graph.Node;
-import jloda.gui.ListTransferHandler;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.*;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.*;
+import jloda.swing.util.ListTransferHandler;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
 import megan.chart.gui.LabelsJList;
 import megan.chart.gui.SyncListener;
@@ -88,7 +89,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             }
         };
 
-        seriesList = new LabelsJList(this, syncListener1, new jloda.gui.PopupMenu(this, megan.viewer.GUIConfiguration.getSeriesListPopupConfiguration(), commandManager));
+        seriesList = new LabelsJList(this, syncListener1, new PopupMenu(this, megan.viewer.GUIConfiguration.getSeriesListPopupConfiguration(), commandManager));
 
         seriesList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent listSelectionEvent) {

@@ -20,7 +20,7 @@ package megan.commands;
 
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;

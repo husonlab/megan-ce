@@ -19,9 +19,10 @@
 package megan.commands;
 
 import jloda.graph.Node;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
@@ -53,7 +54,7 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
 
         if (taxId > 0) {
             try {
-                Basic.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
+                BasicSwing.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
                 ok = true;
             } catch (Exception e1) {
                 Basic.caught(e1);
@@ -76,7 +77,7 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
             Integer taxId = (Integer) v.getInfo();
             if (taxId != null && taxId > 0) {
                 try {
-                    Basic.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
+                    BasicSwing.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId));
                     ok = true;
                 } catch (Exception e1) {
                     Basic.caught(e1);

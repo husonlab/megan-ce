@@ -18,11 +18,11 @@
  */
 package megan.commands.format;
 
-import jloda.gui.ChooseColorDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;

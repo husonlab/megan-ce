@@ -18,7 +18,7 @@
  */
 package megan.inspector;
 
-import jloda.gui.ProgressDialog;
+import jloda.swing.util.ProgressDialog;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import megan.core.Director;

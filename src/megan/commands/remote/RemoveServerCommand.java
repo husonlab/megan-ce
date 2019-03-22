@@ -18,7 +18,7 @@
  */
 package megan.commands.remote;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.remote.client.RemoteServiceManager;

@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;
 import megan.chart.data.IChartData;
@@ -127,10 +127,10 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
                 gc.setColor(Color.DARK_GRAY);
                 gc.setFont(labelFont);
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 while (labelSize.width + 2 > panelSize.width && label.length() >= 5) {
                     label = label.substring(0, label.length() - 4) + "...";
-                    labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                    labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 }
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{series, null});
@@ -223,10 +223,10 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
                 gc.setColor(Color.DARK_GRAY);
                 gc.setFont(labelFont);
                 String label = className;
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 while (labelSize.width + 2 > panelSize.width && label.length() >= 5) {
                     label = className.substring(0, label.length() - 4) + "...";
-                    labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                    labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 }
                 if (sgc != null)
                     sgc.setCurrentItem(new String[]{null, className});

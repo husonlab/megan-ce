@@ -18,8 +18,8 @@
  */
 package megan.classification;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.classification.util.MultiWords;
 import megan.classification.util.TaggedValueIterator;
 

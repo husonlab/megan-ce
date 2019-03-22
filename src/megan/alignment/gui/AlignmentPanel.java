@@ -18,11 +18,11 @@
  */
 package megan.alignment.gui;
 
-import jloda.gui.director.ProjectManager;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.Cursors;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ToolTipHelper;
 import jloda.util.Basic;
-import jloda.util.Cursors;
-import jloda.util.ProgramProperties;
-import jloda.util.ToolTipHelper;
 import megan.alignment.gui.colors.ColorSchemeText;
 import megan.alignment.gui.colors.IColorScheme;
 

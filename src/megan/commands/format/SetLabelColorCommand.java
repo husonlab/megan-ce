@@ -20,10 +20,10 @@ package megan.commands.format;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graphview.GraphView;
-import jloda.gui.ChooseColorDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.util.ChooseColorDialog;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;

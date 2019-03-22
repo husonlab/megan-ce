@@ -19,8 +19,10 @@
 package megan.chart.drawers;
 
 import jloda.graph.*;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.APoint2D;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
@@ -214,7 +216,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 double size = Math.max(1, value * (double) maxRadius);
 
                 int[] oval = {(int) (factorX * pv.getX() + dx - size), (int) (factorY * pv.getY() + dy - size), (int) (2 * size), (int) (2 * size)};
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 int x = (int) Math.round(oval[0] + oval[2] / 2 - labelSize.getWidth() / 2);
                 int y = oval[1] - 2;
 
@@ -319,7 +321,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                     if (probabilityPercent >= getMinProbability()) {
                         Edge e = graph.newEdge(className2Node.get(className1), className2Node.get(className2));
                         graph.setInfo(e, probabilityPercent);
-                        edgeValue.set(e, positive ? probabilityPercent : -probabilityPercent); // negative value indicates anticorrelated
+                        edgeValue.put(e, positive ? probabilityPercent : -probabilityPercent); // negative value indicates anticorrelated
                     }
                 }
             }
@@ -331,17 +333,17 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
      */
     private void embedGraph() {
         final FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(graph, null);
-        final NodeArray<Point2D> coordinates = new NodeArray<>(graph);
+        final NodeArray<APoint2D> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         boolean first = true;
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
             NodeData nodeData = (NodeData) v.getData();
-            nodeData.setLocation(coordinates.get(v));
+            nodeData.setLocation(coordinates.get(v).getX(), coordinates.get(v).getY());
             if (first) {
                 boundingBox.setRect(coordinates.get(v).getX(), coordinates.get(v).getY(), 1, 1);
                 first = false;
             } else
-                boundingBox.add(coordinates.get(v));
+                boundingBox.add(coordinates.get(v).getX(), coordinates.get(v).getY());
         }
         boundingBox.setRect(boundingBox.getX() - maxRadius, boundingBox.getY() - maxRadius, boundingBox.getWidth() + 2 * maxRadius,
                 boundingBox.getHeight() + 2 * maxRadius);
@@ -460,6 +462,10 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
 
         public void setLocation(Point2D location) {
             this.location = location;
+        }
+
+        public void setLocation(double x, double y) {
+            this.location = new Point2D.Double(x, y);
         }
     }
 

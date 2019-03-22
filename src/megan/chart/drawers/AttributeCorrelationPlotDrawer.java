@@ -18,12 +18,13 @@
  */
 package megan.chart.drawers;
 
-import jloda.gui.IPopupMenuModifier;
-import jloda.gui.commands.CommandManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Correlation;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
@@ -132,7 +133,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             for (String classNameX : classNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                final Dimension labelSize = Basic.getStringSize(gc, classNameX, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, classNameX, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -267,7 +268,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             for (String attributeNameX : attributeNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                final Dimension labelSize = Basic.getStringSize(gc, attributeNameX, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, attributeNameX, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -364,7 +365,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
 
             int longest = 0;
             for (String attributeName : attributeNames) {
-                longest = Math.max(longest, Basic.getStringSize(gc, attributeName, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, attributeName, gc.getFont()).getSize().width);
             }
             int right = Math.max(leftMargin, longest + 5);
 
@@ -374,7 +375,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             double yStep = (y0 - y1) / (double) numberOfAttributes;
             int d = numberOfAttributes - 1;
             for (String attributeName : attributeNames) {
-                Dimension labelSize = Basic.getStringSize(gc, attributeName, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, attributeName, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (d + 0.5) * yStep);
                 if (doDraw) {
@@ -428,7 +429,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
 
             int longest = 0;
             for (String className : classNames) {
-                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, className, gc.getFont()).getSize().width);
             }
             int right = Math.max(leftMargin, longest + 5);
 
@@ -438,7 +439,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             double yStep = (y0 - y1) / (double) numberOfClasses;
             int c = numberOfClasses - 1;
             for (String className : classNames) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (c + 0.5) * yStep);
                 if (doDraw) {

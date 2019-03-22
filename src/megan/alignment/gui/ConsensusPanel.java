@@ -18,7 +18,7 @@
  */
 package megan.alignment.gui;
 
-import jloda.util.Cursors;
+import jloda.swing.util.Cursors;
 import megan.alignment.gui.colors.ColorSchemeText;
 import megan.alignment.gui.colors.IColorScheme;
 

@@ -18,7 +18,7 @@
  */
 package megan.alignment.gui;
 
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

@@ -18,8 +18,8 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -92,7 +92,7 @@ public class DrawableValue {
      */
     public void draw(Graphics2D gc, boolean centerLabelWidth, boolean centerLabelHeight) {
         if (centerLabelWidth || centerLabelHeight) {
-            Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             gc.drawString(label, (int) (x - (centerLabelWidth ? labelSize.getWidth() / 2 : 0)), (int) (y + (centerLabelHeight ? labelSize.getHeight() / 2 : 0)));
         } else
             gc.drawString(label, x, y);

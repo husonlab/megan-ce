@@ -18,8 +18,8 @@
  */
 package megan.util;
 
+import jloda.swing.util.FileFilterBase;
 import jloda.util.Basic;
-import jloda.util.FileFilterBase;
 
 import java.io.File;
 import java.io.FilenameFilter;

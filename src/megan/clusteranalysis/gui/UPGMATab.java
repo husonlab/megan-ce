@@ -19,8 +19,8 @@
 
 package megan.clusteranalysis.gui;
 
-import jloda.gui.GraphViewPopupListener;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.GraphViewPopupListener;
+import jloda.swing.util.ProgramProperties;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;

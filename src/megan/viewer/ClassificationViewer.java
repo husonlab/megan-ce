@@ -18,18 +18,18 @@
  */
 package megan.viewer;
 
-import jloda.export.ExportManager;
 import jloda.graph.*;
-import jloda.graphview.*;
-import jloda.gui.MenuBar;
-import jloda.gui.PopupMenu;
-import jloda.gui.*;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.*;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.SearchManager;
-import jloda.gui.format.Formatter;
 import jloda.phylo.PhyloTree;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.*;
+import jloda.swing.export.ExportManager;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.SearchManager;
+import jloda.swing.format.Formatter;
+import jloda.swing.graphview.*;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.*;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -912,7 +912,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             }
         }
 
-        node2BoundingBox.set(v, (Rectangle) bbox.clone());
+        node2BoundingBox.put(v, (Rectangle) bbox.clone());
         return bbox;
     }
 
@@ -978,7 +978,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             }
         }
 
-        node2BoundingBox.set(v, (Rectangle) bbox.clone());
+        node2BoundingBox.put(v, (Rectangle) bbox.clone());
         return bbox;
     }
 
@@ -1038,7 +1038,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 NodeView nv = getNV(v);
 
                 if (nv.getLabel() != null)
-                    nv.setLabelSize(Basic.getStringSize(gc, getLabel(v), getFont(v)));
+                    nv.setLabelSize(BasicSwing.getStringSize(gc, getLabel(v), getFont(v)));
 
                 gc.setColor(ProgramProperties.SELECTION_COLOR.brighter());
 
@@ -1084,7 +1084,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             gc.setColor(Color.gray);
             gc.setStroke(new BasicStroke(1));
             gc.setFont(poweredByFont);
-            int width = (int) Basic.getStringSize(gc, getPOWEREDBY(), gc.getFont()).getWidth();
+            int width = (int) BasicSwing.getStringSize(gc, getPOWEREDBY(), gc.getFont()).getWidth();
             int x = rect.x + rect.width - width - 2;
             int y = rect.y + rect.height - 2;
             gc.drawString(getPOWEREDBY(), x, y);

@@ -19,8 +19,8 @@
 
 package megan.dialogs.lrinspector;
 
-import jloda.gui.MenuConfiguration;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.MenuConfiguration;
+import jloda.swing.util.ProgramProperties;
 import megan.classification.data.ClassificationCommandHelper;
 
 /**

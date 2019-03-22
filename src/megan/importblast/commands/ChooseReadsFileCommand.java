@@ -18,12 +18,12 @@
  */
 package megan.importblast.commands;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.FastaFileFilter;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 import megan.importblast.ImportBlastDialog;

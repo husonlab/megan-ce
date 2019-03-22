@@ -18,10 +18,10 @@
  */
 package megan.viewer.commands;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;

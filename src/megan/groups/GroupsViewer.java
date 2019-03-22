@@ -18,15 +18,15 @@
  */
 package megan.groups;
 
-import jloda.gui.MenuBar;
-import jloda.gui.StatusBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.StatusBar;
+import jloda.swing.util.ToolBar;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.clusteranalysis.ClusterViewer;
 import megan.core.Director;
 import megan.core.SelectionSet;

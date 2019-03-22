@@ -19,10 +19,14 @@
 package megan.alignment.commands;
 
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.*;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
+import jloda.util.Basic;
+import jloda.util.Pair;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.assembly.alignment.AlignmentAssembler;

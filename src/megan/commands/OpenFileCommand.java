@@ -18,14 +18,14 @@
  */
 package megan.commands;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.ProgressDialog;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ProgressDialog;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.ClassificationType;
 import megan.core.Director;

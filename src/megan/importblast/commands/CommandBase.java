@@ -28,7 +28,7 @@ import javax.swing.*;
  * base class
  * Daniel Huson, 11.2010
  */
-public abstract class CommandBase extends jloda.gui.commands.CommandBase {
+public abstract class CommandBase extends jloda.swing.commands.CommandBase {
     public Director getDir() {
         return (Director) super.getDir();
     }

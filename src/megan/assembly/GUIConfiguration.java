@@ -18,8 +18,8 @@
  */
 package megan.assembly;
 
-import jloda.gui.MenuConfiguration;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.MenuConfiguration;
+import jloda.swing.util.ProgramProperties;
 
 /**
  * configuration for menu

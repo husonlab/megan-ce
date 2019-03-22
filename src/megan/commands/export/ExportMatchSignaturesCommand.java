@@ -18,11 +18,11 @@
  */
 package megan.commands.export;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.FastaFileFilter;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;

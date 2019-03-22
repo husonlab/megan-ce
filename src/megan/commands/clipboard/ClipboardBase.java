@@ -18,7 +18,7 @@
  */
 package megan.commands.clipboard;
 
-import jloda.util.ResourceManager;
+import jloda.swing.util.ResourceManager;
 import megan.commands.CommandBase;
 
 import javax.swing.*;

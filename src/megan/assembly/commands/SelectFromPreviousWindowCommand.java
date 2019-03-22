@@ -20,13 +20,13 @@ package megan.assembly.commands;
 
 import jloda.graph.Graph;
 import jloda.graph.Node;
-import jloda.graph.NodeMap;
+import jloda.graph.NodeArray;
 import jloda.graph.NodeSet;
-import jloda.graphview.GraphView;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.ProjectManager;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.assembly.OverlapGraphViewer;
 
@@ -54,7 +54,7 @@ public class SelectFromPreviousWindowCommand extends CommandBase implements ICom
         if (getParent() instanceof OverlapGraphViewer) {
             final OverlapGraphViewer overlapGraphViewer = (OverlapGraphViewer) getParent();
             final GraphView graphView = overlapGraphViewer.getGraphView();
-            final NodeMap<String> node2ReadNameMap = overlapGraphViewer.getNode2ReadNameMap();
+            final NodeArray<String> node2ReadNameMap = overlapGraphViewer.getNode2ReadNameMap();
 
             final Set<String> previousSelection = ProjectManager.getPreviouslySelectedNodeLabels();
             if (previousSelection.size() > 0) {

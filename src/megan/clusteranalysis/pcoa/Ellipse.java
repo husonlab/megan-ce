@@ -19,8 +19,8 @@
 
 package megan.clusteranalysis.pcoa;
 
-import jloda.graphview.Transform;
-import jloda.util.Geometry;
+import jloda.swing.graphview.Transform;
+import jloda.swing.util.Geometry;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

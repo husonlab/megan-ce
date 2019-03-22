@@ -20,7 +20,7 @@ package megan.clusteranalysis;
 
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.swing.util.BasicSwing;
 import megan.core.Document;
 import megan.util.GraphicsUtilities;
 
@@ -114,7 +114,7 @@ public class LegendPanel extends JPanel {
                 String legend = "Legend:";
                 gc.setColor(Color.BLACK);
                 gc.drawString(legend, x, yStart);
-                Dimension labelSize = Basic.getStringSize(gc, legend, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, legend, gc.getFont()).getSize();
                 maxX = Math.max(maxX, labelSize.width);
 
             }
@@ -130,7 +130,7 @@ public class LegendPanel extends JPanel {
                         String label = doc.getSampleLabelGetter().getLabel(sampleName);
                         if (!label.equals(sampleName))
                             label += " (" + sampleName + ")";
-                        final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                        final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                         int boxSize = labelSize.height - 2;
                         if (x + boxSize + labelSize.width + 2 > getWidth() || vertical) {
                             x = 3;

@@ -18,6 +18,7 @@
  */
 package megan.remote.client;
 
+import jloda.swing.util.BasicSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
@@ -120,7 +121,7 @@ public class LocalService implements IRemoteService {
         lock.lock();
         try {
             files.clear();
-            List<File> files = Basic.getAllFilesInDirectory(rootDirectory, RMAFileFilter.getInstance(), true);
+            List<File> files = BasicSwing.getAllFilesInDirectory(rootDirectory, RMAFileFilter.getInstance(), true);
             for (File file : files) {
                 File relative = Basic.getRelativeFile(file, rootDirectory);
                 this.files.add(relative.getPath());

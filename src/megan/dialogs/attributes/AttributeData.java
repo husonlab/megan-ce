@@ -21,9 +21,9 @@
  */
 package megan.dialogs.attributes;
 
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;

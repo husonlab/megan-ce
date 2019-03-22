@@ -38,7 +38,7 @@ import java.util.concurrent.Executors;
  */
 public class ReadAssembler {
     private Graph overlapGraph;
-    private NodeMap<String> node2ReadNameMap;
+    private NodeArray<String> node2ReadNameMap;
     private ReadData[] readId2ReadData;
     private Node[][] paths;
     private String label;
@@ -113,8 +113,8 @@ public class ReadAssembler {
         final NodeArray<String> sequences = new NodeArray<>(overlapGraph);
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
             ReadData readData = readId2ReadData[(Integer) v.getInfo()];
-            sequences.set(v, readData.getSegment());
-            names.set(v, readData.getName());
+            sequences.put(v, readData.getSegment());
+            names.put(v, readData.getName());
         }
         final Map<String, NodeArray<?>> label2nodes = new TreeMap<>();
         label2nodes.put("label", names);
@@ -122,7 +122,7 @@ public class ReadAssembler {
 
         final EdgeArray<Integer> overlap = new EdgeArray<>(overlapGraph);
         for (Edge e = overlapGraph.getFirstEdge(); e != null; e = e.getNext()) {
-            overlap.set(e, (Integer) e.getInfo());
+            overlap.put(e, (Integer) e.getInfo());
         }
         final Map<String, EdgeArray<?>> label2edges = new TreeMap<>();
         label2edges.put("label", null);
@@ -316,8 +316,7 @@ public class ReadAssembler {
             System.err.println(String.format("Contained contigs:%6d", containedContigs.cardinality()));
         if (containedContigs.cardinality() > 0) // delete all contained contigs from graph
         {
-            final NodeSet nodes = overlapGraph.getNodes();
-            for (Node v : nodes) {
+            for (Node v : overlapGraph.nodes()) {
                 if (containedContigs.get((Integer) v.getInfo())) {
                     overlapGraph.deleteNode(v);
                 }

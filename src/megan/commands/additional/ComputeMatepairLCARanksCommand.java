@@ -19,7 +19,7 @@
 package megan.commands.additional;
 
 import jloda.graph.Node;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.TaxonomicLevels;

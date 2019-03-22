@@ -19,7 +19,8 @@
 
 package megan.timeseriesviewer;
 
-import jloda.gui.director.IDirector;
+import jloda.swing.director.IDirector;
+import jloda.swing.util.PopupMenu;
 import megan.core.Director;
 import megan.core.Document;
 
@@ -286,9 +287,9 @@ public class SubjectJTable {
     public void showPopupMenu(final MouseEvent e) {
         // show the header popup menu:
         if (e.getSource() instanceof JTableHeader) {
-            (new jloda.gui.PopupMenu(this, GUIConfiguration.getSubjectColumnHeaderPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
+            (new PopupMenu(this, GUIConfiguration.getSubjectColumnHeaderPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
         } else if (e.getSource() instanceof JTable && e.getSource() == jTable) {
-            (new jloda.gui.PopupMenu(this, GUIConfiguration.getSubjectPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
+            (new PopupMenu(this, GUIConfiguration.getSubjectPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());
         }
     }
 

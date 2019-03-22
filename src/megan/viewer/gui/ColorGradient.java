@@ -18,7 +18,7 @@
  */
 package megan.viewer.gui;
 
-import jloda.gui.ColorTable;
+import jloda.swing.util.ColorTable;
 
 import java.awt.*;
 

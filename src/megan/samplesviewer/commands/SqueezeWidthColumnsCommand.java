@@ -19,8 +19,8 @@
 package megan.samplesviewer.commands;
 
 import javafx.application.Platform;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 import org.controlsfx.control.spreadsheet.SpreadsheetColumn;

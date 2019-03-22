@@ -18,10 +18,11 @@
  */
 package megan.viewer.commands;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
@@ -44,7 +45,7 @@ public class OpenClassificationViewerWebPageCommand extends CommandBase implemen
 
         try {
             if (url != null)
-                Basic.openWebPage(new URL(url));
+                BasicSwing.openWebPage(new URL(url));
         } catch (Exception e1) {
             Basic.caught(e1);
             NotificationsInSwing.showError(getViewer().getFrame(), "Failed to open URL: " + url);
@@ -62,7 +63,7 @@ public class OpenClassificationViewerWebPageCommand extends CommandBase implemen
 
         for (String url : urls) {
             try {
-                Basic.openWebPage(new URL(url));
+                BasicSwing.openWebPage(new URL(url));
             } catch (Exception e1) {
                 Basic.caught(e1);
             }

@@ -20,9 +20,9 @@ package megan.samplesviewer.commands.attributes;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextInputDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 

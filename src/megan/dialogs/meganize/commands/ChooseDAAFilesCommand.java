@@ -18,12 +18,12 @@
  */
 package megan.dialogs.meganize.commands;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.FileFilterBase;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.FileFilterBase;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 import megan.importblast.commands.CommandBase;

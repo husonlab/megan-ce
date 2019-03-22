@@ -18,13 +18,13 @@
  */
 package megan.dialogs.compare;
 
-import jloda.gui.ActionJList;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ActionJList;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.compare.commands.*;

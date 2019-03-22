@@ -18,12 +18,12 @@
  */
 package megan.commands.format;
 
-import jloda.graphview.NodeShape;
-import jloda.graphview.NodeShapeIcon;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.graphview.NodeShape;
+import jloda.swing.graphview.NodeShapeIcon;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;

@@ -18,11 +18,11 @@
  */
 package megan.commands;
 
-import jloda.graphview.GraphView;
-import jloda.graphview.ScrollPaneAdjuster;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.ScrollPaneAdjuster;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 import megan.clusteranalysis.ClusterViewer;

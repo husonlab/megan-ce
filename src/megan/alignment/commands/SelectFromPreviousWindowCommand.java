@@ -18,11 +18,11 @@
  */
 package megan.alignment.commands;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;

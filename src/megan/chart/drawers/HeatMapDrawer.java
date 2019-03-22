@@ -18,10 +18,11 @@
  */
 package megan.chart.drawers;
 
-import jloda.gui.ColorTable;
-import jloda.gui.IPopupMenuModifier;
-import jloda.gui.commands.CommandManager;
-import jloda.util.*;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.util.*;
+import jloda.util.Basic;
+import jloda.util.Statistics;
+import jloda.util.Table;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
@@ -155,7 +156,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -315,7 +316,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             for (String className : classNames) {
                 double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -459,7 +460,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 int longest = 0;
                 for (String series : seriesNames) {
                     String label = seriesLabelGetter.getLabel(series);
-                    longest = Math.max(longest, Basic.getStringSize(gc, label, gc.getFont()).getSize().width);
+                    longest = Math.max(longest, BasicSwing.getStringSize(gc, label, gc.getFont()).getSize().width);
                 }
                 int right = Math.max(leftMargin, longest + 5);
 
@@ -471,7 +472,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 int d = numberOfSeries - 1;
                 for (String series : seriesNames) {
                     String label = seriesLabelGetter.getLabel(series);
-                    Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                    Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                     int x = right - labelSize.width - 4;
                     int y = (int) Math.round(y0 - (d + 0.5) * yStep);
                     if (doDraw) {
@@ -504,7 +505,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             if (numberOfClasses > 0) {
                 int longest = 0;
                 for (String className : classNames) {
-                    longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+                    longest = Math.max(longest, BasicSwing.getStringSize(gc, className, gc.getFont()).getSize().width);
                 }
                 int right = Math.max(leftMargin, longest + 5);
 
@@ -514,7 +515,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 double yStep = (y0 - y1) / (double) numberOfClasses;
                 int c = numberOfClasses - 1;
                 for (String className : classNames) {
-                    Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                    Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                     int x = right - labelSize.width - 4;
                     int y = (int) Math.round(y0 - (c + 0.5) * yStep);
                     if (doDraw) {

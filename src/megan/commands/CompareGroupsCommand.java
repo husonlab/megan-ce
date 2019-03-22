@@ -19,12 +19,12 @@
 
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.algorithms.ComputeCoreBiome;
 import megan.core.Director;
@@ -46,7 +46,7 @@ import java.util.*;
  * compute comparison of groups
  * Daniel Huson, 7.2015
  */
-public class CompareGroupsCommand extends jloda.gui.commands.CommandBase implements ICommand {
+public class CompareGroupsCommand extends jloda.swing.commands.CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         final Document doc = ((Director) getDir()).getDocument();

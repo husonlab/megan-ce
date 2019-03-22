@@ -19,9 +19,9 @@
 package megan.commands.clipboard;
 
 import jloda.graph.Edge;
-import jloda.graphview.GraphView;
-import jloda.gui.commands.ICommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 

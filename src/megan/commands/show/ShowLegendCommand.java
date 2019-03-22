@@ -19,11 +19,11 @@
 package megan.commands.show;
 
 
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.IViewerWithLegend;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.IViewerWithLegend;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 

@@ -18,8 +18,8 @@
  */
 package megan.rma3;
 
+import jloda.swing.util.FileFilterBase;
 import jloda.util.Basic;
-import jloda.util.FileFilterBase;
 import megan.io.InputReader;
 import megan.rma2.RMA2File;
 

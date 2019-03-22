@@ -18,9 +18,13 @@
  */
 package megan.chart.drawers;
 
-import jloda.gui.IPopupMenuModifier;
-import jloda.gui.commands.CommandManager;
-import jloda.util.*;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.Correlation;
+import jloda.util.Table;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
@@ -163,7 +167,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             for (final String classNameX : classNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                final Dimension labelSize = Basic.getStringSize(gc, classNameX, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, classNameX, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -294,7 +298,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             for (final String seriesNameX : seriesNames) {
                 final double xLabel = x0 + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 10);
-                final Dimension labelSize = Basic.getStringSize(gc, seriesNameX, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, seriesNameX, gc.getFont()).getSize();
                 if (classLabelAngle == 0) {
                     apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
                 } else if (classLabelAngle > Math.PI / 2) {
@@ -439,7 +443,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             case Numbers: {
                 gc.setFont(getFont(ChartViewer.FontKeys.DrawFont.toString()));
                 String label = String.format("%.3f", correlationCoefficent);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 int x = (int) Math.round(centerX - labelSize.width / 2.0); // left
                 int y = (int) Math.round(centerY); // top
                 gc.setColor(color.darker());
@@ -519,7 +523,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
 
             int longest = 0;
             for (String className : classNames) {
-                longest = Math.max(longest, Basic.getStringSize(gc, className, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, className, gc.getFont()).getSize().width);
             }
             int right = Math.max(leftMargin, longest + 5);
 
@@ -529,7 +533,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             double yStep = (y0 - y1) / (double) numberOfClasses;
             int c = numberOfClasses - 1;
             for (String className : classNames) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (c + 0.5) * yStep);
                 if (doDraw) {
@@ -583,7 +587,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
 
             int longest = 0;
             for (String seriesName : seriesNames) {
-                longest = Math.max(longest, Basic.getStringSize(gc, seriesName, gc.getFont()).getSize().width);
+                longest = Math.max(longest, BasicSwing.getStringSize(gc, seriesName, gc.getFont()).getSize().width);
             }
             int right = Math.max(leftMargin, longest + 5);
 
@@ -593,7 +597,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             double yStep = (y0 - y1) / (double) numberOfSeries;
             int c = numberOfSeries - 1;
             for (String seriesName : seriesNames) {
-                Dimension labelSize = Basic.getStringSize(gc, seriesName, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, seriesName, gc.getFont()).getSize();
                 int x = right - labelSize.width - 4;
                 int y = (int) Math.round(y0 - (c + 0.5) * yStep);
                 if (doDraw) {
@@ -864,7 +868,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             for (String label : getChartData().getClassNames()) {
                 if (label.length() > 50)
                     label = label.substring(0, 50) + "...";
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 theHeight = Math.max(theHeight, gc.getFont().getSize() + sin * labelSize.width);
             }
         }

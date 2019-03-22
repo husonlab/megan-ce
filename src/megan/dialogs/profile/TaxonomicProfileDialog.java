@@ -18,11 +18,11 @@
  */
 package megan.dialogs.profile;
 
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirector;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirector;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.RememberingComboBox;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.RememberingComboBox;
 import megan.dialogs.profile.commands.ApplyCommand;
 import megan.dialogs.profile.commands.CancelCommand;
 import megan.dialogs.profile.commands.UseProjectionMethodCommand;

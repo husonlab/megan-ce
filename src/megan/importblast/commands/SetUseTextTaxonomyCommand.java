@@ -18,15 +18,15 @@
  */
 package megan.importblast.commands;
 
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetUseTextTaxonomyCommand extends jloda.gui.commands.CommandBase implements ICheckBoxCommand {
+public class SetUseTextTaxonomyCommand extends jloda.swing.commands.CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
         return importBlastDialog.isParseTaxonNames();

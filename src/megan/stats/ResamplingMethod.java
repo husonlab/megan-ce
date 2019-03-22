@@ -18,7 +18,11 @@
  */
 package megan.stats;
 
-import jloda.util.*;
+import jloda.swing.util.ArgsOptions;
+import jloda.util.CanceledException;
+import jloda.util.ProgressCmdLine;
+import jloda.util.ProgressListener;
+import jloda.util.UsageException;
 
 import java.io.*;
 import java.util.*;

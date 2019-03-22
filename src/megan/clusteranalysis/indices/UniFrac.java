@@ -202,11 +202,11 @@ public class UniFrac {
         if (currentSummarized != null) { // has selected below
             for (int s = 0; s < ntax; s++) // add counts for current node
                 currentSummarized[s] += nodeData.getAssigned()[s];
-            summarized.set(v, currentSummarized);
+            summarized.put(v, currentSummarized);
             selected.add(v);
             return true;
         } else if (selected.contains(v)) { // nothing selected below, but this node is selected, so it is a selection leaf
-            summarized.set(v, nodeData.getSummarized());
+            summarized.put(v, nodeData.getSummarized());
             return true;
         } else
             return false;

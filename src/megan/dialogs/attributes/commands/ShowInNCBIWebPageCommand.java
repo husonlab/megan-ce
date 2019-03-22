@@ -18,10 +18,11 @@
  */
 package megan.dialogs.attributes.commands;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.attributes.AttributesWindow;
 import megan.fx.NotificationsInSwing;
@@ -61,7 +62,7 @@ public class ShowInNCBIWebPageCommand extends CommandBase implements ICommand {
             if (taxId > 0) {
                 try {
                     final URL url = new URL("https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=" + taxId);
-                    Basic.openWebPage(url);
+                    BasicSwing.openWebPage(url);
                     ok = true;
                 } catch (Exception e1) {
                     Basic.caught(e1);

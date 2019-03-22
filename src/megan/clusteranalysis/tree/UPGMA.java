@@ -20,9 +20,9 @@ package megan.clusteranalysis.tree;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graphview.NodeView;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.PhyloTreeView;
+import jloda.swing.graphview.NodeView;
+import jloda.swing.graphview.PhyloTreeView;
 
 import java.awt.geom.Point2D;
 import java.util.LinkedList;

@@ -18,20 +18,17 @@
  */
 package megan.remote;
 
-import jloda.gui.MenuBar;
-import jloda.gui.StatusBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IDirector;
-import jloda.gui.director.IViewerWithFindToolBar;
-import jloda.gui.director.ProjectManager;
-import jloda.gui.find.EmptySearcher;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.SearchManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.IViewerWithFindToolBar;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.find.EmptySearcher;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.SearchManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.*;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.RememberingComboBox;
 import megan.core.Director;
 import megan.core.Document;
 import megan.main.MeganProperties;

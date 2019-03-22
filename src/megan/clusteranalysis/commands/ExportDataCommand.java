@@ -18,9 +18,13 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.ICommand;
-import jloda.util.*;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
+import jloda.swing.util.TextFileFilter;
+import jloda.util.Basic;
+import jloda.util.NexusFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.core.Director;

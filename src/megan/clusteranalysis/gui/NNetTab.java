@@ -19,8 +19,8 @@
 
 package megan.clusteranalysis.gui;
 
-import jloda.gui.GraphViewPopupListener;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.GraphViewPopupListener;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.ProgressCmdLine;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.nnet.EqualAngle;

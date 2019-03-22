@@ -38,10 +38,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import jloda.gui.ToolBar;
-import jloda.gui.find.CompositeObjectSearcher;
-import jloda.gui.find.IObjectSearcher;
-import jloda.util.ProgramProperties;
+import jloda.swing.find.CompositeObjectSearcher;
+import jloda.swing.find.IObjectSearcher;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ToolBar;
 import jloda.util.Statistics;
 import megan.chart.ChartColorManager;
 

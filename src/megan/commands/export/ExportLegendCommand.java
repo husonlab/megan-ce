@@ -18,12 +18,12 @@
  */
 package megan.commands.export;
 
-import jloda.export.*;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IViewerWithLegend;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IViewerWithLegend;
+import jloda.swing.export.*;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Document;

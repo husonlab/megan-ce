@@ -19,15 +19,16 @@
 package megan.assembly;
 
 import jloda.graph.*;
-import jloda.graphview.EdgeActionAdapter;
-import jloda.graphview.EdgeView;
-import jloda.graphview.GraphView;
-import jloda.graphview.NodeActionAdapter;
-import jloda.gui.MenuBar;
-import jloda.gui.MenuConfiguration;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.ProjectManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.graphview.EdgeActionAdapter;
+import jloda.swing.graphview.EdgeView;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.NodeActionAdapter;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.MenuConfiguration;
+import jloda.util.APoint2D;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
@@ -38,7 +39,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,14 +54,14 @@ public class OverlapGraphViewer {
     final private Graph overlapGraph;
     final private Node[][] paths;
     final private GraphView graphView;
-    final private NodeMap<String> node2ReadNameMap;
+    final private NodeArray<String> node2ReadNameMap;
 
     /**
      * constructor
      *
      * @param overlapGraph
      */
-    public OverlapGraphViewer(Director dir, final Graph overlapGraph, final NodeMap<String> node2ReadNameMap, Node[][] paths) {
+    public OverlapGraphViewer(Director dir, final Graph overlapGraph, final NodeArray<String> node2ReadNameMap, Node[][] paths) {
         this.dir = dir;
         this.overlapGraph = overlapGraph;
         this.node2ReadNameMap = node2ReadNameMap;
@@ -214,10 +214,10 @@ public class OverlapGraphViewer {
 
         // compute simple layout:
         final FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(overlapGraph, null);
-        NodeArray<Point2D> coordinates = new NodeArray<>(overlapGraph);
+        NodeArray<APoint2D> coordinates = new NodeArray<>(overlapGraph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
-            graphView.setLocation(v, coordinates.get(v));
+            graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());
             graphView.setHeight(v, 5);
             graphView.setWidth(v, 5);
         }
@@ -247,7 +247,7 @@ public class OverlapGraphViewer {
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
-        MenuBar menuBar = new jloda.gui.MenuBar(this, menuConfig, commandManager);
+        MenuBar menuBar = new MenuBar(this, menuConfig, commandManager);
 
 
         frame.setJMenuBar(menuBar);
@@ -273,7 +273,7 @@ public class OverlapGraphViewer {
         return graphView;
     }
 
-    public NodeMap<String> getNode2ReadNameMap() {
+    public NodeArray<String> getNode2ReadNameMap() {
         return node2ReadNameMap;
     }
 }

@@ -18,9 +18,9 @@
  */
 package megan.remote;
 
-import jloda.gui.director.IDirector;
-import jloda.gui.director.ProjectManager;
-import jloda.gui.find.ISearcher;
+import jloda.swing.director.IDirector;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.find.ISearcher;
 import megan.core.Director;
 import megan.remote.commands.*;
 
@@ -76,7 +76,7 @@ public class ServicePanel extends JPanel {
         fileTree = createFileTree(service);
         fileTree.setCellRenderer(new MyRenderer());
         javax.swing.ToolTipManager.sharedInstance().registerComponent(fileTree);
-        jTreeSearcher = new jloda.gui.find.JTreeSearcher(fileTree);
+        jTreeSearcher = new jloda.swing.find.JTreeSearcher(fileTree);
         fileTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 remoteServiceBrowser.updateView(IDirector.ENABLE_STATE);

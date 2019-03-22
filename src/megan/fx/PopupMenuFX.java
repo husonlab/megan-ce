@@ -21,11 +21,11 @@ package megan.fx;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.commands.ICommand;
-import jloda.gui.commands.TeXGenerator;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.commands.ICommand;
+import jloda.swing.commands.TeXGenerator;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 
 /**
  * popup menu

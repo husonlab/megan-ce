@@ -18,10 +18,11 @@
  */
 package megan.commands;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.FViewerChart;
 import megan.chart.TaxaChart;
@@ -51,7 +52,7 @@ public class OpenWebPageCommand extends CommandBase implements ICommand {
             final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
             final URL url = new URL(String.format(searchURL, name.trim().replaceAll(" ", "+") + "+" + id.trim().replaceAll(" ", "+")));
             System.err.println(url);
-            Basic.openWebPage(url);
+            BasicSwing.openWebPage(url);
             ok = true;
         } catch (Exception e1) {
             Basic.caught(e1);
@@ -88,7 +89,7 @@ public class OpenWebPageCommand extends CommandBase implements ICommand {
                 final URL url = new URL(String.format(searchURL, name.trim().replaceAll("\\s+", "+") + "+" + id.trim()
                         .replaceAll("<", " ").replaceAll(">", " ").replaceAll("\\s+", "+")));
                 System.err.println(url);
-                Basic.openWebPage(url);
+                BasicSwing.openWebPage(url);
                 ok = true;
             } catch (Exception e1) {
                 Basic.caught(e1);

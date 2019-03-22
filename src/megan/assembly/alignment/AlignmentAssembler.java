@@ -40,7 +40,7 @@ public class AlignmentAssembler {
     private Graph overlapGraph;
     private Alignment alignment;
     private Node[][] paths;
-    private NodeMap<String> node2readName;
+    private NodeArray<String> node2readName;
     private ArrayList<Pair<String, String>> contigs;
     private List<Integer>[] readId2ContainedReads;
 
@@ -94,8 +94,8 @@ public class AlignmentAssembler {
 
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
             int i = (Integer) v.getInfo();
-            sequences.set(v, alignment.getLane(i).getBlock());
-            names.set(v, Basic.getFirstWord(alignment.getLane(i).getName()));
+            sequences.put(v, alignment.getLane(i).getBlock());
+            names.put(v, Basic.getFirstWord(alignment.getLane(i).getName()));
         }
         final Map<String, NodeArray<?>> label2nodes = new TreeMap<>();
         label2nodes.put("label", names);
@@ -103,7 +103,7 @@ public class AlignmentAssembler {
 
         final EdgeArray<Integer> overlap = new EdgeArray<>(overlapGraph);
         for (Edge e = overlapGraph.getFirstEdge(); e != null; e = e.getNext()) {
-            overlap.set(e, (Integer) e.getInfo());
+            overlap.put(e, (Integer) e.getInfo());
         }
         final Map<String, EdgeArray<?>> label2edges = new TreeMap<>();
         label2edges.put("label", null);

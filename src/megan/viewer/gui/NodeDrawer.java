@@ -20,11 +20,11 @@ package megan.viewer.gui;
 
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.graphview.GraphView;
-import jloda.graphview.INodeDrawer;
-import jloda.graphview.NodeShape;
-import jloda.graphview.NodeView;
-import jloda.util.ProgramProperties;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.INodeDrawer;
+import jloda.swing.graphview.NodeShape;
+import jloda.swing.graphview.NodeView;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Statistics;
 import megan.core.Document;
 import megan.main.MeganProperties;

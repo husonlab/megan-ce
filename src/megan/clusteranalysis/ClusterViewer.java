@@ -21,22 +21,21 @@ package megan.clusteranalysis;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
-import jloda.graphview.EdgeView;
-import jloda.graphview.GraphView;
-import jloda.graphview.NodeShape;
-import jloda.graphview.NodeView;
-import jloda.gui.MenuBar;
-import jloda.gui.StatusBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.*;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.SearchManager;
-import jloda.gui.format.Formatter;
 import jloda.phylo.PhyloTree;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.*;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.SearchManager;
+import jloda.swing.format.Formatter;
+import jloda.swing.graphview.EdgeView;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.NodeShape;
+import jloda.swing.graphview.NodeView;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.*;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.clusteranalysis.gui.*;
@@ -86,7 +85,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private final Document doc;
     private final JFrame frame;
     private final JPanel mainPanel;
-    private final jloda.gui.StatusBar statusBar;
+    private final StatusBar statusBar;
     private final JTabbedPane tabbedPane;
 
     private final MatrixTab matrixTab;
@@ -163,7 +162,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         frame.add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
         frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
-        statusBar = new jloda.gui.StatusBar();
+        statusBar = new StatusBar();
         frame.add(statusBar, BorderLayout.SOUTH);
 
         tabbedPane = new JTabbedPane();
@@ -302,7 +301,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         };
         doc.getSampleSelection().addSampleSelectionListener(selectionListener);
 
-        legendPanel.setPopupMenu(new jloda.gui.PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
+        legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         frame.setVisible(true);
         splitPane.setDividerLocation(1.0);

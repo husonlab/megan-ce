@@ -18,7 +18,7 @@
  */
 package megan.chart.gui;
 
-import jloda.util.Basic;
+import jloda.swing.util.BasicSwing;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -196,7 +196,7 @@ public class SelectionGraphics<T> extends Graphics2D {
 
     public void drawString(String s, int x, int y) {
         if (currentItem != null && gc != null) {
-            Dimension labelSize = Basic.getStringSize(gc, s, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, s, gc.getFont()).getSize();
             rectangle.setRect(x, y - labelSize.height, labelSize.width, labelSize.height);
             testForHit(rectangle, false);
         }

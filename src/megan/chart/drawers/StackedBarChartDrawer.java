@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
-import jloda.util.Basic;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
@@ -83,7 +83,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
         for (String series : getChartData().getSeriesNames()) {
             {
                 String label = seriesLabelGetter.getLabel(series);
-                Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 double xLabel = x0 + (isGapBetweenBars() ? (d + 1) * bigSpace : 0) + (d + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 12);
                 if (classLabelAngle == 0) {
@@ -188,7 +188,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
         for (String className : getChartData().getClassNames()) {
             double currentHeight = y0;
             {
-                final Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 final double xLabel = x0 + (isGapBetweenBars() ? (c + 1) * bigSpace : 0) + (c + 0.5) * xStep;
                 Point2D apt = new Point2D.Double(xLabel, getHeight() - bottomMargin + 12);
                 if (classLabelAngle == 0) {

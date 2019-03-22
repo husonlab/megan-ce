@@ -18,7 +18,7 @@
  */
 package megan.classification.data;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;

@@ -141,7 +141,7 @@ public class AlignmentSorter {
 
         NodeArray<Node> otherEndOfChain = new NodeArray<>(graph);
         for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
-            otherEndOfChain.set(v, v);
+            otherEndOfChain.put(v, v);
         }
 
         EdgeSet selectedEdges = new EdgeSet(graph);
@@ -153,8 +153,8 @@ public class AlignmentSorter {
                 selectedEdges.add(e);
                 Node ov = otherEndOfChain.get(v);
                 Node ow = otherEndOfChain.get(w);
-                otherEndOfChain.set(ov, ow);
-                otherEndOfChain.set(ow, ov);
+                otherEndOfChain.put(ov, ow);
+                otherEndOfChain.put(ow, ov);
             }
         }
 

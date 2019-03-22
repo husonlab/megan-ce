@@ -18,17 +18,16 @@
  */
 package megan.inspector;
 
-import jloda.gui.MenuBar;
-import jloda.gui.PopupMenu;
-import jloda.gui.StatusBar;
-import jloda.gui.ToolBar;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.director.IDirectableViewer;
-import jloda.gui.director.IViewerWithFindToolBar;
-import jloda.gui.director.ProjectManager;
-import jloda.gui.find.FindToolBar;
-import jloda.gui.find.JTreeSearcher;
-import jloda.gui.find.SearchManager;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.director.IViewerWithFindToolBar;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.find.FindToolBar;
+import jloda.swing.find.JTreeSearcher;
+import jloda.swing.find.SearchManager;
+import jloda.swing.util.MenuBar;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.*;
 import jloda.util.*;
 import megan.algorithms.ActiveMatches;
 import megan.classification.Classification;
@@ -77,7 +76,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     boolean sortReadsAlphabetically = true;
 
     private final CommandManager commandManager;
-    private final jloda.gui.MenuBar menuBar;
+    private final MenuBar menuBar;
     private final JPopupMenu popupMenu;
 
     private boolean showFindToolBar = false;

@@ -18,16 +18,16 @@
  */
 package megan.commands.export;
 
-import jloda.export.*;
 import jloda.fx.IHasJavaFXStageAndRoot;
 import jloda.fx.JPanelWithFXStageAndRoot;
-import jloda.graphview.GraphView;
-import jloda.graphview.NodeView;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IDirectableViewer;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IDirectableViewer;
+import jloda.swing.export.*;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.NodeView;
+import jloda.swing.util.IViewerWithJComponent;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.IViewerWithJComponent;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 import megan.clusteranalysis.ClusterViewer;

@@ -18,7 +18,7 @@
  */
 package megan.chart.gui;
 
-import jloda.util.Basic;
+import jloda.swing.util.BasicSwing;
 import megan.chart.data.IChartData;
 import megan.chart.data.IPlot2DData;
 
@@ -125,13 +125,13 @@ public class LegendPanel extends JPanel {
                     gc.setColor(Color.BLACK);
                     gc.drawString(legend, x, yStart);
                 }
-                Dimension labelSize = Basic.getStringSize(gc, legend, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, legend, gc.getFont()).getSize();
                 maxX = Math.max(maxX, labelSize.width);
             }
             int y = yStart + (int) (1.5 * gc.getFont().getSize());
 
             for (String className : ((IChartData) chartViewer.getChartData()).getClassNames()) {
-                Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                 if (x + 12 + labelSize.width + 2 > getWidth() || vertical) {
                     x = 2;
                     y += 1.5 * gc.getFont().getSize();
@@ -166,7 +166,7 @@ public class LegendPanel extends JPanel {
                 String legend = "Legend (samples):";
                 gc.setColor(Color.BLACK);
                 gc.drawString(legend, x, yStart);
-                Dimension labelSize = Basic.getStringSize(gc, legend, gc.getFont()).getSize();
+                Dimension labelSize = BasicSwing.getStringSize(gc, legend, gc.getFont()).getSize();
                 maxX = Math.max(maxX, labelSize.width);
             }
             int y = yStart + (int) (1.5 * gc.getFont().getSize());
@@ -176,7 +176,7 @@ public class LegendPanel extends JPanel {
                 if (!label.equals(sampleName))
                     label += " (" + sampleName + ")";
 
-                final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 if (x + 12 + labelSize.width + 2 > getWidth() || vertical) {
                     x = 3;
                     y += 1.5 * gc.getFont().getSize();
@@ -233,7 +233,7 @@ public class LegendPanel extends JPanel {
                 legend = "Legend:";
             gc.setColor(Color.BLACK);
             gc.drawString(legend, x, yStart);
-            Dimension labelSize = Basic.getStringSize(gc, legend, gc.getFont()).getSize();
+            Dimension labelSize = BasicSwing.getStringSize(gc, legend, gc.getFont()).getSize();
             maxX = Math.max(maxX, labelSize.width);
         }
         int y = yStart + (int) (1.5 * gc.getFont().getSize());
@@ -243,7 +243,7 @@ public class LegendPanel extends JPanel {
             if (!label.equals(sampleName))
                 label += " (" + sampleName + ")";
 
-            final Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+            final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             if (x + 12 + labelSize.width + 2 > getWidth() || vertical) {
                 x = 3;
                 y += 1.5 * gc.getFont().getSize();

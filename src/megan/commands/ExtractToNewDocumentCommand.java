@@ -18,10 +18,14 @@
  */
 package megan.commands;
 
-import jloda.gui.ChooseFileDialog;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.ProjectManager;
-import jloda.util.*;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.ResourceManager;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.Single;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

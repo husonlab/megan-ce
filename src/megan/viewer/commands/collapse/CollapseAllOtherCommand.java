@@ -20,7 +20,7 @@ package megan.viewer.commands.collapse;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;

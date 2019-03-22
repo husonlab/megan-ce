@@ -18,8 +18,8 @@
  */
 package megan.classification.commandtemplates;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICheckBoxCommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICheckBoxCommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;

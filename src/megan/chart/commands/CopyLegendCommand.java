@@ -18,11 +18,11 @@
  */
 package megan.chart.commands;
 
-import jloda.export.TransferableGraphic;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IViewerWithLegend;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IViewerWithLegend;
+import jloda.swing.export.TransferableGraphic;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;

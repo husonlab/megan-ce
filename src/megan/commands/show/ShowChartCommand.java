@@ -18,10 +18,10 @@
  */
 package megan.commands.show;
 
-import jloda.gui.PopupMenu;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.PopupMenu;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.AttributesChart;
 import megan.chart.FViewerChart;

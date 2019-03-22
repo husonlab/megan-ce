@@ -18,7 +18,7 @@
  */
 package megan.chart.data;
 
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.ICommand;
 import megan.chart.commandtemplates.SetChartDrawerCommand;
 import megan.chart.commandtemplates.SetChartDrawerSpecificCommand;
 import megan.chart.commandtemplates.ShowChartSpecificCommand;

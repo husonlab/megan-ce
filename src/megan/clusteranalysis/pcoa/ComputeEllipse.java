@@ -21,7 +21,8 @@ package megan.clusteranalysis.pcoa;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
-import jloda.util.Geometry;
+import jloda.swing.util.Geometry;
+import jloda.util.APoint2D;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -203,10 +204,10 @@ public class ComputeEllipse {
      * @param points
      * @return ellipse
      */
-    public static javafx.scene.shape.Ellipse computeEllipseFX(ArrayList<Point2D> points) {
+    public static javafx.scene.shape.Ellipse computeEllipseFX(ArrayList<APoint2D> points) {
         final double[][] array = new double[points.size()][2];
         int i = 0;
-        for (Point2D aPoint : points) {
+        for (APoint2D aPoint : points) {
             array[i][0] = aPoint.getX();
             array[i++][1] = aPoint.getY();
         }

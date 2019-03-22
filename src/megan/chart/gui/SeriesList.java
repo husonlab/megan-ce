@@ -19,8 +19,8 @@
 
 package megan.chart.gui;
 
-import jloda.gui.ListTransferHandler;
-import jloda.gui.PopupMenu;
+import jloda.swing.util.ListTransferHandler;
+import jloda.swing.util.PopupMenu;
 import megan.chart.ChartColorManager;
 import megan.chart.data.IChartData;
 
@@ -135,6 +135,6 @@ public class SeriesList extends LabelsJList {
     }
 
     private static PopupMenu createPopupMenu(ChartViewer viewer) {
-        return new jloda.gui.PopupMenu(null, GUIConfiguration.getSeriesListPopupConfiguration(), viewer.getCommandManager());
+        return new PopupMenu(null, GUIConfiguration.getSeriesListPopupConfiguration(), viewer.getCommandManager());
     }
 }

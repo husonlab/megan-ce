@@ -18,12 +18,12 @@
  */
 package megan.main;
 
-import jloda.gui.About;
-import jloda.gui.commands.CommandManager;
-import jloda.gui.message.MessageWindow;
-import jloda.util.ArgsOptions;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.message.MessageWindow;
+import jloda.swing.util.About;
+import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;

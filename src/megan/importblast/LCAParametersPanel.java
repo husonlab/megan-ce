@@ -18,8 +18,8 @@
  */
 package megan.importblast;
 
-import jloda.gui.commands.CommandManager;
-import jloda.util.ProgramProperties;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Document;
 import megan.importblast.commands.SetUseComplexityFilterCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;

@@ -18,12 +18,12 @@
  */
 package megan.chart.commands;
 
-import jloda.gui.ChooseFontDialog;
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.util.Basic;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ChooseFontDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 
@@ -51,8 +51,8 @@ public class SetChartLegendFontCommand extends CommandBase implements ICommand {
         Color color = ProgramProperties.get(target + "Color", (Color) null);
         Pair<Font, Color> result = ChooseFontDialog.showChooseFontDialog(chartViewer.getFrame(), "Choose legend font", font, color);
         if (result != null)
-            execute("set chartFont='" + Basic.encode(result.get1())
-                    + "' color=" + (result.get2() != null ? Basic.toString3Int(result.get2()) : "default") + " target='" + target + "';");
+            execute("set chartFont='" + BasicSwing.encode(result.get1())
+                    + "' color=" + (result.get2() != null ? BasicSwing.toString3Int(result.get2()) : "default") + " target='" + target + "';");
     }
 
     public boolean isApplicable() {

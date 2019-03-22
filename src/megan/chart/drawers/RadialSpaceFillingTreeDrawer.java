@@ -22,9 +22,9 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
-import jloda.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.RedGradient;
@@ -330,7 +330,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
 
                     if (v.getOutDegree() > 0) {
                         if (showInternalLabels) {
-                            Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                            Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                             double angleInDeg = modulo360(angleV + angleOffset + extentV / 2.0);
                             double angleInRad = Geometry.deg2rad(270.0 - (angleV + angleOffset + extentV / 2.0));
                             double top = 2;
@@ -386,7 +386,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                         if ((extentV > 2 && what == DrawWhat.Names) || classIsSelected) {
                             double angleInRad = Geometry.deg2rad(360.0 - (angleV + angleOffset + extentV / 2.0));
                             Point2D apt = Geometry.translateByAngle(center, angleInRad, (maxLevel - 0.5) * radiusFactor + 5);
-                            Dimension labelSize = Basic.getStringSize(gc, className, gc.getFont()).getSize();
+                            Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
                             //apt.setLocation(apt.getX(), 2 * center.getY() - apt.getY());
                             //gc.drawString(className, (int)apt.getX(),(int)apt.getY());
                             if (sgc != null)
@@ -410,7 +410,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                         Point2D apt = Geometry.translateByAngle(center, Geometry.deg2rad(angleV + angleOffset + extentV / 2), (level - 0.5) * radiusFactor);
                         apt.setLocation(apt.getX(), 2 * center.getY() - apt.getY());
                         String label = "" + (int) getChartData().getTotalForClass(className);
-                        Dimension labelSize = Basic.getStringSize(gc, label, gc.getFont()).getSize();
+                        Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                         if (classIsSelected)
                             gc.setColor(ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT);
                         gc.drawString(label, (int) (apt.getX() - labelSize.width / 2), (int) apt.getY() + labelSize.height + 3);

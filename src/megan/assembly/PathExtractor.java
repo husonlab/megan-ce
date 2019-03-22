@@ -55,24 +55,24 @@ public class PathExtractor {
     public int apply(ProgressListener progress) throws CanceledException {
         // make a working copy of the graph. Necessary because we remove stuff from the graph
         final Graph overlapGraphWorkingCopy = new Graph();
-        final NodeMap<Node> new2oldNode = new NodeMap<>(overlapGraphWorkingCopy);
-        final EdgeMap<Edge> new2oldEdge = new EdgeMap<>(overlapGraphWorkingCopy);
+        final NodeArray<Node> new2oldNode = new NodeArray<>(overlapGraphWorkingCopy);
+        final EdgeArray<Edge> new2oldEdge = new EdgeArray<>(overlapGraphWorkingCopy);
         {
             progress.setSubtask("Copying graph");
             progress.setMaximum(overlapGraph.getNumberOfNodes() + overlapGraph.getNumberOfEdges());
             progress.setProgress(0);
 
-            NodeMap<Node> old2newNode = new NodeMap<>(this.overlapGraph);
+            NodeArray<Node> old2newNode = new NodeArray<>(this.overlapGraph);
             for (Node v = this.overlapGraph.getFirstNode(); v != null; v = this.overlapGraph.getNextNode(v)) {
                 final Node w = overlapGraphWorkingCopy.newNode(v.getInfo());
                 w.setData(v.getData());
-                new2oldNode.set(w, v);
-                old2newNode.set(v, w);
+                new2oldNode.put(w, v);
+                old2newNode.put(v, w);
                 progress.incrementProgress();
             }
             for (Edge e = this.overlapGraph.getFirstEdge(); e != null; e = this.overlapGraph.getNextEdge(e)) {
                 final Edge f = overlapGraphWorkingCopy.newEdge(old2newNode.get(e.getSource()), old2newNode.get(e.getTarget()), e.getInfo());
-                new2oldEdge.set(f, e);
+                new2oldEdge.put(f, e);
                 progress.incrementProgress();
             }
         }
@@ -85,7 +85,7 @@ public class PathExtractor {
         progress.setProgress(0);
 
         final List<Node> toDelete = new ArrayList<>(overlapGraphWorkingCopy.getNumberOfNodes());
-        final EdgeMap<Integer> edgeWeights = new EdgeMap<>(overlapGraphWorkingCopy);
+        final EdgeArray<Integer> edgeWeights = new EdgeArray<>(overlapGraphWorkingCopy);
 
         for (Node v = overlapGraphWorkingCopy.getFirstNode(); v != null; v = v.getNext()) {
             if (v.getInDegree() == 0) {
@@ -107,7 +107,7 @@ public class PathExtractor {
         while (overlapGraphWorkingCopy.getNumberOfEdges() > 0) {
             Edge bestEdge = overlapGraphWorkingCopy.getFirstEdge();
             for (Edge e = overlapGraphWorkingCopy.getFirstEdge(); e != null; e = overlapGraphWorkingCopy.getNextEdge(e)) {
-                if (edgeWeights.get(e) > edgeWeights.get(bestEdge))
+                if (edgeWeights.getValue(e) > edgeWeights.getValue(bestEdge))
                     bestEdge = e;
             }
 
@@ -117,13 +117,13 @@ public class PathExtractor {
 
             path.add(new2oldNode.get(bestEdge.getSource()));
 
-            int weight = edgeWeights.get(bestEdge);
+            int weight = edgeWeights.getValue(bestEdge);
 
             while (v.getOutDegree() > 0) {
                 // find predecessor node:
                 Node w = null;
                 for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-                    int eWeight = edgeWeights.get(f);
+                    int eWeight = edgeWeights.getValue(f);
                     if (eWeight == weight) {
                         w = f.getTarget();
                         weight -= (Integer) f.getInfo(); // subtracting the overlap length of f
@@ -146,7 +146,7 @@ public class PathExtractor {
 
             // clear edge weights:
             for (Edge z = overlapGraphWorkingCopy.getFirstEdge(); z != null; z = z.getNext()) {
-                edgeWeights.set(z, null);
+                edgeWeights.put(z, null);
             }
 
             // set weights to reflect longest path
@@ -184,14 +184,14 @@ public class PathExtractor {
      * @param v
      * @return path length
      */
-    private int visitNodesRec(Node v, EdgeMap<Integer> edgeWeights) {
+    private int visitNodesRec(Node v, EdgeArray<Integer> edgeWeights) {
         int maxValue = 0;
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-            if (edgeWeights.get(e) == null) {
-                edgeWeights.set(e, visitNodesRec(e.getTarget(), edgeWeights) + (Integer) e.getInfo());
+            if (edgeWeights.getValue(e) == null) {
+                edgeWeights.put(e, visitNodesRec(e.getTarget(), edgeWeights) + (Integer) e.getInfo());
                 // note that (Integer)e.getInfo() is the overlap length of e
             }
-            maxValue = Math.max(maxValue, edgeWeights.get(e));
+            maxValue = Math.max(maxValue, edgeWeights.getValue(e));
         }
         return maxValue;
     }

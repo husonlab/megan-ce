@@ -18,11 +18,11 @@
  */
 package megan.commands.find;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
-import jloda.gui.director.IViewerWithFindToolBar;
-import jloda.gui.find.SearchManager;
-import jloda.util.ResourceManager;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
+import jloda.swing.director.IViewerWithFindToolBar;
+import jloda.swing.find.SearchManager;
+import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;

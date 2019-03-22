@@ -18,7 +18,7 @@
  */
 package megan.alignment.gui;
 
-import jloda.util.Cursors;
+import jloda.swing.util.Cursors;
 
 import javax.swing.*;
 import java.awt.*;

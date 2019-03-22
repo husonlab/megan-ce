@@ -18,9 +18,9 @@
  */
 package megan.importblast;
 
-import jloda.gui.commands.CommandManager;
-import jloda.gui.commands.ICheckBoxCommand;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandManager;
+import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.commands.ICommand;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;

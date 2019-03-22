@@ -18,8 +18,8 @@
  */
 package megan.chart.commands;
 
-import jloda.gui.commands.CommandBase;
-import jloda.gui.commands.ICommand;
+import jloda.swing.commands.CommandBase;
+import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.drawers.RadialSpaceFillingTreeDrawer;
 import megan.chart.gui.ChartViewer;

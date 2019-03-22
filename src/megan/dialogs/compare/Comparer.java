@@ -18,6 +18,7 @@
  */
 package megan.dialogs.compare;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;

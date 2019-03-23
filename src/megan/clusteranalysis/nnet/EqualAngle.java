@@ -19,6 +19,7 @@
 package megan.clusteranalysis.nnet;
 
 import jloda.graph.*;
+import jloda.phylo.PhyloGraph;
 import jloda.phylo.PhyloSplitsGraph;
 import jloda.phylo.PhyloTree;
 import jloda.swing.graphview.PhyloTreeView;
@@ -50,7 +51,7 @@ public class EqualAngle {
     public void createNetwork(int[] cycle0, Taxa taxa, SplitSystem splits, PhyloTreeView view) throws Exception {
         ntax = taxa.getBits().cardinality();
 
-        PhyloTree graph = (PhyloTree) view.getGraph();
+        final PhyloSplitsGraph graph = (PhyloSplitsGraph) view.getGraph();
         graph.clear();
 
         int[] cycle = normalizeCycle(cycle0);
@@ -303,7 +304,7 @@ public class EqualAngle {
      * @param graph
      * @return is leaf edge
      */
-    private boolean isLeafEdge(Edge f, PhyloSplitsGraph graph) {
+    private boolean isLeafEdge(Edge f, PhyloGraph graph) {
         return graph.getDegree(graph.getSource(f)) == 1 || graph.getDegree(graph.getTarget(f)) == 1;
 
     }
@@ -314,9 +315,7 @@ public class EqualAngle {
      * @param graph
      * @throws NotOwnerException
      */
-    private void removeTemporaryTrivialEdges
-    (PhyloSplitsGraph
-             graph) throws NotOwnerException {
+    private void removeTemporaryTrivialEdges(PhyloSplitsGraph graph) {
         EdgeSet tempEdges = new EdgeSet(graph);
         for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
             if (graph.getSplit(e) == -1) // temporary leaf edge
@@ -354,8 +353,7 @@ public class EqualAngle {
      * @param graph
      * @param forbiddenSplits : set of all the splits such as their edges won't have their angles changed
      */
-    private void assignAnglesToEdges(SplitSystem splits, int[] cycle, PhyloSplitsGraph graph, Set forbiddenSplits)
-            throws NotOwnerException {
+    private void assignAnglesToEdges(SplitSystem splits, int[] cycle, PhyloSplitsGraph graph, Set forbiddenSplits) throws NotOwnerException {
 
         //We create the list of angles representing the taxas on a circle.
         double[] TaxaAngles = new double[ntax + 1];
@@ -391,10 +389,7 @@ public class EqualAngle {
      * @param split2angle for each split, its angle
      */
     private void assignAnglesToSplits
-    (double[] TaxaAngles,
-     double[] split2angle, SplitSystem
-             splits, int[] cycle)
-            throws NotOwnerException {
+    (double[] TaxaAngles, double[] split2angle, SplitSystem splits, int[] cycle) {
 
         for (int s = 1; s <= splits.size(); s++) {
             BitSet part = splits.getSplit(s).getA();
@@ -439,7 +434,7 @@ public class EqualAngle {
         PhyloTree graph = (PhyloTree) view.getGraph();
         if (graph.getNumberOfNodes() == 0)
             return;
-        Node v = graph.getTaxon2Node(1);
+        final Node v = graph.getTaxon2Node(1);
         view.setLocation(v, new Point2D.Float(0, 0));
 
         BitSet splitsInPath = new BitSet();

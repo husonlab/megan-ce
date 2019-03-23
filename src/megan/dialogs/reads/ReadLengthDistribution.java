@@ -29,7 +29,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
-import jloda.fx.ExtendedFXMLLoader;
+import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.Statistics;
 import megan.data.IReadBlockIterator;
 import megan.fx.NotificationsInSwing;

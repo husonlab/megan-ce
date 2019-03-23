@@ -36,7 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-import jloda.fx.ASelectionModel;
+import jloda.fx.util.ASelectionModel;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;

@@ -18,8 +18,8 @@
  */
 package megan.commands.export;
 
-import jloda.fx.IHasJavaFXStageAndRoot;
-import jloda.fx.JPanelWithFXStageAndRoot;
+import jloda.fx.util.IHasJavaFXStageAndRoot;
+import jloda.fx.util.JPanelWithFXStageAndRoot;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.export.*;

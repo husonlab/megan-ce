@@ -21,7 +21,7 @@ package megan.dialogs.lrinspector.commands;
 import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.transform.Scale;
-import jloda.fx.IHasJavaFXStageAndRoot;
+import jloda.fx.util.IHasJavaFXStageAndRoot;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;

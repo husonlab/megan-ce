@@ -21,7 +21,7 @@ package megan.fx;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import jloda.fx.ExtendedFXMLLoader;
+import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.Single;
 
 import javax.swing.*;

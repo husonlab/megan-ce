@@ -20,7 +20,7 @@ package megan.clusteranalysis.gui;
 
 import javafx.geometry.Point3D;
 import jloda.graph.*;
-import jloda.phylo.PhyloSplitsGraph;
+import jloda.phylo.PhyloGraph;
 import jloda.phylo.PhyloTree;
 import jloda.swing.director.IDirector;
 import jloda.swing.find.IObjectSearcher;
@@ -63,7 +63,7 @@ public class PCoATab extends JPanel implements ITab {
 
     private final ClusterViewer clusterViewer;
     private final ViewerBase graphView;
-    private final PhyloSplitsGraph graph;
+    private final PhyloGraph graph;
     private PCoA pcoa;
     private int firstPC = 0;
     private int secondPC = 1;
@@ -207,7 +207,7 @@ public class PCoATab extends JPanel implements ITab {
                 }
             }
         };
-        graph = (PhyloSplitsGraph) graphView.getGraph();
+        graph = (PhyloGraph) graphView.getGraph();
         graphView.setCanvasColor(Color.WHITE);
 
         graphView.trans.setLockXYScale(true);

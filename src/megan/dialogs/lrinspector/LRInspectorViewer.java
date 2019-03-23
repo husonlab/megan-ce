@@ -26,7 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
-import jloda.fx.IHasJavaFXStageAndRoot;
+import jloda.fx.util.IHasJavaFXStageAndRoot;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IUsesHeatMapColors;

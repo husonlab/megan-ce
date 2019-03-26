@@ -75,7 +75,7 @@ public class AAdderRun {
         final String[] outputFiles = options.getOptionMandatory("-o", "output", "Output file(s) (.gz ok) or directory", new String[0]);
         options.comment(ArgsOptions.OTHER);
         final double minCoverageProportion = options.getOption("-c", "percentToCover", "Percent of alignment that must be covered by protein", 90.00) / 100.0;
-        final boolean reportUnmappedAccessions = options.getOption("-rnf", "reportNotFound", "Report the names of DNA reference for which no functional accession is available", false);
+        final boolean reportUnmappedAccessions = options.getOption("-rnf", "reportNotFound", "Report the names of DNA references for which no functional accession is available", false);
         options.done();
 
         final File outputDir;

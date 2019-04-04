@@ -36,7 +36,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-import jloda.fx.util.ASelectionModel;
+import jloda.fx.control.AMultipleSelectionModel;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
@@ -81,7 +81,7 @@ public class ReadLayoutPane extends Pane {
     private final ReadOnlyIntegerProperty maxReadLength;
     private final ReadOnlyDoubleProperty layoutWidth;
 
-    private final ASelectionModel<IMatchBlock> matchSelection = new ASelectionModel<>();
+    private final AMultipleSelectionModel<IMatchBlock> matchSelection = new AMultipleSelectionModel<>();
 
     private final ReadLayoutPaneSearcher readLayoutPaneSearcher;
 
@@ -870,7 +870,7 @@ public class ReadLayoutPane extends Pane {
         }
     }
 
-    public ASelectionModel<IMatchBlock> getMatchSelection() {
+    public AMultipleSelectionModel<IMatchBlock> getMatchSelection() {
         return matchSelection;
     }
 

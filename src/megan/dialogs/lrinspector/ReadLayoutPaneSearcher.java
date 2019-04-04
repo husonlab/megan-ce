@@ -23,7 +23,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import jloda.fx.util.ASelectionModel;
+import jloda.fx.control.AMultipleSelectionModel;
 import jloda.swing.find.IObjectSearcher;
 import megan.data.IMatchBlock;
 
@@ -40,7 +40,7 @@ import java.util.Comparator;
 public class ReadLayoutPaneSearcher implements IObjectSearcher {
     private final Component parent;
     private final ReadLayoutPane readLayoutPane;
-    private final ASelectionModel<IMatchBlock> matchBlockSelectionModel;
+    private final AMultipleSelectionModel<IMatchBlock> matchBlockSelectionModel;
     private final ArrayList<Label> labels = new ArrayList<>();
     private int currentIndex = -1;
 
@@ -49,7 +49,7 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
      *
      * @param readLayoutPane
      */
-    public ReadLayoutPaneSearcher(Component parent, ReadLayoutPane readLayoutPane, ASelectionModel<IMatchBlock> matchBlockSelectionModel) {
+    public ReadLayoutPaneSearcher(Component parent, ReadLayoutPane readLayoutPane, AMultipleSelectionModel<IMatchBlock> matchBlockSelectionModel) {
         this.parent = parent;
         this.readLayoutPane = readLayoutPane;
         this.matchBlockSelectionModel = matchBlockSelectionModel;

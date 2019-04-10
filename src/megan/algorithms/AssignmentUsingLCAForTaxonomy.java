@@ -46,7 +46,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
 
     protected final ClassificationFullTree fullTree;
     protected final IdMapper idMapper;
-    protected final Name2IdMap name2idMap;
+    protected final Name2IdMap name2IdMap;
 
     protected final boolean ignoreAncestralTaxa;
 
@@ -72,7 +72,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
     public AssignmentUsingLCAForTaxonomy(String cName, boolean useIdentityFilter, float percentToCover, boolean ignoreAncestralTaxa) {
         fullTree = ClassificationManager.get(cName, false).getFullTree();
         idMapper = ClassificationManager.get(cName, true).getIdMapper();
-        name2idMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();
+        name2IdMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();
         addresses = new String[1000];
         activeSet = new BitSet();
         ch2weight = new HashMap<>(Character.MAX_VALUE, 1f);
@@ -152,8 +152,12 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
                     final String address = getPrefixCoveringWeight(weightToCover, addresses, numberOfAddresses);
                     id = fullTree.getAddress2Id(address);
                 }
-                if (id > 0)
+                if (id > 0) {
+                    if (useIdentityFilter) {
+                        return AssignmentUsingLCAForTaxonomy.adjustByPercentIdentity(id, activeMatches, readBlock, fullTree, name2IdMap);
+                    }
                     return id;
+                }
             }
         }
 

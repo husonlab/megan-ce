@@ -111,6 +111,8 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                 final String refName = tokens[1]; // subjectId
                 if (!Basic.isFloat(tokens[2])) // percIdentity
                     throw new IOException("Expected float (percent identity), got: " + tokens[2]);
+                if (Basic.parseFloat(tokens[2]) > 100)
+                    throw new IOException("Expected percent identity, got: " + tokens[2]);
                 float identity = (Float.parseFloat(tokens[2]));
                 if (!Basic.isInteger(tokens[3])) // alnLength
                     throw new IOException("Expected integer (length), got: " + tokens[3]);

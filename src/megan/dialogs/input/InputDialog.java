@@ -233,7 +233,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
         this.viewer = viewer;
         this.commandManager = viewer.getCommandManager();
         setTitle();
-        commandContextLabel.setText("Command context: " + viewer.getTitle().replaceAll("- MEGAN.*", ""));
+        commandContextLabel.setText("Context=" + viewer.getClassName());
         if (this.viewer.isLocked())
             lockUserInput();
     }

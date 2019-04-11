@@ -70,7 +70,7 @@
                 destdir="${classDir}"
                 debug="on"
                 compiler="javac1.8"
-                source="1.7"
+                source="1.8"
                 target="1.8"
                 classpathref="build.classpath">
             <compilerarg value="-XDignore.symbol.file=true"/>

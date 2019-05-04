@@ -20,7 +20,7 @@ package megan.stats;
 
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.fx.NotificationsInSwing;
 

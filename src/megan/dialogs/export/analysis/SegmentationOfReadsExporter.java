@@ -20,11 +20,7 @@
 package megan.dialogs.export.analysis;
 
 import jloda.graph.Node;
-import jloda.swing.util.ProgramProperties;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.Single;
+import jloda.util.*;
 import megan.analysis.TaxonomicSegmentation;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

@@ -20,8 +20,8 @@ package megan.chart.drawers;
 
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.data.WhiskerData;
 import megan.chart.gui.ChartViewer;

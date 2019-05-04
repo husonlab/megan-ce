@@ -24,8 +24,8 @@ import javafx.scene.control.SeparatorMenuItem;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICommand;
 import jloda.swing.commands.TeXGenerator;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
+import jloda.util.ProgramProperties;
 
 /**
  * popup menu

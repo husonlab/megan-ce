@@ -19,8 +19,8 @@
 package megan.commands.show;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.util.WindowUtilities;
 import megan.viewer.MainViewer;

@@ -19,10 +19,10 @@
 package megan.rma3;
 
 import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.TextFileFilter;
 import jloda.util.Basic;
 import jloda.util.GZipUtils;
+import jloda.util.ProgramProperties;
 import megan.io.InputOutputReaderWriter;
 
 import javax.swing.*;

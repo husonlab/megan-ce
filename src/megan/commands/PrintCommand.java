@@ -19,9 +19,9 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.fx.NotificationsInSwing;

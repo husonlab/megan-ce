@@ -20,7 +20,6 @@ package megan.assembly;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import megan.main.MeganProperties;
 

@@ -20,9 +20,9 @@ package megan.chart.drawers;
 
 import jloda.graph.*;
 import jloda.swing.util.BasicSwing;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;

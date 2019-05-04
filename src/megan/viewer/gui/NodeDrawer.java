@@ -24,7 +24,7 @@ import jloda.swing.graphview.GraphView;
 import jloda.swing.graphview.INodeDrawer;
 import jloda.swing.graphview.NodeShape;
 import jloda.swing.graphview.NodeView;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import jloda.util.Statistics;
 import megan.core.Document;
 import megan.main.MeganProperties;

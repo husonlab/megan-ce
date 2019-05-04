@@ -19,7 +19,7 @@
 package megan.importblast;
 
 import jloda.swing.commands.CommandManager;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.importblast.commands.*;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastMode;

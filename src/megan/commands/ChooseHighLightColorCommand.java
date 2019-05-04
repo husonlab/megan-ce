@@ -20,7 +20,7 @@ package megan.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseColorDialog;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.main.MeganProperties;
 import megan.viewer.MainViewer;

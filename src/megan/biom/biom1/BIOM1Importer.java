@@ -18,7 +18,7 @@
  */
 package megan.biom.biom1;
 
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.ClassificationType;

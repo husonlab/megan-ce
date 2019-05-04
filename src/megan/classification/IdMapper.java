@@ -18,9 +18,9 @@
  */
 package megan.classification;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.data.*;
 

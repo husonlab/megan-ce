@@ -19,7 +19,7 @@
 package megan.chart.drawers;
 
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;
 import megan.chart.data.DefaultChartData;

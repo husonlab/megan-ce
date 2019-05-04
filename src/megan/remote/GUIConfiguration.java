@@ -19,7 +19,7 @@
 package megan.remote;
 
 import jloda.swing.util.MenuConfiguration;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 /**
  * configuration for menu and toolbar

@@ -20,9 +20,9 @@ package megan.chart;
 
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.chart.data.DefaultPlot2DData;
 import megan.chart.data.IPlot2DData;

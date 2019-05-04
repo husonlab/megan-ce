@@ -18,7 +18,6 @@
  */
 package megan.data;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import megan.core.Document;
 import megan.core.MeganFile;

@@ -19,8 +19,8 @@
 package megan.dialogs.importcsv;
 
 import jloda.swing.director.IDirectableViewer;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 

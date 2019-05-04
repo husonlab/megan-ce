@@ -18,7 +18,6 @@
  */
 package megan.alignment;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;

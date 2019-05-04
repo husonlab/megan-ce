@@ -24,7 +24,7 @@ import jloda.graph.NodeData;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.RedGradient;

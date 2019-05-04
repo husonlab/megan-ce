@@ -19,7 +19,7 @@
 package megan.chart.drawers;
 
 import jloda.swing.util.BasicSwing;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.util.LinkedList;

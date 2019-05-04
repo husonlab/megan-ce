@@ -18,7 +18,6 @@
  */
 package megan.parsers;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import megan.algorithms.MinSupportFilter;
 import megan.classification.Classification;

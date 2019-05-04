@@ -18,9 +18,9 @@
  */
 package megan.alignment.gui;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import megan.alignment.gui.colors.ColorSchemeAminoAcids;
 import megan.alignment.gui.colors.ColorSchemeNucleotides;
 import megan.alignment.gui.colors.ColorSchemeText;

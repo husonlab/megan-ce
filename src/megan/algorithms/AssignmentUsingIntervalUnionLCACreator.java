@@ -19,7 +19,7 @@
 
 package megan.algorithms;
 
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.core.Document;
 

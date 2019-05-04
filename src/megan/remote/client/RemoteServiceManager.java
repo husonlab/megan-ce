@@ -18,9 +18,9 @@
  */
 package megan.remote.client;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import megan.remote.IRemoteService;
 import org.apache.commons.codec.binary.Base64;
 

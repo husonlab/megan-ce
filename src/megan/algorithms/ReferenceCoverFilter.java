@@ -19,11 +19,7 @@
 
 package megan.algorithms;
 
-import jloda.swing.util.ProgramProperties;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
 import jloda.util.interval.IntervalChain;
 import megan.daa.connector.ReadBlockDAA;
 import megan.data.IConnector;

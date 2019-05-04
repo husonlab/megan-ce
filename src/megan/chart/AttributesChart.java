@@ -18,9 +18,9 @@
  */
 package megan.chart;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import megan.chart.data.DefaultChartData;
 import megan.chart.data.IChartData;
 import megan.chart.drawers.BarChartDrawer;

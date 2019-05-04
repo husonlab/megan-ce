@@ -21,7 +21,7 @@ package megan.viewer.gui;
 
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;

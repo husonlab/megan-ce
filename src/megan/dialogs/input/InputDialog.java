@@ -23,9 +23,9 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.MenuBar;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.RememberingComboBox;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import megan.main.MeganProperties;
 
 import javax.swing.*;

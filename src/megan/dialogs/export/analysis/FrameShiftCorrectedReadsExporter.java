@@ -18,7 +18,6 @@
  */
 package megan.dialogs.export.analysis;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;

@@ -19,7 +19,7 @@
 package megan.inspector;
 
 import jloda.swing.util.MenuConfiguration;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import megan.classification.data.ClassificationCommandHelper;
 
 /**

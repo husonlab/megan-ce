@@ -27,6 +27,7 @@ import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;

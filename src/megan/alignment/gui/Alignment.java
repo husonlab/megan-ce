@@ -18,9 +18,9 @@
  */
 package megan.alignment.gui;
 
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import jloda.util.ProgressPercentage;
 
 import java.io.StringWriter;

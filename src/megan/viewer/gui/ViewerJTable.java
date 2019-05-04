@@ -23,9 +23,9 @@ import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.swing.util.IPopupMenuModifier;
 import jloda.swing.util.PopupMenu;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;
 

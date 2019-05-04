@@ -20,11 +20,7 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
-import jloda.swing.util.ProgramProperties;
-import jloda.util.Basic;
-import jloda.util.NameNormalizer;
-import jloda.util.ProgressPercentage;
-import jloda.util.UsageException;
+import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.core.MeganFile;

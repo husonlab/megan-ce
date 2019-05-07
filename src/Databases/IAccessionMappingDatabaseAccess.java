@@ -40,7 +40,7 @@ public interface IAccessionMappingDatabaseAccess {
      *
      * @return
      */
-    Collection<String> getClassificationNames() throws ClassNotFoundException;
+    Collection<String> getClassificationNames() throws ClassNotFoundException, SQLException;
 
     /**
      * get the index (column) for a classification. In the methods below, we will reference classifications by their index

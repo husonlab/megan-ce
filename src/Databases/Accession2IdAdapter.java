@@ -56,7 +56,7 @@ public class Accession2IdAdapter {
     public boolean hasClassification(String classificationName) {
         try {
             return isSetup() && accessionMappingDatabaseAccess.getClassificationNames().contains(classificationName);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -72,8 +72,8 @@ public class Accession2IdAdapter {
         final int classificationIndex = accessionMappingDatabaseAccess.getClassificationIndex(classificationName);
         return new IString2IntegerMap() {
             @Override
-            public int get(String key) throws IOException {
-                return accessionMappingDatabaseAccess.getValueInt(classificationIndex, key);
+            public int get(String accession) throws IOException {
+                return accessionMappingDatabaseAccess.getValueInt(classificationIndex, accession);
             }
 
             @Override

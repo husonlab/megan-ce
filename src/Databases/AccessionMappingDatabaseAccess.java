@@ -20,7 +20,7 @@ import java.util.Map;
 public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabaseAccess, Closeable {
     private String DB_PATH = null;
     private String JDBC_DRIVER = "org.sqlite.JDBC";
-    private int CACHE_SIZE = 10000;
+    private int CACHE_SIZE = 100000;
     private LRUMap<String, int[]> cache;
     private Map<Integer, String> classificationMap;
 
@@ -234,15 +234,14 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
      * @return a Collection<String> containing all classification names used in the database
      */
     @Override
-    public Collection<String> getClassificationNames() throws ClassNotFoundException {
+    public Collection<String> getClassificationNames() throws ClassNotFoundException, SQLException {
         String query = "SELECT id FROM info WHERE id != 'general';";
         try {
             return executeQueryString(query, 1);
         } catch (SQLException e) {
             System.err.println("Query " + query + " could not be executed successfully.");
-            e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 
     /**

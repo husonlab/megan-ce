@@ -36,7 +36,7 @@ public class Accession2IdMapFactory implements IString2IntegerMapFactory {
      *
      * @param label2id option mapping of labels to ids
      * @param fileName file
-     * @param progress progress listner
+     * @param progress progress listener
      * @return map or null
      */
     @Override

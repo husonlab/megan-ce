@@ -18,6 +18,7 @@
  */
 package megan.classification;
 
+import Databases.Accession2IdAdapter;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
@@ -145,7 +146,10 @@ public class IdMapper {
                         }
                     }
                     try {
-                        this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
+                        if (Accession2IdAdapter.getInstance().isSetup() && Accession2IdAdapter.getInstance().hasClassification(cName))
+                            this.accessionMap = Accession2IdAdapter.getInstance().createMap(cName);
+                        else
+                            this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);

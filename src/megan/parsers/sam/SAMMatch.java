@@ -220,7 +220,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                     object = three[2];
                     break;
                 case 'H': // hex string
-                    object = new Integer(three[2]);
+                    object = Integer.valueOf(three[2]);
                     break;
                 default:
                     throw new IOException("Failed to parse: " + word);
@@ -247,7 +247,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     private int determineQueryStart() {
         int queryStart = 1;
         Object obj = optionalFields.get("ZS");
-        if (obj != null && obj instanceof Integer) {
+        if (obj instanceof Integer) {
             queryStart = (Integer) obj;
         } else {
             // first need to trim:

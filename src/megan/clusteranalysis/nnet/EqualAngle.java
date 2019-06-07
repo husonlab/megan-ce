@@ -368,7 +368,7 @@ public class EqualAngle {
         Iterator it = graph.edgeIterator();
         while (it.hasNext()) {
             Edge e = (Edge) it.next();
-            if (!forbiddenSplits.contains(new Integer(graph.getSplit(e)))) {
+            if (!forbiddenSplits.contains((int) (graph.getSplit(e)))) {
                 try {
                     graph.setAngle(e, split2angle[graph.getSplit(e)]);
                 } catch (Exception ex) {

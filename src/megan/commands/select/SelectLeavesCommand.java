@@ -72,6 +72,6 @@ public class SelectLeavesCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }

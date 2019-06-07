@@ -18,8 +18,6 @@
  */
 package megan.clusteranalysis;
 
-import jloda.graph.Node;
-import jloda.phylo.PhyloTree;
 import jloda.swing.util.BasicSwing;
 import megan.core.Document;
 import megan.util.GraphicsUtilities;
@@ -28,8 +26,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * legend panel for cluster viewer
@@ -120,13 +116,8 @@ public class LegendPanel extends JPanel {
             }
             int y = yStart + (int) (1.5 * gc.getFont().getSize());
 
-            Set<String> samples = new HashSet<>();
-            samples.addAll(doc.getSampleNames());
-
             if (viewer.getGraphView() != null) {
-                for (Node v = viewer.getGraphView().getGraph().getFirstNode(); v != null; v = v.getNext()) {
-                    String sampleName = ((PhyloTree) viewer.getGraphView().getGraph()).getLabel(v);
-                    if (sampleName != null && samples.contains(sampleName)) {
+                for (String sampleName : doc.getSampleNames()) {
                         String label = doc.getSampleLabelGetter().getLabel(sampleName);
                         if (!label.equals(sampleName))
                             label += " (" + sampleName + ")";
@@ -149,7 +140,6 @@ public class LegendPanel extends JPanel {
                     }
                     if (size != null)
                         size.setSize(maxX, y);
-                }
             }
         }
     }

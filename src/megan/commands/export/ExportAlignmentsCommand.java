@@ -425,7 +425,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
      */
     private File chooseDirectory(ActionEvent event, String fileName) {
         File file = null;
-        if (ProgramProperties.isMacOS() && (event != null && (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
+        if (ProgramProperties.isMacOS() && (event != null && (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
             //Use native file dialog on mac
             java.awt.FileDialog dialog = new java.awt.FileDialog(getViewer().getFrame(), "Open output directory", java.awt.FileDialog.LOAD);
             dialog.setFilenameFilter(new FilenameFilter() {
@@ -487,7 +487,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Export16.gif");
+        return ResourceManager.getIcon("sun/Export16.gif");
     }
 }
 

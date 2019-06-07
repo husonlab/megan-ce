@@ -126,7 +126,7 @@ public class OpenSelectedFilesCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif");
+        return ResourceManager.getIcon("sun/Open16.gif");
     }
 
 
@@ -136,7 +136,7 @@ public class OpenSelectedFilesCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

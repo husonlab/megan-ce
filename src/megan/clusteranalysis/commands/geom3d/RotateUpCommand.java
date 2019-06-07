@@ -47,7 +47,7 @@ public class RotateUpCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

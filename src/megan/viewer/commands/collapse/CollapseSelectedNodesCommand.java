@@ -72,7 +72,7 @@ public class CollapseSelectedNodesCommand extends CommandBase implements IComman
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

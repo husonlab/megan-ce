@@ -48,10 +48,10 @@ public class GUIConfiguration {
                 "Select All;Select None;Select Similar;From Previous Window;|;Select Comment-Like;Select Numerical;Select Uninformative;|;" +
                 "Find...;Find Again;Replace...;|;Colors...;");
 
-        menuConfig.defineMenu("Attributes", "List Attribute Summary...;|;Rename Attribute...;|;Sort Increasing;Sort Decreasing;|;Move Left;Move Right;|;New Column...;Delete Column(s)...;|;Hide;Unhide;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
+        menuConfig.defineMenu("Attributes", "List Attribute Summary...;|;New Column...;Delete Column(s)...;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
                 "Expand...;");
 
-        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Compare Relative...;Compare Absolute...;|;Open RMA File...;");
+        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Compare Relative...;Compare Absolute...;|;Label by Samples;|;Open RMA File...;");
 
         menuConfig.defineMenu("Layout", "Squeeze Wide Columns;");
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +
@@ -77,8 +77,8 @@ public class GUIConfiguration {
      * @return configuration
      */
     public static String getAttributeColumnHeaderPopupConfiguration() {
-        return "Rename Attribute...;|;Sort Increasing;Sort Decreasing;|;Move Left;Move Right;|;New Column...;Delete Column(s)...;|;Hide;Unhide;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
-                "Expand...;|;Compare Relative...;Compare Absolute...;";
+        //return "Rename Attribute...;|;Sort Increasing;Sort Decreasing;|;Move Left;Move Right;|;New Column...;Delete Column(s)...;|;Hide;Unhide;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;Expand...;|;Compare Relative...;Compare Absolute...;";
+        return "Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;Expand...;|;Compare Relative...;Compare Absolute...;";
     }
 
     public static String getSampleRowHeaderPopupConfiguration() {

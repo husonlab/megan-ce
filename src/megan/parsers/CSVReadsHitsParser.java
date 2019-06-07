@@ -28,7 +28,6 @@ import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
 import megan.fx.NotificationsInSwing;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 

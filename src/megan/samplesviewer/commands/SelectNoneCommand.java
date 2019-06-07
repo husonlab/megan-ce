@@ -42,7 +42,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() > 0;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
     public String getName() {
@@ -62,7 +62,7 @@ public class SelectNoneCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK);
     }
 
     /**

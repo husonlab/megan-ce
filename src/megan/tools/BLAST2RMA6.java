@@ -31,7 +31,7 @@ import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 import megan.rma6.RMA6Connector;
 import megan.rma6.RMA6FromBlastCreator;
 
@@ -295,7 +295,7 @@ public class BLAST2RMA6 {
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
             if (blastMode == BlastMode.Unknown)
-                doc.setBlastMode(BlastMode.getBlastMode(blastFiles[0]));
+                doc.setBlastMode(BlastModeUtils.getBlastMode(blastFiles[0]));
             else
                 doc.setBlastMode(blastMode);
             doc.setLcaAlgorithm(lcaAlgorithm);

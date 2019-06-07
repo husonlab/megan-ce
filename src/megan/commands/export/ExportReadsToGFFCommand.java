@@ -33,7 +33,6 @@ import megan.dialogs.export.ExportAlignedReads2GFF3Format;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.fx.NotificationsInSwing;
 import megan.main.Version;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 
@@ -260,7 +259,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Export16.gif");
+        return ResourceManager.getIcon("sun/Export16.gif");
     }
 
     public boolean isCritical() {

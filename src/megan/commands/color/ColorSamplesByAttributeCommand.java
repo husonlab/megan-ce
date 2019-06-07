@@ -50,7 +50,7 @@ public class ColorSamplesByAttributeCommand extends CommandBase implements IChec
         } else if (getViewer() instanceof SamplesViewer) {
             final SamplesViewer viewer = ((SamplesViewer) getViewer());
             viewer.getFrame().toFront();
-            final String attribute = viewer.getSamplesTable().getASelectedColumn();
+            final String attribute = viewer.getSamplesTableView().getASelectedAttribute();
             if (attribute != null)
                 execute("colorBy attribute='" + attribute + "';");
         } else
@@ -59,7 +59,7 @@ public class ColorSamplesByAttributeCommand extends CommandBase implements IChec
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() > 0;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
     public static String ALT_NAME = "Color Samples By Attributes CBOX";

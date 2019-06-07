@@ -52,7 +52,7 @@ public class SortByAssignedDownCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     public String getDescription() {

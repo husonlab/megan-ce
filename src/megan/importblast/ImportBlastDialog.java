@@ -23,6 +23,7 @@ import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.util.StatusBar;
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
@@ -35,7 +36,7 @@ import megan.fx.NotificationsInSwing;
 import megan.importblast.commands.*;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -788,7 +789,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
                         throw new IOException("Failed to detect BLAST format for file: " + fileName);
                 }
                 if (blastMode.equals(BlastMode.Unknown.toString())) {
-                    BlastMode mode = BlastMode.detectMode(this, fileName, true);
+                    BlastMode mode = BlastModeUtils.detectMode(this, fileName, true);
                     if (mode == null) // user canceled
                         throw new CanceledException();
                     else if (mode == BlastMode.Unknown)

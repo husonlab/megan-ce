@@ -64,7 +64,7 @@ public class ShowNotificationsCommand extends CommandBase implements ICheckBoxCo
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Preferences16.gif");
+        return ResourceManager.getIcon("sun/Preferences16.gif");
 
     }
 

@@ -82,11 +82,11 @@ public class OpenClassificationViewerWebPageCommand extends CommandBase implemen
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/development/WebComponent16.gif");
+        return ResourceManager.getIcon("sun/WebComponent16.gif");
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK);
     }
 
     public String getDescription() {

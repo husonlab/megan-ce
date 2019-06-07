@@ -62,7 +62,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         super("Creator:String CreationDate:Long" +
                 " AlignmentsFile:String AlignmentFileFormat:String AlignmentFileSize:Long" +
                 " ReadsFile:String ReadsFileFormat:String ReadsFileSize:Long" +
-                " BlastMode:String" +
+                " BlastModeUtils:String" +
                 " MatchesStart:Long MatchesFooter:Long" +
                 " ClassificationsStart:Long ClassificationsFooter:Long" +
                 " AuxStart:Long AuxFooter:Long FileFooter:Long");
@@ -105,7 +105,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
                 case "ReadsFileSize":
                     setReadsFileSize(reader.readLong());
                     break;
-                case "BlastMode":
+                case "BlastModeUtils":
                     setBlastMode(reader.readString());
                     break;
                 case "MatchesStart":
@@ -172,8 +172,8 @@ public class FileFooterRMA3 extends BaseRMA3 {
                     case "ReadsFileSize":
                         formatDefinition.write(writer, "ReadsFileSize", getReadsFileSize());
                         break;
-                    case "BlastMode":
-                        formatDefinition.write(writer, "BlastMode", getBlastMode());
+                    case "BlastModeUtils":
+                        formatDefinition.write(writer, "BlastModeUtils", getBlastMode());
                         break;
                     case "MatchesStart":
                         formatDefinition.write(writer, "MatchesStart", getMatchesStart());

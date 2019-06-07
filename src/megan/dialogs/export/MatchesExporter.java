@@ -18,13 +18,13 @@
  */
 package megan.dialogs.export;
 
+import jloda.util.BlastMode;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
-import megan.parsers.blast.BlastMode;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

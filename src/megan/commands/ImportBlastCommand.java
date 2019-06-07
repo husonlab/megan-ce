@@ -30,7 +30,7 @@ import megan.fx.NotificationsInSwing;
 import megan.inspector.InspectorWindow;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 import megan.rma6.RMA6FromBlastCreator;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
@@ -55,7 +55,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
                 "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
-                "\tmode={" + Basic.toString(BlastMode.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
+                "\tmode={" + Basic.toString(BlastModeUtils.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
                 "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minPercentReferenceToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[contaminantsFile=<filename>] [description=<text>];";
@@ -128,7 +128,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
 
             np.matchAnyTokenIgnoreCase("mode blastMode");
             np.matchIgnoreCase("=");
-            doc.setBlastMode(BlastMode.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastMode.valuesExceptUnknown(), " "))));
+            doc.setBlastMode(BlastModeUtils.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastModeUtils.valuesExceptUnknown(), " "))));
 
             int maxMatchesPerRead = 25;
             if (np.peekMatchIgnoreCase("maxMatches")) {
@@ -338,7 +338,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     /**

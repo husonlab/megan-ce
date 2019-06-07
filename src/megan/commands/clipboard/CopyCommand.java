@@ -80,7 +80,7 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif");
+        return ResourceManager.getIcon("sun/Copy16.gif");
     }
 
     public boolean isCritical() {
@@ -88,7 +88,7 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

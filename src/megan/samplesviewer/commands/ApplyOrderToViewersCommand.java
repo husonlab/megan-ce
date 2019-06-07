@@ -47,7 +47,7 @@ public class ApplyOrderToViewersCommand extends CommandBase implements ICommand 
             }
         } else {
             final SamplesViewer viewer = (SamplesViewer) getViewer();
-            newOrder.addAll(viewer.getSamplesTable().getDataGrid().getSamplesOrder());
+            newOrder.addAll(viewer.getSamplesTableView().getSamples());
         }
         np.matchIgnoreCase(";");
 

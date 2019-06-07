@@ -1083,7 +1083,7 @@ public class MyGraphViewListener implements IGraphViewListener {
         } else if (ke.getKeyCode() == KeyEvent.VK_SPACE) {
         } else if (ke.getKeyChar() == 'c') {
             viewer.centerGraph();
-        } else if ((ke.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+        } else if ((ke.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
             viewer.setCursor(Cursor.getDefaultCursor());
         }
     }
@@ -1094,7 +1094,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @param ke KeyEvent
      */
     public void keyReleased(KeyEvent ke) {
-        if ((ke.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+        if ((ke.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
             viewer.resetCursor();
         }
     }

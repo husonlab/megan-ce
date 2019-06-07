@@ -121,7 +121,7 @@ public class AlignmentViewerPanel extends JPanel {
         upButton.setBorder(BorderFactory.createEmptyBorder());
         upButton.setToolTipText("Move selected sequences up");
         upButton.setMaximumSize(new Dimension(16, 16));
-        upButton.setIcon(ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Up16.gif"));
+        upButton.setIcon(ResourceManager.getIcon("sun/Up16.gif"));
 
         final JButton downButton = new JButton(new AbstractAction() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -136,7 +136,7 @@ public class AlignmentViewerPanel extends JPanel {
         downButton.setBorder(BorderFactory.createEmptyBorder());
         downButton.setToolTipText("Move selected sequences down");
         downButton.setMaximumSize(new Dimension(16, 16));
-        downButton.setIcon(ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Down16.gif"));
+        downButton.setIcon(ResourceManager.getIcon("sun/Down16.gif"));
 
         selectedBlock.addSelectionListener(new ISelectionListener() {
             public void doSelectionChanged(boolean selected, int minRow, int minCol, int maxRow, int maxCol) {
@@ -154,7 +154,7 @@ public class AlignmentViewerPanel extends JPanel {
         showRefButton.setBorder(BorderFactory.createEmptyBorder());
         showRefButton.setToolTipText("Show/hide reference sequence (if available)");
         showRefButton.setMaximumSize(new Dimension(16, 16));
-        showRefButton.setIcon(ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Forward16.gif"));
+        showRefButton.setIcon(ResourceManager.getIcon("sun/Forward16.gif"));
 
         JButton showAsMappingButton = new JButton(new AbstractAction() {
             public void actionPerformed(ActionEvent actionEvent) {

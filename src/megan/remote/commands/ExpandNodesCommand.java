@@ -101,7 +101,7 @@ public class ExpandNodesCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignJustifyVertical16.gif");
+        return ResourceManager.getIcon("sun/AlignJustifyVertical16.gif");
     }
 
     /**
@@ -110,7 +110,7 @@ public class ExpandNodesCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_J, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_J, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

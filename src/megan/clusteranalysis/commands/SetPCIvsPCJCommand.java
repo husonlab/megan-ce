@@ -160,7 +160,7 @@ public class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand 
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_4, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_4, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

@@ -96,7 +96,7 @@ public class UseContaminantFilterCommand extends CommandBase implements ICheckBo
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/About16.gif");
+        return ResourceManager.getIcon("sun/About16.gif");
     }
 
     /**

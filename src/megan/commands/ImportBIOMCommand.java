@@ -171,7 +171,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     public String getDescription() {

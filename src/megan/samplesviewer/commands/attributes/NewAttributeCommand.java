@@ -57,14 +57,19 @@ public class NewAttributeCommand extends CommandBase implements ICommand {
 
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
 
-        viewer.getSamplesTable().addNewColumn(position, attribute);
+        viewer.getSamplesTableView().addNewColumn(position, attribute);
     }
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        int position = viewer.getSamplesTable().getASelectedColumnIndex();
+        final int index;
+        final String selectedAttribute = viewer.getSamplesTableView().getASelectedAttribute();
+        if (selectedAttribute != null)
+            index = viewer.getSamplesTableView().getAttributes().indexOf(selectedAttribute);
+        else
+            index = viewer.getSamplesTableView().getSampleCount();
+
         String name = null;
-        if (position != -1) {
             if (Platform.isFxApplicationThread()) {
                 TextInputDialog dialog = new TextInputDialog("Attribute");
                 dialog.setTitle("New attribute");
@@ -77,13 +82,13 @@ public class NewAttributeCommand extends CommandBase implements ICommand {
             } else if (javax.swing.SwingUtilities.isEventDispatchThread()) {
                 name = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter new attribute name", "Untitled");
             }
-        }
+
         if (name != null)
-            execute("new attribute='" + name + "' position=" + position + ";");
+            executeImmediately("new attribute='" + name + "' position=" + index + ";");
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getSelectedColumns().size() == 1;
+        return getViewer() instanceof SamplesViewer;
     }
 
     public String getName() {
@@ -96,7 +101,7 @@ public class NewAttributeCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/table/ColumnInsertAfter16.gif");
+        return ResourceManager.getIcon("sun/ColumnInsertAfter16.gif");
 
     }
 
@@ -105,6 +110,6 @@ public class NewAttributeCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_J, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_J, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }

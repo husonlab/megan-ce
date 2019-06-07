@@ -187,7 +187,7 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/New16.gif");
+        return ResourceManager.getIcon("sun/New16.gif");
     }
 
     public boolean isCritical() {
@@ -196,6 +196,6 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
 
     @Override
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }

@@ -69,7 +69,7 @@ public class QuitCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     public String getDescription() {
@@ -77,7 +77,7 @@ public class QuitCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Stop16.gif");
+        return ResourceManager.getIcon("sun/Stop16.gif");
     }
 
     public boolean isCritical() {

@@ -55,7 +55,7 @@ public class CutCommand extends ClipboardBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Cut16.gif");
+        return ResourceManager.getIcon("sun/Cut16.gif");
     }
 
     public boolean isCritical() {
@@ -63,7 +63,7 @@ public class CutCommand extends ClipboardBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

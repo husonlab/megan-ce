@@ -52,7 +52,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
 
         final java.util.Collection<String> samples;
         if (getViewer() instanceof SamplesViewer) {
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamples();
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         } else
             samples = doc.getSampleAttributeTable().getSampleSet();
 

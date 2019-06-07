@@ -54,7 +54,7 @@ public class SyncCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     public String getDescription() {
@@ -62,7 +62,7 @@ public class SyncCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Refresh16.gif");
+        return ResourceManager.getIcon("sun/Refresh16.gif");
     }
 
     public boolean isCritical() {

@@ -24,6 +24,7 @@ import jloda.swing.director.*;
 import jloda.swing.util.ListTransferHandler;
 import jloda.swing.util.PopupMenu;
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.chart.ChartColorManager;
@@ -38,7 +39,6 @@ import megan.core.Director;
 import megan.core.SelectionSet;
 import megan.dialogs.compare.Comparer;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.gui.NodeDrawer;
 
 import javax.swing.*;

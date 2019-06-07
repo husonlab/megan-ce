@@ -58,7 +58,7 @@ public class ShowHowToCiteCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Help16.gif");
+        return ResourceManager.getIcon("sun/Help16.gif");
     }
 
     public String getDescription() {

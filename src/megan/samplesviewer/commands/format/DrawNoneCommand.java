@@ -62,7 +62,7 @@ public class DrawNoneCommand extends CommandBase implements ICommand {
 
     public boolean isApplicable() {
         final SamplesViewer samplesViewer = ((SamplesViewer) getViewer());
-        return samplesViewer != null && samplesViewer.getSamplesTable().getNumberOfSelectedSamples() > 0;
+        return samplesViewer != null && samplesViewer.getSamplesTableView().getCountSelectedSamples() > 0;
     }
 
     /**
@@ -108,7 +108,7 @@ public class DrawNoneCommand extends CommandBase implements ICommand {
      */
     public void actionPerformed(ActionEvent ev) {
         final SamplesViewer samplesViewer = ((SamplesViewer) getViewer());
-        final Collection<String> samples = samplesViewer.getSamplesTable().getSelectedSamples();
+        final Collection<String> samples = samplesViewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0)
             execute("set nodeShape=none sample='" + Basic.toString(samples, "' '") + "';");
     }

@@ -272,7 +272,7 @@ public class ResamplingMethod {
         int count3 = 0;
         for (Integer s3 : genelist) {
             System.err.println("scale value of " + s3 + " pushed into the result");
-            resultOfScalevalue.put(s3, differ[count3++].scale);
+            resultOfScalevalue.put(s3, differ[count3++].getScale());
         }
     }
 
@@ -339,7 +339,7 @@ public class ResamplingMethod {
         Result[] output = new Result[differ.length];
         System.arraycopy(differ, 0, output, 0, differ.length);
         for (int i = 0; i < output.length; i++)
-            output[i].gennum = (++i);
+            output[i].setGenNum(++i);
         Arrays.sort(output, Result.getScaleComparator());
         //quickSortInScale(output, 0, output.length - 1);
         reversePrint(output);
@@ -916,7 +916,7 @@ public class ResamplingMethod {
             //r.readLine(); //ignore the 1. line
             while ((aLine = r.readLine()) != null) {
                 if (aLine.length() > 0 && !aLine.startsWith("#"))
-                    input.addLast(new Float(aLine));
+                    input.addLast(Float.valueOf(aLine));
             }
             float[] result = new float[input.size()];
             int count = 0;
@@ -994,61 +994,4 @@ public class ResamplingMethod {
         System.err.println(fileDst + " is generated!");
     }
 
-    static private class Result {
-
-        private int gennum;
-        private double scale;
-        private String remark;
-
-        //constructor
-
-        public Result() {
-            this.gennum = 0;
-            this.scale = 0;
-            this.remark = "Not tested";
-        }
-
-        public int getGenNum() {
-            return gennum;
-        }
-
-        public void setGenNum(int num) {
-            gennum = num;
-        }
-
-        public double getScale() {
-            return scale;
-        }
-
-        public void setScale(double f) {
-            scale = f;
-        }
-
-        public String getRemark() {
-            return remark;
-        }
-
-        public void setRemark(String s) {
-            remark = s;
-        }
-
-        static public Comparator<Result> getScaleComparator() {
-            return new Comparator<Result>() {
-                public int compare(Result r1, Result r2) {
-
-                    if (r1.scale < r2.scale)
-                        return -1;
-                    else if (r1.scale > r2.scale)
-                        return 1;
-                    else if (r1.gennum < r2.gennum)
-                        return -1;
-                    else if (r1.gennum > r2.gennum)
-                        return 1;
-                    else
-                        return 0;
-                }
-            };
-        }
-
-    }
 }

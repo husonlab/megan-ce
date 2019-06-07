@@ -64,7 +64,7 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
             if (getViewer() instanceof SamplesViewer) {
 
                 SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-                selectedSamples = samplesViewer.getSamplesTable().getSelectedSamples();
+                selectedSamples = samplesViewer.getSamplesTableView().getSelectedSamples();
             } else {
                 selectedSamples = doc.getSampleSelection().getAll();
             }
@@ -128,7 +128,7 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
             return clusterViewer.isPCoATab() && clusterViewer.getGraphView().getSelectedNodes().size() >= 1;
         } else if (getViewer() instanceof SamplesViewer) {
             final SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-            return samplesViewer.getSamplesTable().getNumberOfSelectedSamples() > 0;
+            return samplesViewer.getSamplesTableView().getCountSelectedSamples() > 0;
         } else
             return ((Director) getDir()).getDocument().getSampleSelection().size() >= 1;
     }

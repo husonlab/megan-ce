@@ -61,11 +61,11 @@ public abstract class ClipboardBase extends CommandBase {
             return null;
 
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         action.putValue(Action.SHORT_DESCRIPTION, "Cut");
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Cut16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Cut16.gif"));
 
         return action;
     }
@@ -75,10 +75,10 @@ public abstract class ClipboardBase extends CommandBase {
         if (action == null)
             return null;
 
-        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Copy");
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Copy16.gif"));
 
         return action;
     }
@@ -89,10 +89,10 @@ public abstract class ClipboardBase extends CommandBase {
         if (action == null)
             return null;
 
-        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Paste");
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Paste16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Paste16.gif"));
 
         return action;
     }
@@ -101,7 +101,7 @@ public abstract class ClipboardBase extends CommandBase {
         Action action = findAction(DefaultEditorKit.selectAllAction);
         if (action == null)
             return null;
-        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Select All");
 
         return action;

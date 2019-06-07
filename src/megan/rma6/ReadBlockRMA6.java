@@ -19,10 +19,10 @@
 package megan.rma6;
 
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.io.IInputReader;
-import megan.parsers.blast.BlastMode;
 import megan.parsers.sam.SAMMatch;
 import megan.util.ReadMagnitudeParser;
 

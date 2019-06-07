@@ -39,20 +39,27 @@ import java.util.Optional;
  */
 public class LabelSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "labelBy attribute=<name>;";
+        return "labelBy attribute=<name> [samples={selected|all}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("labelBy attribute=");
-        String attribute = np.getWordRespectCase();
-        Document doc = ((Director) getDir()).getDocument();
+        final String attribute = np.getWordRespectCase();
+        final boolean selected;
+        if (np.peekMatchIgnoreCase("samples")) {
+            np.matchIgnoreCase("samples=");
+            selected = np.getWordMatchesIgnoringCase("selected all").equalsIgnoreCase("selected");
+        } else
+            selected = true;
+        np.matchIgnoreCase(";");
+
+        final Document doc = ((Director) getDir()).getDocument();
 
         java.util.Collection<String> samples;
-        if (getViewer() instanceof SamplesViewer) {
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamples();
+        if (selected && getViewer() instanceof SamplesViewer) {
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         } else
             samples = doc.getSampleAttributeTable().getSampleSet();
-
 
         ProgramProperties.put("SetByAttribute", attribute);
 

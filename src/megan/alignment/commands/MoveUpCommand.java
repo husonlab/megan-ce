@@ -110,7 +110,7 @@ public class MoveUpCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Up16.gif");
+        return ResourceManager.getIcon("sun/Up16.gif");
     }
 
     /**
@@ -119,7 +119,7 @@ public class MoveUpCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

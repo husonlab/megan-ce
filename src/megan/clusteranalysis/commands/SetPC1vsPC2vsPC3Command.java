@@ -114,7 +114,7 @@ public class SetPC1vsPC2vsPC3Command extends CommandBase implements ICheckBoxCom
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_5, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_5, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

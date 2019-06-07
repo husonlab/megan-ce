@@ -1,0 +1,6 @@
+Here are problems that were introduced when migrating to Java12 (from Java 8):
+
+- Notifications do not work in Swing program
+- Update menu item broken
+- Can't show metabolic overview graphic Kegg
+

@@ -75,7 +75,7 @@ public class ShowAlignmentViewerCommand extends CommandBase implements ICommand 
         final Document doc = getDir().getDocument();
         final ClassificationViewer classificationViewer = (ClassificationViewer) getViewer();
         return classificationViewer != null && doc.getMeganFile().hasDataConnector() && classificationViewer.getSelectedNodeIds().size() == 1;
-        // && (doc.getBlastMode().equals(BlastMode.BlastX) || (doc.getBlastMode().equals(BlastMode.BlastN) || (doc.getBlastMode().equals(BlastMode.BlastP))));
+        // && (doc.getBlastMode().equals(BlastModeUtils.BlastX) || (doc.getBlastMode().equals(BlastModeUtils.BlastN) || (doc.getBlastMode().equals(BlastModeUtils.BlastP))));
     }
 
     final public static String NAME = "Show Alignment...";
@@ -97,7 +97,7 @@ public class ShowAlignmentViewerCommand extends CommandBase implements ICommand 
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK);
     }
 }
 

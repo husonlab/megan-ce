@@ -34,7 +34,6 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.SyncDataTableAndTaxonomy;

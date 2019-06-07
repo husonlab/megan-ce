@@ -19,11 +19,12 @@
 package megan.samplesviewer.commands;
 
 import javafx.application.Platform;
+import javafx.scene.control.TableColumn;
+import jloda.fx.control.table.MyTableView;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
-import org.controlsfx.control.spreadsheet.SpreadsheetColumn;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,10 +51,10 @@ public class SqueezeWidthColumnsCommand extends CommandBase implements ICommand 
             @Override
             public void run() {
                 final SamplesViewer viewer = (SamplesViewer) getViewer();
-                for (SpreadsheetColumn col : viewer.getSamplesTable().getSpreadsheetView().getColumns()) {
-                    if (col.getWidth() >= threshold) {
-                        col.setPrefWidth(size);
-                    }
+                for (int col = 0; col < viewer.getSamplesTableView().getAttributeCount(); col++) {
+                    final TableColumn<MyTableView.MyTableRow, ?> column = viewer.getSamplesTableView().getAttribute(col);
+                    if (column != null && column.getWidth() > threshold)
+                        column.setPrefWidth(size);
                 }
             }
         });
@@ -85,7 +86,7 @@ public class SqueezeWidthColumnsCommand extends CommandBase implements ICommand 
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
     }
 }

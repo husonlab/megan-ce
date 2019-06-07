@@ -21,7 +21,6 @@ package megan.commands.show;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.core.Director;
 import megan.samplesviewer.SamplesViewer;
 import megan.util.WindowUtilities;
 
@@ -46,11 +45,16 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute(getSyntax());
+        SamplesViewer samplesViewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
+        if (samplesViewer == null)
+            execute(getSyntax());
+        else // already exists, just need to bring to the front
+            executeImmediately(getSyntax());
+
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfSamples() > 0;
+        return getDir().getDocument().getNumberOfSamples() > 0;
 
     }
 
@@ -73,7 +77,7 @@ public class ShowSamplesViewerCommand extends megan.commands.CommandBase impleme
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

@@ -37,7 +37,6 @@ import megan.data.IReadBlockIterator;
 import megan.data.ReadBlockIteratorMaxCount;
 import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 
@@ -493,7 +492,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Export16.gif");
+        return ResourceManager.getIcon("sun/Export16.gif");
     }
 
     public boolean isCritical() {

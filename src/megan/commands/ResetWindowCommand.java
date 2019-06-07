@@ -63,7 +63,7 @@ public class ResetWindowCommand extends jloda.swing.commands.CommandBase impleme
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Preferences16.gif");
+        return ResourceManager.getIcon("sun/Preferences16.gif");
     }
 
     public boolean isCritical() {

@@ -98,7 +98,7 @@ public class ZoomToFitCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignCenter16.gif");
+        return ResourceManager.getIcon("sun/AlignCenter16.gif");
     }
 
     /**
@@ -107,7 +107,7 @@ public class ZoomToFitCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

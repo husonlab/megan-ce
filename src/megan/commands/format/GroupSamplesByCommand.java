@@ -51,7 +51,7 @@ public class GroupSamplesByCommand extends CommandBase implements ICommand {
 
         java.util.Collection<String> samples;
         if (getViewer() instanceof SamplesViewer) {
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamples();
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         } else
             samples = doc.getSampleAttributeTable().getSampleSet();
 

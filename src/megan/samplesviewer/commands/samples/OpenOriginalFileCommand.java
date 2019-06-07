@@ -50,9 +50,9 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = (SamplesViewer) getViewer();
         if (viewer.getDocument().getMeganFile().isMeganSummaryFile()) {
-            if (viewer.getSamplesTable().getNumberOfSelectedSamples() > 0) {
+            if (viewer.getSamplesTableView().getCountSelectedSamples() > 0) {
                 StringBuilder buf = new StringBuilder();
-                for (String sample : viewer.getSamplesTable().getSelectedSamples()) {
+                for (String sample : viewer.getSamplesTableView().getSelectedSamples()) {
                     Object source = viewer.getDocument().getSampleAttributeTable().get(sample, SampleAttributeTable.HiddenAttribute.Source.toString());
                     if (source != null) {
                         buf.append("open file='").append(source.toString()).append("';");
@@ -69,8 +69,8 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
         if (getViewer() instanceof SamplesViewer) {
             final SamplesViewer viewer = (SamplesViewer) getViewer();
             if (viewer.getDocument().getMeganFile().isMeganSummaryFile()) {
-                if (viewer.getSamplesTable().getNumberOfSelectedSamples() > 0) {
-                    for (String sample : viewer.getSamplesTable().getSelectedSamples()) {
+                if (viewer.getSamplesTableView().getCountSelectedSamples() > 0) {
+                    for (String sample : viewer.getSamplesTableView().getSelectedSamples()) {
                         Object source = viewer.getDocument().getSampleAttributeTable().get(sample, SampleAttributeTable.HiddenAttribute.Source.toString());
                         if (source != null) {
                             final MeganFile meganFile = new MeganFile();
@@ -98,7 +98,7 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif");
+        return ResourceManager.getIcon("sun/Open16.gif");
     }
 
     public boolean isCritical() {

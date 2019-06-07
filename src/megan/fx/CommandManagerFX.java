@@ -438,6 +438,6 @@ public class CommandManagerFX extends CommandManager {
             modifiers.add(KeyCombination.META_DOWN);
 
         KeyCode keyCode = FXSwingUtilities.getKeyCodeFX(acceleratorKey.getKeyCode());
-        return new KeyCodeCombination(keyCode, modifiers.toArray(new KeyCombination.Modifier[modifiers.size()]));
+        return new KeyCodeCombination(keyCode, modifiers.toArray(new KeyCombination.Modifier[0]));
     }
 }

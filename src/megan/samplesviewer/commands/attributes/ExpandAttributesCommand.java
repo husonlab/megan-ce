@@ -62,13 +62,13 @@ public class ExpandAttributesCommand extends CommandBase implements ICommand {
 
         if (samplesViewer != null) {
             // todo: sync to document...
-            // ((SamplesViewer) getViewer()).getSamplesTable().syncFromDocument();
+            // ((SamplesViewer) getViewer()).getSamplesTableView().syncFromDocument();
         }
 
         final int count = doc.getSampleAttributeTable().expandAttribute(attribute, true);
 
         if (count > 0 && samplesViewer != null)
-            samplesViewer.getSamplesTable().syncFromDocument();
+            samplesViewer.getSamplesTableView().syncFromDocumentToView();
 
         if (count == 0)
             NotificationsInSwing.showWarning(getViewer().getFrame(), "Expand attribute failed");
@@ -78,34 +78,36 @@ public class ExpandAttributesCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final String attributeName = viewer.getSamplesTable().getASelectedColumn();
+        final String attributeName = viewer.getSamplesTableView().getASelectedAttribute();
 
-        final Set<Object> states = new TreeSet<>();
-        states.addAll(viewer.getSampleAttributeTable().getSamples2Values(attributeName).values());
+        if (attributeName != null) {
 
-        boolean ok = false;
-        if (Platform.isFxApplicationThread()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("MEGAN Expand Dialog");
-            alert.setHeaderText("Expanding '" + attributeName + "' will add " + states.size() + " new columns");
-            alert.setContentText("Proceed?");
+            final Set<Object> states = new TreeSet<>(viewer.getSampleAttributeTable().getSamples2Values(attributeName).values());
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
-                ok = true;
-                // ... user chose OK
+            boolean ok = false;
+            if (Platform.isFxApplicationThread()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("MEGAN Expand Dialog");
+                alert.setHeaderText("Expanding '" + attributeName + "' will add " + states.size() + " new columns");
+                alert.setContentText("Proceed?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    ok = true;
+                    // ... user chose OK
+                }
+            } else if (SwingUtilities.isEventDispatchThread()) {
+                int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Expanding '" + attributeName + "' will add " + states.size() + " new columns, proceed?");
+                if (result == JOptionPane.YES_OPTION)
+                    ok = true;
             }
-        } else if (SwingUtilities.isEventDispatchThread()) {
-            int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Expanding '" + attributeName + "' will add " + states.size() + " new columns, proceed?");
-            if (result == JOptionPane.YES_OPTION)
-                ok = true;
+            if (ok)
+                executeImmediately("expand attribute='" + attributeName + "';");
         }
-        if (ok)
-            execute("expand attribute='" + attributeName + "';");
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getSelectedColumns().size() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedAttributes().size() == 1;
     }
 
     public String getName() {
@@ -118,7 +120,7 @@ public class ExpandAttributesCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return null; // ResourceManager.getIcon("sun/toolbarButtonGraphics/table/ColumnInsertAfter16.gif");
+        return null; // ResourceManager.getIcon("sun/ColumnInsertAfter16.gif");
 
     }
 

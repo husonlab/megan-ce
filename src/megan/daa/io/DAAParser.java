@@ -25,7 +25,6 @@ import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileRandomAccessReadOnlyAdapter;
-import megan.parsers.blast.BlastMode;
 import megan.parsers.blast.PostProcessMatches;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class DAAParser {
     private final byte[] sourceAlphabet;
     private final byte[] alignmentAlphabet;
 
-    private BlastMode blastMode;
+    private jloda.util.BlastMode blastMode;
 
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
@@ -119,17 +118,17 @@ public class DAAParser {
      *
      * @return blast mode
      */
-    public BlastMode getBlastMode() {
+    public jloda.util.BlastMode getBlastMode() {
         return blastMode;
     }
 
-    public static BlastMode getBlastMode(String fileName) {
+    public static jloda.util.BlastMode getBlastMode(String fileName) {
         try {
             DAAParser daaParser = new DAAParser(fileName);
             return daaParser.getBlastMode();
         } catch (IOException e) {
             Basic.caught(e);
-            return BlastMode.Unknown;
+            return jloda.util.BlastMode.Unknown;
         }
     }
 

@@ -1,114 +1,106 @@
-<!-- file build.xml in your project root directory -->
-<!-- Ant build script for yfiles -->
-<!-- The java based Ant tool is available from -->
-<!-- http://jakarta.apache.org/ant -->
-<!-- This file demonstrates the use of the yGuard byte -->
-<!-- code obfuscator from yWorks Gmbh -->
-<!-- yGuard can be downloaded from -->
-<!--- http://www.yworks.com/products/yguard -->
+<!--
+	~  build.xml Copyright (C) 2019 Daniel H. Huson
+	~
+	~  (Some files contain contributions from other authors, who are then mentioned separately.)
+	~
+	~  This program is free software: you can redistribute it and/or modify
+	~  it under the terms of the GNU General Public License as published by
+	~  the Free Software Foundation, either version 3 of the License, or
+	~  (at your option) any later version.
+	~
+	~  This program is distributed in the hope that it will be useful,
+	~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+	~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	~  GNU General Public License for more details.
+	~
+	~  You should have received a copy of the GNU General Public License
+	~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+	<project name="MEGAN" default="jar" basedir=".">
 
-<project name="project" default="jar" basedir=".">
+		<property name="jfxDir" value="../../javafx/lib"/>
+		<property name="jlodaAntDir" value="../../jloda/antbuild"/>
+		<property name="buildSrcDir" value="../antbuild/src"/>
+		<property name="buildModulesDir" value="../antbuild/modules"/>
 
-    <!-- edit the following lines to your needs -->
-    <property name="project_name" value="MEGAN"/>
-    <property name="jlodaSrcDir" value="../../jloda/src"/>
-    <property name="maltSrcDir" value="../../malt/src"/>
-    <property name="meganSrcDir" value="../src"/>
-    <property name="srcDir" value="src"/>
-    <property name="classDir" value="classes"/>
-    <property name="jar" value="${project_name}.jar"/>
-    <property name="mainclass" value="megan.main.Megan6"/>
+		<path id="build.classpath">
+			<fileset dir="../../megan-ce/jars"  includes="*.jar"/>
+			<fileset dir="${jlodaAntDir}"  includes="jloda.jar"/>
+		</path>
 
-    <!-- class path -->
+		<path id="build.modulepath">
+			<fileset dir="../../jloda/jars"  includes="*.jar"/>
+			<fileset dir="../../megan-ce/jars"  includes="*.jar"/>
+			<fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
+			<fileset dir="${jfxDir}"  includes="*.jar"/>
+			<fileset dir="../antbuild"  includes="jloda.jar"/>
+		</path>
 
-    <path id="build.classpath">
-        <fileset dir="../../jloda/jars"  includes="*.jar"/>
-	<fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
+		<path id="run.modulepath">
+			<fileset dir="../../jloda/jars"  includes="*.jar"/>
+			<fileset dir="../../megan-ce/jars"  includes="*.jar"/>
+			<fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
+			<fileset dir="${jfxDir}"  includes="*.jar"/>
+			<fileset dir="../antbuild"  includes="jloda.jar"/>
+			<fileset dir="../antbuild"  includes="megan.jar"/>
+		</path>
 
-        <fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
-	<fileset dir="../../megan-ce/jars" includes="*.jar"/>
+		<target name="init">
+			<mkdir dir="${buildSrcDir}/megan"/>
+			<mkdir dir="${buildModulesDir}/megan"/>
+		</target>
 
-    </path>
+		<target name="jloda" depends="init">
+			<ant antfile="${jlodaAntDir}/build.xml" target="jar"/>
+		</target>
 
-    <!-- init -->
-    <target name="init">
-        <mkdir dir="${srcDir}"/>
-        <mkdir dir="${classDir}"/>
-        <mkdir dir="${classDir}/resources"/>
-    </target>
+		<target name="copy_sources" depends="jloda">
+			<copy todir="${buildSrcDir}/megan">
+				<fileset dir="../../megan-ce/src"/>
+			</copy>
+		</target>
 
-    <!-- copy resources -->
-    <target name="copy_resources" depends="init">
-        <mkdir dir="${classDir}/resources"/>
-        <mkdir dir="${classDir}/resources/css"/>
-        <mkdir dir="${classDir}/resources/files"/>
-        <copy todir="${classDir}">
-            <fileset dir="../../megan-ce/resources" includes="log4j.properties"/>
-        </copy>
-    </target>
+		<target name="copy_resources" depends="copy_sources">
+			<copy todir="${buildModulesDir}/megan">
+				<fileset dir="../../megan-ce/src"
+					includes="**/*.fxml **/*.png **/*.gif **/*.css **/*.txt **/*.map **/*.info **/*.tre **/*.lvl"/>
+			</copy>
+		</target>
 
-    <!-- copy sources -->
-    <target name="copy_sources" depends="copy_resources">
-        <copy todir="${srcDir}">
-            <fileset dir="${jlodaSrcDir}" excludes="com/apple/**"/>
-            <fileset dir="${maltSrcDir}" excludes=""/>
-            <fileset dir="${meganSrcDir}" excludes=""/>
-        </copy>
-</target>
+		<target name="compile" depends="copy_resources">
+			<javac  includeantruntime="false"
+				srcdir="../antbuild/src/megan"
+				destdir="${buildModulesDir}/megan"
+				debug="on"
+				modulepathref="build.modulepath"
+				>
+			</javac>
+		</target>
 
- <!-- copy fxml -->
-    <target name="copy_fx" depends="copy_sources">
-        <copy todir="${classDir}">
-		<fileset dir="${meganSrcDir}" includes="**/*.fxml"/>
-        </copy>
-</target>
+		<target name="jar" depends="compile">
+			<jar jarfile="megan.jar" basedir="${buildModulesDir}/megan"/>
+		</target>
 
-    <!-- compile  MEGAN -->
-    <target name="compile" depends="copy_fx">
-        <javac  includeantruntime="false"
-                srcdir="${srcDir}"
-                destdir="${classDir}"
-                debug="on"
-                compiler="javac1.8"
-                source="1.8"
-                target="1.8"
-                classpathref="build.classpath">
-            <compilerarg value="-XDignore.symbol.file=true"/>
-        </javac>
-    </target>
+		<target name="run" depends="jar">
+			<java classname="megan.main.Megan6" fork="true"
+				modulepathref="run.modulepath">
+				<jvmarg value="-Xshare:off"/>
+				<jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
+				<jvmarg value="-server"/>
+				<jvmarg value="-Xmx4G"/>
+				<jvmarg value="-Duser.language=en"/>
+				<jvmarg value="-Duser.region=US"/>
+				<jvmarg value="--add-modules=jloda,megan"/>
+				<arg value="+w"/>
+			</java>
+		</target>
 
-    <!-- create .jar -->
-    <target name="jar" depends="compile">
-        <jar jarfile="${jar}"
-             basedir="${classDir}"
-	     includes="jloda/** malt/** megan/** rma/** rusch/**">
-        </jar>
-    </target>
+		<target name="clean">
+			<delete dir="${buildModulesDir}" includeEmptyDirs="true"/>
+			<delete dir="${buildSrcDir}" includeEmptyDirs="true"/>
+			<delete file="megan.jar"/>
+			<delete file="jloda.jar"/>
+		</target>
 
+	</project>
 
-    <!-- run project -->
-    <target name="run" depends="jar">
-        <java classname="${mainclass}" fork="true"
-              classpathref="build.classpath">
-            <classpath>
-                <pathelement location="${jar}"/>
-            </classpath>
-            <arg value="-d"/>
-            <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
-            <jvmarg value="-server"/>
-            <jvmarg value="-d64"/>
-            <jvmarg value="-Xmx4000M"/>
-            <jvmarg value="-Duser.language=en"/>
-            <jvmarg value="-Duser.region=US"/>
-        </java>
-    </target>
-
-    <!-- removes all that has been built -->
-    <target name="clean">
-        <delete dir="${classDir}" includeEmptyDirs="true"/>
-        <delete dir="${srcDir}" includeEmptyDirs="true"/>
-        <delete file="${jar}"/>
-    </target>
-</project>
-
-        <!-- end file build.xml -->

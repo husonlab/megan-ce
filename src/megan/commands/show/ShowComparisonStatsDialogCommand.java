@@ -54,7 +54,7 @@ public class ShowComparisonStatsDialogCommand extends CommandBase implements ICo
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK);
     }
 
     public String getDescription() {
@@ -62,7 +62,7 @@ public class ShowComparisonStatsDialogCommand extends CommandBase implements ICo
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/History16.gif");
+        return ResourceManager.getIcon("sun/History16.gif");
     }
 
     public boolean isCritical() {

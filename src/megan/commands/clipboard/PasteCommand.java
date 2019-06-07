@@ -55,7 +55,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Paste16.gif");
+        return ResourceManager.getIcon("sun/Paste16.gif");
     }
 
     public boolean isCritical() {
@@ -63,7 +63,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

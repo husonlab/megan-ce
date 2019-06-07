@@ -23,6 +23,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
@@ -32,7 +33,6 @@ import megan.core.Document;
 import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 

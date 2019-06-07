@@ -39,7 +39,6 @@ import megan.core.Document;
 import megan.dialogs.compare.Comparer;
 import megan.dialogs.input.InputDialog;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.gui.NodeDrawer;
 import megan.viewer.gui.ViewerJTable;
 import megan.viewer.gui.ViewerJTree;

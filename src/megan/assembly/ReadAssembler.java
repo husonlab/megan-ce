@@ -21,7 +21,7 @@ package megan.assembly;
 
 import jloda.graph.*;
 import jloda.util.*;
-import malt.align.SimpleAligner4DNA;
+import megan.assembly.align.SimpleAligner4DNA;
 import megan.core.Director;
 
 import java.io.IOException;

@@ -58,15 +58,15 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
 
         if (clearExisting) {
             System.err.println("Cleared existing metadata");
-            if (samplesViewer != null)
-                samplesViewer.getSamplesTable().getDataGrid().clear();
+            if (samplesViewer != null) {
+                samplesViewer.getSamplesTableView().clear();
+            }
             doc.getSampleAttributeTable().clear();
         } else {
             System.err.println("Overwriting metadata");
+            if (samplesViewer != null)
+                samplesViewer.getSamplesTableView().syncFromViewToDocument();
         }
-
-        if (samplesViewer != null)
-            samplesViewer.getSamplesTable().getDataGrid().save(samplesViewer.getSampleAttributeTable(), null);
 
         final int oldNumberOfSamples = doc.getNumberOfSamples();
         final int oldNumberOfAttributes = doc.getSampleAttributeTable().getNumberOfAttributes();
@@ -82,7 +82,7 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
 
         doc.setDirty(true);
         if (samplesViewer != null) {
-            samplesViewer.getSamplesTable().syncFromDocument();
+            samplesViewer.getSamplesTableView().syncFromDocumentToView();
         }
 
         NotificationsInSwing.showInformation(getViewer().getFrame(), "Number of attributes imported: " + (doc.getSampleAttributeTable().getNumberOfAttributes() - oldNumberOfAttributes));
@@ -115,7 +115,7 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     public String getDescription() {

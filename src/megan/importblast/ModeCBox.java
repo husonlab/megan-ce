@@ -18,7 +18,7 @@
  */
 package megan.importblast;
 
-import megan.parsers.blast.BlastMode;
+import jloda.util.BlastMode;
 
 import javax.swing.*;
 import java.awt.*;

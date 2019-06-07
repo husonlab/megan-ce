@@ -57,8 +57,8 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
         if (what.equalsIgnoreCase("selected")) {
             if (getViewer() instanceof SamplesViewer) {
                 final SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-                activeSamples = samplesViewer.getSamplesTable().getSelectedSamples();
-                activeAttributes = samplesViewer.getSamplesTable().getSelectedAttributes();
+                activeSamples = samplesViewer.getSamplesTableView().getSelectedSamples();
+                activeAttributes = samplesViewer.getSamplesTableView().getSelectedAttributes();
             } else
                 return;
         } else {
@@ -82,7 +82,7 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                 ArrayList<Number> numbers = new ArrayList<>(activeSamples.size());
                 for (String sample : activeSamples) {
                     Object value = sampleAttributeTable.get(sample, attribute);
-                    if (value != null && value instanceof Number)
+                    if (value instanceof Number)
                         numbers.add((Number) value);
                 }
                 final Statistics statistics = new Statistics(numbers);
@@ -152,8 +152,8 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
     public void actionPerformed(ActionEvent event) {
         if (getViewer() instanceof SamplesViewer) {
             final SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-            if (samplesViewer.getSamplesTable().getSelectedSamples().size() > 0 ||
-                    samplesViewer.getSamplesTable().getSelectedAttributes().size() > 0)
+            if (samplesViewer.getSamplesTableView().getSelectedSamples().size() > 0 ||
+                    samplesViewer.getSamplesTableView().getSelectedAttributes().size() > 0)
                 executeImmediately("show window=message;list attributes=selected;");
             else
                 executeImmediately("show window=message;list attributes=all;");
@@ -178,7 +178,7 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/History16.gif");
+        return ResourceManager.getIcon("sun/History16.gif");
     }
 
     public boolean isCritical() {

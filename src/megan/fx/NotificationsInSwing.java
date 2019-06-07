@@ -26,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Duration;
+import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
 import org.controlsfx.control.Notifications;
@@ -53,6 +54,8 @@ public class NotificationsInSwing {
     private static int maxLength = 150;
 
     private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
+
+    public static boolean isBroken = true;
 
 
     /**
@@ -175,7 +178,7 @@ public class NotificationsInSwing {
     public static void showNotification(final String title, final String message0, final Mode mode, final Pos position, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
-        if (isShowNotifications() && ProgramProperties.isUseGUI()) {
+        if (!isBroken && isShowNotifications() && ProgramProperties.isUseGUI()) {
             try {
                 initFX(true);
 
@@ -190,19 +193,19 @@ public class NotificationsInSwing {
                         switch (mode) {
                             default:
                             case information: {
-                                imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-information.png").toExternalForm());
+                                imageView = new ImageView(ResourceManagerFX.getImage("dialog/dialog-information.png"));
                                 break;
                             }
                             case error: {
-                                imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-error.png").toExternalForm());
+                                imageView = new ImageView(ResourceManagerFX.getImage("dialog/dialog-error.png"));
                                 break;
                             }
                             case warning: {
-                                imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-warning.png").toExternalForm());
+                                imageView = new ImageView(ResourceManagerFX.getImage("dialog/dialog-warning.png"));
                                 break;
                             }
                             case confirmation: {
-                                imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-confim.png").toExternalForm());
+                                imageView = new ImageView(ResourceManagerFX.getImage("dialog/dialog-confim.png"));
                                 break;
                             }
                         }
@@ -217,7 +220,7 @@ public class NotificationsInSwing {
             }
         }
 
-        if (!isShowNotifications() || isEchoToConsole()) {
+        if (isBroken || !isShowNotifications() || isEchoToConsole()) {
             switch (mode) {
                 default:
                 case information: {

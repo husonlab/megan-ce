@@ -37,6 +37,7 @@ import java.util.*;
  */
 public class SampleAttributeTable {
 
+
     public enum Type {String, Integer, Float, Date}
 
     public static final String SAMPLE_ATTRIBUTES = "SAMPLE_ATTRIBUTES";
@@ -73,15 +74,15 @@ public class SampleAttributeTable {
          */
         public HiddenAttribute getEnum(String label) {
             if (label.startsWith(getPrefix()))
-                return valueOf(label.substring(1, label.length()));
+                return valueOf(label.substring(1));
             else
                 return valueOf(label);
         }
     }
 
     private final Table<String, String, Object> table = new Table<>();
-    private List<String> sampleOrder = new LinkedList<>();
-    private List<String> attributeOrder = new LinkedList<>();
+    private final ArrayList<String> sampleOrder = new ArrayList<>();
+    private final ArrayList<String> attributeOrder = new ArrayList<>();
     private final Map<String, Type> attribute2type = new HashMap<>();
 
     private String description = null;
@@ -233,17 +234,16 @@ public class SampleAttributeTable {
      * @return true, if renamed
      */
     public boolean renameSample(String sample, String newName, boolean allowReplaceSample) {
-        if (allowReplaceSample || !table.rowKeySet().contains(newName)) {
-            Map<String, Object> row = table.row(sample);
+        if (allowReplaceSample || !table.rowKeySet().contains(newName) && sampleOrder.contains(sample)) {
+            sampleOrder.set(sampleOrder.indexOf(sample), newName);
+
+            final Map<String, Object> row = table.row(sample);
             if (row != null) {
                 table.rowKeySet().remove(sample);
                 for (String key : row.keySet()) {
                     table.put(newName, key, row.get(key));
                 }
             }
-            int pos = Math.max(0, sampleOrder.indexOf(sample));
-            sampleOrder.remove(sample);
-            sampleOrder.add(pos, newName);
             return true;
         }
         return false;
@@ -362,8 +362,7 @@ public class SampleAttributeTable {
      * @return number of columns added
      */
     public int expandAttribute(String attribute, boolean allowReplaceAttribute) {
-        final Set<Object> values = new TreeSet<>();
-        values.addAll(getSamples2Values(attribute).values());
+        final Set<Object> values = new TreeSet<>(getSamples2Values(attribute).values());
 
         final ArrayList<String> newOrder = new ArrayList<>(getAttributeOrder().size() + values.size());
         newOrder.addAll(getAttributeOrder());
@@ -432,7 +431,7 @@ public class SampleAttributeTable {
         attribute2type.put(attribute, type);
     }
 
-    public List<String> getSampleOrder() {
+    public ArrayList<String> getSampleOrder() {
         return sampleOrder;
     }
 
@@ -490,9 +489,8 @@ public class SampleAttributeTable {
         return count;
     }
 
-    public List<String> getUnhiddenAttributes() {
-        ArrayList<String> list = new ArrayList<>(getNumberOfAttributes() + 1);
-        list.add(SAMPLE_ID);
+    public ArrayList<String> getUnhiddenAttributes() {
+        ArrayList<String> list = new ArrayList<>(getNumberOfAttributes());
         for (String attribute : getAttributeOrder())
             if (!isHiddenAttribute(attribute) && !isSecretAttribute(attribute))
                 list.add(attribute);
@@ -559,7 +557,7 @@ public class SampleAttributeTable {
      */
     public Color getSampleColor(String sampleName) {
         Object colorValue = get(sampleName, SampleAttributeTable.HiddenAttribute.Color);
-        if (colorValue != null && colorValue instanceof Integer) {
+        if (colorValue instanceof Integer) {
             return new Color((Integer) colorValue);
         } else
             return null;
@@ -909,7 +907,7 @@ public class SampleAttributeTable {
                     attributesOrder.add(attribute);
                 }
 
-                final String[] pos2attribute = attributesOrder.toArray(new String[attributesOrder.size()]);
+                final String[] pos2attribute = attributesOrder.toArray(new String[0]);
 
                 for (int i = 0; i < pos2attribute.length; i++) {
                     if (isHiddenAttribute(pos2attribute[i])) // don't import hidden attributes
@@ -1012,8 +1010,7 @@ public class SampleAttributeTable {
 
         final HashMap<String, float[]> result = new HashMap<>();
 
-        final Set<String> hiddenAttributes = new HashSet<>();
-        hiddenAttributes.addAll(Arrays.asList("BarcodeSequence", "LinkerPrimerSequence", "Description"));
+        final Set<String> hiddenAttributes = new HashSet<>(Arrays.asList("BarcodeSequence", "LinkerPrimerSequence", "Description"));
         for (String name : getAttributeOrder()) {
             if (isSecretAttribute(name) || isHiddenAttribute(name) || name.equals("Size") || hiddenAttributes.contains(name))
                 continue;
@@ -1187,4 +1184,35 @@ public class SampleAttributeTable {
         return sampleAttributeTable;
     }
 
+    /**
+     * move set of sample up or down one position
+     *
+     * @param up
+     * @param samples
+     */
+    public void moveSamples(boolean up, Collection<String> samples) {
+        samples = Basic.sortSubsetAsContainingSet(sampleOrder, samples);
+        if (up) {
+            for (String sample : samples) {
+                final int index = sampleOrder.indexOf(sample);
+                swapSamples(index, index - 1);
+            }
+        } else { // down
+            for (String sample : Basic.reverseList(samples)) {
+                final int index = sampleOrder.indexOf(sample);
+                swapSamples(index, index + 1);
+            }
+        }
+    }
+
+    private void swapSamples(int index1, int index2) {
+        final int min = Math.min(index1, index2);
+        final int max = Math.max(index1, index2);
+        if (min != max && min >= 0 && max < sampleOrder.size()) {
+            final String minSample = sampleOrder.get(min);
+            final String maxSample = sampleOrder.get(max);
+            sampleOrder.set(min, maxSample);
+            sampleOrder.set(max, minSample);
+        }
+    }
 }

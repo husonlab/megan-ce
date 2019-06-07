@@ -57,7 +57,7 @@ public class PageSetupCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/PageSetup16.gif");
+        return ResourceManager.getIcon("sun/PageSetup16.gif");
     }
 
     /**

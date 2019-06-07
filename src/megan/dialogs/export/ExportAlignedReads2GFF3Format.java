@@ -28,7 +28,6 @@ import megan.classification.ClassificationManager;
 import megan.data.*;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.dialogs.lrinspector.TableItem;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.TaxonomyData;
 

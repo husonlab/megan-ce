@@ -45,7 +45,7 @@ public class ComputeTotalBiomeCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         final Collection<String> samples;
         if (getViewer() instanceof SamplesViewer)
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         else if (getViewer() instanceof ClassificationViewer)
             samples = ((ClassificationViewer) getViewer()).getDocument().getSampleNames();
         else
@@ -57,7 +57,7 @@ public class ComputeTotalBiomeCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof ClassificationViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1;
+        return getViewer() instanceof ClassificationViewer || getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedSamples() > 1;
     }
 
     public boolean isCritical() {

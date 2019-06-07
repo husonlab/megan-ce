@@ -18,14 +18,11 @@
  */
 package megan.rma6;
 
-import jloda.util.Basic;
-import jloda.util.FileIterator;
-import jloda.util.ICloseableIterator;
-import jloda.util.Single;
+import jloda.util.*;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 import megan.parsers.blast.ISAMIterator;
 import megan.parsers.blast.IteratorManager;
 import megan.parsers.sam.SAMMatch;
@@ -73,7 +70,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
             format = BlastFileFormat.detectFormat(null, blastFile, false);
         }
         if (blastMode == BlastMode.Unknown) {
-            blastMode = BlastMode.detectMode(null, blastFile, false);
+            blastMode = BlastModeUtils.detectMode(null, blastFile, false);
         }
         this.blastMode = blastMode;
 

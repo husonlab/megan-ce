@@ -18,9 +18,9 @@
  */
 package megan.rma6;
 
+import jloda.util.BlastMode;
 import megan.io.IInputReader;
 import megan.io.IOutputWriter;
-import megan.parsers.blast.BlastMode;
 
 import java.io.IOException;
 

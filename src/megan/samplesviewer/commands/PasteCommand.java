@@ -44,10 +44,10 @@ public class PasteCommand extends ClipboardBase implements ICommand {
             @Override
             public void run() {
                 SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-                samplesViewer.getSamplesTable().pasteClipboard();
-                samplesViewer.getSamplesTable().getDataGrid().save(samplesViewer.getSampleAttributeTable(), null);
+                samplesViewer.getSamplesTableView().pasteClipboard();
+                samplesViewer.getSamplesTableView().syncFromViewToDocument();
                 samplesViewer.getCommandManager().updateEnableStateFXItems();
-                if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTable().getDataGrid().isChanged(samplesViewer.getSampleAttributeTable())) {
+                if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTableView().getUpdate() > 0) {
                     samplesViewer.getDocument().setDirty(true);
                     samplesViewer.setWindowTitle();
                 }
@@ -56,7 +56,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedCols() > 0;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
     public static final String ALT_NAME = "Samples Viewer Paste";
@@ -74,7 +74,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Paste16.gif");
+        return ResourceManager.getIcon("sun/Paste16.gif");
     }
 
     public boolean isCritical() {
@@ -82,7 +82,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

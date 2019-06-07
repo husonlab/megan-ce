@@ -97,7 +97,7 @@ public class ExportDataCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/SaveAs16.gif");
+        return ResourceManager.getIcon("sun/SaveAs16.gif");
     }
 
     public String getDescription() {
@@ -109,6 +109,6 @@ public class ExportDataCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }

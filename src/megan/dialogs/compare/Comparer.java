@@ -26,7 +26,6 @@ import megan.core.DataTable;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;
 import megan.main.MeganProperties;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 

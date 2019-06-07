@@ -18,7 +18,6 @@
  */
 package megan.samplesviewer.commands;
 
-import javafx.application.Platform;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
@@ -39,18 +38,12 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-                samplesViewer.getSamplesTable().copyClipboard();
-            }
-        });
+        ((SamplesViewer) getViewer()).getSamplesTableView().copyToClipboard();
     }
 
     public boolean isApplicable() {
         SamplesViewer sampleViewer = (SamplesViewer) getViewer();
-        return sampleViewer != null && sampleViewer.getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() > 0;
+        return sampleViewer != null && sampleViewer.getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
     public String getAltName() {
@@ -66,7 +59,7 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif");
+        return ResourceManager.getIcon("sun/Copy16.gif");
     }
 
     public boolean isCritical() {
@@ -74,7 +67,7 @@ public class CopyCommand extends ClipboardBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }
 

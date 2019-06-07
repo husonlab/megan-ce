@@ -24,14 +24,11 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.compare.Comparer;
-import megan.samplesviewer.SamplesSpreadSheet;
+import megan.samplesviewer.SamplesTableView;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
 
 /**
  * * compare by command
@@ -53,23 +50,17 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final String attribute = viewer.getSamplesTable().getASelectedColumn();
-        final SamplesSpreadSheet samplesTable = ((SamplesViewer) getViewer()).getSamplesTable();
+        final String attribute = viewer.getSamplesTableView().getASelectedAttribute();
+        final SamplesTableView samplesTable = ((SamplesViewer) getViewer()).getSamplesTableView();
 
-        final List<String> samples = new ArrayList<>();
-
-        final BitSet selected = samplesTable.getSelectedSampleIndices();
-        for (int row = selected.nextSetBit(1); row != -1; row = selected.nextSetBit(row + 1))
-            samples.add(samplesTable.getDataGrid().getRowName(row));
-
-        if (attribute != null && samples.size() > 0) {
+        if (attribute != null && samplesTable.getCountSelectedSamples() > 0) {
             execute("compareBy attribute='" + attribute + "' mode=" + Comparer.COMPARISON_MODE.RELATIVE.toString().toLowerCase() +
-                    " samples='" + Basic.toString(samples, "' '") + "';");
+                    " samples='" + Basic.toString(samplesTable.getSelectedSamples(), "' '") + "';");
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() == 1;
     }
 
     public String getName() {

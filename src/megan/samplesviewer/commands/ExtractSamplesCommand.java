@@ -48,14 +48,14 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         SamplesViewer viewer = (SamplesViewer) getViewer();
-        List<String> samples = viewer.getSamplesTable().getSelectedSamplesInOrder();
+        List<String> samples = viewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0) {
             execute("extract samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 0;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedSamples() > 0;
     }
 
     public String getName() {

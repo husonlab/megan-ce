@@ -24,6 +24,7 @@ import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.dialogs.compare.CompareWindow;
 import megan.dialogs.compare.Comparer;
+import megan.dialogs.compare.MyListItem;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -123,7 +124,7 @@ public class ApplyCommand extends CommandBase implements ICommand {
                     return true;
                 Document.ReadAssignmentMode readAssignmentMode = null;
                 for (Object obj : viewer.getJList().getSelectedValuesList()) {
-                    final CompareWindow.MyListItem myListItem = (CompareWindow.MyListItem) obj;
+                    final MyListItem myListItem = (MyListItem) obj;
                     if (readAssignmentMode == null)
                         readAssignmentMode = myListItem.getReadAssignmentMode();
                     else if (readAssignmentMode != myListItem.getReadAssignmentMode())

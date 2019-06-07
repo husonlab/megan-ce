@@ -24,15 +24,16 @@ import com.install4j.api.update.ApplicationDisplayMode;
 import com.install4j.api.update.UpdateChecker;
 import com.install4j.api.update.UpdateDescriptor;
 import com.install4j.api.update.UpdateDescriptorEntry;
+import jloda.Switches;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
+import jloda.swing.util.InfoMessage;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
@@ -69,7 +70,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/About16.gif");
+        return ResourceManager.getIcon("sun/About16.gif");
     }
 
     /**
@@ -91,30 +92,42 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 
-        ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
-        UpdateDescriptor updateDescriptor;
+        final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
+
+        System.err.println("applicationDisplayMode: " + applicationDisplayMode);
+
+
+        final UpdateDescriptor updateDescriptor;
         try {
             updateDescriptor = UpdateChecker.getUpdateDescriptor("http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/updates.xml", applicationDisplayMode);
         } catch (Exception e) {
             Basic.caught(e);
-            NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
+            new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);
+            //NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
             return;
         }
         if (updateDescriptor.getEntries().length > 0) {
-            if (!ProgramProperties.isUseGUI()) {
-                UpdateDescriptorEntry entry = updateDescriptor.getEntries()[0];
+            if (Switches.Install4JLaunchBug || !ProgramProperties.isUseGUI()) {
+                final UpdateDescriptorEntry entry = updateDescriptor.getEntries()[0];
+                /*
                 NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
                         + "\nPlease download from: http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/");
-                return;
+                        */
+
+                new InfoMessage(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
+                        + "\nPlease download from: http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/", true);
             }
         } else {
-            NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
+            new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);
+
+            //NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
             return;
         }
 
 
         // This will return immediately if you call it from the EDT,
 // otherwise it will block until the installer application exits
+
         ApplicationLauncher.launchApplicationInProcess("1691242905", null, new ApplicationLauncher.Callback() {
             public void exited(int exitValue) {
                 //TODO add your code here (not invoked on event dispatch thread)
@@ -164,7 +177,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "checkForUpdate";
+        return "checkForUpdate;";
     }
 
     /**

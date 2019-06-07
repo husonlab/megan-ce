@@ -19,8 +19,8 @@
 
 package megan.classification.data;
 
+import jloda.thirdparty.MurmurHash;
 import jloda.util.Basic;
-import malt.util.MurmurHash3;
 import megan.io.ByteFileGetterMappedMemory;
 
 import java.io.*;
@@ -207,7 +207,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      * @return hash
      */
     public static int computeHash(byte[] key, int mask) {
-        return Math.abs(MurmurHash3.murmurhash3x8632(key, 0, key.length, 666) & mask);
+        return Math.abs(MurmurHash.hash32(key, 0, key.length, 666) & mask);
     }
 
     /**
@@ -218,7 +218,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      * @return hash
      */
     public static int computeHash(byte[] key, int offset, int length, int mask) {
-        return Math.abs(MurmurHash3.murmurhash3x8632(key, offset, length, 666) & mask);
+        return Math.abs(MurmurHash.hash32(key, offset, length, 666) & mask);
     }
 
     /**

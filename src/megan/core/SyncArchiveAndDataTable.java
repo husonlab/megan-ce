@@ -19,12 +19,12 @@
 package megan.core;
 
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
-import megan.parsers.blast.BlastMode;
 
 import java.io.BufferedReader;
 import java.io.IOException;

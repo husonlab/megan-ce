@@ -73,7 +73,7 @@ public class CopyLabelCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif");
+        return ResourceManager.getIcon("sun/Copy16.gif");
     }
 
     /**

@@ -54,7 +54,7 @@ public class ShowAboutWindowCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/About16.gif");
+        return ResourceManager.getIcon("sun/About16.gif");
     }
 
     public boolean isCritical() {

@@ -23,12 +23,12 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.BasicSwing;
 import jloda.util.*;
 import jloda.util.interval.Interval;
-import malt.genes.CDS;
-import malt.genes.GeneItem;
-import malt.genes.GeneItemCreator;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
+import megan.genes.CDS;
+import megan.genes.GeneItem;
+import megan.genes.GeneItemCreator;
 import megan.io.OutputWriter;
 
 import java.io.File;

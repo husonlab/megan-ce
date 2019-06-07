@@ -334,7 +334,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     /**

@@ -23,9 +23,9 @@ import jloda.swing.util.ArgsOptions;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
-import malt.genes.GeneItem;
-import malt.genes.GeneItemCreator;
 import megan.classification.IdMapper;
+import megan.genes.GeneItem;
+import megan.genes.GeneItemCreator;
 import megan.io.IInputReader;
 import megan.io.InputReader;
 

@@ -29,7 +29,6 @@ import megan.data.IConnector;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
-import megan.parsers.blast.BlastMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +151,7 @@ public class ReadExtractorTool {
         final IConnector connector = doc.getConnector();
 
         if (extractCorrectedReads && doc.getBlastMode() != BlastMode.BlastX)
-            throw new IOException("Frame-shift correction only possible when BlastMode is BLASTX");
+            throw new IOException("Frame-shift correction only possible when BlastModeUtils is BLASTX");
 
         if (all) {
             try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {

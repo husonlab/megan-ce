@@ -84,7 +84,7 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
 
         final SamplesViewer samplesViewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
         if (samplesViewer != null)
-            samplesViewer.getSamplesTable().getDataGrid().save(samplesViewer.getSampleAttributeTable(), null);
+            samplesViewer.getSamplesTableView().syncFromViewToDocument();
 
         LinkedList<String> skipped = new LinkedList<>();
         Document doc = ((Director) getDir()).getDocument();
@@ -153,7 +153,7 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
         if (count > 0) {
             doc.setDirty(true);
             if (samplesViewer != null)
-                samplesViewer.getSamplesTable().getDataGrid().load(doc.getSampleAttributeTable());
+                samplesViewer.getSamplesTableView().syncFromDocumentToView();
             try {
                 doc.processReadHits();
                 NotificationsInSwing.showInformation(getViewer().getFrame(), String.format("Added %d reads to file '%s'", count, doc.getMeganFile().getName()));
@@ -199,7 +199,7 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     public boolean isCritical() {

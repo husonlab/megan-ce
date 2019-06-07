@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ *  MoveSamplesUpCommand.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,6 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package megan.samplesviewer.commands.samples;
 
 import jloda.swing.commands.CommandBase;
@@ -61,16 +62,13 @@ public class MoveSamplesUpCommand extends CommandBase implements ICommand {
 
         if (samples.size() > 0) {
             final SamplesViewer viewer = ((SamplesViewer) getViewer());
-            viewer.getSamplesTable().moveSamples(direction.equalsIgnoreCase("up"), samples.toArray(new String[samples.size()]));
-            getDir().execute("update reinduce=true;", getViewer().getCommandManager());
-
-
+            viewer.getSamplesTableView().moveSamples(direction.equalsIgnoreCase("up"), samples);
         }
     }
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final Collection<String> samples = viewer.getSamplesTable().getSelectedSamples();
+        final Collection<String> samples = viewer.getSamplesTableView().getSelectedSamples();
 
         if (samples.size() > 0) {
             final StringBuilder buf = new StringBuilder();
@@ -79,12 +77,12 @@ public class MoveSamplesUpCommand extends CommandBase implements ICommand {
                 buf.append(" '").append(attributeName).append("'");
             }
             buf.append(" direction=up;");
-            execute(buf.toString());
+            executeImmediately(buf.toString());
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 0 && !((SamplesViewer) getViewer()).getSamplesTable().getSelectedSampleIndices().get(1);
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedSamples() > 0 && !((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamplesIndices().contains(0);
     }
 
     public String getName() {
@@ -97,7 +95,7 @@ public class MoveSamplesUpCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Up16.gif");
+        return ResourceManager.getIcon("sun/Up16.gif");
     }
 
     public boolean isCritical() {
@@ -105,7 +103,7 @@ public class MoveSamplesUpCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
     }
 }

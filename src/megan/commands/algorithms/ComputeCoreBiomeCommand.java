@@ -51,7 +51,7 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         final Collection<String> samples;
         if (getViewer() instanceof SamplesViewer)
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamplesInOrder();
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         else if (getViewer() instanceof ClassificationViewer)
             samples = ((ClassificationViewer) getViewer()).getDocument().getSampleNames();
         else
@@ -80,7 +80,7 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return (getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getDocument().getNumberOfSamples() > 1) || (getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedSamples() > 1);
+        return (getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getDocument().getNumberOfSamples() > 1) || (getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedSamples() > 1);
     }
 
     public String getName() {

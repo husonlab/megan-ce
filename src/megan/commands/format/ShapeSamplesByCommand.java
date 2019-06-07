@@ -52,7 +52,7 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
 
         java.util.Collection<String> samples;
         if (getViewer() instanceof SamplesViewer) {
-            samples = ((SamplesViewer) getViewer()).getSamplesTable().getSelectedSamples();
+            samples = ((SamplesViewer) getViewer()).getSamplesTableView().getSelectedSamples();
         } else
             samples = doc.getSampleAttributeTable().getSampleSet();
 
@@ -62,11 +62,7 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
         for (String sample : samples) {
             Object value = doc.getSampleAttributeTable().get(sample, attribute);
             if (value != null) {
-                Integer count = value2Count.get(value.toString());
-                if (count == null) {
-                    value2Count.put(value.toString(), 1);
-                } else
-                    value2Count.put(value.toString(), count + 1);
+                value2Count.merge(value.toString(), 1, Integer::sum);
             }
         }
 

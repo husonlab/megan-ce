@@ -59,7 +59,7 @@ public class FindAgainCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/FindAgain16.gif");
+        return ResourceManager.getIcon("sun/FindAgain16.gif");
     }
 
     /**
@@ -68,7 +68,7 @@ public class FindAgainCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

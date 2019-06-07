@@ -114,7 +114,7 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         final SamplesViewer viewer = (SamplesViewer) getViewer();
 
-        final Collection<String> selected = viewer.getSamplesTable().getSelectedSamples();
+        final Collection<String> selected = viewer.getSamplesTableView().getSelectedSamples();
 
         if (selected.size() > 0) {
             String sample = selected.iterator().next();

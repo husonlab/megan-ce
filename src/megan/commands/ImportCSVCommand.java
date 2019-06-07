@@ -187,7 +187,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.CSVFILE);
 
         List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile,
-                new TextFileFilter(new String[]{"csv", "tsv", "csv", "tab"}), new TextFileFilter(new String[]{"csv", "tsv", "csv", "tab"}), event, "Open CSV file");
+                new TextFileFilter("csv", "tsv", "csv", "tab"), new TextFileFilter("csv", "tsv", "csv", "tab"), event, "Open CSV file");
         if (files != null && files.size() > 0) {
 
             File file = files.get(0);
@@ -237,7 +237,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Import16.gif");
+        return ResourceManager.getIcon("sun/Import16.gif");
     }
 
     public String getDescription() {

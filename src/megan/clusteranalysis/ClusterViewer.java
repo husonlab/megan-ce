@@ -85,7 +85,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
     private final Director dir;
     private final Document doc;
-    private final JFrame frame;
     private final JPanel mainPanel;
     private final StatusBar statusBar;
     private final JTabbedPane tabbedPane;
@@ -147,25 +146,24 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         this.dir = dir;
         this.doc = dir.getDocument();
 
-        frame = new JFrame();
-        frame.getContentPane().setLayout(new BorderLayout());
-        frame.setSize(600, 600);
-        frame.setLocationRelativeTo(parentViewer.getFrame());
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        getContentPane().setLayout(new BorderLayout());
+        setSize(600, 600);
+        setLocationRelativeTo(parentViewer.getFrame());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.clusteranalysis.commands"}, !ProgramProperties.isUseGUI());
 
         menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), getCommandManager());
 
-        frame.setJMenuBar(menuBar);
+        setJMenuBar(menuBar);
         MeganProperties.addPropertiesListListener(menuBar.getRecentFilesListener());
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
-        frame.add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
-        frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
+        setIconImage(ProgramProperties.getProgramIcon().getImage());
         statusBar = new StatusBar();
-        frame.add(statusBar, BorderLayout.SOUTH);
+        add(statusBar, BorderLayout.SOUTH);
 
         tabbedPane = new JTabbedPane();
 
@@ -188,7 +186,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             }
         });
 
-        frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+        getContentPane().add(splitPane, BorderLayout.CENTER);
 
         upgmaTab = new UPGMATab(this);
         njTab = new NJTab(this);
@@ -247,7 +245,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                     currentTab = tabId;
                 }
 
-                if (frame.isActive() && Formatter.getInstance() != null) {
+                if (isActive() && Formatter.getInstance() != null) {
                     Formatter.getInstance().setViewer(dir, getGraphView());
                 }
                 // updateView(IDirector.ALL);
@@ -259,9 +257,9 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         clusterAnalysisSearcher = new ClusterAnalysisSearcher(this);
         searchManager = new SearchManager(dir, this, clusterAnalysisSearcher, false, true);
 
-        frame.addWindowListener(new WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             public void windowActivated(WindowEvent event) {
-                MainViewer.setLastActiveFrame(frame);
+                MainViewer.setLastActiveFrame(ClusterViewer.this);
                 updateView(IDirector.ENABLE_STATE);
                 if (Formatter.getInstance() != null) {
                     Formatter.getInstance().setViewer(dir, getGraphView());
@@ -288,7 +286,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                 getDir().executeImmediately("close what=current;", getCommandManager());
                 if (dir.getDocument().getProgressListener() != null)
                     dir.getDocument().getProgressListener().setUserCancelled(true);
-                if (MainViewer.getLastActiveFrame() == frame)
+                if (MainViewer.getLastActiveFrame() == ClusterViewer.this)
                     MainViewer.setLastActiveFrame(null);
             }
         });
@@ -305,7 +303,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
-        frame.setVisible(true);
+        setVisible(true);
         splitPane.setDividerLocation(1.0);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -330,16 +328,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      * @return frame
      */
     public JFrame getFrame() {
-        return frame;
-    }
-
-    /**
-     * gets the title
-     *
-     * @return title
-     */
-    public String getTitle() {
-        return frame.getTitle();
+        return this;
     }
 
     public void setTitle() {
@@ -358,8 +347,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             newTitle += " - [" + dir.getID() + "] - " + ProgramProperties.getProgramVersion();
 
 
-        if (!frame.getTitle().equals(newTitle)) {
-            frame.setTitle(newTitle);
+        if (!getTitle().equals(newTitle)) {
+            setTitle(newTitle);
             ProjectManager.updateWindowMenus();
         }
     }
@@ -411,7 +400,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                     }
                 }
 
-                if (frame.isActive())
+                if (isActive())
                     graphView.requestFocusInWindow();
                 final Set<String> selectedLabels = doc.getSampleSelection().getAll();
                 final NodeSet toSelect = new NodeSet(graphView.getGraph());
@@ -460,12 +449,12 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         if (!findToolBar.isEnabled() && showFindToolBar) {
             mainPanel.add(findToolBar, BorderLayout.NORTH);
             findToolBar.setEnabled(true);
-            frame.getContentPane().validate();
+            getContentPane().validate();
             getCommandManager().updateEnableState();
         } else if (findToolBar.isEnabled() && !showFindToolBar) {
             mainPanel.remove(findToolBar);
             findToolBar.setEnabled(false);
-            frame.getContentPane().validate();
+            getContentPane().validate();
             getCommandManager().updateEnableState();
         }
 
@@ -613,11 +602,11 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      */
     public void destroyView() throws CanceledException {
         searchManager.getFindDialogAsToolBar().close();
-        frame.setVisible(false);
+        setVisible(false);
         doc.getSampleSelection().removeSampleSelectionListener(selectionListener);
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
-        frame.dispose();
+        dispose();
     }
 
     /**

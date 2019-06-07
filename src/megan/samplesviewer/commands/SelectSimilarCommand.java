@@ -18,10 +18,9 @@
  */
 package megan.samplesviewer.commands;
 
-import javafx.collections.ObservableList;
-import javafx.scene.control.TablePosition;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.util.Triplet;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
@@ -44,19 +43,15 @@ public class SelectSimilarCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = (SamplesViewer) getViewer();
 
-        final ObservableList selectedCells = viewer.getSamplesTable().getSpreadsheetView().getSelectionModel().getSelectedCells();
-        if (selectedCells.size() == 1) {
-            Object obj = selectedCells.get(0);
-            int row = ((TablePosition) obj).getRow();
-            int col = ((TablePosition) obj).getColumn();
-            final String attribute = viewer.getSamplesTable().getDataGrid().getColumnName(col);
-            final String value = viewer.getSamplesTable().getDataGrid().getValue(row, col);
-            executeImmediately("select similar name='" + attribute + "' value='" + value + "';");
+        final Triplet<String, String, String> selectedCell = viewer.getSamplesTableView().getSingleSelectedCell();
+
+        if (selectedCell != null) {
+            executeImmediately("select similar name='" + selectedCell.getSecond() + "' value='" + selectedCell.getThird() + "';");
         }
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedCols() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() == 1;
     }
 
     public String getName() {

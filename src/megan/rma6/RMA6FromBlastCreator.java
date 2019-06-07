@@ -29,7 +29,6 @@ import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.io.InputOutputReaderWriter;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
 import megan.parsers.blast.ISAMIterator;
 import megan.parsers.blast.IteratorManager;
 

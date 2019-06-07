@@ -104,7 +104,7 @@ public class ChooseMeganFileCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/SaveAs16.gif");
+        return ResourceManager.getIcon("sun/SaveAs16.gif");
     }
 
     /**

@@ -99,7 +99,7 @@ public class CollapseNodesCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/AlignJustifyHorizontal16.gif");
+        return ResourceManager.getIcon("sun/AlignJustifyHorizontal16.gif");
     }
 
     /**
@@ -108,7 +108,7 @@ public class CollapseNodesCommand extends CommandBase implements ICommand {
      * @return accelerator key
      */
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     /**

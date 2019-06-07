@@ -19,8 +19,8 @@
 package megan.core;
 
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
-import megan.parsers.blast.BlastMode;
 
 import java.io.*;
 import java.util.*;

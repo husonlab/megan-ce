@@ -32,7 +32,7 @@ import megan.core.Document;
 import megan.data.IReadBlock;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 import megan.rma6.BlastFileReadBlockIterator;
 
 import java.io.BufferedWriter;
@@ -146,7 +146,7 @@ public class Blast2LCA {
             blastFormat = BlastFileFormat.detectFormat(null, blastFile, true).toString();
         }
         if (blastMode.equalsIgnoreCase(BlastMode.Unknown.toString()))
-            blastMode = BlastMode.detectMode(null, blastFile, false).toString();
+            blastMode = BlastModeUtils.detectMode(null, blastFile, false).toString();
 
         final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
         // load taxonomy:
@@ -180,7 +180,7 @@ public class Blast2LCA {
             System.err.println("Reading file: " + blastFile);
             System.err.println("Writing file: " + outputFile);
 
-            try (BlastFileReadBlockIterator it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoringCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, longReads)) {
+            try (BlastFileReadBlockIterator it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoreCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, longReads)) {
                 final ProgressPercentage progressListener = new ProgressPercentage();
                 progressListener.setMaximum(it.getMaximumProgress());
 

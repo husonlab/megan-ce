@@ -31,7 +31,7 @@ import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 import megan.rma6.RMA6Connector;
 import megan.rma6.RMA6FromBlastCreator;
 import megan.util.SAMFileFilter;
@@ -267,7 +267,7 @@ public class SAM2RMA6 {
             doc.setMinSupport(minSupport);
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
-            doc.setBlastMode(BlastMode.determineBlastModeSAMFile(samFiles[i]));
+            doc.setBlastMode(BlastModeUtils.determineBlastModeSAMFile(samFiles[i]));
             doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setLcaCoveragePercent(lcaCoveragePercent);
             doc.setMinPercentReadToCover(minPercentReadToCover);

@@ -22,6 +22,7 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -36,7 +37,6 @@ import megan.dialogs.parameters.commands.ChooseContaminantsFileCommand;
 import megan.dialogs.parameters.commands.UseContaminantFilterCommand;
 import megan.importblast.commands.ListContaminantsCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
-import megan.parsers.blast.BlastMode;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

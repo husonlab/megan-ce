@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ *  MoveSamplesDownCommand.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -51,7 +51,7 @@ public class MoveSamplesDownCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final Collection<String> samples = viewer.getSamplesTable().getSelectedSamples();
+        final Collection<String> samples = viewer.getSamplesTableView().getSelectedSamples();
 
         if (samples.size() > 0) {
             final StringBuilder buf = new StringBuilder();
@@ -60,14 +60,14 @@ public class MoveSamplesDownCommand extends CommandBase implements ICommand {
                 buf.append(" '").append(attributeName).append("'");
             }
             buf.append(" direction=down;");
-            execute(buf.toString());
+            executeImmediately(buf.toString());
         }
     }
 
     public boolean isApplicable() {
         if (getViewer() instanceof SamplesViewer) {
             SamplesViewer viewer = (SamplesViewer) getViewer();
-            return viewer.getSamplesTable().getNumberOfSelectedSamples() > 0 && !viewer.getSamplesTable().getSelectedSampleIndices().get(Math.max(0, viewer.getSamplesTable().getDataGrid().getRowCount() - 1));
+            return viewer.getSamplesTableView().getCountSelectedSamples() > 0 && !viewer.getSamplesTableView().getSelectedSamplesIndices().contains(Math.max(0, viewer.getSamplesTableView().getSampleCount() - 1));
         } else
             return false;
     }
@@ -82,7 +82,7 @@ public class MoveSamplesDownCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/navigation/Down16.gif");
+        return ResourceManager.getIcon("sun/Down16.gif");
     }
 
     public boolean isCritical() {
@@ -90,7 +90,7 @@ public class MoveSamplesDownCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
     }
 }

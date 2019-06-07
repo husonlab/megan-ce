@@ -18,10 +18,12 @@
  */
 package megan.main;
 
+import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.message.MessageWindow;
 import jloda.swing.util.About;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.chart.data.ChartCommandHelper;
@@ -75,6 +77,8 @@ public class Megan6 {
      * @throws Exception
      */
     public void parseArguments(String args[]) throws Exception {
+        ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+        ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");
         Basic.startCollectionStdErr();
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
         CommandManager.getGlobalCommands().addAll(ChartCommandHelper.getChartDrawerCommands());
@@ -103,21 +107,20 @@ public class Megan6 {
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
         options.done();
 
+        System.err.println("Java version: " + System.getProperty("java.version"));
         if (silentMode) {
             Basic.hideSystemErr();
             Basic.hideSystemOut();
             Basic.stopCollectingStdErr();
         }
 
-        if (Basic.getDebugMode())
-            System.err.println("Java version: " + System.getProperty("java.version"));
 
         MeganProperties.initializeProperties(propertiesFile);
         ProgramProperties.put("usingInstall4j", options.isUsingInstall4j());
 
         final String treeFile = ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE);
 
-        About.setAbout("resources.images", "megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE);
+        About.setAbout("megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE);
         About.getAbout().showAbout();
 
         SwingUtilities.invokeLater(new Runnable() {

@@ -23,11 +23,11 @@ import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.Document;
-import megan.parsers.blast.BlastMode;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;

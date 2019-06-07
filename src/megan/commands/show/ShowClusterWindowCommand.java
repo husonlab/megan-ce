@@ -49,7 +49,8 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
                     ClusterViewer.clusterViewerAddOn.apply(viewer);
                 dir.addViewer(viewer);
             }
-            viewer.toFront();
+            viewer.getFrame().toFront();
+
         } else if (getViewer() instanceof ClassificationViewer) {
             final String name = getViewer().getClassName().toUpperCase() + "ClusterViewer";
             ClusterViewer viewer = (ClusterViewer) dir.getViewerByClassName(name);

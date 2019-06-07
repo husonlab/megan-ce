@@ -18,8 +18,7 @@
  */
 package megan.samplesviewer;
 
-import javafx.collections.ListChangeListener;
-import javafx.scene.control.TablePosition;
+import javafx.application.Platform;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IViewerWithFindToolBar;
 import jloda.swing.director.ProjectManager;
@@ -30,7 +29,6 @@ import jloda.swing.util.MenuConfiguration;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.util.CanceledException;
-import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
@@ -38,7 +36,6 @@ import megan.core.SampleAttributeTable;
 import megan.core.SelectionSet;
 import megan.dialogs.input.InputDialog;
 import megan.fx.CommandManagerFX;
-import megan.fx.SpreadSheetSearcher;
 import megan.main.MeganProperties;
 import megan.samplesviewer.commands.PasteCommand;
 import megan.viewer.MainViewer;
@@ -49,8 +46,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Set;
 
 /**
  * Viewer for working with metadata
@@ -79,9 +78,9 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
     private final Set<String> needToReselectSamples = new HashSet<>();
 
-    private final SamplesSpreadSheet samplesSpreadSheet;
+    private final SamplesTableView sampleTableView;
 
-    private final SpreadSheetSearcher spreadSheetSearcher;
+    private final TableViewSearcher tableViewSearcher;
 
     /**
      * constructor
@@ -111,15 +110,15 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         mainPanel.setLayout(new BorderLayout());
         frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
-        samplesSpreadSheet = new SamplesSpreadSheet(this);
-        mainPanel.add(samplesSpreadSheet.getPanel());
+        sampleTableView = new SamplesTableView(this);
+        mainPanel.add(sampleTableView.getPanel());
 
         frame.getContentPane().add(statusbar, BorderLayout.SOUTH);
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
-        spreadSheetSearcher = new SpreadSheetSearcher(frame, samplesSpreadSheet.getSpreadsheetView());
-        searchManager = new SearchManager(dir, this, spreadSheetSearcher, false, true);
+        tableViewSearcher = new TableViewSearcher(sampleTableView.getTableView());
+        searchManager = new SearchManager(dir, this, tableViewSearcher, false, true);
 
         this.menuBar = new MenuBar(this, menuConfig, getCommandManager());
         frame.setJMenuBar(menuBar);
@@ -160,8 +159,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
             public void windowDeactivated(WindowEvent event) {
                 List<String> list = new ArrayList<>();
-                list.addAll(samplesSpreadSheet.getSelectedAttributes());
-                list.addAll(samplesSpreadSheet.getSelectedSamples());
+                list.addAll(sampleTableView.getSelectedAttributes());
+                list.addAll(sampleTableView.getSelectedSamples());
                 if (list.size() != 0) {
                     ProjectManager.getPreviouslySelectedNodeLabels().clear();
                     ProjectManager.getPreviouslySelectedNodeLabels().addAll(list);
@@ -176,36 +175,9 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
             }
         });
 
-        selectionListener = new SelectionSet.SelectionListener() {
-            public void changed(Collection<String> labels, boolean selected) {
-                // todo: select samples here
-            }
-        };
+        selectionListener = (labels, selected) -> Platform.runLater(() -> sampleTableView.selectSamples(labels, selected));
         doc.getSampleSelection().addSampleSelectionListener(selectionListener);
 
-
-        samplesSpreadSheet.getSpreadsheetView().getSelectionModel().getSelectedCells().addListener(new ListChangeListener<TablePosition>() {
-            @Override
-            public void onChanged(Change<? extends TablePosition> c) {
-                samplesSpreadSheet.updateNumberOfSelectedRowsAndCols();
-                while (c.next()) {
-                    for (TablePosition pos : c.getRemoved()) {
-                        spreadSheetSearcher.getSelected().remove(new Pair<>(pos.getRow(), pos.getColumn()));
-                    }
-                    for (TablePosition pos : c.getAddedSubList()) {
-                        spreadSheetSearcher.getSelected().add(new Pair<>(pos.getRow(), pos.getColumn()));
-                    }
-                }
-
-                // change enabled state here
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateView(Director.ENABLE_STATE);
-                    }
-                });
-            }
-        });
         frame.setVisible(true);
     }
 
@@ -245,6 +217,10 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         return commandManager;
     }
 
+    public Director getDir() {
+        return dir;
+    }
+
     /**
      * ask view to rescan itself
      *
@@ -255,7 +231,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         //     System.err.println("updateView(): not in Swing or FX thread!");
 
         if (what.equals(Director.ALL)) {
-            samplesSpreadSheet.syncFromDocument();
+            sampleTableView.syncFromDocumentToView();
         }
 
         final FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
@@ -282,15 +258,11 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
                 findToolBar.setShowReplaceBar(showReplaceToolBar);
         }
 
-        if (!doc.isDirty() && samplesSpreadSheet.getDataGrid().isChanged(getSampleAttributeTable()))
+        if (!doc.isDirty() && sampleTableView.isDirty())
             doc.setDirty(true);
 
         getCommandManager().updateEnableStateSwingItems();
-        javafx.application.Platform.runLater(new Runnable() {
-            public void run() {
-                getCommandManager().updateEnableStateFXItems();
-            }
-        });
+        javafx.application.Platform.runLater(() -> getCommandManager().updateEnableStateFXItems());
 
         setWindowTitle();
         frame.setCursor(Cursor.getDefaultCursor());
@@ -307,7 +279,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         getCommandManager().setEnableCritical(false);
         searchManager.getFindDialogAsToolBar().setEnableCritical(false);
-        samplesSpreadSheet.lockUserInput();
+        sampleTableView.lockUserInput();
         menuBar.setEnableRecentFileMenuItems(false);
     }
 
@@ -315,7 +287,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
      * ask view to allow user input
      */
     public void unlockUserInput() {
-        samplesSpreadSheet.unlockUserInput();
+        sampleTableView.unlockUserInput();
         getCommandManager().setEnableCritical(true);
         frame.setCursor(Cursor.getDefaultCursor());
         searchManager.getFindDialogAsToolBar().setEnableCritical(true);
@@ -332,8 +304,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         SampleAttributeTable sampleAttributeTable = doc.getSampleAttributeTable();
         String message = "Samples=" + sampleAttributeTable.getNumberOfSamples();
         message += " Attributes=" + sampleAttributeTable.getNumberOfUnhiddenAttributes();
-        if (getSamplesTable().getNumberOfSelectedSamples() > 0 || getSamplesTable().getNumberOfSelectedCols() > 0) {
-            message += " (Selection: " + getSamplesTable().getNumberOfSelectedSamples() + " samples, " + getSamplesTable().getNumberOfSelectedCols() + " attributes)";
+        if (getSamplesTableView().getCountSelectedSamples() > 0 || getSamplesTableView().getCountSelectedAttributes() > 0) {
+            message += " (Selection: " + getSamplesTableView().getCountSelectedSamples() + " samples, " + getSamplesTableView().getCountSelectedAttributes() + " attributes)";
         }
         statusbar.setText2(message);
     }
@@ -353,15 +325,17 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     public void destroyView() throws CanceledException {
         locked = true;
         ProgramProperties.put("SampleViewerGeometry", new int[]{frame.getLocation().x, frame.getLocation().y, frame.getSize().width, frame.getSize().height});
+        frame.setVisible(false);
 
         searchManager.getFindDialogAsToolBar().close();
 
         doc.getSampleSelection().removeSampleSelectionListener(selectionListener);
 
-        frame.setVisible(false);
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
+        frame.setVisible(false);
+
         dir.removeViewer(this);
-        frame.dispose();
+        //frame.dispose();
     }
 
     /**
@@ -441,8 +415,8 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         return needToReselectSamples;
     }
 
-    public SamplesSpreadSheet getSamplesTable() {
-        return samplesSpreadSheet;
+    public SamplesTableView getSamplesTableView() {
+        return sampleTableView;
     }
 
     /**

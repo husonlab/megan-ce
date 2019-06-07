@@ -47,13 +47,13 @@ public class GroupByCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final String attribute = viewer.getSamplesTable().getASelectedColumn();
+        final String attribute = viewer.getSamplesTableView().getASelectedAttribute();
         if (attribute != null)
             execute("groupBy attribute='" + attribute + "';show window=groups;");
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedCols() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() == 1;
     }
 
     public String getName() {

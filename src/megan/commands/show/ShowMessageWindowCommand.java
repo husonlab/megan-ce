@@ -59,7 +59,7 @@ public class ShowMessageWindowCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/History16.gif");
+        return ResourceManager.getIcon("sun/History16.gif");
     }
 
     /**

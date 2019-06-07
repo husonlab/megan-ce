@@ -23,6 +23,8 @@ import javafx.scene.control.TextInputDialog;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.Director;
+import megan.core.SampleAttributeTable;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
@@ -54,13 +56,12 @@ public class RenameSampleCommand extends CommandBase implements ICommand {
         String newName = np.getWordRespectCase();
         np.matchIgnoreCase(";");
 
-        final SamplesViewer viewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
-        viewer.getSamplesTable().renameSample(sampleName, newName);
+        (((Director) getDir()).getDocument()).renameSample(sampleName, newName);
     }
 
     public void actionPerformed(ActionEvent event) {
         SamplesViewer viewer = (SamplesViewer) getViewer();
-        String sampleName = viewer.getSamplesTable().getSelectedSamples().iterator().next();
+        String sampleName = viewer.getSamplesTableView().getASelectedSample();
         String newName = null;
         if (Platform.isFxApplicationThread()) {
             TextInputDialog dialog = new TextInputDialog(sampleName);
@@ -82,13 +83,14 @@ public class RenameSampleCommand extends CommandBase implements ICommand {
                     count++;
                 newName += "." + count;
             }
-            execute("rename sample='" + sampleName + "' newName='" + newName + "';");
+            execute("rename sample='" + sampleName + "' newName='" + newName + "';" +
+                    "labelBy attribute='" + SampleAttributeTable.SAMPLE_ID + "'  samples=all;");
         }
     }
 
     public boolean isApplicable() {
         SamplesViewer viewer = (SamplesViewer) getViewer();
-        return !viewer.getDocument().getMeganFile().hasDataConnector() && (viewer.getSamplesTable().getSelectedSamples().size() == 1);
+        return !viewer.getDocument().getMeganFile().hasDataConnector() && (viewer.getSamplesTableView().getCountSelectedSamples() == 1);
     }
 
     public String getName() {
@@ -113,6 +115,6 @@ public class RenameSampleCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK);
+        return KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK);
     }
 }

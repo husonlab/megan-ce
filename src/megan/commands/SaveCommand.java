@@ -70,8 +70,8 @@ public class SaveCommand extends CommandBase implements ICommand {
             if (summary) {
                 final SamplesViewer sampleViewer = (SamplesViewer) getDir().getViewerByClass(SamplesViewer.class);
                 if (sampleViewer != null) {
-                    sampleViewer.getSamplesTable().getDataGrid().save(doc.getSampleAttributeTable(), null);
-                    sampleViewer.getSamplesTable().getDataGrid().reload(doc.getSampleAttributeTable());
+
+                    sampleViewer.getSamplesTableView().syncFromViewToDocument();
                 }
 
                 if (viewer != null)
@@ -160,7 +160,7 @@ public class SaveCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/SaveAs16.gif");
+        return ResourceManager.getIcon("sun/SaveAs16.gif");
     }
 
     public String getDescription() {
@@ -168,7 +168,7 @@ public class SaveCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     public boolean isCritical() {

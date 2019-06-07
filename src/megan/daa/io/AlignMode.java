@@ -19,8 +19,6 @@
 
 package megan.daa.io;
 
-import megan.parsers.blast.BlastMode;
-
 /**
  * alignment mode enum
  * Daniel Huson, 8.2015
@@ -53,15 +51,15 @@ public enum AlignMode {
         }
     }
 
-    public static BlastMode getBlastMode(int rank) {
+    public static jloda.util.BlastMode getBlastMode(int rank) {
         switch (rank) {
             case 2:
-                return BlastMode.BlastP;
+                return jloda.util.BlastMode.BlastP;
             case 3:
-                return BlastMode.BlastX;
+                return jloda.util.BlastMode.BlastX;
             default:
             case 4:
-                return BlastMode.BlastN;
+                return jloda.util.BlastMode.BlastN;
         }
 
     }

@@ -19,6 +19,7 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.Pair;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;

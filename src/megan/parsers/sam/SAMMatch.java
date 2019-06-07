@@ -19,9 +19,9 @@
 package megan.parsers.sam;
 
 import jloda.util.Basic;
+import jloda.util.BlastMode;
 import jloda.util.SequenceUtils;
 import jloda.util.Single;
-import megan.parsers.blast.BlastMode;
 import megan.util.BlosumMatrix;
 
 import java.io.IOException;

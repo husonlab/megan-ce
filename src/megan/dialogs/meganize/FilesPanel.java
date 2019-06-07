@@ -22,7 +22,7 @@ import jloda.swing.commands.CommandManager;
 import megan.dialogs.meganize.commands.ChooseDAAFilesCommand;
 import megan.importblast.commands.SetLongReadsCommand;
 import megan.parsers.blast.BlastFileFormat;
-import megan.parsers.blast.BlastMode;
+import megan.parsers.blast.BlastModeUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -117,7 +117,7 @@ public class FilesPanel extends JPanel {
                 try {
                     String format = BlastFileFormat.detectFormat(dialog, blastFileName, false).toString();
                     dialog.getFormatCBox().setSelectedFormat(format);
-                    String mode = BlastMode.detectMode(dialog, blastFileName, false).toString();
+                    String mode = BlastModeUtils.detectMode(dialog, blastFileName, false).toString();
                     dialog.getAlignmentModeCBox().setSelectedMode(mode);
                 } catch (Exception e) {
                     dialog.getFormatCBox().setSelectedFormat("Unknown");

@@ -61,13 +61,13 @@ public class DeleteColumnCommand extends CommandBase implements ICommand {
 
         if (attributes.size() > 0) {
             final SamplesViewer viewer = ((SamplesViewer) getViewer());
-            viewer.getSamplesTable().deleteColumns(attributes.toArray(new String[attributes.size()]));
+            viewer.getSamplesTableView().deleteColumns(attributes.toArray(new String[0]));
         }
     }
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final Collection<String> attributes = viewer.getSamplesTable().getSelectedAttributes();
+        final Collection<String> attributes = viewer.getSamplesTableView().getSelectedAttributes();
 
         if (attributes.size() > 0) {
             final String message = "Confirm delete column '" + attributes.iterator().next() + "'" + (attributes.size() > 1 ? " (and " + (attributes.size() - 1) + " others)" : "");
@@ -79,7 +79,7 @@ public class DeleteColumnCommand extends CommandBase implements ICommand {
                     buf.append(" '").append(attributeName).append("'");
                 }
                 buf.append(";");
-                execute(buf.toString());
+                executeImmediately(buf.toString());
             }
         }
     }
@@ -87,7 +87,7 @@ public class DeleteColumnCommand extends CommandBase implements ICommand {
 
     public boolean isApplicable() {
         final SamplesViewer samplesViewer = ((SamplesViewer) getViewer());
-        return samplesViewer != null && samplesViewer.getSamplesTable().getNumberOfSelectedCols() > 0;
+        return samplesViewer != null && samplesViewer.getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
     public String getName() {
@@ -100,7 +100,7 @@ public class DeleteColumnCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/table/ColumnDelete16.gif");
+        return ResourceManager.getIcon("sun/ColumnDelete16.gif");
     }
 
     public boolean isCritical() {
@@ -108,6 +108,6 @@ public class DeleteColumnCommand extends CommandBase implements ICommand {
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 }

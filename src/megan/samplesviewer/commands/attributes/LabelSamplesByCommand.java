@@ -47,13 +47,13 @@ public class LabelSamplesByCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         final SamplesViewer viewer = ((SamplesViewer) getViewer());
-        final String attribute = viewer.getSamplesTable().getASelectedColumn();
+        final String attribute = viewer.getSamplesTableView().getASelectedAttribute();
         if (attribute != null)
             execute("labelBy attribute='" + attribute + "';");
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTable().getNumberOfSelectedColsIncludingSamplesCol() == 1;
+        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() == 1;
     }
 
     public String getName() {

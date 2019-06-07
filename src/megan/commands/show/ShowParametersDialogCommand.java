@@ -202,11 +202,11 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
     }
 
     public KeyStroke getAcceleratorKey() {
-        return KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+        return KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Preferences16.gif");
+        return ResourceManager.getIcon("sun/Preferences16.gif");
     }
 }
 

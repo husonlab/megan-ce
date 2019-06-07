@@ -123,7 +123,7 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
     }
 
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Export16.gif");
+        return ResourceManager.getIcon("sun/Export16.gif");
     }
 
     public String getDescription() {

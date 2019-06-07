@@ -23,21 +23,17 @@ fi
 
 bin_dir=`dirname "$0"`       # may be relative path
 bin_dir=`cd "$bin_dir" && pwd`    # ensure absolute path
+
 jars_dir="$bin_dir/../jars"
+jars2_dir="$bin_dir/../jars2"
 
 jre_dir=${installer:sys.preferredJre}
 
-if [ -z $jre_dir ]
-then
-	java=java
-	vmOptions="-Xmx8G"
-	classpath="../antbuild/MEGAN.jar:$jars_dir/MALT.jar:$jars_dir/data.jar:"
-else
-	java=$jre_dir/bin/java
-	vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
-	classpath="$jars_dir/MEGAN.jar:$jars_dir/MALT.jar:$jars_dir/data.jar:"
-fi
+java=$jre_dir/bin/java
+vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
+jfx_dir="$bin_dir/../openjfx/${compiler:sys.platform}/lib"
+modulepath="$jars_dir:$jars2_dir:$jfx_dir"
 
-java_flags="-server -Duser.language=en -Duser.region=US -Djava.awt.headless=true $vmOptions"
+java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
 
-$java $java_flags -cp "$classpath" megan.tools.DAA2Info  $options
+$java $java_flags --module-path=$modulepath --add-modules=megan megan.tools.DAA2Info  $options

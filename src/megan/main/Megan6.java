@@ -76,7 +76,7 @@ public class Megan6 {
      *
      * @throws Exception
      */
-    public void parseArguments(String args[]) throws Exception {
+    public void parseArguments(String[] args) throws Exception {
         ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
         ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");
         Basic.startCollectionStdErr();

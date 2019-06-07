@@ -107,13 +107,12 @@ public class Megan6 {
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
         options.done();
 
-        System.err.println("Java version: " + System.getProperty("java.version"));
         if (silentMode) {
             Basic.hideSystemErr();
             Basic.hideSystemOut();
             Basic.stopCollectingStdErr();
         }
-
+        System.err.println("Java version: " + System.getProperty("java.version"));
 
         MeganProperties.initializeProperties(propertiesFile);
         ProgramProperties.put("usingInstall4j", options.isUsingInstall4j());

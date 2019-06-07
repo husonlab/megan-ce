@@ -26,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Duration;
+import jloda.Switches;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
@@ -54,8 +55,6 @@ public class NotificationsInSwing {
     private static int maxLength = 150;
 
     private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
-
-    public static boolean isBroken = true;
 
 
     /**
@@ -178,7 +177,7 @@ public class NotificationsInSwing {
     public static void showNotification(final String title, final String message0, final Mode mode, final Pos position, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
-        if (!isBroken && isShowNotifications() && ProgramProperties.isUseGUI()) {
+        if (!Switches.notificationInSwingBug && isShowNotifications() && ProgramProperties.isUseGUI()) {
             try {
                 initFX(true);
 
@@ -220,7 +219,7 @@ public class NotificationsInSwing {
             }
         }
 
-        if (isBroken || !isShowNotifications() || isEchoToConsole()) {
+        if (Switches.notificationInSwingBug || !isShowNotifications() || isEchoToConsole()) {
             switch (mode) {
                 default:
                 case information: {

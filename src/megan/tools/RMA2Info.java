@@ -20,6 +20,7 @@ package megan.tools;
 
 import jloda.graph.Node;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -31,6 +32,7 @@ import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.dialogs.export.CSVExportFViewer;
+import megan.main.Megan6;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
@@ -51,6 +53,7 @@ public class RMA2Info {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("RMA2Info");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

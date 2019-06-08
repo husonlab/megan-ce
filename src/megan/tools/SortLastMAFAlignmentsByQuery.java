@@ -19,7 +19,9 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import megan.main.Megan6;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -41,6 +43,7 @@ public class SortLastMAFAlignmentsByQuery {
      */
     public static void main(String[] args) throws Exception {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("SortLastMAFAlignments");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

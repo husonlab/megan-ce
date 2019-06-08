@@ -20,6 +20,7 @@ package megan.tools;
 
 import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -30,6 +31,7 @@ import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.daa.io.DAAParser;
+import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.rma6.RMA6Connector;
@@ -58,6 +60,7 @@ public class DAA2RMA6 {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("DAA2RMA");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

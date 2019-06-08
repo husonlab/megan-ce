@@ -20,6 +20,7 @@ package megan.tools;
 
 import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -28,6 +29,7 @@ import megan.classification.IdParser;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Document;
 import megan.daa.Meganize;
+import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.util.DAAFileFilter;
 
@@ -50,6 +52,7 @@ public class DAAMeganizer {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("Meganizer");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

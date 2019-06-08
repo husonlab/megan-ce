@@ -21,6 +21,7 @@ package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import megan.classification.Classification;
@@ -30,6 +31,7 @@ import megan.genes.CDS;
 import megan.genes.GeneItem;
 import megan.genes.GeneItemCreator;
 import megan.io.OutputWriter;
+import megan.main.Megan6;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,7 @@ public class AAdderBuild {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("AAdderBuild");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

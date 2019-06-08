@@ -19,6 +19,7 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -29,6 +30,7 @@ import megan.data.IConnector;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
+import megan.main.Megan6;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +50,7 @@ public class ReadExtractorTool {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("ReadExtractorTool");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

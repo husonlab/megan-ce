@@ -20,6 +20,7 @@ package megan.tools;
 
 import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -29,6 +30,7 @@ import megan.classification.data.ClassificationCommandHelper;
 import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
+import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
@@ -58,6 +60,7 @@ public class SAM2RMA6 {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("SAM2RMA6");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

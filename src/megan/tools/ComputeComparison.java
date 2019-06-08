@@ -19,6 +19,7 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.SaveCommand;
@@ -27,6 +28,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
+import megan.main.Megan6;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -45,6 +47,7 @@ public class ComputeComparison {
      */
     public static void main(String[] args) {
         try {
+            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
             ProgramProperties.setProgramName("ComputeComparison");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

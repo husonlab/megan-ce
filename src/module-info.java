@@ -130,18 +130,19 @@ module megan {
     exports rusch.megan5client;
     exports rusch.megan5client.Tests;
     exports rusch.megan5client.connector;
+    exports megan.xtra;
 
+    exports megan.resources;
     exports megan.resources.css;
     exports megan.resources.icons;
     exports megan.resources.images;
     exports megan.resources.files;
 
-    exports megan.resources;
     opens megan.resources.css;
     opens megan.resources.icons;
     opens megan.resources.images;
     opens megan.resources.files;
 
-    exports megan.xtra;
-
+    opens megan.dialogs.lrinspector;
+    opens megan.dialogs.reads;
 }

@@ -116,6 +116,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
 
                 new InfoMessage(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
                         + "\nPlease download from: http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/", true);
+                return;
             }
         } else {
             new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);

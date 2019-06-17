@@ -43,16 +43,7 @@ public class QuitCommand extends CommandBase implements ICommand {
             ProgramProperties.store();
             System.exit(0);
         } else {    // todo: in non-gui mode, call the code below results in a deadlock...
-            ProjectManager.doQuit(new Runnable() {
-                                      public void run() {
-                                          ChartColorManager.store();
-                                      }
-                                  },
-                    new Runnable() {
-                        public void run() {
-                            NewCommand.makeNewDocument();
-                        }
-                    });
+            ProjectManager.doQuit(ChartColorManager::store, NewCommand::makeNewDocument);
         }
     }
 

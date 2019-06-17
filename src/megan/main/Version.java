@@ -27,6 +27,6 @@ package megan.main;
 public class Version {
     static public final String NAME = "MEGAN";
     // this string gets modified by the nightly  build script...
-    static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.16.0, built June 7, 2019)";
+    static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.16.0, built 17 Jun 2019)";
 }
 

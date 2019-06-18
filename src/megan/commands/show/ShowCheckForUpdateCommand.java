@@ -24,7 +24,6 @@ import com.install4j.api.update.ApplicationDisplayMode;
 import com.install4j.api.update.UpdateChecker;
 import com.install4j.api.update.UpdateDescriptor;
 import com.install4j.api.update.UpdateDescriptorEntry;
-import jloda.Switches;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
@@ -94,9 +93,6 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
 
         final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
 
-        System.err.println("applicationDisplayMode: " + applicationDisplayMode);
-
-
         final UpdateDescriptor updateDescriptor;
         try {
             updateDescriptor = UpdateChecker.getUpdateDescriptor("http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/updates.xml", applicationDisplayMode);
@@ -107,7 +103,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
             return;
         }
         if (updateDescriptor.getEntries().length > 0) {
-            if (Switches.Install4JLaunchBug || !ProgramProperties.isUseGUI()) {
+            if (!ProgramProperties.isUseGUI()) {
                 final UpdateDescriptorEntry entry = updateDescriptor.getEntries()[0];
                 /*
                 NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()

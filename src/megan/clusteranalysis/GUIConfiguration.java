@@ -19,7 +19,6 @@
 package megan.clusteranalysis;
 
 import jloda.swing.util.MenuConfiguration;
-import jloda.util.ProgramProperties;
 import megan.classification.data.ClassificationCommandHelper;
 
 /**
@@ -61,7 +60,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Window", "Message Window...;|;Samples Viewer...;Groups Viewer...;|;");
 
-        menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
+        menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;|;Check For Updates...;");
         return menuConfig;
     }
 

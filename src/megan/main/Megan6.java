@@ -115,7 +115,6 @@ public class Megan6 {
         System.err.println("Java version: " + System.getProperty("java.version"));
 
         MeganProperties.initializeProperties(propertiesFile);
-        ProgramProperties.put("usingInstall4j", options.isUsingInstall4j());
 
         final String treeFile = ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE);
 

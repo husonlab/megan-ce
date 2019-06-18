@@ -19,7 +19,6 @@
 package megan.assembly;
 
 import jloda.swing.util.MenuConfiguration;
-import jloda.util.ProgramProperties;
 
 /**
  * configuration for menu
@@ -40,7 +39,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;From Previous Alignment;");
 
-        menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;" + ProgramProperties.getIfEnabled("usingInstall4j", "|;Check For Updates...;"));
+        menuConfig.defineMenu("Help", "About...;How to Cite...;|;Community Website...;Reference Manual...;|;Check For Updates...;");
 
         return menuConfig;
     }

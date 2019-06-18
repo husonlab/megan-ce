@@ -1,14 +1,16 @@
 module megan {
     requires transitive jloda;
     requires transitive javafx.swing;
+    requires transitive javafx.fxml;
     requires transitive com.install4j.runtime;
-    requires java.sql;
+    requires transitive java.sql;
+    requires transitive jdk.httpserver;
+    requires transitive org.controlsfx.controls;
+
     requires Jama;
     requires commons.codec;
     requires spring.web;
-    requires org.controlsfx.controls;
     requires org.apache.commons.collections4;
-    requires transitive jdk.httpserver;
     requires sis.jhdf5.batteries.included;
     requires sqlite.jdbc;
     requires gson;

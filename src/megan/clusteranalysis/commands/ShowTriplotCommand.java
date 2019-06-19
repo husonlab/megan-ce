@@ -53,10 +53,10 @@ public class ShowTriplotCommand extends CommandBase implements ICheckBoxCommand 
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set showTriPlot=");
-        boolean show = np.getBoolean();
+        final boolean show = np.getBoolean();
         np.matchIgnoreCase(";");
 
-        ClusterViewer viewer = getViewer();
+        final ClusterViewer viewer = getViewer();
         viewer.getPcoaTab().setShowTriPlot(show);
         try {
             viewer.updateView(IDirector.ENABLE_STATE);

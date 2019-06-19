@@ -585,9 +585,16 @@ public class PCoATab extends JPanel implements ITab {
             computeBiPlotVectors(biplotSize);
 
         for (Node v : biplotNodes) {
+            if (!showBiPlot) {
+                graphView.getNV(v).setLabelVisible(false);
+                graphView.getNV(v).setShape(NodeView.NONE_NODE);
+            }
             graph.setHidden(v, !showBiPlot);
         }
         for (Edge e : biplotEdges) {
+            if (!showBiPlot) {
+                graphView.getEV(e).setLineWidth((byte) 0);
+            }
             graph.setHidden(e, !showBiPlot);
         }
     }
@@ -603,9 +610,16 @@ public class PCoATab extends JPanel implements ITab {
             computeTriPlotVectors(triplotSize);
 
         for (Node v : triplotNodes) {
+            if (!showTriPlot) {
+                graphView.getNV(v).setLabelVisible(false);
+                graphView.getNV(v).setShape(NodeView.NONE_NODE);
+            }
             graph.setHidden(v, !showTriPlot);
         }
         for (Edge e : triplotEdges) {
+            if (!showTriPlot) {
+                graphView.getEV(e).setLineWidth((byte) 0);
+            }
             graph.setHidden(e, !showTriPlot);
         }
     }
@@ -647,8 +661,11 @@ public class PCoATab extends JPanel implements ITab {
         ProgramProperties.put("ShowGroupsAsConvexHulls", showGroupsAsConvexHulls);
         for (Iterator<Edge> it = graph.edgeIteratorIncludingHidden(); it.hasNext(); ) {
             Edge e = it.next();
-            if (convexHullEdges.contains(e))
+            if (convexHullEdges.contains(e)) {
+                graphView.getEV(e).setLineWidth(showGroupsAsConvexHulls ? (byte) 1 : (byte) 0);
                 graph.setHidden(e, !showGroupsAsConvexHulls);
+                // graph.setWeight(e,showGroupsAsConvexHulls?1:0);
+            }
         }
     }
 

@@ -45,6 +45,8 @@ import java.util.Set;
 public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     public static final String NAME = "CoOccurrencePlot";
 
+    public enum Method {Jaccard, PearsonsR, KendallsTau}
+
     private int maxRadius = ProgramProperties.get("COMaxRadius", 40);
     private final Graph graph;
     private final EdgeArray<Float> edgeValue;
@@ -58,6 +60,8 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     private int maxPrevalence = ProgramProperties.get("COMaxPrevalence", 90); // maximum prevalence in percent
     private boolean showAntiOccurring = ProgramProperties.get("COShowAntiOccurring", true);
     private boolean showCoOccurring = ProgramProperties.get("COShowCoOccurring", true);
+
+    private Method method = Method.valueOf(ProgramProperties.get("COMethod", Method.Jaccard.toString()));
 
     /**
      * constructor
@@ -74,7 +78,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
      * @param gc
      */
     public void drawChart(Graphics2D gc) {
-        SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
+        final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
@@ -114,6 +118,11 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 line.setLine(factorX * pv.getX() + dx, factorY * pv.getY() + dy, factorX * pw.getX() + dx, factorY * pw.getY() + dy);
                 gc.setColor(edgeValue.get(e) > 0 ? PositiveColor : NegativeColor);
                 gc.draw(line);
+                if (isShowValues()) {
+                    gc.setColor(Color.DARK_GRAY);
+                    gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
+                    gc.drawString(String.format("%.4f", edgeValue.get(e)), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
+                }
             } catch (Exception ex) {
                 Basic.caught(ex);
             }
@@ -217,7 +226,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
 
                 int[] oval = {(int) (factorX * pv.getX() + dx - size), (int) (factorY * pv.getY() + dy - size), (int) (2 * size), (int) (2 * size)};
                 Dimension labelSize = BasicSwing.getStringSize(gc, className, gc.getFont()).getSize();
-                int x = (int) Math.round(oval[0] + oval[2] / 2 - labelSize.getWidth() / 2);
+                int x = (int) Math.round(oval[0] + oval[2] / 2.0 - labelSize.getWidth() / 2);
                 int y = oval[1] - 2;
 
                 if (getChartData().getChartSelection().isSelected(null, className)) {
@@ -268,60 +277,131 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
         Map<String, Node> className2Node = new HashMap<>();
 
         // setup nodes
-        for (String className1 : getChartData().getClassNames()) {
-            int prevalenceOfClass1 = 0;
+        for (String aClassName : getChartData().getClassNames()) {
+            int numberOfSeriesContainingClass = 0;
             for (String series : getChartData().getSeriesNames()) {
-                double percentage = 100.0 * getChartData().getValue(series, className1).doubleValue() / getChartData().getTotalForSeries(series);
+                final double percentage = 100.0 * getChartData().getValue(series, aClassName).doubleValue() / getChartData().getTotalForSeries(series);
                 if (percentage >= getMinThreshold())
-                    prevalenceOfClass1++;
+                    numberOfSeriesContainingClass++;
             }
-            double prevalencePercentage = 100.0 * prevalenceOfClass1 / (double) getChartData().getNumberOfSeries();
-            if (prevalencePercentage >= getMinPrevalence() && prevalencePercentage <= getMaxPrevalence()) {
-                Node v = graph.newNode();
-                NodeData nodeData = new NodeData();
-                nodeData.setLabel(className1);
+            final double percentageOfSeriesContainingClass = 100.0 * numberOfSeriesContainingClass / (double) getChartData().getNumberOfSeries();
+            if (percentageOfSeriesContainingClass >= getMinPrevalence() && percentageOfSeriesContainingClass <= getMaxPrevalence()) {
+                final Node v = graph.newNode();
+                final NodeData nodeData = new NodeData();
+                nodeData.setLabel(aClassName);
                 v.setData(nodeData);
-                className2Node.put(className1, v);
-                nodeData.setPrevalence(prevalenceOfClass1);
+                className2Node.put(aClassName, v);
+                nodeData.setPrevalence(numberOfSeriesContainingClass);
             }
         }
 
-        // setup edges
-        for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            String className1 = ((NodeData) v.getData()).getLabel();
-            for (Node w = v.getNext(); w != null; w = w.getNext()) {
-                String className2 = ((NodeData) w.getData()).getLabel();
-                Set<String> intersection = new HashSet<>();
-                Set<String> union = new HashSet<>();
-                for (String series : getChartData().getSeriesNames()) {
-                    double total = getChartData().getTotalForSeries(series);
-                    double percentage1 = 100.0 * getChartData().getValue(series, className1).doubleValue() / total;
-                    double percentage2 = 100.0 * getChartData().getValue(series, className2).doubleValue() / total;
-                    if (percentage1 >= getMinThreshold() || percentage2 >= getMinThreshold()) {
-                        union.add(series);
-                    }
-                    if (percentage1 > getMinThreshold() && percentage2 >= getMinThreshold()) {
-                        intersection.add(series);
-                    }
-                }
-                if (union.size() > 0) {
-                    boolean positive;
-                    if (isShowCoOccurring() && !isShowAntiOccurring())
-                        positive = true;
-                    else if (!isShowCoOccurring() && isShowAntiOccurring())
-                        positive = false;
-                    else
-                        positive = (intersection.size() >= 0.5 * union.size());
-                    final float probabilityPercent;
-                    if (positive)
-                        probabilityPercent = (100.0f * (float) intersection.size() / (float) union.size());
-                    else
-                        probabilityPercent = (100.0f * (float) (union.size() - intersection.size()) / (float) union.size());
+        final String[] series = getChartData().getSeriesNames().toArray(new String[0]);
+        final int n = series.length;
 
-                    if (probabilityPercent >= getMinProbability()) {
-                        Edge e = graph.newEdge(className2Node.get(className1), className2Node.get(className2));
-                        graph.setInfo(e, probabilityPercent);
-                        edgeValue.put(e, positive ? probabilityPercent : -probabilityPercent); // negative value indicates anticorrelated
+        if (n >= 2) { // setup edges
+            for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                final String classA = ((NodeData) v.getData()).getLabel();
+                for (Node w = v.getNext(); w != null; w = w.getNext()) {
+                    final String classB = ((NodeData) w.getData()).getLabel();
+
+                    final float score;
+                    switch (method) {
+                        default:
+                        case Jaccard: {
+                            final Set<String> intersection = new HashSet<>();
+                            final Set<String> union = new HashSet<>();
+                            for (String series1 : series) {
+                                double total = getChartData().getTotalForSeries(series1);
+                                double percentage1 = 100.0 * getChartData().getValue(series1, classA).doubleValue() / total;
+                                double percentage2 = 100.0 * getChartData().getValue(series1, classB).doubleValue() / total;
+                                if (percentage1 >= getMinThreshold() || percentage2 >= getMinThreshold()) {
+                                    union.add(series1);
+                                }
+                                if (percentage1 > getMinThreshold() && percentage2 >= getMinThreshold()) {
+                                    intersection.add(series1);
+                                }
+                            }
+                            if (union.size() > 0) {
+                                final boolean positive;
+                                if (isShowCoOccurring() && !isShowAntiOccurring())
+                                    positive = true;
+                                else if (!isShowCoOccurring() && isShowAntiOccurring())
+                                    positive = false;
+                                else
+                                    positive = (intersection.size() >= 0.5 * union.size());
+                                if (positive)
+                                    score = ((float) intersection.size() / (float) union.size());
+                                else
+                                    score = -((float) (union.size() - intersection.size()) / (float) union.size());
+                            } else
+                                score = 0;
+                            break;
+                        }
+                        case PearsonsR: {
+                            double meanA = 0;
+                            double meanB = 0;
+                            for (String series1 : series) {
+                                meanA += getChartData().getValue(series1, classA).doubleValue();
+                                meanB += getChartData().getValue(series1, classB).doubleValue();
+                            }
+                            meanA /= n;
+                            meanB /= n;
+
+                            double valueTop = 0;
+                            double valueBottomA = 0;
+                            double valueBottomB = 0;
+
+                            for (String series1 : series) {
+                                final double a = getChartData().getValue(series1, classA).doubleValue();
+                                final double b = getChartData().getValue(series1, classB).doubleValue();
+                                valueTop += (a - meanA) * (b - meanB);
+                                valueBottomA += (a - meanA) * (a - meanA);
+                                valueBottomB += (b - meanB) * (b - meanB);
+                            }
+                            valueBottomA = Math.sqrt(valueBottomA);
+                            valueBottomB = Math.sqrt(valueBottomB);
+                            score = (float) (valueTop / (valueBottomA * valueBottomB));
+                            break;
+                        }
+                        case KendallsTau: {
+                            int countConcordant = 0;
+                            int countDiscordant = 0;
+
+                            for (int i = 0; i < series.length; i++) {
+                                String series1 = series[i];
+                                double aIn1 = getChartData().getValue(series1, classA).doubleValue();
+                                double bIn1 = getChartData().getValue(series1, classB).doubleValue();
+
+                                for (int j = i + 1; j < series.length; j++) {
+                                    String series2 = series[j];
+                                    double aIn2 = getChartData().getValue(series2, classA).doubleValue();
+                                    double bIn2 = getChartData().getValue(series2, classB).doubleValue();
+
+                                    if (aIn1 != aIn2 && bIn1 != bIn2) {
+                                        if ((aIn1 < aIn2) == (bIn1 < bIn2))
+                                            countConcordant++;
+                                        else
+                                            countDiscordant++;
+                                    }
+                                }
+                            }
+
+                            if (countConcordant + countDiscordant > 0)
+                                score = (float) (countConcordant - countDiscordant) / (float) (countConcordant + countDiscordant);
+                            else
+                                score = 0;
+
+                            //System.err.println(classA+" vs "+classB+": conc: "+countConcordant+" disc: "+countDiscordant+" score: "+score);
+
+                        }
+                        break;
+                    }
+
+
+                    if (showCoOccurring && 100 * score >= getMinProbability() || showAntiOccurring && -100 * score >= getMinProbability()) {
+                        Edge e = graph.newEdge(className2Node.get(classA), className2Node.get(classB));
+                        graph.setInfo(e, score);
+                        edgeValue.put(e, score); // negative value indicates anticorrelated
                     }
                 }
             }
@@ -433,6 +513,15 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     public void setShowCoOccurring(boolean showCoOccurring) {
         this.showCoOccurring = showCoOccurring;
         ProgramProperties.put("COShowCoOccurring", showCoOccurring);
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+        ProgramProperties.put("COMethod", method.toString());
     }
 
     class NodeData {

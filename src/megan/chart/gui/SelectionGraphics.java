@@ -98,7 +98,7 @@ public class SelectionGraphics<T> extends Graphics2D {
     }
 
     /**
-     * erase the current label
+     * erase the current item
      */
     public void clearCurrentItem() {
         currentItem = null;
@@ -141,8 +141,8 @@ public class SelectionGraphics<T> extends Graphics2D {
 
     private void testForHit(Shape shape, boolean onStroke) {
         if (selectionRectangle != null && currentItem != null && currentItem != previouslySelectedItem) {
-            if (gc != null && !gc.getTransform().isIdentity())
-                shape = gc.getTransform().createTransformedShape(shape);
+            //  if (gc != null && !gc.getTransform().isIdentity())
+            //      shape = gc.getTransform().createTransformedShape(shape);
             if (shape instanceof Line2D) {
                 if (shape.intersects(selectionRectangle)) {
                     selection.add(currentItem);

@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 5.2013
  */
 public class CoOccurrenceToolBar extends JToolBar {
+
     private final static Font font = new Font((new JLabel()).getFont().getFamily(), (new JLabel()).getFont().getStyle(), 10);
     private final JTextField minThresholdField = new JTextField(8);
     private final JTextField minPrevalenceField = new JTextField(3);
@@ -41,6 +42,9 @@ public class CoOccurrenceToolBar extends JToolBar {
     private final JSlider maxPrevalenceSlider = new JSlider();
     private final JTextField minProbabilityField = new JTextField(3);
     private final JSlider minProbabilitySlider = new JSlider();
+
+    private final JComboBox<CoOccurrenceDrawer.Method> methodCBox = new JComboBox<>();
+
     private final JCheckBox showCooccurring = new JCheckBox();
     private final JCheckBox showAntiOccurring = new JCheckBox();
     private final JButton applyButton;
@@ -56,15 +60,15 @@ public class CoOccurrenceToolBar extends JToolBar {
         setMaximumSize(new Dimension(1000000, 22));
         setPreferredSize(new Dimension(1000000, 22));
 
-        add(getSmallLabel("Threshold (%)"));
+        add(getSmallLabel("Detection (%)"));
         minThresholdField.setMaximumSize(new Dimension(88, 15));
         minThresholdField.setText(String.format("%2.5f", Basic.restrictToRange(0.0, 100.0, coOccurrenceDrawer.getMinThreshold())));
         minThresholdField.setFont(font);
-        minThresholdField.setToolTipText("Minimum % of reads that class must have to be considered present");
+        minThresholdField.setToolTipText("Minimum % of reads that class must have to be considered present in a sample");
         add(minThresholdField);
         addSeparator();
 
-        add(getSmallLabel("Min prevalence (%)"));
+        add(getSmallLabel("Min samples (%)"));
         minPrevalenceField.setMaximumSize(new Dimension(33, 15));
         minPrevalenceField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
         minPrevalenceField.setFont(font);
@@ -92,7 +96,7 @@ public class CoOccurrenceToolBar extends JToolBar {
         add(minPrevalenceField);
         addSeparator();
 
-        add(getSmallLabel("Max prevalence (%)"));
+        add(getSmallLabel("Max samples (%)"));
         maxPrevalenceField.setMaximumSize(new Dimension(33, 15));
         maxPrevalenceField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
         maxPrevalenceField.setFont(font);
@@ -120,11 +124,11 @@ public class CoOccurrenceToolBar extends JToolBar {
         add(maxPrevalenceField);
         addSeparator();
 
-        add(getSmallLabel("Probability (%)"));
+        add(getSmallLabel("Edge threshold (%)"));
         minProbabilityField.setMaximumSize(new Dimension(33, 15));
         minProbabilityField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
         minProbabilityField.setFont(font);
-        minProbabilityField.setToolTipText("Minimum % probability with which two classes co-occur in samples");
+        minProbabilityField.setToolTipText("Minimum % co-occurrence (or anti-occurrence) score required for two classes to be joined by an edge");
 
         minProbabilitySlider.setToolTipText(minProbabilityField.getToolTipText());
         minProbabilitySlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
@@ -147,6 +151,16 @@ public class CoOccurrenceToolBar extends JToolBar {
         add(minProbabilitySlider);
         add(minProbabilityField);
         addSeparator();
+
+        methodCBox.setEditable(false);
+        methodCBox.setFont(font);
+        for (CoOccurrenceDrawer.Method method : CoOccurrenceDrawer.Method.values())
+            methodCBox.addItem(method);
+        methodCBox.setSelectedItem(coOccurrenceDrawer.getMethod());
+        add(methodCBox);
+        methodCBox.setToolTipText("Jaccard: # samples containing both classes / samples containing at least one of the two\n" +
+                "Kendall's tau: (# concordant pairs - # discordant pairs) / (# concordant pairs + # discordant pairs)\n" +
+                "Pearson's r: sample Pearson correlation coefficient");
 
         showCooccurring.setText("Co");
         showCooccurring.setFont(font);
@@ -195,6 +209,9 @@ public class CoOccurrenceToolBar extends JToolBar {
 
                     coOccurrenceDrawer.setMaxPrevalence(Integer.parseInt(maxPrevalenceField.getText()));
 
+                    if (methodCBox.getSelectedItem() != null)
+                        coOccurrenceDrawer.setMethod((CoOccurrenceDrawer.Method) methodCBox.getSelectedItem());
+
                     chartViewer.getDir().execute("show what=all target=classes;", chartViewer.getCommandManager());
                 } catch (Exception ex) {
                     NotificationsInSwing.showInternalError(chartViewer.getFrame(), "CoOccurrence drawer: " + ex.getMessage());
@@ -215,6 +232,7 @@ public class CoOccurrenceToolBar extends JToolBar {
         maxPrevalenceSlider.setEnabled(enabled);
         minProbabilityField.setEnabled(enabled);
         minProbabilitySlider.setEnabled(enabled);
+        methodCBox.setEnabled(enabled);
         showCooccurring.setEnabled(enabled);
         showAntiOccurring.setEnabled(enabled);
         applyButton.setEnabled(enabled);

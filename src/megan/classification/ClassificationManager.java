@@ -137,7 +137,7 @@ public class ClassificationManager {
     }
 
     public static boolean hasTaxonomicRanks(String classificationName) {
-        return name2classification.get(classificationName).getId2Rank().size() > 0;
+        return name2classification.get(classificationName).getId2Rank().size() > 1;
     }
 
     /**

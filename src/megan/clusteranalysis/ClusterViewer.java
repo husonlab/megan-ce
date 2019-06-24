@@ -639,39 +639,44 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         try {
             final PhyloTree graph = ((PhyloTree) graphView.getGraph());
             for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-                final String sample = graph.getLabel(v);
                 final NodeView nv = graphView.getNV(v);
+                final String label = graph.getLabel(v);
                 boolean showThisLabel = showLabels;
-                if (!showThisLabel && graphView == pcoaTab.getGraphView() && !pcoaTab.isSampleNode(v))
-                    showThisLabel = true;
-
-                if (sample != null) {
-                    nv.setLabelVisible(showThisLabel);
-                    if (nv.getHeight() <= 3)
-                        nv.setHeight(nodeRadius);
-                    if (nv.getWidth() <= 3)
-                        nv.setWidth(nodeRadius);
-                    nv.setFixedSize(true);
-
-                    NodeShape shape = label2shape.get(sample);
-                    if (shape != null) {
-                        nv.setNodeShape(shape);
+                if (label != null) {
+                    if (graphView == pcoaTab.getGraphView()) {
+                        if (pcoaTab.isBiplotNode(v))
+                            showThisLabel = pcoaTab.isShowBiPlot();
+                        else if (pcoaTab.isTriplotNode(v))
+                            showThisLabel = pcoaTab.isShowTriPlot();
                     }
-                    graphView.setLabel(v, doc.getSampleLabelGetter().getLabel(sample));
-                    if (useColors) {
-                        Color color = dir.getDocument().getChartColorManager().getSampleColor(sample);
-                        if (nodeRadius > 1 || !showThisLabel) {
-                            nv.setBackgroundColor(color);
-                            nv.setLabelBackgroundColor(null);
+                    if (showThisLabel) {
+                        nv.setLabelVisible(true);
+                        if (nv.getHeight() <= 3)
+                            nv.setHeight(nodeRadius);
+                        if (nv.getWidth() <= 3)
+                            nv.setWidth(nodeRadius);
+                        nv.setFixedSize(true);
+
+                        NodeShape shape = label2shape.get(label);
+                        if (shape != null) {
+                            nv.setNodeShape(shape);
+                        }
+                        graphView.setLabel(v, doc.getSampleLabelGetter().getLabel(label));
+                        if (useColors) {
+                            Color color = dir.getDocument().getChartColorManager().getSampleColor(label);
+                            if (nodeRadius > 1) {
+                                nv.setBackgroundColor(color);
+                                nv.setLabelBackgroundColor(null);
+                            } else
+                                nv.setLabelBackgroundColor(color);
                         } else
-                            nv.setLabelBackgroundColor(color);
-                    } else
-                        nv.setBackgroundColor(null);
+                            nv.setBackgroundColor(null);
 
-                } else {
-                    nv.setNodeShape(NodeShape.None);
+                    } else {
+                        nv.setLabelVisible(false);
+                        nv.setNodeShape(NodeShape.None);
+                    }
                 }
-
             }
             for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
                 if (graph.getInfo(e) != null && (Byte) graph.getInfo(e) == EdgeView.DIRECTED)

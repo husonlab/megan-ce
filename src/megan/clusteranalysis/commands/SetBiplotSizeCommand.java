@@ -22,6 +22,7 @@ import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
+import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -129,8 +130,13 @@ public class SetBiplotSizeCommand extends CommandBase implements ICommand {
         int number = Math.min(max, viewer.getPcoaTab().getBiplotSize());
 
         String result = JOptionPane.showInputDialog(viewer.getFrame(), "Number of biplot vectors (0-" + max + "): ", number);
-        if (result != null && Basic.isInteger(result))
-            executeImmediately("set biplotSize=" + Basic.parseInt(result) + ";");
+        if (result != null && Basic.isInteger(result)) {
+            final int value = Basic.parseInt(result);
+            if (value < 0 || value > max)
+                NotificationsInSwing.showError(viewer.getFrame(), "Input '" + value + "' out of range: 0 -- " + max);
+            else
+                executeImmediately("set biplotSize=" + value + ";");
+        }
     }
 
     /**

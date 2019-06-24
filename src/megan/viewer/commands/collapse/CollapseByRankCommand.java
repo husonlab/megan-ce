@@ -75,7 +75,7 @@ public class CollapseByRankCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[TaxonomicLevels.getAllMajorRanks().size()]);
+        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[0]);
 
         String choice = null;
         if (getViewer() instanceof MainViewer) {

@@ -585,11 +585,15 @@ public class PCoATab extends JPanel implements ITab {
             computeBiPlotVectors(biplotSize);
 
         for (Node v : biplotNodes) {
-            if (!showBiPlot) {
+            if (showBiPlot) {
+                graph.setHidden(v, false);
+                graphView.getNV(v).setLabelVisible(true);
+                graphView.getNV(v).setShape(NodeView.OVAL_NODE);
+            } else {
                 graphView.getNV(v).setLabelVisible(false);
                 graphView.getNV(v).setShape(NodeView.NONE_NODE);
+                graph.setHidden(v, true);
             }
-            graph.setHidden(v, !showBiPlot);
         }
         for (Edge e : biplotEdges) {
             if (!showBiPlot) {
@@ -610,11 +614,15 @@ public class PCoATab extends JPanel implements ITab {
             computeTriPlotVectors(triplotSize);
 
         for (Node v : triplotNodes) {
-            if (!showTriPlot) {
+            if (showTriPlot) {
+                graph.setHidden(v, false);
+                graphView.getNV(v).setLabelVisible(true);
+                graphView.getNV(v).setShape(NodeView.OVAL_NODE);
+            } else {
                 graphView.getNV(v).setLabelVisible(false);
                 graphView.getNV(v).setShape(NodeView.NONE_NODE);
+                graph.setHidden(v, true);
             }
-            graph.setHidden(v, !showTriPlot);
         }
         for (Edge e : triplotEdges) {
             if (!showTriPlot) {
@@ -865,6 +873,7 @@ public class PCoATab extends JPanel implements ITab {
                 biplotNodes.add(v);
                 graph.setLabel(v, pair.getFirst());
                 graphView.setLabel(v, pair.getFirst());
+                graphView.setLabelVisible(v, isShowBiPlot());
                 final NodeView nv = graphView.getNV(v);
                 nv.setLocation(x, y);
                 node2vector.put(v, new Vector3D(x, y, z));
@@ -937,6 +946,7 @@ public class PCoATab extends JPanel implements ITab {
                 triplotNodes.add(v);
                 graph.setLabel(v, pair.getFirst());
                 graphView.setLabel(v, pair.getFirst());
+                graphView.setLabelVisible(v, isShowTriPlot());
                 final NodeView nv = graphView.getNV(v);
                 nv.setLocation(x, y);
                 node2vector.put(v, new Vector3D(x, y, z));
@@ -1264,12 +1274,16 @@ public class PCoATab extends JPanel implements ITab {
     }
 
     public boolean isSampleNode(Node v) {
-        return !biplotNodes.contains(v) && !triplotNodes.contains(v) && getGraphView().getLabel(v) != null
-                && getGraphView().getLabel(v).trim().length() > 0;
+        final NodeView nv = graphView.getNV(v);
+        return nv.getLabel() != null && !biplotNodes.contains(v) && !triplotNodes.contains(v) && nv.getLabel().length() > 0;
     }
 
     public boolean isBiplotNode(Node v) {
         return biplotNodes.contains(v);
+    }
+
+    public boolean isTriplotNode(Node v) {
+        return triplotNodes.contains(v);
     }
 
     public Point3D getPoint3D(Node v) {

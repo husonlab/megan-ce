@@ -7,6 +7,7 @@ import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * adapts database accession mapping
@@ -28,7 +29,7 @@ public class Accession2IdAdapter {
     }
 
     public void setup() {
-        if (ProgramProperties.get("enable-database-lookup", false)) {
+        if (ProgramProperties.get("enable-database-lookup", false) && !Accession2IdAdapter.getInstance().isSetup()) {
             final String fileName = JOptionPane.showInputDialog(null, "Enter database file name:", ProgramProperties.get("AccessionMappingDatabase", ""));
             setup(fileName);
         } else {
@@ -43,6 +44,7 @@ public class Accession2IdAdapter {
             try {
                 accessionMappingDatabaseAccess = new AccessionMappingDatabaseAccess(fileName);
                 ProgramProperties.put("AccessionMappingDatabase", fileName);
+                System.err.println("Supported classifications: " + Basic.toString(accessionMappingDatabaseAccess.getClassificationNames(), " "));
             } catch (Exception e) {
                 Basic.caught(e);
                 NotificationsInSwing.showError("Failed to open database file " + fileName + ": " + e.getMessage());
@@ -55,10 +57,14 @@ public class Accession2IdAdapter {
 
     public boolean hasClassification(String classificationName) {
         try {
-            return isSetup() && accessionMappingDatabaseAccess.getClassificationNames().contains(classificationName);
-        } catch (Exception e) {
-            return false;
+            if (isSetup()) {
+                if (accessionMappingDatabaseAccess.getClassificationNames().contains(classificationName))
+                    return true;
+            }
+        } catch (Exception ex) {
+            Basic.caught(ex);
         }
+        return false;
     }
 
     /**
@@ -68,12 +74,16 @@ public class Accession2IdAdapter {
      * @return mapping
      */
     public IString2IntegerMap createMap(String classificationName) {
-        System.err.println("Classification " + classificationName + " lookup uses database file " + ProgramProperties.get("AccessionMappingDatabase", ""));
+        System.err.println("Classification '" + classificationName + "' uses database file " + ProgramProperties.get("AccessionMappingDatabase", ""));
         final int classificationIndex = accessionMappingDatabaseAccess.getClassificationIndex(classificationName);
         return new IString2IntegerMap() {
             @Override
-            public int get(String accession) throws IOException {
-                return accessionMappingDatabaseAccess.getValueInt(classificationIndex, accession);
+            public int get(String accession) {
+                try {
+                    return accessionMappingDatabaseAccess.getValueInt(classificationIndex, accession);
+                } catch (Exception e) {
+                    return 0;
+                }
             }
 
             @Override
@@ -94,9 +104,12 @@ public class Accession2IdAdapter {
 
     public void close() {
         if (accessionMappingDatabaseAccess != null) {
-            accessionMappingDatabaseAccess.close();
+            try {
+                accessionMappingDatabaseAccess.closeDB();
+            } catch (SQLException e) {
+                Basic.caught(e);
+            }
             accessionMappingDatabaseAccess = null;
         }
     }
-
 }

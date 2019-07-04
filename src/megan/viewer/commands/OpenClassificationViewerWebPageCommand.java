@@ -23,6 +23,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
@@ -58,7 +59,8 @@ public class OpenClassificationViewerWebPageCommand extends CommandBase implemen
 
         java.util.List<String> urls = viewer.getURLsForSelection();
         if (urls.size() >= 5 && JOptionPane.showConfirmDialog(getViewer().getFrame(), "Do you really want to open " + urls.size() +
-                " URLs in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
+                        " URLs in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) != JOptionPane.YES_OPTION)
             return;
 
         for (String url : urls) {

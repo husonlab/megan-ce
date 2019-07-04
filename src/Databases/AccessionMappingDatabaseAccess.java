@@ -1,9 +1,7 @@
 package Databases;
 
-import javafx.util.Pair;
 import org.apache.commons.collections4.map.LRUMap;
 
-import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,16 +11,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * accession mapping lookup
- * Sylvia Siegel, 5.2019
- */
-public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabaseAccess, Closeable {
+public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabaseAccess {
     private String DB_PATH = null;
     private String JDBC_DRIVER = "org.sqlite.JDBC";
     private int CACHE_SIZE = 100000;
     private LRUMap<String, int[]> cache;
     private Map<Integer, String> classificationMap;
+    public int db_query_count = 0;
+    private Connection con;
 
     /**
      * default Constructor for AccessionMappingDatabaseAccess
@@ -35,7 +31,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * Constructor also establishes the connection to the database. No need to call openDatabase
-     *
      * @param path to the database file
      */
     public AccessionMappingDatabaseAccess(String path) throws FileNotFoundException, ClassNotFoundException, SQLException {
@@ -46,7 +41,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
     /**
      * changes the cache size and creates a new cache with that size
      * Warning: an old cache might be discarded
-     *
      * @param size new size of the cache
      */
     public void setCacheSize(Integer size) {
@@ -56,16 +50,14 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * sets the database location and checks if a connection to that database is possible
-     *
      * @param url path to the database file
      */
     @Override
     public void openDatabase(String url) throws FileNotFoundException, ClassNotFoundException, SQLException {
-        if (url == null) {
-            throw new FileNotFoundException("The path is null and does therefore not exist. Please try again with a valid path. ");
+        if (url == null || url.equals("")) {
+            throw new FileNotFoundException("The path " + url + " is invalid. Please try again with a valid path. ");
         }
-        // If the database is already connected return
-        try {
+        try { // If the database is already connected return
             if (DB_PATH.equals(url)) {
                 return;
             }
@@ -80,31 +72,28 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         }
         // create new cache
         setCacheSize(CACHE_SIZE);
-        // create new classificationMap
-        classificationMap = new HashMap<>(5);
 
         // Check if it is possible to establish a connection to the database
-        Connection con = null;
+        // and set the Connection variable
         try {
             Class.forName(JDBC_DRIVER);
             con = DriverManager.getConnection(("jdbc:sqlite:" + DB_PATH));
+            // give user feetback
+            System.out.println("Connected with " + DB_PATH + ", " + getSize() + " enties in the database.");
+            // create new classificationMap with the correct size
+            ResultSetMetaData metaData = getMetaData("SELECT * FROM mappings LIMIT 1;");
+            int cols = metaData.getColumnCount();
+            classificationMap = new HashMap<>(cols);
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Database driver not found. ");
         } catch (SQLException e) {
             throw new SQLException("Database connection could not be established. Make sure a path to a valid .db file was entered.", e);
-        } finally { // clean up
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (Exception e) {
-            }
         }
+
     }
 
     /**
      * generic method for executing queries with results of type int/Integer
-     *
      * @param query the SQL query
      * @return ArrayList containing all query results of the specified type
      * @throws SQLException if something went wrong with the database
@@ -115,11 +104,12 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Database driver not found");
         }
-        Connection con = null;
         ResultSet rs = null;
         ArrayList<Integer> resultlist = null;
         try {
-            con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            if (con.isClosed()) {
+                con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            }
             rs = con.createStatement().executeQuery(query);
             resultlist = new ArrayList<>();
             while (rs.next()) {
@@ -130,9 +120,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             e.printStackTrace();
             throw new SQLException("Error when executing query " + query + "\n" + e.getMessage());
         } finally {
-            if (con != null) {
-                con.close();
-            }
             if (rs != null) {
                 rs.close();
             }
@@ -141,7 +128,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * generic method for executing queries with results of type String
-     *
      * @param query the SQL query
      * @param index the index of the result of interest
      * @return ArrayList containing all query results of the specified type
@@ -153,11 +139,12 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Database driver not found");
         }
-        Connection con = null;
         ResultSet rs = null;
         ArrayList<String> resultlist = null;
         try {
-            con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            if (con.isClosed()) {
+                con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            }
             rs = con.createStatement().executeQuery(query);
             resultlist = new ArrayList<>();
             while (rs.next()) {
@@ -168,9 +155,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             e.printStackTrace();
             throw new SQLException("Error when executing query " + query + "\n" + e.getMessage());
         } finally {
-            if (con != null) {
-                con.close();
-            }
             if (rs != null) {
                 rs.close();
             }
@@ -180,7 +164,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * get the info string associated with the database. This string can be inserted when creating the DB
-     *
      * @return info string associated or null if no such string is defined
      */
     @Override
@@ -196,7 +179,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * gets the size of the mappings table
-     *
      * @return size of mappings table or 0 if an error occured
      */
     @Override
@@ -220,7 +202,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * computes the size of the mappings database by querying the mappings table with count(*)
-     *
      * @return size of the mapping database or 0 if an error occured
      */
     private int computeDBSize() throws SQLException, ClassNotFoundException {
@@ -230,7 +211,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * get the list of classification names
-     *
      * @return a Collection<String> containing all classification names used in the database
      */
     @Override
@@ -246,36 +226,35 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * gets the metadata for a certain query result
-     *
      * @param query String containing the complete SQL query
      * @return ResultSetMetaData
      */
-    private Pair<Connection, ResultSetMetaData> getMetaData(String query) throws SQLException {
+    private ResultSetMetaData getMetaData(String query) throws SQLException {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException c) {
             System.err.println("Driver not found. ");
             c.printStackTrace();
         }
-        Connection con = DriverManager.getConnection(("jdbc:sqlite:" + DB_PATH));
+        if (con.isClosed()) {
+            con = DriverManager.getConnection(("jdbc:sqlite:" + DB_PATH));
+        }
         Statement stmd = con.createStatement();
         ResultSetMetaData rs = stmd.executeQuery(query).getMetaData();
-        return new Pair<>(con, rs);
+        return rs;
     }
 
     /**
      * get the index (column) for a classification. In the methods below, we will reference classifications by their index
-     *
      * @param classificationName name of the classification you want to look for
      * @return the index in the database for a given classificationName (note: it starts with 1 not 0) or -1 if no match was found
      */
     @Override
     public int getClassificationIndex(String classificationName) {
         String query = "SELECT * FROM mappings LIMIT 1;";
-        Pair<Connection, ResultSetMetaData> metaDataPair = null;
+        ResultSetMetaData metaData = null;
         try {
-            metaDataPair = getMetaData(query);
-            ResultSetMetaData metaData = metaDataPair.getValue();
+            metaData = getMetaData(query);
             // Note that for the database access the index is 1-based
             // this 1-based index will be returned
             for (int i = 0; i < metaData.getColumnCount(); i++) {
@@ -287,13 +266,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         } catch (SQLException e) {
             System.err.println("An error occured while executing the query " + query);
             e.printStackTrace();
-        } finally {
-            if (metaDataPair != null) {
-                try {
-                    metaDataPair.getKey().close();
-                } catch (Exception e) {
-                }
-            }
         }
         // if we get here no valid classification name was given
         System.err.println(classificationName + " is not a valid identifier");
@@ -302,17 +274,14 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * get the type for a given classification index
-     *
      * @param classificationIndex index to be considered
      * @return the ValueType of the index (either String or integer)
      */
     @Override
-    public ValueType getType(int classificationIndex) {
+    public ValueType getType(int classificationIndex) throws SQLException {
         String query = "SELECT * FROM mappings LIMIT 1;";
-        Pair<Connection, ResultSetMetaData> metaDataPair = null;
         try {
-            metaDataPair = getMetaData(query);
-            ResultSetMetaData metaData = metaDataPair.getValue();
+            ResultSetMetaData metaData = getMetaData(query);
             String typeName = metaData.getColumnTypeName(classificationIndex);
             if (typeName.equals("TEXT")) {
                 return ValueType.STRING;
@@ -321,21 +290,13 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             }
         } catch (SQLException e) {
             System.err.println("Something went wrong with the query " + query);
-            e.printStackTrace();
-        } finally {
-            try {
-                if (metaDataPair != null) {
-                    metaDataPair.getKey().close();
-                }
-            } catch (SQLException e) {
-            }
+            throw e;
         }
         return null;
     }
 
     /**
      * get the classification name for a given classification index
-     *
      * @param classificationIndex index to be considered
      * @return the name of the classification or null if an error occurred
      */
@@ -344,29 +305,19 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             return classificationMap.get(classificationIndex);
         }
         String query = "SELECT * FROM mappings LIMIT 1;";
-        Pair<Connection, ResultSetMetaData> metaDataPair = null;
         try {
-            metaDataPair = getMetaData(query);
-            ResultSetMetaData metaData = metaDataPair.getValue();
+            ResultSetMetaData metaData = getMetaData(query);
             String result = metaData.getColumnName(classificationIndex).split("_")[0];
             classificationMap.put(classificationIndex, result);
             return result;
         } catch (SQLException e) {
             System.err.println("An error occured when executing the query " + query);
             throw e;
-        } finally {
-            try {
-                if (metaDataPair != null) {
-                    metaDataPair.getKey().close();
-                }
-            } catch (Exception e) {
-            }
         }
     }
 
     /**
      * get the size for a given classification index
-     *
      * @param classificationIndex index to be considered
      * @return size for a given classification index or -1 if the classification was not found
      */
@@ -378,7 +329,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             return executeQueryInt(query, 1).get(0);
         } catch (SQLException e) {
             System.err.println("An error occured when executing the query " + query);
-            e.printStackTrace();
+            throw e;
         } catch (IndexOutOfBoundsException e) {
         }
         return -1;
@@ -386,7 +337,6 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * get the info string for a given classification index
-     *
      * @param classificationIndex index to be considered
      * @return info string provided when inserting the reference database or "" if no such string was given
      */
@@ -405,11 +355,10 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
 
     /**
      * Checks the cache/ DB for the accession and returns the whole Integer[] of all values associated with that accession
-     *
      * @param accession accession String to query to database for
      * @return int[] or null
      */
-    private int[] getAccession(String accession) {
+    private int[] getAccession(String accession) throws SQLException, ClassNotFoundException {
         // check if accession is in cache
         if (cache.containsKey(accession)) {
             return cache.get(accession);
@@ -417,11 +366,12 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         // if not query db for accession and append to cache
         int[] values = null;
         String query = "SELECT * FROM mappings WHERE ncbi_id = '" + accession + "';";
-        Connection con = null;
         Statement stmd = null;
         try {
             Class.forName(JDBC_DRIVER);
-            con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            if (con.isClosed()) {
+                con = DriverManager.getConnection("jdbc:sqlite:" + DB_PATH);
+            }
             stmd = con.createStatement();
             ResultSet rs = stmd.executeQuery(query);
             int columnCount = rs.getMetaData().getColumnCount();
@@ -435,56 +385,48 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             }
         } catch (SQLException e) {
             System.err.println("Something went wrong while executing the query " + query);
-            e.printStackTrace();
+            throw e;
         } catch (ClassNotFoundException c) {
-            System.err.println("Driver not found. ");
-            c.printStackTrace();
+            throw new ClassNotFoundException("Database Driver not found. " + c.getMessage());
         } finally {
             try {
                 if (stmd != null) {
                     stmd.close();
                 }
-                if (con != null) {
-                    con.close();
-                }
             } catch (SQLException e) {
             }
         }
+        db_query_count++;
         return values;
     }
 
     /**
      * get the value for a classification of type integers
-     *
      * @param classificationIndex index to be considered
-     * @param accession           String to query the database for
-     * @return the value of type int or 0 if non is found and -1 in error cases
+     * @param accession String to query the database for
+     * @return the value of type int or 0 if non is found
      */
     @Override
-    public int getValueInt(int classificationIndex, String accession) {
+    public int getValueInt(int classificationIndex, String accession) throws SQLException, ClassNotFoundException {
         int[] values = getAccession(accession);
-        try {
-            // the classification index is database related in values we put items starting from classification index = 2
-            return values[(classificationIndex - 2)];
-        } catch (IndexOutOfBoundsException e) {
-        }
-        return -1;
+        // the classification index is database related in values we put items starting from classification index = 2
+        return values[(classificationIndex - 2)];
     }
 
     /**
      * get the value for a classification of type STRING
-     *
      * @param classificationIndex index to be considered
-     * @param accession           String to query the database for
+     * @param accession String to query the database for
      * @return String representation of the result of getValueInt
      */
     @Override
-    public String getValueString(int classificationIndex, String accession) {
+    public String getValueString(int classificationIndex, String accession) throws SQLException, ClassNotFoundException {
         return "" + getValueInt(classificationIndex, accession);
     }
 
-    // todo: implement
-    public void close() {
-
+    public void closeDB() throws SQLException {
+        if (con != null) {
+            con.close();
+        }
     }
 }

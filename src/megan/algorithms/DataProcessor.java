@@ -18,7 +18,6 @@
  */
 package megan.algorithms;
 
-import Databases.Accession2IdAdapter;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
@@ -54,8 +53,6 @@ public class DataProcessor {
             DataProcessorParallel dataProcessorParallel = new DataProcessorParallel(doc);
             return dataProcessorParallel.apply();
         }
-
-        Accession2IdAdapter.getInstance().setup(); // use database
 
         final ProgressListener progress = doc.getProgressListener();
         try {

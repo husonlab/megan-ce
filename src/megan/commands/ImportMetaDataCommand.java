@@ -92,7 +92,8 @@ public class ImportMetaDataCommand extends CommandBase implements ICommand {
         final File lastOpenFile = ProgramProperties.getFile("MetaDataFilePath");
         final File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(".csv"), new TextFileFilter(".csv"), event, "Open metadata mapping file");
         if (file != null && file.length() > 0) {
-            int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Clear existing metadata?", "Clear existing metadata?", JOptionPane.YES_NO_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "Clear existing metadata?", "Clear existing metadata?", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
             if (result == JOptionPane.CANCEL_OPTION)
                 return;
             execute("import metadata='" + file.getPath() + "' clearExisting=" + (result == JOptionPane.YES_OPTION) + ";show window=samplesViewer;");

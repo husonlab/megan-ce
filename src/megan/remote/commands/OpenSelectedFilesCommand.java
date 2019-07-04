@@ -21,6 +21,7 @@ package megan.remote.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.remote.RemoteServiceBrowser;
 import megan.remote.ServicePanel;
@@ -93,7 +94,8 @@ public class OpenSelectedFilesCommand extends CommandBase implements ICommand {
                 }
             }
             if (count > 10) {
-                if (JOptionPane.showConfirmDialog(remoteServiceBrowser.getFrame(), "Do you really want to open " + count + " new files?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+                if (JOptionPane.showConfirmDialog(remoteServiceBrowser.getFrame(), "Do you really want to open " + count + " new files?", "Confirm", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) == JOptionPane.NO_OPTION)
                     return;
             }
             execute(buf.toString());

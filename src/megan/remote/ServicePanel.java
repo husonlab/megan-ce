@@ -21,6 +21,7 @@ package megan.remote;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.find.ISearcher;
+import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.remote.commands.*;
 
@@ -212,7 +213,8 @@ public class ServicePanel extends JPanel {
             }
         }
         if (count > 10) {
-            if (JOptionPane.showConfirmDialog(remoteServiceBrowser.getFrame(), "Do you really want to open " + count + " new files?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+            if (JOptionPane.showConfirmDialog(remoteServiceBrowser.getFrame(), "Do you really want to open " + count + " new files?", "Confirm", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) == JOptionPane.NO_OPTION)
                 return;
         }
         Director dir = remoteServiceBrowser.getDir();

@@ -53,7 +53,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param npe
+     * @param np
      * @throws java.io.IOException
      */
     @Override

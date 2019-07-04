@@ -306,7 +306,8 @@ public class AlignmentExporter {
                 if ((new File(fileName)).exists()) {
                     if (!warned) {
                         if (ProgramProperties.isUseGUI()) {
-                            int result = JOptionPane.showConfirmDialog(parent, "Some files already exist, overwrite all existing files?", "Overwrite files?", JOptionPane.YES_NO_CANCEL_OPTION);
+                            int result = JOptionPane.showConfirmDialog(parent, "Some files already exist, overwrite all existing files?", "Overwrite files?", JOptionPane.YES_NO_CANCEL_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
                             switch (result) {
                                 case JOptionPane.NO_OPTION:
                                     overwrite = false;

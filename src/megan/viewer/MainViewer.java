@@ -270,7 +270,8 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 try {
                     int result = JOptionPane.showConfirmDialog(getFrame(), "Document has been modified, save before " +
                                     (ProjectManager.isQuitting() ? "quitting?" : "closing?"), ProgramProperties.getProgramName() + " - Save Changes?",
-                            JOptionPane.YES_NO_CANCEL_OPTION);
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
 
                     if (result == JOptionPane.YES_OPTION) {
                         Boolean[] canceled = new Boolean[]{false};
@@ -296,7 +297,9 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
     private boolean confirmQuit() throws CanceledException {
         if (ProgramProperties.isUseGUI()) {
             getFrame().toFront();
-            int result = JOptionPane.showConfirmDialog(getLastActiveFrame(), "Quit " + ProgramProperties.getProgramName() + "?", ProgramProperties.getProgramVersion() + " - Quit?", JOptionPane.YES_NO_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(getLastActiveFrame(), "Quit " + ProgramProperties.getProgramName() + "?",
+                    ProgramProperties.getProgramVersion() + " - Quit?", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
             if (result == JOptionPane.CANCEL_OPTION) {
                 throw new CanceledException();
             } else return result != JOptionPane.NO_OPTION;

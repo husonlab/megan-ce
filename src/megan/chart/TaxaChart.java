@@ -99,7 +99,8 @@ public class TaxaChart extends ChartViewer {
                     java.util.Collection<String> selectedIds = getClassesList().getSelectedLabels();
                     if (selectedIds.size() > 0) {
                         if (selectedIds.size() >= 5 && JOptionPane.showConfirmDialog(getFrame(), "Do you really want to open " + selectedIds.size() +
-                                " windows in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
+                                        " windows in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) != JOptionPane.YES_OPTION)
                             return;
                         for (String label : selectedIds) {
                             try {
@@ -123,7 +124,8 @@ public class TaxaChart extends ChartViewer {
                     java.util.Collection<String> selectedIds = getClassesList().getSelectedLabels();
                     if (selectedIds.size() > 0) {
                         if (selectedIds.size() >= 5 && JOptionPane.showConfirmDialog(getFrame(), "Do you really want to open " + selectedIds.size() +
-                                " windows in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION)
+                                        " windows in your browser?", "Confirmation - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) != JOptionPane.YES_OPTION)
                             return;
                         for (String label : selectedIds) {
                             try {

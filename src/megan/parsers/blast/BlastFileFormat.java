@@ -81,7 +81,7 @@ public enum BlastFileFormat {
 
         if (result == null && ProgramProperties.isUseGUI() && ask) {
             result = (BlastFileFormat) JOptionPane.showInputDialog(owner, "Cannot determine format, please choose:", "Question: Which input format?",
-                    JOptionPane.QUESTION_MESSAGE, null, valuesExceptUnknown(), BlastText);
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), valuesExceptUnknown(), BlastText);
         }
         if (result == null) {
             throw new IOException("Failed to determine BLAST format");

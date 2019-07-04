@@ -102,7 +102,7 @@ public class BlastModeUtils {
             if (!ProgramProperties.isUseGUI())
                 throw new IOException("Couldn't detect BLAST mode, please specify");
             mode = (jloda.util.BlastMode) JOptionPane.showInputDialog(owner, "Cannot determine mode, please choose:", "Question: Which mode?",
-                    JOptionPane.QUESTION_MESSAGE, null, jloda.util.BlastMode.values(), jloda.util.BlastMode.BlastX);
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), jloda.util.BlastMode.values(), jloda.util.BlastMode.BlastX);
         }
         return mode;
     }

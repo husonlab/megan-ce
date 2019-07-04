@@ -56,7 +56,7 @@ public interface IAccessionMappingDatabaseAccess {
      * @param classificationIndex
      * @return
      */
-    ValueType getType(int classificationIndex);
+    ValueType getType(int classificationIndex) throws SQLException;
 
     /**
      * get the size for a given classification index
@@ -81,7 +81,7 @@ public interface IAccessionMappingDatabaseAccess {
      * @param accession
      * @return
      */
-    int getValueInt(int classificationIndex, String accession);
+    int getValueInt(int classificationIndex, String accession) throws SQLException, ClassNotFoundException;
 
     /**
      * get the value for a classification of type STRING
@@ -90,5 +90,5 @@ public interface IAccessionMappingDatabaseAccess {
      * @param accession
      * @return
      */
-    String getValueString(int classificationIndex, String accession);
+    String getValueString(int classificationIndex, String accession) throws SQLException, ClassNotFoundException;
 }

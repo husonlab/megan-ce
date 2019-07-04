@@ -22,6 +22,7 @@ import jloda.graph.Node;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ClassificationViewer;
 
@@ -42,7 +43,8 @@ public class EditNodeLabelCommand extends CommandBase implements ICommand {
         for (Node v : ((ClassificationViewer) getViewer()).getSelectedNodes()) {
             if (numToEdit > 5) {
                 int result = JOptionPane.showConfirmDialog(getViewer().getFrame(), "There are " + numToEdit +
-                        " more selected labels, edit next?", "Question", JOptionPane.YES_NO_OPTION);
+                                " more selected labels, edit next?", "Question", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
                 if (result == JOptionPane.NO_OPTION)
                     break;
             }

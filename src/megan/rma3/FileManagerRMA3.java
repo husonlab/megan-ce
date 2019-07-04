@@ -110,7 +110,8 @@ public class FileManagerRMA3 {
                 if ((new File(fileName + ".gz")).exists()) {
                     System.err.println("Run gunzip on: " + fileName + ".gz");
                     int response = JOptionPane.showConfirmDialog(null, "Required " + type + " file '" + file.getName() + "' is compressed, decompress?",
-                            type + " file is compressed", JOptionPane.YES_NO_CANCEL_OPTION);
+                            type + " file is compressed", JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
                     switch (response) {
                         case JOptionPane.YES_OPTION:
                             GZipUtils.inflate(fileName + ".gz", fileName);

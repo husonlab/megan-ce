@@ -316,11 +316,9 @@ public class SampleAttributeTable {
      * @param attribute
      */
     public void removeAttribute(String attribute) {
-        if (table.columnKeySet().contains(attribute)) {
             attributeOrder.remove(attribute);
             attribute2type.keySet().remove(attribute);
             table.removeColumn(attribute);
-        }
     }
 
     /**

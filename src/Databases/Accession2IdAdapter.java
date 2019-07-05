@@ -8,6 +8,8 @@ import megan.fx.NotificationsInSwing;
 import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * adapts database accession mapping
@@ -65,6 +67,17 @@ public class Accession2IdAdapter {
             Basic.caught(ex);
         }
         return false;
+    }
+
+    public Collection<String> getClassificationNames() {
+        try {
+            if (isSetup()) {
+                return accessionMappingDatabaseAccess.getClassificationNames();
+            }
+        } catch (Exception ex) {
+            Basic.caught(ex);
+        }
+        return new ArrayList<>();
     }
 
     /**

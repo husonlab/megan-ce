@@ -25,16 +25,20 @@ import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
+import megan.viewer.TaxonomyData;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static megan.main.MeganProperties.DISABLED_TAXA;
 
 /**
  * the classification full tree
@@ -132,7 +136,7 @@ public class ClassificationFullTree extends PhyloTree {
 
         if (getName().equals(Classification.Taxonomy)) {
             // fix Domains:
-            Integer taxId = name2IdMap.get("Bacteria");
+            int taxId = name2IdMap.get("Bacteria");
             if (taxId > 0)
                 name2IdMap.setRank(taxId, 127);
             taxId = name2IdMap.get("Archaea");
@@ -141,6 +145,12 @@ public class ClassificationFullTree extends PhyloTree {
             taxId = name2IdMap.get("Eukaryota");
             if (taxId > 0)
                 name2IdMap.setRank(taxId, 127);
+
+
+            // disable taxa
+            for (int t : ProgramProperties.get(DISABLED_TAXA, new int[0])) {
+                TaxonomyData.getDisabledTaxa().add(t);
+            }
         }
 
         LCAAddressing.computeAddresses(this, id2Address, address2Id);

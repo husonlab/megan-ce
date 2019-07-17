@@ -5,7 +5,7 @@ import jloda.util.ProgramProperties;
 import megan.classification.data.IString2IntegerMap;
 import megan.fx.NotificationsInSwing;
 
-import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,7 +16,10 @@ import java.util.Collection;
  * Daniel Huson, 5.2019
  */
 public class Accession2IdAdapter {
+    public final static boolean DATABASE_USES_WRONG_NAMES = true;
+
     private AccessionMappingDatabaseAccess accessionMappingDatabaseAccess;
+    private File file;
 
     private static Accession2IdAdapter instance;
 
@@ -30,16 +33,6 @@ public class Accession2IdAdapter {
         return instance;
     }
 
-    public void setup() {
-        if (ProgramProperties.get("enable-database-lookup", false) && !Accession2IdAdapter.getInstance().isSetup()) {
-            final String fileName = JOptionPane.showInputDialog(null, "Enter database file name:", ProgramProperties.get("AccessionMappingDatabase", ""));
-            setup(fileName);
-        } else {
-            ProgramProperties.remove("AccessionMappingDatabase");
-            setup(null);
-        }
-    }
-
     public void setup(String fileName) {
         close();
         if (fileName != null && fileName.length() > 0)
@@ -47,6 +40,7 @@ public class Accession2IdAdapter {
                 accessionMappingDatabaseAccess = new AccessionMappingDatabaseAccess(fileName);
                 ProgramProperties.put("AccessionMappingDatabase", fileName);
                 System.err.println("Supported classifications: " + Basic.toString(accessionMappingDatabaseAccess.getClassificationNames(), " "));
+                this.file = new File(fileName);
             } catch (Exception e) {
                 Basic.caught(e);
                 NotificationsInSwing.showError("Failed to open database file " + fileName + ": " + e.getMessage());
@@ -87,7 +81,16 @@ public class Accession2IdAdapter {
      * @return mapping
      */
     public IString2IntegerMap createMap(String classificationName) {
+
+        if (DATABASE_USES_WRONG_NAMES) {
+            // todo: need to change database to use uppercase names:
+            classificationName = classificationName.toLowerCase();
+            if (classificationName.endsWith("taxonomy"))
+                classificationName = "protacc";
+        }
+
         System.err.println("Classification '" + classificationName + "' uses database file " + ProgramProperties.get("AccessionMappingDatabase", ""));
+
         final int classificationIndex = accessionMappingDatabaseAccess.getClassificationIndex(classificationName);
         return new IString2IntegerMap() {
             @Override
@@ -124,5 +127,22 @@ public class Accession2IdAdapter {
             }
             accessionMappingDatabaseAccess = null;
         }
+        file = null;
+    }
+
+    public boolean isDBFile(String fileName) {
+        if (!fileName.endsWith(".db"))
+            return false;
+
+        if (this.file != null && (new File(fileName)).equals(this.file))
+            return true;
+        try {
+            final AccessionMappingDatabaseAccess accessionMappingDatabaseAccess = new AccessionMappingDatabaseAccess(fileName);
+            accessionMappingDatabaseAccess.closeDB();
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
+
     }
 }

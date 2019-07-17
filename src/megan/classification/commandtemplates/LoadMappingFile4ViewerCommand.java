@@ -33,6 +33,8 @@ import megan.importblast.ImportBlastDialog;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * loads a mapping file for the given fViewer and mapType
@@ -76,9 +78,16 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
         final File lastOpenFile = ProgramProperties.getFile(ClassificationManager.getMapFileKey(cName, mapType));
         getDir().notifyLockInput();
         ImportBlastDialog dialog = (ImportBlastDialog) getParent();
-        final String[] suffixes = (mapType == IdMapper.MapType.Accession ? new String[]{"map", "abin", "map.gz"} : new String[]{"map", "bin", "map.gz"});
-        final File file = ChooseFileDialog.chooseFileToOpen(dialog, lastOpenFile, new TextFileFilter(suffixes, false),
-                new TextFileFilter(suffixes, true), ev, "Open " + mapType + " File");
+        final ArrayList<String> suffixes = new ArrayList<>(Arrays.asList("map", "map.gz"));
+        if (mapType == IdMapper.MapType.Accession) {
+            suffixes.add("abin");
+            if (ProgramProperties.get("enable-database-lookup", false))
+                suffixes.add("db");
+        } else
+            suffixes.add("bin");
+
+        final File file = ChooseFileDialog.chooseFileToOpen(dialog, lastOpenFile, new TextFileFilter(suffixes.toArray(new String[0]), false),
+                new TextFileFilter(suffixes.toArray(new String[0]), true), ev, "Open " + mapType + " File");
         getDir().notifyUnlockInput();
 
         if (file != null) {

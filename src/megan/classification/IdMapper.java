@@ -146,7 +146,17 @@ public class IdMapper {
                         }
                     }
                     try {
-                        this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
+                        if (ProgramProperties.get("enable-database-lookup", false)) {
+                            final Accession2IdAdapter accession2IdAdapter = Accession2IdAdapter.getInstance();
+                            if (accession2IdAdapter.isDBFile(fileName)) {
+                                if (!accession2IdAdapter.isSetup())
+                                    Accession2IdAdapter.getInstance().setup(fileName);
+                                this.accessionMap = Accession2IdAdapter.getInstance().createMap(cName);
+                            } else
+                                this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
+                        } else
+                            this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
+
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
@@ -219,20 +229,6 @@ public class IdMapper {
      * @return
      */
     public IdParser createIdParser() {
-
-        if (ProgramProperties.get("enable-database-lookup", false) && !Accession2IdAdapter.getInstance().isSetup())
-            Accession2IdAdapter.getInstance().setup(); // use database
-
-        if (Accession2IdAdapter.getInstance().isSetup()) {
-            // todo: use capital letters in DB and use Taxonomy for taxonomy
-            String adaptedName = (cName.equals(Classification.Taxonomy) ? "protacc" : cName.toLowerCase());
-            if (getAccessionMap() == null && Accession2IdAdapter.getInstance().hasClassification(adaptedName)) {
-                this.loadedMaps.add(MapType.Accession);
-                this.activeMaps.add(MapType.Accession);
-                this.accessionMap = Accession2IdAdapter.getInstance().createMap(adaptedName);
-            }
-        }
-
         final IdParser idParser = new IdParser(this);
         idParser.setAlgorithm(algorithm);
         return idParser;

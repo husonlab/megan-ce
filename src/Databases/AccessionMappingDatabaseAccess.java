@@ -117,7 +117,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             }
             return resultlist;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new SQLException("Error when executing query " + query + "\n" + e.getMessage());
         } finally {
             if (rs != null) {
@@ -152,7 +152,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
             }
             return resultlist;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new SQLException("Error when executing query " + query + "\n" + e.getMessage());
         } finally {
             if (rs != null) {

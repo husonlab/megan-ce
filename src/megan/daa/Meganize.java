@@ -63,6 +63,7 @@ public class Meganize {
                              int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover, float minPercentReferenceToCover, String contaminantsFile) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
+        final long start = System.currentTimeMillis();
 
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
 
@@ -122,5 +123,7 @@ public class Meganize {
         header.load();
         header.setReserved3(DAAHeader.MEGAN_VERSION);
         header.save();
+
+        System.err.println(String.format("(Meganization of file %s took %,1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
     }
 }

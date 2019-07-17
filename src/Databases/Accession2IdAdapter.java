@@ -16,7 +16,7 @@ import java.util.Collection;
  * Daniel Huson, 5.2019
  */
 public class Accession2IdAdapter {
-    public final static boolean DATABASE_USES_WRONG_NAMES = true;
+    public final static boolean DATABASE_USES_WRONG_NAMES = false;
 
     private AccessionMappingDatabaseAccess accessionMappingDatabaseAccess;
     private File file;

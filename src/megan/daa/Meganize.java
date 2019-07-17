@@ -21,6 +21,7 @@ package megan.daa;
 
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
 import megan.classification.Classification;
 import megan.core.ContaminantManager;
@@ -66,6 +67,9 @@ public class Meganize {
         final long start = System.currentTimeMillis();
 
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
+        if (ProgramProperties.get("enable-database-lookup", false))
+            System.err.println(String.format("(Reference annotation of file %s took %.1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
+
 
         final Document doc = new Document();
         doc.setOpenDAAFileOnlyIfMeganized(false);
@@ -124,6 +128,7 @@ public class Meganize {
         header.setReserved3(DAAHeader.MEGAN_VERSION);
         header.save();
 
-        System.err.println(String.format("(Meganization of file %s took %,1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
+        if (ProgramProperties.get("enable-database-lookup", false))
+            System.err.println(String.format("(Meganization of file %s took %.1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
     }
 }

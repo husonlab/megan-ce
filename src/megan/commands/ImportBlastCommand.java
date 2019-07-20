@@ -32,6 +32,7 @@ import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
 import megan.rma6.RMA6FromBlastCreator;
+import megan.util.ReadMagnitudeParser;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
@@ -264,18 +265,18 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                     System.err.println("Deleting existing file: " + meganFile.getPath());
             }
 
-            final String[] blastFileNames = blastFiles.toArray(new String[blastFiles.size()]);
-            final String[] readFileNames = readsFiles.toArray(new String[readsFiles.size()]);
+            final String[] blastFileNames = blastFiles.toArray(new String[0]);
+            final String[] readFileNames = readsFiles.toArray(new String[0]);
+
+            ReadMagnitudeParser.setEnabled(doc.getReadAssignmentMode() == Document.ReadAssignmentMode.readMagnitude);
 
             doc.getMeganFile().setFile(meganFileName, MeganFile.Type.RMA6_FILE);
             RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(ProgramProperties.getProgramName(), format, doc.getBlastMode(),
                     blastFileNames, readFileNames, doc.getMeganFile().getFileName(), useCompression, doc, maxMatchesPerRead);
 
-
             rma6Creator.parseFiles(doc.getProgressListener());
 
             doc.loadMeganFile();
-
 
             if (description != null && description.length() > 0) {
                 description = description.replaceAll("^ +| +$|( )+", "$1"); // replace all white spaces by a single space

@@ -21,7 +21,6 @@ package megan.core;
 import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
-import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
@@ -98,7 +97,7 @@ public class SyncArchiveAndDataTable {
             }
         } else {
             String name = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(fileName), "");
-            sampleAttributeTable.addSample(name, new HashMap<String, Object>(), true, true);
+            sampleAttributeTable.addSample(name, new HashMap<>(), true, true);
         }
 
         // fix some broken files that contain two lines of metadata...
@@ -124,12 +123,7 @@ public class SyncArchiveAndDataTable {
      * @param table
      */
     static public void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
-        boolean useWeights;
-        if (!classificationBlock.getName().equals(Classification.Taxonomy) || readAssignmentMode == Document.ReadAssignmentMode.readCount)
-            useWeights = false; // don't use weights unless taxonomy...
-        else {
-            useWeights = true;
-        }
+        boolean useWeights = (readAssignmentMode != Document.ReadAssignmentMode.readCount);
 
         final Map<Integer, float[]> classId2count = new HashMap<>();
         table.setClass2Counts(classificationBlock.getName(), classId2count);
@@ -137,14 +131,12 @@ public class SyncArchiveAndDataTable {
         for (Integer classId : classificationBlock.getKeySet()) {
             float sum = (useWeights ? classificationBlock.getWeightedSum(classId) : classificationBlock.getSum(classId));
             if (sum > 0) {
-                if (classId2count.get(classId) == null)
-                    classId2count.put(classId, new float[totalDataSets]);
+                classId2count.computeIfAbsent(classId, k -> new float[totalDataSets]);
                 classId2count.get(classId)[dataSetId] += sum;
             }
         }
         if (table.getAdditionalReads() > 0) {
-            if (classId2count.get(IdMapper.NOHITS_ID) == null)
-                classId2count.put(IdMapper.NOHITS_ID, new float[totalDataSets]);
+            classId2count.computeIfAbsent(IdMapper.NOHITS_ID, k -> new float[totalDataSets]);
             classId2count.get(IdMapper.NOHITS_ID)[dataSetId] += (int) table.getAdditionalReads();
         }
     }

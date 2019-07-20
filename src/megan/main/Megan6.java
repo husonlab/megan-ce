@@ -85,13 +85,16 @@ public class Megan6 {
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
+        ProgramProperties.setProgramLicence("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
+                "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
+                "Sources available at: https://github.com/danielhuson/megan-ce");
+
         ProgramProperties.setUseGUI(true);
 
         final ArgsOptions options = new ArgsOptions(args, this, "MEGAN MetaGenome Analyzer Community Edition");
         options.setAuthors("Daniel H. Huson");
-        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
-                "This is free software, licensed under the terms of the GNU General Public License, Version 3.");
         options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense(ProgramProperties.getProgramLicence());
 
         final String[] meganFiles = options.getOption("-f", "files", "MEGAN RMA file(s) to open", new String[0]);
 

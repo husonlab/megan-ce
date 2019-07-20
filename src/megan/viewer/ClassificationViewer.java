@@ -743,6 +743,9 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 buf2.append(String.format("Absolute comparison, Reads=%,d Assigned=%,d", totalReads, totalAssignedReads));
         } else if (totalReads > 0) {
             buf2.append(String.format("Reads=%,d Assigned=%,d", totalReads, totalAssignedReads));
+            if (doc.getReadAssignmentMode() == Document.ReadAssignmentMode.readMagnitude)
+                buf2.append(String.format(" (%s)", doc.getReadAssignmentMode().toString()));
+
             if (doc.getBlastMode() != BlastMode.Unknown)
                 buf2.append(" mode=").append(doc.getBlastMode().toString());
         } else {

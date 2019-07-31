@@ -135,10 +135,6 @@ module megan {
     exports megan.xtra;
 
     exports megan.resources;
-    exports megan.resources.css;
-    exports megan.resources.icons;
-    exports megan.resources.images;
-    exports megan.resources.files;
 
     opens megan.resources.css;
     opens megan.resources.icons;

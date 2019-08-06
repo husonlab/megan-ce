@@ -1,6 +1,7 @@
 package Databases;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ public interface IAccessionMappingDatabaseAccess {
      *
      * @param url
      */
-    void openDatabase(String url) throws FileNotFoundException, ClassNotFoundException, SQLException;
+    void openDatabase(String url) throws FileNotFoundException, ClassNotFoundException, SQLException, IOException;
 
     /**
      * get the info string associated with the database

@@ -3,6 +3,7 @@ package Databases;
 import org.apache.commons.collections4.map.LRUMap;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -33,7 +34,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
      * Constructor also establishes the connection to the database. No need to call openDatabase
      * @param path to the database file
      */
-    public AccessionMappingDatabaseAccess(String path) throws FileNotFoundException, ClassNotFoundException, SQLException {
+    public AccessionMappingDatabaseAccess(String path) throws IOException, ClassNotFoundException, SQLException {
         this();
         openDatabase(path);
     }
@@ -53,9 +54,12 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
      * @param url path to the database file
      */
     @Override
-    public void openDatabase(String url) throws FileNotFoundException, ClassNotFoundException, SQLException {
+    public void openDatabase(String url) throws IOException, ClassNotFoundException, SQLException {
+        if (con != null)
+            throw new IOException("Can't open database, already open");
+
         if (url == null || url.equals("")) {
-            throw new FileNotFoundException("The path " + url + " is invalid. Please try again with a valid path. ");
+            throw new FileNotFoundException("The path " + url + " is invalid. Please try again with a valid path.");
         }
         try { // If the database is already connected return
             if (DB_PATH.equals(url)) {
@@ -68,7 +72,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
         if (Files.exists(Paths.get(url))) {
             DB_PATH = url;
         } else {
-            throw new FileNotFoundException("The path " + url + " does not exist. Please try again with a valid path. ");
+            throw new FileNotFoundException("The path " + url + " does not exist. Please try again with a valid path.");
         }
         // create new cache
         setCacheSize(CACHE_SIZE);
@@ -427,6 +431,7 @@ public class AccessionMappingDatabaseAccess implements IAccessionMappingDatabase
     public void closeDB() throws SQLException {
         if (con != null) {
             con.close();
+            con = null;
         }
     }
 }

@@ -134,8 +134,7 @@ module megan {
     exports rusch.megan5client.connector;
     exports megan.xtra;
 
-    exports megan.resources;
-
+    opens megan.resources;
     opens megan.resources.css;
     opens megan.resources.icons;
     opens megan.resources.images;
@@ -143,4 +142,5 @@ module megan {
 
     opens megan.dialogs.lrinspector;
     opens megan.dialogs.reads;
+    exports megan.resources;
 }

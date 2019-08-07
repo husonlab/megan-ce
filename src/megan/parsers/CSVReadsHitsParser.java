@@ -82,9 +82,7 @@ public class CSVReadsHitsParser {
         }
 
         final Map<String, List<Pair<Integer, Float>>>[] readName2IdAndScore = new HashMap[cNames.length];
-        for (int i = 0; i < readName2IdAndScore.length; i++) {
-            readName2IdAndScore[i] = new HashMap<>();
-        }
+        Arrays.fill(readName2IdAndScore, new HashMap<>());
 
         final int[] count = new int[parsers.length];
         int numberOfErrors = 0;
@@ -128,11 +126,7 @@ public class CSVReadsHitsParser {
                                 }
                             } else
                                 score = Float.parseFloat(tokens[2].trim());
-                            List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].get(readName);
-                            if (taxonIdAndScore == null) {
-                                taxonIdAndScore = new LinkedList<>();
-                                readName2IdAndScore[i].put(readName, taxonIdAndScore);
-                            }
+                            List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].computeIfAbsent(readName, k -> new LinkedList<>());
                             taxonIdAndScore.add(new Pair<>(id, score));
                             if (!readName.equals(prevName))
                                 count[i]++;
@@ -169,11 +163,7 @@ public class CSVReadsHitsParser {
                 final int taxId = computeTaxonId(doc, taxonIdAndScore);
 
                 if (taxId != 0) {
-                    float[] counts = class2counts.get(taxId);
-                    if (counts == null) {
-                        counts = new float[]{0};
-                        class2counts.put(taxId, counts);
-                    }
+                    float[] counts = class2counts.computeIfAbsent(taxId, k -> new float[]{0});
                     counts[0]++;
                     if (class2count.get(taxId) == null)
                         class2count.put(taxId, 1f);
@@ -239,11 +229,7 @@ public class CSVReadsHitsParser {
                     final int classId = getBestId(classIdAndScore);
 
                     if (classId != 0) {
-                        float[] counts = class2counts.get(classId);
-                        if (counts == null) {
-                            counts = new float[]{0};
-                            class2counts.put(classId, counts);
-                        }
+                        float[] counts = class2counts.computeIfAbsent(classId, k -> new float[]{0});
                         counts[0]++;
                         if (class2count.get(classId) == null)
                             class2count.put(classId, 1f);
@@ -296,12 +282,7 @@ public class CSVReadsHitsParser {
         // sort by decreasing bit-score:
         Arrays.sort(pairs, new Comparator<Pair<Integer, Float>>() {
             public int compare(Pair<Integer, Float> pair1, Pair<Integer, Float> pair2) {
-                if (pair1.getSecond() > pair2.getSecond())
-                    return -1;
-                else if (pair1.getSecond() < pair2.getSecond())
-                    return 1;
-                else
-                    return 0;
+                return pair2.getSecond().compareTo(pair1.getSecond());
             }
         });
 

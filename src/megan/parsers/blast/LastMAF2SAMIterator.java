@@ -18,12 +18,12 @@
  */
 package megan.parsers.blast;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.Pair;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
-import megan.fx.NotificationsInSwing;
 import megan.util.LastMAFFileFilter;
 
 import java.io.IOException;

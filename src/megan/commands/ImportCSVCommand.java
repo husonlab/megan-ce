@@ -19,6 +19,7 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
@@ -31,7 +32,6 @@ import megan.core.Document;
 import megan.core.MeganFile;
 import megan.dialogs.importcsv.ImportCSVWindow;
 import megan.dialogs.parameters.ParametersDialogSmall;
-import megan.fx.NotificationsInSwing;
 import megan.inspector.InspectorWindow;
 import megan.main.MeganProperties;
 import megan.parsers.CSVReadsHitsParser;

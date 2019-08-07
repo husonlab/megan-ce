@@ -19,12 +19,12 @@
 package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.gui.PCoATab;
 import megan.clusteranalysis.pcoa.PCoA;
-import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import java.awt.*;

@@ -27,6 +27,7 @@ import jloda.swing.find.IObjectSearcher;
 import jloda.swing.find.NodeLabelSearcher;
 import jloda.swing.find.SearchManager;
 import jloda.swing.graphview.*;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.util.*;
@@ -40,7 +41,6 @@ import megan.clusteranalysis.pcoa.geom3d.Matrix3D;
 import megan.clusteranalysis.pcoa.geom3d.Vector3D;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
 

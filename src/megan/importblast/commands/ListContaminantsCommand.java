@@ -19,12 +19,12 @@
 package megan.importblast.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.ContaminantManager;
 import megan.dialogs.parameters.ParametersDialog;
-import megan.fx.NotificationsInSwing;
 import megan.importblast.ImportBlastDialog;
 
 import javax.swing.*;

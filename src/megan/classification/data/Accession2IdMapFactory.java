@@ -19,10 +19,10 @@
 
 package megan.classification.data;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
-import megan.fx.NotificationsInSwing;
 
 import java.io.IOException;
 

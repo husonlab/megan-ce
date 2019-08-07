@@ -20,6 +20,7 @@
 package megan.blastclient;
 
 import jloda.swing.director.IDirectableViewer;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.util.Basic;
@@ -28,7 +29,6 @@ import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import megan.core.Director;
 import megan.core.MeganFile;
-import megan.fx.NotificationsInSwing;
 import megan.util.IReadsProvider;
 
 import javax.swing.*;

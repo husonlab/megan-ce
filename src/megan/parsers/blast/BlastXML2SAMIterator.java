@@ -18,8 +18,8 @@
  */
 package megan.parsers.blast;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
-import megan.fx.NotificationsInSwing;
 import megan.parsers.blast.blastxml.BlastXMLParser;
 import megan.parsers.blast.blastxml.MatchesText;
 import megan.util.BlastXMLFileFilter;

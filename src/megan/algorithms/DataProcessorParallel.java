@@ -18,6 +18,7 @@
  */
 package megan.algorithms;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
@@ -31,7 +32,6 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.data.UpdateItemList;
-import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
 import megan.main.MeganProperties;
 import megan.rma6.RMA6File;

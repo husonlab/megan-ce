@@ -18,6 +18,7 @@
  */
 package megan.parsers;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.FileInputIterator;
 import jloda.util.ProgramProperties;
@@ -29,7 +30,6 @@ import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 
 import java.io.BufferedReader;

@@ -18,12 +18,12 @@
  */
 package megan.classification;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 

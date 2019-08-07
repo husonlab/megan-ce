@@ -21,11 +21,11 @@ package megan.stats;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.phylo.PhyloTree;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import megan.classification.IdMapper;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 
 import java.io.IOException;
 import java.util.LinkedList;

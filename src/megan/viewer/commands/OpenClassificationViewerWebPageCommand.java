@@ -20,12 +20,12 @@ package megan.viewer.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;

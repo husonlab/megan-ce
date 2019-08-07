@@ -19,6 +19,7 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
@@ -28,7 +29,6 @@ import megan.classification.data.SyncDataTableAndClassificationViewer;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.samplesviewer.SamplesViewer;
 import megan.util.MeganFileFilter;

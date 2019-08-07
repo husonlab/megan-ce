@@ -18,6 +18,7 @@
  */
 package megan.parsers;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.*;
 import megan.algorithms.MinSupportFilter;
 import megan.classification.Classification;
@@ -27,7 +28,6 @@ import megan.classification.IdParser;
 import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 

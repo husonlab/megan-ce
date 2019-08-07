@@ -21,6 +21,7 @@ package megan.viewer.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
@@ -28,7 +29,6 @@ import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;

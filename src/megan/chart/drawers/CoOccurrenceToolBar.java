@@ -18,9 +18,9 @@
  */
 package megan.chart.drawers;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import megan.chart.gui.ChartViewer;
-import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

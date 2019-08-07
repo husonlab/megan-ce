@@ -20,6 +20,7 @@ package megan.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
@@ -34,7 +35,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.data.ExtractToNewDocument;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.rma6.ExtractToNewDocumentRMA6;
 import megan.util.RMAFileFilter;

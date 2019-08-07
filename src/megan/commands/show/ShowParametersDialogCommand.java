@@ -20,6 +20,7 @@ package megan.commands.show;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
@@ -31,7 +32,6 @@ import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.dialogs.lrinspector.LRInspectorViewer;
 import megan.dialogs.parameters.ParametersDialog;
-import megan.fx.NotificationsInSwing;
 import megan.inspector.InspectorWindow;
 import megan.viewer.MainViewer;
 

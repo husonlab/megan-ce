@@ -19,11 +19,11 @@
 package megan.viewer.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
-import megan.fx.NotificationsInSwing;
 import megan.util.CallBack;
 import megan.util.PopupChoice;
 import megan.viewer.ClassificationViewer;

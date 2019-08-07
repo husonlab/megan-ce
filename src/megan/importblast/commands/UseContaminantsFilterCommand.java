@@ -19,9 +19,9 @@
 package megan.importblast.commands;
 
 import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
-import megan.fx.NotificationsInSwing;
 import megan.importblast.ImportBlastDialog;
 
 import javax.swing.*;

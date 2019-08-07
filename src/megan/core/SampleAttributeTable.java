@@ -18,10 +18,10 @@
  */
 package megan.core;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.Table;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 
 import java.awt.*;

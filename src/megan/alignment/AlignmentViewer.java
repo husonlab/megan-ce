@@ -26,6 +26,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.find.FindToolBar;
 import jloda.swing.find.JListSearcher;
 import jloda.swing.find.SearchManager;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.MenuBar;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
@@ -37,7 +38,6 @@ import megan.alignment.gui.colors.ColorSchemeNucleotides;
 import megan.alignment.gui.colors.ColorSchemeText;
 import megan.assembly.alignment.AlignmentAssembler;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.viewer.MainViewer;
 

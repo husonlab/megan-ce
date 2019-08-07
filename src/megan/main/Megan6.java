@@ -21,6 +21,7 @@ package megan.main;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.message.MessageWindow;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.About;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
@@ -29,7 +30,6 @@ import jloda.util.ProgramProperties;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;

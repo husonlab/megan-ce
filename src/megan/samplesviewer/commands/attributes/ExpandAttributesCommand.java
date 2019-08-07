@@ -23,10 +23,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
-import megan.fx.NotificationsInSwing;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;

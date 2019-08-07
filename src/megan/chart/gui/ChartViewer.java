@@ -22,6 +22,7 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.director.*;
 import jloda.swing.find.FindToolBar;
 import jloda.swing.find.SearchManager;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.MenuBar;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
@@ -36,7 +37,6 @@ import megan.chart.data.IData;
 import megan.chart.data.IPlot2DData;
 import megan.chart.drawers.*;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 
 import javax.swing.*;

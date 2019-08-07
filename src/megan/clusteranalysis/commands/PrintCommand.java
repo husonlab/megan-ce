@@ -19,12 +19,12 @@
 package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
-import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import java.awt.*;

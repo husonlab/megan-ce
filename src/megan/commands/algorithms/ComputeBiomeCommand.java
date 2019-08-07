@@ -19,6 +19,7 @@
 package megan.commands.algorithms;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
@@ -27,7 +28,6 @@ import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.viewer.gui.NodeDrawer;
 

@@ -18,6 +18,7 @@
  */
 package megan.algorithms;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
@@ -29,7 +30,6 @@ import megan.core.Document;
 import megan.core.ReadAssignmentCalculator;
 import megan.core.SyncArchiveAndDataTable;
 import megan.data.*;
-import megan.fx.NotificationsInSwing;
 import megan.io.InputOutputReaderWriter;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;

@@ -18,9 +18,9 @@
  */
 package megan.importblast;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 
 import javax.swing.*;

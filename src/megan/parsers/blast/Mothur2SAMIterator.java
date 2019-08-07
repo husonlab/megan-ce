@@ -18,9 +18,9 @@
  */
 package megan.parsers.blast;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import megan.fx.NotificationsInSwing;
 import megan.util.MothurFileFilter;
 
 import java.io.IOException;

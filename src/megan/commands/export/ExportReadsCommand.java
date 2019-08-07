@@ -19,6 +19,7 @@
 package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
@@ -32,7 +33,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.lrinspector.LRInspectorViewer;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;

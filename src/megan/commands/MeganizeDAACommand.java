@@ -22,6 +22,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
@@ -32,7 +33,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.daa.Meganize;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.util.ReadMagnitudeParser;
 

@@ -19,9 +19,9 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
-import megan.fx.NotificationsInSwing;
 import megan.util.DiversityIndex;
 import megan.viewer.ViewerBase;
 

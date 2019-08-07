@@ -20,6 +20,7 @@ package megan.commands.export;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
@@ -31,7 +32,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.export.ExportAlignedReads2GFF3Format;
 import megan.dialogs.lrinspector.LRInspectorViewer;
-import megan.fx.NotificationsInSwing;
 import megan.main.Version;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;

@@ -20,6 +20,7 @@ package megan.commands.additional;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
@@ -27,7 +28,6 @@ import jloda.util.parse.NexusStreamParser;
 import megan.algorithms.NaiveProjectionProfile;
 import megan.classification.ClassificationManager;
 import megan.core.*;
-import megan.fx.NotificationsInSwing;
 import megan.main.MeganProperties;
 import megan.util.CallBack;
 import megan.util.PopupChoice;

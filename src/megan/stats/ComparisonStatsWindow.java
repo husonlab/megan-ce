@@ -20,9 +20,9 @@ package megan.stats;
 
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 
 import javax.swing.*;
 import java.awt.*;

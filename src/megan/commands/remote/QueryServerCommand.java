@@ -19,11 +19,11 @@
 package megan.commands.remote;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.Pair;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 import megan.remote.client.RemoteServiceManager;
 import rusch.megan5client.RMADataset;
 import rusch.megan5client.connector.Megan5ServerConnector;

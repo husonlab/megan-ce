@@ -40,7 +40,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.fx.FXSwingUtilities;
-import megan.fx.NotificationsInSwing;
 import megan.fx.PopupMenuFX;
 import megan.util.GraphicsUtilities;
 
@@ -205,9 +204,9 @@ public class SamplesTableView {
                         rootNode.setCenter(main);
                         BorderPane.setMargin(main, new Insets(3, 3, 3, 3));
 
-                        String css = NotificationsInSwing.getControlStylesheetURL();
-                        if (css != null)
-                            jfxPanel.getScene().getStylesheets().add(css);
+                        // String css = NotificationsInSwing.getControlStylesheetURL();
+                        // if (css != null)
+                        //    jfxPanel.getScene().getStylesheets().add(css);
                     } finally {
                         initialized = true;
                     }

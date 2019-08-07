@@ -18,11 +18,11 @@
  */
 package megan.inspector;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.swing.util.ProgressDialog;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import megan.core.Director;
-import megan.fx.NotificationsInSwing;
 
 import java.util.LinkedList;
 import java.util.Queue;

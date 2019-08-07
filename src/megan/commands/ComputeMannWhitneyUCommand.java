@@ -21,9 +21,9 @@ package megan.commands;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
-import megan.fx.NotificationsInSwing;
 import megan.viewer.ViewerBase;
 import org.apache.commons.math3.stat.inference.MannWhitneyUTest;
 

@@ -18,6 +18,7 @@
  */
 package megan.biom.biom1;
 
+import jloda.swing.message.NotificationsInSwing;
 import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
@@ -26,7 +27,6 @@ import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Document;
 import megan.core.MeganFile;
-import megan.fx.NotificationsInSwing;
 import megan.util.BiomFileFilter;
 import megan.viewer.MainViewer;
 

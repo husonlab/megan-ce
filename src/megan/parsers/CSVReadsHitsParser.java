@@ -91,31 +91,35 @@ public class CSVReadsHitsParser {
         final ProgressListener progress = doc.getProgressListener();
         progress.setTasks("Importing CSV file", "Reading " + fileName);
 
+        int countInputReadNames = 0;
+        int countOutputReadNames = 0;
+        int countClassNames = 0;
+        int countUnrecognizedClassNames = 0;
+
         try (FileInputIterator it = new FileInputIterator(fileName)) {
             progress.setMaximum(it.getMaximumProgress());
             progress.setProgress(0);
 
             boolean warnedNoScoreGiven = false;
 
-
             String prevName = "";
 
             while (it.hasNext()) {
-                String aLine = it.next();
                 numberOfLines++;
-                aLine = aLine.trim();
+                final String aLine = it.next().trim();
                 if (aLine.length() == 0 || aLine.startsWith("#"))
                     continue;
                 try {
-                    String[] tokens = Basic.split(aLine, separator);
+                    final String[] tokens = Basic.split(aLine, separator);
 
                     if (tokens.length < 2 || tokens.length > 3)
                         throw new IOException("Line " + numberOfLines + ": incorrect number of columns, expected 2 or 3, got: " + tokens.length);
 
-                    String readName = tokens[0].trim();
+                    final String readName = tokens[0].trim();
                     boolean found = false;
                     for (int i = 0; !found && i < parsers.length; i++) {
                         final int id = (parsers.length == 1 && Basic.isInteger(tokens[1]) ? Basic.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
+
                         if (id != 0) {
                             float score;
                             if (tokens.length < 3) {
@@ -126,15 +130,26 @@ public class CSVReadsHitsParser {
                                 }
                             } else
                                 score = Float.parseFloat(tokens[2].trim());
-                            List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].computeIfAbsent(readName, k -> new LinkedList<>());
+                            final List<Pair<Integer, Float>> taxonIdAndScore = readName2IdAndScore[i].computeIfAbsent(readName, k -> new LinkedList<>());
                             taxonIdAndScore.add(new Pair<>(id, score));
                             if (!readName.equals(prevName))
                                 count[i]++;
                             found = true;
                         }
                     }
-                    if (!found)
+
+                    countClassNames++;
+                    if (!found) {
                         System.err.println("Unrecognized name: " + tokens[1]);
+                        countUnrecognizedClassNames++;
+                    }
+
+                    if (!readName.equals(prevName)) {
+                        countInputReadNames++;
+                        if (found)
+                            countOutputReadNames++;
+                    }
+
                     prevName = readName;
                 } catch (Exception ex) {
                     System.err.println("Error: " + ex + ", skipping");
@@ -208,6 +223,19 @@ public class CSVReadsHitsParser {
                     }
                 }
             }
+
+            System.err.println(String.format("Reads in:%,13d", countInputReadNames));
+            System.err.println(String.format("Reads out:%,12d", countOutputReadNames));
+
+            System.err.println(String.format("Class names:%,10d", countClassNames));
+            if (countUnrecognizedClassNames > 0)
+                System.err.println(String.format("Unrecognized:%,9d", countUnrecognizedClassNames));
+
+            if (countOutputReadNames < countInputReadNames) {
+                float[] unassignedCounts = class2counts.computeIfAbsent(IdMapper.UNASSIGNED_ID, k -> new float[]{0});
+                unassignedCounts[0] += (countInputReadNames - countOutputReadNames);
+            }
+
             table.getClassification2Class2Counts().put(ClassificationType.Taxonomy.toString(), class2counts);
         } else {
             Map<Integer, float[]> class2counts = new HashMap<>();

@@ -29,6 +29,7 @@ import jloda.swing.find.SearchManager;
 import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
+import jloda.swing.window.MenuBar;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.core.Director;

@@ -9,6 +9,11 @@ hs_err_pid*
 *.iml
 .idea
 
+#eclipse
+.settings
+.classpath
+.project
+
 # MacOS
 .DS_Store
 

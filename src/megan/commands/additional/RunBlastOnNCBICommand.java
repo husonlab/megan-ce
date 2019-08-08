@@ -27,9 +27,9 @@ import javafx.event.EventHandler;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgressDialog;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.blastclient.BlastService;
@@ -91,9 +91,6 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         } else
             blastDB = "nr";
         np.matchIgnoreCase(";");
-
-        // need to ensure that FX is initialized:
-        NotificationsInSwing.initFX(true);
 
         getDir().notifyLockInput();
 

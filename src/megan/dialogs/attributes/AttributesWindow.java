@@ -23,6 +23,7 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
+import jloda.swing.window.MenuBar;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
@@ -53,7 +54,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @author2010 Daniel Huson
+ * @author Daniel Huson, 2010
  */
 public class AttributesWindow implements IDirectableViewer, Printable {
     private boolean uptodate = true;

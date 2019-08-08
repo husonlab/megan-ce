@@ -29,6 +29,7 @@ import jloda.swing.format.Formatter;
 import jloda.swing.graphview.*;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
+import jloda.swing.window.MenuBar;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

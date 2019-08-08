@@ -23,6 +23,7 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.RememberingComboBox;
+import jloda.swing.window.MenuBar;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.main.MeganProperties;

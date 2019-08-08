@@ -37,6 +37,7 @@ import jloda.swing.find.FindToolBar;
 import jloda.swing.find.SearchManager;
 import jloda.swing.util.IViewerWithJComponent;
 import jloda.swing.util.ToolBar;
+import jloda.swing.window.MenuBar;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

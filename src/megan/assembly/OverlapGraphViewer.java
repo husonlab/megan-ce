@@ -26,6 +26,7 @@ import jloda.swing.graphview.EdgeActionAdapter;
 import jloda.swing.graphview.EdgeView;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.graphview.NodeActionAdapter;
+import jloda.swing.window.MenuBar;
 import jloda.swing.window.MenuConfiguration;
 import jloda.util.APoint2D;
 import jloda.util.CanceledException;

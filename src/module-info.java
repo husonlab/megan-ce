@@ -5,7 +5,6 @@ module megan {
     requires transitive com.install4j.runtime;
     requires transitive java.sql;
     requires transitive jdk.httpserver;
-    requires transitive org.controlsfx.controls;
 
     requires Jama;
     requires commons.codec;

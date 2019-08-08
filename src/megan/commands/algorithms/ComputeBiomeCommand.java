@@ -19,7 +19,7 @@
 package megan.commands.algorithms;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;

@@ -21,7 +21,7 @@ package megan.importblast;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.StatusBar;
 import jloda.util.Basic;
 import jloda.util.BlastMode;

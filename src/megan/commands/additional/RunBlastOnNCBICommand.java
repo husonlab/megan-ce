@@ -27,7 +27,7 @@ import javafx.event.EventHandler;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgressDialog;
 import jloda.util.*;

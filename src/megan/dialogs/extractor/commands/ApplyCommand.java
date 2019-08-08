@@ -22,7 +22,7 @@ import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;

@@ -30,7 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import jloda.fx.util.ExtendedFXMLLoader;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Statistics;
 import megan.data.IReadBlockIterator;
 import megan.main.Version;

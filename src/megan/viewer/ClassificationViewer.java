@@ -27,7 +27,6 @@ import jloda.swing.find.FindToolBar;
 import jloda.swing.find.SearchManager;
 import jloda.swing.format.Formatter;
 import jloda.swing.graphview.*;
-import jloda.swing.util.MenuBar;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.util.*;

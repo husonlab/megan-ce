@@ -18,7 +18,7 @@
  */
 package megan.assembly;
 
-import jloda.swing.util.MenuConfiguration;
+import jloda.swing.window.MenuConfiguration;
 
 /**
  * configuration for menu

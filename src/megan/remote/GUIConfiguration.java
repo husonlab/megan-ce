@@ -18,7 +18,7 @@
  */
 package megan.remote;
 
-import jloda.swing.util.MenuConfiguration;
+import jloda.swing.window.MenuConfiguration;
 
 /**
  * configuration for menu and toolbar

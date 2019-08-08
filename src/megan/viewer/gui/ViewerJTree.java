@@ -22,7 +22,7 @@ package megan.viewer.gui;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.window.IPopupMenuModifier;
 import jloda.swing.util.PopupMenu;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.GUIConfiguration;

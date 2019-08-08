@@ -18,7 +18,7 @@
  */
 package megan.parsers;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import megan.algorithms.MinSupportFilter;
 import megan.classification.Classification;

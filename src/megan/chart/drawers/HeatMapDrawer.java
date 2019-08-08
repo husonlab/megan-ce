@@ -22,7 +22,7 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ColorTable;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.window.IPopupMenuModifier;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.Statistics;

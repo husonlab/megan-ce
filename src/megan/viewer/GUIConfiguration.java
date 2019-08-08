@@ -18,7 +18,7 @@
  */
 package megan.viewer;
 
-import jloda.swing.util.MenuConfiguration;
+import jloda.swing.window.MenuConfiguration;
 import jloda.util.ProgramProperties;
 import megan.classification.data.ClassificationCommandHelper;
 

@@ -18,7 +18,7 @@
  */
 package megan.biom.biom1;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;

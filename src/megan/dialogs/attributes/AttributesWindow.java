@@ -21,7 +21,6 @@ package megan.dialogs.attributes;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.util.MenuBar;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.util.Basic;

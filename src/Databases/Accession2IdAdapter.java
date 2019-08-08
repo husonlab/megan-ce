@@ -1,6 +1,6 @@
 package Databases;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.classification.data.IString2IntegerMap;

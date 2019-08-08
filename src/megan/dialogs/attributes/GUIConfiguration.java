@@ -18,7 +18,7 @@
  */
 package megan.dialogs.attributes;
 
-import jloda.swing.util.MenuConfiguration;
+import jloda.swing.window.MenuConfiguration;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 

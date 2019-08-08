@@ -19,7 +19,7 @@
 package megan.viewer.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;

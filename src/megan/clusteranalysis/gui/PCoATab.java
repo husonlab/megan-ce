@@ -27,7 +27,7 @@ import jloda.swing.find.IObjectSearcher;
 import jloda.swing.find.NodeLabelSearcher;
 import jloda.swing.find.SearchManager;
 import jloda.swing.graphview.*;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.util.*;

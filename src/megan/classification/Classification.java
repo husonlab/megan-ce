@@ -18,7 +18,7 @@
  */
 package megan.classification;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import megan.classification.data.ClassificationFullTree;

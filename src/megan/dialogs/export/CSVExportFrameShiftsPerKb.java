@@ -20,7 +20,7 @@
 package megan.dialogs.export;
 
 import jloda.graph.Node;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.interval.IntervalTree;
 import megan.algorithms.IntervalTree4Matches;

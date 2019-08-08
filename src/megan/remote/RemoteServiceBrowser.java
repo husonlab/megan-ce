@@ -26,7 +26,6 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.find.EmptySearcher;
 import jloda.swing.find.FindToolBar;
 import jloda.swing.find.SearchManager;
-import jloda.swing.util.MenuBar;
 import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;

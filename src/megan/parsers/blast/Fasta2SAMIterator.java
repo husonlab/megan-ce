@@ -18,7 +18,7 @@
  */
 package megan.parsers.blast;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.FastaFileFilter;
 import jloda.util.Basic;
 

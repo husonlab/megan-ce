@@ -21,7 +21,7 @@ package megan.chart.drawers;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ILabelGetter;
-import jloda.swing.util.IPopupMenuModifier;
+import jloda.swing.window.IPopupMenuModifier;
 import jloda.util.Pair;
 import megan.chart.ChartColorManager;
 import megan.chart.cluster.ClusteringTree;

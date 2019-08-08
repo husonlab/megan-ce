@@ -21,7 +21,7 @@ package megan.core;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.*;
 import jloda.swing.message.MessageWindow;
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;

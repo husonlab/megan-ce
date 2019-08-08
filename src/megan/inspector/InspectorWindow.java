@@ -25,7 +25,6 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.find.FindToolBar;
 import jloda.swing.find.JTreeSearcher;
 import jloda.swing.find.SearchManager;
-import jloda.swing.util.MenuBar;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.util.*;

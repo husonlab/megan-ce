@@ -18,7 +18,7 @@
  */
 package megan.parsers.blast;
 
-import jloda.swing.message.NotificationsInSwing;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import megan.parsers.blast.blastxml.BlastXMLParser;
 import megan.parsers.blast.blastxml.MatchesText;

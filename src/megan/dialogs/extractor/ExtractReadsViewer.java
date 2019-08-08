@@ -22,7 +22,6 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.util.MenuBar;
 import jloda.swing.util.StatusBar;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;

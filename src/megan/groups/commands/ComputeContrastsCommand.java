@@ -165,7 +165,7 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
         if (openViewers.size() == 1) {
             execute("compute contrasts data=" + openViewers.get(0) + ";");
         } else if (openViewers.size() > 1) {
-            String[] choices = openViewers.toArray(new String[openViewers.size()]);
+            String[] choices = openViewers.toArray(new String[0]);
             String result = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Choose viewer", "Choose viewer", JOptionPane.PLAIN_MESSAGE, ProgramProperties.getProgramIcon(), choices, choices[0]);
             if (result != null)
                 execute("compute contrasts data=" + result + ";");

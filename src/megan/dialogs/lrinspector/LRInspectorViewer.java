@@ -130,8 +130,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         setTitle();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);

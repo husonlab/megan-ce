@@ -21,8 +21,8 @@ package megan.importblast;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.StatusBar;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.CanceledException;
@@ -144,9 +144,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         this.cNames.addAll(cNames);
 
         dir.addViewer(this);
-
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.importblast.commands"}, !ProgramProperties.isUseGUI());
         commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(), true);

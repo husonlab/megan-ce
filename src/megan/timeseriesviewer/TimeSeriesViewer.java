@@ -79,8 +79,8 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
         setTitle();
 
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
+
         int[] geometry = ProgramProperties.get(getClassName() + "Geometry", new int[]{100, 100, 800, 600});
         if (parent != null)
             getFrame().setLocationRelativeTo(parent);

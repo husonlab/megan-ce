@@ -127,8 +127,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         MeganProperties.notifyListChange(ProgramProperties.RECENTFILES);
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
-        if (ProgramProperties.getProgramIcon() != null)
-            frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        frame.setIconImages(ProgramProperties.getProgramIconImages());
 
         setWindowTitle();
         // add window listeners

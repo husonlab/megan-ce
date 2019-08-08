@@ -73,8 +73,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
 
         setSize(500, 165);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         StatusBar statusBar = new StatusBar(false);
 

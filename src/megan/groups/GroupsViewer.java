@@ -82,8 +82,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
         setTitle();
-        if (ProgramProperties.getProgramIcon() != null)
-            frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        frame.setIconImages(ProgramProperties.getProgramIconImages());
 
         frame.setJMenuBar(menuBar);
 

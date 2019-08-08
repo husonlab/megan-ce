@@ -95,8 +95,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         menuBar = new MenuBar(this, GUIConfiguration.getMenuConfiguration(), commandManager);
         setJMenuBar(menuBar);

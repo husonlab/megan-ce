@@ -138,6 +138,8 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         this.seriesLabelGetter = seriesLabelGetter;
         this.chartData = chartData;
 
+        this.setIconImages(ProgramProperties.getProgramIconImages());
+
         int[] geometry = ProgramProperties.get(MeganProperties.CHART_WINDOW_GEOMETRY, new int[]{100, 100, 800, 600});
         getFrame().setSize(geometry[2], geometry[3]);
         if (parentViewer != null)
@@ -160,8 +162,8 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
                             ProgramProperties.get(target.toString() + "Color", (Color) null)));
         }
 
-        if (ProgramProperties.getProgramIcon() != null)
-            setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
+
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
         if (parentViewer == null)

@@ -20,10 +20,10 @@ package megan.commands.export;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
@@ -145,7 +145,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         {
             dialog.setModal(true);
             dialog.setTitle("Export in GFF3 Format - " + Version.NAME);
-            dialog.setIconImage(ProgramProperties.getProgramIcon().getImage());
+            dialog.setIconImages(ProgramProperties.getProgramIconImages());
             dialog.setLocationRelativeTo(frame);
             dialog.setSize(500, 160);
             dialog.getContentPane().setLayout(new BorderLayout());

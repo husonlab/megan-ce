@@ -21,10 +21,10 @@ package megan.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
@@ -182,7 +182,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector())
                     MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
-                    NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()), 5000);
+                    NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", Basic.getFileNameWithoutPath(fileName), doc.getNumberOfReads()), 5000);
                 } else
                     System.err.println(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()));
                 timeOfLastOpen = System.currentTimeMillis();

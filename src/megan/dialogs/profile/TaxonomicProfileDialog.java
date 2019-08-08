@@ -60,8 +60,7 @@ public class TaxonomicProfileDialog extends JDialog {
      */
     public TaxonomicProfileDialog(JFrame parent, IDirector dir) {
         super(parent);
-
-        this.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         method = ProfileMethod.Projection;
 

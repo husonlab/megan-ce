@@ -118,8 +118,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
         generateHelpText();
 
         setTitle();
-        if (ProgramProperties.getProgramIcon() != null)
-            frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        frame.setIconImages(ProgramProperties.getProgramIconImages());
         frame.getContentPane().setLayout(new BorderLayout());
         frame.setJMenuBar(menuBar);
 

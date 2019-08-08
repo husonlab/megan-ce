@@ -69,7 +69,7 @@ public class CompareWindow extends JDialog {
         ignoreNoHits = ProgramProperties.get("CompareWindowIgnoreHoHits", true);
         keep1 = ProgramProperties.get("CompareWindowKeep1", false);
 
-        this.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        setIconImages(ProgramProperties.getProgramIconImages());
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.dialogs.compare.commands"}, !ProgramProperties.isUseGUI());
 

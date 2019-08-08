@@ -161,7 +161,9 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
         add(new ToolBar(this, GUIConfiguration.getToolBarConfiguration(), commandManager), BorderLayout.NORTH);
-        setIconImage(ProgramProperties.getProgramIcon().getImage());
+
+        setIconImages(ProgramProperties.getProgramIconImages());
+
         statusBar = new StatusBar();
         add(statusBar, BorderLayout.SOUTH);
 

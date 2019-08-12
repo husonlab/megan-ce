@@ -58,7 +58,7 @@ public class NJ {
 
             HashMap<String, Node> TaxaHashMap = new HashMap<>();
             int nbNtax = dist.getNtax();
-            StringBuffer tax[] = new StringBuffer[nbNtax + 1];
+            StringBuffer[] tax = new StringBuffer[nbNtax + 1];
             //Taxalabels are saved as a StringBuffer array
 
             for (int i = 1; i <= nbNtax; i++) {
@@ -69,8 +69,8 @@ public class NJ {
                 TaxaHashMap.put(tax[i].toString(), v);
             }
 
-            double h[][] = new double[nbNtax + 1][nbNtax + 1];// distance matix
-            double b[] = new double[nbNtax + 1];// the b variable in Neighbor Joining
+            double[][] h = new double[nbNtax + 1][nbNtax + 1];// distance matix
+            double[] b = new double[nbNtax + 1];// the b variable in Neighbor Joining
             int i_min = 0, j_min = 0; // needed for manipulation of h and b
             double temp, dist_e = 0.0, dist_f = 0.0;//new edge weights
             StringBuffer tax_old_i; //labels of taxa that are being merged

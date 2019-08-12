@@ -34,8 +34,8 @@ public class SAMUtilities {
     private static final String FILE_HEADER_BLASTX_TEMPLATE = "@HD\tVN:1.5\tSO:unsorted\tGO:query\n@PG\tID:1\tPN:MEGAN\tCL:%s\tDS:BlastX\n@RG\tID:1\tPL:unknown\tSM:unknown\n@CO\tBlastX-like alignments\n" +
             "@CO\tReporting AS: bitScore, ZR: rawScore, ZE: expected, ZI: percent identity, ZL: reference length, ZF: frame, ZS: query start DNA coordinate\n";
 
-    private static final int mapDaaOpCode2CigarOpCode[] = {0, 1, 2, 0}; // op_match -> M, op_insertion-> I, op_deletion-> D, op_substitution -> M
-    private static final char daaOpCode2CigarLetter[] = {'M', 'I', 'D'};
+    private static final int[] mapDaaOpCode2CigarOpCode = {0, 1, 2, 0}; // op_match -> M, op_insertion-> I, op_deletion-> D, op_substitution -> M
+    private static final char[] daaOpCode2CigarLetter = {'M', 'I', 'D'};
 
     private static final CombinedOperation insertOperation = new CombinedOperation(PackedTranscript.EditOperation.op_insertion, 1, null);
 

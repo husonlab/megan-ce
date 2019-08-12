@@ -26,7 +26,7 @@ package megan.daa.io;
 public class Translator {
     private static final byte[] reverseNucleotide = new byte[]{3, 2, 1, 0, 4};
 
-    private static byte lookup[][][] = {
+    private static byte[][][] lookup = {
             {{11, 2, 11, 2, 23},
                     {16, 16, 16, 16, 16},
                     {1, 15, 1, 15, 23},
@@ -58,7 +58,7 @@ public class Translator {
                     {23, 23, 23, 23, 23},
             }};
 
-    private static byte lookupReverse[][][] = {
+    private static byte[][][] lookupReverse = {
             {{13, 10, 13, 10, 23},
                     {4, 17, 4, 23, 23},
                     {15, 15, 15, 15, 15},

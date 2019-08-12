@@ -104,7 +104,7 @@ public class AAdderRun {
             for (int t = 0; t < entries; t++) {
                 final String dnaId = ins.readString();
                 final long pos = ins.readLong();
-                ref2PosAndTree.put(dnaId, new Pair<Long, IntervalTree<GeneItem>>(pos, null));
+                ref2PosAndTree.put(dnaId, new Pair<>(pos, null));
                 progress.incrementProgress();
             }
         }

@@ -24,7 +24,7 @@ package megan.clusteranalysis.pcoa.geom3d;
  * Created by huson on 9/16/14.
  */
 public class MatrixN {
-    private final VectorN v[];
+    private final VectorN[] v;
 
     /**
      * constructor

@@ -77,7 +77,7 @@ public class AAdderBuild {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input Output");
-        final List<String> gffFiles = options.getOptionMandatory("-igff", "inputGFF", "Input GFF3 files or directory (.gz ok)", new LinkedList<String>());
+        final List<String> gffFiles = options.getOptionMandatory("-igff", "inputGFF", "Input GFF3 files or directory (.gz ok)", new LinkedList<>());
         final String indexDirectory = options.getOptionMandatory("-d", "index", "Index directory", "");
 
         options.comment("Classification mapping");

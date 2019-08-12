@@ -112,7 +112,7 @@ public class SetEdgeShapeCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        String choices[] = new String[]{"angular", "straight", "curved", "none"};
+        String[] choices = new String[]{"angular", "straight", "curved", "none"};
 
         String result = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Set edge shape", "Set edge shape", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), choices, choices[0]);
 

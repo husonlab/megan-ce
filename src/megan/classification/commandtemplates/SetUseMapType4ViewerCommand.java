@@ -51,7 +51,10 @@ public class SetUseMapType4ViewerCommand extends CommandBase implements ICheckBo
      */
     @Override
     public boolean isSelected() {
-        return ClassificationManager.isActiveMapper(cName, mapType);
+        if(ClassificationManager.isUseFastAccessionMappingMode() && mapType== IdMapper.MapType.MeganMapDB)
+            return ClassificationManager.canUseMeganMapDBFile();
+        else
+            return ClassificationManager.isActiveMapper(cName, mapType);
     }
 
     public String getSyntax() {
@@ -66,7 +69,7 @@ public class SetUseMapType4ViewerCommand extends CommandBase implements ICheckBo
     }
 
     public boolean isApplicable() {
-        return ClassificationManager.isLoaded(cName, mapType);
+        return ClassificationManager.isLoaded(cName, mapType) && !ClassificationManager.isUseFastAccessionMappingMode();
     }
 
     public static String getAltName(String cName, IdMapper.MapType mapType) {

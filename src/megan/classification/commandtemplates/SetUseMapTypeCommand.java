@@ -30,7 +30,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Set maptype to use for specific fViewer
+ * Set map type to use for specific viewer
  * Daniel Huson, 4.2015
  */
 public class SetUseMapTypeCommand extends CommandBase implements ICommand {
@@ -48,11 +48,10 @@ public class SetUseMapTypeCommand extends CommandBase implements ICommand {
         final boolean state = np.getBoolean();
         np.matchIgnoreCase(";");
 
-        final IdMapper mapper = ClassificationManager.get(cName, true).getIdMapper();
-        mapper.setActiveMap(mapType, state);
+       ClassificationManager.setActiveMapper(cName, mapType,state);
 
         if (getParent() instanceof ImportBlastDialog) {
-            ((ImportBlastDialog) getParent()).getCommandManager().execute("use cViewer=" + cName + " state=" + mapper.hasActiveAndLoaded() + ";");
+            ((ImportBlastDialog) getParent()).getCommandManager().execute("use cViewer=" + cName + " state=" + ClassificationManager.get(cName, true).getIdMapper().hasActiveAndLoaded() + ";");
         }
     }
 

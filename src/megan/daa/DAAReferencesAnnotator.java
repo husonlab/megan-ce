@@ -18,17 +18,24 @@
  */
 package megan.daa;
 
-import jloda.util.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import jloda.fx.util.ProgramExecutorService;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
+import jloda.util.ProgressPercentage;
+import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
 import megan.daa.io.*;
-import megan.main.MeganProperties;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,13 +45,12 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 8.2105
  */
 public class DAAReferencesAnnotator {
-
     /**
      * add reference annotations to a DAA file
      *
      * @throws IOException
      */
-    public static void apply(String daaFile, boolean doTaxonomy, Collection<String> fNames0, final ProgressListener progress) throws IOException, CanceledException {
+    public static void apply(String daaFile, boolean doTaxonomy, Collection<String> cNames0, final ProgressListener progress) throws IOException, CanceledException {
         DAAModifier.removeAllMEGANData(daaFile);
 
         final DAAHeader header = new DAAHeader(daaFile);
@@ -53,36 +59,113 @@ public class DAAReferencesAnnotator {
 
         final String[] cNames;
         {
-            final List<String> fNamesList = new LinkedList<>();
-            fNamesList.addAll(fNames0);
+            final List<String> fNamesList = new LinkedList<>(cNames0);
             if (doTaxonomy && !fNamesList.contains(Classification.Taxonomy)) {
                 fNamesList.add(Classification.Taxonomy);
-            } else if (!doTaxonomy && fNamesList.contains(Classification.Taxonomy))
+            } else if (!doTaxonomy)
                 fNamesList.remove(Classification.Taxonomy);
-            cNames = fNamesList.toArray(new String[fNamesList.size()]);
+            cNames = fNamesList.toArray(new String[0]);
         }
 
         final int[][] cName2ref2class = new int[cNames.length][header.getNumberOfReferences()];
 
-        final int numberOfThreads = Math.max(1, Math.min(header.getNumberOfReferences(), Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS) / 2, Runtime.getRuntime().availableProcessors() / 2)));
         final ExecutorService service = Executors.newCachedThreadPool();
+        ObjectProperty<Exception> exception = new SimpleObjectProperty<>();
+
         try {
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+            if (ClassificationManager.canUseMeganMapDBFile()) {
+                System.err.println("Annotating DAA file using FAST mode (accession database and first accession per line)");
+                progress.setSubtask("Annotating references");
 
-            progress.setSubtask("Annotating references");
-            progress.setMaximum(header.getNumberOfReferences());
-            progress.setProgress(0);
+                final int chunkSize = 100000;
 
-            // determine the names for references:
-            for (int t = 0; t < numberOfThreads; t++) {
-                final int task = t;
-                service.submit(new Runnable() {
-                    public void run() {
+                final int numberOfTasks = (int) Math.ceil((double) header.getNumberOfReferences() / chunkSize);
+
+                 final CountDownLatch countDownLatch = new CountDownLatch(numberOfTasks);
+
+                final int numberOfThreads = Math.min(numberOfTasks, ProgramExecutorService.getNumberOfCoresToUse());
+
+                //System.err.println("Number of tasks: "+numberOfTasks);
+                //System.err.println("Number of threads: "+numberOfThreads);
+
+                progress.setMaximum(numberOfTasks/numberOfThreads);
+                progress.setProgress(0);
+
+                for (int t = 0; t < numberOfThreads; t++) {
+                    final int task = t;
+                    service.submit(() -> {
+                        try (final AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(ClassificationManager.getMeganMapDBFile())) {
+                            final int[] mapClassificationId2DatabaseRank = accessAccessionMappingDatabase.setupMapClassificationId2DatabaseRank(cNames);
+
+                            final String[] queries = new String[chunkSize];
+                            for (int r = task * chunkSize; r < header.getNumberOfReferences(); r += numberOfThreads * chunkSize) {
+                                try {
+                                    if (exception.get() != null)
+                                        return;
+                                    for (int i = 0; i < chunkSize; i++) {
+                                        final int a = r + i;
+                                        if (a < header.getNumberOfReferences()) {
+                                            queries[i] = getFirstWord(header.getReference(a, null));
+                                        } else
+                                            break;
+                                    }
+                                    final int size = Math.min(chunkSize, header.getNumberOfReferences() - r);
+                                    final Map<String, int[]> query2ids = accessAccessionMappingDatabase.getValues(queries, size);
+                                    for (int q = 0; q < size; q++) {
+                                        final int[] ids = query2ids.get(queries[q]);
+                                        if (ids != null) {
+                                            for (int c = 0; c < cNames.length; c++) {
+                                                final int dbRank = mapClassificationId2DatabaseRank[c];
+                                                if (dbRank < ids.length)
+                                                    cName2ref2class[c][r + q] = ids[dbRank];
+                                            }
+                                        }
+                                    }
+                                }
+                                finally {
+                                    if(task==0)
+                                        progress.incrementProgress();
+                                    countDownLatch.countDown();
+                                }
+                            }
+                        } catch (Exception ex) {
+                            synchronized (exception) {
+                                exception.set(ex);
+                            }
+                            while (countDownLatch.getCount() > 0)
+                                countDownLatch.countDown();
+                            service.shutdownNow();
+                        }
+                    });
+                }
+
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    Basic.caught(e);
+                }
+
+            } else {
+                System.err.println("Annotating DAA file using SLOW mode");
+
+                final int numberOfThreads = Math.max(1, Math.min(header.getNumberOfReferences(), Math.min(ProgramExecutorService.getNumberOfCoresToUse(), Runtime.getRuntime().availableProcessors())));
+                final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+
+                progress.setSubtask("Annotating references");
+                progress.setMaximum(header.getNumberOfReferences());
+                progress.setProgress(0);
+
+                // determine the names for references:
+                for (int t = 0; t < numberOfThreads; t++) {
+                    final int task = t;
+                    service.submit(() -> {
                         try {
                             final IdParser[] idParsers = new IdParser[cNames.length];
 
+                           // need to use only one database per thread.
+
                             for (int i = 0; i < cNames.length; i++) {
-                                idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
+                                    idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
                             }
 
                             for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {
@@ -98,55 +181,63 @@ public class DAAReferencesAnnotator {
                                     progress.setProgress(r);
                             }
                         } catch (Exception ex) {
-                            Basic.caught(ex);
+                            synchronized (exception) {
+                                exception.set(ex);
+                            }
+                            while (countDownLatch.getCount() > 0)
+                                countDownLatch.countDown();
+                            service.shutdownNow();
                         } finally {
                             countDownLatch.countDown();
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                Basic.caught(e);
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    Basic.caught(e);
+                }
+            }
+            if (exception.get() != null) {
+                if (exception.get() instanceof CanceledException)
+                    throw (CanceledException) exception.get();
+                else
+                    throw new IOException(exception.get());
             }
 
             // get all into bytes:
             final byte[][] cName2Bytes = new byte[cNames.length][];
             final int[] cName2Size = new int[cNames.length];
 
-
             final CountDownLatch countDownLatch2 = new CountDownLatch(cNames.length);
             for (int t = 0; t < cNames.length; t++) {
                 final int task = t;
-                service.submit(new Runnable() {
-                    public void run() {
-                        try {
-                            final ByteOutputStream outs = new ByteOutputStream();
-                            final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
-                            w.writeNullTerminatedString(cNames[task].getBytes());
-                            final int[] ref2class = cName2ref2class[task];
+                service.submit(() -> {
+                    try {
+                        final ByteOutputStream outs = new ByteOutputStream();
+                        final OutputWriterLittleEndian w = new OutputWriterLittleEndian(outs);
+                        w.writeNullTerminatedString(cNames[task].getBytes());
+                        final int[] ref2class = cName2ref2class[task];
 
-                            if (task == 0) {
-                                progress.setSubtask("Writing");
-                                progress.setMaximum(ref2class.length);
-                                progress.setProgress(0);
-                            }
-
-                            for (int classId : ref2class) {
-                                w.writeInt(classId);
-                                if (task == 0)
-                                    progress.incrementProgress();
-                            }
-
-                            cName2Bytes[task] = outs.getBytes();
-                            cName2Size[task] = outs.size();
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        } finally {
-                            countDownLatch2.countDown();
+                        if (task == 0) {
+                            progress.setSubtask("Writing");
+                            progress.setMaximum(ref2class.length);
+                            progress.setProgress(0);
                         }
+
+                        for (int classId : ref2class) {
+                            w.writeInt(classId);
+                            if (task == 0)
+                                progress.incrementProgress();
+                        }
+
+                        cName2Bytes[task] = outs.getBytes();
+                        cName2Size[task] = outs.size();
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
+                    } finally {
+                        countDownLatch2.countDown();
                     }
                 });
             }
@@ -163,5 +254,17 @@ public class DAAReferencesAnnotator {
         } finally {
             service.shutdownNow();
         }
+    }
+
+    private static String getFirstWord(byte[] bytes) {
+        int a = 0;
+        while (a < bytes.length && (bytes[a] == '>' || Character.isWhitespace(bytes[a]))) {
+            a++;
+        }
+        int b = a;
+        while (b < bytes.length && (bytes[b] == '_' || Character.isLetterOrDigit(bytes[b]))) {
+            b++;
+        }
+        return new String(bytes, a, b - a);
     }
 }

@@ -34,7 +34,6 @@ import java.util.Set;
  * Daniel Huson, 4.2015, 3.2016
  */
 public class IdParser {
-    public static final String[] GI_TAGS = new String[]{"gi|", "(gi:"};
     public static final String[] ACCESSION_TAGS = new String[]{"gb|", "ref|"};
     public static final String REFSEQ_TAG = "ref|";
 
@@ -58,7 +57,6 @@ public class IdParser {
     private final Map<Integer, int[]> id2segment = new HashMap<>();
 
     private final TaggedValueIterator taggedIds;
-    private final TaggedValueIterator giTaggedIds;
     private final TaggedValueIterator accTaggedIds;
 
     private int maxWarnings = 10;
@@ -75,9 +73,11 @@ public class IdParser {
         isTaxonomy = idMapper.getCName().equals(Classification.Taxonomy);
 
         multiWords = new MultiWords();
+
+        final boolean accessionOrDB=(idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession))||(idMapper.isActiveMap(IdMapper.MapType.MeganMapDB) && idMapper.isLoaded(IdMapper.MapType.MeganMapDB));
+
         taggedIds = new TaggedValueIterator(false, true, idMapper.getIdTags());
-        giTaggedIds = new TaggedValueIterator(false, idMapper.isActiveMap(IdMapper.MapType.GI) && idMapper.isLoaded(IdMapper.MapType.GI), GI_TAGS);
-        accTaggedIds = new TaggedValueIterator(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession), ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
+        accTaggedIds = new TaggedValueIterator(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), accessionOrDB, ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
     }
 
     /**
@@ -159,6 +159,7 @@ public class IdParser {
         // Look for accession mapping
         if (accTaggedIds.isEnabled()) {
             accTaggedIds.restart(headerString);
+
             for (String label : accTaggedIds) {
                 final int id = idMapper.getAccessionMap().get(label);
                 if (id > 0) {
@@ -177,43 +178,6 @@ public class IdParser {
                                 id2count.put(id, count == null ? 1 : count + 1);
                                 break;
                         }
-                    }
-                }
-            }
-        }
-
-        // look for GI mapping
-        if (giTaggedIds.isEnabled()) {
-            giTaggedIds.restart(headerString);
-            for (String label : giTaggedIds) {
-                try {
-                    final long giNumber = Long.parseLong(label);
-                    if (giNumber > 0) {
-                        final int id = idMapper.getGiMap().get(giNumber);
-                        //System.err.println("gi="+giNumber+" -> "+id);
-                        if (id != 0) {
-                            if (disabledIds.contains(id))
-                                disabled.add(id);
-                            else {
-                                switch (algorithm) {
-                                    default:
-                                    case First_Hit:
-                                        return id;
-                                    case LCA:
-                                        ids.add(id);
-                                        break;
-                                    case Majority:
-                                        final Integer count = id2count.get(id);
-                                        id2count.put(id, count == null ? 1 : count + 1);
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                } catch (NumberFormatException ex) {
-                    if (maxWarnings > 0) {
-                        System.err.println("parseLong() failed: " + label);
-                        maxWarnings--;
                     }
                 }
             }

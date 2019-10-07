@@ -18,10 +18,12 @@
  */
 package megan.tools;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -35,7 +37,9 @@ import megan.util.DAAFileFilter;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -75,7 +79,7 @@ public class DAAMeganizer {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
@@ -131,16 +135,14 @@ public class DAAMeganizer {
         options.comment("Classification support:");
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
-        final String gi2TaxaFile = options.getOption("-g2t", "gi2taxa", "GI-to-Taxonomy mapping file", "");
+        final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
 
-        final HashMap<String, String> class2GIFile = new HashMap<>();
         final HashMap<String, String> class2AccessionFile = new HashMap<>();
         final HashMap<String, String> class2SynonymsFile = new HashMap<>();
 
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            class2GIFile.put(cName, options.getOption("-g2" + cName.toLowerCase(), "gi2" + cName.toLowerCase(), "GI-to-" + cName + " mapping file", ""));
             class2AccessionFile.put(cName, options.getOption("-a2" + cName.toLowerCase(), "acc2" + cName.toLowerCase(), "Accession-to-" + cName + " mapping file", ""));
             class2SynonymsFile.put(cName, options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", ""));
             final String tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
@@ -152,6 +154,7 @@ public class DAAMeganizer {
         }
 
         options.comment(ArgsOptions.OTHER);
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p","threads","Number of threads",8));
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
@@ -182,9 +185,17 @@ public class DAAMeganizer {
             throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
         }
 
+
+        final Collection<String> mapDBClassifications= AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if(mapDBClassifications.size()>0 && (Basic.hasPositiveLengthValue(class2AccessionFile)|| Basic.hasPositiveLengthValue(class2SynonymsFile)))
+            throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
+
+        if(mapDBClassifications.size()>0)
+            ClassificationManager.setMeganMapDBFile(mapDBFile);
+
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (class2GIFile.get(cName).length() > 0 || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+            if (mapDBClassifications.contains(cName) ||  class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
                 cNames.add(cName);
         }
         if (cNames.size() > 0)
@@ -198,8 +209,8 @@ public class DAAMeganizer {
             ClassificationManager.get(Classification.Taxonomy, true);
             taxonIdMapper.setUseTextParsing(parseTaxonNames);
 
-            if (gi2TaxaFile.length() > 0) {
-                taxonIdMapper.loadMappingFile(gi2TaxaFile, IdMapper.MapType.GI, false, new ProgressPercentage());
+            if (mapDBFile.length() > 0) {
+                taxonIdMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
             }
             if (acc2TaxaFile.length() > 0) {
                 taxonIdMapper.loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
@@ -213,8 +224,8 @@ public class DAAMeganizer {
 
                 idMappers[i] = ClassificationManager.get(cName, true).getIdMapper();
 
-                if (class2GIFile.get(cName).length() > 0)
-                    idMappers[i].loadMappingFile(class2GIFile.get(cName), IdMapper.MapType.GI, false, new ProgressPercentage());
+                if (mapDBClassifications.contains(cName))
+                    idMappers[i].loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
                 if (class2AccessionFile.get(cName).length() > 0)
                     idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());
                 if (class2SynonymsFile.get(cName).length() > 0)

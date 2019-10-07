@@ -22,8 +22,8 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
@@ -276,7 +276,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             } catch (CanceledException ex) {
                 throw ex;
             } catch (Exception ex) {
-                System.err.println("Error: " + ex.getMessage());
+                NotificationsInSwing.showError(ex.getMessage());
+                System.err.println(ex.getMessage());
                 countFailed++;
             }
         }

@@ -19,7 +19,6 @@
 package megan.classification.data;
 
 import jloda.swing.commands.ICommand;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.commandtemplates.*;
@@ -74,22 +73,17 @@ public class ClassificationCommandHelper {
      *
      * @return import blast commands
      */
-    public static Collection<ICommand> getImportBlastCommands() {
+    public static Collection<ICommand> getImportBlastCommands(Collection<String> cNames) {
         final List<ICommand> commands = new LinkedList<>();
-        List<String> cNames = new LinkedList<>();
-        cNames.addAll(ClassificationManager.getAllSupportedClassifications());
-
-        if (!cNames.contains(Classification.Taxonomy))
-            cNames.add(Classification.Taxonomy); // todo: remove? should never happen
 
         for (String cName : cNames) {
             commands.add(new SetAnalyse4ViewerCommand(cName));
             commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.Accession));
-            commands.add(new LoadMappingFile4ViewerCommand(cName, IdMapper.MapType.Accession));
-            commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.GI));
-            commands.add(new LoadMappingFile4ViewerCommand(cName, IdMapper.MapType.GI));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.Accession));
+            commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.MeganMapDB));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.MeganMapDB));
             commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.Synonyms));
-            commands.add(new LoadMappingFile4ViewerCommand(cName, IdMapper.MapType.Synonyms));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.Synonyms));
             commands.add(new SetUseIdParsing4ViewerCommand(cName));
             commands.add(new SetUseLCA4ViewerCommand(cName));
         }

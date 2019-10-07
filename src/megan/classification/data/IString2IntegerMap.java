@@ -33,12 +33,12 @@ public interface IString2IntegerMap extends Closeable {
      * @param key
      * @return value or 0
      */
-    public int get(String key) throws IOException;
+     int get(String key) throws IOException;
 
     /**
      * return the number of entries
      *
      * @return size
      */
-    public int size();
+     int size();
 }

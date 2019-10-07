@@ -12,5 +12,5 @@ Please visit the MEGAN Community Website for help: http://megan.informatik.uni-t
 
 You can run the program by typing "ant run" in the antbuild directory.
 
-This project depends on https://github.com/danielhuson/jloda
+This project depends on https://github.com/husonlab/jloda
 

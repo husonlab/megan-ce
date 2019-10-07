@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ * SetSlowModeCommand.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,65 +15,65 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
+
 package megan.importblast.commands;
 
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
-import megan.importblast.ImportBlastDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetUseTextTaxonomyCommand extends jloda.swing.commands.CommandBase implements ICheckBoxCommand {
-    public boolean isSelected() {
-        ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        return importBlastDialog.isParseTaxonNames();
-    }
+/**
+ * set the slow mapping mode
+ * daniel Huson, 9.2019
+ */
+public class SetSlowModeCommand extends CommandBase implements ICheckBoxCommand {
 
-    public String getSyntax() {
-        return "set useParseTextTaxonomy=<bool>;";
+    @Override
+    public boolean isSelected() {
+        return !ClassificationManager.isUseFastAccessionMappingMode();
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("set useParseTextTaxonomy=");
-        boolean bool = np.getBoolean();
-        np.matchIgnoreCase(";");
-        ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        importBlastDialog.setParseTaxonNames(bool);
+    }
+
+    public String getSyntax() {
+        return null;
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("set useParseTextTaxonomy=" + (!isSelected()) + ";");
+        execute("set accessionMapMode=slow;");
+
     }
 
-    public boolean isApplicable() {
-        return  !ClassificationManager.isUseFastAccessionMappingMode();
-    }
-
-    final public static String NAME = "Parse Taxon Names";
+    public static final String NAME="Slow Mode";
 
     public String getName() {
         return NAME;
     }
 
+
     public String getDescription() {
-        return "Parse taxon names embedded in BLAST file to identify taxa";
+        return "Use slow accession mapping mode, attempting to mapping all accessions in reference headers.\nCan be used with MEGAN mapping db file and all other mapping options.";
     }
 
+
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/Preferences16.gif");
+        return null;
     }
+
 
     public boolean isCritical() {
         return true;
     }
 
-
-    public KeyStroke getAcceleratorKey() {
-        return null;
+    public boolean isApplicable() {
+        return true;
     }
-}
 
+
+}

@@ -67,9 +67,9 @@ public class Meganize {
         final long start = System.currentTimeMillis();
 
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
+
         if (ProgramProperties.get("enable-database-lookup", false))
             System.err.println(String.format("(Reference annotation of file %s took %.1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
-
 
         final Document doc = new Document();
         doc.setOpenDAAFileOnlyIfMeganized(false);

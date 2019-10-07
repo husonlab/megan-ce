@@ -129,25 +129,25 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
      *
      * @param parent
      * @param dir
-     * @param cNames
+     * @param cNames0
      * @param title
      */
-    public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames, final String title) {
+    public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames0, final String title) {
         this.dir = dir;
         final boolean showTaxonomyPane;
-        cNames = new ArrayList<>(cNames);
-        if (cNames.contains(Classification.Taxonomy)) {
+
+        this.cNames.addAll(cNames0);
+        if (this.cNames.contains(Classification.Taxonomy)) {
             showTaxonomyPane = true;
-            cNames.remove(Classification.Taxonomy);
+            this.cNames.remove(Classification.Taxonomy);
         } else
             showTaxonomyPane = false;
-        this.cNames.addAll(cNames);
 
         dir.addViewer(this);
         setIconImages(ProgramProperties.getProgramIconImages());
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.importblast.commands"}, !ProgramProperties.isUseGUI());
-        commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(), true);
+        commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(cNames0), true);
 
         setMinScore(Document.DEFAULT_MINSCORE);
         setTopPercent(Document.DEFAULT_TOPPERCENT);

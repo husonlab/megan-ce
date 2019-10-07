@@ -18,6 +18,7 @@
  */
 package megan.dialogs.compare;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
@@ -25,7 +26,6 @@ import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;
-import megan.main.MeganProperties;
 import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
@@ -35,7 +35,6 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * comparison of multiple datasets
@@ -94,7 +93,6 @@ public class Comparer {
         result.setCreator(ProgramProperties.getProgramName());
         result.setCreationDate((new Date()).toString());
 
-
         final String[] names = new String[dirs.size()];
         final Long[] uids = new Long[dirs.size()];
         final float[] originalNumberOfReads = new float[dirs.size()];
@@ -102,85 +100,87 @@ public class Comparer {
 
         // lock all unlocked projects involved in the comparison
         final List<Director> myLocked = new LinkedList<>();
-        final Map<String, Object> sample2source = new HashMap<>();
-        for (final Director dir : dirs) {
-            if (!dir.isLocked()) {
-                dir.notifyLockInput();
-                myLocked.add(dir);
-            }
-            int pos = pid2pos[dir.getID()];
-            names[pos] = getUniqueName(names, pos, Basic.getFileBaseName(dir.getDocument().getTitle()));
-            originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
-            blastModes[pos] = dir.getDocument().getBlastMode();
-            if (dir.getDocument().getSampleAttributeTable().getNumberOfSamples() == 1) {
-                String oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();
-                Map<String, Object> attributes2value = dir.getDocument().getSampleAttributeTable().getAttributesToValues(oSample);
-                sampleAttributeTable.addSample(names[pos], attributes2value, false, true);
-            }
-            try {
-                if (!dir.getDocument().getMeganFile().isMeganSummaryFile())
-                    uids[pos] = dir.getDocument().getConnector().getUId();
-            } catch (Exception e) {
-                uids[pos] = 0L;
-            }
-            sample2source.put(names[pos], dir.getDocument().getMeganFile().getFileName());
-        }
 
-        sampleAttributeTable.addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), sample2source, true, true);
+        try {
+            final Map<String, Object> sample2source = new HashMap<>();
 
-        final boolean useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
-
-        final long newSampleSize;
-        {
-            long calculateNewSampleSize = 0;
-            if (useRelative) {
-                for (Director dir : dirs) {
-                    final MainViewer mainViewer = dir.getMainViewer();
-                    final long numberOfReads;
-
-                    if (isIgnoreUnassigned())
-                        numberOfReads = mainViewer.getTotalAssignedReads();
-                    else {
-                        numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
-                    }
-                    if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
-                        calculateNewSampleSize = numberOfReads;
+            for (final Director dir : dirs) {
+                if (!dir.isLocked()) {
+                    dir.notifyLockInput();
+                    myLocked.add(dir);
                 }
-                System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
+                final int pos = pid2pos[dir.getID()];
+                names[pos] = getUniqueName(names, pos, Basic.getFileBaseName(dir.getDocument().getTitle()));
+                originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
+                blastModes[pos] = dir.getDocument().getBlastMode();
+                if (dir.getDocument().getSampleAttributeTable().getNumberOfSamples() == 1) {
+                    String oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();
+                    Map<String, Object> attributes2value = dir.getDocument().getSampleAttributeTable().getAttributesToValues(oSample);
+                    sampleAttributeTable.addSample(names[pos], attributes2value, false, true);
+                }
+                try {
+                    if (!dir.getDocument().getMeganFile().isMeganSummaryFile())
+                        uids[pos] = dir.getDocument().getConnector().getUId();
+                } catch (Exception e) {
+                    uids[pos] = 0L;
+                }
+                sample2source.put(names[pos], dir.getDocument().getMeganFile().getFileName());
             }
-            newSampleSize = calculateNewSampleSize;
-        }
 
-        String parameters = "mode=" + getMode();
-        if (useRelative)
-            parameters += " normalizedTo=" + newSampleSize;
-        if (isIgnoreUnassigned())
-            parameters += " ignoreUnassigned=true";
-        result.setParameters(parameters);
+            sampleAttributeTable.addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), sample2source, true, true);
 
-        final float[] sizes = new float[dirs.size()];
+            final boolean useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
 
-        progressListener.setMaximum(dirs.size());
-        progressListener.setProgress(0);
+            final long newSampleSize;
+            {
+                long calculateNewSampleSize = 0;
+                if (useRelative) {
+                    for (Director dir : dirs) {
+                        final MainViewer mainViewer = dir.getMainViewer();
+                        final long numberOfReads;
 
-        final int numberOfThreads = Math.min(Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1)), dirs.size());
-        final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
-        final ExecutorService executor = Executors.newCachedThreadPool();
+                        if (isIgnoreUnassigned())
+                            numberOfReads = mainViewer.getTotalAssignedReads();
+                        else {
+                            numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
+                        }
+                        if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
+                            calculateNewSampleSize = numberOfReads;
+                    }
+                    System.err.println("Normalizing to: " + calculateNewSampleSize + " reads per sample");
+                }
+                newSampleSize = calculateNewSampleSize;
+            }
 
-        final long[] assignedCountPerThread = new long[numberOfThreads];
+            String parameters = "mode=" + getMode();
+            if (useRelative)
+                parameters += " normalizedTo=" + newSampleSize;
+            if (isIgnoreUnassigned())
+                parameters += " ignoreUnassigned=true";
+            result.setParameters(parameters);
 
-        final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
-        final ProgressSilent progressSilent = new ProgressSilent();
+            final float[] sizes = new float[dirs.size()];
 
-        final Single<Exception> exception = new Single<>();
-        final Director sentinel = new Director(null);
+            progressListener.setMaximum(dirs.size());
+            progressListener.setProgress(0);
 
-        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+            final int numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), dirs.size());
+            final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
+            final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
 
-        for (int i = 0; i < numberOfThreads; i++) {
-            final int threadNumber = i;
-            executor.execute(new Runnable() {
-                public void run() {
+            final long[] assignedCountPerThread = new long[numberOfThreads];
+
+            final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
+            final ProgressSilent progressSilent = new ProgressSilent();
+
+            final Single<Exception> exception = new Single<>();
+            final Director sentinel = new Director(null);
+
+            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+
+            for (int i = 0; i < numberOfThreads; i++) {
+                final int threadNumber = i;
+                service.execute(() -> {
                     long readCount = 0;
                     try {
                         while (true) {
@@ -240,8 +240,7 @@ public class Comparer {
                                                 countsTarget = class2countsTarget.get(classId);
                                                 if (countsTarget == null) {
                                                     countsTarget = new float[dirs.size()];
-                                                    for (int i = 0; i < countsTarget.length; i++)
-                                                        countsTarget[i] = 0;
+                                                    Arrays.fill(countsTarget, 0);
                                                     class2countsTarget.put(classId, countsTarget);
                                                 }
                                             }
@@ -267,7 +266,7 @@ public class Comparer {
                         exception.set(ex);
                         while (countDownLatch.getCount() > 0)
                             countDownLatch.countDown();
-                        executor.shutdownNow();
+                        service.shutdownNow();
                     } finally {
                         synchronized (progressListenerThread) {
                             if (progressListenerThread.get() == threadNumber)
@@ -276,67 +275,66 @@ public class Comparer {
                         assignedCountPerThread[threadNumber] += readCount;
                         countDownLatch.countDown();
                     }
+                });
+            }
+
+            progressListener.setTasks("Computing comparison", "Using " + mode.toString().toLowerCase() + " mode");
+            progressListener.setProgress(0);
+            progressListener.setMaximum(dirs.size());
+
+            try {
+                for (Director dir : dirs) {
+                    inputQueue.put(dir);
                 }
-            });
-        }
-
-        progressListener.setTasks("Computing comparison", "Using " + mode.toString().toLowerCase() + " mode");
-        progressListener.setProgress(0);
-        progressListener.setMaximum(dirs.size());
-
-        try {
-            for (Director dir : dirs) {
-                inputQueue.put(dir);
+                for (int i = 0; i < numberOfThreads; i++) {
+                    inputQueue.put(sentinel);
+                }
+                // wait until all jobs are done
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+               Basic.caught(e);
+                if (exception.get() == null)
+                    exception.set(new IOException("Comparison computation failed: " + e.getMessage(), e));
             }
-            for (int i = 0; i < numberOfThreads; i++) {
-                inputQueue.put(sentinel);
+
+            if (exception.get() != null) {
+                throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
             }
-            // wait until all jobs are done
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            if (exception.get() == null)
-                exception.set(new IOException("Comparison computation failed: " + e.getMessage(), e));
-        }
+            service.shutdownNow();
 
-        if (exception.get() != null) {
-            throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
-        }
-        executor.shutdownNow();
-
-        // if we have a taxonomy classification, then use it to get exact values:
-        if (result.getClassification2Class2Counts().keySet().contains(Classification.Taxonomy)) {
-            Map<Integer, float[]> class2counts = result.getClass2Counts(Classification.Taxonomy);
-            for (int i = 0; i < sizes.length; i++) {
-                sizes[i] = 0;
+            // if we have a taxonomy classification, then use it to get exact values:
+            if (result.getClassification2Class2Counts().containsKey(Classification.Taxonomy)) {
+                Map<Integer, float[]> class2counts = result.getClass2Counts(Classification.Taxonomy);
+                Arrays.fill(sizes, 0);
+                for (float[] counts : class2counts.values()) {
+                    for (int i = 0; i < counts.length; i++)
+                        sizes[i] += counts[i];
+                }
             }
-            for (float[] counts : class2counts.values()) {
-                for (int i = 0; i < counts.length; i++)
-                    sizes[i] += counts[i];
+
+            result.setSamples(names, uids, sizes, blastModes);
+            sampleAttributeTable.removeAttribute(SampleAttributeTable.HiddenAttribute.Label.toString());
+
+            final long totalAssigned = Basic.getSum(assignedCountPerThread);
+
+            for (String classificationName : result.getClassification2Class2Counts().keySet()) {
+                result.setNodeStyle(classificationName, NodeDrawer.Style.PieChart.toString());
+            }
+
+            if (useRelative) {
+                System.err.println(String.format("Total assigned: %,12d normalized", totalAssigned));
+            } else {
+                System.err.println(String.format("Total assigned: %,12d", totalAssigned));
+            }
+
+            result.setTotalReads((int) Basic.getSum(originalNumberOfReads));
+        }
+        finally{
+            // unlock all projects involved in the comparison
+            for (final Director dir : myLocked) {
+                dir.notifyUnlockInput();
             }
         }
-
-        result.setSamples(names, uids, sizes, blastModes);
-        sampleAttributeTable.removeAttribute(SampleAttributeTable.HiddenAttribute.Label.toString());
-
-        final long totalAssigned = Basic.getSum(assignedCountPerThread);
-
-        for (String classificationName : result.getClassification2Class2Counts().keySet()) {
-            result.setNodeStyle(classificationName, NodeDrawer.Style.PieChart.toString());
-        }
-
-        // unlock all  projects involved in the comparison
-        for (final Director dir : myLocked) {
-            dir.notifyUnlockInput();
-        }
-
-        if (useRelative) {
-            System.err.println(String.format("Total assigned: %,12d normalized", totalAssigned));
-        } else {
-            System.err.println(String.format("Total assigned: %,12d", totalAssigned));
-        }
-
-        result.setTotalReads((int) Basic.getSum(originalNumberOfReads));
     }
 
     /**
@@ -353,9 +351,11 @@ public class Comparer {
         String newName = name;
         while (!ok && count < 1000) {
             ok = true;
-            for (int i = 0; ok && i < pos; i++) {
-                if (newName.equalsIgnoreCase(names[i]))
+            for (int i = 0;i < pos; i++) {
+                if (newName.equalsIgnoreCase(names[i])) {
                     ok = false;
+                    break;
+                }
             }
             if (!ok)
                 newName = name + "." + (++count);

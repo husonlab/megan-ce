@@ -18,11 +18,12 @@
  */
 package megan.commands.additional;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
@@ -36,7 +37,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.data.IReadBlockIterator;
 import megan.data.ReadBlockIteratorMaxCount;
-import megan.main.MeganProperties;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 
@@ -158,7 +158,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             System.err.println(String.format("Number of contigs:%6d", count));
 
             if (doOverlapContigs) {
-                final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
+                final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
                 count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
                 System.err.println(String.format("Remaining contigs:%6d", count));
             }
@@ -197,7 +197,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                     System.err.println(String.format("Number of contigs:%6d", count));
 
                     if (doOverlapContigs) {
-                        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
+                        final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
                         count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
                         System.err.println(String.format("Remaining contigs:%6d", count));
                     }

@@ -22,6 +22,7 @@ import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressSilent;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -36,6 +37,9 @@ public class ClassificationManager {
 
     private static final ArrayList<String> defaultClassificationsList = new ArrayList<>();
     private static final ArrayList<String> defaultClassificationsListExcludingNCBITaxonomy = new ArrayList<>();
+
+    private static String meganMapDBFile;
+    private static boolean useFastAccessionMappingMode;
 
     static {
         defaultClassificationsListExcludingNCBITaxonomy.add("INTERPRO2GO");
@@ -132,8 +136,8 @@ public class ClassificationManager {
     }
 
     public static void setActiveMapper(String name, IdMapper.MapType mapType, boolean active) {
-        if (active || name2classification.get(name) != null)
-            get(name, true).getIdMapper().setActiveMap(mapType, active);
+            if (active || name2classification.get(name) != null)
+                get(name, true).getIdMapper().setActiveMap(mapType, active);
     }
 
     public static boolean hasTaxonomicRanks(String classificationName) {
@@ -161,5 +165,28 @@ public class ClassificationManager {
 
     public static boolean isTaxonomy(String name) {
         return hasTaxonomicRanks(name); // todo: need to enforce that all labels are unique
+    }
+
+    public static String getMeganMapDBFile() {
+        return meganMapDBFile;
+    }
+
+    public static void setMeganMapDBFile(String meganMapDBFile) throws IOException {
+        if(meganMapDBFile!=null && !Basic.fileExistsAndIsNonEmpty(meganMapDBFile))
+            throw new IOException("File not found or not readable: "+meganMapDBFile);
+        ClassificationManager.meganMapDBFile = meganMapDBFile;
+        if(meganMapDBFile!=null)
+            setUseFastAccessionMappingMode(true);
+    }
+
+    public static boolean canUseMeganMapDBFile() {
+        return getMeganMapDBFile()!=null && isUseFastAccessionMappingMode();
+    }
+    public static boolean isUseFastAccessionMappingMode() {
+        return useFastAccessionMappingMode;
+    }
+
+    public static void setUseFastAccessionMappingMode(boolean useFastAccessionMappingMode) {
+        ClassificationManager.useFastAccessionMappingMode = useFastAccessionMappingMode;
     }
 }

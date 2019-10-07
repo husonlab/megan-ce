@@ -183,7 +183,7 @@ public class CompareCommand extends CommandBase implements ICommand {
             compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
 
             if (!compareWindow.isCanceled()) {
-                String command = compareWindow.getCommand();
+                final String command = compareWindow.getCommand();
                 if (command != null) {
                     newDir.execute(command, newDir.getCommandManager());
                     ok = true;

@@ -19,6 +19,7 @@
 package megan.rma6;
 
 import jloda.util.*;
+import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
@@ -33,7 +34,9 @@ import megan.parsers.blast.ISAMIterator;
 import megan.parsers.blast.IteratorManager;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates a new RMA6 file by parsing a blast file
@@ -88,7 +91,7 @@ public class RMA6FromBlastCreator {
         this.parsers = new IdParser[cNames.length];
         int taxonMapperIndex = -1;
 
-        System.err.println("Classifications: " + Basic.toString(cNames, ","));
+        System.err.println("Classifications: " + Basic.toString(cNames, ", "));
 
         for (int i = 0; i < cNames.length; i++) {
             parsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
@@ -122,7 +125,7 @@ public class RMA6FromBlastCreator {
      * @throws IOException
      * @throws CanceledException
      */
-    public void parseFiles(final ProgressListener progress) throws IOException, CanceledException {
+    public void parseFiles(final ProgressListener progress) throws IOException, CanceledException, SQLException {
         progress.setTasks("Generating RMA6 file", "Parsing matches");
 
         final HashMap<String, Long> read2PairedReadLocation;
@@ -145,7 +148,21 @@ public class RMA6FromBlastCreator {
         long totalNumberOfReads = 0;
         long totalNumberOfMatches = 0;
 
-        for (int fileNumber = 0; fileNumber < blastFiles.length; fileNumber++) {
+        // setup use of accession mapping database, if provided
+        final AccessAccessionMappingDatabase accessAccessionMappingDatabase;
+        final int[] mapClassificationId2DatabaseRank;
+        if (ClassificationManager.canUseMeganMapDBFile()) {
+            System.err.println("Annotating RMA6 file using FAST mode (accession database and first accession per line)");
+            accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(ClassificationManager.getMeganMapDBFile());
+            mapClassificationId2DatabaseRank = accessAccessionMappingDatabase.setupMapClassificationId2DatabaseRank(cNames);
+        } else {
+            System.err.println("Annotating RMA6 file using SLOW mode");
+            accessAccessionMappingDatabase = null;
+            mapClassificationId2DatabaseRank = null;
+        }
+
+        try {
+            for (int fileNumber = 0; fileNumber < blastFiles.length; fileNumber++) {
             int missingReadWarnings = 0;
             final String blastFile = blastFiles[fileNumber];
             progress.setTasks("Parsing file", Basic.getFileNameWithoutPath(blastFile));
@@ -168,87 +185,132 @@ public class RMA6FromBlastCreator {
                 isFasta = false; // don't care, won't use
             }
 
-            // MAIN LOOP:
-            while (iterator.hasNext()) {
-                totalNumberOfReads++;
-                final int numberOfMatches = iterator.next();
-                totalNumberOfMatches += numberOfMatches;
-                final byte[] matchesText = iterator.getMatchesText(); // get matches as '\n' separated strings
-                final int matchesTextLength = iterator.getMatchesTextLength();
-                final int queryNameLength = Basic.getFirstWord(matchesText, queryName);
+                // MAIN LOOP:
+                while (iterator.hasNext()) {
+                    totalNumberOfReads++;
+                    final int numberOfMatches = iterator.next();
+                    totalNumberOfMatches += numberOfMatches;
+                    final byte[] matchesText = iterator.getMatchesText(); // get matches as '\n' separated strings
+                    final int matchesTextLength = iterator.getMatchesTextLength();
+                    final int queryNameLength = Basic.getFirstWord(matchesText, queryName);
 
-                //System.err.println("Got: "+Basic.toString(matchesText,Math.min(100,matchesTextLength)));
+                    //System.err.println("Got: "+Basic.toString(matchesText,Math.min(100,matchesTextLength)));
 
-                Long mateLocation = null;
+                    Long mateLocation = null;
 
-                if (pairedReads) {
-                    final String strippedName = Basic.toString(queryName, 0, queryNameLength - pairedReadSuffixLength);
-                    mateLocation = read2PairedReadLocation.get(strippedName);
-                    if (mateLocation == null) {
-                        read2PairedReadLocation.put(strippedName, rma6FileCreator.getPosition());
-                    } else {
-                        read2PairedReadLocation.remove(strippedName);
-                    }
-                }
-
-                byte[] queryText = null;
-                int queryTextLength = 0;
-
-                if (fastaIterator != null) {
-                    if (Utilities.findQuery(queryName, queryNameLength, fastaIterator, isFasta)) {
-                        queryTextLength = Utilities.getFastAText(fastaIterator, isFasta, fastAText);
-                        queryText = fastAText.get();
-
-                    } else {
-                        if (missingReadWarnings++ < 50)
-                            System.err.println("WARNING: Failed to find read '" + Basic.toString(queryName, 0, queryNameLength) + "' in file: " + readsFiles[fileNumber]);
-                        if (missingReadWarnings == 50)
-                            System.err.println("No further 'failed to find read' warnings...");
-                    }
-                }
-                if (iterator.getQueryText() != null) {
-                    queryText = iterator.getQueryText();
-                    queryTextLength = iterator.getQueryText().length;
-
-                }
-                if (queryText == null) {
-                    queryText = queryName;
-                    queryTextLength = queryNameLength;
-                }
-
-                // for each match, write its taxonId and all its functional ids:
-                int offset = 0;
-
-                for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
-                    final String refName = Utilities.getToken(2, matchesText, offset);
-
-                    if (matchCount == matchLineRMA6s.length) { // double the array...
-                        MatchLineRMA6[] tmp = new MatchLineRMA6[2 * matchCount];
-                        System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchCount);
-                        matchLineRMA6s = tmp;
-                        for (int i = matchCount; i < matchLineRMA6s.length; i++)
-                            matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
-                    }
-
-                    final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
-                    matchLineRMA6.parse(matchesText, offset);
-                    for (int i = 0; i < parsers.length; i++) {
-                        final int id = parsers[i].getIdFromHeaderLine(refName);
-                        if (matchCount == match2classification2id.length) {
-                            int[][] tmp = new int[2 * matchCount][cNames.length];
-                            System.arraycopy(match2classification2id, 0, tmp, 0, matchCount);
-                            match2classification2id = tmp;
+                    if (pairedReads) {
+                        final String strippedName = Basic.toString(queryName, 0, queryNameLength - pairedReadSuffixLength);
+                        mateLocation = read2PairedReadLocation.get(strippedName);
+                        if (mateLocation == null) {
+                            read2PairedReadLocation.put(strippedName, rma6FileCreator.getPosition());
+                        } else {
+                            read2PairedReadLocation.remove(strippedName);
                         }
-                        match2classification2id[matchCount][i] = id;
-                        matchLineRMA6.setFId(i, id);
                     }
-                    offset = Utilities.nextNewLine(matchesText, offset) + 1;
-                }
 
-                rma6FileCreator.addQuery(queryText, queryTextLength, numberOfMatches, matchesText, matchesTextLength, match2classification2id, mateLocation != null ? mateLocation : 0);
-                progress.setProgress(iterator.getProgress());
-            } // end of iterator
-        } // end of files
+                    byte[] queryText = null;
+                    int queryTextLength = 0;
+
+                    if (fastaIterator != null) {
+                        if (Utilities.findQuery(queryName, queryNameLength, fastaIterator, isFasta)) {
+                            queryTextLength = Utilities.getFastAText(fastaIterator, isFasta, fastAText);
+                            queryText = fastAText.get();
+
+                        } else {
+                            if (missingReadWarnings++ < 50)
+                                System.err.println("WARNING: Failed to find read '" + Basic.toString(queryName, 0, queryNameLength) + "' in file: " + readsFiles[fileNumber]);
+                            if (missingReadWarnings == 50)
+                                System.err.println("No further 'failed to find read' warnings...");
+                        }
+                    }
+                    if (iterator.getQueryText() != null) {
+                        queryText = iterator.getQueryText();
+                        queryTextLength = iterator.getQueryText().length;
+
+                    }
+                    if (queryText == null) {
+                        queryText = queryName;
+                        queryTextLength = queryNameLength;
+                    }
+
+                    // for each match, write its taxonId and all its functional ids:
+
+                    if (mapClassificationId2DatabaseRank != null) { // use mapping database
+                        int offset = 0;
+                        final String[] queries = new String[numberOfMatches];
+                        for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
+                            queries[matchCount] = getFirstWord(Utilities.getToken(2, matchesText, offset));
+
+                            if (matchCount == matchLineRMA6s.length) { // double the array...
+                                MatchLineRMA6[] tmp = new MatchLineRMA6[2 * numberOfMatches];
+                                System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchCount);
+                                matchLineRMA6s = tmp;
+                                for (int i = matchCount; i < matchLineRMA6s.length; i++)
+                                    matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
+                            }
+                            if (matchCount == match2classification2id.length) {
+                                int[][] tmp = new int[2 * numberOfMatches][cNames.length];
+                                System.arraycopy(match2classification2id, 0, tmp, 0, matchCount);
+                                match2classification2id = tmp;
+                            }
+
+                            final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
+                            matchLineRMA6.parse(matchesText, offset);
+                            offset = Utilities.nextNewLine(matchesText, offset) + 1;
+                        }
+                        final Map<String, int[]> query2ids = accessAccessionMappingDatabase.getValues(queries, queries.length);
+                        for (int matchCount = 0; matchCount < queries.length; matchCount++) {
+                            final int[] ids = query2ids.get(queries[matchCount]);
+                            if (ids != null) {
+                                for (int c = 0; c < cNames.length; c++) {
+                                    final int dbRank = mapClassificationId2DatabaseRank[c];
+                                    if (dbRank < ids.length) {
+                                        final int id = ids[dbRank];
+                                        match2classification2id[matchCount][c] = id;
+                                        matchLineRMA6s[matchCount].setFId(c, id);
+                                    }
+                                }
+                            }
+                        }
+                    } else { // use mapping files
+                        int offset = 0;
+                        for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
+                            final String refName = Utilities.getToken(2, matchesText, offset);
+
+                            if (matchCount == matchLineRMA6s.length) { // double the array...
+                                MatchLineRMA6[] tmp = new MatchLineRMA6[2 * numberOfMatches];
+                                System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchCount);
+                                matchLineRMA6s = tmp;
+                                for (int i = matchCount; i < matchLineRMA6s.length; i++)
+                                    matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
+                            }
+                            if (matchCount == match2classification2id.length) {
+                                int[][] tmp = new int[2 * numberOfMatches][cNames.length];
+                                System.arraycopy(match2classification2id, 0, tmp, 0, matchCount);
+                                match2classification2id = tmp;
+                            }
+
+                            final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
+                            matchLineRMA6.parse(matchesText, offset);
+                            for (int i = 0; i < parsers.length; i++) {
+                                final int id = parsers[i].getIdFromHeaderLine(refName);
+
+                                match2classification2id[matchCount][i] = id;
+                                matchLineRMA6.setFId(i, id);
+                            }
+                            offset = Utilities.nextNewLine(matchesText, offset) + 1;
+                        }
+                    }
+
+                    rma6FileCreator.addQuery(queryText, queryTextLength, numberOfMatches, matchesText, matchesTextLength, match2classification2id, mateLocation != null ? mateLocation : 0);
+                    progress.setProgress(iterator.getProgress());
+                } // end of iterator
+            } // end of files
+        }
+        finally{
+            if(accessAccessionMappingDatabase!=null)
+                accessAccessionMappingDatabase.close();
+        }
 
         rma6FileCreator.endAddingQueries();
 
@@ -309,5 +371,17 @@ public class RMA6FromBlastCreator {
      */
     public void setContaminants(String contaminantTaxonIdsString) {
         doc.getDataTable().setContaminants(contaminantTaxonIdsString);
+    }
+
+    private static String getFirstWord(String string) {
+        int a=0;
+        while(a<string.length() && (string.charAt(a)=='>' || Character.isWhitespace(string.charAt(a)))) {
+            a++;
+        }
+        int b=a;
+        while(b<string.length() && (string.charAt(b)=='_' || Character.isLetterOrDigit(string.charAt(b)))) {
+            b++;
+        }
+        return   string.substring(a,b);
     }
 }

@@ -120,11 +120,10 @@ public class Blast2LCA {
         options.comment("Classification support:");
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
-        final String gi2TaxaFile = options.getOption("-g2t", "gi2taxa", "GI-to-Taxonomy mapping file", "");
+        final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
 
-        final String gi2KeggFile = options.getOption("-g2kegg", "gi2kegg", "GI-to-KEGG mapping file", "");
         final String acc2KeggFile = options.getOption("-a2kegg", "acc2kegg", "Accession-to-KEGG mapping file", "");
         final String synonyms2KeggFile = options.getOption("-s2kegg", "syn2kegg", "Synonyms-to-KEGG mapping file", "");
 
@@ -132,6 +131,12 @@ public class Blast2LCA {
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
+
+        if(mapDBFile.length()>0 && (acc2TaxaFile.length() > 0 || synonyms2TaxaFile.length() > 0 || acc2KeggFile.length() > 0 || synonyms2KeggFile.length() > 0))
+            throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
+
+        if(mapDBFile.length()>0)
+            ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         if (topPercent == 0)
             topPercent = 0.0001f;
@@ -143,8 +148,6 @@ public class Blast2LCA {
             propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
-        ProgramProperties.get("oneMatchPerTaxon", false);
-
         if (blastFormat.equalsIgnoreCase(BlastFileFormat.Unknown.toString())) {
             blastFormat = BlastFileFormat.detectFormat(null, blastFile, true).toString();
         }
@@ -155,8 +158,8 @@ public class Blast2LCA {
         // load taxonomy:
         {
             taxonIdMapper.setUseTextParsing(parseTaxonNames);
-            if (gi2TaxaFile.length() > 0) {
-                taxonIdMapper.loadMappingFile(gi2TaxaFile, IdMapper.MapType.GI, false, new ProgressPercentage());
+            if (mapDBFile.length() > 0) {
+                taxonIdMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
             }
             if (acc2TaxaFile.length() > 0) {
                 taxonIdMapper.loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
@@ -166,8 +169,8 @@ public class Blast2LCA {
             }
             final IdMapper keggMapper = ClassificationManager.get("KEGG", true).getIdMapper();
             if (doKegg) {
-                if (gi2KeggFile.length() > 0) {
-                    keggMapper.loadMappingFile(gi2KeggFile, IdMapper.MapType.GI, false, new ProgressPercentage());
+                if (mapDBFile.length() > 0) {
+                    keggMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
                 }
                 if (acc2KeggFile.length() > 0) {
                     keggMapper.loadMappingFile(acc2KeggFile, IdMapper.MapType.Accession, false, new ProgressPercentage());

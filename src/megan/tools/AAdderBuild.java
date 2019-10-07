@@ -179,11 +179,7 @@ public class AAdderBuild {
 
         try (ProgressListener progress = new ProgressPercentage("Building annotation list", annotations.size())) {
             for (CDS cds : annotations) {
-                ArrayList<Interval<GeneItem>> list = dnaId2list.get(cds.getDnaId());
-                if (list == null) {
-                    list = new ArrayList<>();
-                    dnaId2list.put(cds.getDnaId(), list);
-                }
+                ArrayList<Interval<GeneItem>> list = dnaId2list.computeIfAbsent(cds.getDnaId(), k -> new ArrayList<>());
                 final GeneItem geneItem = creator.createGeneItem();
                 final String accession = cds.getProteinId();
                 geneItem.setProteinId(accession.getBytes());

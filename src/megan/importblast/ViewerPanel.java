@@ -25,10 +25,7 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.commandtemplates.*;
-import megan.importblast.commands.ChooseContaminantsFileCommand;
-import megan.importblast.commands.ListContaminantsCommand;
-import megan.importblast.commands.SetUseTextTaxonomyCommand;
-import megan.importblast.commands.UseContaminantsFilterCommand;
+import megan.importblast.commands.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,7 +61,33 @@ public class ViewerPanel extends JPanel {
         panel1.setBorder(BorderFactory.createTitledBorder("How MEGAN identifies " + cName + " classes"));
         panel1.setLayout(new BorderLayout());
 
-        final JPanel aPanel = new JPanel(new GridLayout(5, 1));
+        final JPanel aPanel = new JPanel(new GridLayout(6, 1));
+        
+        {
+            final ICommand useFastMode = commandManager.getCommand(SetFastModeCommand.NAME);
+            final AbstractButton useFastModeButton = commandManager.getButton(useFastMode);
+            aPanel.add(useFastModeButton);
+
+            final ICommand useSlowMode = commandManager.getCommand(SetSlowModeCommand.NAME);
+            final AbstractButton useSlowModeButton = commandManager.getButton(useSlowMode);
+            aPanel.add(useSlowModeButton);
+        }
+
+        final ICommand useMapDBCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.MeganMapDB));
+        final AbstractButton useMapDBButton = commandManager.getButton(useMapDBCommand);
+        if (useMapDBCommand instanceof ICheckBoxCommand)
+            useMapDBButton.setSelected(((ICheckBoxCommand) useMapDBCommand).isSelected());
+        useMapDBButton.setEnabled(useMapDBCommand.isApplicable());
+        aPanel.add(useMapDBButton);
+
+        {
+            final JPanel butPanel = new JPanel();
+            butPanel.setLayout(new BoxLayout(butPanel, BoxLayout.X_AXIS));
+            butPanel.add(commandManager.getButton(LoadMappingFile4ViewerCommand.getAltName(cName, IdMapper.MapType.MeganMapDB)));
+            butPanel.add(new JLabel(" " + LoadMappingFile4ViewerCommand.getName(cName, IdMapper.MapType.MeganMapDB)));
+            butPanel.add(Box.createHorizontalGlue());
+            aPanel.add(butPanel);
+        }
 
         final ICommand useAccessionLookupCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.Accession));
         final AbstractButton ueseAccessionButton = commandManager.getButton(useAccessionLookupCommand);
@@ -82,21 +105,6 @@ public class ViewerPanel extends JPanel {
             aPanel.add(butPanel);
         }
 
-        final ICommand useGi2ClassIdMappingCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.GI));
-        final AbstractButton useGiButton = commandManager.getButton(useGi2ClassIdMappingCommand);
-        if (useGi2ClassIdMappingCommand instanceof ICheckBoxCommand)
-            useGiButton.setSelected(((ICheckBoxCommand) useGi2ClassIdMappingCommand).isSelected());
-        useGiButton.setEnabled(useGi2ClassIdMappingCommand.isApplicable());
-        aPanel.add(useGiButton);
-
-        {
-            final JPanel butPanel = new JPanel();
-            butPanel.setLayout(new BoxLayout(butPanel, BoxLayout.X_AXIS));
-            butPanel.add(commandManager.getButton(LoadMappingFile4ViewerCommand.getAltName(cName, IdMapper.MapType.GI)));
-            butPanel.add(new JLabel(" " + LoadMappingFile4ViewerCommand.getName(cName, IdMapper.MapType.GI)));
-            butPanel.add(Box.createHorizontalGlue());
-            aPanel.add(butPanel);
-        }
 
         final ICommand useSynonymsCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.Synonyms));
         final AbstractButton useSynomymsButton = commandManager.getButton(useSynonymsCommand);

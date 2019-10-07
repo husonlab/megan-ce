@@ -19,21 +19,23 @@
 
 package megan.algorithms;
 
-import jloda.util.*;
+import jloda.fx.util.ProgramExecutorService;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
+import jloda.util.ProgressPercentage;
 import jloda.util.interval.IntervalChain;
 import megan.daa.connector.ReadBlockDAA;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
-import megan.main.MeganProperties;
 import megan.util.BlastParsingUtils;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -79,11 +81,11 @@ public class ReferenceCoverFilter {
             progress.setSubtask("Determining reference coverage");
             System.err.println(String.format("Running reference coverage filter with threshold=%.1f%%", getPercentToCover()));
 
-            final int numberOfThreads = Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), connector.getNumberOfReads());
+            final int numberOfThreads = Math.min( ProgramExecutorService.getNumberOfCoresToUse(), connector.getNumberOfReads());
             if (numberOfThreads == 0)
                 return; // no reads
 
-            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+            final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
             try {
                 final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
                 final IReadBlock sentinel = new ReadBlockDAA();

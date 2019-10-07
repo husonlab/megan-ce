@@ -137,7 +137,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      */
     public int get(String keyString) throws IOException {
         byte[] key = keyString.getBytes();
-        final int keyHash = computeHash(key, 0, key.length, mask);
+        final int keyHash = computeHash(key,  mask);
         long dataOffset = extended ? dataByteBuffer.getLong(8 * keyHash + indexStartPos) : dataByteBuffer.getInt(4 * keyHash + indexStartPos);
         if (dataOffset == 0)
             return 0;
@@ -208,17 +208,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      */
     public static int computeHash(byte[] key, int mask) {
         return Math.abs(MurmurHash3.murmurhash3x8632(key, 0, key.length, 666) & mask);
-    }
-
-    /**
-     * compute the hash value for a given key
-     *
-     * @param key
-     * @param mask
-     * @return hash
-     */
-    public static int computeHash(byte[] key, int offset, int length, int mask) {
-        return Math.abs(MurmurHash3.murmurhash3x8632(key, offset, length, 666) & mask);
     }
 
     /**

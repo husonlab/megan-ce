@@ -98,7 +98,7 @@ public class ParametersDialog extends JDialog {
         super();
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.dialogs.parameters.commands"}, !ProgramProperties.isUseGUI());
-        commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(), true);
+        commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(ClassificationManager.getAllSupportedClassifications()), true);
 
         setLocationRelativeTo(parent);
         setTitle("Change LCA Parameters - MEGAN");

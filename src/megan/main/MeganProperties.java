@@ -87,10 +87,7 @@ public class MeganProperties {
     public static final String DEFAULT_TAXONOMYFILE = "ncbi.tre";
     public static final String DEFAULT_MAPPINGFILE = "ncbi.map";
     public static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
-
-    public static final String NUMBER_OF_THREADS = "NumberOfThreads";
-    public static final int DEFAULT_NUMBER_OF_THREADS = 8;
-
+    
     /**
      * sets the program properties
      *

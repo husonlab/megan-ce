@@ -18,11 +18,8 @@
  */
 package megan.classification;
 
-import Databases.Accession2IdAdapter;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import megan.accessiondb.AccessAccessionAdapter;
 import megan.classification.data.*;
 
 import java.io.IOException;
@@ -48,25 +45,9 @@ public class IdMapper {
     static public final int CONTAMINANTS_ID = -6; // -5 used by KEGG
     static public final String CONTAMINANTS_LABEL = "Contaminants";
 
-    public static ILong2IntegerMapFactory giMapFactory = new GI2IdMapFactory();
     public static IString2IntegerMapFactory accessionMapFactory = new Accession2IdMapFactory();
 
-    /**
-     * create tags for parsing header line
-     *
-     * @param cName
-     * @return short tag
-     */
-    public static String[] createTags(String cName) {
-        String shortTag = Classification.createShortTag(cName);
-        String longTag = cName.toLowerCase() + "|";
-        if (shortTag.equals(longTag))
-            return new String[]{shortTag};
-        else
-            return new String[]{shortTag, longTag};
-    }
-
-    public enum MapType {GI, Accession, Synonyms}
+    public enum MapType {Accession, Synonyms, MeganMapDB}
 
     private final String cName;
 
@@ -83,7 +64,6 @@ public class IdMapper {
 
     private final Set<Integer> disabledIds = new HashSet<>();
 
-    protected ILong2IntegerMap giMap = null;
     protected IString2IntegerMap accessionMap = null;
     protected String2IntegerMap synonymsMap = null;
 
@@ -103,6 +83,21 @@ public class IdMapper {
     }
 
     /**
+     * create tags for parsing header line
+     *
+     * @param cName
+     * @return short tag
+     */
+    public static String[] createTags(String cName) {
+        String shortTag = Classification.createShortTag(cName);
+        String longTag = cName.toLowerCase() + "|";
+        if (shortTag.equals(longTag))
+            return new String[]{shortTag};
+        else
+            return new String[]{shortTag, longTag};
+    }
+
+    /**
      * load the named file of the given map type
      *
      * @param fileName
@@ -114,49 +109,13 @@ public class IdMapper {
     public void loadMappingFile(String fileName, MapType mapType, boolean reload, ProgressListener progress) throws CanceledException {
         switch (mapType) {
             default:
-            case GI: {
-                if (giMap == null || reload) {
-                    if (giMap != null) {
-                        try {
-                            giMap.close();
-                        } catch (IOException e) {
-                            Basic.caught(e);
-                        }
-                    }
-                    try {
-                        this.giMap = giMapFactory.create(name2IdMap, fileName, progress);
-                        loadedMaps.add(mapType);
-                        activeMaps.add(mapType);
-                        map2Filename.put(mapType, fileName);
-                    } catch (Exception e) {
-                        if (e instanceof CanceledException)
-                            throw (CanceledException) e;
-                        Basic.caught(e);
-                    }
-                }
-                break;
-            }
             case Accession: {
                 if (accessionMap == null || reload) {
                     if (accessionMap != null) {
-                        try {
-                            accessionMap.close();
-                        } catch (IOException e) {
-                            Basic.caught(e);
-                        }
+                       closeAccessionMap();
                     }
                     try {
-                        if (ProgramProperties.get("enable-database-lookup", false)) {
-                            final Accession2IdAdapter accession2IdAdapter = Accession2IdAdapter.getInstance();
-                            if (accession2IdAdapter.isDBFile(fileName)) {
-                                if (!accession2IdAdapter.isSetup())
-                                    Accession2IdAdapter.getInstance().setup(fileName);
-                                this.accessionMap = Accession2IdAdapter.getInstance().createMap(cName);
-                            } else
-                                this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
-                        } else
-                            this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
-
+                        this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
@@ -190,6 +149,22 @@ public class IdMapper {
                         Basic.caught(e);
                     }
                 }
+            }
+            case MeganMapDB: {
+                if (accessionMap == null || reload) {
+                    if (accessionMap != null) {
+                        closeAccessionMap();
+                    }
+                    try {
+                        this.accessionMap =new AccessAccessionAdapter(fileName,cName);
+                        loadedMaps.add(mapType);
+                        activeMaps.add(mapType);
+                        map2Filename.put(mapType, fileName);
+                    } catch (Exception e) {
+                        Basic.caught(e);
+                    }
+                }
+                break;
             }
         }
     }
@@ -229,22 +204,25 @@ public class IdMapper {
      * @return
      */
     public IdParser createIdParser() {
-        final IdParser idParser = new IdParser(this);
-        idParser.setAlgorithm(algorithm);
-        return idParser;
-    }
+        // the follow code ensures that we use multiple accesses to the sqlite mapping database
+        if(accessionMap instanceof AccessAccessionAdapter) {
+            final IdMapper copy=new IdMapper(cName,fullTree,name2IdMap);
+            copy.setActiveMap(MapType.MeganMapDB,true);
+            try {
+                copy.loadMappingFile(((AccessAccessionAdapter)accessionMap).getMappingDBFile(),MapType.MeganMapDB,false,new ProgressSilent());
+            } catch (CanceledException e) {
+                Basic.caught(e);
+            }
+            final IdParser idParser = new IdParser(copy);
+            idParser.setAlgorithm(algorithm);
+            return idParser;
 
-    /**
-     * get a  id from a giNumber
-     *
-     * @param giNumber
-     * @return KO id or null
-     */
-    public Integer getIdFromGI(long giNumber) throws IOException {
-        if (isLoaded(MapType.GI)) {
-            return getGiMap().get(giNumber);
         }
-        return null;
+        else {
+            final IdParser idParser = new IdParser(this);
+            idParser.setAlgorithm(algorithm);
+            return idParser;
+        }
     }
 
     /**
@@ -262,10 +240,6 @@ public class IdMapper {
 
     public String getMappingFile(MapType mapType) {
         return map2Filename.get(mapType);
-    }
-
-    public ILong2IntegerMap getGiMap() {
-        return giMap;
     }
 
     public IString2IntegerMap getAccessionMap() {
@@ -297,6 +271,17 @@ public class IdMapper {
 
     public Set<Integer> getDisabledIds() {
         return disabledIds;
+    }
+
+    public void closeAccessionMap() {
+        if (accessionMap != null) {
+            try {
+                accessionMap.close();
+            } catch (IOException e) {
+                Basic.caught(e);
+            }
+        }
+        accessionMap=null;
     }
 
     public boolean isDisabled(int id) {

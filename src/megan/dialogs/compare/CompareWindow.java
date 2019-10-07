@@ -298,8 +298,7 @@ public class CompareWindow extends JDialog {
                 }
             }
             first = true;
-            for (Object aSelected : selected) {
-                MyListItem item = (MyListItem) aSelected;
+            for (MyListItem item : selected) {
                 if (item.getPID() == -1) {
                     if (first) {
                         buf.append(" meganFile=");

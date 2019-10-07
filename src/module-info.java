@@ -17,7 +17,7 @@ module megan {
     requires contrasts;
     requires colt;
 
-    exports Databases;
+    exports megan.accessiondb;
     exports megan.algorithms;
     exports megan.alignment;
     exports megan.alignment.commands;

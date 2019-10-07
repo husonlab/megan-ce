@@ -49,11 +49,6 @@ public class DataProcessor {
      * @throws jloda.util.CanceledException
      */
     public static int apply(final Document doc) throws CanceledException {
-        if (ProgramProperties.get("UseParallelDataProcessor", false)) {
-            DataProcessorParallel dataProcessorParallel = new DataProcessorParallel(doc);
-            return dataProcessorParallel.apply();
-        }
-
         final ProgressListener progress = doc.getProgressListener();
         try {
             progress.setTasks("Binning reads", "Initializing...");

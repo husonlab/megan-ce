@@ -42,7 +42,6 @@ public class ExportSummaryCommand extends CommandBase implements ICommand {
 // no need to implement, never called
     }
 
-
     public void actionPerformed(ActionEvent event) {
         Director dir = getDir();
         if (dir.getDocument().getMeganFile().hasDataConnector()) {

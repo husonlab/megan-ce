@@ -18,16 +18,15 @@
  */
 package megan.assembly;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.*;
-import megan.main.MeganProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * builds contigs from paths and data
@@ -67,8 +66,8 @@ public class ContigBuilder {
             return;
         }
 
-        final int numberOfThreads = Math.max(1, Math.min(ProgramProperties.get(MeganProperties.NUMBER_OF_THREADS, MeganProperties.DEFAULT_NUMBER_OF_THREADS), Runtime.getRuntime().availableProcessors() - 1));
-        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
+        final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(paths.length);
 
         for (final Node[] path : paths) {

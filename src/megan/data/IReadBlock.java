@@ -76,6 +76,7 @@ public interface IReadBlock extends Serializable {
      * @return mate type
      * @deprecated
      */
+    @Deprecated
     byte getMateType();
 
     /**
@@ -84,6 +85,7 @@ public interface IReadBlock extends Serializable {
      * @param type
      * @deprecated
      */
+    @Deprecated
     void setMateType(byte type);
 
     /**

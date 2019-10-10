@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * set the slow mapping mode
  * daniel Huson, 9.2019
  */
-public class SetSlowModeCommand extends CommandBase implements ICheckBoxCommand {
+public class SetExtendedModeCommand extends CommandBase implements ICheckBoxCommand {
 
     @Override
     public boolean isSelected() {
@@ -46,11 +46,11 @@ public class SetSlowModeCommand extends CommandBase implements ICheckBoxCommand 
     }
 
     public void actionPerformed(ActionEvent event) {
-        execute("set accessionMapMode=slow;");
+        execute("set accessionMapMode=extended;");
 
     }
 
-    public static final String NAME="Slow Mode";
+    public static final String NAME="Extended Mode";
 
     public String getName() {
         return NAME;
@@ -58,7 +58,7 @@ public class SetSlowModeCommand extends CommandBase implements ICheckBoxCommand 
 
 
     public String getDescription() {
-        return "Use slow accession mapping mode, attempting to mapping all accessions in reference headers.\nCan be used with MEGAN mapping db file and all other mapping options.";
+        return "Use extended accession mapping mode, attempting to mapping all accessions in reference headers.\nCan be used with MEGAN mapping db file and all other mapping options.";
     }
 
 

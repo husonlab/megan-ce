@@ -146,7 +146,7 @@ public class DAAReferencesAnnotator {
                 }
 
             } else {
-                System.err.println("Annotating DAA file using SLOW mode");
+                System.err.println("Annotating DAA file using EXTENDED mode");
 
                 final int numberOfThreads = Math.max(1, Math.min(header.getNumberOfReferences(), Math.min(ProgramExecutorService.getNumberOfCoresToUse(), Runtime.getRuntime().availableProcessors())));
                 final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);

@@ -68,9 +68,9 @@ public class ViewerPanel extends JPanel {
             final AbstractButton useFastModeButton = commandManager.getButton(useFastMode);
             aPanel.add(useFastModeButton);
 
-            final ICommand useSlowMode = commandManager.getCommand(SetSlowModeCommand.NAME);
-            final AbstractButton useSlowModeButton = commandManager.getButton(useSlowMode);
-            aPanel.add(useSlowModeButton);
+            final ICommand useExtendedMode = commandManager.getCommand(SetExtendedModeCommand.NAME);
+            final AbstractButton usedExtendedModeButton = commandManager.getButton(useExtendedMode);
+            aPanel.add(usedExtendedModeButton);
         }
 
         final ICommand useMapDBCommand = commandManager.getCommand(SetUseMapType4ViewerCommand.getAltName(cName, IdMapper.MapType.MeganMapDB));

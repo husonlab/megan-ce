@@ -43,7 +43,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -189,7 +188,7 @@ public class ParametersDialog extends JDialog {
             final JPanel aPanel = new JPanel();
             aPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("LCA and analysis parameters:"), BorderFactory.createEmptyBorder(3, 10, 1, 10)));
 
-            final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().size()]);
+            final String[] cNames = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().toArray(new String[0]);
 
             aPanel.setLayout(new GridLayout(18 + (cNames.length + 1) / 2, 2));
 
@@ -361,16 +360,15 @@ public class ParametersDialog extends JDialog {
 
             aPanel.add(lcaAlgorithmComboBox);
             lcaAlgorithmComboBox.setToolTipText("Set the LCA algorithm to be used for taxonomic binning");
-            lcaAlgorithmComboBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (lcaAlgorithmComboBox.getSelectedItem() != null) {
-                        ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
-                        if (getLcaAlgorithm().equals(Document.LCAAlgorithm.naive))
-                            lcaCoveragePercent.setText("100");
-                        else
-                            lcaCoveragePercent.setText("80");
-                    }
+            lcaAlgorithmComboBox.addActionListener(e -> {
+                if (lcaAlgorithmComboBox.getSelectedItem() != null) {
+                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
+                    if (getLcaAlgorithm().equals(Document.LCAAlgorithm.naive))
+                        lcaCoveragePercent.setText("100");
+                    else
+                        lcaCoveragePercent.setText("80");
+                }
+                if(lcaAlgorithmComboBox.getSelectedItem()!=null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
                             lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
@@ -412,12 +410,11 @@ public class ParametersDialog extends JDialog {
 
             aPanel.add(readAssignmentModeComboBox);
             readAssignmentModeComboBox.setToolTipText("Read assignment mode: determines what is shown as number of assigned reads in taxonomy analysis");
-            readAssignmentModeComboBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (readAssignmentModeComboBox.getSelectedItem() != null) {
-                        ProgramProperties.put("ReadAssignmentModeComboBox", getReadAssignmentMode().toString());
-                    }
+            readAssignmentModeComboBox.addActionListener(e -> {
+                if (readAssignmentModeComboBox.getSelectedItem() != null) {
+                    ProgramProperties.put("ReadAssignmentModeComboBox", getReadAssignmentMode().toString());
+                }
+                if(readAssignmentModeComboBox.getSelectedItem()!=null) {
                     switch (Document.ReadAssignmentMode.valueOfIgnoreCase(readAssignmentModeComboBox.getSelectedItem().toString())) {
                         case readCount:
                             readAssignmentModeComboBox.setToolTipText("Display read counts as 'assigned reads' in taxonomy viewer");
@@ -437,6 +434,7 @@ public class ParametersDialog extends JDialog {
                 }
             });
 
+
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
@@ -446,12 +444,9 @@ public class ParametersDialog extends JDialog {
             aPanel.add(longReadsCBox);
             longReadsCBox.setToolTipText("Reads parsed as 'long reads'");
             longReadsCBox.setEnabled(doc.getConnector() instanceof DAAConnector); // can only change this if is DAA file because reads are sorted during
-            longReadsCBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(longReadsCBox.isSelected() ? 2 : 0));
-                    ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
-                }
+            longReadsCBox.addActionListener(e -> {
+                lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithmComboBox.getItemAt(longReadsCBox.isSelected() ? 2 : 0));
+                ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
             });
 
             aPanel.add(usePercentIdentityCBox);

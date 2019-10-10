@@ -156,7 +156,7 @@ public class RMA6FromBlastCreator {
             accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(ClassificationManager.getMeganMapDBFile());
             mapClassificationId2DatabaseRank = accessAccessionMappingDatabase.setupMapClassificationId2DatabaseRank(cNames);
         } else {
-            System.err.println("Annotating RMA6 file using SLOW mode");
+            System.err.println("Annotating RMA6 file using EXTENDED mode");
             accessAccessionMappingDatabase = null;
             mapClassificationId2DatabaseRank = null;
         }

@@ -57,7 +57,7 @@ public class OverlapGraphBuilder {
      * @throws CanceledException
      */
     public void apply(final List<ReadData> readData, final ProgressListener progress) throws CanceledException {
-        readDatas = readData.toArray(new ReadData[readData.size()]);
+        readDatas = readData.toArray(new ReadData[0]);
         // collect all matches for each reference:
 
         progress.setSubtask("Sorting reads and matches by reference");

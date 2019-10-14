@@ -27,7 +27,7 @@ import java.util.List;
  * <p/>
  * Created by huson on 10/3/14.
  */
-public interface IService {
+interface IService {
     /**
      * get URL of remote server
      *

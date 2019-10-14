@@ -38,8 +38,8 @@ import java.util.TreeMap;
  * statistical comparison of two datasets
  * Daniel Huson, 3.2007
  */
-public class ComparisonStats {
-    private static List<String> methods;
+class ComparisonStats {
+    private static final List<String> methods;
 
     static {
         methods = new LinkedList<>();
@@ -96,7 +96,7 @@ public class ComparisonStats {
      * @param dir
      * @return input map
      */
-    static Map<Integer, Float> computeInputMapFromLeaves(Director dir, boolean useInternal, boolean useUnassigned) {
+    private static Map<Integer, Float> computeInputMapFromLeaves(Director dir, boolean useInternal, boolean useUnassigned) {
         Map<Integer, Float> map = new TreeMap<>();
 
         PhyloTree tree = dir.getMainViewer().getTree();

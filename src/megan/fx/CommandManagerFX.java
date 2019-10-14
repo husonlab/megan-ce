@@ -39,19 +39,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * manages commands in context of FX
  * Daniel Huson, 2.2016
  */
 public class CommandManagerFX extends CommandManager {
-    protected final Map<MenuItem, ICommand> menuItem2CommandFX = new HashMap<>();
-    protected final Map<javafx.scene.control.ButtonBase, ICommand> button2CommandFX = new HashMap<>();
-    public final static ActionEvent ACTION_EVENT_FROM_FX = new ActionEvent("CommandManagerWithFX", 0, null);
+    private final Map<MenuItem, ICommand> menuItem2CommandFX = new HashMap<>();
+    private final Map<javafx.scene.control.ButtonBase, ICommand> button2CommandFX = new HashMap<>();
+    private final static ActionEvent ACTION_EVENT_FROM_FX = new ActionEvent("CommandManagerWithFX", 0, null);
 
     /**
      * construct a parser
@@ -195,15 +193,12 @@ public class CommandManagerFX extends CommandManager {
             final ICheckBoxCommand checkBoxCommand = (ICheckBoxCommand) command;
 
             final CheckMenuItem menuItem = new CheckMenuItem(command.getName());
-            menuItem.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                @Override
-                public void handle(javafx.event.ActionEvent event) {
-                    checkBoxCommand.setSelected(menuItem.isSelected());
-                    if (command.getAutoRepeatInterval() > 0)
-                        command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                    else
-                        command.actionPerformed(ACTION_EVENT_FROM_FX);
-                }
+            menuItem.setOnAction(event -> {
+                checkBoxCommand.setSelected(menuItem.isSelected());
+                if (command.getAutoRepeatInterval() > 0)
+                    command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                else
+                    command.actionPerformed(ACTION_EVENT_FROM_FX);
             });
             if (command.getDescription() != null) {
                 menuItem.setUserData(command.getDescription());
@@ -211,7 +206,7 @@ public class CommandManagerFX extends CommandManager {
             if (command.getIcon() != null)
                 menuItem.setGraphic(asImageViewFX(command.getIcon()));
             else
-                menuItem.setGraphic((asImageViewFX(ResourceManager.getIcon("Empty16.gif"))));
+                menuItem.setGraphic((asImageViewFX(Objects.requireNonNull(ResourceManager.getIcon("Empty16.gif")))));
             if (command.getDescription() != null && menuItem.getGraphic() != null) {
                 Tooltip.install(menuItem.getGraphic(), new Tooltip(command.getDescription()));
             }
@@ -222,26 +217,18 @@ public class CommandManagerFX extends CommandManager {
             return menuItem;
         } else {
             final MenuItem menuItem = new MenuItem(command.getName());
-            menuItem.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                @Override
-                public void handle(javafx.event.ActionEvent event) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (command.getAutoRepeatInterval() > 0)
-                                command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                            else
-                                command.actionPerformed(ACTION_EVENT_FROM_FX);
-                        }
-                    });
-                }
-            });
+            menuItem.setOnAction(event -> SwingUtilities.invokeLater(() -> {
+                if (command.getAutoRepeatInterval() > 0)
+                    command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                else
+                    command.actionPerformed(ACTION_EVENT_FROM_FX);
+            }));
             if (command.getDescription() != null)
                 menuItem.setUserData(command.getDescription());
             if (command.getIcon() != null)
                 menuItem.setGraphic(asImageViewFX(command.getIcon()));
             else
-                menuItem.setGraphic((asImageViewFX(ResourceManager.getIcon("Empty16.gif"))));
+                menuItem.setGraphic((asImageViewFX(Objects.requireNonNull(ResourceManager.getIcon("Empty16.gif")))));
             if (command.getDescription() != null && menuItem.getGraphic() != null) {
                 Tooltip.install(menuItem.getGraphic(), new Tooltip(command.getDescription()));
             }
@@ -271,7 +258,7 @@ public class CommandManagerFX extends CommandManager {
      * @param enabled
      * @return button
      */
-    public javafx.scene.control.ButtonBase getButtonFX(String commandName, boolean enabled) {
+    private javafx.scene.control.ButtonBase getButtonFX(String commandName, boolean enabled) {
         javafx.scene.control.ButtonBase button = getButtonFX(getCommand(commandName));
         button.setDisable(!enabled);
         if (button.getText() != null && button.getText().equals("Null")) {
@@ -294,7 +281,7 @@ public class CommandManagerFX extends CommandManager {
      * @param command
      * @return button
      */
-    public javafx.scene.control.ButtonBase getButtonFX(final ICommand command) {
+    private javafx.scene.control.ButtonBase getButtonFX(final ICommand command) {
         if (command == null) {
             javafx.scene.control.Button nullButton = new javafx.scene.control.Button("Null");
             nullButton.setDisable(true);
@@ -304,15 +291,12 @@ public class CommandManagerFX extends CommandManager {
             final ICheckBoxCommand checkBoxCommand = (ICheckBoxCommand) command;
 
             final CheckBox cbox = new CheckBox(command.getName());
-            cbox.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                @Override
-                public void handle(javafx.event.ActionEvent event) {
-                    checkBoxCommand.setSelected(cbox.isSelected());
-                    if (command.getAutoRepeatInterval() > 0)
-                        command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                    else
-                        command.actionPerformed(ACTION_EVENT_FROM_FX);
-                }
+            cbox.setOnAction(event -> {
+                checkBoxCommand.setSelected(cbox.isSelected());
+                if (command.getAutoRepeatInterval() > 0)
+                    command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                else
+                    command.actionPerformed(ACTION_EVENT_FROM_FX);
             });
             if (command.getDescription() != null) {
                 cbox.setUserData(command.getDescription());
@@ -326,14 +310,11 @@ public class CommandManagerFX extends CommandManager {
             return cbox;
         } else {
             final Button button = new Button(command.getName());
-            button.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                @Override
-                public void handle(javafx.event.ActionEvent event) {
-                    if (command.getAutoRepeatInterval() > 0)
-                        command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                    else
-                        command.actionPerformed(ACTION_EVENT_FROM_FX);
-                }
+            button.setOnAction(event -> {
+                if (command.getAutoRepeatInterval() > 0)
+                    command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                else
+                    command.actionPerformed(ACTION_EVENT_FROM_FX);
             });
             if (command.getDescription() != null) {
                 button.setUserData(command.getDescription());
@@ -363,15 +344,12 @@ public class CommandManagerFX extends CommandManager {
             final ICheckBoxCommand checkBoxCommand = (ICheckBoxCommand) command;
 
             final RadioButton button = new RadioButton(command.getName());
-            button.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                @Override
-                public void handle(javafx.event.ActionEvent event) {
-                    checkBoxCommand.setSelected(button.isSelected());
-                    if (command.getAutoRepeatInterval() > 0)
-                        command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
-                    else
-                        command.actionPerformed(ACTION_EVENT_FROM_FX);
-                }
+            button.setOnAction(event -> {
+                checkBoxCommand.setSelected(button.isSelected());
+                if (command.getAutoRepeatInterval() > 0)
+                    command.actionPerformedAutoRepeat(ACTION_EVENT_FROM_FX);
+                else
+                    command.actionPerformed(ACTION_EVENT_FROM_FX);
             });
             if (command.getDescription() != null) {
                 button.setUserData(command.getDescription());
@@ -425,7 +403,7 @@ public class CommandManagerFX extends CommandManager {
      * @param acceleratorKey
      * @return key combination
      */
-    public static KeyCombination translateAccelerator(KeyStroke acceleratorKey) {
+    private static KeyCombination translateAccelerator(KeyStroke acceleratorKey) {
         final List<KeyCombination.Modifier> modifiers = new ArrayList<>();
 
         if ((acceleratorKey.getModifiers() & java.awt.event.InputEvent.SHIFT_DOWN_MASK) != 0)

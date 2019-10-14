@@ -46,38 +46,34 @@ public class AttributesList extends LabelsJList {
 
         setName("Attributes");
 
-        addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!inSelection) {
-                    inSelection = true;
-                    try {
-                        chartSelection.clearSelectionAttributes();
-                        chartSelection.setSelectedAttribute(getSelectedLabels(), true);
-                    } finally {
-                        inSelection = false;
-                    }
+        addListSelectionListener(listSelectionEvent -> {
+            if (!inSelection) {
+                inSelection = true;
+                try {
+                    chartSelection.clearSelectionAttributes();
+                    chartSelection.setSelectedAttribute(getSelectedLabels(), true);
+                } finally {
+                    inSelection = false;
                 }
             }
         });
 
         setDragEnabled(true);
         setTransferHandler(new ListTransferHandler());
-        chartSelection.addAttributesSelectionListener(new IChartSelectionListener() {
-            public void selectionChanged(ChartSelection chartSelection) {
-                if (!inSelection) {
-                    inSelection = true;
-                    try {
-                        DefaultListModel model = (DefaultListModel) getModel();
-                        for (int i = 0; i < model.getSize(); i++) {
-                            String name = getModel().getElementAt(i);
-                            if (chartSelection.isSelectedAttribute(name))
-                                addSelectionInterval(i, i + 1);
-                            else
-                                removeSelectionInterval(i, i + 1);
-                        }
-                    } finally {
-                        inSelection = false;
+        chartSelection.addAttributesSelectionListener(chartSelection -> {
+            if (!inSelection) {
+                inSelection = true;
+                try {
+                    DefaultListModel model = (DefaultListModel) getModel();
+                    for (int i = 0; i < model.getSize(); i++) {
+                        String name = getModel().getElementAt(i);
+                        if (chartSelection.isSelectedAttribute(name))
+                            addSelectionInterval(i, i + 1);
+                        else
+                            removeSelectionInterval(i, i + 1);
                     }
+                } finally {
+                    inSelection = false;
                 }
             }
         });
@@ -116,7 +112,7 @@ public class AttributesList extends LabelsJList {
         }
     }
 
-    public ChartViewer getViewer() {
+    private ChartViewer getViewer() {
         return (ChartViewer) viewer;
     }
 
@@ -125,11 +121,9 @@ public class AttributesList extends LabelsJList {
     }
 
     private static SyncListener createSyncListenerAttributesList(final ChartViewer viewer) {
-        return new SyncListener() {
-            public void syncList2Viewer(LinkedList<String> enabledNames) {
-                if (viewer.getChartDrawer().canAttributes()) {
-                    viewer.getChartDrawer().forceUpdate();
-                }
+        return enabledNames -> {
+            if (viewer.getChartDrawer().canAttributes()) {
+                viewer.getChartDrawer().forceUpdate();
             }
         };
     }

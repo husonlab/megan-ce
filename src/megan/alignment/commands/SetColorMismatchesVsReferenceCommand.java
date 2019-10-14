@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class SetColorMismatchesVsReferenceCommand extends CommandBase implements ICheckBoxCommand {
+class SetColorMismatchesVsReferenceCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -75,7 +75,7 @@ public class SetColorMismatchesVsReferenceCommand extends CommandBase implements
         execute("set colorMismatchesVsReference=" + (!isSelected()) + ";");
     }
 
-    public static final String NAME = "Mismatches Vs Reference";
+    private static final String NAME = "Mismatches Vs Reference";
 
     public String getName() {
         return NAME;

@@ -61,7 +61,6 @@ public class ByteFileGetterInMemory implements IByteGetter {
                 }
                 progress.setProgress(index);
             }
-            progress.close();
         }
     }
 

@@ -28,6 +28,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
@@ -35,16 +36,16 @@ import java.util.TreeSet;
  * Daniel Huson, 3.2007
  */
 public class ComparisonStatsWindow extends JDialog {
-    final IDirector dir;
+    private final IDirector dir;
 
     final JComboBox dataCBox1;
     final JComboBox dataCBox2;
     final JComboBox methodCBox;
 
-    final JPanel optionsPanel;
+    private final JPanel optionsPanel;
 
 
-    final ComparisonStatsActions actions;
+    private final ComparisonStatsActions actions;
 
     /**
      * setup and display the compare dialog
@@ -106,7 +107,7 @@ public class ComparisonStatsWindow extends JDialog {
         optionsPanel = new JPanel();
         optionsPanel.setBorder(BorderFactory.createTitledBorder("Method options"));
         IMethodItem item = (IMethodItem) methodCBox.getSelectedItem();
-        optionsPanel.add(item.getOptionsPanel());
+        optionsPanel.add(Objects.requireNonNull(item).getOptionsPanel());
 
         centerPanel.add(new JScrollPane(optionsPanel));
         getContentPane().add(centerPanel, BorderLayout.CENTER);
@@ -125,23 +126,13 @@ public class ComparisonStatsWindow extends JDialog {
 
         getActions().updateEnableState();
 
-        dataCBox1.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                getActions().updateEnableState();
-            }
-        });
-        dataCBox2.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                getActions().updateEnableState();
-            }
-        });
-        methodCBox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                getActions().updateEnableState();
-                optionsPanel.removeAll();
-                IMethodItem item = (IMethodItem) methodCBox.getSelectedItem();
-                optionsPanel.add(item.getOptionsPanel());
-            }
+        dataCBox1.addItemListener(itemEvent -> getActions().updateEnableState());
+        dataCBox2.addItemListener(itemEvent -> getActions().updateEnableState());
+        methodCBox.addItemListener(itemEvent -> {
+            getActions().updateEnableState();
+            optionsPanel.removeAll();
+            IMethodItem item1 = (IMethodItem) methodCBox.getSelectedItem();
+            optionsPanel.add(item1.getOptionsPanel());
         });
 
         setVisible(true);
@@ -176,7 +167,7 @@ public class ComparisonStatsWindow extends JDialog {
      *
      * @return actions
      */
-    public ComparisonStatsActions getActions() {
+    private ComparisonStatsActions getActions() {
         return actions;
     }
 

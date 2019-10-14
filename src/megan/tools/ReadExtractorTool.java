@@ -72,7 +72,7 @@ public class ReadExtractorTool {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Extracts reads from a DAA or RMA file by classification");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");

@@ -82,17 +82,15 @@ public class WordCountAnalysis {
                 }
             }
             if (n >= minDepth) {
-                depthVsDifferences.add(new Pair<Number, Number>(n, words.size()));
+                depthVsDifferences.add(new Pair<>(n, words.size()));
 
-                SortedSet<Pair<Integer, String>> ranker = new TreeSet<>(new Comparator<Pair<Integer, String>>() {
-                    public int compare(Pair<Integer, String> pair1, Pair<Integer, String> pair2) {
-                        if (pair1.get1() > pair2.get1())
-                            return -1;
-                        else if (pair1.get1() < pair2.get1())
-                            return 1;
-                        else
-                            return pair1.get2().compareTo(pair2.get2());
-                    }
+                SortedSet<Pair<Integer, String>> ranker = new TreeSet<>((pair1, pair2) -> {
+                    if (pair1.get1() > pair2.get1())
+                        return -1;
+                    else if (pair1.get1() < pair2.get1())
+                        return 1;
+                    else
+                        return pair1.get2().compareTo(pair2.get2());
                 });
                 for (Map.Entry<String, Integer> entry : word2count.entrySet()) {
                     ranker.add(new Pair<>(entry.getValue(), entry.getKey()));
@@ -122,7 +120,7 @@ public class WordCountAnalysis {
         if (depthVsDifferences.size() == 0)
             return new LinkedList<>();
 
-        Pair<Number, Number>[] array = (Pair<Number, Number>[]) depthVsDifferences.toArray(new Pair[depthVsDifferences.size()]);
+        Pair<Number, Number>[] array = (Pair<Number, Number>[]) depthVsDifferences.toArray(new Pair[0]);
 
         int minX = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE;
@@ -137,34 +135,32 @@ public class WordCountAnalysis {
         Arrays.sort(array);
 
         // smooth the values:
-        if (true) {
-            vMax = 0;
-            double[] smoothedValues = new double[array.length];
-            double sum = 0;
-            int count = 0;
-            for (int i = 0; i < array.length; i++) {
-                Pair<Number, Number> pair = array[i];
-                sum += pair.getSecond().intValue();
-                if (count < 10)
-                    count++;
-                else
-                    sum -= array[i - 10].getSecond().intValue();
-                if (i > 5)
-                    smoothedValues[i - 5] = sum / count;
-            }
-            for (int i = 0; i < Math.min(5, smoothedValues.length); i++) {
-                smoothedValues[i] = smoothedValues[Math.min(5, smoothedValues.length) - 1];
-            }
-            for (int i = 0; i < array.length; i++) {
-                smoothedValues[i] = smoothedValues[Math.max(0, array.length - 6)];
-            }
+        vMax = 0;
+        double[] smoothedValues = new double[array.length];
+        double sum = 0;
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            Pair<Number, Number> pair = array[i];
+            sum += pair.getSecond().intValue();
+            if (count < 10)
+                count++;
+            else
+                sum -= array[i - 10].getSecond().intValue();
+            if (i > 5)
+                smoothedValues[i - 5] = sum / count;
+        }
+        for (int i = 0; i < Math.min(5, smoothedValues.length); i++) {
+            smoothedValues[i] = smoothedValues[Math.min(5, smoothedValues.length) - 1];
+        }
+        for (int i = 0; i < array.length; i++) {
+            smoothedValues[i] = smoothedValues[Math.max(0, array.length - 6)];
+        }
 
-            for (int i = 0; i < array.length; i++) {
-                Pair<Number, Number> pair = array[i];
-                array[i] = new Pair<Number, Number>(pair.get1(), smoothedValues[i]);
-                // pair.set2(smoothedValues[i]);       // uncomment this line to plot the smoothed values
-                vMax = Math.max(vMax, (int) smoothedValues[i]);
-            }
+        for (int i = 0; i < array.length; i++) {
+            Pair<Number, Number> pair = array[i];
+            array[i] = new Pair<>(pair.get1(), smoothedValues[i]);
+            // pair.set2(smoothedValues[i]);       // uncomment this line to plot the smoothed values
+            vMax = Math.max(vMax, (int) smoothedValues[i]);
         }
 
         int first = 0;
@@ -185,7 +181,7 @@ public class WordCountAnalysis {
         LinkedList<Pair<Number, Number>> result = new LinkedList<>();
         for (float x = minX; x <= maxX; x += stepX) {
             float y = (vMax * x) / (kM + x);
-            result.add(new Pair<Number, Number>(x, y));
+            result.add(new Pair<>(x, y));
         }
         return result;
     }

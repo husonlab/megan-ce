@@ -102,7 +102,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
      *
      * @return header
      */
-    public static String getHeader() {
+    private static String getHeader() {
         return "#seqname number-of-bases number-of-alignments number-of-bases-covered\n";
     }
 
@@ -112,7 +112,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
      * @param readBlock
      * @return line
      */
-    public static String createReportLine(IReadBlock readBlock) {
+    private static String createReportLine(IReadBlock readBlock) {
         final IntervalTree<IMatchBlock> intervalTree = new IntervalTree<>();
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);

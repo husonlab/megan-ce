@@ -36,7 +36,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     private final BlastMode blastMode;
     private final boolean pairedReads;
 
-    private String[] cNames;
+    private final String[] cNames;
     private long uid;
     private String readHeader;
     private String readSequence;

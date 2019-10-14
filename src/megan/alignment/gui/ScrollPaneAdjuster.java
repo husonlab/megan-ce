@@ -30,11 +30,11 @@ public class ScrollPaneAdjuster {
     private final JScrollBar scrollBarX;
     private final JScrollBar scrollBarY;
 
-    final double xFactor;
-    final double yFactor;
+    private final double xFactor;
+    private final double yFactor;
 
-    final double xPortionOfVisible;
-    final double yPortionOfVisible;
+    private final double xPortionOfVisible;
+    private final double yPortionOfVisible;
 
     /**
      * construct object and "remember" how scrollpane is currently centered around middle of screen

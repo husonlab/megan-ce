@@ -38,9 +38,9 @@ import java.util.Map;
  * Daniel Huson, 3.2013
  */
 public class SelectionGraphics<T> extends Graphics2D {
-    private Graphics2D gc;
+    private final Graphics2D gc;
 
-    private LinkedList<T> selection = new LinkedList<>();
+    private final LinkedList<T> selection = new LinkedList<>();
     private T currentItem = null;
     private T previouslySelectedItem = null;
     private Rectangle selectionRectangle;

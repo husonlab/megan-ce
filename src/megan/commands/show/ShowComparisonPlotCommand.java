@@ -37,7 +37,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
+class ShowComparisonPlotCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show comparisonPlot [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "]};";
     }
@@ -75,12 +75,12 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
         if (getViewer() instanceof MainViewer) {
             execute("show comparisonPlot data=" + Classification.Taxonomy + ";");
         } else if (getViewer() instanceof ClassificationViewer) {
-            execute("show comparisonPlot data=" + ((ClassificationViewer) getViewer()).getClassName() + ";");
+            execute("show comparisonPlot data=" + getViewer().getClassName() + ";");
         }
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfSamples() > 1 && getViewer() instanceof ClassificationViewer;
+        return getDir().getDocument().getNumberOfSamples() > 1 && getViewer() instanceof ClassificationViewer;
 
     }
 

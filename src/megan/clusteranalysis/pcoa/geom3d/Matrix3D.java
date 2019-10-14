@@ -96,7 +96,7 @@ public class Matrix3D extends MatrixN {
      * @param b
      * @param c
      */
-    public void translate(double a, double b, double c) {
+    private void translate(double a, double b, double c) {
 
         Matrix3D tmp = new Matrix3D();
 
@@ -134,7 +134,7 @@ public class Matrix3D extends MatrixN {
      * @param s
      * @param t
      */
-    public void scale(double r, double s, double t) {
+    private void scale(double r, double s, double t) {
 
         Matrix3D tmp = new Matrix3D();
 

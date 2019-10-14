@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 4.2012
  */
-public class SetNucleotideColorSchemeCommand extends CommandBase implements ICommand {
+class SetNucleotideColorSchemeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -82,7 +82,7 @@ public class SetNucleotideColorSchemeCommand extends CommandBase implements ICom
         }
     }
 
-    public static final String NAME = "Set Nucleotide Colors...";
+    private static final String NAME = "Set Nucleotide Colors...";
 
     public String getName() {
         return NAME;

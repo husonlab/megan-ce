@@ -25,7 +25,7 @@ import megan.classification.data.ClassificationCommandHelper;
  * configuration for menu and toolbar
  * Daniel Huson, 7.2010
  */
-public class GUIConfiguration {
+class GUIConfiguration {
 
     /**
      * get the menu configuration

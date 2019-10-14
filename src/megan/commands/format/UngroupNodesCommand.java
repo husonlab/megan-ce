@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * do not join nodes in PCoA plot
  * Daniel Huson, 7.2014
  */
-public class UngroupNodesCommand extends CommandBase implements ICommand {
+class UngroupNodesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

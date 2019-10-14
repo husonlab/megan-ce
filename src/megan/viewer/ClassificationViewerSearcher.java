@@ -39,9 +39,9 @@ import java.util.*;
  */
 public class ClassificationViewerSearcher implements IObjectSearcher {
     private final String name;
-    final PhyloTree graph;
-    final ClassificationViewer classificationViewer;
-    final Frame frame;
+    private final PhyloTree graph;
+    private final ClassificationViewer classificationViewer;
+    private final Frame frame;
 
     private Iterator<Integer> currentIterator = null;
     private Integer currentId = -1;
@@ -50,14 +50,14 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
     private final Set<Integer> toDeSelectIds = new HashSet<>();
     private int numberOfObjects = 0;
 
-    final NodeSet toSelect;
-    final NodeSet toDeselect;
+    private final NodeSet toSelect;
+    private final NodeSet toDeselect;
 
-    boolean searchInCollapsed = false;
+    private boolean searchInCollapsed = false;
 
     private int countCurrent = 0; // use this to cycle throug different instances of current node id
 
-    private AbstractButton uncollapseButton;
+    private final AbstractButton uncollapseButton;
 
     /**
      * constructor
@@ -72,7 +72,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
         this.graph = viewer.getTree();
         toSelect = new NodeSet(graph);
         toDeselect = new NodeSet(graph);
-        searchInCollapsed = ProgramProperties.get("FViewerSearchInCollapsed", searchInCollapsed);
+        searchInCollapsed = ProgramProperties.get("FViewerSearchInCollapsed", false);
 
         uncollapseButton = new JCheckBox();
         uncollapseButton.setAction(new AbstractAction() {
@@ -309,16 +309,14 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
         for (int t : toSelectIds) {
             final Set<Node> nodes = classificationViewer.getNodes(t);
             if (nodes != null) {
-                for (Node v : nodes)
-                    toSelect.add(v);
+                toSelect.addAll(nodes);
             }
         }
         toDeselect.clear();
         for (int t : toDeSelectIds) {
             final Set<Node> nodes = classificationViewer.getNodes(t);
             if (nodes != null) {
-                for (Node v : nodes)
-                    toDeselect.add(v);
+                toDeselect.addAll(nodes);
             }
         }
 

@@ -144,11 +144,6 @@ public class Blast2Alignment {
 
                             String key = Basic.getFirstLine(matchBlock.getText());
                             // if this is an augmented DNA reference, remove everything from |pos| onward
-                            if (false) {
-                                int pos = key.indexOf("|pos|");
-                                if (pos != -1)
-                                    key = key.substring(0, pos);
-                            }
 
                             //  System.err.println("key:  "+key);
                             //  System.err.println("text: "+matchText);
@@ -164,11 +159,7 @@ public class Blast2Alignment {
                                 } else
                                     blastFormatUnknown = false;
                             }
-                            Set<Long> seen = reference2seen.get(key);
-                            if (seen == null) {
-                                seen = new HashSet<>(10000);
-                                reference2seen.put(key, seen);
-                            }
+                            Set<Long> seen = reference2seen.computeIfAbsent(key, k -> new HashSet<>(10000));
                             final long uid = readBlock.getUId();
                             if (!seen.contains(uid)) // this ensures that any given reference only contains one copy of a read
                             {
@@ -177,12 +168,8 @@ public class Blast2Alignment {
                                 if (!matchesSeenForGivenRead.contains(key)) {
                                     matchesSeenForGivenRead.add(key);
 
-                                    List<byte[][]> pairs = reference2ReadMatchPairs.get(key);
-                                    if (pairs == null) {
-                                        pairs = new LinkedList<>();
-                                        reference2ReadMatchPairs.put(key, pairs);
-                                    }
-                                    pairs.add(new byte[][]{readHeader.getBytes(), readSequence != null ? readSequence.getBytes() : null, matchText.getBytes()});
+                                    List<byte[][]> pairs = reference2ReadMatchPairs.computeIfAbsent(key, k -> new LinkedList<>());
+                                    pairs.add(new byte[][]{readHeader.getBytes(), readSequence.getBytes(), matchText.getBytes()});
                                     readUsed = true;
                                 }
                             }
@@ -268,11 +255,11 @@ public class Blast2Alignment {
         totalNumberOfReads = readMatchPairs.size();
     }
 
-    public String getBlastType() {
+    private String getBlastType() {
         return blastType;
     }
 
-    public void setBlastType(String blastType) {
+    private void setBlastType(String blastType) {
         this.blastType = blastType;
     }
 
@@ -386,11 +373,7 @@ public class Blast2Alignment {
                 totalReadsOut++;
 
                 for (Pair<Integer, String> insertion : insertions) {
-                    Collection<Pair<Integer, String>> list = pos2Insertions.get(insertion.getFirst());
-                    if (list == null) {
-                        list = new LinkedList<>();
-                        pos2Insertions.put(insertion.getFirst(), list);
-                    }
+                    Collection<Pair<Integer, String>> list = pos2Insertions.computeIfAbsent(insertion.getFirst(), k -> new LinkedList<>());
                     list.add(new Pair<>(which, insertion.getSecond()));
                 }
                 which++;
@@ -460,7 +443,7 @@ public class Blast2Alignment {
                         reference.setLeadingGaps(reference.getLeadingGaps() + maxInsertion);
                     } else if (col < reference.getLeadingGaps() + reference.getBlock().length()) {
                         int insertAfter = col - reference.getLeadingGaps();
-                        reference.setBlock(reference.getBlock().substring(0, insertAfter + 1) + gaps(maxInsertion) + reference.getBlock().substring(insertAfter + 1, reference.getBlock().length()));
+                        reference.setBlock(reference.getBlock().substring(0, insertAfter + 1) + gaps(maxInsertion) + reference.getBlock().substring(insertAfter + 1));
                     } else if (col > reference.getLeadingGaps() + reference.getBlock().length()) {
                         reference.setTrailingGaps(reference.getTrailingGaps() + maxInsertion);
                     }
@@ -496,7 +479,7 @@ public class Blast2Alignment {
                             lane.setLeadingGaps(lane.getLeadingGaps() + maxInsertion);
                         } else if (col < lane.getLeadingGaps() + lane.getBlock().length()) {
                             int insertAfter = col - lane.getLeadingGaps();
-                            lane.setBlock(lane.getBlock().substring(0, insertAfter + 1) + insert.toLowerCase() + gaps(maxInsertion - insert.length()) + lane.getBlock().substring(insertAfter + 1, lane.getBlock().length()));
+                            lane.setBlock(lane.getBlock().substring(0, insertAfter + 1) + insert.toLowerCase() + gaps(maxInsertion - insert.length()) + lane.getBlock().substring(insertAfter + 1));
                         } else if (col > lane.getLeadingGaps() + lane.getBlock().length()) {
                             lane.setTrailingGaps(lane.getTrailingGaps() + maxInsertion);
                         }
@@ -508,7 +491,7 @@ public class Blast2Alignment {
                                 lane.setLeadingGaps(lane.getLeadingGaps() + maxInsertion);
                             } else if (col < lane.getLeadingGaps() + lane.getBlock().length()) {
                                 int insertAfter = col - lane.getLeadingGaps();
-                                lane.setBlock(lane.getBlock().substring(0, insertAfter + 1) + gaps(maxInsertion) + lane.getBlock().substring(insertAfter + 1, lane.getBlock().length()));
+                                lane.setBlock(lane.getBlock().substring(0, insertAfter + 1) + gaps(maxInsertion) + lane.getBlock().substring(insertAfter + 1));
                             } else if (col > lane.getLeadingGaps() + lane.getBlock().length()) {
                                 lane.setTrailingGaps(lane.getTrailingGaps() + maxInsertion);
                             }
@@ -649,7 +632,7 @@ public class Blast2Alignment {
         final int leadingGaps = 3 * (startSubject - 1);
         final int trailingGaps = 3 * (length - endSubject);
         final String unalignedPrefix = readSequence.substring(0, startQuery);
-        final String unalignedSuffix = readSequence.substring(endQuery, readSequence.length());
+        final String unalignedSuffix = readSequence.substring(endQuery);
         alignment.addSequence(readName, text, null, unalignedPrefix, leadingGaps, block, trailingGaps, unalignedSuffix);
     }
 
@@ -734,7 +717,7 @@ public class Blast2Alignment {
         int leadingGaps = startSubject - 1;
         int trailingGaps = length - endSubject;
         String unalignedPrefix = readSequence.substring(0, startQuery);
-        String unalignedSuffix = readSequence.substring(endQuery, readSequence.length());
+        String unalignedSuffix = readSequence.substring(endQuery);
         alignment.addSequence(readName, text, null, unalignedPrefix, leadingGaps, block, trailingGaps, unalignedSuffix);
     }
 
@@ -824,11 +807,6 @@ public class Blast2Alignment {
                 System.err.println("Setting subj["+(p-1)+"]="+newCh+" previous="+previousCh);
                 */
                 // todo: Just reactivated this, might cause problems:
-                if (false) {
-                    if (referenceSequence.get()[p - 1] != 0 && referenceSequence.get()[p - 1] != 'N' && referenceSequence.get()[p - 1] != subjectString.charAt(i))
-                        System.err.println("Warning: discrepancy between refSequence and refSequence for read: " + Basic.getFirstWord(readName) + " at position p-1=" + (p - 1)
-                                + ", i=" + i + ": " + referenceSequence.get()[p - 1] + " vs " + subjectString.charAt(i));
-                }
                 referenceSequence.get()[p - 1] = subjectString.charAt(i);
                 p++;
             }
@@ -876,7 +854,7 @@ public class Blast2Alignment {
         int leadingGaps = startSubject - 1;
         int trailingGaps = length - endSubject;
         String unalignedPrefix = readSequence.substring(0, startQuery - 1);
-        String unalignedSuffix = readSequence.substring(endQuery, readSequence.length());
+        String unalignedSuffix = readSequence.substring(endQuery);
         alignment.addSequence(readName, text, null, unalignedPrefix, leadingGaps, block, trailingGaps, unalignedSuffix);
 
         if (!hasExactLength) {

@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
  * sets the color table
  * Daniel Huson, 1.2016
  */
-public class SetColorTableCommand extends CommandBase implements ICommand {
+class SetColorTableCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *

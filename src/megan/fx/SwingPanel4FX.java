@@ -50,11 +50,7 @@ public class SwingPanel4FX<C> {
         if (SwingUtilities.isEventDispatchThread())
             initSwingLater();
         else {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    initSwingLater();
-                }
-            });
+            SwingUtilities.invokeLater(() -> initSwingLater());
         }
     }
 
@@ -72,12 +68,7 @@ public class SwingPanel4FX<C> {
      */
     private void initSwingLater() {
         jFXPanel = new JFXPanel();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                initFxLater();
-            }
-        });
+        Platform.runLater(() -> initFxLater());
     }
 
     /**

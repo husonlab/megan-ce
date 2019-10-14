@@ -47,7 +47,7 @@ public class AxisPanel extends BasePanel {
         revalidate();
     }
 
-    public Alignment getAlignment() {
+    private Alignment getAlignment() {
         return alignment;
     }
 
@@ -67,15 +67,15 @@ public class AxisPanel extends BasePanel {
         paintSelection(g);
     }
 
-    private Font axisFont = new Font(Font.MONOSPACED, Font.PLAIN, 14);
-    FontMetrics axisMetrics = getFontMetrics(axisFont);
+    private final Font axisFont = new Font(Font.MONOSPACED, Font.PLAIN, 14);
+    private final FontMetrics axisMetrics = getFontMetrics(axisFont);
 
     /**
      * Paints the axis of the alignment
      *
      * @param g0 the graphics context of the sequence panel
      */
-    public void paintAxis(Graphics g0) {
+    private void paintAxis(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         Rectangle rec = getVisibleRect();
 
@@ -120,7 +120,7 @@ public class AxisPanel extends BasePanel {
                     break;
             }
 
-            Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+            Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
             int jc = 0;
             int jumped = 0;
             int offsetDueToInsertedPositions = 0;
@@ -168,7 +168,7 @@ public class AxisPanel extends BasePanel {
      *
      * @param g0
      */
-    public void paintSelection(Graphics g0) {
+    private void paintSelection(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         SelectedBlock selectedBlock = getSelectedBlock();
         if (selectedBlock.isSelected()) {
@@ -193,12 +193,9 @@ public class AxisPanel extends BasePanel {
     }
 
     class MyMouseListener extends MouseAdapter implements MouseListener, MouseMotionListener {
-        private final int inClick = 1;
         private final int inMove = 2;
         private final int inRubberband = 3;
         private final int inScrollByMouse = 4;
-
-        private boolean shiftDown = false;
 
         private boolean stillDownWithoutMoving = false;
 
@@ -208,6 +205,7 @@ public class AxisPanel extends BasePanel {
         @Override
         public void mouseClicked(MouseEvent me) {
             super.mouseClicked(me);
+            int inClick = 1;
             current = inClick;
             if (me.getClickCount() == 1) {
                 if (me.isShiftDown()) {
@@ -229,7 +227,7 @@ public class AxisPanel extends BasePanel {
         public void mousePressed(MouseEvent me) {
             super.mousePressed(me);
             mouseDown = me.getPoint();
-            shiftDown = me.isShiftDown();
+            boolean shiftDown = me.isShiftDown();
 
             if (me.isAltDown() || me.isShiftDown()) {
                 current = inRubberband;
@@ -246,7 +244,7 @@ public class AxisPanel extends BasePanel {
                             synchronized (this) {
                                 wait(500);
                             }
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                         }
                         if (stillDownWithoutMoving) {
                             current = inRubberband;

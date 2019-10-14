@@ -214,12 +214,12 @@ public class SAM2SAMIteratorOld implements ISAMIterator {
     /**
      * iterator that only return SAM lines for which an alignment is present
      */
-    class AlignedIterator implements Iterator<byte[]> {
+    static class AlignedIterator implements Iterator<byte[]> {
         final private FileIterator iterator;
         private byte[] next = null;
         private int length = 0;
 
-        public AlignedIterator(final FileIterator iterator) {
+        AlignedIterator(final FileIterator iterator) {
             this.iterator = iterator;
         }
 
@@ -261,7 +261,7 @@ public class SAM2SAMIteratorOld implements ISAMIterator {
 
         }
 
-        public int getLineLength() {
+        int getLineLength() {
             return length;
         }
     }

@@ -36,7 +36,7 @@ import java.awt.event.ActionEvent;
  * selection command
  * Daniel Huson, 9.2015
  */
-public class SelectByRankCommand extends CommandBase implements ICommand {
+class SelectByRankCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "select rank={" + Basic.toString(TaxonomicLevels.getAllNames(), "|") + "}";
     }
@@ -57,9 +57,9 @@ public class SelectByRankCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[TaxonomicLevels.getAllMajorRanks().size()]);
+        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[0]);
 
-        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, null, new CallBack<String>() {
+        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, null, new CallBack<>() {
             @Override
             public void call(String choice) {
                 execute("select rank='" + choice + "';");

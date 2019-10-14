@@ -48,29 +48,23 @@ public class FXUtilities {
 
         if (scrollBar1 != null && scrollBar2 != null) {
             final Single<Boolean> inChange = new Single<>(false);
-            scrollBar1.valueProperty().addListener(new InvalidationListener() {
-                @Override
-                public void invalidated(Observable observable) {
-                    if (!inChange.get()) {
-                        try {
-                            inChange.set(true);
-                            scrollBar2.setValue(scrollBar1.getValue() * (scrollBar2.getMax() - scrollBar2.getMin()) / (scrollBar1.getMax() - scrollBar1.getMin()));
-                        } finally {
-                            inChange.set(false);
-                        }
+            scrollBar1.valueProperty().addListener(observable -> {
+                if (!inChange.get()) {
+                    try {
+                        inChange.set(true);
+                        scrollBar2.setValue(scrollBar1.getValue() * (scrollBar2.getMax() - scrollBar2.getMin()) / (scrollBar1.getMax() - scrollBar1.getMin()));
+                    } finally {
+                        inChange.set(false);
                     }
                 }
             });
-            scrollBar2.valueProperty().addListener(new InvalidationListener() {
-                @Override
-                public void invalidated(Observable observable) {
-                    if (!inChange.get()) {
-                        try {
-                            inChange.set(true);
-                            scrollBar1.setValue(scrollBar2.getValue() * (scrollBar1.getMax() - scrollBar1.getMin()) / (scrollBar2.getMax() - scrollBar2.getMin()));
-                        } finally {
-                            inChange.set(false);
-                        }
+            scrollBar2.valueProperty().addListener(observable -> {
+                if (!inChange.get()) {
+                    try {
+                        inChange.set(true);
+                        scrollBar1.setValue(scrollBar2.getValue() * (scrollBar1.getMax() - scrollBar1.getMin()) / (scrollBar2.getMax() - scrollBar2.getMin()));
+                    } finally {
+                        inChange.set(false);
                     }
                 }
             });

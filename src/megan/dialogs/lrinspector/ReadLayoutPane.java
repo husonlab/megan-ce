@@ -58,11 +58,11 @@ import java.util.*;
  * Daniel Huson, Feb 2017
  */
 public class ReadLayoutPane extends Pane {
-    static public int DEFAULT_LABELED_HEIGHT = 110;
+    static public final int DEFAULT_LABELED_HEIGHT = 110;
 
-    static public final Color LIGHTGRAY_SEMITRANSPARENT = Color.color(0.827451f, 0.827451f, 0.827451f, 0.5);
+    private static final Color LIGHTGRAY_SEMITRANSPARENT = Color.color(0.827451f, 0.827451f, 0.827451f, 0.5);
 
-    public static Font font = new Font("Courier", ProgramProperties.get("LongReadLabelFontSize", 10));
+    private static Font font = new Font("Courier", ProgramProperties.get("LongReadLabelFontSize", 10));
     private static int arrowHeight = 10;
     private static final Object lock = new Object();
 
@@ -111,19 +111,9 @@ public class ReadLayoutPane extends Pane {
             geneLabels[i] = new Group();
         }
 
-        preferredHeightUnlabeled.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                layoutLabels();
-            }
-        });
+        preferredHeightUnlabeled.addListener((observable, oldValue, newValue) -> layoutLabels());
 
-        preferredHeightLabeled.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                layoutLabels();
-            }
-        });
+        preferredHeightLabeled.addListener((observable, oldValue, newValue) -> layoutLabels());
 
         setPrefWidth(readLength);
         setPrefHeight(30);
@@ -167,7 +157,7 @@ public class ReadLayoutPane extends Pane {
             }
 
             final Pair<Integer, Integer> coordinates = new Pair<>(alignedQueryStart, alignedQueryEnd);
-            if (coordinates2geneArrow.keySet().contains(coordinates))
+            if (coordinates2geneArrow.containsKey(coordinates))
                 geneArrow = coordinates2geneArrow.get(coordinates);
             else {
                 geneArrow = new GeneArrow(cNames, readLength, getArrowHeight(), 1, 30, coordinates.getFirst(), coordinates.getSecond(), starts);
@@ -181,6 +171,14 @@ public class ReadLayoutPane extends Pane {
             geneArrow.setOnMousePressed(mousePressedHandler);
             geneArrow.setOnMouseClicked(mouseClickedHandler);
             geneArrow.setOnMouseReleased(mouseReleasedHandler);
+            EventHandler<MouseEvent> mouseDraggedHandlerY = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Node node = (Node) event.getSource();
+                    node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
+                    mouseDown[1] = event.getSceneY();
+                }
+            };
             geneArrow.setOnMouseDragged(mouseDraggedHandlerY);
 
             match2GeneArrow.put(matchBlock, geneArrow);
@@ -188,56 +186,47 @@ public class ReadLayoutPane extends Pane {
 
         matchSelection.setItems(intervalTree.values());
 
-        widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                final double readWidth = (layoutWidth.get() - 60) / maxReadLength.get() * readLength;
-                line.setEndX(readWidth);
-                lengthLabel.setLayoutX(readWidth + 2);
+        widthProperty().addListener((observable, oldValue, newValue) -> {
+            final double readWidth = (layoutWidth.get() - 60) / maxReadLength.get() * readLength;
+            line.setEndX(readWidth);
+            lengthLabel.setLayoutX(readWidth + 2);
 
-                final Set<Integer> starts = new HashSet<>();
-                for (final GeneArrow geneArrow : geneArrows) {
-                    geneArrow.rescale(maxReadLength.get(), arrowHeight, layoutWidth.get() - 60, getHeight(), starts);
-                }
-                layoutLabels();
+            final Set<Integer> starts12 = new HashSet<>();
+            for (final GeneArrow geneArrow : geneArrows) {
+                geneArrow.rescale(maxReadLength.get(), arrowHeight, layoutWidth.get() - 60, getHeight(), starts12);
             }
+            layoutLabels();
         });
 
-        heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                line.setStartY(0.5 * getHeight());
-                line.setEndY(0.5 * getHeight());
-                lengthLabel.setLayoutY(0.5 * (getHeight() - lengthLabel.getHeight()));
+        heightProperty().addListener((observable, oldValue, newValue) -> {
+            line.setStartY(0.5 * getHeight());
+            line.setEndY(0.5 * getHeight());
+            lengthLabel.setLayoutY(0.5 * (getHeight() - lengthLabel.getHeight()));
 
-                final Set<Integer> starts = new HashSet<>();
-                for (final GeneArrow geneArrow : geneArrows) {
-                    geneArrow.rescale(maxReadLength.get(), arrowHeight, layoutWidth.get() - 60, getHeight(), starts);
-                }
-                layoutLabels();
+            final Set<Integer> starts1 = new HashSet<>();
+            for (final GeneArrow geneArrow : geneArrows) {
+                geneArrow.rescale(maxReadLength.get(), arrowHeight, layoutWidth.get() - 60, getHeight(), starts1);
             }
+            layoutLabels();
         });
 
-        matchSelection.getSelectedItems().addListener(new ListChangeListener<IMatchBlock>() {
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends IMatchBlock> c) {
-                while (c.next()) {
-                    for (IMatchBlock matchBlock : c.getAddedSubList()) {
-                        final GeneArrow geneArrow = match2GeneArrow.get(matchBlock);
-                        if (geneArrow != null) {
-                            geneArrow.setEffect(new DropShadow(5, Color.RED));
-                            for (Node label : geneArrow.getLabels()) {
-                                label.setEffect(new DropShadow(5, Color.RED));
-                            }
+        matchSelection.getSelectedItems().addListener((ListChangeListener<IMatchBlock>) c -> {
+            while (c.next()) {
+                for (IMatchBlock matchBlock : c.getAddedSubList()) {
+                    final GeneArrow geneArrow = match2GeneArrow.get(matchBlock);
+                    if (geneArrow != null) {
+                        geneArrow.setEffect(new DropShadow(5, Color.RED));
+                        for (Node label : geneArrow.getLabels()) {
+                            label.setEffect(new DropShadow(5, Color.RED));
                         }
                     }
-                    for (IMatchBlock matchBlock : c.getRemoved()) {
-                        final GeneArrow geneArrow = match2GeneArrow.get(matchBlock);
-                        if (geneArrow != null) {
-                            geneArrow.setEffect(null);
-                            for (Node label : geneArrow.getLabels()) {
-                                label.setEffect(null);
-                            }
+                }
+                for (IMatchBlock matchBlock : c.getRemoved()) {
+                    final GeneArrow geneArrow = match2GeneArrow.get(matchBlock);
+                    if (geneArrow != null) {
+                        geneArrow.setEffect(null);
+                        for (Node label : geneArrow.getLabels()) {
+                            label.setEffect(null);
                         }
                     }
                 }
@@ -259,7 +248,7 @@ public class ReadLayoutPane extends Pane {
         return (int) Math.round(font.getSize());
     }
 
-    public static int getArrowHeight() {
+    private static int getArrowHeight() {
         return arrowHeight;
     }
 
@@ -277,7 +266,7 @@ public class ReadLayoutPane extends Pane {
      * @param selectedCNames
      * @param show
      */
-    public void showLabels(Collection<String> selectedCNames, boolean show) {
+    private void showLabels(Collection<String> selectedCNames, boolean show) {
         if (show) {
             if (selectedCNames.size() > 0 && classificationLabelsShowing.size() == 0) {
                 setPrefHeight(preferredHeightLabeled.get());
@@ -297,8 +286,7 @@ public class ReadLayoutPane extends Pane {
         for (int cid = 0; cid < cNames.length; cid++) {
             String cName = cNames[cid];
             if (!classificationLabelsShowing.contains(cName)) {
-                if (getChildren().contains(geneLabels[cid]))
-                    getChildren().remove(geneLabels[cid]);
+                getChildren().remove(geneLabels[cid]);
             } else {
                 if (!getChildren().contains(geneLabels[cid]))
                     getChildren().add(geneLabels[cid]);
@@ -349,11 +337,7 @@ public class ReadLayoutPane extends Pane {
                         if (label.getFont().getSize() != ReadLayoutPane.font.getSize())
                             label.setFont(ReadLayoutPane.font);
 
-                        ArrayList<Label> labels = text2OldLabels.get(label.getText());
-                        if (labels == null) {
-                            labels = new ArrayList<>();
-                            text2OldLabels.put(label.getText(), labels);
-                        }
+                        ArrayList<Label> labels = text2OldLabels.computeIfAbsent(label.getText(), k -> new ArrayList<>());
                         labels.add(label);
                     }
                 }
@@ -559,99 +543,78 @@ public class ReadLayoutPane extends Pane {
 
     private final double[] mouseDown = {0, 0};
 
-    private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            final Node node = (Node) event.getSource();
+    private final EventHandler<MouseEvent> mousePressedHandler = event -> {
+        final Node node = (Node) event.getSource();
 
-            if (event.isPopupTrigger()) {
-                if (node instanceof Label) {
-                    showLabelContextMenu((Label) node, event.getScreenX(), event.getScreenY());
-                    event.consume();
-                } else if (node instanceof GeneArrow) {
-                    ((GeneArrow) node).showContextMenu(event.getScreenX(), event.getScreenY());
-                    event.consume();
-                }
-            } else {
-                if (!event.isShiftDown())
-                    matchSelection.clearSelection();
-
-                mouseDown[0] = event.getSceneX();
-                mouseDown[1] = event.getSceneY();
-
-                final ArrayList<IMatchBlock> matchBlocks = new ArrayList<>();
-                if (node.getUserData() instanceof IMatchBlock) {
-                    matchBlocks.add((IMatchBlock) node.getUserData());
-                } else if (node.getUserData() instanceof GeneArrow) {
-                    matchBlocks.addAll(((GeneArrow) node.getUserData()).getMatchBlocks());
-                } else if (node.getUserData() instanceof IMatchBlock[]) {
-                    matchBlocks.addAll(Arrays.asList((IMatchBlock[]) node.getUserData()));
-                } else if (node instanceof GeneArrow) {
-                    matchBlocks.addAll(((GeneArrow) node).getMatchBlocks());
-                }
-                if (matchBlocks.size() > 0) {
-                    for (IMatchBlock matchBlock : matchBlocks) {
-                        previousSelectionTimeProperty().set(System.currentTimeMillis()); // so that we don't scroll the table view
-                        matchSelection.select(matchBlock);
-                    }
-                    event.consume();
-                }
+        if (event.isPopupTrigger()) {
+            if (node instanceof Label) {
+                showLabelContextMenu((Label) node, event.getScreenX(), event.getScreenY());
+                event.consume();
+            } else if (node instanceof GeneArrow) {
+                ((GeneArrow) node).showContextMenu(event.getScreenX(), event.getScreenY());
+                event.consume();
             }
-        }
-    };
+        } else {
+            if (!event.isShiftDown())
+                matchSelection.clearSelection();
 
-    private final EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            final Node node = (Node) event.getSource();
-
-            if (node instanceof GeneArrow) {
-                final GeneArrow geneArrow = (GeneArrow) node;
-                System.out.println(geneArrow.toString());
-            } else if (node instanceof Label) {
-                if (((Label) node).getTooltip() != null)
-                    System.out.println(((Label) node).getTooltip().getText());
-                else
-                    System.out.println(((Label) node).getText());
-            }
-        }
-    };
-
-    private final EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            final Node node = (Node) event.getSource();
-
-            if (event.isPopupTrigger()) {
-                if (node instanceof Label) {
-                    showLabelContextMenu((Label) node, event.getScreenX(), event.getScreenY());
-                    event.consume();
-                } else if (node instanceof GeneArrow) {
-                    ((GeneArrow) node).showContextMenu(event.getScreenX(), event.getScreenY());
-                    event.consume();
-                }
-            }
-        }
-    };
-
-    private final EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            Node node = (Node) event.getSource();
-            node.setLayoutX(node.getLayoutX() + (event.getSceneX() - mouseDown[0]));
-            node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
             mouseDown[0] = event.getSceneX();
             mouseDown[1] = event.getSceneY();
+
+            final ArrayList<IMatchBlock> matchBlocks = new ArrayList<>();
+            if (node.getUserData() instanceof IMatchBlock) {
+                matchBlocks.add((IMatchBlock) node.getUserData());
+            } else if (node.getUserData() instanceof GeneArrow) {
+                matchBlocks.addAll(((GeneArrow) node.getUserData()).getMatchBlocks());
+            } else if (node.getUserData() instanceof IMatchBlock[]) {
+                matchBlocks.addAll(Arrays.asList((IMatchBlock[]) node.getUserData()));
+            } else if (node instanceof GeneArrow) {
+                matchBlocks.addAll(((GeneArrow) node).getMatchBlocks());
+            }
+            if (matchBlocks.size() > 0) {
+                for (IMatchBlock matchBlock : matchBlocks) {
+                    previousSelectionTimeProperty().set(System.currentTimeMillis()); // so that we don't scroll the table view
+                    matchSelection.select(matchBlock);
+                }
+                event.consume();
+            }
         }
     };
 
-    private final EventHandler<MouseEvent> mouseDraggedHandlerY = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            Node node = (Node) event.getSource();
-            node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
-            mouseDown[1] = event.getSceneY();
+    private final EventHandler<MouseEvent> mouseClickedHandler = event -> {
+        final Node node = (Node) event.getSource();
+
+        if (node instanceof GeneArrow) {
+            final GeneArrow geneArrow = (GeneArrow) node;
+            System.out.println(geneArrow.toString());
+        } else if (node instanceof Label) {
+            if (((Label) node).getTooltip() != null)
+                System.out.println(((Label) node).getTooltip().getText());
+            else
+                System.out.println(((Label) node).getText());
         }
+    };
+
+    private final EventHandler<MouseEvent> mouseReleasedHandler = event -> {
+        final Node node = (Node) event.getSource();
+
+        if (event.isPopupTrigger()) {
+            if (node instanceof Label) {
+                showLabelContextMenu((Label) node, event.getScreenX(), event.getScreenY());
+                event.consume();
+            } else if (node instanceof GeneArrow) {
+                ((GeneArrow) node).showContextMenu(event.getScreenX(), event.getScreenY());
+                event.consume();
+            }
+        }
+    };
+
+    private final EventHandler<MouseEvent> mouseDraggedHandler = event -> {
+        Node node = (Node) event.getSource();
+        node.setLayoutX(node.getLayoutX() + (event.getSceneX() - mouseDown[0]));
+        node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
+        mouseDown[0] = event.getSceneX();
+        mouseDown[1] = event.getSceneY();
     };
 
 
@@ -664,21 +627,18 @@ public class ReadLayoutPane extends Pane {
     private void showLabelContextMenu(final Label label, double screenX, double screenY) {
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem selectAllSimilar = new MenuItem("Select Similar");
-        selectAllSimilar.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                for (Group group : getVisibleGroups()) {
-                    for (Node node : group.getChildren()) {
-                        if (node instanceof Label) {
-                            if (((Label) node).getText().equals(label.getText())) {
-                                if (node.getUserData() instanceof IMatchBlock[]) {
-                                    for (IMatchBlock matchBlock : (IMatchBlock[]) node.getUserData()) {
-                                        matchSelection.select(matchBlock);
-                                    }
+        selectAllSimilar.setOnAction(event -> {
+            for (Group group : getVisibleGroups()) {
+                for (Node node : group.getChildren()) {
+                    if (node instanceof Label) {
+                        if (((Label) node).getText().equals(label.getText())) {
+                            if (node.getUserData() instanceof IMatchBlock[]) {
+                                for (IMatchBlock matchBlock : (IMatchBlock[]) node.getUserData()) {
+                                    matchSelection.select(matchBlock);
                                 }
                             }
-
                         }
+
                     }
                 }
             }
@@ -686,35 +646,29 @@ public class ReadLayoutPane extends Pane {
         contextMenu.getItems().add(selectAllSimilar);
 
         final MenuItem copy = new MenuItem("Copy Label");
-        copy.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final Clipboard clipboard = Clipboard.getSystemClipboard();
-                final ClipboardContent content = new ClipboardContent();
-                content.putString(label.getTooltip().getText());
-                clipboard.setContent(content);
-            }
+        copy.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(label.getTooltip().getText());
+            clipboard.setContent(content);
         });
         contextMenu.getItems().add(copy);
         contextMenu.getItems().add(new SeparatorMenuItem());
 
         final MenuItem webSearch = new MenuItem("Web Search...");
-        webSearch.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    final String text;
-                    if (label.getTooltip() != null)
-                        text = label.getTooltip().getText();
-                    else
-                        text = label.getText();
-                    final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
-                    final URL url = new URL(String.format(searchURL, text.trim().replaceAll("\\s+", "+")));
-                    //System.err.println(url);
-                    BasicSwing.openWebPage(url);
-                } catch (MalformedURLException e) {
-                    Basic.caught(e);
-                }
+        webSearch.setOnAction(event -> {
+            try {
+                final String text;
+                if (label.getTooltip() != null)
+                    text = label.getTooltip().getText();
+                else
+                    text = label.getText();
+                final String searchURL = ProgramProperties.get(ProgramProperties.SEARCH_URL, ProgramProperties.defaultSearchURL);
+                final URL url = new URL(String.format(searchURL, text.trim().replaceAll("\\s+", "+")));
+                //System.err.println(url);
+                BasicSwing.openWebPage(url);
+            } catch (MalformedURLException e) {
+                Basic.caught(e);
             }
         });
         contextMenu.getItems().add(webSearch);

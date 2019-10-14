@@ -127,8 +127,7 @@ public class CloseCommand extends CommandBase implements ICommand {
                 ((GraphView) getParent()).getFrame().setVisible(false);
             }
         } else if (what.equalsIgnoreCase("others")) {
-            final ArrayList<IDirector> projects = new ArrayList<>();
-            projects.addAll(ProjectManager.getProjects());
+            final ArrayList<IDirector> projects = new ArrayList<>(ProjectManager.getProjects());
 
             for (IDirector aDir : projects) {
                 if (aDir == getDir()) {

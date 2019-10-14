@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 11.2010
  */
-public class ShowDefinitionsCommand extends CommandBase implements ICommand {
+class ShowDefinitionsCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

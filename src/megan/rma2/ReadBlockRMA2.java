@@ -297,7 +297,7 @@ public class ReadBlockRMA2 implements IReadBlock {
                 }
                 matchBlocks.add(matchBlock);
             }
-            readBlock.setMatchBlocks(matchBlocks.toArray(new IMatchBlock[matchBlocks.size()]));
+            readBlock.setMatchBlocks(matchBlocks.toArray(new IMatchBlock[0]));
             if (skippedMatches > 0) {
                 // need to skip the rest of the bits:
                 dataIndexReader.skipBytes(skippedMatches * MatchBlockRMA2.getBytesInIndexFile(rma2Formatter.getMatchBlockRMA2Formatter()));
@@ -396,6 +396,6 @@ public class ReadBlockRMA2 implements IReadBlock {
      * @param matchBlocks
      */
     public void addMatchBlocks(SortedSet<IMatchBlock> matchBlocks) {
-        setMatchBlocks(matchBlocks.toArray(new IMatchBlock[matchBlocks.size()]));
+        setMatchBlocks(matchBlocks.toArray(new IMatchBlock[0]));
     }
 }

@@ -61,7 +61,7 @@ import java.util.*;
 public class ClassificationViewer extends ViewerBase implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, IUsesHeatMapColors {
     static public final int XSTEP = 50;
     static public final int YSTEP = 50;
-    static final int HLEAFBOX = 200; // horizontal length of leaf box, needed for picking
+    private static final int HLEAFBOX = 200; // horizontal length of leaf box, needed for picking
 
     private final JFrame frame;
     private final StatusBar statusBar;
@@ -84,20 +84,20 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     private int totalAssignedReads = 0;
 
-    final NodeSet nodesWithMovedLabels; // track node labels that have been moved
+    private final NodeSet nodesWithMovedLabels; // track node labels that have been moved
     private final NodeArray<Rectangle> node2BoundingBox;
 
     // some one-time calculations
     private boolean doScrollToRight = false;
 
     private boolean drawOnScreen = true;
-    protected boolean mustDrawTwice = false;
+    private boolean mustDrawTwice = false;
 
     private final MenuBar menuBar;
 
     private boolean avoidSelectionBounce = false;
 
-    protected Classification classification;
+    Classification classification;
 
     private boolean useReadWeights = false;
 
@@ -159,16 +159,14 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         trans.removeAllChangeListeners();
 
-        trans.addChangeListener(new ITransformChangeListener() {
-            public void hasChanged(Transform trans) {
-                final Dimension ps = trans.getPreferredSize();
-                int x = Math.max(ps.width, ClassificationViewer.super.getScrollPane().getWidth() - 20);
-                int y = Math.max(ps.height, ClassificationViewer.super.getScrollPane().getHeight() - 20);
-                ps.setSize(x, y);
-                setPreferredSize(ps);
-                ClassificationViewer.super.getScrollPane().getViewport().setViewSize(new Dimension(x, y));
-                repaint();
-            }
+        trans.addChangeListener(trans -> {
+            final Dimension ps = trans.getPreferredSize();
+            int x = Math.max(ps.width, ClassificationViewer.super.getScrollPane().getWidth() - 20);
+            int y = Math.max(ps.height, ClassificationViewer.super.getScrollPane().getHeight() - 20);
+            ps.setSize(x, y);
+            setPreferredSize(ps);
+            ClassificationViewer.super.getScrollPane().getViewport().setViewSize(new Dimension(x, y));
+            repaint();
         });
 
         statusBar = new StatusBar();
@@ -348,28 +346,25 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * Waits a while before doing so, because there may be multiple updates of the selection state
      */
     private void updateStatusBarTooltip() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                if (getSelectedNodes().size() > 0) {
-                    double numberOfAssigned = 0;
-                    double numberOfSummarized = 0;
-                    for (Node v : getSelectedNodes()) {
-                        if (v.getData() instanceof NodeData) {
-                            NodeData nodeData = (NodeData) v.getData();
-                            numberOfAssigned += nodeData.getCountAssigned();
-                            numberOfSummarized += nodeData.getCountSummarized();
-                        }
+        SwingUtilities.invokeLater(() -> {
+            if (getSelectedNodes().size() > 0) {
+                double numberOfAssigned = 0;
+                double numberOfSummarized = 0;
+                for (Node v : getSelectedNodes()) {
+                    if (v.getData() instanceof NodeData) {
+                        NodeData nodeData = (NodeData) v.getData();
+                        numberOfAssigned += nodeData.getCountAssigned();
+                        numberOfSummarized += nodeData.getCountSummarized();
                     }
+                }
 
-                    final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
-                            Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
-                    //System.err.println(line);
-                    statusBar.setToolTipText(line);
-                } else
-                    statusBar.setToolTipText(null);
-                thread = null;
-            }
+                final String line = (String.format("Selected nodes: %,d, total assigned: %,d, total summarized: %,d", getSelectedNodes().size(),
+                        Math.round(numberOfAssigned), Math.round(numberOfSummarized)));
+                //System.err.println(line);
+                statusBar.setToolTipText(line);
+            } else
+                statusBar.setToolTipText(null);
+            thread = null;
         });
     }
 
@@ -467,7 +462,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      *
      * @throws java.io.IOException
      */
-    public void updateData() throws IOException {
+    private void updateData() throws IOException {
         ProgressListener progress = doc.getProgressListener();
         boolean saveCancelable = false;
 
@@ -477,7 +472,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             progress.setCancelable(false);
             try {
                 progress.setProgress(-1);
-            } catch (CanceledException e) {
+            } catch (CanceledException ignored) {
             }
         }
 
@@ -585,7 +580,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             int count = 0;
             for (Node v = getTree().getFirstNode(); v != null; v = v.getNext()) {
                 if (v.getOutDegree() == 0) {
-                    Integer rank = classification.getId2Rank().get((Integer) v.getInfo());
+                    Integer rank = classification.getId2Rank().get(v.getInfo());
                     if (rank != null && rank > 0)
                         rank2count[rank]++;
                     count++;
@@ -604,7 +599,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     /**
      * sets the title of the window
      */
-    public void setWindowTitle() {
+    private void setWindowTitle() {
         String newTitle;
         if (getClassName().equals(Classification.Taxonomy))
             newTitle = dir.getDocument().getTitle();
@@ -728,7 +723,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     /**
      * rescan the status bar
      */
-    public void updateStatusBar() {
+    void updateStatusBar() {
         statusBar.setText1("Terms=" + getTree().getNumberOfNodes());
         final long totalReads = doc.getNumberOfReads();
         final StringBuilder buf2 = new StringBuilder();
@@ -861,7 +856,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param e
      * @return bbounding box of subtree
      */
-    Rectangle embedCladogramRec(Node v, Edge e) {
+    private Rectangle embedCladogramRec(Node v, Edge e) {
         Rectangle bbox = null;
 
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
@@ -924,7 +919,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param level
      * @return bbounding box of subtree
      */
-    Rectangle embedPhylogramRec(Node v, Edge e, int level) {
+    private Rectangle embedPhylogramRec(Node v, Edge e, int level) {
         Rectangle bbox = null;
 
         for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
@@ -1199,8 +1194,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             drawableNodeLabels.add(v);
     }
 
-    double oldXScale = 0;
-    double oldYScale = 0;
+    private double oldXScale = 0;
+    private double oldYScale = 0;
 
     /**
      * we first collect all node labels to be drawn and then draw them here.
@@ -1502,7 +1497,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     public void setSelectedIds(Collection<Integer> fIds, boolean state) {
         NodeSet nodesToSelect = new NodeSet(getTree());
         for (Node v = getTree().getFirstNode(); v != null; v = v.getNext()) {
-            if (fIds.contains((Integer) v.getInfo())) {
+            if (fIds.contains(v.getInfo())) {
                 nodesToSelect.add(v);
             }
         }
@@ -1545,7 +1540,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         }
 
         {
-            Integer level = id2rank.get((Integer) v.getInfo());
+            Integer level = id2rank.get(v.getInfo());
             if (level != null) {
                 String name = TaxonomicLevels.getName(level);
                 if (name != null) {
@@ -1698,7 +1693,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public List<Integer> computeAllIdsInSearchOrder() {
         final PhyloTree tree = new PhyloTree();
-        computeInduceTreeWithNoCollapsedNodes(tree, new HashMap<Integer, Set<Node>>());
+        computeInduceTreeWithNoCollapsedNodes(tree, new HashMap<>());
         final List<Integer> list = new ArrayList<>(tree.getNumberOfNodes());
         final Stack<Node> stack = new Stack<>();
         stack.add(tree.getRoot());
@@ -1713,18 +1708,18 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
     public void computeInduceTreeWithNoCollapsedNodes(PhyloTree tree, Map<Integer, Set<Node>> id2nodes) {
         tree.clear();
-        classification.getFullTree().extractInducedTree(id2NodeData, new HashSet<Integer>(), tree, id2nodes);
+        classification.getFullTree().extractInducedTree(id2NodeData, new HashSet<>(), tree, id2nodes);
     }
 
     public int getTotalAssignedReads() {
         return totalAssignedReads;
     }
 
-    public JSplitPane getMainSplitPane() {
+    JSplitPane getMainSplitPane() {
         return mainSplitPane;
     }
 
-    public StatusBar getStatusBar() {
+    StatusBar getStatusBar() {
         return statusBar;
     }
 

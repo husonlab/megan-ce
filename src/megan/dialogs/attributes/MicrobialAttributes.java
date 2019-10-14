@@ -37,7 +37,7 @@ import java.util.*;
  * Daniel Huson, 7.2012
  */
 public class MicrobialAttributes {
-    final public String[] knownAttributes = new String[]{"Gram Stain", "Shape", "Arrangment", "Endospores", "Motility",
+    private final String[] knownAttributes = new String[]{"Gram Stain", "Shape", "Arrangment", "Endospores", "Motility",
             "Salinity", "Oxygen Req", "Habitat", "Temp. range", "Optimal temp.", "Pathogenic in", "Disease"};
 
     private final Map<String, Set<Integer>> attributeAndState2taxa = new HashMap<>();
@@ -62,16 +62,11 @@ public class MicrobialAttributes {
         if (instance == null) {
             instance = new MicrobialAttributes();
             String fileName = ProgramProperties.get(MeganProperties.MICROBIALATTRIBUTESFILE);
-            InputStream ins = null;
-            try {
-                ins = ResourceManager.getFileAsStream(fileName);
+            try (InputStream ins = ResourceManager.getFileAsStream(fileName)) {
                 instance.readData(ins);
             } catch (Exception ex) {
                 Basic.caught(ex);
                 instance = null;
-            } finally {
-                if (ins != null)
-                    ins.close();
             }
             Document.loadVersionInfo("Microbial attributes", fileName);
         }
@@ -84,9 +79,8 @@ public class MicrobialAttributes {
      * @param ins
      * @throws IOException
      */
-    public void readData(InputStream ins) throws IOException {
-        Set<String> attributesOfInterest = new HashSet<>();
-        attributesOfInterest.addAll(Arrays.asList(knownAttributes));
+    private void readData(InputStream ins) throws IOException {
+        Set<String> attributesOfInterest = new HashSet<>(Arrays.asList(knownAttributes));
 
         Map<String, Integer> attribute2column = new HashMap<>();
         Map<Integer, String> column2attribute = new HashMap<>();
@@ -126,23 +120,11 @@ public class MicrobialAttributes {
                                     state = "-";
                                 if (state.equalsIgnoreCase("n"))
                                     state = "No";
-                                Set<String> states = attribute2states.get(column2attribute.get(i));
-                                if (states == null) {
-                                    states = new HashSet<>();
-                                    attribute2states.put(column2attribute.get(i), states);
-                                }
+                                Set<String> states = attribute2states.computeIfAbsent(column2attribute.get(i), k -> new HashSet<>());
                                 states.add(state);
                                 String key = column2attribute.get(i) + ":" + state;
-                                Set<Integer> taxa = attributeAndState2taxa.get(key);
-                                if (taxa == null) {
-                                    taxa = new HashSet<>();
-                                    attributeAndState2taxa.put(key, taxa);
-                                }
-                                Set<String> attributeAndStates = tax2attributeAndState.get(taxonId);
-                                if (attributeAndStates == null) {
-                                    attributeAndStates = new HashSet<>();
-                                    tax2attributeAndState.put(taxonId, attributeAndStates);
-                                }
+                                Set<Integer> taxa = attributeAndState2taxa.computeIfAbsent(key, k -> new HashSet<>());
+                                Set<String> attributeAndStates = tax2attributeAndState.computeIfAbsent(taxonId, k -> new HashSet<>());
                                 attributeAndStates.add(key);
                                 taxa.add(taxonId);
                             }
@@ -160,7 +142,7 @@ public class MicrobialAttributes {
     private void cleanStates() {
         System.err.println("Cleaning microbial attributes file:");
         for (String attribute : attribute2states.keySet()) {
-            String[] originalStates = attribute2states.get(attribute).toArray(new String[attribute2states.get(attribute).size()]);
+            String[] originalStates = attribute2states.get(attribute).toArray(new String[0]);
             String[] states = new String[originalStates.length];
             for (int i = 0; i < states.length; i++) {
                 states[i] = originalStates[i].toLowerCase().replaceAll(":", ": ").replaceAll(",", "").replaceAll(" or ", " ")
@@ -177,14 +159,12 @@ public class MicrobialAttributes {
                 mapTo[i] = i;
 
             for (int i = 0; i < states.length; i++) {
-                Set<String> iSet = new HashSet<>();
-                iSet.addAll(Arrays.asList(states[i].split(" ")));
+                Set<String> iSet = new HashSet<>(Arrays.asList(states[i].split(" ")));
 
                 for (int j = i + 1; j < states.length; j++) {
                     boolean same = false;
 
-                    Set<String> jSet = new HashSet<>();
-                    jSet.addAll(Arrays.asList(states[j].split(" ")));
+                    Set<String> jSet = new HashSet<>(Arrays.asList(states[j].split(" ")));
                     if (iSet.equals(jSet))
                         same = true;
 
@@ -242,7 +222,7 @@ public class MicrobialAttributes {
         return attributeAndState2taxa;
     }
 
-    public Set<String> getAttributesAndStates(Integer taxonId) {
+    private Set<String> getAttributesAndStates(Integer taxonId) {
         return tax2attributeAndState.get(taxonId);
     }
 
@@ -269,11 +249,7 @@ public class MicrobialAttributes {
                         Map<String, Number> series2value = tax2series2value.get(taxName);
                         for (String series : series2value.keySet()) {
                             if (series2value.get(series) != null) {
-                                Map<String, Integer> attributeState2value = dataSet2AttributeState2Value.get(series);
-                                if (attributeState2value == null) {
-                                    attributeState2value = new HashMap<>();
-                                    dataSet2AttributeState2Value.put(series, attributeState2value);
-                                }
+                                Map<String, Integer> attributeState2value = dataSet2AttributeState2Value.computeIfAbsent(series, k -> new HashMap<>());
                                 for (String key : attributesAndStates) {
                                     Integer value = attributeState2value.get(key);
                                     if (value == null)

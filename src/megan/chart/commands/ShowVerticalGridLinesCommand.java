@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * show vertical grid lines in bar chart
  * Daniel Huson, 1.2016
  */
-public class ShowVerticalGridLinesCommand extends CommandBase implements ICheckBoxCommand {
+class ShowVerticalGridLinesCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return getViewer() instanceof ChartViewer && ((ChartViewer) getViewer()).isShowVerticalGridLines();

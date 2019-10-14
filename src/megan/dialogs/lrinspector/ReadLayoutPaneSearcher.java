@@ -139,15 +139,12 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
 
     @Override
     public void selectAll(final boolean select) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isCurrentSet()) {
-                    if (select)
-                        matchBlockSelectionModel.selectAll();
-                    else
-                        matchBlockSelectionModel.clearSelection();
-                }
+        Runnable runnable = () -> {
+            if (isCurrentSet()) {
+                if (select)
+                    matchBlockSelectionModel.selectAll();
+                else
+                    matchBlockSelectionModel.clearSelection();
             }
         };
         if (Platform.isFxApplicationThread())
@@ -159,18 +156,15 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
     @Override
     public void setCurrentSelected(final boolean select) {
         final int index = currentIndex;
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isCurrentSet()) {
-                    final Label label = labels.get(index);
-                    if (label.getUserData() instanceof IMatchBlock[]) {
-                        for (IMatchBlock matchBlock : (IMatchBlock[]) label.getUserData()) {
-                            if (select)
-                                matchBlockSelectionModel.select(matchBlock);
-                            else
-                                matchBlockSelectionModel.clearSelection(matchBlock);
-                        }
+        Runnable runnable = () -> {
+            if (isCurrentSet()) {
+                final Label label = labels.get(index);
+                if (label.getUserData() instanceof IMatchBlock[]) {
+                    for (IMatchBlock matchBlock : (IMatchBlock[]) label.getUserData()) {
+                        if (select)
+                            matchBlockSelectionModel.select(matchBlock);
+                        else
+                            matchBlockSelectionModel.clearSelection(matchBlock);
                     }
                 }
             }
@@ -224,12 +218,9 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
                 }
             }
         }
-        labels.sort(new Comparator<Label>() {
-            @Override
-            public int compare(Label a, Label b) {
-                Integer startA = ((IMatchBlock[]) a.getUserData())[0].getAlignedQueryStart();
-                return startA.compareTo(((IMatchBlock[]) b.getUserData())[0].getAlignedQueryStart());
-            }
+        labels.sort((a, b) -> {
+            Integer startA = ((IMatchBlock[]) a.getUserData())[0].getAlignedQueryStart();
+            return startA.compareTo(((IMatchBlock[]) b.getUserData())[0].getAlignedQueryStart());
         });
         return this;
     }

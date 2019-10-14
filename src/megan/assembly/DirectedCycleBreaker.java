@@ -29,7 +29,7 @@ import java.util.Collection;
  * breaks all directed cycles be removing edges
  * Created by huson on 8/22/16.
  */
-public class DirectedCycleBreaker {
+class DirectedCycleBreaker {
     public static int apply(Graph G) {
         DirectedCycleDetector dector = new DirectedCycleDetector(G);
         int count = 0;

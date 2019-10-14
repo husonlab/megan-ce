@@ -23,7 +23,7 @@ package megan.parsers.sam;
  * Daniel Huson, DATE
  */
 public class Flag {
-    private int value;
+    private final int value;
     /*
     0x1	template having multiple fragments in sequencing
 0x2	each fragment properly aligned according to the aligner

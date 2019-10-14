@@ -151,7 +151,7 @@ public class RarefactionPlot extends ChartViewer {
      * @return values for 10-100 percent, for each dataset in the document
      * @throws jloda.util.CanceledException
      */
-    public static Map<String, Collection<Pair<Number, Number>>> computeCounts(Document doc, int threshold, ClassificationViewer viewer, ProgressListener progressListener) throws CanceledException {
+    private static Map<String, Collection<Pair<Number, Number>>> computeCounts(Document doc, int threshold, ClassificationViewer viewer, ProgressListener progressListener) throws CanceledException {
         final String cName = viewer.getClassName();
         final int numberOfPoints = ProgramProperties.get("NumberRareFactionDataPoints", 20);
         final int numberOfReplicates = ProgramProperties.get("NumberRareFactionReplicates", 10);
@@ -202,7 +202,7 @@ public class RarefactionPlot extends ChartViewer {
             ArrayList<Pair<Number, Number>> list = new ArrayList<>(counts.size());
             int sampleSize = 0;
             for (int p = 0; p <= numberOfPoints; p++) {
-                list.add(new Pair<Number, Number>(sampleSize, counts.get(p)));
+                list.add(new Pair<>(sampleSize, counts.get(p)));
                 sampleSize += batchSize;
             }
             name2counts.put(doc.getSampleNames().get(pid), list);

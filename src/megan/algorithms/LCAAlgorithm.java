@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @deprecated
  */
-public class LCAAlgorithm {
+class LCAAlgorithm {
     private String[] addresses = new String[1000];
     private int[] weights = new int[1000];
     private final BitSet toRemove = new BitSet();

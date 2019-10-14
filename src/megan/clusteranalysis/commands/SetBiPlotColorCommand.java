@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set biplot color
  * Daniel Huson, 10.2017
  */
-public class SetBiPlotColorCommand extends CommandBase implements ICommand {
+class SetBiPlotColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it

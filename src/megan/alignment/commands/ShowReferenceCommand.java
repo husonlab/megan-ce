@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ShowReferenceCommand extends CommandBase implements ICheckBoxCommand {
+class ShowReferenceCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -75,7 +75,7 @@ public class ShowReferenceCommand extends CommandBase implements ICheckBoxComman
         execute("set show-reference=" + !isSelected() + ";");
     }
 
-    public static final String NAME = "Show Reference";
+    private static final String NAME = "Show Reference";
 
     public String getName() {
         return NAME;

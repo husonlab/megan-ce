@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  * Find again
  * Daniel Huson, 7 2010
  */
-public class FindAgainCommand extends CommandBase implements ICommand {
+class FindAgainCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

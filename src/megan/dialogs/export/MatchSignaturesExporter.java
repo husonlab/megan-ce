@@ -70,7 +70,7 @@ public class MatchSignaturesExporter {
                 read2rank.put(readName, readRank);
 
                 final HashSet<Integer> taxa = new HashSet<>();
-                readsAndTaxa.add(new Pair<String, Set<Integer>>(readName, taxa));
+                readsAndTaxa.add(new Pair<>(readName, taxa));
 
                 double useMinScore = -1;
                 for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
@@ -128,11 +128,7 @@ public class MatchSignaturesExporter {
                     }
                     String signature = buf.toString();
                     w.write(signature);
-                    List<String> reads = signature2reads.get(signature);
-                    if (reads == null) {
-                        reads = new LinkedList<>();
-                        signature2reads.put(signature, reads);
-                    }
+                    List<String> reads = signature2reads.computeIfAbsent(signature, k -> new LinkedList<>());
                     reads.add(pair.get1());
                     w.write("\n");
                 }

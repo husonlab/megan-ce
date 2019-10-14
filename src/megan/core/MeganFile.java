@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * manages MEGAN file associated with a document, can be an RMA file, a summary file or a MEGAN server file
@@ -58,7 +59,7 @@ public class MeganFile {
      * @param readOnly
      */
     public void setFileFromExistingFile(String fileName, boolean readOnly) {
-        if (this.fileName == null || !fileName.equals(this.fileName))
+        if (!fileName.equals(this.fileName))
             connector = null;
         this.fileName = fileName;
         this.readOnly = readOnly;
@@ -103,7 +104,7 @@ public class MeganFile {
      * @param fileType
      */
     public void setFile(String fileName, Type fileType) {
-        if (this.fileName == null || fileName == null || !fileName.equals(this.fileName))
+        if (fileName == null || !fileName.equals(this.fileName))
             connector = null;
         this.fileName = fileName;
         this.fileType = fileType;
@@ -162,14 +163,11 @@ public class MeganFile {
     }
 
     public String getFileName() {
-        if (fileName == null)
-            return "Untitled";
-        else
-            return fileName;
+        return Objects.requireNonNullElse(fileName, "Untitled");
     }
 
     public void setFileName(String fileName) {
-        if (this.fileName == null || fileName == null || !fileName.equals(this.fileName))
+        if (fileName == null || !fileName.equals(this.fileName))
             connector = null;
         this.fileName = fileName;
     }
@@ -311,7 +309,7 @@ public class MeganFile {
         int p = fileName.lastIndexOf(isMeganServerFile() ? '/' : File.separatorChar);
 
         if (p >= 0 && p < fileName.length() - 1)
-            return fileName.substring(p + 1, fileName.length());
+            return fileName.substring(p + 1);
         else
             return fileName;
     }
@@ -366,7 +364,7 @@ public class MeganFile {
      * @param fileName
      * @return embedded source files
      */
-    public static ArrayList<String> determineEmbeddedSourceFiles(String fileName) {
+    private static ArrayList<String> determineEmbeddedSourceFiles(String fileName) {
         final Document doc = new Document();
         doc.getMeganFile().setFile(fileName, Type.MEGAN_SUMMARY_FILE);
         try {

@@ -167,9 +167,9 @@ public class ViewerJTree extends JTree {
                 }
             }
             if (select)
-                setSelectionPaths(paths.toArray(new TreePath[paths.size()]));
+                setSelectionPaths(paths.toArray(new TreePath[0]));
             else
-                removeSelectionPaths(paths.toArray(new TreePath[paths.size()]));
+                removeSelectionPaths(paths.toArray(new TreePath[0]));
             repaint();
             inSelection = false;
         }
@@ -200,7 +200,7 @@ public class ViewerJTree extends JTree {
     /**
      * tree node
      */
-    public class MyJTreeNode extends DefaultMutableTreeNode {
+    public static class MyJTreeNode extends DefaultMutableTreeNode {
         private final Node v;
 
         MyJTreeNode(Node v) {
@@ -225,7 +225,6 @@ public class ViewerJTree extends JTree {
 class MyJTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     private final ViewerJTree jTree;
     private final ClassificationViewer classificationViewer;
-    private final Map<Integer, ViewerJTree.MyJTreeNode> id2node;
 
     /**
      * constructor
@@ -235,7 +234,6 @@ class MyJTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     MyJTreeListener(ViewerJTree jTree, ClassificationViewer classificationViewer, Map<Integer, ViewerJTree.MyJTreeNode> id2node) {
         this.jTree = jTree;
         this.classificationViewer = classificationViewer;
-        this.id2node = id2node;
     }
 
     /**

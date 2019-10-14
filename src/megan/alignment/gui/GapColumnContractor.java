@@ -63,7 +63,7 @@ public class GapColumnContractor {
                 Pair<Integer, Integer> endEvent = new Pair<>(lane.getLastNonGapPosition(), 1);
                 events.add(endEvent);
             }
-            Pair<Integer, Integer>[] array = (Pair<Integer, Integer>[]) events.toArray(new Pair[events.size()]);
+            Pair<Integer, Integer>[] array = (Pair<Integer, Integer>[]) events.toArray(new Pair[0]);
             Arrays.sort(array);
 
             int lastStart = 0;

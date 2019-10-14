@@ -66,10 +66,10 @@ public class ReadLengthDistribution {
 
         controller.getTextField().setText("Read length distribution for: " + viewer.getClassification().getName2IdMap().get(classId) + " (" + classId + "):");
 
-        final Service<Boolean> service = new Service<Boolean>() {
+        final Service<Boolean> service = new Service<>() {
             @Override
             protected Task<Boolean> createTask() {
-                return new Task<Boolean>() {
+                return new Task<>() {
                     @Override
                     protected Boolean call() throws Exception {
 
@@ -104,39 +104,21 @@ public class ReadLengthDistribution {
                             System.err.println("" + (min + i * add) + ": " + binnedCounts[i]);
                             series.getData().add(new XYChart.Data<>("" + (min + i * add), binnedCounts[i]));
                         }
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                barChart.getData().add(series);
-                            }
-                        });
+                        Platform.runLater(() -> barChart.getData().add(series));
                         return true;
                     }
                 };
             }
         };
-        controller.getCloseButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (service.isRunning())
-                    service.cancel();
-                frame.setVisible(false);
-            }
+        controller.getCloseButton().setOnAction(actionEvent -> {
+            if (service.isRunning())
+                service.cancel();
+            frame.setVisible(false);
         });
         controller.getProgressBar().visibleProperty().bind(service.runningProperty());
-        service.setOnRunning(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                controller.getProgressBar().progressProperty().bind(service.progressProperty());
-            }
-        });
+        service.setOnRunning(workerStateEvent -> controller.getProgressBar().progressProperty().bind(service.progressProperty()));
 
-        service.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                NotificationsInSwing.showError("Plot failed: " + service.getException());
-            }
-        });
+        service.setOnCancelled(workerStateEvent -> NotificationsInSwing.showError("Plot failed: " + service.getException()));
         service.restart();
     }
 

@@ -27,7 +27,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class HideIntermediateLabelsCommand extends CommandBase implements ICheckBoxCommand {
+class HideIntermediateLabelsCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return getViewer() != null && ((ViewerBase) getViewer()).isShowIntermediateLabels();
     }

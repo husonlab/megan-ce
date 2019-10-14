@@ -37,7 +37,7 @@ public class ReadBlockRMA2Formatter {
     static public final String DEFAULT_RMA2_2 = "ReadWeight:int;MateUId:long;MateType:byte;ReadLength:int;Complexity:float;NumberOfMatches:int;";
     static public final String DEFAULT_RMA2_5 = "ReadWeight:int;MateUId:long;MateType:byte;ReadLength:int;Complexity:float;NumberOfMatches:int;"; // MEGAN5
 
-    private String format;
+    private final String format;
 
     private int numberOfBytes = 0;
 
@@ -62,7 +62,7 @@ public class ReadBlockRMA2Formatter {
         decode(format);
     }
 
-    public void decode(String format) {
+    private void decode(String format) {
         LinkedList<Object[]> list = new LinkedList<>();
         StringTokenizer tokenizer = new StringTokenizer(format, ";");
         int index = 0;

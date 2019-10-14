@@ -49,11 +49,9 @@ public class AlignmentSorter {
             array[i] = alignment.getOrder(i);
         alignment.resetOrder(); // need this so that getName etc gets the correct name
 
-        Arrays.sort(array, new Comparator<Integer>() {
-            public int compare(Integer a, Integer b) {
-                int value = alignment.getName(a).compareTo(alignment.getName(b));
-                return descending ? -value : value;
-            }
+        Arrays.sort(array, (a, b) -> {
+            int value = alignment.getName(a).compareTo(alignment.getName(b));
+            return descending ? -value : value;
         });
         alignment.setOrder(Arrays.asList(array));
     }
@@ -69,12 +67,10 @@ public class AlignmentSorter {
             array[i] = alignment.getOrder(i);
         alignment.resetOrder();
 
-        Arrays.sort(array, new Comparator<Integer>() {
-            public int compare(Integer a, Integer b) {
-                int sA = alignment.getLane(a).getFirstNonGapPosition();
-                int sB = alignment.getLane(b).getFirstNonGapPosition();
-                return descending ? sB - sA : sA - sB;
-            }
+        Arrays.sort(array, (a, b) -> {
+            int sA = alignment.getLane(a).getFirstNonGapPosition();
+            int sB = alignment.getLane(b).getFirstNonGapPosition();
+            return descending ? sB - sA : sA - sB;
         });
         alignment.setOrder(Arrays.asList(array));
     }
@@ -92,7 +88,7 @@ public class AlignmentSorter {
         for (int i = 0; i < alignment.getNumberOfSequences(); i++) {
             list[i] = new Pair<>(alignment.getLane(i).getFirstNonGapPosition(), i);
         }
-        Arrays.sort(list, new Pair<Integer, Integer>()); // sort by start position
+        Arrays.sort(list, new Pair<>()); // sort by start position
 
         float[][] similarity = new float[alignment.getNumberOfSequences()][alignment.getNumberOfSequences()];
 
@@ -111,21 +107,19 @@ public class AlignmentSorter {
         Graph graph = new Graph();
         Node[] row2node = new Node[alignment.getNumberOfSequences()];
 
-        SortedSet<Edge> edges = new TreeSet<>(new Comparator<Edge>() {
-            public int compare(Edge e1, Edge e2) {
-                Float a1 = (Float) e1.getInfo();
-                Float a2 = (Float) e2.getInfo();
-                if (a1 > a2)
-                    return -1;
-                else if (a1 < a2)
-                    return 1;
-                else if (e1.getId() < e2.getId())
-                    return -1;
-                else if (e1.getId() > e2.getId())
-                    return 1;
-                else
-                    return 0;
-            }
+        SortedSet<Edge> edges = new TreeSet<>((e1, e2) -> {
+            Float a1 = (Float) e1.getInfo();
+            Float a2 = (Float) e2.getInfo();
+            if (a1 > a2)
+                return -1;
+            else if (a1 < a2)
+                return 1;
+            else if (e1.getId() < e2.getId())
+                return -1;
+            else if (e1.getId() > e2.getId())
+                return 1;
+            else
+                return 0;
         });
         for (int i = 0; i < alignment.getNumberOfSequences(); i++) {
             row2node[i] = graph.newNode();
@@ -274,24 +268,22 @@ public class AlignmentSorter {
             }
         }
 
-        SortedSet<List<Node>> sorted = new TreeSet<>(new Comparator<List<Node>>() {
-            public int compare(List<Node> listA, List<Node> listB) {
-                Node nodeA = listA.get(0);
-                Node nodeB = listB.get(0);
-                Lane laneA = alignment.getLane((Integer) nodeA.getInfo());
-                Lane laneB = alignment.getLane((Integer) nodeB.getInfo());
+        SortedSet<List<Node>> sorted = new TreeSet<>((listA, listB) -> {
+            Node nodeA = listA.get(0);
+            Node nodeB = listB.get(0);
+            Lane laneA = alignment.getLane((Integer) nodeA.getInfo());
+            Lane laneB = alignment.getLane((Integer) nodeB.getInfo());
 
-                if (laneA.getFirstNonGapPosition() < laneB.getFirstNonGapPosition())
-                    return -1;
-                else if (laneA.getFirstNonGapPosition() > laneB.getFirstNonGapPosition())
-                    return 1;
-                else if (nodeA.getId() < nodeB.getId())
-                    return -1;
-                else if (nodeA.getId() > nodeB.getId())
-                    return 1;
-                else
-                    return 0;
-            }
+            if (laneA.getFirstNonGapPosition() < laneB.getFirstNonGapPosition())
+                return -1;
+            else if (laneA.getFirstNonGapPosition() > laneB.getFirstNonGapPosition())
+                return 1;
+            else if (nodeA.getId() < nodeB.getId())
+                return -1;
+            else if (nodeA.getId() > nodeB.getId())
+                return 1;
+            else
+                return 0;
         });
 
         sorted.addAll(chains);

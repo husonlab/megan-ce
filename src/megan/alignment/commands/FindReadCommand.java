@@ -94,7 +94,7 @@ public class FindReadCommand extends CommandBase implements ICommand {
         return true;
     }
 
-    public static String NAME = "Find Read...";
+    public static final String NAME = "Find Read...";
 
     public String getName() {
         return NAME;

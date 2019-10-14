@@ -90,8 +90,7 @@ public class ChartSelection {
     }
 
     public void toggleSelectedSeries(java.util.Collection<String> series) {
-        Collection<String> toSelect = new HashSet<>();
-        toSelect.addAll(series);
+        Collection<String> toSelect = new HashSet<>(series);
         toSelect.removeAll(selectedSeries);
         selectedSeries.removeAll(series);
         selectedSeries.addAll(toSelect);
@@ -115,8 +114,7 @@ public class ChartSelection {
     }
 
     public void toggleSelectedClasses(java.util.Collection<String> classes) {
-        Collection<String> toSelect = new HashSet<>();
-        toSelect.addAll(classes);
+        Collection<String> toSelect = new HashSet<>(classes);
         toSelect.removeAll(selectedClasses);
         selectedClasses.removeAll(classes);
         selectedClasses.addAll(toSelect);
@@ -153,8 +151,7 @@ public class ChartSelection {
     }
 
     public void toggleSelectedAttributes(java.util.Collection<String> attributes) {
-        Collection<String> toSelect = new HashSet<>();
-        toSelect.addAll(attributes);
+        Collection<String> toSelect = new HashSet<>(attributes);
         toSelect.removeAll(selectedAttributes);
         selectedAttributes.removeAll(attributes);
         selectedAttributes.addAll(toSelect);

@@ -235,7 +235,7 @@ public class SelectedBlock {
         return row >= firstRow && row <= lastRow && col >= firstCol && col <= lastCol;
     }
 
-    public int getTotalRows() {
+    private int getTotalRows() {
         return totalRows;
     }
 
@@ -243,7 +243,7 @@ public class SelectedBlock {
         this.totalRows = totalRows;
     }
 
-    public int getTotalCols() {
+    private int getTotalCols() {
         return totalCols;
     }
 

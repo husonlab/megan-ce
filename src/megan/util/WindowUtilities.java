@@ -33,12 +33,9 @@ public class WindowUtilities {
      */
     public static void toFront(final Window window) {
         if (window != null) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    window.setVisible(true);
-                    window.toFront();
-                }
+            Runnable runnable = () -> {
+                window.setVisible(true);
+                window.toFront();
             };
             if (SwingUtilities.isEventDispatchThread())
                 runnable.run();

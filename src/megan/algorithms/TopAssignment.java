@@ -63,15 +63,13 @@ public class TopAssignment {
             final String classificationLetter = classificationName.substring(0, 1);
             return String.format(" [1] %s%05d: 100 # %d", classificationLetter, classId, classId2Count.get(classId));
         } else {
-            SortedSet<Pair<Integer, Integer>> sorted = new TreeSet<>(new Comparator<Pair<Integer, Integer>>() {
-                public int compare(Pair<Integer, Integer> idAndCount1, Pair<Integer, Integer> idAndCount2) {
-                    if (idAndCount1.get2() > idAndCount2.get2())
-                        return -1;
-                    else if (idAndCount1.get2() < idAndCount2.get2())
-                        return 1;
-                    else
-                        return idAndCount1.get1().compareTo(idAndCount2.get1());
-                }
+            SortedSet<Pair<Integer, Integer>> sorted = new TreeSet<>((idAndCount1, idAndCount2) -> {
+                if (idAndCount1.get2() > idAndCount2.get2())
+                    return -1;
+                else if (idAndCount1.get2() < idAndCount2.get2())
+                    return 1;
+                else
+                    return idAndCount1.get1().compareTo(idAndCount2.get1());
             });
 
             for (Map.Entry<Integer, Integer> entry : classId2Count.entrySet()) {

@@ -43,7 +43,7 @@ public class PasteCommand extends ClipboardBase implements ICommand {
         return false;
     }
 
-    public static final String ALT_NAME = "Inspector Paste";
+    private static final String ALT_NAME = "Inspector Paste";
 
     public String getAltName() {
         return ALT_NAME;

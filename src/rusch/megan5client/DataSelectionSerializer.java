@@ -39,67 +39,65 @@ public class DataSelectionSerializer {
     /**
      * serialize data selection
      */
-    public static List<String> serializeDataSelection(DataSelection dataSelection) {
+    private static List<String> serializeDataSelection(DataSelection dataSelection) {
         List<String> datasel = new ArrayList<>();
 
-        if (true) {
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useRead");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useReadName");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useReadHeader");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useReadSequence");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useMateUId");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useReadLength");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useReadComplexity");
-            }
-            if (dataSelection.isWantReadText()) {
-                datasel.add("useReadOriginalNumberOfMatches");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useReadNumberOfMatches");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useReadWeight");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchText");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchLength");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchTaxonId");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchSeedId");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchKeggId");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchCogId");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchExpected");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchPercentIdentity");
-            }
-            if (dataSelection.isWantMatches()) {
-                datasel.add("useMatchRefSeq");
-            }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useRead");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useReadName");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useReadHeader");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useReadSequence");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useMateUId");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useReadLength");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useReadComplexity");
+        }
+        if (dataSelection.isWantReadText()) {
+            datasel.add("useReadOriginalNumberOfMatches");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useReadNumberOfMatches");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useReadWeight");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchText");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchLength");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchTaxonId");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchSeedId");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchKeggId");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchCogId");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchExpected");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchPercentIdentity");
+        }
+        if (dataSelection.isWantMatches()) {
+            datasel.add("useMatchRefSeq");
         }
         return datasel;
 

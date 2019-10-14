@@ -81,7 +81,7 @@ public class DrawableValue {
      *
      * @return selected
      */
-    public boolean isSelected() {
+    private boolean isSelected() {
         return selected;
     }
 
@@ -90,7 +90,7 @@ public class DrawableValue {
      *
      * @param gc
      */
-    public void draw(Graphics2D gc, boolean centerLabelWidth, boolean centerLabelHeight) {
+    private void draw(Graphics2D gc, boolean centerLabelWidth, boolean centerLabelHeight) {
         if (centerLabelWidth || centerLabelHeight) {
             Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
             gc.drawString(label, (int) (x - (centerLabelWidth ? labelSize.getWidth() / 2 : 0)), (int) (y + (centerLabelHeight ? labelSize.getHeight() / 2 : 0)));

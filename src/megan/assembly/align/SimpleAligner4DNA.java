@@ -73,7 +73,7 @@ public class SimpleAligner4DNA {
      * @param seedLength
      * @return true, if alignment found
      */
-    public boolean computeAlignment(byte[] query, byte[] reference, int queryPos, int refPos, int seedLength) {
+    private boolean computeAlignment(byte[] query, byte[] reference, int queryPos, int refPos, int seedLength) {
         bandedAligner.computeAlignment(query, query.length, reference, reference.length, queryPos, refPos, seedLength);
         return bandedAligner.getRawScore() >= minRawScore && (minPercentIdentity == 0 || bandedAligner.getPercentIdentity() >= minPercentIdentity);
     }
@@ -115,7 +115,7 @@ public class SimpleAligner4DNA {
      *
      * @return
      */
-    public float getMinPercentIdentity() {
+    private float getMinPercentIdentity() {
         return minPercentIdentity;
     }
 
@@ -136,7 +136,7 @@ public class SimpleAligner4DNA {
      * @param queryMustBeContained
      * @return pos or reference.length
      */
-    public int getPositionInReference(byte[] query, byte[] reference, boolean queryMustBeContained) {
+    private int getPositionInReference(byte[] query, byte[] reference, boolean queryMustBeContained) {
         if (queryMustBeContained && getMinPercentIdentity() >= 100) {
             return (new BoyerMoore(query, 0, query.length, 127)).search(reference);
         }

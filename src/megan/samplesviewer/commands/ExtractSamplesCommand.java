@@ -32,7 +32,7 @@ import java.util.List;
  * * duplicate command
  * * Daniel Huson, 9.2012
  */
-public class ExtractSamplesCommand extends CommandBase implements ICommand {
+class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

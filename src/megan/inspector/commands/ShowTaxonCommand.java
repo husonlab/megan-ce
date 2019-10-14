@@ -38,7 +38,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 11.2010
  */
-public class ShowTaxonCommand extends CommandBase implements ICommand {
+class ShowTaxonCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -93,7 +93,7 @@ public class ShowTaxonCommand extends CommandBase implements ICommand {
         }
     }
 
-    public static final String NAME = "Show Taxon...";
+    private static final String NAME = "Show Taxon...";
 
     public String getName() {
         return NAME;

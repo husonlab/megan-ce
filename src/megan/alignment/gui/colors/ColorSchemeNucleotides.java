@@ -45,11 +45,7 @@ public class ColorSchemeNucleotides implements IColorScheme {
                 break;
             }
         }
-        switch (which) {
-            case Default:
-            default:
-                colorScheme = new ColorSchemeNucleotidesDefault();
-        }
+        colorScheme = new ColorSchemeNucleotidesDefault();
     }
 
     /**
@@ -82,7 +78,7 @@ public class ColorSchemeNucleotides implements IColorScheme {
         for (NAMES type : NAMES.values()) {
             names.add(type.toString());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
 }

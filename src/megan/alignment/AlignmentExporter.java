@@ -99,11 +99,7 @@ public class AlignmentExporter {
                         String key = Basic.getFirstLine(matchBlock.getText());
                         if (!matchesSeenForGivenRead.contains(key)) {
                             matchesSeenForGivenRead.add(key);
-                            List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.get(key);
-                            if (pairs == null) {
-                                pairs = new LinkedList<>();
-                                reference2ReadMatchPairs.put(key, pairs);
-                            }
+                            List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.computeIfAbsent(key, k -> new LinkedList<>());
                             pairs.add(new Pair<>(readBlock, matchBlock));
                             readUsed = true;
                         }
@@ -157,11 +153,7 @@ public class AlignmentExporter {
                             if (!matchesSeenForGivenRead.contains(key)) {
                                 matchesSeenForGivenRead.add(key);
 
-                                List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.get(key);
-                                if (pairs == null) {
-                                    pairs = new LinkedList<>();
-                                    reference2ReadMatchPairs.put(key, pairs);
-                                }
+                                List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.computeIfAbsent(key, k -> new LinkedList<>());
                                 pairs.add(new Pair<>(readBlock, matchBlock));
                                 readUsed = true;
                             }
@@ -229,15 +221,13 @@ public class AlignmentExporter {
 
         // sort data by decreasing number of reads associated with a given reference sequence
         final SortedSet<Pair<String, List<Pair<IReadBlock, IMatchBlock>>>> sorted =
-                new TreeSet<>(new Comparator<Pair<String, List<Pair<IReadBlock, IMatchBlock>>>>() {
-                    public int compare(Pair<String, List<Pair<IReadBlock, IMatchBlock>>> pair1, Pair<String, List<Pair<IReadBlock, IMatchBlock>>> pair2) {
-                        if (pair1.getSecond().size() > pair2.getSecond().size())
-                            return -1;
-                        else if (pair1.getSecond().size() < pair2.getSecond().size())
-                            return 1;
-                        else
-                            return pair1.getFirst().compareTo(pair2.getFirst());
-                    }
+                new TreeSet<>((pair1, pair2) -> {
+                    if (pair1.getSecond().size() > pair2.getSecond().size())
+                        return -1;
+                    else if (pair1.getSecond().size() < pair2.getSecond().size())
+                        return 1;
+                    else
+                        return pair1.getFirst().compareTo(pair2.getFirst());
                 });
         for (String reference : reference2ReadMatchPairs.keySet()) {
             List<Pair<IReadBlock, IMatchBlock>> value = reference2ReadMatchPairs.get(reference);

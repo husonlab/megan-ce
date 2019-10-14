@@ -41,7 +41,7 @@ public class TaxonPathAssignment {
      * @param readBlock
      * @return id
      */
-    public static List<Pair<Integer, Float>> computeTaxPath(IReadBlock readBlock, BitSet activeMatches) {
+    private static List<Pair<Integer, Float>> computeTaxPath(IReadBlock readBlock, BitSet activeMatches) {
         List<Pair<Integer, Float>> result = new LinkedList<>();
 
         if (readBlock.getNumberOfMatches() == 0) {
@@ -64,11 +64,7 @@ public class TaxonPathAssignment {
                         totalCount++;
                         Node v = TaxonomyData.getTree().getANode(taxonId);
                         while (v != null) {
-                            Integer count = node2count.get(v);
-                            if (count != null)
-                                node2count.put(v, count + 1);
-                            else
-                                node2count.put(v, 1);
+                            node2count.merge(v, 1, Integer::sum);
                             if (v.getInDegree() > 0)
                                 v = v.getFirstInEdge().getSource();
                             else
@@ -88,11 +84,7 @@ public class TaxonPathAssignment {
                         totalCount++;
                         Node v = TaxonomyData.getTree().getANode(taxonId);
                         while (v != null) {
-                            Integer count = node2count.get(v);
-                            if (count != null)
-                                node2count.put(v, count + 1);
-                            else
-                                node2count.put(v, 1);
+                            node2count.merge(v, 1, Integer::sum);
                             if (v.getInDegree() > 0)
                                 v = v.getFirstInEdge().getSource();
                             else

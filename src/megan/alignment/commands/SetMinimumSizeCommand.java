@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class SetMinimumSizeCommand extends CommandBase implements ICommand {
+class SetMinimumSizeCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
@@ -71,7 +71,7 @@ public class SetMinimumSizeCommand extends CommandBase implements ICommand {
             execute("set minReadsAlignment=" + result + ";");
     }
 
-    public static final String NAME = "Set Minimum Number of Reads...";
+    private static final String NAME = "Set Minimum Number of Reads...";
 
     public String getName() {
         return NAME;

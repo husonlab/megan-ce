@@ -24,6 +24,6 @@ import jloda.util.ProgressListener;
  * a task that can be run by the loader
  * Daniel Huson, 9.2009
  */
-public interface LoaderTask {
+interface LoaderTask {
     void run(ProgressListener progressListener) throws Exception;
 }

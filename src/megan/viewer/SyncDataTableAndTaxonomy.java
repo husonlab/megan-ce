@@ -151,9 +151,8 @@ public class SyncDataTableAndTaxonomy {
                                     Edge e = v.getCommonEdge(w);
                                     if (e != null) {
                                         try {
-                                            if (e != null)
-                                                viewer.getEV(e).read(format);
-                                        } catch (IOException ex) {
+                                            viewer.getEV(e).read(format);
+                                        } catch (IOException ignored) {
 
                                         }
                                     }
@@ -223,8 +222,7 @@ public class SyncDataTableAndTaxonomy {
         table.setNodeStyle(ClassificationType.Taxonomy.toString(), viewer.getNodeDrawer().getStyle().toString());
 
         // Sync collapsed nodes:
-        Set<Integer> collapsed = new HashSet<>();
-        collapsed.addAll(viewer.getCollapsedIds());
+        Set<Integer> collapsed = new HashSet<>(viewer.getCollapsedIds());
         table.setCollapsed(ClassificationType.Taxonomy.toString(), collapsed);
     }
 }

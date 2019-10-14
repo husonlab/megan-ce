@@ -134,7 +134,7 @@ public class AddFilesCommand extends CommandBase implements ICommand {
             getDir().notifyUnlockInput();
         }
 
-        if (files != null && files.size() > 0) {
+        if (files.size() > 0) {
             StringBuilder buf = new StringBuilder();
             for (File file : files) {
                 if (file != null && file.exists() && file.canRead()) {

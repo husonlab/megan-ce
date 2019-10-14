@@ -33,10 +33,7 @@ import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static megan.main.MeganProperties.DISABLED_TAXA;
 
@@ -243,11 +240,7 @@ public class ClassificationFullTree extends PhyloTree {
         targetId2Nodes.clear();
         for (Node v = targetTree.getFirstNode(); v != null; v = v.getNext()) {
             int id = (Integer) v.getInfo();
-            Set<Node> nodes = targetId2Nodes.get(id);
-            if (nodes == null) {
-                nodes = new HashSet<>();
-                targetId2Nodes.put(id, nodes);
-            }
+            Set<Node> nodes = targetId2Nodes.computeIfAbsent(id, k -> new HashSet<>());
             nodes.add(v);
             if (v.getInDegree() > 1)
                 System.err.println("Reticulate node: " + id + " (currently not supported)");
@@ -316,10 +309,7 @@ public class ClassificationFullTree extends PhyloTree {
                     wCpy.setInfo(id);
                 }
                 NodeData nodeData = id2data.get(id);
-                if (nodeData != null)
-                    wCpy.setData(nodeData);
-                else
-                    wCpy.setData(new NodeData(new float[0], new float[0]));
+                wCpy.setData(Objects.requireNonNullElseGet(nodeData, () -> new NodeData(new float[0], new float[0])));
 
                 treeCpy.newEdge(vCpy, wCpy);
 
@@ -327,7 +317,7 @@ public class ClassificationFullTree extends PhyloTree {
                     for (Edge f = wCpy.getFirstInEdge(); f != null; f = wCpy.getNextInEdge(f))
                         treeCpy.setSpecial(f, true);
                 }
-                if (!stopIds.contains((Integer) w.getInfo()))
+                if (!stopIds.contains(w.getInfo()))
                     induceRec(w, wCpy, treeCpy, keep, stopIds, id2data, node2copy);
             }
         }
@@ -366,7 +356,7 @@ public class ClassificationFullTree extends PhyloTree {
             if (ClassificationManager.isTaxonomy(getName()))
                 computeTaxonomyId2DataRec(numberOfDatasets, getRoot(), id2counts, id2data);
             else
-                computeId2DataRec(numberOfDatasets, getRoot(), id2counts, new HashMap<Integer, Set<Integer>>(), id2data);
+                computeId2DataRec(numberOfDatasets, getRoot(), id2counts, new HashMap<>(), id2data);
         }
     }
 
@@ -498,8 +488,8 @@ public class ClassificationFullTree extends PhyloTree {
      * @param id
      * @return true, if id is contained
      */
-    public boolean containsId(int id) {
-        return id2Node.keySet().contains(id);
+    private boolean containsId(int id) {
+        return id2Node.containsKey(id);
     }
 
     /**
@@ -509,8 +499,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @return ids and all descendants
      */
     public Set<Integer> getAllDescendants(Set<Integer> ids) {
-        final Set<Integer> set = new HashSet<>();
-        set.addAll(ids);
+        final Set<Integer> set = new HashSet<>(ids);
         getAllDescendantsRec(getRoot(), false, set);
         return set;
     }
@@ -523,7 +512,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @param set
      */
     private void getAllDescendantsRec(Node v, boolean add, Set<Integer> set) {
-        if (!add && set.contains((Integer) v.getInfo()))
+        if (!add && set.contains(v.getInfo()))
             add = true;
         else if (add)
             set.add((Integer) v.getInfo());
@@ -687,10 +676,7 @@ public class ClassificationFullTree extends PhyloTree {
      */
     public int getAddress2Id(String address) {
         Integer id = address2Id.get(address);
-        if (id == null)
-            return 0;
-        else
-            return id;
+        return Objects.requireNonNullElse(id, 0);
     }
 
     /**

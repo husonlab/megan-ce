@@ -75,7 +75,7 @@ public class MatchLineRMA6 {
      * @param n
      * @return position of n-th tab after offset
      */
-    public static int skipTabs(byte[] text, int offset, int n) {
+    private static int skipTabs(byte[] text, int offset, int n) {
         while (n > 0) {
             if (offset == text.length)
                 return -1;

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * map-based int getter
@@ -61,10 +62,7 @@ public class IntFileGetterHashMap implements IIntGetter {
     @Override
     public int get(long index) {
         Integer value = map.get(index);
-        if (value != null)
-            return value;
-        else
-            return 0;
+        return Objects.requireNonNullElse(value, 0);
 
     }
 

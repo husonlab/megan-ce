@@ -47,8 +47,8 @@ public class ResamplingMethod {
      */
     private Map<Integer, Float> input1;
     private Map<Integer, Float> input2;
-    private HashMap<Integer, float[]> unionOfInputs = new HashMap<>();
-    private HashMap<Integer, Double> resultOfScalevalue = new HashMap<>();
+    private final HashMap<Integer, float[]> unionOfInputs = new HashMap<>();
+    private final HashMap<Integer, Double> resultOfScalevalue = new HashMap<>();
 
     /**
      * constructor
@@ -148,7 +148,7 @@ public class ResamplingMethod {
         this.p_left = leftPercentile;
     }
 
-    public double getOptionRightPercentile() {
+    private double getOptionRightPercentile() {
         return p_right;
     }
 
@@ -200,7 +200,7 @@ public class ResamplingMethod {
                 System.err.println("Illegal: the 1st data set contains all zeros, resampling not possible!");
                 return false;
             }
-            if (input2.containsValue(0)) {
+            if (Objects.requireNonNull(input2).containsValue(0)) {
                 System.err.println("Illegal: the data set as percentile set contains zero value!");
                 return false;
             } else return true;
@@ -212,7 +212,7 @@ public class ResamplingMethod {
                 System.err.println("Illegal: the 2nd data set contains all zeros, resampling not possible!");
                 return false;
             }
-            if (input1.containsValue(0)) {
+            if (Objects.requireNonNull(input1).containsValue(0)) {
                 System.err.println("Illegal: the data set as percentile set contains zero value!");
                 return false;
             }
@@ -292,7 +292,7 @@ public class ResamplingMethod {
      * @param args
      * @throws Exception
      */
-    static public void main(String args[]) throws Exception {
+    static public void main(String[] args) throws Exception {
 
         ResamplingMethod compare = new ResamplingMethod();
 
@@ -597,7 +597,7 @@ public class ResamplingMethod {
         if (rightPer < 1)
             rightPer = 1;
 
-        assert ((leftPer > 0) && (leftPer <= diff_i.length) && (rightPer > 0) && (rightPer <= diff_i.length) && (leftPer <= rightPer));
+        assert leftPer > 0 && leftPer <= diff_i.length && rightPer <= diff_i.length && leftPer <= rightPer;
 
         /*
          * result[0]:leftlimit; result[1]:rightlimit; result[2]:middelvalue
@@ -908,7 +908,7 @@ public class ResamplingMethod {
      * in plan.... read *.txt that contain more splits
      */
 
-    public float[] readInput(String fileName) {
+    private float[] readInput(String fileName) {
         try {
             BufferedReader r = new BufferedReader(new FileReader(new File(fileName)));
             String aLine;
@@ -951,7 +951,7 @@ public class ResamplingMethod {
      *
      * @param result
      */
-    static public void reversePrint(Result[] result) {
+    private static void reversePrint(Result[] result) {
         for (int i = (result.length - 1); i >= 0; i--) {
             System.err.println("Gen" + result[i].getGenNum() + ":   scale of " + result[i].getScale() + "  " + result[i].getRemark());
         }
@@ -984,7 +984,7 @@ public class ResamplingMethod {
      * @param bAppend
      * @throws IOException
      */
-    static public void createOutputFilesReverse(Result[] result, String fileDst, boolean bAppend) throws IOException {
+    private static void createOutputFilesReverse(Result[] result, String fileDst, boolean bAppend) throws IOException {
         BufferedWriter output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileDst, bAppend)));
         for (int i = (result.length - 1); i >= 0; i--) {
             output.write("Gen" + result[i].getGenNum() + ":  scale of " + result[i].getScale() + "  " + result[i].getRemark() + "\n");

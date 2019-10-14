@@ -108,7 +108,7 @@ public class Cigar {
     /**
      * @return The number of read bases that the read covers.
      */
-    public static int getReadLength(final List<CigarElement> cigarElements) {
+    private static int getReadLength(final List<CigarElement> cigarElements) {
         int length = 0;
         for (final CigarElement element : cigarElements) {
             if (element.getOperator().consumesReadBases()) {
@@ -212,20 +212,20 @@ public class Cigar {
         return ret;
     }
 
-    public static boolean isRealOperator(final CigarOperator op) {
+    private static boolean isRealOperator(final CigarOperator op) {
         return op == CigarOperator.M || op == CigarOperator.EQ || op == CigarOperator.X ||
                 op == CigarOperator.I || op == CigarOperator.D || op == CigarOperator.N;
     }
 
-    public static boolean isInDelOperator(final CigarOperator op) {
+    private static boolean isInDelOperator(final CigarOperator op) {
         return op == CigarOperator.I || op == CigarOperator.D;
     }
 
-    public static boolean isClippingOperator(final CigarOperator op) {
+    private static boolean isClippingOperator(final CigarOperator op) {
         return op == CigarOperator.S || op == CigarOperator.H;
     }
 
-    public static boolean isPaddingOperator(final CigarOperator op) {
+    private static boolean isPaddingOperator(final CigarOperator op) {
         return op == CigarOperator.P;
     }
 
@@ -236,13 +236,13 @@ public class Cigar {
 
         final Cigar cigar = (Cigar) o;
 
-        return !(cigarElements != null ? !cigarElements.equals(cigar.cigarElements) : cigar.cigarElements != null);
+        return !!cigarElements.equals(cigar.cigarElements);
 
     }
 
     @Override
     public int hashCode() {
-        return cigarElements != null ? cigarElements.hashCode() : 0;
+        return cigarElements.hashCode();
     }
 
     public String toString() {

@@ -37,7 +37,7 @@ import java.util.Optional;
  * * rename command
  * * Daniel Huson, 9.2012
  */
-public class RenameSampleCommand extends CommandBase implements ICommand {
+class RenameSampleCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "rename sample=<name> newName=<name>;";
     }

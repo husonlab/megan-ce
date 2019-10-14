@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * map based int putter
@@ -75,10 +76,7 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     @Override
     public int get(long index) {
         Integer value = map.get(index);
-        if (value != null)
-            return value;
-        else
-            return 0;
+        return Objects.requireNonNullElse(value, 0);
 
     }
 

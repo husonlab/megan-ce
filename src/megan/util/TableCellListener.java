@@ -34,7 +34,7 @@ import java.beans.PropertyChangeListener;
  *  author: unknown
  */
 public class TableCellListener implements PropertyChangeListener, Runnable {
-    private JTable table;
+    private final JTable table;
     private Action action;
 
     private int row;
@@ -77,7 +77,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      *
      * @return the column that was edited
      */
-    public int getColumn() {
+    private int getColumn() {
         return column;
     }
 
@@ -86,7 +86,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      *
      * @return the new value in the cell
      */
-    public Object getNewValue() {
+    private Object getNewValue() {
         return newValue;
     }
 
@@ -95,7 +95,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      *
      * @return the old value of the cell
      */
-    public Object getOldValue() {
+    private Object getOldValue() {
         return oldValue;
     }
 
@@ -104,7 +104,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      *
      * @return the row that was edited
      */
-    public int getRow() {
+    private int getRow() {
         return row;
     }
 
@@ -113,7 +113,7 @@ public class TableCellListener implements PropertyChangeListener, Runnable {
      *
      * @return the table of the cell that was changed
      */
-    public JTable getTable() {
+    private JTable getTable() {
         return table;
     }
 

@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 11.2010
  */
-public class CollapseNodesCommand extends CommandBase implements ICommand {
+class CollapseNodesCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -79,7 +79,7 @@ public class CollapseNodesCommand extends CommandBase implements ICommand {
         return "Collapse";
     }
 
-    public static final String ALTNAME = "Collapse Inspector";
+    private static final String ALTNAME = "Collapse Inspector";
 
     public String getAltName() {
         return ALTNAME;

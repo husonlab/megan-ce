@@ -33,20 +33,20 @@ import java.util.Map;
  * <p/>
  * Mapping file for all Connector requests
  */
-public class RMAControllerMappings {
+class RMAControllerMappings {
     //ADMIN
 
 
     public final static String GET_LOG_MAPPING = "admin/getLog";
-    public final static String GET_LOG_METHOD = "GET";
-    public final static List<Parameter> GET_LOG_PARAMETER = new ArrayList<>();
-    public final static String GET_LOG_DESCRIPTION = "Get the most recent server log entries as a String[].";
+    private final static String GET_LOG_METHOD = "GET";
+    private final static List<Parameter> GET_LOG_PARAMETER = new ArrayList<>();
+    private final static String GET_LOG_DESCRIPTION = "Get the most recent server log entries as a String[].";
 
     static {
     }
 
-    public final static String GET_LOG_RETURN_OBJECT = "String[]";
-    public final static Map<String, Object> GET_LOG_REQUEST = new HashMap<>();
+    private final static String GET_LOG_RETURN_OBJECT = "String[]";
+    private final static Map<String, Object> GET_LOG_REQUEST = new HashMap<>();
 
     static {
         GET_LOG_REQUEST.put("Mapping Name", GET_LOG_MAPPING);
@@ -66,15 +66,15 @@ public class RMAControllerMappings {
     }
 
     public final static String GET_INFO_MAPPING = "info";
-    public final static String GET_INFO_METHOD = "GET";
-    public final static List<Parameter> GET_INFO_PARAMETER = new ArrayList<>();
-    public final static String GET_INFO_DESCRIPTION = "Get general information about server, its data and contact information.";
+    private final static String GET_INFO_METHOD = "GET";
+    private final static List<Parameter> GET_INFO_PARAMETER = new ArrayList<>();
+    private final static String GET_INFO_DESCRIPTION = "Get general information about server, its data and contact information.";
 
     static {
     }
 
-    public final static String GET_INFO_RETURN_OBJECT = "String";
-    public final static Map<String, Object> GET_INFO_REQUEST = new HashMap<>();
+    private final static String GET_INFO_RETURN_OBJECT = "String";
+    private final static Map<String, Object> GET_INFO_REQUEST = new HashMap<>();
 
     static {
         GET_INFO_REQUEST.put("Mapping Name", GET_INFO_MAPPING);
@@ -85,16 +85,16 @@ public class RMAControllerMappings {
     }
 
 
-    public final static String UPDATE_DATASETS_MAPPING = "admin/updateDatasets";
-    public final static String UPDATE_DATASETS_METHOD = "GET";
-    public final static List<Parameter> UPDATE_DATASETS_PARAMETER = new ArrayList<>();
-    public final static String UPDATE_DATASETS_DESCRIPTION = "Update the MeganServer filesystem on the server. This should be performed once new datasets should be published or after the config file was changed.";
+    private final static String UPDATE_DATASETS_MAPPING = "admin/updateDatasets";
+    private final static String UPDATE_DATASETS_METHOD = "GET";
+    private final static List<Parameter> UPDATE_DATASETS_PARAMETER = new ArrayList<>();
+    private final static String UPDATE_DATASETS_DESCRIPTION = "Update the MeganServer filesystem on the server. This should be performed once new datasets should be published or after the config file was changed.";
 
     static {
     }
 
-    public final static String UPDATE_DATASETS_RETURN_OBJECT = "String";
-    public final static Map<String, Object> UPDATE_DATASETS_REQUEST = new HashMap<>();
+    private final static String UPDATE_DATASETS_RETURN_OBJECT = "String";
+    private final static Map<String, Object> UPDATE_DATASETS_REQUEST = new HashMap<>();
 
     static {
         UPDATE_DATASETS_REQUEST.put("Mapping Name", UPDATE_DATASETS_MAPPING);
@@ -106,9 +106,9 @@ public class RMAControllerMappings {
 
 
     public final static String ADD_USER_MAPPING = "admin/addUser";
-    public final static String ADD_USER_METHOD = "GET";
-    public final static List<Parameter> ADD_USER_PARAMETER = new ArrayList<>();
-    public final static String ADD_USER_DESCRIPTION = "Allows admins to add/edit users to the MeganServer instance.";
+    private final static String ADD_USER_METHOD = "GET";
+    private final static List<Parameter> ADD_USER_PARAMETER = new ArrayList<>();
+    private final static String ADD_USER_DESCRIPTION = "Allows admins to add/edit users to the MeganServer instance.";
 
     static {
         Parameter p = new Parameter("userName", true, "default");
@@ -119,8 +119,8 @@ public class RMAControllerMappings {
         ADD_USER_PARAMETER.add(p3);
     }
 
-    public final static String ADD_USER_RETURN_OBJECT = "String";
-    public final static Map<String, Object> ADD_USER_REQUEST = new HashMap<>();
+    private final static String ADD_USER_RETURN_OBJECT = "String";
+    private final static Map<String, Object> ADD_USER_REQUEST = new HashMap<>();
 
     static {
         ADD_USER_REQUEST.put("Mapping Name", ADD_USER_MAPPING);
@@ -132,17 +132,17 @@ public class RMAControllerMappings {
 
 
     public final static String REMOVE_USER_MAPPING = "admin/removeUser";
-    public final static String REMOVE_USER_METHOD = "GET";
-    public final static List<Parameter> REMOVE_USER_PARAMETER = new ArrayList<>();
-    public final static String REMOVE_USER_DESCRIPTION = "Delete a user from the MeganServer instance. This can not be revoked.";
+    private final static String REMOVE_USER_METHOD = "GET";
+    private final static List<Parameter> REMOVE_USER_PARAMETER = new ArrayList<>();
+    private final static String REMOVE_USER_DESCRIPTION = "Delete a user from the MeganServer instance. This can not be revoked.";
 
     static {
         Parameter p = new Parameter("userName", true, "default");
         REMOVE_USER_PARAMETER.add(p);
     }
 
-    public final static String REMOVE_USER_RETURN_OBJECT = "String";
-    public final static Map<String, Object> REMOVE_USER_REQUEST = new HashMap<>();
+    private final static String REMOVE_USER_RETURN_OBJECT = "String";
+    private final static Map<String, Object> REMOVE_USER_REQUEST = new HashMap<>();
 
     static {
         REMOVE_USER_REQUEST.put("Mapping Name", REMOVE_USER_MAPPING);
@@ -154,15 +154,15 @@ public class RMAControllerMappings {
 
 
     public final static String LIST_USERS_MAPPING = "admin/listUsers";
-    public final static String LIST_USERS_METHOD = "GET";
-    public final static List<Parameter> LIST_USERS_PARAMETER = new ArrayList<>();
-    public final static String LIST_USERS_DESCRIPTION = "Retrieve a list of users";
+    private final static String LIST_USERS_METHOD = "GET";
+    private final static List<Parameter> LIST_USERS_PARAMETER = new ArrayList<>();
+    private final static String LIST_USERS_DESCRIPTION = "Retrieve a list of users";
 
     static {
     }
 
-    public final static String LIST_USERS_RETURN_OBJECT = "String[]";
-    public final static Map<String, Object> LIST_USERS_REQUEST = new HashMap<>();
+    private final static String LIST_USERS_RETURN_OBJECT = "String[]";
+    private final static Map<String, Object> LIST_USERS_REQUEST = new HashMap<>();
 
     static {
         LIST_USERS_REQUEST.put("Mapping Name", LIST_USERS_MAPPING);
@@ -175,17 +175,17 @@ public class RMAControllerMappings {
 
     //USER
     public final static String GET_UID_MAPPING = "getFileUid";
-    public final static String GET_UID_METHOD = "GET";
-    public final static List<Parameter> GET_UID_PARAMETER = new ArrayList<>();
-    public final static String GET_UID_DESCRIPTION = "Get the unique uid for a dataset.";
+    private final static String GET_UID_METHOD = "GET";
+    private final static List<Parameter> GET_UID_PARAMETER = new ArrayList<>();
+    private final static String GET_UID_DESCRIPTION = "Get the unique uid for a dataset.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         GET_UID_PARAMETER.add(p);
     }
 
-    public final static String GET_UID_RETURN_OBJECT = "Long";
-    public final static Map<String, Object> GET_UID_REQUEST = new HashMap<>();
+    private final static String GET_UID_RETURN_OBJECT = "Long";
+    private final static Map<String, Object> GET_UID_REQUEST = new HashMap<>();
 
     static {
         GET_UID_REQUEST.put("Mapping Name", GET_UID_MAPPING);
@@ -197,17 +197,17 @@ public class RMAControllerMappings {
 
 
     public final static String IS_READ_ONLY_MAPPING = "isReadOnly";
-    public final static String IS_READ_ONLY_METHOD = "GET";
-    public final static List<Parameter> IS_READ_ONLY_PARAMETER = new ArrayList<>();
-    public final static String IS_READ_ONLY_DESCRIPTION = "Show permissions of the user on the dataset. Currently all datasets are read-only unless changed on the raw file level.";
+    private final static String IS_READ_ONLY_METHOD = "GET";
+    private final static List<Parameter> IS_READ_ONLY_PARAMETER = new ArrayList<>();
+    private final static String IS_READ_ONLY_DESCRIPTION = "Show permissions of the user on the dataset. Currently all datasets are read-only unless changed on the raw file level.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         IS_READ_ONLY_PARAMETER.add(p);
     }
 
-    public final static String IS_READ_ONLY_RETURN_OBJECT = "Boolean";
-    public final static Map<String, Object> IS_READ_ONLY_REQUEST = new HashMap<>();
+    private final static String IS_READ_ONLY_RETURN_OBJECT = "Boolean";
+    private final static Map<String, Object> IS_READ_ONLY_REQUEST = new HashMap<>();
 
     static {
         IS_READ_ONLY_REQUEST.put("Mapping Name", IS_READ_ONLY_MAPPING);
@@ -219,18 +219,18 @@ public class RMAControllerMappings {
 
 
     public final static String LIST_DATASETS_MAPPING = "listDatasets";
-    public final static String LIST_DATASETS_METHOD = "GET";
-    public final static List<Parameter> LIST_DATASETS_PARAMETER = new ArrayList<>();
+    private final static String LIST_DATASETS_METHOD = "GET";
+    private final static List<Parameter> LIST_DATASETS_PARAMETER = new ArrayList<>();
 
     static {
         Parameter p = new Parameter("includeMetadata", false, "False");
         LIST_DATASETS_PARAMETER.add(p);
     }
 
-    public final static String LIST_DATASETS_DESCRIPTION = "Retrieve a list of datasets that is known to the MeganServer instance.";
+    private final static String LIST_DATASETS_DESCRIPTION = "Retrieve a list of datasets that is known to the MeganServer instance.";
 
-    public final static String LIST_DATASETS_RETURN_OBJECT = "RMADataset[]";
-    public final static Map<String, Object> LIST_DATASETS_REQUEST = new HashMap<>();
+    private final static String LIST_DATASETS_RETURN_OBJECT = "RMADataset[]";
+    private final static Map<String, Object> LIST_DATASETS_REQUEST = new HashMap<>();
 
     static {
         LIST_DATASETS_REQUEST.put("Mapping Name", LIST_DATASETS_MAPPING);
@@ -241,13 +241,13 @@ public class RMAControllerMappings {
     }
 
 
-    public final static String ABOUT_MAPPING = "About";
-    public final static String ABOUT_METHOD = "GET";
-    public final static List<Parameter> ABOUT_PARAMETER = new ArrayList<>();
-    public final static String ABOUT_DESCRIPTION = "Get a brief About string including version number, build date and authors.";
+    private final static String ABOUT_MAPPING = "About";
+    private final static String ABOUT_METHOD = "GET";
+    private final static List<Parameter> ABOUT_PARAMETER = new ArrayList<>();
+    private final static String ABOUT_DESCRIPTION = "Get a brief About string including version number, build date and authors.";
 
-    public final static String ABOUT_RETURN_OBJECT = "About";
-    public final static Map<String, Object> ABOUT_REQUEST = new HashMap<>();
+    private final static String ABOUT_RETURN_OBJECT = "About";
+    private final static Map<String, Object> ABOUT_REQUEST = new HashMap<>();
 
     static {
         ABOUT_REQUEST.put("Mapping Name", ABOUT_MAPPING);
@@ -259,17 +259,17 @@ public class RMAControllerMappings {
 
 
     public final static String GET_AUXILIARY_MAPPING = "getAuxiliary";
-    public final static String GET_AUXILIARY_METHOD = "GET";
-    public final static List<Parameter> GET_AUXILIARY_PARAMETER = new ArrayList<>();
-    public final static String GET_AUXILIARY_DESCRIPTION = "Get auxiliary data for a single dataset.";
+    private final static String GET_AUXILIARY_METHOD = "GET";
+    private final static List<Parameter> GET_AUXILIARY_PARAMETER = new ArrayList<>();
+    private final static String GET_AUXILIARY_DESCRIPTION = "Get auxiliary data for a single dataset.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         GET_AUXILIARY_PARAMETER.add(p);
     }
 
-    public final static String GET_AUXILIARY_RETURN_OBJECT = "Map<String,String>";
-    public final static Map<String, Object> GET_AUXILIARY_REQUEST = new HashMap<>();
+    private final static String GET_AUXILIARY_RETURN_OBJECT = "Map<String,String>";
+    private final static Map<String, Object> GET_AUXILIARY_REQUEST = new HashMap<>();
 
     static {
         GET_AUXILIARY_REQUEST.put("Mapping Name", GET_AUXILIARY_MAPPING);
@@ -281,17 +281,17 @@ public class RMAControllerMappings {
 
 
     public final static String GET_ALL_CLASSIFICATION_NAMES_MAPPING = "getAllClassificationNames";
-    public final static String GET_ALL_CLASSIFICATION_NAMES_METHOD = "GET";
-    public final static List<Parameter> GET_ALL_CLASSIFICATION_NAMES_PARAMETER = new ArrayList<>();
-    public final static String GET_ALL_CLASSIFICATION_NAMES_DESCRIPTION = "Retrieve a list of classifications that are avaliable in a dataset.";
+    private final static String GET_ALL_CLASSIFICATION_NAMES_METHOD = "GET";
+    private final static List<Parameter> GET_ALL_CLASSIFICATION_NAMES_PARAMETER = new ArrayList<>();
+    private final static String GET_ALL_CLASSIFICATION_NAMES_DESCRIPTION = "Retrieve a list of classifications that are avaliable in a dataset.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         GET_ALL_CLASSIFICATION_NAMES_PARAMETER.add(p);
     }
 
-    public final static String GET_ALL_CLASSIFICATION_NAMES_RETURN_OBJECT = "String[]";
-    public final static Map<String, Object> GET_ALL_CLASSIFICATION_NAMES_REQUEST = new HashMap<>();
+    private final static String GET_ALL_CLASSIFICATION_NAMES_RETURN_OBJECT = "String[]";
+    private final static Map<String, Object> GET_ALL_CLASSIFICATION_NAMES_REQUEST = new HashMap<>();
 
     static {
         GET_ALL_CLASSIFICATION_NAMES_REQUEST.put("Mapping Name", GET_ALL_CLASSIFICATION_NAMES_MAPPING);
@@ -303,9 +303,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_CLASSIFICATIONBLOCK_MAPPING = "getClassificationBlock";
-    public final static String GET_CLASSIFICATIONBLOCK_METHOD = "GET";
-    public final static List<Parameter> GET_CLASSIFICATIONBLOCK_PARAMETER = new ArrayList<>();
-    public final static String GET_CLASSIFICATIONBLOCK_DESCRIPTION = "Retrieve for a dataset and a classification a number of known taxa/genes together with abundances.";
+    private final static String GET_CLASSIFICATIONBLOCK_METHOD = "GET";
+    private final static List<Parameter> GET_CLASSIFICATIONBLOCK_PARAMETER = new ArrayList<>();
+    private final static String GET_CLASSIFICATIONBLOCK_DESCRIPTION = "Retrieve for a dataset and a classification a number of known taxa/genes together with abundances.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -314,8 +314,8 @@ public class RMAControllerMappings {
         GET_CLASSIFICATIONBLOCK_PARAMETER.add(p2);
     }
 
-    public final static String GET_CLASSIFICATIONBLOCK_RETURN_OBJECT = "ClassificationBlockServer";
-    public final static Map<String, Object> GET_CLASSIFICATIONBLOCK_REQUEST = new HashMap<>();
+    private final static String GET_CLASSIFICATIONBLOCK_RETURN_OBJECT = "ClassificationBlockServer";
+    private final static Map<String, Object> GET_CLASSIFICATIONBLOCK_REQUEST = new HashMap<>();
 
     static {
         GET_CLASSIFICATIONBLOCK_REQUEST.put("Mapping Name", GET_CLASSIFICATIONBLOCK_MAPPING);
@@ -327,9 +327,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_ALL_READS_ITERATOR_MAPPING = "getAllReadsIterator";
-    public final static String GET_ALL_READS_ITERATOR_METHOD = "GET";
-    public final static List<Parameter> GET_ALL_READS_ITERATOR_PARAMETER = new ArrayList<>();
-    public final static String GET_ALL_READS_ITERATOR_DESCRIPTION = "Get a list of reads together with annotations from a datasets and filtered by parameters such as minScore, maxExpected, and dataselection.";
+    private final static String GET_ALL_READS_ITERATOR_METHOD = "GET";
+    private final static List<Parameter> GET_ALL_READS_ITERATOR_PARAMETER = new ArrayList<>();
+    private final static String GET_ALL_READS_ITERATOR_DESCRIPTION = "Get a list of reads together with annotations from a datasets and filtered by parameters such as minScore, maxExpected, and dataselection.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -342,8 +342,8 @@ public class RMAControllerMappings {
         GET_ALL_READS_ITERATOR_PARAMETER.add(p4);
     }
 
-    public final static String GET_ALL_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
-    public final static Map<String, Object> GET_ALL_READS_ITERATOR_REQUEST = new HashMap<>();
+    private final static String GET_ALL_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
+    private final static Map<String, Object> GET_ALL_READS_ITERATOR_REQUEST = new HashMap<>();
 
     static {
         GET_ALL_READS_ITERATOR_REQUEST.put("Mapping Name", GET_ALL_READS_ITERATOR_MAPPING);
@@ -355,9 +355,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_READS_ITERATOR_MAPPING = "getReadsIterator";
-    public final static String GET_READS_ITERATOR_METHOD = "GET";
-    public final static List<Parameter> GET_READS_ITERATOR_PARAMETER = new ArrayList<>();
-    public final static String GET_READS_ITERATOR_DESCRIPTION = "Get a list of reads together with annotations from a dataset assigned to one classification and class identifier and filtered by parameters such as minScore, maxExpected, and dataselection.";
+    private final static String GET_READS_ITERATOR_METHOD = "GET";
+    private final static List<Parameter> GET_READS_ITERATOR_PARAMETER = new ArrayList<>();
+    private final static String GET_READS_ITERATOR_DESCRIPTION = "Get a list of reads together with annotations from a dataset assigned to one classification and class identifier and filtered by parameters such as minScore, maxExpected, and dataselection.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -374,8 +374,8 @@ public class RMAControllerMappings {
         GET_READS_ITERATOR_PARAMETER.add(p4);
     }
 
-    public final static String GET_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
-    public final static Map<String, Object> GET_READS_ITERATOR_REQUEST = new HashMap<>();
+    private final static String GET_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
+    private final static Map<String, Object> GET_READS_ITERATOR_REQUEST = new HashMap<>();
 
     static {
         GET_READS_ITERATOR_REQUEST.put("Mapping Name", GET_READS_ITERATOR_MAPPING);
@@ -387,9 +387,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING = "getReadsForMultipleClassIds";
-    public final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_METHOD = "GET";
-    public final static List<Parameter> GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_PARAMETER = new ArrayList<>();
-    public final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_DESCRIPTION = "Get a list of reads together with annotations from a dataset assigned to one classification and a number of class identifiers and filtered by parameters such as minScore, maxExpected, and dataselection.";
+    private final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_METHOD = "GET";
+    private final static List<Parameter> GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_PARAMETER = new ArrayList<>();
+    private final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_DESCRIPTION = "Get a list of reads together with annotations from a dataset assigned to one classification and a number of class identifiers and filtered by parameters such as minScore, maxExpected, and dataselection.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -406,8 +406,8 @@ public class RMAControllerMappings {
         GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_PARAMETER.add(p4);
     }
 
-    public final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_RETURN_OBJECT = "ReadBlockPage";
-    public final static Map<String, Object> GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_REQUEST = new HashMap<>();
+    private final static String GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_RETURN_OBJECT = "ReadBlockPage";
+    private final static Map<String, Object> GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_REQUEST = new HashMap<>();
 
     static {
         GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_REQUEST.put("Mapping Name", GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING);
@@ -419,9 +419,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_CLASSIFICATION_SIZE_MAPPING = "getClassificationSize";
-    public final static String GET_CLASSIFICATION_SIZE_METHOD = "GET";
-    public final static List<Parameter> GET_CLASSIFICATION_SIZE_PARAMETER = new ArrayList<>();
-    public final static String GET_CLASSIFICATION_SIZE_DESCRIPTION = "Retrieve the number of different genes/taxa from a classification for a single dataset.";
+    private final static String GET_CLASSIFICATION_SIZE_METHOD = "GET";
+    private final static List<Parameter> GET_CLASSIFICATION_SIZE_PARAMETER = new ArrayList<>();
+    private final static String GET_CLASSIFICATION_SIZE_DESCRIPTION = "Retrieve the number of different genes/taxa from a classification for a single dataset.";
 
 
     static {
@@ -431,8 +431,8 @@ public class RMAControllerMappings {
         GET_CLASSIFICATION_SIZE_PARAMETER.add(p2);
     }
 
-    public final static String GET_CLASSIFICATION_SIZE_RETURN_OBJECT = "Integer";
-    public final static Map<String, Object> GET_CLASSIFICATION_SIZE_REQUEST = new HashMap<>();
+    private final static String GET_CLASSIFICATION_SIZE_RETURN_OBJECT = "Integer";
+    private final static Map<String, Object> GET_CLASSIFICATION_SIZE_REQUEST = new HashMap<>();
 
     static {
         GET_CLASSIFICATION_SIZE_REQUEST.put("Mapping Name", GET_CLASSIFICATION_SIZE_MAPPING);
@@ -444,9 +444,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_CLASS_SIZE_MAPPING = "getClassSize";
-    public final static String GET_CLASS_SIZE_METHOD = "GET";
-    public final static List<Parameter> GET_CLASS_SIZE_PARAMETER = new ArrayList<>();
-    public final static String GET_CLASS_SIZE_DESCRIPTION = "Retrieve the number of reads assigned to one gene/taxa for one dataset.";
+    private final static String GET_CLASS_SIZE_METHOD = "GET";
+    private final static List<Parameter> GET_CLASS_SIZE_PARAMETER = new ArrayList<>();
+    private final static String GET_CLASS_SIZE_DESCRIPTION = "Retrieve the number of reads assigned to one gene/taxa for one dataset.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -457,8 +457,8 @@ public class RMAControllerMappings {
         GET_CLASS_SIZE_PARAMETER.add(p3);
     }
 
-    public final static String GET_CLASS_SIZE_RETURN_OBJECT = "Integer";
-    public final static Map<String, Object> GET_CLASS_SIZE_REQUEST = new HashMap<>();
+    private final static String GET_CLASS_SIZE_RETURN_OBJECT = "Integer";
+    private final static Map<String, Object> GET_CLASS_SIZE_REQUEST = new HashMap<>();
 
     static {
         GET_CLASS_SIZE_REQUEST.put("Mapping Name", GET_CLASS_SIZE_MAPPING);
@@ -470,9 +470,9 @@ public class RMAControllerMappings {
 
 
     public final static String GET_FIND_ALL_READS_ITERATOR_MAPPING = "getFindAllReadsIterator";
-    public final static String GET_FIND_ALL_READS_ITERATOR_METHOD = "GET";
-    public final static List<Parameter> GET_FIND_ALL_READS_ITERATOR_PARAMETER = new ArrayList<>();
-    public final static String GET_FIND_ALL_READS_ITERATOR_DESCRIPTION = "Retrieve reads of a datasets in which the string in the regular expression is found.";
+    private final static String GET_FIND_ALL_READS_ITERATOR_METHOD = "GET";
+    private final static List<Parameter> GET_FIND_ALL_READS_ITERATOR_PARAMETER = new ArrayList<>();
+    private final static String GET_FIND_ALL_READS_ITERATOR_DESCRIPTION = "Retrieve reads of a datasets in which the string in the regular expression is found.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -483,8 +483,8 @@ public class RMAControllerMappings {
         GET_FIND_ALL_READS_ITERATOR_PARAMETER.add(p4);
     }
 
-    public final static String GET_FIND_ALL_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
-    public final static Map<String, Object> GET_FIND_ALL_READS_ITERATOR_REQUEST = new HashMap<>();
+    private final static String GET_FIND_ALL_READS_ITERATOR_RETURN_OBJECT = "ReadBlockPage";
+    private final static Map<String, Object> GET_FIND_ALL_READS_ITERATOR_REQUEST = new HashMap<>();
 
     static {
         GET_FIND_ALL_READS_ITERATOR_REQUEST.put("Mapping Name", GET_FIND_ALL_READS_ITERATOR_MAPPING);
@@ -496,17 +496,17 @@ public class RMAControllerMappings {
 
 
     public final static String GET_NUMBER_OF_READS_MAPPING = "getNumberOfReads";
-    public final static String GET_NUMBER_OF_READS_METHOD = "GET";
-    public final static List<Parameter> GET_NUMBER_OF_READS_PARAMETER = new ArrayList<>();
-    public final static String GET_NUMBER_OF_READS_DESCRIPTION = "Get number of reads for a datasets";
+    private final static String GET_NUMBER_OF_READS_METHOD = "GET";
+    private final static List<Parameter> GET_NUMBER_OF_READS_PARAMETER = new ArrayList<>();
+    private final static String GET_NUMBER_OF_READS_DESCRIPTION = "Get number of reads for a datasets";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         GET_NUMBER_OF_READS_PARAMETER.add(p);
     }
 
-    public final static String GET_NUMBER_OF_READS_RETURN_OBJECT = "Integer";
-    public final static Map<String, Object> GET_NUMBER_OF_READS_REQUEST = new HashMap<>();
+    private final static String GET_NUMBER_OF_READS_RETURN_OBJECT = "Integer";
+    private final static Map<String, Object> GET_NUMBER_OF_READS_REQUEST = new HashMap<>();
 
     static {
         GET_NUMBER_OF_READS_REQUEST.put("Mapping Name", GET_NUMBER_OF_READS_MAPPING);
@@ -518,17 +518,17 @@ public class RMAControllerMappings {
 
 
     public final static String GET_NUMBER_OF_MATCHES_MAPPING = "getNumberOfMatches";
-    public final static String GET_NUMBER_OF_MATCHES_METHOD = "GET";
-    public final static List<Parameter> GET_NUMBER_OF_MATCHES_PARAMETER = new ArrayList<>();
-    public final static String GET_NUMBER_OF_MATCHES_DESCRIPTION = "Get number of matches for a datasets";
+    private final static String GET_NUMBER_OF_MATCHES_METHOD = "GET";
+    private final static List<Parameter> GET_NUMBER_OF_MATCHES_PARAMETER = new ArrayList<>();
+    private final static String GET_NUMBER_OF_MATCHES_DESCRIPTION = "Get number of matches for a datasets";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
         GET_NUMBER_OF_MATCHES_PARAMETER.add(p);
     }
 
-    public final static String GET_NUMBER_OF_MATCHES_RETURN_OBJECT = "Integer";
-    public final static Map<String, Object> GET_NUMBER_OF_MATCHES_REQUEST = new HashMap<>();
+    private final static String GET_NUMBER_OF_MATCHES_RETURN_OBJECT = "Integer";
+    private final static Map<String, Object> GET_NUMBER_OF_MATCHES_REQUEST = new HashMap<>();
 
     static {
         GET_NUMBER_OF_MATCHES_REQUEST.put("Mapping Name", GET_NUMBER_OF_MATCHES_MAPPING);
@@ -539,16 +539,16 @@ public class RMAControllerMappings {
     }
 
 
-    public final static String HELP_MAPPING = "help";
-    public final static String HELP_METHOD = "GET";
-    public final static List<Parameter> HELP_PARAMETER = new ArrayList<>();
-    public final static String HELP_DESCRIPTION = "This helpful page";
+    private final static String HELP_MAPPING = "help";
+    private final static String HELP_METHOD = "GET";
+    private final static List<Parameter> HELP_PARAMETER = new ArrayList<>();
+    private final static String HELP_DESCRIPTION = "This helpful page";
 
     static {
     }
 
-    public final static String HELP_RETURN_OBJECT = "Integer";
-    public final static Map<String, Object> HELP_REQUEST = new HashMap<>();
+    private final static String HELP_RETURN_OBJECT = "Integer";
+    private final static Map<String, Object> HELP_REQUEST = new HashMap<>();
 
     static {
         HELP_REQUEST.put("Mapping Name", HELP_MAPPING);
@@ -559,9 +559,9 @@ public class RMAControllerMappings {
     }
 
     public static final String GET_READ_MAPPING = "getRead";
-    public final static String GET_READ_METHOD = "GET";
-    public final static List<Parameter> GET_READ_PARAMETER = new ArrayList<>();
-    public final static String GET_READ_DESCRIPTION = "Get a single read.";
+    private final static String GET_READ_METHOD = "GET";
+    private final static List<Parameter> GET_READ_PARAMETER = new ArrayList<>();
+    private final static String GET_READ_DESCRIPTION = "Get a single read.";
 
     static {
         Parameter p = new Parameter("fileId", true, "default");
@@ -576,8 +576,8 @@ public class RMAControllerMappings {
         GET_READ_PARAMETER.add(p4);
     }
 
-    public final static String GET_READ_RETURN_OBJECT = "ReadBlockServer";
-    public final static Map<String, Object> GET_READ_REQUEST = new HashMap<>();
+    private final static String GET_READ_RETURN_OBJECT = "ReadBlockServer";
+    private final static Map<String, Object> GET_READ_REQUEST = new HashMap<>();
 
     static {
         GET_READ_REQUEST.put("Mapping Name", GET_READ_MAPPING);
@@ -589,17 +589,17 @@ public class RMAControllerMappings {
 
 
     public static final String LOAD_READ_PAGE_MAPPING = "loadPagedReads";
-    public final static String LOAD_READ_PAGE_METHOD = "GET";
-    public final static List<Parameter> LOAD_READ_PAGE_PARAMETER = new ArrayList<>();
-    public final static String LOAD_READ_PAGE_DESCRIPTION = "Load a cached read page. You get the key for this read page with one of the iterators.";
+    private final static String LOAD_READ_PAGE_METHOD = "GET";
+    private final static List<Parameter> LOAD_READ_PAGE_PARAMETER = new ArrayList<>();
+    private final static String LOAD_READ_PAGE_DESCRIPTION = "Load a cached read page. You get the key for this read page with one of the iterators.";
 
     static {
         Parameter p = new Parameter("pageId", true, "default");
         LOAD_READ_PAGE_PARAMETER.add(p);
     }
 
-    public final static String LOAD_READ_PAGE_RETURN_OBJECT = "ReadBlockPage";
-    public final static Map<String, Object> LOAD_READ_PAGE_REQUEST = new HashMap<>();
+    private final static String LOAD_READ_PAGE_RETURN_OBJECT = "ReadBlockPage";
+    private final static Map<String, Object> LOAD_READ_PAGE_REQUEST = new HashMap<>();
 
     static {
         LOAD_READ_PAGE_REQUEST.put("Mapping Name", LOAD_READ_PAGE_MAPPING);
@@ -610,7 +610,7 @@ public class RMAControllerMappings {
     }
 
 
-    public static final Map<String, Map<String, Object>> REQUESTS = new HashMap<>();
+    private static final Map<String, Map<String, Object>> REQUESTS = new HashMap<>();
 
     static {
         REQUESTS.put(HELP_MAPPING, HELP_REQUEST);
@@ -622,7 +622,6 @@ public class RMAControllerMappings {
         REQUESTS.put(GET_CLASSIFICATION_SIZE_MAPPING, GET_CLASSIFICATION_SIZE_REQUEST);
         REQUESTS.put(GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_MAPPING, GET_READS_ITERATOR_FOR_MULTIPLE_CLASSIDS_REQUEST);
 
-        REQUESTS.put(GET_READS_ITERATOR_MAPPING, GET_READS_ITERATOR_REQUEST);
         REQUESTS.put(GET_READS_ITERATOR_MAPPING, GET_READS_ITERATOR_REQUEST);
         REQUESTS.put(GET_ALL_READS_ITERATOR_MAPPING, GET_ALL_READS_ITERATOR_REQUEST);
         REQUESTS.put(GET_CLASSIFICATIONBLOCK_MAPPING, GET_CLASSIFICATIONBLOCK_REQUEST);

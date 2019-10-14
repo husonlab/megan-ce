@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class ExpandHorizontalCommand extends CommandBase implements ICommand {
+class ExpandHorizontalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "expand direction={horizontal|vertical};";
     }

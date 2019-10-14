@@ -105,15 +105,12 @@ public class SegmentationOfReadsExporter {
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);
                                         try {
-                                            SwingUtilities.invokeAndWait(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
-                                                        case JOptionPane.NO_OPTION:
-                                                        case JOptionPane.CANCEL_OPTION: // close and abort
-                                                            ok.set(false);
-                                                        default:
-                                                    }
+                                            SwingUtilities.invokeAndWait(() -> {
+                                                switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                                                    case JOptionPane.NO_OPTION:
+                                                    case JOptionPane.CANCEL_OPTION: // close and abort
+                                                        ok.set(false);
+                                                    default:
                                                 }
                                             });
                                         } catch (InterruptedException | InvocationTargetException e) {

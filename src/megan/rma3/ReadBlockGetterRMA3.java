@@ -174,22 +174,20 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
                 if (matchLine.isDoCog())
                     matchBlock.setId("EGGNOG", matchLine.getCogId());
 
-                if (wantMatches) {
-                    if (matchLine.isEmbedText()) {
-                        samMatch.parse(SAMCompress.inflate(firstSAMLineForCurrentRead, matchLine.getText()));
+                if (matchLine.isEmbedText()) {
+                    samMatch.parse(SAMCompress.inflate(firstSAMLineForCurrentRead, matchLine.getText()));
+                    matchBlock.setText(samMatch.getBlastAlignmentText());
+                    if (readBlock.getReadHeader() == null)
+                        readBlock.setReadHeader(samMatch.getQueryName());
+                } else if (samReader != null) {
+                    try {
+                        samReader.seek(matchLine.getFileOffset());
+                        samMatch.parse(samReader.readLine());
                         matchBlock.setText(samMatch.getBlastAlignmentText());
                         if (readBlock.getReadHeader() == null)
                             readBlock.setReadHeader(samMatch.getQueryName());
-                    } else if (samReader != null) {
-                        try {
-                            samReader.seek(matchLine.getFileOffset());
-                            samMatch.parse(samReader.readLine());
-                            matchBlock.setText(samMatch.getBlastAlignmentText());
-                            if (readBlock.getReadHeader() == null)
-                                readBlock.setReadHeader(samMatch.getQueryName());
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        }
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
                     }
                 }
                 matches.add(matchBlock);
@@ -210,7 +208,7 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
         if (wantReadText && (readBlock.getReadHeader() == null || readBlock.getReadHeader().length() == 0) && firstSAMLineForCurrentRead != null)
             readBlock.setReadHeader(Basic.getFirstWord(firstSAMLineForCurrentRead));
 
-        readBlock.setMatchBlocks(matches.toArray(new MatchBlockFromBlast[matches.size()]));
+        readBlock.setMatchBlocks(matches.toArray(new MatchBlockFromBlast[0]));
 
         return readBlock;
     }

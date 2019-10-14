@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * Open the replace dialog
  * Daniel Huson, 9 2016
  */
-public class ShowReplaceCommand extends CommandBase implements ICheckBoxCommand {
+class ShowReplaceCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).isShowReplaceToolBar();

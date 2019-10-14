@@ -40,7 +40,7 @@ import java.util.*;
  * * shape by command
  * * Daniel Huson, 9.2105
  */
-public class ShapeSamplesByCommand extends CommandBase implements ICommand {
+class ShapeSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "shapeBy attribute=<name>;";
     }
@@ -71,11 +71,7 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
         for (String value : value2Count.keySet()) {
             pairs[i++] = new Pair<>(value2Count.get(value), value);
         }
-        Arrays.sort(pairs, new Comparator<Pair<Integer, String>>() {
-            public int compare(Pair<Integer, String> p1, Pair<Integer, String> p2) {
-                return -p1.compareTo(p2);
-            }
-        });
+        Arrays.sort(pairs, (p1, p2) -> -p1.compareTo(p2));
 
         Map<String, NodeShape> value2shape = new HashMap<>();
         int count = 0;
@@ -108,34 +104,26 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
 
         if (attributes.size() > 0) {
             final JFrame frame = getViewer().getFrame();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    String defaultChoice = ProgramProperties.get("SetByAttribute", "");
+            Platform.runLater(() -> {
+                String defaultChoice = ProgramProperties.get("SetByAttribute", "");
 
-                    if (!attributes.contains(defaultChoice))
-                        defaultChoice = attributes.get(0);
+                if (!attributes.contains(defaultChoice))
+                    defaultChoice = attributes.get(0);
 
-                    ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
-                    dialog.setTitle("MEGAN6 " + getViewer().getClassName() + " choice");
-                    dialog.setHeaderText("Select attribute to shape by");
-                    dialog.setContentText("Choose attribute:");
+                ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
+                dialog.setTitle("MEGAN6 " + getViewer().getClassName() + " choice");
+                dialog.setHeaderText("Select attribute to shape by");
+                dialog.setContentText("Choose attribute:");
 
-                    if (frame != null) {
-                        dialog.setX(frame.getX() + (frame.getWidth() - 200) / 2);
-                        dialog.setY(frame.getY() + (frame.getHeight() - 200) / 2);
-                    }
+                if (frame != null) {
+                    dialog.setX(frame.getX() + (frame.getWidth() - 200) / 2);
+                    dialog.setY(frame.getY() + (frame.getHeight() - 200) / 2);
+                }
 
-                    final Optional<String> result = dialog.showAndWait();
-                    if (result.isPresent()) {
-                        final String choice = result.get();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                execute("shapeBy attribute='" + choice + "';");
-                            }
-                        });
-                    }
+                final Optional<String> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    final String choice = result.get();
+                    SwingUtilities.invokeLater(() -> execute("shapeBy attribute='" + choice + "';"));
                 }
             });
         }

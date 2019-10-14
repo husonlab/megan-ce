@@ -26,7 +26,7 @@ import java.io.*;
  * optimized int to int map, see http://java-performance.info/implementing-world-fastest-java-int-to-int-hash-map/
  */
 public class IntIntMap {
-    public static final int NO_VALUE = 0;
+    private static final int NO_VALUE = 0;
     private static final int FREE_KEY = 0;
 
     private static final int MAGIC_NUMBER = 123456789;

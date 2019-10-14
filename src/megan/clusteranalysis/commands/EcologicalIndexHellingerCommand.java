@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * method=Hellinger command
  * Daniel Huson, 6.2010
  */
-public class EcologicalIndexHellingerCommand extends CommandBase implements ICheckBoxCommand {
+class EcologicalIndexHellingerCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

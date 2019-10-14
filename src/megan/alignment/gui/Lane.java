@@ -183,13 +183,9 @@ public class Lane {
 
     public String toStringIncludingLeadingAndTrailingGaps() {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < getLeadingGaps(); i++) {
-            buf.append("-");
-        }
+        buf.append("-".repeat(Math.max(0, getLeadingGaps())));
         buf.append(block);
-        for (int i = 0; i < getTrailingGaps(); i++) {
-            buf.append("-");
-        }
+        buf.append("-".repeat(Math.max(0, getTrailingGaps())));
         return buf.toString();
     }
 
@@ -216,12 +212,10 @@ public class Lane {
     public boolean hasUnalignedCharAt(int col) {
         if (col < getFirstNonGapPosition()) {
             int firstUnalignedPrefixPos = getFirstNonGapPosition() - unalignedPrefix.length();
-            if (col > firstUnalignedPrefixPos)
-                return true;
+            return col > firstUnalignedPrefixPos;
         } else if (col >= getLastNonGapPosition()) {
             int lastUnalignedSuffixPos = getLastNonGapPosition() + unalignedSuffix.length();
-            if (col < lastUnalignedSuffixPos)
-                return true;
+            return col < lastUnalignedSuffixPos;
         }
         return false;
     }

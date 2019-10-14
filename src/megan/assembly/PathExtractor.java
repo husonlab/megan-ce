@@ -156,7 +156,7 @@ public class PathExtractor {
                 }
             }
 
-            pathsList.add(path.toArray(new Node[path.size()]));
+            pathsList.add(path.toArray(new Node[0]));
             progress.setProgress(initialNumberOfEdges - overlapGraphWorkingCopy.getNumberOfEdges());
         }
         if (progress instanceof ProgressPercentage)
@@ -172,7 +172,7 @@ public class PathExtractor {
                 singletonList.add(new2oldNode.get(v));
         }
         paths = pathsList.toArray(new Node[pathsList.size()][]);
-        singletons = singletonList.toArray(new Node[singletonList.size()]);
+        singletons = singletonList.toArray(new Node[0]);
 
         return paths.length;
     }

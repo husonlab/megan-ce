@@ -36,12 +36,7 @@ public class Match implements Comparator<Match> {
             return -1;
         else if (a.bitScore < b.bitScore)
             return 1;
-        else if (a.id < b.id)
-            return -1;
-        else if (a.id > b.id)
-            return 1;
-        else
-            return 0;
+        else return Integer.compare(a.id, b.id);
     }
 
     public float getBitScore() {

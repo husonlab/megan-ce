@@ -111,21 +111,21 @@ data                : <list of lists>, counts of observations by sample
                                                    ...]
     */
 
-    public String comment;
-    public String classification;
-    public String id;
-    public String format;
-    public String format_url;
-    public String type;
+    private String comment;
+    private String classification;
+    private String id;
+    private String format;
+    private String format_url;
+    private String type;
     public String generated_by;
-    public String date;
+    private String date;
     // public Date date;    // todo: should be date
-    public Map[] rows;
-    public Map[] columns;
-    public String matrix_type;
-    public String matrix_element_type;
-    public int[] shape;
-    public float[][] data;
+    private Map[] rows;
+    private Map[] columns;
+    private String matrix_type;
+    private String matrix_element_type;
+    private int[] shape;
+    private float[][] data;
 
     /**
      * default constructor
@@ -154,7 +154,7 @@ data                : <list of lists>, counts of observations by sample
      *
      * @throws IOException
      */
-    public void check() throws IOException {
+    private void check() throws IOException {
         boolean ok = false;
         if (type != null) {
             for (AcceptableTypes acceptable : AcceptableTypes.values()) {
@@ -321,21 +321,21 @@ data                : <list of lists>, counts of observations by sample
     }
 
     public boolean isTaxonomyData() {
-        return type != null && AcceptableTypes.Taxon_table.toString().equalsIgnoreCase(type);
+        return AcceptableTypes.Taxon_table.toString().equalsIgnoreCase(type);
     }
 
     public boolean isOTUData() {
-        return type != null && AcceptableTypes.OTU_table.toString().equalsIgnoreCase(type);
+        return AcceptableTypes.OTU_table.toString().equalsIgnoreCase(type);
     }
 
     public boolean isKEGGData() {
-        if (type == null || !AcceptableTypes.Function_table.toString().equalsIgnoreCase(type))
+        if (!AcceptableTypes.Function_table.toString().equalsIgnoreCase(type))
             return false;
         return comment != null && comment.contains("KEGG");
     }
 
     public boolean isSEEDData() {
-        if (type == null || !AcceptableTypes.Function_table.toString().equalsIgnoreCase(type))
+        if (!AcceptableTypes.Function_table.toString().equalsIgnoreCase(type))
             return false;
         if (rows.length == 0)
             return false;

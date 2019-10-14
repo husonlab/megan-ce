@@ -97,6 +97,6 @@ public class ColorSchemeAminoAcids implements IColorScheme {
         for (NAMES type : NAMES.values()) {
             names.add(type.toString());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 }

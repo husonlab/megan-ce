@@ -109,7 +109,7 @@ public class GoodallsDistance {
      * then normalize the values in each column
      */
 
-    public static Vector<Double[]> transpose(Vector<Double[]> numbers, boolean normalized) {
+    private static Vector<Double[]> transpose(Vector<Double[]> numbers, boolean normalized) {
         int row_l = numbers.get(0).length;
         int col_l = numbers.size();
         Vector<Double[]> res = new Vector<>();
@@ -284,7 +284,7 @@ public class GoodallsDistance {
      * @param normalized
      * @return Goodall's
      */
-    static public Vector<Vector<Double>> getGoodallsDistance(Vector<Double[]> numbers, boolean normalized) {
+    private static Vector<Vector<Double>> getGoodallsDistance(Vector<Double[]> numbers, boolean normalized) {
         Vector<Double> range = getRange(numbers);
         Vector<Double[]> transpose = transpose(numbers, normalized);
         /*

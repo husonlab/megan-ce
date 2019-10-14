@@ -161,21 +161,20 @@ public class GeneItemAccessor {
         return referenceHeader;
     }
 
-    public String getIndex2ref(int i) {
+    private String getIndex2ref(int i) {
         return index2ref[i];
     }
 
-    public int size() {
+    private int size() {
         return size;
     }
 
     /**
      * dump gene table to standard out
      *
-     * @param args
      */
-    public static void main(String[] args) throws IOException, UsageException, CanceledException {
-        args = new String[]{"-i", "/Users/huson/data/malt/gff/index/aadd.idx"};
+    public static void main() throws IOException, UsageException, CanceledException {
+        String[] args = new String[]{"-i", "/Users/huson/data/malt/gff/index/aadd.idx"};
 
         final ArgsOptions options = new ArgsOptions(args, null, "GeneTableDump", "Dump gene table");
         final String idxFile = options.getOptionMandatory("i", "idxFile", "Input aadd.idx file", "index/aadd.idx");
@@ -190,16 +189,7 @@ public class GeneItemAccessor {
                 System.err.println("ref[" + i + "]=" + geneTableAccess.getIndex2ref(i) + ":");
                 final IntervalTree<GeneItem> tree = geneTableAccess.getIntervals(i);
                 if (tree != null) {
-                    if (true) {
-                        System.err.println("Tree[" + idxFile + "]: " + Basic.abbreviateDotDotDot(tree.toString(), 1000));
-                    } else {
-                        w.write("RefIndex=" + i + "\n");
-
-                        for (Interval<GeneItem> interval : tree) {
-                            w.write(interval.getStart() + " " + interval.getEnd() + ": " + interval.getData() + "\n");
-                        }
-                        w.write("----\n");
-                    }
+                    System.err.println("Tree[" + idxFile + "]: " + Basic.abbreviateDotDotDot(tree.toString(), 1000));
                 }
             }
         }

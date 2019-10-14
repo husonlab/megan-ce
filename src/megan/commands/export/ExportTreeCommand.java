@@ -36,7 +36,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-public class ExportTreeCommand extends CommandBase implements ICommand {
+class ExportTreeCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=tree");

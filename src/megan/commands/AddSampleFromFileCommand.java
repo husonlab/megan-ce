@@ -48,7 +48,7 @@ import java.util.Set;
  * * add command
  * * Daniel Huson, 9.2012
  */
-public class AddSampleFromFileCommand extends CommandBase implements ICommand {
+class AddSampleFromFileCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "addSample [sample=<name>] source=<filename|pid> ... [overwrite={false|true}];";
     }
@@ -171,13 +171,13 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
         List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new MeganAndRMAFileFilter(), new MeganAndRMAFileFilter(), event, "Open MEGAN file to add");
         getDir().notifyUnlockInput();
 
-        if (files != null && files.size() > 0) {
-            String command = "addSample";
+        if (files.size() > 0) {
+            StringBuilder command = new StringBuilder("addSample");
             for (File file : files) {
-                command += " source='" + file.getPath() + "'";
+                command.append(" source='").append(file.getPath()).append("'");
             }
-            command += ";";
-            execute(command);
+            command.append(";");
+            execute(command.toString());
             ProgramProperties.put(MeganProperties.MEGANFILE, files.iterator().next().getAbsolutePath());
         }
     }

@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-public class ListDisabledCommand extends CommandBase implements ICommand {
+class ListDisabledCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "list taxa=disabled;";
     }
@@ -38,14 +38,12 @@ public class ListDisabledCommand extends CommandBase implements ICommand {
 
         final Set<Integer> disabledTopLevelTaxa = TaxonomyData.getDisabledInternalTaxa();
 
-        if (disabledTopLevelTaxa != null) {
-            System.out.println(String.format("Total disabled taxa:%,12d", TaxonomyData.getDisabledTaxa().size()));
-            System.out.println(String.format("Disabled top-level taxa:%,8d", TaxonomyData.getDisabledInternalTaxa().size()));
+        System.out.println(String.format("Total disabled taxa:%,12d", TaxonomyData.getDisabledTaxa().size()));
+        System.out.println(String.format("Disabled top-level taxa:%,8d", TaxonomyData.getDisabledInternalTaxa().size()));
 
-            for (Integer taxId : disabledTopLevelTaxa) {
-                String taxName = TaxonomyData.getName2IdMap().get(taxId);
-                System.out.println("[" + taxId + "] " + taxName);
-            }
+        for (Integer taxId : disabledTopLevelTaxa) {
+            String taxName = TaxonomyData.getName2IdMap().get(taxId);
+            System.out.println("[" + taxId + "] " + taxName);
         }
     }
 

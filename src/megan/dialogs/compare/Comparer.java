@@ -53,8 +53,8 @@ public class Comparer {
         }
     }
 
-    final List<Director> dirs;
-    int[] pid2pos;
+    private final List<Director> dirs;
+    private int[] pid2pos;
 
     private COMPARISON_MODE mode = COMPARISON_MODE.ABSOLUTE;
     private boolean ignoreUnassigned = false;
@@ -408,7 +408,7 @@ public class Comparer {
                     } else np.getWordRespectCase(); // skip
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return COMPARISON_MODE.ABSOLUTE;
     }
@@ -436,7 +436,7 @@ public class Comparer {
                     np.getWordRespectCase();
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return 0;
     }
@@ -446,7 +446,7 @@ public class Comparer {
      *
      * @param mode
      */
-    public void setMode(COMPARISON_MODE mode) {
+    private void setMode(COMPARISON_MODE mode) {
         this.mode = mode;
     }
 
@@ -459,11 +459,11 @@ public class Comparer {
      *
      * @return mode
      */
-    public COMPARISON_MODE getMode() {
+    private COMPARISON_MODE getMode() {
         return mode;
     }
 
-    public boolean isIgnoreUnassigned() {
+    private boolean isIgnoreUnassigned() {
         return ignoreUnassigned;
     }
 
@@ -475,7 +475,7 @@ public class Comparer {
         return dirs;
     }
 
-    public boolean isKeep1() {
+    private boolean isKeep1() {
         return keep1;
     }
 

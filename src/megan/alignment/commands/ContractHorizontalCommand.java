@@ -26,7 +26,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ContractHorizontalCommand extends CommandBase implements ICommand {
+class ContractHorizontalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

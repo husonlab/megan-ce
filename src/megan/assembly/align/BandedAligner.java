@@ -45,7 +45,7 @@ import jloda.util.ReusableByteBuffer;
  * banded DNA aligner. Does both local and semiGlobal alignment
  * Daniel Huson, 8.2014
  */
-public class BandedAligner {
+class BandedAligner {
     private double lambda = 0.625;
     private double lnK = -0.89159811928378356416921953633132;
     private final static double LN_2 = 0.69314718055994530941723212145818;
@@ -115,8 +115,6 @@ public class BandedAligner {
     private int queryPos;
     private int refPos;
 
-    private final boolean samSoftClipping;
-
     // new stuff:
 
     private byte[][] alignment; // last computed alignment
@@ -158,7 +156,7 @@ public class BandedAligner {
         traceBackIQuery = new byte[0][0];
         // todo: only use one traceback matrix
 
-        samSoftClipping = alignerOptions.isSamSoftClipping();
+        boolean samSoftClipping = alignerOptions.isSamSoftClipping();
     }
 
     /**
@@ -364,7 +362,7 @@ public class BandedAligner {
                     if (refIndex >= referenceLength) { // out of range of the alignment
                         traceBackM[col][row] = traceBackIRef[col][row] = traceBackIQuery[col][row] = DONE;
                         matrixM[col][row] = matrixIRef[col][row] = matrixIQuery[col][row] = 0;
-                    } else if (refIndex >= 0 && refIndex < referenceLength) { // do the actual alignment:
+                    } else if (refIndex >= 0) { // do the actual alignment:
                         int bestMScore = 0;
                         // match or mismatch
                         {
@@ -437,36 +435,6 @@ public class BandedAligner {
                     }
                     // else  refIndex >referenceLength
                 }
-            }
-        }
-
-        if (false) {
-            {
-                System.err.println("queryPos: " + queryPos);
-                System.err.println("refPos:    " + refPos);
-                System.err.println("seedLen.: " + seedLength);
-
-                System.err.println("Query:");
-                System.err.println(Basic.toString(query));
-                System.err.println("Reference:");
-                System.err.println(Basic.toString(reference));
-            }
-
-            {
-                System.err.println("SeedScore:   " + rawScore);
-                int firstScore = Math.max(Math.max(matrixIQuery[firstSeedCol][middleRow], matrixIRef[firstSeedCol][middleRow]), matrixM[firstSeedCol][middleRow]);
-                System.err.println("FirstScore:  " + firstScore);
-                int secondScore = Math.max(Math.max(matrixIQuery[lastSeedCol][middleRow], matrixIRef[lastSeedCol][middleRow]), matrixM[lastSeedCol][middleRow]);
-                System.err.println("secondScore: " + secondScore);
-                System.err.println("totalScore:  " + (rawScore + firstScore + secondScore));
-            }
-            {
-                System.err.println("Matrix M:");
-                System.err.println(toString(matrixM, 0, cols, query));
-                System.err.println("Matrix IQuery:");
-                System.err.println(toString(matrixIQuery, 0, cols, query));
-                System.err.println("Matrix IRef:");
-                System.err.println(toString(matrixIRef, 0, cols, query));
             }
         }
 
@@ -641,7 +609,7 @@ public class BandedAligner {
                     if (refIndex >= referenceLength) { // out of range of the alignment
                         traceBackM[col][row] = traceBackIRef[col][row] = traceBackIQuery[col][row] = DONE;
                         matrixM[col][row] = matrixIRef[col][row] = matrixIQuery[col][row] = -gapOpenPenalty;
-                    } else if (refIndex >= 0 && refIndex < referenceLength) { // do the actual alignment:
+                    } else if (refIndex >= 0) { // do the actual alignment:
                         int bestMScore = Integer.MIN_VALUE;
                         // match or mismatch
                         {
@@ -706,36 +674,6 @@ public class BandedAligner {
             }
         }
 
-        if (false) {
-            {
-                System.err.println("queryPos: " + queryPos);
-                System.err.println("refPos:    " + refPos);
-                System.err.println("seedLen.: " + seedLength);
-
-                System.err.println("Query:");
-                System.err.println(Basic.toString(query));
-                System.err.println("Reference:");
-                System.err.println(Basic.toString(reference));
-            }
-
-            {
-                System.err.println("SeedScore:   " + rawScore);
-                int firstScore = Math.max(Math.max(matrixIQuery[firstSeedCol][middleRow], matrixIRef[firstSeedCol][middleRow]), matrixM[firstSeedCol][middleRow]);
-                System.err.println("FirstScore:  " + firstScore);
-                int secondScore = Math.max(Math.max(matrixIQuery[lastSeedCol][middleRow], matrixIRef[lastSeedCol][middleRow]), matrixM[lastSeedCol][middleRow]);
-                System.err.println("secondScore: " + secondScore);
-                System.err.println("totalScore:  " + (rawScore + firstScore + secondScore));
-            }
-            {
-                System.err.println("Matrix M:");
-                System.err.println(toString(matrixM, 0, cols, query));
-                System.err.println("Matrix IQuery:");
-                System.err.println(toString(matrixIQuery, 0, cols, query));
-                System.err.println("Matrix IRef:");
-                System.err.println(toString(matrixIRef, 0, cols, query));
-            }
-        }
-
         rawScore += Math.max(Math.max(matrixIQuery[firstSeedCol][middleRow], matrixIRef[firstSeedCol][middleRow]), matrixM[firstSeedCol][middleRow]);
         rawScore += Math.max(Math.max(matrixIQuery[lastSeedCol][middleRow], matrixIRef[lastSeedCol][middleRow]), matrixM[lastSeedCol][middleRow]);
     }
@@ -758,7 +696,7 @@ public class BandedAligner {
      *
      * @return alignment
      */
-    public void computeAlignmentByTraceBack() {
+    private void computeAlignmentByTraceBack() {
         if (rawScore <= 0) {
             alignment = null;
             return;
@@ -1086,7 +1024,7 @@ public class BandedAligner {
         return gapOpens;
     }
 
-    public int getIdentities() {
+    private int getIdentities() {
         return identities;
     }
 
@@ -1159,7 +1097,7 @@ public class BandedAligner {
      * @param length
      * @return copy
      */
-    public byte[] copy(byte[] array, int length) {
+    private byte[] copy(byte[] array, int length) {
         byte[] result = new byte[length];
         System.arraycopy(array, 0, result, 0, length);
         return result;
@@ -1199,9 +1137,7 @@ public class BandedAligner {
         }
         buf.append("\n");
         buf.append("---+");
-        for (int i = firstCol; i < cols; i++) {
-            buf.append("----");
-        }
+        buf.append("----".repeat(Math.max(0, cols - firstCol)));
         buf.append("\n");
 
 

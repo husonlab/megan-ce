@@ -88,7 +88,7 @@ public class DAAQueryRecord {
         return daaParser;
     }
 
-    public void setDaaParser(DAAParser daaParser) {
+    private void setDaaParser(DAAParser daaParser) {
         this.daaParser = daaParser;
     }
 

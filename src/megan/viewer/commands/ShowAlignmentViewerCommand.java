@@ -78,7 +78,7 @@ public class ShowAlignmentViewerCommand extends CommandBase implements ICommand 
         // && (doc.getBlastMode().equals(BlastModeUtils.BlastX) || (doc.getBlastMode().equals(BlastModeUtils.BlastN) || (doc.getBlastMode().equals(BlastModeUtils.BlastP))));
     }
 
-    final public static String NAME = "Show Alignment...";
+    private final static String NAME = "Show Alignment...";
 
     public String getName() {
         return NAME;

@@ -56,7 +56,7 @@ public class SAMIteratorBase {
      * @param tag
      * @return
      */
-    protected static boolean startsWith(String string, String tag) {
+    static boolean startsWith(String string, String tag) {
         return string.startsWith(tag) || (tag.contains(" ") && string.startsWith(tag.replaceAll(" ", "")));
     }
 
@@ -67,7 +67,7 @@ public class SAMIteratorBase {
      * @param tag
      * @return next token after tag
      */
-    public static String getNextToken(String aLine, String tag) {
+    static String getNextToken(String aLine, String tag) {
         int a = endOfTagMatch(aLine, tag);
         if (a >= 0) {
             while (a < aLine.length() && Character.isWhitespace(aLine.charAt(a)))
@@ -87,7 +87,7 @@ public class SAMIteratorBase {
      * @param tag1
      * @return next token after tag
      */
-    public static String getNextToken(String aLine, String tag1, String tag2) {
+    static String getNextToken(String aLine, String tag1, String tag2) {
         int a = endOfTagMatch(aLine, tag1);
         if (a >= 0) {
             a = endOfTagMatch(aLine, a, tag2);
@@ -108,7 +108,7 @@ public class SAMIteratorBase {
      * @param tag1
      * @return next token after tag
      */
-    public static String getNextLetters(String aLine, String tag1, String tag2) {
+    static String getNextLetters(String aLine, String tag1, String tag2) {
         int a = endOfTagMatch(aLine, tag1);
         if (a >= 0) {
             a = endOfTagMatch(aLine, a, tag2);
@@ -183,7 +183,7 @@ public class SAMIteratorBase {
      *
      * @return true, if next line available
      */
-    protected boolean hasNextLine() {
+    boolean hasNextLine() {
         return pushedBackLine != null || iterator.hasNext();
     }
 
@@ -192,7 +192,7 @@ public class SAMIteratorBase {
      *
      * @return next line
      */
-    protected String nextLine() {
+    String nextLine() {
         if (pushedBackLine != null) {
             final String result = pushedBackLine;
             pushedBackLine = null;
@@ -207,7 +207,7 @@ public class SAMIteratorBase {
      * @param prefix
      * @return line or null
      */
-    protected String getNextLineStartsWith(String prefix) {
+    String getNextLineStartsWith(String prefix) {
         while (hasNextLine()) {
             final String line = nextLine();
             if (line.startsWith(prefix))
@@ -222,7 +222,7 @@ public class SAMIteratorBase {
      * @param infix
      * @return line or null
      */
-    protected String getNextLineContains(String infix) {
+    String getNextLineContains(String infix) {
         while (hasNextLine()) {
             final String line = nextLine();
             if (line.contains(infix))
@@ -236,7 +236,7 @@ public class SAMIteratorBase {
      *
      * @return next line or null
      */
-    protected String getNextLineStartsWith(String prefix1, String prefix2) {
+    String getNextLineStartsWith(String prefix1, String prefix2) {
         while (hasNextLine()) {
             final String line = nextLine();
             if (line.startsWith(prefix1) || line.startsWith(prefix2))
@@ -250,7 +250,7 @@ public class SAMIteratorBase {
      *
      * @return next line or null
      */
-    protected String skipEmptyLines() {
+    String skipEmptyLines() {
         while (true) {
             if (hasNextLine()) {
                 final String next = nextLine().trim();
@@ -266,21 +266,21 @@ public class SAMIteratorBase {
      *
      * @param line
      */
-    public void pushBackLine(String line) {
+    void pushBackLine(String line) {
         if (pushedBackLine != null)
             System.err.println("Error: Push back line, but buffer not empty");
         pushedBackLine = line;
     }
 
-    public long getLineNumber() {
+    long getLineNumber() {
         return iterator.getLineNumber();
     }
 
-    public int getMaxNumberOfMatchesPerRead() {
+    int getMaxNumberOfMatchesPerRead() {
         return maxNumberOfMatchesPerRead;
     }
 
-    public int getMaxNumberOfErrors() {
+    int getMaxNumberOfErrors() {
         return maxNumberOfErrors;
     }
 

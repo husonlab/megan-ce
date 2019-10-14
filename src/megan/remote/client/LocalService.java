@@ -99,7 +99,7 @@ public class LocalService implements IRemoteService {
      *
      * @param rootDirectory
      */
-    public void setRootDirectory(File rootDirectory) throws IOException {
+    private void setRootDirectory(File rootDirectory) throws IOException {
         if (rootDirectory != null) {
             rootDirectory = rootDirectory.getAbsoluteFile();
             if (!rootDirectory.isDirectory())
@@ -159,7 +159,7 @@ public class LocalService implements IRemoteService {
      * @param localFileName
      * @return full file path
      */
-    public String getAbsoluteFilePath(String localFileName) {
+    private String getAbsoluteFilePath(String localFileName) {
         return rootDirectory + File.separator + localFileName;
     }
 

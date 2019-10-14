@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class InspectReadsCommand extends CommandBase implements ICommand {
+class InspectReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "inspector reads=all;";
     }
@@ -62,33 +62,22 @@ public class InspectReadsCommand extends CommandBase implements ICommand {
         final Collection<Integer> ids = ClassificationManager.get(classificationName, true).getFullTree().getAllDescendants(id);
         name2Size2Ids.add(new Triplet<>(classIdName, size, ids));
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                inspectorWindow.getFrame().setVisible(true);
-                inspectorWindow.getFrame().toFront();
-                inspectorWindow.getFrame().setState(JFrame.NORMAL);
-                inspectorWindow.addTopLevelNode(name2Size2Ids, classificationName);
-                final Runnable job = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                inspectorWindow.getFrame().toFront();
-                            }
-                        });
-                    }
-                };
-                Thread thread = new Thread(job);
-                thread.setDaemon(true);
-                thread.start();
-            }
+        SwingUtilities.invokeLater(() -> {
+            inspectorWindow.getFrame().setVisible(true);
+            inspectorWindow.getFrame().toFront();
+            inspectorWindow.getFrame().setState(JFrame.NORMAL);
+            inspectorWindow.addTopLevelNode(name2Size2Ids, classificationName);
+            final Runnable job = () -> {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                SwingUtilities.invokeLater(() -> inspectorWindow.getFrame().toFront());
+            };
+            Thread thread = new Thread(job);
+            thread.setDaemon(true);
+            thread.start();
         });
     }
 
@@ -100,7 +89,7 @@ public class InspectReadsCommand extends CommandBase implements ICommand {
         return getViewer() instanceof LRInspectorViewer;
     }
 
-    final public static String NAME = "Inspect...";
+    private final static String NAME = "Inspect...";
 
     public String getName() {
         return NAME;

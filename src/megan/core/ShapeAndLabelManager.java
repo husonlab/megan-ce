@@ -26,13 +26,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * manage shapes and labels to be set by sampleViewer and shown by clusterViewer
  * Daniel Huson, 4.2013
  * todo: need to intergrate this
  */
-public class ShapeAndLabelManager {
+class ShapeAndLabelManager {
     private final Map<String, String> sample2label = new HashMap<>();
     private final Map<String, NodeShape> sample2shape = new HashMap<>();
 
@@ -84,10 +85,7 @@ public class ShapeAndLabelManager {
      */
     public NodeShape getShape(String sample) {
         NodeShape shape = sample2shape.get(sample);
-        if (shape == null)
-            return NodeShape.Oval;
-        else
-            return shape;
+        return Objects.requireNonNullElse(shape, NodeShape.Oval);
     }
 
     /**

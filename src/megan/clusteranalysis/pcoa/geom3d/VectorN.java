@@ -50,7 +50,7 @@ public class VectorN {
      *
      * @return size
      */
-    public int size() {
+    private int size() {
         return v.length;
     }
 
@@ -90,9 +90,9 @@ public class VectorN {
      * @return string
      */
     public String toString() {
-        String s = "{";
+        StringBuilder s = new StringBuilder("{");
         for (int j = 0; j < size(); j++)
-            s += (j == 0 ? "" : ",") + get(j);
+            s.append(j == 0 ? "" : ",").append(get(j));
         return s + "}";
     }
 

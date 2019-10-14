@@ -52,7 +52,7 @@ public class SetUseMagnitudeCommand extends megan.importblast.commands.CommandBa
         return true;
     }
 
-    public static final String NAME = "Use Magnitudes";
+    private static final String NAME = "Use Magnitudes";
 
     public String getName() {
         return NAME;

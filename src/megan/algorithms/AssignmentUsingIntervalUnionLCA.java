@@ -293,47 +293,44 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     }
 
     private Comparator<StartStopEvent> createComparator() {
-        return new Comparator<StartStopEvent>() {
-            @Override
-            public int compare(StartStopEvent a, StartStopEvent b) {
-                if (a.getPos() < b.getPos())
-                    return -1;
-                else if (a.getPos() > b.getPos())
-                    return 1;
-                else if (a.isStart() && b.isEnd())
-                    return -1;
-                else if (a.isEnd() && b.isStart())
-                    return 1;
-                else
-                    return 0;
-            }
+        return (a, b) -> {
+            if (a.getPos() < b.getPos())
+                return -1;
+            else if (a.getPos() > b.getPos())
+                return 1;
+            else if (a.isStart() && b.isEnd())
+                return -1;
+            else if (a.isEnd() && b.isStart())
+                return 1;
+            else
+                return 0;
         };
     }
 
-    private class StartStopEvent {
+    private static class StartStopEvent {
         private boolean start;
         private int pos;
         private int matchId;
 
-        public void set(boolean start, int pos, int matchId) {
+        void set(boolean start, int pos, int matchId) {
             this.start = start;
             this.pos = pos;
             this.matchId = matchId;
         }
 
-        public boolean isStart() {
+        boolean isStart() {
             return start;
         }
 
-        public boolean isEnd() {
+        boolean isEnd() {
             return !start;
         }
 
-        public int getPos() {
+        int getPos() {
             return pos;
         }
 
-        public int getMatchId() {
+        int getMatchId() {
             return matchId;
         }
     }

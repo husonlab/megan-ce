@@ -40,7 +40,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collections;
 
-public class ExportIndividualSamplesCommand extends CommandBase implements ICommand {
+class ExportIndividualSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "extract directory=<target-directory> replace={true|false};";
     }

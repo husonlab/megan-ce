@@ -38,45 +38,60 @@ public class DAAHeader {
     public final static long DAA_VERSION = 1L; // changed from 0 to 1 on Jan-25, 2018
     public final static int MEGAN_VERSION = 6;
 
-    protected final String fileName;
+    private final String fileName;
 
     // header1
-    protected long magicNumber;
-    protected long version;
+    private long magicNumber;
+    private long version;
 
     // header2:
-    protected long diamondBuild, dbSeqs, dbSeqsUsed, dbLetters, flags, queryRecords;
-    protected int modeRank, gapOpen, gapExtend, reward, penalty, reserved1, reserved2, reserved3;
+    private long diamondBuild;
+    private long dbSeqs;
+    private long dbSeqsUsed;
+    private long dbLetters;
+    private long flags;
+    private long queryRecords;
+    private int modeRank;
+    private int gapOpen;
+    private int gapExtend;
+    private int reward;
+    private int penalty;
+    private int reserved1;
+    private int reserved2;
+    private int reserved3;
 
-    protected double k, lambda, reserved4, reserved5;
-    protected final byte[] scoreMatrix = new byte[16];
-    protected final long[] blockSize = new long[256];
-    protected final byte[] blockTypeRank = new byte[256];
+    private double k;
+    private double lambda;
+    private double reserved4;
+    private double reserved5;
+    private final byte[] scoreMatrix = new byte[16];
+    private final long[] blockSize = new long[256];
+    private final byte[] blockTypeRank = new byte[256];
 
     // references:
     private byte[][] references;
-    protected int[] refLengths;
+    private int[] refLengths;
 
     private final int referenceLocationChunkBits = 6; // 6 bits = 64 chunk size
     private final int referenceLocationChunkSize = 1 << referenceLocationChunkBits;
     private long[] referenceLocations; // location of every 2^referenceLocationChunkBits reference
 
     // ref annotations:
-    protected int numberOfRefAnnotations;
-    protected int[][] refAnnotations = new int[256][];
-    protected String[] refAnnotationNames = new String[256];
-    protected int refAnnotationIndexForTaxonomy = -1;
+    private int numberOfRefAnnotations;
+    private final int[][] refAnnotations = new int[256][];
+    private final String[] refAnnotationNames = new String[256];
+    private int refAnnotationIndexForTaxonomy = -1;
 
     // helper variables:
-    protected String scoreMatrixName;
+    private String scoreMatrixName;
 
-    protected long headerSize;
+    private long headerSize;
 
-    protected int refNamesBlockIndex = -1;
-    protected int refLengthsBlockIndex = -1;
-    protected int alignmentsBlockIndex = -1;
+    private int refNamesBlockIndex = -1;
+    private int refLengthsBlockIndex = -1;
+    private int alignmentsBlockIndex = -1;
 
-    protected double lnK;
+    private double lnK;
 
     /**
      * constructor
@@ -301,7 +316,7 @@ public class DAAHeader {
         return dbSeqsUsed;
     }
 
-    public long getDbLetters() {
+    private long getDbLetters() {
         return dbLetters;
     }
 
@@ -551,7 +566,7 @@ public class DAAHeader {
         } catch (IOException e) {
             Basic.caught(e);
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -600,7 +615,7 @@ public class DAAHeader {
         }
     }
 
-    static final double LN_2 = 0.69314718055994530941723212145818;
+    private static final double LN_2 = 0.69314718055994530941723212145818;
 
     /**
      * compute the bit score from a raw score

@@ -42,7 +42,7 @@ import java.io.Writer;
  * save data command
  * Daniel Huson, 11.2010
  */
-public class ExportReferenceCommand extends CommandBase implements ICommand {
+class ExportReferenceCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export reference file=<filename> [what={all|selection}];";
     }

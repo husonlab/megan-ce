@@ -43,7 +43,7 @@ public class TopLevelAttributes {
             name = s;
         }
 
-        public boolean equalsName(String otherName) {
+        boolean equalsName(String otherName) {
             return name.equals(otherName);
         }
 
@@ -51,7 +51,7 @@ public class TopLevelAttributes {
             return this.name;
         }
 
-        public static Type valueOfName(String name) {
+        static Type valueOfName(String name) {
             for (Type value : Type.values())
                 if (value.equalsName(name))
                     return value;
@@ -90,7 +90,7 @@ public class TopLevelAttributes {
      * @param reader
      * @throws IOException
      */
-    public void read(IHDF5Reader reader) throws IOException {
+    private void read(IHDF5Reader reader) throws IOException {
         try {
             id = reader.getStringAttribute("/", "id");
             type = reader.getStringAttribute("/", "type");
@@ -198,13 +198,13 @@ public class TopLevelAttributes {
      * @param date Date
      * @return String with format "yyyy-MM-dd'T'HH:mm:ss'Z'"
      */
-    public static String getISO8601StringForDate(Date date) {
+    private static String getISO8601StringForDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(date);
     }
 
-    public static boolean isValidType(String type) {
+    private static boolean isValidType(String type) {
         return Type.valueOfName(type) != null;
     }
 }

@@ -39,7 +39,7 @@ import java.util.LinkedList;
  * Daniel Huson, 3.2013
  */
 public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "RadialTreeChart";
+    private static final String NAME = "RadialTreeChart";
 
     private enum DrawWhat {RegionsAndBars, Names, Selection, Values}
 
@@ -519,7 +519,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
         this.angleOffset = (int) Math.round(modulo360(angleOffset));
     }
 
-    public Shape getLabelShape(Point2D labelPosition, Dimension labelSize, double labelAngle) {
+    private Shape getLabelShape(Point2D labelPosition, Dimension labelSize, double labelAngle) {
         if (labelSize != null) {
             Point2D apt = labelPosition;
             if (apt != null) {

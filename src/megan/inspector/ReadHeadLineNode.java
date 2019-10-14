@@ -65,7 +65,7 @@ public class ReadHeadLineNode extends NodeBase {
         return uid;
     }
 
-    public int getReadLength() {
+    private int getReadLength() {
         return readSequence != null ? readSequence.length() : 0;
     }
 

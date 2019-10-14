@@ -36,7 +36,7 @@ import java.util.Collection;
  * compute biome
  * Daniel Huson, 2.2013, 7.2016
  */
-public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
+class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -68,9 +68,9 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
                 if (Basic.isFloat(result[0]) && Basic.isFloat(result[1])) {
 
                     sampleThresholdPercent = Basic.parseFloat(result[0]);
-                    ProgramProperties.put("CoreBiomeSampleThreshold", (double) sampleThresholdPercent);
+                    ProgramProperties.put("CoreBiomeSampleThreshold", sampleThresholdPercent);
                     classThresholdPercent = Basic.parseFloat(result[1]);
-                    ProgramProperties.put("CoreBiomeClassThreshold", (double) classThresholdPercent);
+                    ProgramProperties.put("CoreBiomeClassThreshold", classThresholdPercent);
 
                     execute("compute biome=core classThreshold=" + result[1] + " sampleThreshold=" + result[0] + " samples='" + Basic.toString(samples, "' '") + "';");
                 } else

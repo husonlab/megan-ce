@@ -36,7 +36,7 @@ import java.util.Optional;
  * * make a new attribute
  * * Daniel Huson, 19.2015
  */
-public class NewAttributeCommand extends CommandBase implements ICommand {
+class NewAttributeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "new attribute=<name> position=<number>;";
     }

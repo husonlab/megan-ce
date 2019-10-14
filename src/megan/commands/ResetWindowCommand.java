@@ -26,7 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ResetWindowCommand extends jloda.swing.commands.CommandBase implements ICommand {
+class ResetWindowCommand extends jloda.swing.commands.CommandBase implements ICommand {
     public String getSyntax() {
         return "reset windowLocation;";
     }
@@ -36,13 +36,10 @@ public class ResetWindowCommand extends jloda.swing.commands.CommandBase impleme
 
         final IDirectableViewer viewer = getViewer();
         // viewer.getFrame().setSize(1000, 1000);\
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                viewer.getFrame().setLocation(100, 100);
-                viewer.getFrame().setVisible(true);
-                viewer.getFrame().toFront();
-            }
+        SwingUtilities.invokeLater(() -> {
+            viewer.getFrame().setLocation(100, 100);
+            viewer.getFrame().setVisible(true);
+            viewer.getFrame().toFront();
         });
     }
 

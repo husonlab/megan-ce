@@ -40,7 +40,7 @@ import java.util.Random;
  * Daniel Huson, 7.2016
  */
 public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "BoxChart";
+    private static final String NAME = "BoxChart";
 
     /**
      * constructor
@@ -156,7 +156,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
                         index = groupSamplePairs.size();
-                        groupSamplePairs.add(new Pair<>(groupId, new ArrayList<String>()));
+                        groupSamplePairs.add(new Pair<>(groupId, new ArrayList<>()));
                         group2index.put(groupId, index);
                     }
                     final ArrayList<String> list = groupSamplePairs.get(index).getSecond();
@@ -377,7 +377,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                     Integer index = group2index.get(groupId);
                     if (index == null) {
                         index = groupSamplePairs.size();
-                        groupSamplePairs.add(new Pair<>(groupId, new ArrayList<String>()));
+                        groupSamplePairs.add(new Pair<>(groupId, new ArrayList<>()));
                         group2index.put(groupId, index);
                     }
                     final ArrayList<String> list = groupSamplePairs.get(index).getSecond();

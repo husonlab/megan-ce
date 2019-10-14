@@ -47,7 +47,7 @@ import java.util.Collection;
  * meganize DAA files
  * Daniel Huson, 3.2016
  */
-public class MeganizeDAACommand extends CommandBase implements ICommand {
+class MeganizeDAACommand extends CommandBase implements ICommand {
 
     /**
      * get command-line usage description
@@ -160,7 +160,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("useIdentityFilter=");
             useIdentityFilter = np.getBoolean();
             if (useIdentityFilter)
-                System.err.println("IGNORED setting: useIdentityFilter=" + useIdentityFilter);
+                System.err.println("IGNORED setting: useIdentityFilter=" + true);
         }
 
         Document.ReadAssignmentMode readAssignmentMode = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS;

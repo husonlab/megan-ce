@@ -28,7 +28,7 @@ import megan.chart.gui.LabelsJList;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SortAlphabeticallyBackwardCommand extends CommandBase implements ICommand {
+class SortAlphabeticallyBackwardCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

@@ -45,11 +45,11 @@ public class DefaultPlot2DData implements IPlot2DData {
     private final Map<String, LinkedList<Pair<Number, Number>>> series2DataXY;
     private final Map<String, Pair<Number, Number>> series2RangeX;
     private final Map<String, Pair<Number, Number>> series2RangeY;
-    private final Pair<Number, Number> rangeX = new Pair<Number, Number>(0, 0);
-    private final Pair<Number, Number> rangeY = new Pair<Number, Number>(0, 0);
+    private final Pair<Number, Number> rangeX = new Pair<>(0, 0);
+    private final Pair<Number, Number> rangeY = new Pair<>(0, 0);
 
-    private Map<String, String> seriesToolTips;
-    private Map<String, String> classesToolTips;
+    private final Map<String, String> seriesToolTips;
+    private final Map<String, String> classesToolTips;
 
 
     public DefaultPlot2DData() {
@@ -140,8 +140,7 @@ public class DefaultPlot2DData implements IPlot2DData {
     }
 
     public void setDataForSeries(String series, Collection<Pair<Number, Number>> dataXY) {
-        LinkedList<Pair<Number, Number>> list = new LinkedList<>();
-        list.addAll(dataXY);
+        LinkedList<Pair<Number, Number>> list = new LinkedList<>(dataXY);
         series2DataXY.put(series, list);
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
@@ -156,8 +155,8 @@ public class DefaultPlot2DData implements IPlot2DData {
             minY = Math.min(y, minY);
             maxY = Math.max(y, maxY);
         }
-        series2RangeX.put(series, new Pair<Number, Number>(minX, maxX));
-        series2RangeY.put(series, new Pair<Number, Number>(minY, maxY));
+        series2RangeX.put(series, new Pair<>(minX, maxX));
+        series2RangeY.put(series, new Pair<>(minY, maxY));
 
         if (rangeX.get1().doubleValue() == 0 && rangeX.get2().doubleValue() == 0)
             rangeX.set(minX, maxX);
@@ -191,11 +190,7 @@ public class DefaultPlot2DData implements IPlot2DData {
     }
 
     public void addValue(String series, Number x, Number y) {
-        LinkedList<Pair<Number, Number>> list = series2DataXY.get(series);
-        if (list == null) {
-            list = new LinkedList<>();
-            series2DataXY.put(series, list);
-        }
+        LinkedList<Pair<Number, Number>> list = series2DataXY.computeIfAbsent(series, k -> new LinkedList<>());
         list.add(new Pair<>(x, y));
 
         Pair<Number, Number> rangeXd = series2RangeX.get(series);

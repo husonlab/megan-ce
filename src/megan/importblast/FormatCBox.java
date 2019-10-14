@@ -22,6 +22,7 @@ import megan.parsers.blast.BlastFileFormat;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * combo box for choosing blast format
@@ -48,7 +49,7 @@ public class FormatCBox extends JComboBox<String> {
      * @return selected format
      */
     public String getSelectedFormat() {
-        return getSelectedItem().toString();
+        return Objects.requireNonNull(getSelectedItem()).toString();
     }
 
     /**

@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * * reorder samples in viewer
  * * Daniel Huson, 9.2012
  */
-public class SqueezeWidthColumnsCommand extends CommandBase implements ICommand {
+class SqueezeWidthColumnsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "squeeze above=<number> to=<number>;";
     }
@@ -47,15 +47,12 @@ public class SqueezeWidthColumnsCommand extends CommandBase implements ICommand 
         final int size = np.getInt(1, threshold);
         np.matchIgnoreCase(";");
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final SamplesViewer viewer = (SamplesViewer) getViewer();
-                for (int col = 0; col < viewer.getSamplesTableView().getAttributeCount(); col++) {
-                    final TableColumn<MyTableView.MyTableRow, ?> column = viewer.getSamplesTableView().getAttribute(col);
-                    if (column != null && column.getWidth() > threshold)
-                        column.setPrefWidth(size);
-                }
+        Platform.runLater(() -> {
+            final SamplesViewer viewer = (SamplesViewer) getViewer();
+            for (int col = 0; col < viewer.getSamplesTableView().getAttributeCount(); col++) {
+                final TableColumn<MyTableView.MyTableRow, ?> column = viewer.getSamplesTableView().getAttribute(col);
+                if (column != null && column.getWidth() > threshold)
+                    column.setPrefWidth(size);
             }
         });
     }

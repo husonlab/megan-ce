@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * copy command
  * Daniel Huson, 7.2010
  */
-public class CopyImageCommand extends CommandBase implements ICommand {
+class CopyImageCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

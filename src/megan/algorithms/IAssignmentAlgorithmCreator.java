@@ -23,7 +23,7 @@ package megan.algorithms;
  * Assignment algorithm creator
  * Daniel Huson, 1.2016
  */
-public interface IAssignmentAlgorithmCreator {
+interface IAssignmentAlgorithmCreator {
     /**
      * create a new assignment algorithm object
      */

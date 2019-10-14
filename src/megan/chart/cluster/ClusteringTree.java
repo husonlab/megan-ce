@@ -104,7 +104,7 @@ public class ClusteringTree {
                 final Distances distances;
                 switch (type) {
                     case SERIES: {
-                        final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[seriesAndClass2Value.rowKeySet().size()]);
+                        final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[0]);
 
                         taxa = new Taxa();
                         for (String seriesName : series)
@@ -119,7 +119,7 @@ public class ClusteringTree {
                         break;
                     }
                     case CLASSES: {
-                        final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[seriesAndClass2Value.columnKeySet().size()]);
+                        final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[0]);
 
                         taxa = new Taxa();
                         for (String className : classes)
@@ -328,7 +328,7 @@ public class ClusteringTree {
 
         gc.setStroke(new BasicStroke(1));
 
-        if (previousRectangle == null || !rect.equals(previousRectangle)) {
+        if (!rect.equals(previousRectangle)) {
             previousRectangle = rect;
             fitToRectangle(treeView, rect);
         }

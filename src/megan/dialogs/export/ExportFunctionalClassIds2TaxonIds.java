@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -48,7 +49,7 @@ import java.util.TreeMap;
  * exports a functional classification to taxa table
  * Daniel Huson, 12.2011, 1.2019
  */
-public class ExportFunctionalClassIds2TaxonIds {
+class ExportFunctionalClassIds2TaxonIds {
 
     /**
      * export a table of functional classification ids to taxa
@@ -101,11 +102,7 @@ public class ExportFunctionalClassIds2TaxonIds {
                             classId = IdMapper.LOW_COMPLEXITY_ID;
                         else
                             classId = TopAssignment.computeId(classificationName, doc.getMinScore(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock);
-                        int[] counts = classId2Counts.get(classId);
-                        if (counts == null) {
-                            counts = new int[numberOfTaxa];
-                            classId2Counts.put(classId, counts);
-                        }
+                        int[] counts = classId2Counts.computeIfAbsent(classId, k -> new int[numberOfTaxa]);
                         counts[countTaxa]++;
                         progressListener.checkForCancel();
                     }
@@ -136,10 +133,7 @@ public class ExportFunctionalClassIds2TaxonIds {
                         w.write("" + classId);
                     } else {
                         final String name = classification.getName2IdMap().get(classId);
-                        if (name != null)
-                            w.write(name);
-                        else
-                            w.write("" + classId);
+                        w.write(Objects.requireNonNullElseGet(name, () -> "" + classId));
                     }
 
                     for (int x : entry.getValue()) {

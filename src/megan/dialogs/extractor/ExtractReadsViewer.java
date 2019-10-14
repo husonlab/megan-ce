@@ -200,7 +200,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Extract by " + getMode() + " - " + dir.getDocument().getTitle();
 
         /*

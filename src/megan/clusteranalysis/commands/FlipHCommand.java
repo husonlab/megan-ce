@@ -29,7 +29,7 @@ import java.awt.event.ActionEvent;
  * flip horizontally
  * Daniel Huson, 3.2013
  */
-public class FlipHCommand extends CommandBase implements ICheckBoxCommand {
+class FlipHCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

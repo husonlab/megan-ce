@@ -100,7 +100,7 @@ public class SyncDataTableAndClassificationViewer {
                                     try {
                                         classificationViewer.getNV(v).read(format);
                                         changed = true;
-                                    } catch (IOException e) {
+                                    } catch (IOException ignored) {
 
                                     }
                                 }
@@ -170,7 +170,7 @@ public class SyncDataTableAndClassificationViewer {
                                                 classificationViewer.getEV(e).read(format);
                                                 changed = true;
                                             }
-                                        } catch (IOException ex) {
+                                        } catch (IOException ignored) {
 
                                         }
                                     }
@@ -203,7 +203,7 @@ public class SyncDataTableAndClassificationViewer {
                         String format = classificationViewer.getNV(v).toString(false);
                         buf.append(fviewerId).append(":").append(format);
                     }
-                } catch (NotOwnerException ex) {
+                } catch (NotOwnerException ignored) {
                 }
             }
             table.setNodeFormats(classificationName, buf.toString());
@@ -239,8 +239,7 @@ public class SyncDataTableAndClassificationViewer {
         table.setNodeStyle(classificationName, classificationViewer.getNodeDrawer().getStyle().toString());
 
         // Sync collapsed nodes:
-        Set<Integer> collapsed = new HashSet<>();
-        collapsed.addAll(classificationViewer.getCollapsedIds());
+        Set<Integer> collapsed = new HashSet<>(classificationViewer.getCollapsedIds());
         if (collapsed.size() == 0)
             collapsed.add(-1); // collapsed must contain atleast one element, otherwise will be ignored
         table.setCollapsed(classificationName, collapsed);

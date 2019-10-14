@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImportBiom2Taxonomy {
+class ImportBiom2Taxonomy {
     private final static String[] keys = {"taxonomy", "organism", "organisms"};
 
     /**
@@ -79,11 +79,7 @@ public class ImportBiom2Taxonomy {
                     countLinesSkipped++;
                 }
 
-                float[] array = class2counts.get(taxonId);
-                if (array == null) {
-                    array = new float[numberOfSamples];
-                    class2counts.put(taxonId, array);
-                }
+                float[] array = class2counts.computeIfAbsent(taxonId, k -> new float[numberOfSamples]);
                 array[i] += data[j];
             }
         }

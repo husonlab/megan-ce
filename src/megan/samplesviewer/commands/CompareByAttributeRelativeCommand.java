@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * * compare by command
  * * Daniel Huson, 9.2015
  */
-public class CompareByAttributeRelativeCommand extends CommandBase implements ICommand {
+class CompareByAttributeRelativeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

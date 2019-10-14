@@ -128,7 +128,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
         close();
     }
 
-    public class DataRecord {
+    static class DataRecord {
         ListOfLongs locations;
         float weight;
         int sum;

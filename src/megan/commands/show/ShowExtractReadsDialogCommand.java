@@ -68,7 +68,7 @@ public class ShowExtractReadsDialogCommand extends CommandBase implements IComma
                 && getDir().getDocument().getMeganFile().hasDataConnector();
     }
 
-    final public static String NAME = "Extract Reads...";
+    private final static String NAME = "Extract Reads...";
 
     public String getName() {
         return NAME;

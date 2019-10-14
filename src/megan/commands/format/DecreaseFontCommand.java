@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * set size
  * Daniel Huson, 4.2011
  */
-public class DecreaseFontCommand extends CommandBase implements ICommand {
+class DecreaseFontCommand extends CommandBase implements ICommand {
 
     /**
      * get the name to be used as a menu label

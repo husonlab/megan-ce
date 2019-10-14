@@ -43,7 +43,7 @@ import java.util.*;
  * Daniel Huson, 11.2015
  */
 public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implements IChartDrawer {
-    public static final String NAME = "AttributeCorrelationPlot";
+    private static final String NAME = "AttributeCorrelationPlot";
 
     private String[] attributeNames;
 
@@ -491,8 +491,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         }
 
         {
-            final ArrayList<String> currentClasses = new ArrayList<>();
-            currentClasses.addAll(getChartData().getClassNames());
+            final ArrayList<String> currentClasses = new ArrayList<>(getChartData().getClassNames());
             if (!previousClasses.equals(currentClasses)) {
                 mustUpdate = true;
                 previousClasses.clear();
@@ -501,8 +500,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         }
 
         {
-            final ArrayList<String> currentSamples = new ArrayList<>();
-            currentSamples.addAll(getChartData().getSeriesNames());
+            final ArrayList<String> currentSamples = new ArrayList<>(getChartData().getSeriesNames());
             if (!previousSamples.equals(currentSamples)) {
                 mustUpdate = true;
                 previousSamples.clear();
@@ -512,8 +510,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         }
 
         {
-            final Set<String> currentAttributes = new HashSet<>();
-            currentAttributes.addAll(getViewer().getAttributesList().getEnabledLabels());
+            final Set<String> currentAttributes = new HashSet<>(getViewer().getAttributesList().getEnabledLabels());
             if (!previousAttributes.equals(currentAttributes)) {
                 mustUpdate = true;
                 previousAttributes.clear();
@@ -532,8 +529,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         }
 
         if (!mustUpdate) {
-            final Set<String> currentAttributes = new HashSet<>();
-            currentAttributes.addAll(getViewer().getAttributesList().getAllLabels());
+            final Set<String> currentAttributes = new HashSet<>(getViewer().getAttributesList().getAllLabels());
             if (!currentAttributes.equals(viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes())) {
                 viewer.getAttributesList().sync(viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(), null, false);
                 mustUpdate = true;
@@ -551,32 +547,28 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 future.cancel(true);
                 future = null;
             }
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    try {
-                        inUpdateCoordinates = true;
-                        updateCoordinates();
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            public void run() {
-                                try {
-                                    if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
-                                        updateClassesJList();
-                                    previousClusterClasses = viewer.getClassesList().isDoClustering();
-                                    if (!previousClusterAttributes && viewer.getAttributesList().isDoClustering())
-                                        updateAttributesJList();
-                                    previousClusterAttributes = viewer.getAttributesList().isDoClustering();
-                                    viewer.repaint();
-                                } catch (Exception e) {
-                                    Basic.caught(e);
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        //Basic.caught(e);
-                    } finally {
-                        future = null;
-                        inUpdateCoordinates = false;
-                    }
+            future = executorService.submit(() -> {
+                try {
+                    inUpdateCoordinates = true;
+                    updateCoordinates();
+                    SwingUtilities.invokeAndWait(() -> {
+                        try {
+                            if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                                updateClassesJList();
+                            previousClusterClasses = viewer.getClassesList().isDoClustering();
+                            if (!previousClusterAttributes && viewer.getAttributesList().isDoClustering())
+                                updateAttributesJList();
+                            previousClusterAttributes = viewer.getAttributesList().isDoClustering();
+                            viewer.repaint();
+                        } catch (Exception e) {
+                            Basic.caught(e);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Basic.caught(e);
+                } finally {
+                    future = null;
+                    inUpdateCoordinates = false;
                 }
             });
         } else {
@@ -615,13 +607,13 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
         final String[] currentClasses;
         {
             final Collection<String> list = getViewer().getClassesList().getEnabledLabels();
-            currentClasses = list.toArray(new String[list.size()]);
+            currentClasses = list.toArray(new String[0]);
         }
 
         final String[] currentAttributes;
         {
             final Collection<String> list = getViewer().getAttributesList().getEnabledLabels();
-            currentAttributes = list.toArray(new String[list.size()]);
+            currentAttributes = list.toArray(new String[0]);
         }
 
         for (String className : currentClasses) {
@@ -637,7 +629,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             classesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.RIGHT : ClusteringTree.SIDE.TOP);
             classesClusteringTree.updateClustering(currentClasses, dataMatrix.copy());
             final Collection<String> list = classesClusteringTree.getLabelOrder();
-            classNames = list.toArray(new String[list.size()]);
+            classNames = list.toArray(new String[0]);
         } else
             classNames = currentClasses;
 
@@ -645,7 +637,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             attributesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.TOP : ClusteringTree.SIDE.RIGHT);
             attributesClusteringTree.updateClustering(currentAttributes, dataMatrix.computeTransposedTable());
             final Collection<String> list = attributesClusteringTree.getLabelOrder();
-            attributeNames = list.toArray(new String[list.size()]);
+            attributeNames = list.toArray(new String[0]);
         } else
             attributeNames = currentAttributes;
 
@@ -653,8 +645,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     }
 
     private void updateClassesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedClasses());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedClasses());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(classNames));
         final Collection<String> others = viewer.getClassesList().getAllLabels();
         others.removeAll(ordered);
@@ -665,8 +656,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     }
 
     private void updateAttributesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedAttributes());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedAttributes());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(attributeNames));
         final Collection<String> others = viewer.getAttributesList().getAllLabels();
         others.removeAll(ordered);
@@ -713,60 +703,57 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     }
 
     public IPopupMenuModifier getPopupMenuModifier() {
-        return new IPopupMenuModifier() {
-            @Override
-            public void apply(JPopupMenu menu, final CommandManager commandManager) {
-                AttributeCorrelationPlotDrawer.super.getPopupMenuModifier().apply(menu, commandManager);
+        return (menu, commandManager) -> {
+            AttributeCorrelationPlotDrawer.super.getPopupMenuModifier().apply(menu, commandManager);
 
-                menu.addSeparator();
-                {
-                    final AbstractAction action = (new AbstractAction("Show Correlation Values...") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            final String classification = viewer.getParentViewer().getClassName();
+            menu.addSeparator();
+            {
+                final AbstractAction action = (new AbstractAction("Show Correlation Values...") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        final String classification = viewer.getParentViewer().getClassName();
 
-                            final StringBuilder buf = new StringBuilder();
-                            buf.append("show window=Message;");
-                            for (String attribute : getChartData().getChartSelection().getSelectedSeries()) {
-                                buf.append(";correlate class='").append(Basic.toString(getChartData().getChartSelection().getSelectedClasses(), "' '")).append("'")
-                                        .append(" classification='").append(classification).append("' attribute='").append(attribute).append("';");
-                            }
-                            commandManager.getDir().execute(buf.toString(), commandManager);
+                        final StringBuilder buf = new StringBuilder();
+                        buf.append("show window=Message;");
+                        for (String attribute : getChartData().getChartSelection().getSelectedSeries()) {
+                            buf.append(";correlate class='").append(Basic.toString(getChartData().getChartSelection().getSelectedClasses(), "' '")).append("'")
+                                    .append(" classification='").append(classification).append("' attribute='").append(attribute).append("';");
                         }
-                    });
-                    action.setEnabled(getChartData().getChartSelection().getSelectedClasses().size() >= 1 &&
-                            getChartData().getChartSelection().getSelectedSeries().size() >= 1);
+                        commandManager.getDir().execute(buf.toString(), commandManager);
+                    }
+                });
+                action.setEnabled(getChartData().getChartSelection().getSelectedClasses().size() >= 1 &&
+                        getChartData().getChartSelection().getSelectedSeries().size() >= 1);
 
-                    menu.add(action);
-                }
-                menu.addSeparator();
+                menu.add(action);
+            }
+            menu.addSeparator();
 
-                {
-                    final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (classesClusteringTree.hasSelectedSubTree()) {
-                                //System.err.println("Rotate Classes");
-                                classesClusteringTree.rotateSelectedSubTree();
-                                final Collection<String> list = classesClusteringTree.getLabelOrder();
-                                classNames = list.toArray(new String[list.size()]);
-                                updateClassesJList();
-                                getJPanel().repaint();
-                            } else if (attributesClusteringTree.hasSelectedSubTree()) {
-                                // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
-                                //System.err.println("Rotate Series");
-                                attributesClusteringTree.rotateSelectedSubTree();
-                                //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
-                                final Collection<String> list = attributesClusteringTree.getLabelOrder();
-                                attributeNames = list.toArray(new String[list.size()]);
-                                updateAttributesJList();
-                                getJPanel().repaint();
-                            }
+            {
+                final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (classesClusteringTree.hasSelectedSubTree()) {
+                            //System.err.println("Rotate Classes");
+                            classesClusteringTree.rotateSelectedSubTree();
+                            final Collection<String> list = classesClusteringTree.getLabelOrder();
+                            classNames = list.toArray(new String[list.size()]);
+                            updateClassesJList();
+                            getJPanel().repaint();
+                        } else if (attributesClusteringTree.hasSelectedSubTree()) {
+                            // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                            //System.err.println("Rotate Series");
+                            attributesClusteringTree.rotateSelectedSubTree();
+                            //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                            final Collection<String> list = attributesClusteringTree.getLabelOrder();
+                            attributeNames = list.toArray(new String[list.size()]);
+                            updateAttributesJList();
+                            getJPanel().repaint();
                         }
-                    });
-                    action.setEnabled(classesClusteringTree.hasSelectedSubTree() != attributesClusteringTree.hasSelectedSubTree());
-                    menu.add(action);
-                }
+                    }
+                });
+                action.setEnabled(classesClusteringTree.hasSelectedSubTree() != attributesClusteringTree.hasSelectedSubTree());
+                menu.add(action);
             }
         };
     }

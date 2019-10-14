@@ -36,16 +36,16 @@ import java.util.TreeSet;
  * Daniel Huson, 4.2015
  */
 public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator {
-    public final static String NEW_QUERY = "Query=";
-    public final static String NEW_MATCH = ">";
-    public final static String QUERY = "Query";
-    public final static String SUBJECT = "Sbjct";
-    public final static String SCORE = "Score";
-    public final static String EXPECT = "Expect";
-    public final static String LENGTH = "Length";
-    public final static String IDENTITIES = "Identities";
-    public final static String FRAME = "Frame";
-    public final static String EQUALS = "=";
+    private final static String NEW_QUERY = "Query=";
+    private final static String NEW_MATCH = ">";
+    private final static String QUERY = "Query";
+    private final static String SUBJECT = "Sbjct";
+    private final static String SCORE = "Score";
+    private final static String EXPECT = "Expect";
+    private final static String LENGTH = "Length";
+    private final static String IDENTITIES = "Identities";
+    private final static String FRAME = "Frame";
+    private final static String EQUALS = "=";
 
     private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
@@ -53,7 +53,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
 
     private final ArrayList<String> refHeaderLines = new ArrayList<>(1000);
 
-    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     private List<Match> listOfMatches = null; // if we want to iterate over all matches in the order they were obtained, then must set this to non-null
@@ -282,12 +282,12 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         buffer.append(alignedQuery.replaceAll("-", "")).append("\t");
         buffer.append("*\t");
 
-        buffer.append(String.format("AS:i:%d\t", (int) Math.round(bitScore)));
+        buffer.append(String.format("AS:i:%d\t", Math.round(bitScore)));
         buffer.append(String.format("NM:i:%d\t", Utilities.computeEditDistance(alignedQuery, alignedReference)));
         buffer.append(String.format("ZL:i:%d\t", referenceLength));
         buffer.append(String.format("ZR:i:%d\t", rawScore));
         buffer.append(String.format("ZE:f:%g\t", expect));
-        buffer.append(String.format("ZI:i:%d\t", (int) Math.round(percentIdentity)));
+        buffer.append(String.format("ZI:i:%d\t", Math.round(percentIdentity)));
         if (frame != 0)
             buffer.append(String.format("ZF:i:%d\t", frame));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
@@ -298,7 +298,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     }
 
     public void setReportAllMatchesInOriginalOrder(boolean report) {
-        listOfMatches = (report ? new ArrayList<Match>() : null);
+        listOfMatches = (report ? new ArrayList<>() : null);
     }
 
     public boolean isReportAllMatchesInOriginalOrder() {

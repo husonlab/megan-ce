@@ -72,7 +72,7 @@ public class ActiveMatches {
      * @param readBlock     current read block
      * @param activeMatches current set of active matches
      */
-    public static void applyTopPercentFilter(double topPercent, double bestScore, float minPercentIdentity, IReadBlock readBlock, BitSet activeMatches) {
+    private static void applyTopPercentFilter(double topPercent, double bestScore, float minPercentIdentity, IReadBlock readBlock, BitSet activeMatches) {
         if (topPercent > 0 && topPercent < 100) {
             if (bestScore == 0) {
                 for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {

@@ -36,7 +36,7 @@ import java.io.StringWriter;
  * translate selected sequence command
  * Daniel Huson, 11.2011
  */
-public class TranslateSelectedSequenceCommand extends CommandBase implements ICommand {
+class TranslateSelectedSequenceCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -89,7 +89,7 @@ public class TranslateSelectedSequenceCommand extends CommandBase implements ICo
         execute(getSyntax());
     }
 
-    public static final String NAME = "Translate...";
+    private static final String NAME = "Translate...";
 
     public String getName() {
         return NAME;

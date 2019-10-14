@@ -139,7 +139,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         return matchBlocks.iterator();
     }
 
-    public int getLength() {
+    private int getLength() {
         return getEnd() - getStart() + 1;
     }
 
@@ -147,11 +147,11 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         return reverse;
     }
 
-    public int getStart() {
+    private int getStart() {
         return start;
     }
 
-    public int getEnd() {
+    private int getEnd() {
         return end;
     }
 
@@ -175,38 +175,32 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         if (accessions.size() > 0) {
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem copy = new MenuItem("Copy Alignments");
-            copy.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    final Clipboard clipboard = Clipboard.getSystemClipboard();
-                    final ClipboardContent content = new ClipboardContent();
-                    final StringBuilder buf = new StringBuilder();
-                    boolean first = true;
-                    for (IMatchBlock matchBlock : getMatchBlocks()) {
-                        if (first)
-                            first = false;
-                        else
-                            buf.append("\n");
-                        buf.append(matchBlock.getText());
-                    }
-                    content.putString(buf.toString());
-                    clipboard.setContent(content);
+            copy.setOnAction(event -> {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                final StringBuilder buf = new StringBuilder();
+                boolean first = true;
+                for (IMatchBlock matchBlock : getMatchBlocks()) {
+                    if (first)
+                        first = false;
+                    else
+                        buf.append("\n");
+                    buf.append(matchBlock.getText());
                 }
+                content.putString(buf.toString());
+                clipboard.setContent(content);
             });
             contextMenu.getItems().add(copy);
             contextMenu.getItems().add(new SeparatorMenuItem());
 
             for (final String accession : accessions) {
                 final MenuItem menuItem = new MenuItem("Search on NCBI...");
-                menuItem.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            final String query = accession.replaceAll("gi\\|[0-9]*", "").replaceAll("[a-zA-Z]*\\|", " ").replaceAll("[/\\| ]*]", " ").replaceAll("^\\s+", "").replaceAll("\\s+", "+");
-                            BasicSwing.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/protein/" + query));
-                        } catch (MalformedURLException e) {
-                            Basic.caught(e);
-                        }
+                menuItem.setOnAction(event -> {
+                    try {
+                        final String query = accession.replaceAll("gi\\|[0-9]*", "").replaceAll("[a-zA-Z]*\\|", " ").replaceAll("[/\\| ]*]", " ").replaceAll("^\\s+", "").replaceAll("\\s+", "+");
+                        BasicSwing.openWebPage(new URL("https://www.ncbi.nlm.nih.gov/protein/" + query));
+                    } catch (MalformedURLException e) {
+                        Basic.caught(e);
                     }
                 });
                 contextMenu.getItems().add(menuItem);
@@ -243,8 +237,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
             buf.append("Matches: ").append(matchBlocks.size()).append("\n");
         for (IMatchBlock matchBlock : getMatchBlocks()) {
             final String accession = Basic.swallowLeadingGreaterSign(matchBlock.getTextFirstWord());
-            if (accession != null)
-                buf.append(String.format("-- Accession: %s --\n", accession));
+            buf.append(String.format("-- Accession: %s --\n", accession));
             buf.append(String.format("Bit score: %.0f, Expect: %f\n", matchBlock.getBitScore(), matchBlock.getExpected()));
             for (String cName : cNames) {
                 int classId = matchBlock.getId(cName);
@@ -259,18 +252,13 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         return buf.toString();
     }
 
-    class BitScoreComparator implements Comparator<IMatchBlock> {
+    static class BitScoreComparator implements Comparator<IMatchBlock> {
         public int compare(IMatchBlock a, IMatchBlock b) {
             if (a.getBitScore() > b.getBitScore())
                 return -1;
             else if (a.getBitScore() < b.getBitScore())
                 return 1;
-            else if (a.getUId() < b.getUId())
-                return -1;
-            else if (a.getUId() > b.getUId())
-                return 1;
-            else
-                return 0;
+            else return Long.compare(a.getUId(), b.getUId());
         }
     }
 

@@ -100,22 +100,19 @@ public class MultiWords {
             }
         }
 
-        Arrays.sort(pairs, 0, count, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] a, int[] b) {
-                int aLen = a[1] - a[0];
-                int bLen = b[1] - b[0];
-                if (aLen > bLen)
-                    return -1;
-                else if (aLen < bLen)
-                    return 1;
-                if (a[0] < b[0])
-                    return -1;
-                else if (a[0] > b[0])
-                    return 1;
-                else
-                    return 0; // have same length and start, must be equalOverShorterOfBoth
-            }
+        Arrays.sort(pairs, 0, count, (a, b) -> {
+            int aLen = a[1] - a[0];
+            int bLen = b[1] - b[0];
+            if (aLen > bLen)
+                return -1;
+            else if (aLen < bLen)
+                return 1;
+            if (a[0] < b[0])
+                return -1;
+            else if (a[0] > b[0])
+                return 1;
+            else
+                return 0; // have same length and start, must be equalOverShorterOfBoth
         });
         return count;
     }
@@ -140,13 +137,13 @@ public class MultiWords {
         return line.substring(pairs[i][0], pairs[i][1]);
     }
 
-    public static int[] grow(final int[] array) {
+    private static int[] grow(final int[] array) {
         final int[] result = new int[Math.max(10, 2 * array.length)];
         System.arraycopy(array, 0, result, 0, array.length);
         return result;
     }
 
-    public static int[][] grow(final int[][] array) {
+    private static int[][] grow(final int[][] array) {
         final int[][] result = new int[Math.max(10, 2 * array.length)][2];
         System.arraycopy(array, 0, result, 0, array.length);
         return result;

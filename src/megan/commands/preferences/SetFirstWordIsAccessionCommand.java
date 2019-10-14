@@ -28,7 +28,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetFirstWordIsAccessionCommand extends CommandBase implements ICheckBoxCommand {
+class SetFirstWordIsAccessionCommand extends CommandBase implements ICheckBoxCommand {
 
     @Override
     public boolean isSelected() {

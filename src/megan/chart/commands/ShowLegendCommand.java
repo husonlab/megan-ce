@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
+class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return isApplicable() && !chartViewer.getShowLegend().equals("none");

@@ -34,11 +34,11 @@ import java.util.TreeSet;
  * Daniel Huson, 4.2015
  */
 public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIterator {
-    final static String vsString = " vs ";
+    private final static String vsString = " vs ";
 
     private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
-    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     /**
@@ -102,7 +102,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
 
                 if (isParseLongReads()) { // when parsing long reads we keep alignments based on local critera
                     match.samLine = makeSAM(queryName, match.referenceName, -1, match.bitScore, match.expected, 0, match.identity, match.frame, match.queryStart, match.queryEnd, match.refStart, match.refEnd, match.querySequence, match.refSequence);
-                    matchesIntervalTree.add(new Interval<Match>(match.queryStart, match.queryEnd, match));
+                    matchesIntervalTree.add(new Interval<>(match.queryStart, match.queryEnd, match));
                 } else {
                     if (matches.size() < getMaxNumberOfMatchesPerRead() || match.bitScore > matches.last().bitScore) {
                         match.id = matchId++;
@@ -171,12 +171,12 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
         buffer.append(alignedQuery.replaceAll("-", "")).append("\t");
         buffer.append("*\t");
 
-        buffer.append(String.format("AS:i:%d\t", (int) Math.round(bitScore)));
+        buffer.append(String.format("AS:i:%d\t", Math.round(bitScore)));
         buffer.append(String.format("NM:i:%d\t", Utilities.computeEditDistance(alignedQuery, alignedReference)));
         buffer.append(String.format("ZL:i:%d\t", referenceLength));
         buffer.append(String.format("ZR:i:%d\t", rawScore));
         buffer.append(String.format("ZE:f:%g\t", expect));
-        buffer.append(String.format("ZI:i:%d\t", (int) Math.round(percentIdentity)));
+        buffer.append(String.format("ZI:i:%d\t", Math.round(percentIdentity)));
         buffer.append(String.format("ZF:i:%d\t", frame));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
 
@@ -188,7 +188,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
     /**
      * a rapsearch match
      */
-    public class RapSearchMatch extends Match {
+    static class RapSearchMatch extends Match {
         String readName;
         String referenceName;
         String referenceLine;
@@ -237,12 +237,12 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
             if (isNoHit)
                 return false;
 
-            String suffix = aLine.substring(index + vsString.length(), aLine.length()).trim();
+            String suffix = aLine.substring(index + vsString.length()).trim();
             index = suffix.indexOf(" ");
             if (index <= 0)
                 throw new IOException("Token ' ' not found after ' vs ' in line: " + aLine);
             referenceName = suffix.substring(0, index).trim();
-            suffix = suffix.substring(index + 1, suffix.length()).trim();
+            suffix = suffix.substring(index + 1).trim();
             String[] tokens = suffix.split(" ");
 
             if (tokens[0].startsWith(bitsString) && Basic.isFloat(tokens[0].substring(bitsString.length())))
@@ -288,7 +288,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
          * @param subjectLine
          * @throws IOException
          */
-        public void parseLines(String queryLine, String midLine, String subjectLine) throws IOException {
+        void parseLines(String queryLine, String midLine, String subjectLine) throws IOException {
             if (!queryLine.startsWith(Query))
                 throw new IOException("Token '" + Query + "' not found in line: " + queryLine);
             String[] queryTokens = queryLine.split("\\s+");

@@ -27,7 +27,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-public class ZoomToFullCommand extends CommandBase implements ICommand {
+class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

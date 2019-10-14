@@ -68,8 +68,8 @@ public class AttributesWindow implements IDirectableViewer, Printable {
 
 
     private JTree tree;
-    DefaultMutableTreeNode root = null;
-    public boolean doClear = false; // if this is set, window will be cleared on next rescan
+    private DefaultMutableTreeNode root = null;
+    private boolean doClear = false; // if this is set, window will be cleared on next rescan
     public boolean doSortByNrOfReads = false;
     public boolean doSortByAlpha = true;
 
@@ -77,7 +77,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     private int dividerLocation = 360;
     public String selectedTaxon = "No Taxon Selected";
 
-    JSplitPane splitPane = null;
+    private JSplitPane splitPane = null;
     private JEditorPane descEditor = null;
     private JEditorPane previewEditor = null;
     private JEditorPane helpEditor = null;
@@ -85,7 +85,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     private Map<String, String> prop2Explanation = new Hashtable<>();
     private final Map<String, Map<String, Number>> attribute2taxa2value;
     //same data like attribute2taxa2value but not sorted by number of reads per taxon
-    Map<String, Pair> attribute2SortedTaxValPair = new TreeMap<>(); //e.g. <Gram Stain:Positive, sortedPair[Taxa,Value]>
+    private final Map<String, Pair> attribute2SortedTaxValPair = new TreeMap<>(); //e.g. <Gram Stain:Positive, sortedPair[Taxa,Value]>
 
     /**
      * constructor
@@ -213,7 +213,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      *
      * @return the description panel
      */
-    public JScrollPane getDescriptionPanel() {
+    private JScrollPane getDescriptionPanel() {
         if (descEditor == null) {
             descEditor = new JEditorPane("text/html", "");
             descEditor.setEditable(false);
@@ -248,7 +248,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * @param node  parent node
      * @return the preview panel
      */
-    public JScrollPane getPreviewPanel(String label, TreeNode node) {
+    private JScrollPane getPreviewPanel(String label, TreeNode node) {
         if (previewEditor == null) {
             previewEditor = new JEditorPane("text/html", "");
             previewEditor.setEditable(false);
@@ -299,7 +299,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * @param label
      * @return the label withou the read info
      */
-    public final String removeSizeInfo(String label) {
+    private String removeSizeInfo(String label) {
         int pos = label.indexOf("[");
         if (pos > 0)
             return label.substring(0, pos).trim();
@@ -312,7 +312,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      *
      * @return the preview panel
      */
-    public JScrollPane getHelpPanel() {
+    private JScrollPane getHelpPanel() {
         if (helpEditor == null) {
             helpEditor = new JEditorPane("text/html", "");
             helpEditor.setEditable(false);
@@ -339,26 +339,24 @@ public class AttributesWindow implements IDirectableViewer, Printable {
         renderer.setOpenIcon(null);
         this.tree.setCellRenderer(renderer);
 
-        this.tree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttributesWindow.this.tree.getLastSelectedPathComponent();
-                if (node == null)
-                    return;
-                String label = node.getUserObject().toString();
-                if (node.isLeaf() && AttributesWindow.this.attData.getMicrobialTaxa().contains(removeSizeInfo(label))) {
-                    AttributesWindow.this.selectedTaxon = removeSizeInfo(label);
-                    AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getDescriptionPanel());
-                } else if (!node.isLeaf()) {
-                    if (label.equals("Microbial Attributes")) {
-                        AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getHelpPanel());
-                    } else //kind node e.g. "Negative [100 Reads, 20 Taxa]"
-                        if (node.getPath().length >= 2) {
-                            AttributesWindow.this.selectedTaxon = removeSizeInfo(label);
-                            AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getPreviewPanel(label, node.getPath()[node.getPath().length - 2]));
-                        }
-                }
-                splitPane.setDividerLocation(dividerLocation);
+        this.tree.addTreeSelectionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttributesWindow.this.tree.getLastSelectedPathComponent();
+            if (node == null)
+                return;
+            String label = node.getUserObject().toString();
+            if (node.isLeaf() && AttributesWindow.this.attData.getMicrobialTaxa().contains(removeSizeInfo(label))) {
+                AttributesWindow.this.selectedTaxon = removeSizeInfo(label);
+                AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getDescriptionPanel());
+            } else if (!node.isLeaf()) {
+                if (label.equals("Microbial Attributes")) {
+                    AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getHelpPanel());
+                } else //kind node e.g. "Negative [100 Reads, 20 Taxa]"
+                    if (node.getPath().length >= 2) {
+                        AttributesWindow.this.selectedTaxon = removeSizeInfo(label);
+                        AttributesWindow.this.splitPane.setBottomComponent(AttributesWindow.this.getPreviewPanel(label, node.getPath()[node.getPath().length - 2]));
+                    }
             }
+            splitPane.setDividerLocation(dividerLocation);
         });
 
         this.tree.addMouseListener(new MouseAdapter() {
@@ -405,7 +403,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
             //split the attribute from the kind, e.g. [Gram Stain:Yes]
             int pos = attribute_kind.indexOf(":");
             String attribute = attribute_kind.substring(0, pos);
-            String kind = attribute_kind.substring(pos + 1, attribute_kind.length());
+            String kind = attribute_kind.substring(pos + 1);
 
             kindNode = new DefaultMutableTreeNode(kind);
             if (!attribute.equals(addedAttribute)) {
@@ -474,7 +472,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * @param names  string array
      * @param values int array
      */
-    public void doInsertionSort(String[] names, int[] values) {
+    private void doInsertionSort(String[] names, int[] values) {
         int i, j, t;
         String temp = "";
         for (i = 1; i < values.length; i++) {
@@ -497,7 +495,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      *
      * @param v
      */
-    public void collapse(DefaultMutableTreeNode v) {
+    private void collapse(DefaultMutableTreeNode v) {
         if (v == null)
             v = this.root;
 
@@ -523,7 +521,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      *
      * @param v
      */
-    public void expand(DefaultMutableTreeNode v) {
+    private void expand(DefaultMutableTreeNode v) {
         if (v == null)
             v = this.root;
 
@@ -629,7 +627,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Microbial Attributes - " + this.dir.getDocument().getTitle();
 
         /*
@@ -690,7 +688,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
 
             double scale_x = paper_w / image_w;
             double scale_y = paper_h / image_h;
-            double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+            double scale = Math.min(scale_x, scale_y);
 
             double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
             double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;

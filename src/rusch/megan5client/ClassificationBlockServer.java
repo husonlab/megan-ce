@@ -67,7 +67,7 @@ public class ClassificationBlockServer implements Serializable {
     }
 
 
-    public void load(IClassificationBlock block) {
+    private void load(IClassificationBlock block) {
         classification = block.getName();
         for (Integer i : block.getKeySet()) {
             taxId2Count.put(i, block.getSum(i));

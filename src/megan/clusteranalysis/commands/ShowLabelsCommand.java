@@ -31,7 +31,7 @@ import java.awt.event.KeyEvent;
  * select all nodes
  * Daniel Huson, 6.2010
  */
-public class ShowLabelsCommand extends CommandBase implements ICheckBoxCommand {
+class ShowLabelsCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

@@ -136,18 +136,17 @@ public class SamplesTableView {
         tableView.setAllowDeleteCol(true);
         tableView.getUndeleteableCols().add(SampleAttributeTable.SAMPLE_ID);
 
-        if (true)
-            tableView.updateProperty().addListener((c, o, n) -> {
-                if (n.longValue() > initialUpdate) {
-                    Platform.runLater(() -> {
-                        SwingUtilities.invokeLater(this::syncFromViewToDocument);
-                        if (!samplesViewer.getDocument().isDirty()) {
-                            samplesViewer.getDocument().setDirty(true);
-                            samplesViewer.getDir().notifyUpdateViewer(IDirector.TITLE);
-                        }
-                    });
-                }
-            });
+        tableView.updateProperty().addListener((c, o, n) -> {
+            if (n.longValue() > initialUpdate) {
+                Platform.runLater(() -> {
+                    SwingUtilities.invokeLater(this::syncFromViewToDocument);
+                    if (!samplesViewer.getDocument().isDirty()) {
+                        samplesViewer.getDocument().setDirty(true);
+                        samplesViewer.getDir().notifyUpdateViewer(IDirector.TITLE);
+                    }
+                });
+            }
+        });
         tableView.setAllowAddCol(true);
 
         tableView.setAdditionColHeaderMenuItems((col) -> {
@@ -517,33 +516,25 @@ public class SamplesTableView {
 
     public void selectSample(String sample, boolean select) {
         if (tableView != null) {
-            ensureFXThread(() -> {
-                tableView.selectRow(sample, select);
-            });
+            ensureFXThread(() -> tableView.selectRow(sample, select));
         }
     }
 
     public void selectSamples(Collection<String> samples, boolean select) {
         if (tableView != null) {
-            ensureFXThread(() -> {
-                tableView.selectRowHeaders(samples, select);
-            });
+            ensureFXThread(() -> tableView.selectRowHeaders(samples, select));
         }
     }
 
     public void selectByValue(String attribute, Object value) {
         if (tableView != null) {
-            ensureFXThread(() -> {
-                tableView.selectByValue(attribute, value.toString());
-            });
+            ensureFXThread(() -> tableView.selectByValue(attribute, value.toString()));
         }
     }
 
     public void selectAttribute(String attribute, boolean select) {
         if (tableView != null) {
-            ensureFXThread(() -> {
-                tableView.selectCol(attribute, select);
-            });
+            ensureFXThread(() -> tableView.selectCol(attribute, select));
         }
     }
 

@@ -102,7 +102,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
             }
             importBlastDialog.getReadFileNameField().setText(importBlastDialog.getReadFileName());
 
-            final String fileName = (files.size() > 1 ? Basic.getCommonPrefix(files.toArray(new File[files.size()]), "out") : files.get(0).getName());
+            final String fileName = (files.size() > 1 ? Basic.getCommonPrefix(files.toArray(new File[0]), "out") : files.get(0).getName());
 
             final File meganFile = makeNewRMAFile(files.get(0).getParentFile(), fileName);
 

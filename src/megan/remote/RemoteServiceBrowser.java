@@ -72,9 +72,9 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     private final CommandManager commandManager;
 
     private RememberingComboBox urlComboBox;
-    private JTextField userTextField = new JTextField(30);
+    private final JTextField userTextField = new JTextField(30);
 
-    private JPasswordField passwordTextField = new JPasswordField(30);
+    private final JPasswordField passwordTextField = new JPasswordField(30);
     //private JTextField passwordTextField = new JTextField(30);
 
     private final JCheckBox saveCredentialsCBox = new JCheckBox();
@@ -117,12 +117,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         searchManager = new SearchManager(dir, this, new EmptySearcher(), false, true);
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                updateView(IDirector.ENABLE_STATE);
-            }
-        });
+        tabbedPane.addChangeListener(e -> updateView(IDirector.ENABLE_STATE));
 
         tabbedPane.add("Add Server", createOpenRemoteServerPanel());
         tabbedPane.setSelectedIndex(0);
@@ -155,14 +150,12 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         urlComboBox.setBorder(BorderFactory.createBevelBorder(1));
         //  ((JTextComponent) urlComboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(createDocumentListener());
 
-        final ItemListener itemListener = new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                final String shortServerName = e.getItem().toString().replace("http://", "").replaceAll("/$", "") + "::";
-                final String user = RemoteServiceManager.getUser(shortServerName);
-                userTextField.setText(user != null ? user : "");
-                final String password = RemoteServiceManager.getPassword(shortServerName);
-                passwordTextField.setText(password != null ? password : "");
-            }
+        final ItemListener itemListener = e -> {
+            final String shortServerName = e.getItem().toString().replace("http://", "").replaceAll("/$", "") + "::";
+            final String user = RemoteServiceManager.getUser(shortServerName);
+            userTextField.setText(user != null ? user : "");
+            final String password = RemoteServiceManager.getPassword(shortServerName);
+            passwordTextField.setText(password != null ? password : "");
         };
         urlComboBox.addItemListener(itemListener);
         urlComboBox.addItemsFromString(ProgramProperties.get("RemoteServers", ""), "%%%");
@@ -221,11 +214,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         aLine.add(Box.createHorizontalGlue());
         aLine.add(new JLabel("Save credentials"));
         aLine.add(saveCredentialsCBox);
-        saveCredentialsCBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ProgramProperties.put("SaveRemoteCredentials", saveCredentialsCBox.isSelected());
-            }
-        });
+        saveCredentialsCBox.addActionListener(e -> ProgramProperties.put("SaveRemoteCredentials", saveCredentialsCBox.isSelected()));
         saveCredentialsCBox.setToolTipText("Save MeganServer credentials");
         outside.add(aLine, BorderLayout.SOUTH);
 
@@ -360,7 +349,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         setTitle("Remote MEGAN Files");
     }
 
@@ -474,7 +463,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
                     userTextField.setText(user != null ? user : "");
                     final String password = RemoteServiceManager.getPassword(shortServerName);
                     passwordTextField.setText(password != null ? password : "");
-                } catch (BadLocationException e1) {
+                } catch (BadLocationException ignored) {
                 }
                 updateView(IDirector.ENABLE_STATE);
             }

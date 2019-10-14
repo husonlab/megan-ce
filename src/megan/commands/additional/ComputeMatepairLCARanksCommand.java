@@ -33,7 +33,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashSet;
 
-public class ComputeMatepairLCARanksCommand extends CommandBase implements ICommand {
+class ComputeMatepairLCARanksCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "mpAnalyzer what={lca-ranks|compare} infile=<filename> outfile=<filename>;";
     }

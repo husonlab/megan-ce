@@ -37,7 +37,7 @@ import java.util.*;
  * Compute a taxonomic profile by naive match-based analysis
  * Daniel Huson, 2015
  */
-public class NaiveMatchBasedProfile {
+class NaiveMatchBasedProfile {
     /**
      * compute a taxonomic profile at a given taxonomic rank using naive projection
      *
@@ -90,11 +90,7 @@ public class NaiveMatchBasedProfile {
                         rawProfile.put(IdMapper.UNASSIGNED_ID, rawValue == null ? 1f : rawValue + 1f);
                     } else { // have some active matches:
                         for (int taxonId = activeTaxa.nextSetBit(0); taxonId != -1; taxonId = activeTaxa.nextSetBit(taxonId + 1)) {
-                            Float rawValue = rawProfile.get(taxonId);
-                            if (rawValue == null)
-                                rawProfile.put(taxonId, 1f / activeTaxa.cardinality());
-                            else
-                                rawProfile.put(taxonId, rawValue + 1f / activeTaxa.cardinality());
+                            rawProfile.merge(taxonId, 1f / activeTaxa.cardinality(), Float::sum);
                         }
                         totalAssigned++;
                     }

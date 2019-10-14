@@ -38,7 +38,7 @@ import java.util.Set;
  * show all
  * Daniel Huson, 7.2012
  */
-public class SetColorCommand extends CommandBase implements ICommand {
+class SetColorCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -100,8 +100,7 @@ public class SetColorCommand extends CommandBase implements ICommand {
                     return; // canceled
                 else {
                     if (chooser.isApplyToAll()) {
-                        Set<String> toDo = new HashSet<>();
-                        toDo.addAll(viewer.getChartData().getChartSelection().getSelectedSeries());
+                        Set<String> toDo = new HashSet<>(viewer.getChartData().getChartSelection().getSelectedSeries());
                         toDo.removeAll(done);
                         for (String label : toDo) {
                             chartColors.setSampleColor(label, chooser.getResult());
@@ -132,8 +131,7 @@ public class SetColorCommand extends CommandBase implements ICommand {
                     return; // canceled
                 else {
                     if (chooser.isApplyToAll()) {
-                        Set<String> toDo = new HashSet<>();
-                        toDo.addAll(viewer.getChartData().getChartSelection().getSelectedClasses());
+                        Set<String> toDo = new HashSet<>(viewer.getChartData().getChartSelection().getSelectedClasses());
                         toDo.removeAll(done);
                         for (String label : toDo) {
                             chartColors.setClassColor(viewer.getClass2HigherClassMapper().get(label), chooser.getResult());
@@ -212,8 +210,8 @@ public class SetColorCommand extends CommandBase implements ICommand {
                 || (!viewer.isSeriesTabSelected() && viewer.getChartData().getChartSelection().getSelectedClasses().size() > 0);
     }
 
-    class ColorChooser extends JDialog {
-        public Color result = null;
+    static class ColorChooser extends JDialog {
+        Color result = null;
         private boolean applyToAll = false;
 
         /**
@@ -277,11 +275,11 @@ public class SetColorCommand extends CommandBase implements ICommand {
             setVisible(true);
         }
 
-        public Color getResult() {
+        Color getResult() {
             return result;
         }
 
-        public boolean isApplyToAll() {
+        boolean isApplyToAll() {
             return applyToAll;
         }
     }

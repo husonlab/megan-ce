@@ -44,69 +44,61 @@ public class OverlapAvoider<T> {
      * constructor
      */
     public OverlapAvoider() {
-        sortedByMinX = new TreeSet<>(new Comparator<Integer>() {
-            public int compare(Integer id1, Integer id2) {
-                Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinX() : data.get(id1).getFirst().getMaxX());
-                Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinX() : data.get(id2).getFirst().getMaxX());
-                if (d1 < d2)
-                    return -1;
-                else if (d1 > d2)
-                    return 1;
-                else if (id1 < id2)
-                    return -1;
-                else if (id1 > id2)
-                    return 1;
-                else
-                    return 0;
-            }
+        sortedByMinX = new TreeSet<>((id1, id2) -> {
+            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinX() : data.get(id1).getFirst().getMaxX());
+            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinX() : data.get(id2).getFirst().getMaxX());
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            else if (id1 < id2)
+                return -1;
+            else if (id1 > id2)
+                return 1;
+            else
+                return 0;
         });
-        sortedByMaxX = new TreeSet<>(new Comparator<Integer>() {
-            public int compare(Integer id1, Integer id2) {
-                Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxX() : data.get(id1).getFirst().getMinX());
-                Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxX() : data.get(id2).getFirst().getMinX());
-                if (d1 < d2)
-                    return -1;
-                else if (d1 > d2)
-                    return 1;
-                else if (id1 < id2)
-                    return -1;
-                else if (id1 > id2)
-                    return 1;
-                else
-                    return 0;
-            }
+        sortedByMaxX = new TreeSet<>((id1, id2) -> {
+            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxX() : data.get(id1).getFirst().getMinX());
+            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxX() : data.get(id2).getFirst().getMinX());
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            else if (id1 < id2)
+                return -1;
+            else if (id1 > id2)
+                return 1;
+            else
+                return 0;
         });
-        sortedByMinY = new TreeSet<>(new Comparator<Integer>() {
-            public int compare(Integer id1, Integer id2) {
-                Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinY() : data.get(id1).getFirst().getMaxY());
-                Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinY() : data.get(id2).getFirst().getMaxY());
-                if (d1 < d2)
-                    return -1;
-                else if (d1 > d2)
-                    return 1;
-                else if (id1 < id2)
-                    return -1;
-                else if (id1 > id2)
-                    return 1;
-                else
-                    return 0;
-            }
+        sortedByMinY = new TreeSet<>((id1, id2) -> {
+            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinY() : data.get(id1).getFirst().getMaxY());
+            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinY() : data.get(id2).getFirst().getMaxY());
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            else if (id1 < id2)
+                return -1;
+            else if (id1 > id2)
+                return 1;
+            else
+                return 0;
         });
-        sortedByMaxY = new TreeSet<>(new Comparator<Integer>() {
-            public int compare(Integer id1, Integer id2) {
-                Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxY() : data.get(id1).getFirst().getMinY());
-                Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxY() : data.get(id2).getFirst().getMinY());
-                if (d1 < d2)
-                    return -1;
-                else if (d1 > d2)
-                    return 1;
-                else if (id1 < id2)
-                    return -1;
-                else if (id1 > id2)
-                    return 1;
-                else
-                    return 0;
-            }
+        sortedByMaxY = new TreeSet<>((id1, id2) -> {
+            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxY() : data.get(id1).getFirst().getMinY());
+            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxY() : data.get(id2).getFirst().getMinY());
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            else if (id1 < id2)
+                return -1;
+            else if (id1 > id2)
+                return 1;
+            else
+                return 0;
         });
     }
 

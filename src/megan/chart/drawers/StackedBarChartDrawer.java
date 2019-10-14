@@ -35,7 +35,7 @@ import java.awt.geom.Rectangle2D;
  * Daniel Huson, 5.2012
  */
 public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "StackedBarChart";
+    private static final String NAME = "StackedBarChart";
 
     /**
      * constructor

@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class RotateRightCommand extends CommandBase implements ICommand {
+class RotateRightCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

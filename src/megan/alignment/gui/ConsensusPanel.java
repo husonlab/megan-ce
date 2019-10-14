@@ -52,7 +52,7 @@ public class ConsensusPanel extends BasePanel {
         revalidate();
     }
 
-    public Alignment getAlignment() {
+    private Alignment getAlignment() {
         return alignment;
     }
 
@@ -61,7 +61,7 @@ public class ConsensusPanel extends BasePanel {
         revalidateGrid();
     }
 
-    public IColorScheme getColorScheme() {
+    private IColorScheme getColorScheme() {
         return colorScheme;
     }
 
@@ -69,7 +69,7 @@ public class ConsensusPanel extends BasePanel {
         this.colorScheme = colorScheme;
     }
 
-    public boolean isShowColors() {
+    private boolean isShowColors() {
         return showColors;
     }
 
@@ -93,7 +93,7 @@ public class ConsensusPanel extends BasePanel {
      *
      * @param g0 the graphics context of the sequence panel
      */
-    public void paintConsensus(Graphics g0) {
+    private void paintConsensus(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         Rectangle rec = getVisibleRect();
 
@@ -120,7 +120,7 @@ public class ConsensusPanel extends BasePanel {
 
                 int firstLayoutCol = lane.getFirstNonGapPosition();
 
-                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().size()]);
+                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().toArray(new Integer[0]);
                 if (jumpCols.length > 0) {
                     int jc = 0;
                     int jumped = 0;
@@ -156,7 +156,7 @@ public class ConsensusPanel extends BasePanel {
                 if (isShowColors() && getColorScheme() != null) {          // color scheme selected?
                     g.setColor(Color.WHITE);
 
-                    Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+                    Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
                     int jc = 0;
                     int jumped = 0;
                     int colorStreak = 0;
@@ -196,7 +196,7 @@ public class ConsensusPanel extends BasePanel {
             }
 
             if (cellWidth > 4) {
-                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
                 int jc = 0;
                 int jumped = 0;
 
@@ -239,7 +239,7 @@ public class ConsensusPanel extends BasePanel {
      *
      * @param g0
      */
-    public void paintSelection(Graphics g0) {
+    private void paintSelection(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         SelectedBlock selectedBlock = getSelectedBlock();
         if (selectedBlock.isSelected()) {
@@ -264,12 +264,9 @@ public class ConsensusPanel extends BasePanel {
     }
 
     class MyMouseListener extends MouseAdapter implements MouseListener, MouseMotionListener {
-        private final int inClick = 1;
         private final int inMove = 2;
         private final int inRubberband = 3;
         private final int inScrollByMouse = 4;
-
-        private boolean shiftDown = false;
 
         private boolean stillDownWithoutMoving = false;
 
@@ -279,6 +276,7 @@ public class ConsensusPanel extends BasePanel {
         @Override
         public void mouseClicked(MouseEvent me) {
             super.mouseClicked(me);
+            int inClick = 1;
             current = inClick;
             if (me.getClickCount() == 1) {
                 if (me.isShiftDown()) {
@@ -300,7 +298,7 @@ public class ConsensusPanel extends BasePanel {
         public void mousePressed(MouseEvent me) {
             super.mousePressed(me);
             mouseDown = me.getPoint();
-            shiftDown = me.isShiftDown();
+            boolean shiftDown = me.isShiftDown();
 
             if (me.isAltDown() || me.isShiftDown()) {
                 current = inRubberband;
@@ -317,7 +315,7 @@ public class ConsensusPanel extends BasePanel {
                             synchronized (this) {
                                 wait(500);
                             }
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                         }
                         if (stillDownWithoutMoving) {
                             current = inRubberband;

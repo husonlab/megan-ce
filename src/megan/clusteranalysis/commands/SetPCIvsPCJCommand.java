@@ -38,7 +38,7 @@ import java.io.IOException;
  * PC2 vs PC3
  * Daniel Huson, 9.2012
  */
-public class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand {
+class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

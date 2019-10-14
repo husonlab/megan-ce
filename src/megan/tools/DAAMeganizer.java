@@ -79,7 +79,7 @@ public class DAAMeganizer {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
@@ -113,7 +113,7 @@ public class DAAMeganizer {
             } else if (minSupportPercent0 == Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
                 minSupportPercent = 0;
                 minSupport = minSupport0;
-            } else if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
+            } else if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT) {
                 throw new IOException("Please specify a value for either --minSupport or --minSupportPercent, but not for both");
             } else {
                 minSupportPercent = minSupportPercent0;

@@ -102,7 +102,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
      * @param key
      * @param value
      */
-    public void put(long key, int value) {
+    private void put(long key, int value) {
         maps[(int) (key & MASK)].put((int) (key >>> BITS), value);
     }
 
@@ -155,7 +155,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
                 if (gi >= 0) {
                     final int taxId = Integer.parseInt(aLine.substring(pos + 1));
 
-                    if (gi >= 0 && gi <= lastGi)
+                    if (gi <= lastGi)
                         throw new IOException("Error, line: " + lineNo + ": GIs out of order: " + gi + " after " + lastGi);
 
                     // fill in missing Gis

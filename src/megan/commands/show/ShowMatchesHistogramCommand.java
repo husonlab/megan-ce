@@ -104,11 +104,7 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
                             (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                         String firstLine = matchBlock.getText().split("\n")[0];
 
-                        Integer count = matched2count.get(firstLine);
-                        if (count == null)
-                            matched2count.put(firstLine, 1);
-                        else
-                            matched2count.put(firstLine, count + 1);
+                        matched2count.merge(firstLine, 1, Integer::sum);
                     }
                 }
             }

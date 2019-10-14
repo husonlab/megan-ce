@@ -63,7 +63,7 @@ public class ShowRemoteBrowserCommand extends CommandBase implements ICommand {
         return true;
     }
 
-    final public static String NAME = "Open From Server...";
+    private final static String NAME = "Open From Server...";
 
     public String getName() {
         return NAME;

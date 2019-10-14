@@ -38,7 +38,7 @@ import java.awt.print.PrinterJob;
  * print command
  * Daniel Huson, 6.2010
  */
-public class PrintCommand extends CommandBase implements ICommand {
+class PrintCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

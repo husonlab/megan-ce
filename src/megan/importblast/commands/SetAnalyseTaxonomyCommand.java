@@ -44,7 +44,7 @@ public class SetAnalyseTaxonomyCommand extends CommandBase implements ICheckBoxC
         return false;
     }
 
-    final public static String NAME = "Analyse taxonomic content";
+    private final static String NAME = "Analyse taxonomic content";
 
     public String getName() {
         return NAME;

@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class InspectAssignmentsCommand extends CommandBase implements ICommand {
+class InspectAssignmentsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "inspector nodes=selected;";
     }
@@ -60,7 +60,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
             Node v = classificationViewer.getANode(id);
             if (v.getOutDegree() > 0) { // internal node
                 float size = classificationViewer.getNodeData(v).getCountAssigned();
-                name2Size2Ids.add(new Triplet<>(name, size, (Collection<Integer>) Collections.singletonList(id)));
+                name2Size2Ids.add(new Triplet<>(name, size, Collections.singletonList(id)));
             } else {
                 float size = classificationViewer.getNodeData(v).getCountSummarized();
                 final Collection<Integer> ids = classificationViewer.getClassification().getFullTree().getAllDescendants(id);
@@ -70,31 +70,20 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
         WindowUtilities.toFront(inspectorWindow.getFrame());
 
         if (name2Size2Ids.size() > 0) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
-                    if (false) { // todo: without this, inspector window sometimes opens behind main windows...
-                        final Runnable job = new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        inspectorWindow.getFrame().toFront();
-                                    }
-                                });
-                            }
-                        };
-                        Thread thread = new Thread(job);
-                        thread.setDaemon(true);
-                        thread.start();
-                    }
+            SwingUtilities.invokeLater(() -> {
+                inspectorWindow.addTopLevelNode(name2Size2Ids, classificationViewer.getClassName());
+                if (false) { // todo: without this, inspector window sometimes opens behind main windows...
+                    final Runnable job = () -> {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        SwingUtilities.invokeLater(() -> inspectorWindow.getFrame().toFront());
+                    };
+                    Thread thread = new Thread(job);
+                    thread.setDaemon(true);
+                    thread.start();
                 }
             });
         }
@@ -109,7 +98,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
                 ((ClassificationViewer) getViewer()).getDocument().getMeganFile().hasDataConnector();
     }
 
-    final public static String NAME = "Inspect...";
+    private final static String NAME = "Inspect...";
 
     public String getName() {
         return NAME;

@@ -56,14 +56,14 @@ public class PearsonDistance {
      *
      * @return vectors. First index is class, second is sample
      */
-    public static double[][] computeVectors(ClassificationViewer graphView, int numberOfSamples) {
+    private static double[][] computeVectors(ClassificationViewer graphView, int numberOfSamples) {
         double[] total = new double[numberOfSamples];
 
         HashSet<Integer> seen = new HashSet<>();
         LinkedList<double[]> rows = new LinkedList<>();
         for (Node v = graphView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
             if (graphView.getSelected(v)) {
-                if (!seen.contains((Integer) v.getInfo())) {
+                if (!seen.contains(v.getInfo())) {
                     seen.add((Integer) v.getInfo());
                     double[] row = new double[numberOfSamples];
                     final float[] values = (v.getOutDegree() == 0 ? graphView.getNodeData(v).getSummarized() : graphView.getNodeData(v).getAssigned());

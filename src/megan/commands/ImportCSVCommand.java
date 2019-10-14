@@ -45,7 +45,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ImportCSVCommand extends CommandBase implements ICommand {
+class ImportCSVCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import csv={reads|summary} separator={comma|tab} file=<fileName> fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|")
                 + ",...} [topPercent=<num>] [minScore=<num>] [minSupportPercent=<num>]  [minSupport=<num>] [multiplier=<number>];";
@@ -117,7 +117,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 if (minSupport != -1)
                     doc.setMinSupport(minSupport);
 
-                CSVReadsHitsParser.apply(fileName, doc, cNames.toArray(new String[cNames.size()]), tabSeparator);
+                CSVReadsHitsParser.apply(fileName, doc, cNames.toArray(new String[0]), tabSeparator);
 
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
@@ -157,7 +157,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 doc.neverOpenedReads = false;
                 doc.clearReads();
 
-                CSVSummaryParser.apply(fileName, doc, cNames.toArray(new String[cNames.size()]), tabSeparator, multiplier);
+                CSVSummaryParser.apply(fileName, doc, cNames.toArray(new String[0]), tabSeparator, multiplier);
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
                 viewer.collapseToDefault();
@@ -188,7 +188,7 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
 
         List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile,
                 new TextFileFilter("csv", "tsv", "csv", "tab"), new TextFileFilter("csv", "tsv", "csv", "tab"), event, "Open CSV file");
-        if (files != null && files.size() > 0) {
+        if (files.size() > 0) {
 
             File file = files.get(0);
             ImportCSVWindow importCSVWindow = new ImportCSVWindow(getViewer(), getDir());

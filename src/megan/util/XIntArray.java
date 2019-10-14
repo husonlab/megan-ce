@@ -148,7 +148,7 @@ public class XIntArray {
      * @param index
      * @return value
      */
-    public int get(long index) {
+    private int get(long index) {
         final int segment = (int) (index >>> SEGMENT_BITS);
         if (segment >= segments.length)
             return 0;
@@ -205,7 +205,7 @@ public class XIntArray {
         return maxIndex;
     }
 
-    public long length() {
+    private long length() {
         return maxIndex + 1;
     }
 

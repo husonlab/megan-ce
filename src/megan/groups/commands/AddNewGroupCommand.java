@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 8.2014
  */
-public class AddNewGroupCommand extends CommandBase implements ICommand {
+class AddNewGroupCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "add group";
     }

@@ -51,7 +51,7 @@ public class ShowVersionInfoCommand extends CommandBase implements ICommand {
         return getViewer() != null && getViewer() instanceof ClassificationViewer && Document.getVersionInfo().get(getViewer().getClassName() + " tree") != null;
     }
 
-    final public static String NAME = "Show Info...";
+    private final static String NAME = "Show Info...";
 
     public String getName() {
         return NAME;

@@ -253,7 +253,7 @@ public class SAMValidationError {
          */
         MATE_NOT_FOUND;
 
-        public final Severity severity;
+        final Severity severity;
 
         Type() {
             this.severity = Severity.ERROR;

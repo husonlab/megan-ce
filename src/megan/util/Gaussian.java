@@ -22,7 +22,7 @@ package megan.util;
 public class Gaussian {
 
     // return phi(x) = standard Gaussian pdf
-    public static double phi(double x) {
+    private static double phi(double x) {
         return Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI);
     }
 
@@ -32,7 +32,7 @@ public class Gaussian {
     }
 
     // return Phi(z) = standard Gaussian cdf using Taylor approximation
-    public static double Phi(double z) {
+    private static double Phi(double z) {
         if (z < -8.0) return 0.0;
         if (z > 8.0) return 1.0;
         double sum = 0.0, term = z;
@@ -44,12 +44,12 @@ public class Gaussian {
     }
 
     // return Phi(z, mu, sigma) = Gaussian cdf with mean mu and stddev sigma
-    public static double Phi(double z, double mu, double sigma) {
+    private static double Phi(double z, double mu, double sigma) {
         return Phi((z - mu) / sigma);
     }
 
     // Compute z such that Phi(z) = y via bisection search
-    public static double PhiInverse(double y) {
+    private static double PhiInverse(double y) {
         return PhiInverse(y, .00000001, -8, 8);
     }
 
@@ -63,8 +63,8 @@ public class Gaussian {
 
 
     // test client
-    public static void main(String[] args) {
-        args = new String[]{"902", "100", "5"};
+    public static void main() {
+        String[] args = new String[]{"902", "100", "5"};
 
         double z = Double.parseDouble(args[0]);
         double mu = Double.parseDouble(args[1]);

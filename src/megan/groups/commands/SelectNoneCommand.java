@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 8.2014
  */
-public class SelectNoneCommand extends CommandBase implements ICommand {
+class SelectNoneCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

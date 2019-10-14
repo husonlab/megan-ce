@@ -77,7 +77,7 @@ import java.util.*;
 public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerWithFindToolBar, IViewerWithLegend, Printable {
     public static int PCoA_TAB_INDEX = 0;
     public static int UPGMA_TAB_INDEX = 1;
-    public static int NJ_TAB_INDEX = 2;
+    private static int NJ_TAB_INDEX = 2;
     public static int NNET_TAB_INDEX = 3;
     public static int MATRIX_TAB_INDEX = 4;
 
@@ -101,10 +101,8 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private final JSplitPane splitPane;
 
     private final MenuBar menuBar;
-    public final CommandManager commandManager;
-    final SelectionSet.SelectionListener selectionListener;
-
-    private int numberOfNodesUsed = 0;
+    private final CommandManager commandManager;
+    private final SelectionSet.SelectionListener selectionListener;
 
     private String dataType;
     private String ecologicalIndex = BrayCurtisDissimilarity.NAME;
@@ -129,7 +127,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     private Taxa taxa;
     private Distances distances;
 
-    private ClassificationViewer parentViewer;
+    private final ClassificationViewer parentViewer;
 
     public static Appliable clusterViewerAddOn;
 
@@ -204,54 +202,52 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         tabbedPane.add(nnetTab.getLabel(), nnetTab);
         tabbedPane.add(matrixTab.getLabel(), matrixTab);
 
-        tabbedPane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                int tabId = tabbedPane.getSelectedIndex();
-                if (tabId != currentTab) {
-                    if (tabbedPane.getComponentAt(currentTab) instanceof ITab) {
-                        ((ITab) tabbedPane.getComponentAt(currentTab)).deactivate();
-                    }
-                    if (tabbedPane.getSelectedComponent() instanceof ITab && ((ITab) tabbedPane.getSelectedComponent()).needsUpdate()) {
-                        final ITab tab = ((ITab) tabbedPane.getSelectedComponent());
-                        tab.activate();
-                        dir.execute("sync;", getCommandManager());
-                    } else {
-                        final GraphView prevView = getGraphViewForTabId(currentTab);
-                        final GraphView nextView = getGraphViewForTabId(tabId);
-                        if (prevView != null && nextView != null && prevView != nextView) // copy attributes from one labeled node to next
-                        {
-                            for (Node v = prevView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
-                                if (prevView.getLabel(v) != null) {
-                                    for (Node w = nextView.getGraph().getFirstNode(); w != null; w = w.getNext()) {
-                                        if (nextView.getLabel(w) != null && prevView.getLabel(v).equals(nextView.getLabel(w))) {
-                                            NodeView nw = nextView.getNV(w);
-                                            NodeView nv = prevView.getNV(v);
-                                            nw.setColor(nv.getColor());
-                                            nw.setFont(nv.getFont());
-                                            nw.setLabelColor(nv.getLabelColor());
-                                            nw.setBackgroundColor(nv.getBackgroundColor());
-                                            nw.setLabelBackgroundColor(nv.getLabelBackgroundColor());
-                                            nw.setHeight(nv.getHeight());
-                                            nw.setWidth(nv.getWidth());
-                                            nw.setShape(nv.getShape());
-                                            nw.setLineWidth((byte) nv.getLineWidth());
-                                            nextView.setSelected(w, prevView.getSelected(v));
-                                        }
+        tabbedPane.addChangeListener(changeEvent -> {
+            int tabId = tabbedPane.getSelectedIndex();
+            if (tabId != currentTab) {
+                if (tabbedPane.getComponentAt(currentTab) instanceof ITab) {
+                    ((ITab) tabbedPane.getComponentAt(currentTab)).deactivate();
+                }
+                if (tabbedPane.getSelectedComponent() instanceof ITab && ((ITab) tabbedPane.getSelectedComponent()).needsUpdate()) {
+                    final ITab tab = ((ITab) tabbedPane.getSelectedComponent());
+                    tab.activate();
+                    dir.execute("sync;", getCommandManager());
+                } else {
+                    final GraphView prevView = getGraphViewForTabId(currentTab);
+                    final GraphView nextView = getGraphViewForTabId(tabId);
+                    if (prevView != null && nextView != null && prevView != nextView) // copy attributes from one labeled node to next
+                    {
+                        for (Node v = prevView.getGraph().getFirstNode(); v != null; v = v.getNext()) {
+                            if (prevView.getLabel(v) != null) {
+                                for (Node w = nextView.getGraph().getFirstNode(); w != null; w = w.getNext()) {
+                                    if (nextView.getLabel(w) != null && prevView.getLabel(v).equals(nextView.getLabel(w))) {
+                                        NodeView nw = nextView.getNV(w);
+                                        NodeView nv = prevView.getNV(v);
+                                        nw.setColor(nv.getColor());
+                                        nw.setFont(nv.getFont());
+                                        nw.setLabelColor(nv.getLabelColor());
+                                        nw.setBackgroundColor(nv.getBackgroundColor());
+                                        nw.setLabelBackgroundColor(nv.getLabelBackgroundColor());
+                                        nw.setHeight(nv.getHeight());
+                                        nw.setWidth(nv.getWidth());
+                                        nw.setShape(nv.getShape());
+                                        nw.setLineWidth((byte) nv.getLineWidth());
+                                        nextView.setSelected(w, prevView.getSelected(v));
                                     }
                                 }
                             }
                         }
-                        if (nextView != null)
-                            nextView.fitGraphToWindow();
                     }
-                    currentTab = tabId;
+                    if (nextView != null)
+                        nextView.fitGraphToWindow();
                 }
-
-                if (isActive() && Formatter.getInstance() != null) {
-                    Formatter.getInstance().setViewer(dir, getGraphView());
-                }
-                // updateView(IDirector.ALL);
+                currentTab = tabId;
             }
+
+            if (isActive() && Formatter.getInstance() != null) {
+                Formatter.getInstance().setViewer(dir, getGraphView());
+            }
+            // updateView(IDirector.ALL);
         });
 
         this.setPreferredSize(new Dimension(0, 0));
@@ -296,23 +292,14 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
         setTitle();
 
-        selectionListener = new SelectionSet.SelectionListener() {
-            public void changed(Collection<String> labels, boolean selected) {
-                selectByLabel(getTabbedIndex(), labels, selected);
-            }
-        };
+        selectionListener = (labels, selected) -> selectByLabel(getTabbedIndex(), labels, selected);
         doc.getSampleSelection().addSampleSelectionListener(selectionListener);
 
         legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         setVisible(true);
         splitPane.setDividerLocation(1.0);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                dir.execute("sync;", commandManager);
-            }
-        });
+        SwingUtilities.invokeLater(() -> dir.execute("sync;", commandManager));
     }
 
     /**
@@ -333,7 +320,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
         return this;
     }
 
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = dataType + " Cluster Analysis - " + doc.getTitle();
 
         if (doc.getMeganFile().isMeganServerFile())
@@ -392,11 +379,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                     for (String sample : getDir().getDocument().getSampleAttributeTable().getSampleOrder()) {
                         String groupId = getDir().getDocument().getSampleAttributeTable().getGroupId(sample);
                         if (groupId != null) {
-                            LinkedList<Node> nodes = group2Nodes.get(groupId);
-                            if (nodes == null) {
-                                nodes = new LinkedList<>();
-                                group2Nodes.put(groupId, nodes);
-                            }
+                            LinkedList<Node> nodes = group2Nodes.computeIfAbsent(groupId, k -> new LinkedList<>());
                             nodes.add(sample2node.get(sample));
                         }
                     }
@@ -524,7 +507,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * sets the status line
      */
-    public void setStatusLine(ClusterViewer clusterViewer) {
+    private void setStatusLine(ClusterViewer clusterViewer) {
         statusBar.setText1("Samples=" + clusterViewer.getDir().getDocument().getNumberOfSamples());
 
         String text2 = "Data=" + clusterViewer.getDataType();
@@ -544,7 +527,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
      * @param tabId
      * @return GraphView or null
      */
-    public GraphView getGraphViewForTabId(int tabId) {
+    private GraphView getGraphViewForTabId(int tabId) {
         if (tabbedPane.getComponentAt(tabId) instanceof ITab) {
             return ((ITab) tabbedPane.getComponentAt(tabId)).getGraphView();
         } else {
@@ -788,6 +771,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     }
 
     public int getNumberOfNodesUsed() {
+        int numberOfNodesUsed = 0;
         return numberOfNodesUsed;
     }
 
@@ -849,7 +833,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
                 double scale_x = paper_w / image_w;
                 double scale_y = paper_h / image_h;
-                double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+                double scale = Math.min(scale_x, scale_y);
 
                 double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
                 double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;

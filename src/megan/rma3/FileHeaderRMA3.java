@@ -95,11 +95,11 @@ public class FileHeaderRMA3 extends BaseRMA3 {
         }
     }
 
-    public String getCreator() {
+    private String getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    private void setCreator(String creator) {
         this.creator = creator;
     }
 
@@ -107,7 +107,7 @@ public class FileHeaderRMA3 extends BaseRMA3 {
         return creationDate;
     }
 
-    public void setCreationDate(long creationDate) {
+    private void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
 

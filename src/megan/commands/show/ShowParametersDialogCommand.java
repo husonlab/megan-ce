@@ -143,12 +143,7 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
 
         final InspectorWindow inspectorWindow = (InspectorWindow) getDir().getViewerByClass(InspectorWindow.class);
         if (inspectorWindow != null && inspectorWindow.getDataTree().getRowCount() > 1) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    inspectorWindow.clear();
-                }
-            });
+            SwingUtilities.invokeLater(() -> inspectorWindow.clear());
         }
 
         final ArrayList<LRInspectorViewer> toClose = new ArrayList<>();
@@ -157,14 +152,11 @@ public class ShowParametersDialogCommand extends CommandBase implements ICommand
                 toClose.add((LRInspectorViewer) viewer);
         }
         for (final IDirectableViewer viewer : toClose) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        viewer.destroyView();
-                    } catch (CanceledException e) {
-                        Basic.caught(e);
-                    }
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    viewer.destroyView();
+                } catch (CanceledException e) {
+                    Basic.caught(e);
                 }
             });
         }

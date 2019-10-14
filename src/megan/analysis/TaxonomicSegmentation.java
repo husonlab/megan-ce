@@ -40,7 +40,7 @@ import java.util.*;
  * Daniel Huson, 8.2018
  */
 public class TaxonomicSegmentation {
-    public static final int defaultRank = 0; // use next down
+    private static final int defaultRank = 0; // use next down
     public static final float defaultSwitchPenalty = 10000f; // always non-negative
     public static final float defaultCompatibleFactor = 1f; // always non-negative
     public static final float defaultIncompatibleFactor = 0.2f; // always non-negative
@@ -51,8 +51,6 @@ public class TaxonomicSegmentation {
     private float switchPenalty = defaultSwitchPenalty;
     private float compatibleFactor = defaultCompatibleFactor;
     private float incompatibleFactor = defaultIncompatibleFactor;
-
-    private boolean verbose = false;
 
     public String getParamaterString() {
         return "rank=" + TaxonomicLevels.getName(rank) + " classId=" + TaxonomyData.getName2IdMap().get(classId) + " switchPenalty=" + Basic.removeTrailingZerosAfterDot("" + switchPenalty)
@@ -121,6 +119,7 @@ public class TaxonomicSegmentation {
         final float[][] scoreMatrix = new float[columns.size()][allTaxa.size()];
         final int[][] traceBackMatrix = new int[columns.size()][allTaxa.size()];
 
+        boolean verbose = false;
         {
             for (int col = 1; col < columns.size(); col++) { // skip the first point
                 final DPColumn column = columns.get(col);
@@ -270,16 +269,13 @@ public class TaxonomicSegmentation {
             list.add(new Pair<>(scoreMatrix[col][tax2row.get(tax)], tax));
         }
         if (list.size() > 1) {
-            list.sort(new Comparator<Pair<Float, Integer>>() {
-                @Override
-                public int compare(Pair<Float, Integer> a, Pair<Float, Integer> b) {
-                    if (a.getFirst() > b.getFirst())
-                        return -1;
-                    else if (a.getFirst() < b.getFirst())
-                        return 1;
-                    else
-                        return a.getSecond().compareTo(b.getSecond());
-                }
+            list.sort((a, b) -> {
+                if (a.getFirst() > b.getFirst())
+                    return -1;
+                else if (a.getFirst() < b.getFirst())
+                    return 1;
+                else
+                    return a.getSecond().compareTo(b.getSecond());
             });
             float bestScore = list.get(0).getFirst();
             for (int i = 1; i < list.size(); i++) {
@@ -377,7 +373,7 @@ public class TaxonomicSegmentation {
     /**
      * a segment with tax id
      */
-    public class Segment {
+    public static class Segment {
         final private int start;
         final private int end;
         final private int tax;
@@ -408,17 +404,17 @@ public class TaxonomicSegmentation {
     /**
      * a column in the dynamic program: all alignments that are available at the given position
      */
-    private class DPColumn {
-        private int pos;
+    private static class DPColumn {
+        private final int pos;
         private final Map<Integer, Float> taxon2AlignmentScore; // todo: replace by array and rows
         private float minAlignmentScore = 0;
 
-        public DPColumn(int pos) {
+        DPColumn(int pos) {
             this.pos = pos;
             taxon2AlignmentScore = new TreeMap<>();
         }
 
-        public void add(int tax, float score) {
+        void add(int tax, float score) {
             if (score <= 0)
                 throw new RuntimeException("Score must be positive, got: " + score); // should never happen
             final Float prev = taxon2AlignmentScore.get(tax);
@@ -428,20 +424,20 @@ public class TaxonomicSegmentation {
                 minAlignmentScore = score;
         }
 
-        public Set<Integer> getTaxa() {
+        Set<Integer> getTaxa() {
             return taxon2AlignmentScore.keySet();
         }
 
-        public Float getScore(int tax) {
+        Float getScore(int tax) {
             final Float value = taxon2AlignmentScore.get(tax);
             return value == null ? 0 : value;
         }
 
-        public int getPos() {
+        int getPos() {
             return pos;
         }
 
-        public float getMinAlignmentScore() {
+        float getMinAlignmentScore() {
             return minAlignmentScore;
         }
 

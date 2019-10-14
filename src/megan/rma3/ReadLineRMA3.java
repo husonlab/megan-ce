@@ -37,7 +37,7 @@ public class ReadLineRMA3 extends BaseRMA3 {
     private int length;
     private int numberOfMatches;
     private int readWeight;
-    private boolean hasMagnitude;
+    private final boolean hasMagnitude;
 
     // alternatives, depending on textStoragePolicy:
     private long fileOffset; // location of text in reads file

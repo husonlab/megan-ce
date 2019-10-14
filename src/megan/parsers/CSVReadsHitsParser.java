@@ -219,7 +219,7 @@ public class CSVReadsHitsParser {
                             }
                             class2counts.remove(oldTaxId);
                         }
-                    } catch (CanceledException e) {
+                    } catch (CanceledException ignored) {
                     }
                 }
             }
@@ -308,11 +308,7 @@ public class CSVReadsHitsParser {
         final Pair<Integer, Float>[] pairs = taxonIdAndScore.toArray((Pair<Integer, Float>[]) new Pair[taxonIdAndScore.size()]);
 
         // sort by decreasing bit-score:
-        Arrays.sort(pairs, new Comparator<Pair<Integer, Float>>() {
-            public int compare(Pair<Integer, Float> pair1, Pair<Integer, Float> pair2) {
-                return pair2.getSecond().compareTo(pair1.getSecond());
-            }
-        });
+        Arrays.sort(pairs, (pair1, pair2) -> pair2.getSecond().compareTo(pair1.getSecond()));
 
         Set<Integer> taxonIds = new HashSet<>();
 

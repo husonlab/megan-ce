@@ -32,7 +32,7 @@ import java.util.Map;
  * extracts classification from a BIOME file containing a kegg classification
  * Daniel Huson, 9.2012
  */
-public class Biom1ImportKEGG {
+class Biom1ImportKEGG {
     /**
      * gets a series 2 classes to value map from the data
      *
@@ -62,7 +62,7 @@ public class Biom1ImportKEGG {
                     Object obj = metaData.get("taxonomy");
                     if (obj == null)
                         obj = metaData.get("ontology");
-                    if (obj != null && obj instanceof ArrayList) {
+                    if (obj instanceof ArrayList) {
                         List<String> names = Basic.reverseList((ArrayList) obj);
                         for (String name : names) {
                             int keggId = classification.getName2IdMap().get(name);
@@ -105,11 +105,7 @@ public class Biom1ImportKEGG {
 
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];
-                    Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
-                    if (class2count == null) {
-                        class2count = new HashMap<>();
-                        series2Classes2count.put(col2series[col], class2count);
-                    }
+                    Map<Integer, Integer> class2count = series2Classes2count.computeIfAbsent(col2series[col], k -> new HashMap<>());
                     Integer previous = class2count.get(row2class[row]);
                     if (previous != null)
                         value += previous;
@@ -130,11 +126,7 @@ public class Biom1ImportKEGG {
                 int value = array3[2];
                 //System.err.println("Class: " + obj.getClass());
                 //System.err.println("Row: " + Basic.toString(array3));
-                Map<Integer, Integer> class2count = series2Classes2count.get(col2series[col]);
-                if (class2count == null) {
-                    class2count = new HashMap<>();
-                    series2Classes2count.put(col2series[col], class2count);
-                }
+                Map<Integer, Integer> class2count = series2Classes2count.computeIfAbsent(col2series[col], k -> new HashMap<>());
                 Integer previous = class2count.get(row2class[row]);
                 if (previous != null)
                     value += previous;

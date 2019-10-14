@@ -55,11 +55,8 @@ public class RMA3Connector implements IConnector {
 
     @Override
     public long getUId() throws IOException {
-        final RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY);
-        try {
+        try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             return rma3File.getFileHeader().getCreationDate();
-        } finally {
-            rma3File.close();
         }
     }
 
@@ -96,12 +93,9 @@ public class RMA3Connector implements IConnector {
 
     @Override
     public String[] getAllClassificationNames() throws IOException {
-        final RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY);
-        try {
+        try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             List<String> names = rma3File.getClassificationsFooter().getAllNames();
             return names.toArray(new String[names.size()]);
-        } finally {
-            rma3File.close();
         }
     }
 
@@ -119,13 +113,10 @@ public class RMA3Connector implements IConnector {
 
     @Override
     public IClassificationBlock getClassificationBlock(String classificationName) throws IOException {
-        final RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY);
-        try {
+        try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             ClassificationBlockRMA3 classificationBlock = new ClassificationBlockRMA3(ClassificationType.valueOf(classificationName));
             classificationBlock.read(rma3File.getClassificationsFooter(), rma3File.getReader());
             return classificationBlock;
-        } finally {
-            rma3File.close();
         }
     }
 
@@ -183,21 +174,15 @@ public class RMA3Connector implements IConnector {
 
     @Override
     public int getNumberOfReads() throws IOException {
-        final RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY);
-        try {
+        try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             return (int) Math.min(Integer.MAX_VALUE, rma3File.getMatchFooter().getNumberOfReads());
-        } finally {
-            rma3File.close();
         }
     }
 
     @Override
     public int getNumberOfMatches() throws IOException {
-        final RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY);
-        try {
+        try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             return (int) Math.min(Integer.MAX_VALUE, rma3File.getMatchFooter().getNumberOfMatches());
-        } finally {
-            rma3File.close();
         }
     }
 
@@ -207,11 +192,8 @@ public class RMA3Connector implements IConnector {
 
     @Override
     public void putAuxiliaryData(Map<String, byte[]> label2data) throws IOException {
-        final RMA3FileModifier rma3FileModifier = new RMA3FileModifier(fileName);
-        try {
+        try (RMA3FileModifier rma3FileModifier = new RMA3FileModifier(fileName)) {
             rma3FileModifier.saveAuxData(label2data);
-        } finally {
-            rma3FileModifier.close();
         }
     }
 

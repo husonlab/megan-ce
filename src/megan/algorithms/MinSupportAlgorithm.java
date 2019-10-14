@@ -86,7 +86,7 @@ public class MinSupportAlgorithm {
      *
      * @return mapping of old taxon ids to new taxon ids
      */
-    public Map<Integer, Integer> apply() throws CanceledException {
+    private Map<Integer, Integer> apply() throws CanceledException {
         Map<Integer, Integer> orphan2AncestorMapping = new HashMap<>();
         progressListener.setMaximum(tree.getNumberOfNodes());
         progressListener.setProgress(0);

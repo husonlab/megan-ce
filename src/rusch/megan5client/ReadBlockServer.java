@@ -65,7 +65,7 @@ public class ReadBlockServer {
                 mbs.add(new MatchBlockServer(mb, classnames));
             }
         }
-        this.matchBlocks = mbs.toArray(new MatchBlockServer[mbs.size()]);
+        this.matchBlocks = mbs.toArray(new MatchBlockServer[0]);
     }
 
 

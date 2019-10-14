@@ -36,7 +36,6 @@ import java.util.*;
  * Date: 03-Jan-2004
  */
 public class EqualAngle {
-    private boolean optionUseWeights = true;
 
     private int ntax;
 
@@ -81,6 +80,7 @@ public class EqualAngle {
 
 
         // rotateAbout so that edge leaving first taxon ist pointing at 9 o'clock
+        boolean optionUseWeights = true;
         if (graph.getNumberOfNodes() > 0 && graph.getNumberOfEdges() > 0) {
             Node v = graph.getTaxon2Node(1);
             Edge e = graph.getFirstAdjacentEdge(v);
@@ -145,7 +145,7 @@ public class EqualAngle {
      * @param max
      * @return max element in set
      */
-    public int getMax(BitSet set, int max) {
+    private int getMax(BitSet set, int max) {
         for (; max >= 0; max--)
             if (set.get(max))
                 return max;
@@ -189,7 +189,7 @@ public class EqualAngle {
         int[] result = new int[cycle.length];
 
         int i = 1;
-        while (cycle[i] != 1 && i < cycle.length)
+        while (cycle[i] != 1)
             i++;
         int j = 1;
         while (i < cycle.length) {
@@ -368,7 +368,7 @@ public class EqualAngle {
         Iterator it = graph.edgeIterator();
         while (it.hasNext()) {
             Edge e = (Edge) it.next();
-            if (!forbiddenSplits.contains((int) (graph.getSplit(e)))) {
+            if (!forbiddenSplits.contains(graph.getSplit(e))) {
                 try {
                     graph.setAngle(e, split2angle[graph.getSplit(e)]);
                 } catch (Exception ex) {

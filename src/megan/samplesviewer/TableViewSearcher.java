@@ -39,13 +39,13 @@ import java.util.Set;
  */
 public class TableViewSearcher implements IObjectSearcher {
     private final String name;
-    final MyTableView table;
-    final Frame frame;
-    protected final Pair<Integer, Integer> current = new Pair<>(-1, -1); // row, col
+    private final MyTableView table;
+    private final Frame frame;
+    private final Pair<Integer, Integer> current = new Pair<>(-1, -1); // row, col
 
     private final Set<Pair<Integer, Integer>> toSelect;
     private final Set<Pair<Integer, Integer>> toDeselect;
-    public static final String SEARCHER_NAME = "TableSearcher";
+    private static final String SEARCHER_NAME = "TableSearcher";
 
     private final Set<Pair<Integer, Integer>> selected;
 
@@ -211,12 +211,7 @@ public class TableViewSearcher implements IObjectSearcher {
     public void setCurrentLabel(final String newLabel) {
         final Pair<Integer, Integer> cell = new Pair<>(current.getFirst(), current.getSecond());
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                table.setValue(cell.getFirst(), cell.getSecond(), newLabel);
-            }
-        };
+        final Runnable runnable = () -> table.setValue(cell.getFirst(), cell.getSecond(), newLabel);
         if (Platform.isFxApplicationThread())
             runnable.run();
         else
@@ -255,36 +250,33 @@ public class TableViewSearcher implements IObjectSearcher {
      * something has been changed or selected, update view
      */
     public void updateView() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Pair<Integer, Integer> first = null;
-                final Set<Pair<Integer, Integer>> selection = new HashSet<>();
-                for (Object obj : table.getSelectionModel().getSelectedCells()) {
-                    TablePosition pos = (TablePosition) obj;
-                    selection.add(new Pair<>(pos.getRow(), pos.getColumn()));
-                }
-
-                for (Pair<Integer, Integer> pair : toDeselect) {
-                    selection.remove(pair);
-                }
-
-                for (Pair<Integer, Integer> pair : toSelect) {
-                    selection.add(pair);
-                    if (first == null)
-                        first = pair;
-                }
-                table.getSelectionModel().clearSelection();
-                for (Pair<Integer, Integer> pair : selection) {
-                    final TableColumn<MyTableView.MyTableRow, ?> column = table.getCol(pair.get2());
-                    table.getSelectionModel().select(pair.get1(), column);
-                }
-                if (first != null) {
-                    table.scrollToRow(first.get1());
-                }
-                toSelect.clear();
-                toDeselect.clear();
+        Platform.runLater(() -> {
+            Pair<Integer, Integer> first = null;
+            final Set<Pair<Integer, Integer>> selection = new HashSet<>();
+            for (Object obj : table.getSelectionModel().getSelectedCells()) {
+                TablePosition pos = (TablePosition) obj;
+                selection.add(new Pair<>(pos.getRow(), pos.getColumn()));
             }
+
+            for (Pair<Integer, Integer> pair : toDeselect) {
+                selection.remove(pair);
+            }
+
+            for (Pair<Integer, Integer> pair : toSelect) {
+                selection.add(pair);
+                if (first == null)
+                    first = pair;
+            }
+            table.getSelectionModel().clearSelection();
+            for (Pair<Integer, Integer> pair : selection) {
+                final TableColumn<MyTableView.MyTableRow, ?> column = table.getCol(pair.get2());
+                table.getSelectionModel().select(pair.get1(), column);
+            }
+            if (first != null) {
+                table.scrollToRow(first.get1());
+            }
+            toSelect.clear();
+            toDeselect.clear();
         });
 
     }

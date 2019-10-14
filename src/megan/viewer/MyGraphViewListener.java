@@ -18,13 +18,6 @@
  */
 package megan.viewer;
 
-/**
- * @version $Id: MyGraphViewListener.java,v 1.48 2010-04-29 09:52:09 huson Exp $
- * <p/>
- * Listener for all graphview events.
- * @author Daniel Huson
- */
-
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.swing.graphview.*;
@@ -36,6 +29,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,34 +44,34 @@ public class MyGraphViewListener implements IGraphViewListener {
 
     final static boolean hasLabelXORBug = true;
 
-    protected final ViewerBase viewer;
+    private final ViewerBase viewer;
     private final PhyloTree tree;
     private final NodeArray<Rectangle> node2bbox;
 
-    protected final int inClick = 1;
+    private final int inClick = 1;
     protected final int inMove = 2;
-    protected final int inRubberband = 3;
-    protected final int inNewEdge = 4;
-    protected final int inMoveNodeLabel = 5;
-    protected final int inMoveEdgeLabel = 6;
-    protected final int inMoveInternalEdgePoint = 7;
-    protected final int inScrollByMouse = 8;
+    private final int inRubberband = 3;
+    private final int inNewEdge = 4;
+    private final int inMoveNodeLabel = 5;
+    private final int inMoveEdgeLabel = 6;
+    private final int inMoveInternalEdgePoint = 7;
+    private final int inScrollByMouse = 8;
     private final int inMoveMagnifier = 9;
     private final int inResizeMagnifier = 10;
 
-    protected int current;
-    protected int downX;
-    protected int downY;
-    protected Rectangle selRect;
-    protected Point prevPt;
-    protected Point offset; // used by move node label
+    private int current;
+    private int downX;
+    private int downY;
+    private Rectangle selRect;
+    private Point prevPt;
+    private Point offset; // used by move node label
 
-    protected NodeSet hitNodes;
-    protected NodeSet hitNodeLabels;
-    protected EdgeSet hitEdges;
-    protected EdgeSet hitEdgeLabels;
+    private final NodeSet hitNodes;
+    private final NodeSet hitNodeLabels;
+    private final EdgeSet hitEdges;
+    private final EdgeSet hitEdgeLabels;
 
-    NodeSet nodesWithMovedLabels;
+    private final NodeSet nodesWithMovedLabels;
 
     private boolean inPopup = false;
 
@@ -195,7 +189,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                                 synchronized (this) {
                                     Thread.sleep(500);
                                 }
-                            } catch (InterruptedException e) {
+                            } catch (InterruptedException ignored) {
                             }
                             if (stillDownWithoutMoving) {
                                 current = inRubberband;
@@ -217,17 +211,17 @@ public class MyGraphViewListener implements IGraphViewListener {
                 try {
                     if (!viewer.getSelected(v) || viewer.getLabel(v) == null)
                         return; // move labels only of selected node
-                } catch (NotOwnerException e) {
+                } catch (NotOwnerException ignored) {
                 }
                 current = inMoveNodeLabel;
                 viewer.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
-            } else if (numHitNodes == 0 && numHitEdges == 0 && numHitNodeLabels == 0 && numHitEdgeLabels > 0) {
+            } else if (numHitNodes == 0 && numHitEdges == 0 && numHitNodeLabels == 0) {
                 Edge e = hitEdgeLabels.getFirstElement();
                 try {
                     if (!viewer.getSelected(e) || viewer.getLabel(e) == null)
                         return; // move labels only of selected edges
-                } catch (NotOwnerException ex) {
+                } catch (NotOwnerException ignored) {
                 }
 
                 current = inMoveEdgeLabel;
@@ -275,7 +269,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @return has hit something
      */
     private boolean getHitsRec(int x, int y, Node v, Edge e0, boolean onlyOne) {
-        Rectangle bbox0 = (Rectangle) node2bbox.get(v);
+        Rectangle bbox0 = node2bbox.get(v);
         if (bbox0 == null)
             return false;
         Rectangle bbox = new Rectangle(bbox0.x - 100, bbox0.y - 40, bbox0.width + 1000, bbox0.height + 80);
@@ -314,7 +308,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                     Point wp = wv.computeConnectPoint(vv.getLocation(), viewer.trans);
 
                     if (tree.findDirectedEdge(v, w) != null)
-                        viewer.adjustBiEdge(vp, wp); // adjust for parallel edge
+                        viewer.adjustBiEdge(Objects.requireNonNull(vp), Objects.requireNonNull(wp)); // adjust for parallel edge
 
                     if (viewer.getEV(f).hitEdge(vp, wp, viewer.trans, x, y, 3)) {
                         hitEdges.add(f);
@@ -371,7 +365,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @return has hit something
      */
     private boolean getHitsRec(Rectangle rect, Node v, Edge e0) {
-        Rectangle bbox = (Rectangle) node2bbox.get(v);
+        Rectangle bbox = node2bbox.get(v);
         Rectangle bboxDC = new Rectangle();
         viewer.trans.w2d(bbox, bboxDC);
         int height = bboxDC.height;
@@ -474,7 +468,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                             w = viewer.getGraph().getTarget(e);
                             viewer.setLocation(w, location);
                         }
-                    } catch (NotOwnerException ex) {
+                    } catch (NotOwnerException ignored) {
                     }
                 } else if (secondHit.size() == 1) {
                     w = secondHit.getFirstElement();
@@ -564,7 +558,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                         viewer.setLocation(v, viewer.trans.d2w(me.getPoint()));
                         viewer.setDefaultNodeLocation(viewer.trans.d2w(new Point(meX + 10, meY + 10)));
                         viewer.repaint();
-                    } catch (NotOwnerException ex) {
+                    } catch (NotOwnerException ignored) {
                     }
                 }
             }
@@ -592,7 +586,7 @@ public class MyGraphViewListener implements IGraphViewListener {
             try {
 // undo node label
                 Node v;
-                if (viewer.isAllowEditNodeLabelsOnDoubleClick() && hitNodeLabels.size() > 0)
+                if (hitNodeLabels.size() > 0)
                     v = hitNodeLabels.getLastElement();
                 else
                     v = hitNodes.getLastElement();
@@ -612,7 +606,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                         || (viewer.isAllowEditEdgeLabelsOnDoubleClick() && hitEdges.size() > 0))) {
             try {
                 Edge e;
-                if (viewer.isAllowEditEdgeLabelsOnDoubleClick() && hitEdgeLabels.size() > 0)
+                if (hitEdgeLabels.size() > 0)
                     e = hitEdgeLabels.getLastElement();
                 else
                     e = hitEdges.getLastElement();
@@ -683,7 +677,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                     viewer.getEV(e).moveInternalPoint(viewer.trans, p1, p2);
                     viewer.repaint();
                 }
-            } catch (NotOwnerException ex) {
+            } catch (NotOwnerException ignored) {
             }
 
         } else if (current == inMoveNodeLabel) {
@@ -763,7 +757,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                     Point pw = wv.computeConnectPoint(nextToW, viewer.trans);
 
                     if (G.findDirectedEdge(G.getTarget(e), G.getSource(e)) != null)
-                        viewer.adjustBiEdge(pv, pw); // want parallel bi-edges
+                        viewer.adjustBiEdge(Objects.requireNonNull(pv), Objects.requireNonNull(pw)); // want parallel bi-edges
 
                     Graphics2D gc = (Graphics2D) viewer.getGraphics();
 
@@ -780,20 +774,16 @@ public class MyGraphViewListener implements IGraphViewListener {
                         else {
                             prevPt = new Point(downX, downY);
                             Point labPt = ev.getLabelPosition(viewer.trans);
-                            offset.x = labPt.x - downX;
+                            offset.x = Objects.requireNonNull(labPt).x - downX;
                             offset.y = labPt.y - downY;
                         }
                         gc.drawLine(apt.x, apt.y, meX, meY);
                         ev.hiliteLabel(gc, viewer.trans);
-                        if (false)
-                            ev.drawLabel(gc, viewer.trans);
                         int labX = meX + offset.x;
                         int labY = meY + offset.y;
 
                         ev.setLabelPositionRelative(labX - apt.x, labY - apt.y);
                         ev.hiliteLabel(gc, viewer.trans);
-                        if (false)
-                            ev.drawLabel(gc, viewer.trans);
 
                         prevPt.x = meX;
                         prevPt.y = meY;
@@ -857,7 +847,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @param shift    boolean
      * @param clicks   int
      */
-    void selectNodesEdges(NodeSet hitNodes, EdgeSet hitEdges, boolean shift, int clicks) {
+    private void selectNodesEdges(NodeSet hitNodes, EdgeSet hitEdges, boolean shift, int clicks) {
         if (hitNodes.size() == 1) // in this case, only do node selection
             hitEdges.clear();
 
@@ -942,7 +932,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @param y int
      * @return hit_nodes NodeSet
      */
-    public NodeSet getHitNodes(int x, int y) {
+    private NodeSet getHitNodes(int x, int y) {
         getHits(x, y, false);
         return hitNodes;
     }
@@ -954,7 +944,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @param y int
      * @return hit_nodes NodeSet
      */
-    public Node getAHitNodeOrNodeLabel(int x, int y) {
+    private Node getAHitNodeOrNodeLabel(int x, int y) {
         getHits(x, y, true);
         if (hitNodes.size() > 0)
             return hitNodes.getFirstElement();
@@ -1005,7 +995,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @param y int
      * @return hit_edges EdgeSet
      */
-    EdgeSet getHitEdges(int x, int y) {
+    private EdgeSet getHitEdges(int x, int y) {
         getHits(x, y, false);
         return hitEdges;
     }

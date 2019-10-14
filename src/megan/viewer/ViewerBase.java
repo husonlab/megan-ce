@@ -50,36 +50,36 @@ import java.util.*;
  * Daniel Huson, 12.2009
  */
 abstract public class ViewerBase extends PhyloTreeView {
-    protected final Set<Integer> collapsedIds = new HashSet<>(); // hide all nodes below these
+    private final Set<Integer> collapsedIds = new HashSet<>(); // hide all nodes below these
 
-    boolean nodeLabelNames = true;
-    boolean nodeLabelIds = false;
-    boolean nodeLabelAssigned = false;
-    boolean nodeLabelSummarized = false;
+    private boolean nodeLabelNames = true;
+    private boolean nodeLabelIds = false;
+    private boolean nodeLabelAssigned = false;
+    private boolean nodeLabelSummarized = false;
 
-    boolean showIntermediateLabels = false;
-    protected boolean drawLeavesOnly = false;
-    protected String showLegend = "undefined"; // vertical or horizontal or none or undefined
+    private boolean showIntermediateLabels = false;
+    boolean drawLeavesOnly = false;
+    String showLegend = "undefined"; // vertical or horizontal or none or undefined
 
-    protected final Director dir;
-    protected final Document doc;
+    final Director dir;
+    final Document doc;
 
-    protected final Set<Integer> previousNodeIdsOfInterest = new HashSet<>();
+    private final Set<Integer> previousNodeIdsOfInterest = new HashSet<>();
 
-    protected final Set<Integer> dirtyNodeIds = new HashSet<>();
-    protected final Set<Pair<Integer, Integer>> dirtyEdgeIds = new HashSet<>();
+    private final Set<Integer> dirtyNodeIds = new HashSet<>();
+    private final Set<Pair<Integer, Integer>> dirtyEdgeIds = new HashSet<>();
 
-    protected final JPanel mainPanel;
-    protected final LegendPanel legendPanel;
-    protected final JScrollPane legendScrollPane;
-    protected final JSplitPane splitPane;
+    final JPanel mainPanel;
+    final LegendPanel legendPanel;
+    private final JScrollPane legendScrollPane;
+    final JSplitPane splitPane;
     protected CommandManager commandManager;
 
     public enum DiagramType {RectangularCladogram, RectangularPhylogram, RoundedCladogram, RoundedPhylogram}
 
-    protected DiagramType drawerType;
+    DiagramType drawerType;
 
-    protected final NodeDrawer nodeDrawer;
+    final NodeDrawer nodeDrawer;
 
     /*
      * constructor
@@ -134,7 +134,7 @@ abstract public class ViewerBase extends PhyloTreeView {
      *
      * @return max number
      */
-    public double[] determineMaxAssigned() {
+    double[] determineMaxAssigned() {
         // determine maximum count of reads on any given node:
         double maxSingleCount = 1;
         double maxTotalCount = 1;
@@ -205,7 +205,7 @@ abstract public class ViewerBase extends PhyloTreeView {
      *
      * @return ids
      */
-    public Set<Integer> getAllIds(NodeSet nodes) {
+    Set<Integer> getAllIds(NodeSet nodes) {
         Set<Integer> result = new HashSet<>();
         for (Node v = nodes.getFirstElement(); v != null; v = nodes.getNextElement(v)) {
             result.add((Integer) v.getInfo());
@@ -216,7 +216,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * setup the key listeners
      */
-    protected void setupKeyListener() {
+    void setupKeyListener() {
         getFrame().addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent keyEvent) {
                 if (!keyEvent.isAltDown() && !keyEvent.isMetaDown() && !keyEvent.isControlDown()) {
@@ -535,7 +535,7 @@ abstract public class ViewerBase extends PhyloTreeView {
      *
      * @return all none-root nodes of degree 2
      */
-    public NodeSet getDegree2Nodes() {
+    NodeSet getDegree2Nodes() {
         NodeSet nodes = new NodeSet(getTree());
 
         for (Node v = getTree().getFirstNode(); v != null; v = v.getNext())
@@ -572,18 +572,15 @@ abstract public class ViewerBase extends PhyloTreeView {
     }
 
     public void scrollToNode(final Node v) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final Rectangle rect = getNV(v).getLabelRect(trans);
-                if (rect != null) {
-                    rect.x -= 25;
-                    rect.y -= 25;
-                    rect.width += 50;
-                    rect.height += 50;
-                    scrollRectToVisible(rect);
-                    repaint();
-                }
+        final Runnable runnable = () -> {
+            final Rectangle rect = getNV(v).getLabelRect(trans);
+            if (rect != null) {
+                rect.x -= 25;
+                rect.y -= 25;
+                rect.width += 50;
+                rect.height += 50;
+                scrollRectToVisible(rect);
+                repaint();
             }
         };
         if (SwingUtilities.isEventDispatchThread())
@@ -690,7 +687,7 @@ abstract public class ViewerBase extends PhyloTreeView {
         System.err.println("Not implemented");
     }
 
-    public Set<Integer> getPreviousNodeIdsOfInterest() {
+    Set<Integer> getPreviousNodeIdsOfInterest() {
         return previousNodeIdsOfInterest;
     }
 

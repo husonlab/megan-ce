@@ -32,7 +32,7 @@ public abstract class CommandBase extends jloda.swing.commands.CommandBase {
         return (Director) super.getDir();
     }
 
-    public Document getDoc() {
+    protected Document getDoc() {
         return getDir().getDocument();
     }
 

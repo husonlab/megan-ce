@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
+class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "correlate class={name|number ...} classification={name} attribute={name} ;";
@@ -116,7 +116,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
         final ClassificationViewer viewer = (ClassificationViewer) getViewer();
         final Collection<Integer> ids = viewer.getSelectedIds();
         if (ids.size() > 0 && list.size() > 0) {
-            final String[] choices = list.toArray(new String[list.size()]);
+            final String[] choices = list.toArray(new String[0]);
             String choice = ProgramProperties.get("CorrelateToAttribute", choices[0]);
             if (!list.contains(choice))
                 choice = choices[0];

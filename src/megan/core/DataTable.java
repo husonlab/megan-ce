@@ -38,28 +38,28 @@ public class DataTable {
     private static final String MEGAN3SummaryFormat = "Summary";
 
     // tags used in file:
-    final public static String CONTENT_TYPE = "@ContentType";
-    final public static String CREATION_DATE = "@CreationDate";
-    final public static String CREATOR = "@Creator";
-    final public static String NAMES = "@Names";
-    final public static String BLAST_MODE = "@BlastMode";
-    final public static String DISABLED = "@Disabled";
-    final public static String NODE_FORMATS = "@NodeFormats";
-    final public static String EDGE_FORMATS = "@EdgeFormats";
-    public static final String ALGORITHM = "@Algorithm";
-    public static final String NODE_STYLE = "@NodeStyle";
-    public static final String COLOR_TABLE = "@ColorTable";
-    public static final String COLOR_EDITS = "@ColorEdits";
+    private final static String CONTENT_TYPE = "@ContentType";
+    private final static String CREATION_DATE = "@CreationDate";
+    private final static String CREATOR = "@Creator";
+    private final static String NAMES = "@Names";
+    private final static String BLAST_MODE = "@BlastMode";
+    private final static String DISABLED = "@Disabled";
+    private final static String NODE_FORMATS = "@NodeFormats";
+    private final static String EDGE_FORMATS = "@EdgeFormats";
+    private static final String ALGORITHM = "@Algorithm";
+    private static final String NODE_STYLE = "@NodeStyle";
+    private static final String COLOR_TABLE = "@ColorTable";
+    private static final String COLOR_EDITS = "@ColorEdits";
 
-    public static final String PARAMETERS = "@Parameters";
-    public static final String CONTAMINANTS = "@Contaminants";
+    private static final String PARAMETERS = "@Parameters";
+    private static final String CONTAMINANTS = "@Contaminants";
 
-    public static final String TOTAL_READS = "@TotalReads";
-    public static final String ADDITIONAL_READS = "@AdditionalReads";
+    private static final String TOTAL_READS = "@TotalReads";
+    private static final String ADDITIONAL_READS = "@AdditionalReads";
 
-    public static final String COLLAPSE = "@Collapse";
-    public static final String SIZES = "@Sizes";
-    public static final String UIDS = "@Uids";
+    private static final String COLLAPSE = "@Collapse";
+    private static final String SIZES = "@Sizes";
+    private static final String UIDS = "@Uids";
 
     // variables:
     private String contentType = MEGAN4SummaryFormat;
@@ -295,11 +295,7 @@ public class DataTable {
                         String classification = ClassificationType.getFullName(tokens[0]);
                         Integer classId = Integer.parseInt(tokens[1]);
 
-                        Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
-                        if (class2counts == null) {
-                            class2counts = new HashMap<>();
-                            classification2class2counts.put(classification, class2counts);
-                        }
+                        Map<Integer, float[]> class2counts = classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
                         float[] counts = class2counts.get(classId);
                         if (counts == null) {
                             counts = new float[Math.min(getNumberOfSamples(), tokens.length - 2)];
@@ -401,7 +397,7 @@ public class DataTable {
      * @param w
      * @throws IOException
      */
-    public void writeHeader(Writer w) throws IOException {
+    private void writeHeader(Writer w) throws IOException {
         w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
         w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
         w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
@@ -594,7 +590,7 @@ public class DataTable {
      */
     public int importMEGAN3SummaryFile(String fileName, BufferedReader r, boolean headerOnly) throws IOException {
         int lineNumber = 0;
-        try {
+        try (r) {
             String aLine;
             sampleNames.clear();
             sampleNames.add(Basic.getFileBaseName(fileName));
@@ -669,8 +665,6 @@ public class DataTable {
             }
             if (!headerOnly)
                 determineSizesFromTaxonomyClassification();
-        } finally {
-            r.close();
         }
         return lineNumber;
     }
@@ -750,7 +744,7 @@ public class DataTable {
      * @return sample names
      */
     public String[] getSampleNamesArray() {
-        return sampleNames.toArray(new String[sampleNames.size()]);
+        return sampleNames.toArray(new String[0]);
     }
 
     public Collection<String> getSampleNames() {
@@ -831,7 +825,7 @@ public class DataTable {
     }
 
     public Long[] getSampleUIds() {
-        return sampleUIds.toArray(new Long[sampleUIds.size()]);
+        return sampleUIds.toArray(new Long[0]);
     }
 
     /**
@@ -1002,7 +996,7 @@ public class DataTable {
      *
      * @return
      */
-    public String getContentType() {
+    private String getContentType() {
         return contentType;
     }
 
@@ -1011,7 +1005,7 @@ public class DataTable {
      *
      * @param contentType
      */
-    public void setContentType(String contentType) {
+    private void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
@@ -1065,7 +1059,7 @@ public class DataTable {
      *
      * @param megan4Table
      */
-    public void copy(DataTable megan4Table) {
+    private void copy(DataTable megan4Table) {
         clear();
         StringWriter sw = new StringWriter();
         try {
@@ -1101,7 +1095,7 @@ public class DataTable {
      *
      * @param toDelete
      */
-    public void removeSamples(Collection<String> toDelete) {
+    private void removeSamples(Collection<String> toDelete) {
         Set<Integer> dead = new HashSet<>();
         for (String name : toDelete) {
             dead.add(Basic.getIndex(name, sampleNames));
@@ -1194,11 +1188,7 @@ public class DataTable {
 
             for (String classification : source.classification2class2counts.keySet()) {
                 Map<Integer, float[]> sourceClass2counts = source.classification2class2counts.get(classification);
-                Map<Integer, float[]> targetClass2counts = target.classification2class2counts.get(classification);
-                if (targetClass2counts == null) {
-                    targetClass2counts = new HashMap<>();
-                    target.classification2class2counts.put(classification, targetClass2counts);
-                }
+                Map<Integer, float[]> targetClass2counts = target.classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
                 for (Integer classId : sourceClass2counts.keySet()) {
                     float[] sourceCounts = sourceClass2counts.get(classId);
                     if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != 0) {
@@ -1233,11 +1223,7 @@ public class DataTable {
 
             for (String classification : sourceClassification2class2counts.keySet()) {
                 Map<Integer, float[]> sourceClass2counts = sourceClassification2class2counts.get(classification);
-                Map<Integer, float[]> targetClass2counts = this.classification2class2counts.get(classification);
-                if (targetClass2counts == null) {
-                    targetClass2counts = new HashMap<>();
-                    this.classification2class2counts.put(classification, targetClass2counts);
-                }
+                Map<Integer, float[]> targetClass2counts = this.classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
                 for (int classId : sourceClass2counts.keySet()) {
                     float[] sourceCounts = sourceClass2counts.get(classId);
                     if (sourceCounts != null && srcId < sourceCounts.length && sourceCounts[srcId] != 0) {
@@ -1263,8 +1249,7 @@ public class DataTable {
      * @return set of samples
      */
     public void extractSamplesTo(Collection<String> samples, DataTable target) {
-        Set<String> toDelete = new HashSet<>();
-        toDelete.addAll(sampleNames);
+        Set<String> toDelete = new HashSet<>(sampleNames);
         toDelete.removeAll(samples);
         target.copy(this);
         target.removeSamples(toDelete);
@@ -1353,8 +1338,7 @@ public class DataTable {
         final Map<String, Map<Integer, float[]>> classification2Class2Counts = getClassification2Class2Counts();
         for (String classification : classification2Class2Counts.keySet()) {
             final Map<Integer, float[]> class2Counts = classification2Class2Counts.get(classification);
-            final Set<Integer> keys = new HashSet<>();
-            keys.addAll(class2Counts.keySet());
+            final Set<Integer> keys = new HashSet<>(class2Counts.keySet());
             for (Integer classId : keys) {
                 float[] values = class2Counts.get(classId);
                 if (values != null) {
@@ -1441,7 +1425,7 @@ public class DataTable {
      *
      * @param sampleNames
      */
-    public void disableSamples(Collection<String> sampleNames) {
+    private void disableSamples(Collection<String> sampleNames) {
         int size = disabledSamples.size();
         Set<String> newDisabled = new HashSet<>();
         newDisabled.addAll(disabledSamples);
@@ -1464,8 +1448,7 @@ public class DataTable {
      * @return true, if changed
      */
     public boolean setEnabledSamples(Collection<String> names) {
-        Set<String> oldDisabled = new HashSet<>();
-        oldDisabled.addAll(disabledSamples);
+        Set<String> oldDisabled = new HashSet<>(disabledSamples);
 
         Set<String> newDisabled = new HashSet<>();
 
@@ -1495,8 +1478,7 @@ public class DataTable {
                 originalData = new DataTable();
                 originalData.copy(this);
             }
-            Set<String> newDisabled = new HashSet<>();
-            newDisabled.addAll(disabledSamples);
+            Set<String> newDisabled = new HashSet<>(disabledSamples);
             copyEnabled(newDisabled, originalData);
         }
     }
@@ -1507,7 +1489,7 @@ public class DataTable {
      * @param disabledSamples
      * @param originalData
      */
-    public void copyEnabled(Set<String> disabledSamples, DataTable originalData) {
+    private void copyEnabled(Set<String> disabledSamples, DataTable originalData) {
         clear();
 
         String[] origSampleNames = originalData.getSampleNamesArray();
@@ -1540,11 +1522,7 @@ public class DataTable {
         // write the data:
         for (String classification : originalData.classification2class2counts.keySet()) {
             Map<Integer, float[]> origClass2counts = originalData.classification2class2counts.get(classification);
-            Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
-            if (class2counts == null) {
-                class2counts = new HashMap<>();
-                classification2class2counts.put(classification, class2counts);
-            }
+            Map<Integer, float[]> class2counts = classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
 
             for (Integer classId : origClass2counts.keySet()) {
                 float[] origCounts = origClass2counts.get(classId);
@@ -1562,8 +1540,7 @@ public class DataTable {
     }
 
     public Set<String> getDisabledSamples() {
-        Set<String> result = new HashSet<>();
-        result.addAll(disabledSamples);
+        Set<String> result = new HashSet<>(disabledSamples);
         return result;
     }
 

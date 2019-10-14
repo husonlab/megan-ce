@@ -50,9 +50,7 @@ public class Megan6 {
 
             //install shutdown hook
             //its run() method is executed for sure as the VM shuts down
-            Runnable finalizer = new Runnable() {
-                public void run() {
-                }
+            Runnable finalizer = () -> {
             };
             Runtime.getRuntime().addShutdownHook(new Thread(finalizer));
 
@@ -76,7 +74,7 @@ public class Megan6 {
      *
      * @throws Exception
      */
-    public void parseArguments(String[] args) throws Exception {
+    private void parseArguments(String[] args) throws Exception {
         ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
         ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");
         Basic.startCollectionStdErr();
@@ -124,28 +122,26 @@ public class Megan6 {
         About.setAbout("megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE);
         About.getAbout().showAbout();
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    final Director newDir = Director.newProject();
-                    final MainViewer viewer = newDir.getMainViewer();
-                    viewer.getFrame().setVisible(true);
-                    if (MessageWindow.getInstance() == null) {
-                        MessageWindow.setInstance(new MessageWindow(ProgramProperties.getProgramIcon(), "Messages - MEGAN", viewer.getFrame(), false));
-                        MessageWindow.getInstance().getTextArea().setFont(new Font("Monospaced", Font.PLAIN, 12));
-                    }
-                    if (showMessageWindow)
-                        Director.showMessageWindow();
-
-                    Basic.restoreSystemOut(System.err); // send system out to system err
-                    System.err.println(Basic.stopCollectingStdErr());
-
-                    MeganProperties.notifyListChange("RecentFiles");
-                    newDir.executeOpen(treeFile, meganFiles, null);
-
-                } catch (Exception e) {
-                    Basic.caught(e);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                final Director newDir = Director.newProject();
+                final MainViewer viewer = newDir.getMainViewer();
+                viewer.getFrame().setVisible(true);
+                if (MessageWindow.getInstance() == null) {
+                    MessageWindow.setInstance(new MessageWindow(ProgramProperties.getProgramIcon(), "Messages - MEGAN", viewer.getFrame(), false));
+                    MessageWindow.getInstance().getTextArea().setFont(new Font("Monospaced", Font.PLAIN, 12));
                 }
+                if (showMessageWindow)
+                    Director.showMessageWindow();
+
+                Basic.restoreSystemOut(System.err); // send system out to system err
+                System.err.println(Basic.stopCollectingStdErr());
+
+                MeganProperties.notifyListChange("RecentFiles");
+                newDir.executeOpen(treeFile, meganFiles, null);
+
+            } catch (Exception e) {
+                Basic.caught(e);
             }
         });
     }

@@ -28,7 +28,7 @@ import java.util.Comparator;
  * Daniel Huson, 2.2008
  */
 public class InputDataItem extends JButton implements Comparator {
-    Director dir;
+    private Director dir;
 
     InputDataItem() {
     }
@@ -56,11 +56,6 @@ public class InputDataItem extends JButton implements Comparator {
         int x = one.getName().compareTo(other.getName());
         if (x != 0)
             return x;
-        if (one.getPID() < other.getPID())
-            return -1;
-        else if (one.getPID() > other.getPID())
-            return 1;
-        else
-            return 0;
+        return Integer.compare(one.getPID(), other.getPID());
     }
 }

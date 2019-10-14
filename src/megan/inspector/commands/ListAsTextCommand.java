@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
 
-public class ListAsTextCommand extends ClipboardBase implements ICommand {
+class ListAsTextCommand extends ClipboardBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -62,7 +62,7 @@ public class ListAsTextCommand extends ClipboardBase implements ICommand {
         return inspectorWindow != null && inspectorWindow.hasSelectedNodes();
     }
 
-    public static final String NAME = "As Text...";
+    private static final String NAME = "As Text...";
 
     public String getName() {
         return NAME;

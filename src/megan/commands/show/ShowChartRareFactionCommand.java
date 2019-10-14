@@ -34,7 +34,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ShowChartRareFactionCommand extends CommandBase implements ICommand {
+class ShowChartRareFactionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show rarefaction data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "};";
     }
@@ -67,14 +67,14 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
         IDirectableViewer viewer = getViewer();
         String data;
         if (viewer instanceof ClassificationViewer)
-            data = ((ClassificationViewer) viewer).getClassName();
+            data = viewer.getClassName();
         else
             return;
         execute("show rarefaction data=" + data + ";");
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
+        return getDir().getDocument().getNumberOfReads() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
 

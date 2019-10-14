@@ -47,12 +47,12 @@ import java.util.concurrent.ConcurrentMap;
  * 4:08:22 PM - Nov 1, 2014
  */
 public class Megan5ServerConnector implements IConnector {
-    private RestTemplate restTemplate;
-    private HttpEntity<String> request;
-    private String url;
+    private final RestTemplate restTemplate;
+    private final HttpEntity<String> request;
+    private final String url;
     private String fileId;
 
-    private static ConcurrentMap<String, Object> url2response = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Object> url2response = new ConcurrentHashMap<>();
 
     /**
      * Create connection and apply authentication.
@@ -232,9 +232,9 @@ public class Megan5ServerConnector implements IConnector {
      * @return
      */
     private String httpArray(Collection<Integer> classIds) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Object o : classIds) {
-            s = s + o.toString() + ",";
+            s.append(o.toString()).append(",");
         }
         return s.substring(0, s.length() - 1);
     }
@@ -246,9 +246,9 @@ public class Megan5ServerConnector implements IConnector {
      * @return
      */
     public static String httpArray2(List<String> classIds) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Object o : classIds) {
-            s = s + o.toString() + ",";
+            s.append(o.toString()).append(",");
         }
         return s.substring(0, s.length() - 1);
     }

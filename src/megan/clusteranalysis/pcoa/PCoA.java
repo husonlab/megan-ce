@@ -260,18 +260,15 @@ public class PCoA {
         }
 
         // sort by decreasing length of vector
-        Arrays.sort(nameAndLoadingVectorBiPlot, new Comparator<Pair<String, double[]>>() {
-            @Override
-            public int compare(Pair<String, double[]> a, Pair<String, double[]> b) {
-                double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-                double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
-                if (aSquaredLength > bSquaredLength)
-                    return -1;
-                else if (aSquaredLength < bSquaredLength)
-                    return 1;
-                else
-                    return a.getFirst().compareTo(b.getFirst());
-            }
+        Arrays.sort(nameAndLoadingVectorBiPlot, (a, b) -> {
+            double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+            double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+            if (aSquaredLength > bSquaredLength)
+                return -1;
+            else if (aSquaredLength < bSquaredLength)
+                return 1;
+            else
+                return a.getFirst().compareTo(b.getFirst());
         });
 
         /*
@@ -333,18 +330,15 @@ public class PCoA {
         }
 
         // sort by decreasing length of vector
-        Arrays.sort(nameAndLoadingVectorBiPlot, new Comparator<Pair<String, double[]>>() {
-            @Override
-            public int compare(Pair<String, double[]> a, Pair<String, double[]> b) {
-                double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-                double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
-                if (aSquaredLength > bSquaredLength)
-                    return -1;
-                else if (aSquaredLength < bSquaredLength)
-                    return 1;
-                else
-                    return a.getFirst().compareTo(b.getFirst());
-            }
+        Arrays.sort(nameAndLoadingVectorBiPlot, (a, b) -> {
+            double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+            double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+            if (aSquaredLength > bSquaredLength)
+                return -1;
+            else if (aSquaredLength < bSquaredLength)
+                return 1;
+            else
+                return a.getFirst().compareTo(b.getFirst());
         });
 
         /*

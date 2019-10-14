@@ -23,7 +23,7 @@ package megan.daa.io;
  * Packed sequence
  * Daniel Huson, 8.2015
  */
-public class PackedSequence {
+class PackedSequence {
     /**
      * read packed sequence from buffer
      *
@@ -51,8 +51,8 @@ public class PackedSequence {
         int n = 0, l = 0;
         int mask = (1 << bits) - 1;
 
-        for (int i = 0; i < packed.length; i++) {
-            x |= (packed[i] & 0xFF) << n;
+        for (byte b : packed) {
+            x |= (b & 0xFF) << n;
             n += 8;
 
             while (n >= bits && l < query_len) {

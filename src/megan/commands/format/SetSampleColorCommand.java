@@ -36,7 +36,7 @@ import java.util.LinkedList;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-public class SetSampleColorCommand extends CommandBase implements ICommand {
+class SetSampleColorCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set nodeColor=<color> [sample=<name ...>];";
     }

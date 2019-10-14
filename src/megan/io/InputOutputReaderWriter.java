@@ -28,7 +28,7 @@ import java.util.zip.DataFormatException;
  * Daniel Huson, 6.2009
  */
 public class InputOutputReaderWriter implements IInputReaderOutputWriter {
-    private Compressor compressor = new Compressor();
+    private final Compressor compressor = new Compressor();
     private boolean useCompression = true;
 
     private final IInputOutput io;

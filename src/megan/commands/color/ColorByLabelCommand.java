@@ -28,7 +28,7 @@ import megan.core.SampleAttributeTable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand {
+class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return !((Director) getDir()).getDocument().getChartColorManager().isColorByPosition();
@@ -70,7 +70,7 @@ public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand
         return true;
     }
 
-    public static String NAME = "Color Classes By Label";
+    public static final String NAME = "Color Classes By Label";
 
     public String getName() {
         return NAME;

@@ -42,7 +42,7 @@ import java.util.*;
  * export taxonomy related stuff in CVS format
  * Daniel Huson, 4.2010
  */
-public class CSVExportTaxonomy {
+class CSVExportTaxonomy {
     /**
      * export taxon name to counts mapping
      *
@@ -407,7 +407,7 @@ public class CSVExportTaxonomy {
      * @param format
      * @return label type
      */
-    public static String getTaxonLabelSource(String format, int taxonId) {
+    private static String getTaxonLabelSource(String format, int taxonId) {
         if (format.startsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
@@ -428,7 +428,7 @@ public class CSVExportTaxonomy {
      * @param format
      * @return label type
      */
-    public static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
+    private static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
         if (format.endsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
@@ -446,7 +446,7 @@ public class CSVExportTaxonomy {
      * @param taxonId
      * @return
      */
-    public static String getPath(int taxonId) {
+    private static String getPath(int taxonId) {
         final List<String> path = new LinkedList<>();
         Node v = TaxonomyData.getTree().getANode(taxonId);
         while (v != null && v.getInfo() != null) {
@@ -459,7 +459,7 @@ public class CSVExportTaxonomy {
                 v = null;
         }
         final StringBuilder buf = new StringBuilder();
-        final String[] array = path.toArray(new String[path.size()]);
+        final String[] array = path.toArray(new String[0]);
         for (int i = array.length - 1; i >= 0; i--) {
             buf.append(array[i].replaceAll(";", "_")).append(";");
         }
@@ -474,7 +474,7 @@ public class CSVExportTaxonomy {
      * @param readBlock
      * @return path
      */
-    public static String getPathPercent(Director dir, IReadBlock readBlock) {
+    private static String getPathPercent(Director dir, IReadBlock readBlock) {
         final Document doc = dir.getDocument();
         final BitSet activeMatchesForTaxa = new BitSet();
         ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);

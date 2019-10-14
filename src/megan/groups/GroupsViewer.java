@@ -58,7 +58,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     private final MenuBar menuBar;
 
     private final GroupsPanel groupsPanel;
-    final SelectionSet.SelectionListener selectionListener;
+    private final SelectionSet.SelectionListener selectionListener;
 
     private boolean ignoreNextUpdateAll = false;
 
@@ -97,20 +97,14 @@ public class GroupsViewer implements IDirectableViewer, Printable {
         groupsPanel = new GroupsPanel(dir.getDocument(), this);
         mainPanel.add(groupsPanel, BorderLayout.CENTER);
 
-        selectionListener = new SelectionSet.SelectionListener() {
-            public void changed(Collection<String> labels, boolean selected) {
-                groupsPanel.selectSamples(labels, selected);
-            }
-        };
+        selectionListener = (labels, selected) -> groupsPanel.selectSamples(labels, selected);
         dir.getDocument().getSampleSelection().addSampleSelectionListener(selectionListener);
-        groupsPanel.setGroupsChangedListener(new GroupsPanel.IGroupsChangedListener() {
-            public void changed() {
-                for (IDirectableViewer viewer : dir.getViewers()) {
-                    if (viewer instanceof ClusterViewer) {
-                        ClusterViewer cv = (ClusterViewer) viewer;
-                        if (cv.getPcoaTab() == cv.getSelectedComponent()) {
-                            cv.updateView(IDirector.ALL);
-                        }
+        groupsPanel.setGroupsChangedListener(() -> {
+            for (IDirectableViewer viewer : dir.getViewers()) {
+                if (viewer instanceof ClusterViewer) {
+                    ClusterViewer cv = (ClusterViewer) viewer;
+                    if (cv.getPcoaTab() == cv.getSelectedComponent()) {
+                        cv.updateView(IDirector.ALL);
                     }
                 }
             }
@@ -249,7 +243,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Sample Groups - " + this.dir.getDocument().getTitle();
 
         /*
@@ -301,7 +295,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
 
             double scale_x = paper_w / image_w;
             double scale_y = paper_h / image_h;
-            double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+            double scale = Math.min(scale_x, scale_y);
 
             double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
             double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;

@@ -53,7 +53,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     public enum MODE {
         Beans, Circles, Squares, Numbers, Colors;
 
-        public static MODE valueOfIgnoreCase(String label) {
+        static MODE valueOfIgnoreCase(String label) {
             for (MODE mode : MODE.values()) {
                 if (mode.toString().equalsIgnoreCase(label))
                     return mode;
@@ -62,30 +62,30 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         }
     }
 
-    public static final String NAME = "CorrelationPlot";
+    private static final String NAME = "CorrelationPlot";
 
-    protected final Table<String, String, Float> dataMatrix = new Table<>();
+    final Table<String, String, Float> dataMatrix = new Table<>();
 
-    protected String[] classNames = null;
+    String[] classNames = null;
     private String[] seriesNames = null;
 
-    protected final ArrayList<String> previousSamples = new ArrayList<>();
-    protected final ArrayList<String> previousClasses = new ArrayList<>();
+    final ArrayList<String> previousSamples = new ArrayList<>();
+    final ArrayList<String> previousClasses = new ArrayList<>();
 
     private final ClusteringTree topClusteringTree;
     private final ClusteringTree rightClusteringTree;
 
     private boolean previousClusterSeries = false;
-    protected boolean previousClusterClasses = false;
-    protected boolean previousTranspose;
-    protected Future future; // used in recompute
+    boolean previousClusterClasses = false;
+    boolean previousTranspose;
+    Future future; // used in recompute
 
-    protected final int topTreeSpace = ProgramProperties.get("topTreeHeight", 100);
-    protected final int rightTreeSpace = ProgramProperties.get("rightTreeWidth", 100);
+    final int topTreeSpace = ProgramProperties.get("topTreeHeight", 100);
+    final int rightTreeSpace = ProgramProperties.get("rightTreeWidth", 100);
 
-    protected MODE mode;
+    private MODE mode;
 
-    protected boolean inUpdateCoordinates = true;
+    boolean inUpdateCoordinates = true;
 
     /**
      * constructor
@@ -364,7 +364,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
      * @param boundingBox
      * @param correlationCoefficent
      */
-    protected void drawCell(Graphics2D gc, double[] boundingBox, double correlationCoefficent) {
+    void drawCell(Graphics2D gc, double[] boundingBox, double correlationCoefficent) {
         double centerX = boundingBox[0] + boundingBox[2] / 2; // center x
         double centerY = boundingBox[1] + boundingBox[3] / 2; // center y
 
@@ -452,7 +452,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         }
     }
 
-    protected void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
+    void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
         int x0 = x + Math.max(10, width - 25);
 
         int xLabel = x0 + 15;
@@ -463,7 +463,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         int y0 = y + 15;
         for (int i = 0; i <= boxHeight; i++) {
             float p = 1f - (float) i / (float) boxHeight; // is between 1 and 0
-            final Color color = getChartColors().getHeatMapTable().getColor((int) Math.round(1000 * p), 1000);
+            final Color color = getChartColors().getHeatMapTable().getColor(Math.round(1000 * p), 1000);
             gc.setColor(color);
             gc.drawLine(x0, y0 + i, x0 + boxWidth, y0 + i);
         }
@@ -568,7 +568,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
      *
      * @param gc
      */
-    protected void drawYAxisTransposed(Graphics2D gc, Dimension size) {
+    void drawYAxisTransposed(Graphics2D gc, Dimension size) {
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
         if (numberOfSeries > 0) {
             SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics) gc : null);
@@ -710,33 +710,29 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 future = null;
             }
             inUpdateCoordinates = true;
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    try {
-                        updateCoordinates();
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            public void run() {
-                                if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
-                                    updateClassesJList();
-                                previousClusterClasses = viewer.getClassesList().isDoClustering();
-                                if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
-                                    updateSeriesJList();
-                                previousClusterSeries = viewer.getSeriesList().isDoClustering();
-                                viewer.repaint();
-                            }
-                        });
-                    } catch (Exception e) {
-                        // Basic.caught(e);
-                    } finally {
-                        future = null;
-                        inUpdateCoordinates = false;
-                    }
+            future = executorService.submit(() -> {
+                try {
+                    updateCoordinates();
+                    SwingUtilities.invokeAndWait(() -> {
+                        if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                            updateClassesJList();
+                        previousClusterClasses = viewer.getClassesList().isDoClustering();
+                        if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
+                            updateSeriesJList();
+                        previousClusterSeries = viewer.getSeriesList().isDoClustering();
+                        viewer.repaint();
+                    });
+                } catch (Exception e) {
+                    // Basic.caught(e);
+                } finally {
+                    future = null;
+                    inUpdateCoordinates = false;
                 }
             });
         }
     }
 
-    protected void updateCoordinates() {
+    void updateCoordinates() {
         System.err.println("Updating...");
 
         dataMatrix.clear();
@@ -875,11 +871,11 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         return theHeight;
     }
 
-    public MODE getMode() {
+    private MODE getMode() {
         return mode;
     }
 
-    public void setMode(MODE mode) {
+    private void setMode(MODE mode) {
         this.mode = mode;
     }
 
@@ -898,43 +894,40 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     }
 
     public IPopupMenuModifier getPopupMenuModifier() {
-        return new IPopupMenuModifier() {
-            @Override
-            public void apply(JPopupMenu menu, final CommandManager commandManager) {
-                menu.addSeparator();
-                CorrelationPlotDrawer.MODE mode = CorrelationPlotDrawer.MODE.valueOfIgnoreCase(ProgramProperties.get("CorrelationPlotMode", CorrelationPlotDrawer.MODE.Beans.toString()));
-                final CallBack<MODE> callBack = new CallBack<CorrelationPlotDrawer.MODE>() {
-                    public void call(CorrelationPlotDrawer.MODE choice) {
-                        setMode(choice);
-                        ProgramProperties.put("CorrelationPlotMode", choice.toString());
+        return (menu, commandManager) -> {
+            menu.addSeparator();
+            MODE mode = MODE.valueOfIgnoreCase(ProgramProperties.get("CorrelationPlotMode", MODE.Beans.toString()));
+            final CallBack<MODE> callBack = new CallBack<>() {
+                public void call(MODE choice) {
+                    setMode(choice);
+                    ProgramProperties.put("CorrelationPlotMode", choice.toString());
+                    getJPanel().repaint();
+                }
+            };
+            PopupChoice.addToJMenu(menu, MODE.values(), mode, callBack);
+            menu.addSeparator();
+
+            final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (rightClusteringTree.hasSelectedSubTree()) {
+                        //System.err.println("Rotate Classes");
+                        rightClusteringTree.rotateSelectedSubTree();
+                        final Collection<String> list = rightClusteringTree.getLabelOrder();
+                        if (!isTranspose()) {
+                            classNames = list.toArray(new String[0]);
+                            updateClassesJList();
+                        } else {
+                            seriesNames = list.toArray(new String[0]);
+                            updateSeriesJList();
+                        }
                         getJPanel().repaint();
                     }
-                };
-                PopupChoice.addToJMenu(menu, CorrelationPlotDrawer.MODE.values(), mode, callBack);
-                menu.addSeparator();
+                }
+            });
+            action.setEnabled(rightClusteringTree.hasSelectedSubTree());
+            menu.add(action);
 
-                final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (rightClusteringTree.hasSelectedSubTree()) {
-                            //System.err.println("Rotate Classes");
-                            rightClusteringTree.rotateSelectedSubTree();
-                            final Collection<String> list = rightClusteringTree.getLabelOrder();
-                            if (!isTranspose()) {
-                                classNames = list.toArray(new String[0]);
-                                updateClassesJList();
-                            } else {
-                                seriesNames = list.toArray(new String[0]);
-                                updateSeriesJList();
-                            }
-                            getJPanel().repaint();
-                        }
-                    }
-                });
-                action.setEnabled(rightClusteringTree.hasSelectedSubTree());
-                menu.add(action);
-
-            }
         };
     }
 

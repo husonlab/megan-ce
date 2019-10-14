@@ -62,7 +62,7 @@ public class HMM2Blastx {
      *
      * @param args
      */
-    public void run(String[] args) throws Exception {
+    private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Converts HMM output to BLASTX");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -136,7 +136,7 @@ public class HMM2Blastx {
                         case NextQuery:
                             if (aLine.startsWith(">>")) {
                                 queryName = Basic.getWordAfter(">>", aLine);
-                                frame = getFrameFromSuffix(queryName);
+                                frame = getFrameFromSuffix(Objects.requireNonNull(queryName));
                                 queryName = removeFrameSuffix(queryName);
                                 state = EXPECTING.Score;
                                 countQueries++;
@@ -202,19 +202,13 @@ public class HMM2Blastx {
                         if (score >= minScore) {
                             String blastString = makeBlastXAlignment(referenceName, score, expected, queryAligned, midAligned, refAligned, queryStart, queryEnd, refStart, refEnd, frame, read2length.get(queryName));
 
-                            SortedSet<Pair<Float, String>> alignments = query2alignments.get(queryName);
-                            if (alignments == null) {
-                                alignments = new TreeSet<>(new Comparator<Pair<Float, String>>() {
-                                    public int compare(Pair<Float, String> o1, Pair<Float, String> o2) {
-                                        if (o1.get1() > o2.get1())
-                                            return -1;
-                                        else if (o1.get1() < o2.get1())
-                                            return 1;
-                                        else return o1.get2().compareTo(o2.get2());
-                                    }
-                                });
-                                query2alignments.put(queryName, alignments);
-                            }
+                            SortedSet<Pair<Float, String>> alignments = query2alignments.computeIfAbsent(queryName, k -> new TreeSet<>((o1, o2) -> {
+                                if (o1.get1() > o2.get1())
+                                    return -1;
+                                else if (o1.get1() < o2.get1())
+                                    return 1;
+                                else return o1.get2().compareTo(o2.get2());
+                            }));
                             if (alignments.size() == maxMatchesPerRead) {
                                 if (score >= alignments.last().get1()) {
                                     alignments.add(new Pair<>(score, blastString));
@@ -330,7 +324,7 @@ public class HMM2Blastx {
         int[] gaps = computeGaps(queryAligned, refAligned, midAligned);
         buf.append(String.format(" Identities = %d/%d (%d%%), Positives = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n",
                 identities[0], identities[1], identities[2], positives[0], positives[1], positives[2], gaps[0], gaps[1], gaps[2]));
-        buf.append(String.format(" Frame = %+d\n", (frame <= 3 ? frame : 3 - frame)));
+        buf.append(String.format(" Frame = %+d\n", frame));
         buf.append("\n");
         buf.append(String.format("Query: %8d %s %d\n", queryStart, queryAligned, queryEnd));
         buf.append(String.format("                %s\n", midAligned));

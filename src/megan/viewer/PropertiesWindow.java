@@ -32,7 +32,7 @@ import java.io.IOException;
  * 5.2005 Daniel Huson
  */
 public class PropertiesWindow extends JDialog {
-    final JEditorPane textArea = new JEditorPane("text/html", "");
+    private final JEditorPane textArea = new JEditorPane("text/html", "");
 
     public PropertiesWindow(JFrame parent, Document doc) {
         super(parent, "Properties - " + doc.getTitle() + " - " + ProgramProperties.getProgramVersion());
@@ -54,7 +54,7 @@ public class PropertiesWindow extends JDialog {
             buf.append("<b>Number of reads:</b> ").append(doc.getNumberOfReads()).append("<br><p>");
             try {
                 buf.append(doc.getDataTable().getHeaderPrettyPrint()).append("<p>");
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         } else {
             buf.append("<b>Content type:</b> NCBI taxonomy<br>");
@@ -94,7 +94,7 @@ public class PropertiesWindow extends JDialog {
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    AbstractAction okaction;
+    private AbstractAction okaction;
 
     private AbstractAction getOkAction() {
         final PropertiesWindow me = this;

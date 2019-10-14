@@ -39,15 +39,12 @@ class IntervalList {
     private void updateSort() {
         covered = -1;
         // sort all the intervals:
-        list.sort(new Comparator<IntPair>() {
-            @Override
-            public int compare(IntPair p, IntPair q) {
-                if (p.getA() < q.getA())
-                    return -1;
-                else if (p.getA() > q.getA())
-                    return 1;
-                else return Integer.compare(p.getB(), q.getB());
-            }
+        list.sort((p, q) -> {
+            if (p.getA() < q.getA())
+                return -1;
+            else if (p.getA() > q.getA())
+                return 1;
+            else return Integer.compare(p.getB(), q.getB());
         });
 
         // make the intervals disjoint:
@@ -107,7 +104,7 @@ class IntervalList {
         add(new IntPair(a, b));
     }
 
-    public void add(IntPair pair) {
+    private void add(IntPair pair) {
         list.add(pair);
         isSorted = false;
         covered = -1;
@@ -155,8 +152,8 @@ class IntervalList {
         return max;
     }
 
-    private class IntPair {
-        private int a;
+    private static class IntPair {
+        private final int a;
         private int b;
 
         IntPair(int a, int b) {

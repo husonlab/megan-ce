@@ -70,11 +70,7 @@ public class ChooseDirectoryCommand extends CommandBase implements ICommand {
         if (ProgramProperties.isMacOS() && (event != null && (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
             //Use native file dialog on mac
             java.awt.FileDialog dialog = new java.awt.FileDialog(getViewer().getFrame(), "Open output directory", java.awt.FileDialog.LOAD);
-            dialog.setFilenameFilter(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return true;
-                }
-            });
+            dialog.setFilenameFilter((dir, name) -> true);
             if (fileName != null) {
                 dialog.setDirectory(fileName);
                 //dialog.setFile(fileName);

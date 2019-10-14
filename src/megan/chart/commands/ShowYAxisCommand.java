@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * show Y axis
  * Daniel Huson, 6.2012
  */
-public class ShowYAxisCommand extends CommandBase implements ICheckBoxCommand {
+class ShowYAxisCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return isApplicable() && chartViewer.isShowYAxis();

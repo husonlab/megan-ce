@@ -36,7 +36,6 @@ public class OverlapGraphBuilder {
     private final Graph overlapGraph = new Graph();
     private final NodeArray<String> node2readName = new NodeArray<>(overlapGraph);
     private List<Integer>[] readId2ContainedReads;
-    private EdgeArray<Integer> edgeWeights;
     private final int minOverlap;
 
     /**
@@ -72,12 +71,12 @@ public class OverlapGraphBuilder {
             list[i] = new Pair<>(alignment.getLane(i).getFirstNonGapPosition(), i);
             numberOfLetters[i] = countLetters(alignment.getLane(i));
         }
-        Arrays.sort(list, new Pair<Integer, Integer>()); // sort by start position
+        Arrays.sort(list, new Pair<>()); // sort by start position
 
 
         //  overlap graph. Each node is a read, each edge is a suffix-prefix overlap
         readId2ContainedReads = new List[alignment.getNumberOfSequences()];
-        edgeWeights = new EdgeArray<>(overlapGraph);
+        EdgeArray<Integer> edgeWeights = new EdgeArray<>(overlapGraph);
 
         {
             final Set<Integer> toDelete = new HashSet<>();

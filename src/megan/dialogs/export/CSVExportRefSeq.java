@@ -39,7 +39,7 @@ import java.util.Collections;
  * export accession related data
  * Daniel Huson, 8.2011, 3.206
  */
-public class CSVExportRefSeq {
+class CSVExportRefSeq {
     /**
      * export readname to refseq id naming
      *

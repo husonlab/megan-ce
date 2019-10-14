@@ -63,7 +63,7 @@ public class ReadDataHeadLineNode extends NodeBase {
         this.data = Basic.foldHard(this.data, 140);
     }
 
-    public void setText(String text) {
+    private void setText(String text) {
         this.text = text;
     }
 

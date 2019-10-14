@@ -116,7 +116,7 @@ public class OutputWriterLittleEndian implements Closeable {
      *
      * @throws IOException
      */
-    public void writeFloat(float a) throws IOException {
+    private void writeFloat(float a) throws IOException {
         byteBuffer.putFloat(0, a);
         byteBuffer.rewind();
         byteBuffer.get(bytes, 0, 4);
@@ -187,7 +187,7 @@ public class OutputWriterLittleEndian implements Closeable {
      *
      * @throws IOException
      */
-    public void writeSizedPrefixedBytes(byte[] bytes, int offset, int length) throws IOException {
+    private void writeSizedPrefixedBytes(byte[] bytes, int offset, int length) throws IOException {
         writeInt(length);
         write(bytes, offset, length);
     }

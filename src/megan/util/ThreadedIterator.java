@@ -43,7 +43,7 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
     private final boolean isClosable;
     private final Single<Boolean> closed = new Single<>(false); // need this to stop
 
-    private static boolean enable = true;
+    private static final boolean enable = true;
 
     /**
      * default constructor

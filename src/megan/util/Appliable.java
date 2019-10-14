@@ -24,5 +24,5 @@ package megan.util;
  * Created by huson on 11/19/15.
  */
 public interface Appliable {
-    public void apply(Object argument);
+    void apply(Object argument);
 }

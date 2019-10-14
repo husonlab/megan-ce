@@ -30,7 +30,7 @@ import java.util.Hashtable;
  * Daniel Huson, 11.2008
  */
 public class AttributeReporter {
-    final Director dir;
+    private final Director dir;
 
     /**
      * constructor

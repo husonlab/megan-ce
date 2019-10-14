@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Daniel Huson, 3.2017
  */
-public class ListAttributeSummaryCommand extends CommandBase implements ICommand {
+class ListAttributeSummaryCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -94,11 +94,7 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                     if (value != null) {
                         String string = value.toString().trim();
                         if (string.length() > 0) {
-                            Integer count = value2count.get(string);
-                            if (count == null)
-                                value2count.put(string, 1);
-                            else
-                                value2count.put(string, count + 1);
+                            value2count.merge(string, 1, Integer::sum);
                         }
                     }
                 }
@@ -107,16 +103,13 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                     list.add(new Pair<>(entry.getValue(), entry.getKey()));
                 }
                 if (list.size() > 0) {
-                    list.sort(new Comparator<Pair<Integer, String>>() {
-                        @Override
-                        public int compare(Pair<Integer, String> a, Pair<Integer, String> b) {
-                            if (a.getFirst() > b.getFirst())
-                                return -1;
-                            else if (a.getFirst() < b.getFirst())
-                                return 1;
-                            else
-                                return a.getSecond().compareTo(b.getSecond());
-                        }
+                    list.sort((a, b) -> {
+                        if (a.getFirst() > b.getFirst())
+                            return -1;
+                        else if (a.getFirst() < b.getFirst())
+                            return 1;
+                        else
+                            return a.getSecond().compareTo(b.getSecond());
                     });
                     System.out.println(String.format("%s:", attribute));
 

@@ -25,6 +25,7 @@ import java.io.*;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,16 +37,16 @@ public abstract class BaseFileGetterPutter {
 
     protected enum Mode {READ_ONLY, READ_WRITE, CREATE_READ_WRITE, CREATE_READ_WRITE_IN_MEMORY}
 
-    protected static final int BITS = 30;
+    static final int BITS = 30;
 
-    protected static final int BLOCK_SIZE = (1 << BITS);
-    protected static final long BIT_MASK = (BLOCK_SIZE - 1L);
-    protected final ByteBuffer[] buffers;
-    protected final FileChannel fileChannel;
-    protected final long fileLength;
-    protected final File file;
+    static final int BLOCK_SIZE = (1 << BITS);
+    static final long BIT_MASK = (BLOCK_SIZE - 1L);
+    final ByteBuffer[] buffers;
+    private final FileChannel fileChannel;
+    final long fileLength;
+    private final File file;
 
-    protected final boolean inMemory;
+    private final boolean inMemory;
 
     /**
      * opens the named file as READ_ONLY
@@ -134,17 +135,17 @@ public abstract class BaseFileGetterPutter {
                 break;
             blockNumber++;
         }
-        buffers = list.toArray(new ByteBuffer[list.size()]);
+        buffers = list.toArray(new ByteBuffer[0]);
         if (mode == Mode.CREATE_READ_WRITE)
             erase(); // clear the file
         // System.err.println("Buffers: " + buffers.length);
     }
 
-    protected static int getWhichBuffer(long filePos) {
+    static int getWhichBuffer(long filePos) {
         return (int) (filePos >>> BITS);
     }
 
-    protected static int getIndexInBuffer(long filePos) {
+    static int getIndexInBuffer(long filePos) {
         return (int) (filePos & BIT_MASK);
     }
 
@@ -173,11 +174,8 @@ public abstract class BaseFileGetterPutter {
                         while (true) {
                             try {
                                 outs.write(buffer.get());
-                            } catch (BufferUnderflowException e) {
+                            } catch (BufferUnderflowException | IndexOutOfBoundsException e) {
                                 break; // buffer.get() also checks limit, so no need for us to check limit...
-                            } catch (IndexOutOfBoundsException e) // buffer.get() also checks limit, so no need for us to check limit...
-                            {
-                                break;
                             }
                         }
                         progress.incrementProgress();
@@ -185,8 +183,7 @@ public abstract class BaseFileGetterPutter {
                 }
                 progress.close();
             }
-            for (int i = 0; i < buffers.length; i++)
-                buffers[i] = null;
+            Arrays.fill(buffers, null);
             fileChannel.close();
         } catch (IOException e) {
             Basic.caught(e);
@@ -196,7 +193,7 @@ public abstract class BaseFileGetterPutter {
     /**
      * erase file by setting all bytes to 0
      */
-    public void erase() {
+    private void erase() {
         byte[] bytes = null;
         for (ByteBuffer buffer : buffers) {
             if (bytes == null || bytes.length < buffer.limit())
@@ -222,7 +219,7 @@ public abstract class BaseFileGetterPutter {
      * @param newLength
      * @throws java.io.IOException
      */
-    protected static void resize(File file, long newLength) throws IOException {
+    static void resize(File file, long newLength) throws IOException {
         final long oldLength;
         {
             final RandomAccessFile raf = new RandomAccessFile(file, "r");

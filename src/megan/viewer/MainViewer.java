@@ -81,51 +81,45 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
         }
         ProgramProperties.checkState();
 
-        SyncListener syncListener1 = new SyncListener() {
-            public void syncList2Viewer(LinkedList<String> enabledNames) { // rescan enable state
-                if (doc.getDataTable().setEnabledSamples(enabledNames)) {
-                    dir.execute("update reInduce=true;", commandManager);
-                }
+        SyncListener syncListener1 = enabledNames -> { // rescan enable state
+            if (doc.getDataTable().setEnabledSamples(enabledNames)) {
+                dir.execute("update reInduce=true;", commandManager);
             }
         };
 
         seriesList = new LabelsJList(this, syncListener1, new PopupMenu(this, megan.viewer.GUIConfiguration.getSeriesListPopupConfiguration(), commandManager));
 
-        seriesList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!seriesList.inSelection) {
-                    seriesList.inSelection = true;
-                    try {
-                        // select series in window
-                        Set<String> selected = new HashSet<>();
-                        selected.addAll(seriesList.getSelectedLabels());
-                        selectedSeries.clear();
-                        selectedSeries.setSelected(selected, true);
-                    } finally {
-                        seriesList.inSelection = false;
-                    }
+        seriesList.addListSelectionListener(listSelectionEvent -> {
+            if (!seriesList.inSelection) {
+                seriesList.inSelection = true;
+                try {
+                    // select series in window
+                    Set<String> selected = new HashSet<>();
+                    selected.addAll(seriesList.getSelectedLabels());
+                    selectedSeries.clear();
+                    selectedSeries.setSelected(selected, true);
+                } finally {
+                    seriesList.inSelection = false;
                 }
             }
         });
         seriesList.setDragEnabled(true);
         seriesList.setTransferHandler(new ListTransferHandler());
 
-        selectedSeries.addSampleSelectionListener(new SelectionSet.SelectionListener() {
-            public void changed(Collection<String> labels, boolean selected) {
-                if (!seriesList.inSelection) {
-                    seriesList.inSelection = true;
-                    try {
-                        DefaultListModel model = (DefaultListModel) seriesList.getModel();
-                        for (int i = 0; i < model.getSize(); i++) {
-                            String name = seriesList.getModel().getElementAt(i);
-                            if (selectedSeries.isSelected(name))
-                                seriesList.addSelectionInterval(i, i + 1);
-                            else
-                                seriesList.removeSelectionInterval(i, i + 1);
-                        }
-                    } finally {
-                        seriesList.inSelection = false;
+        selectedSeries.addSampleSelectionListener((labels, selected) -> {
+            if (!seriesList.inSelection) {
+                seriesList.inSelection = true;
+                try {
+                    DefaultListModel model = (DefaultListModel) seriesList.getModel();
+                    for (int i = 0; i < model.getSize(); i++) {
+                        String name = seriesList.getModel().getElementAt(i);
+                        if (selectedSeries.isSelected(name))
+                            seriesList.addSelectionInterval(i, i + 1);
+                        else
+                            seriesList.removeSelectionInterval(i, i + 1);
                     }
+                } finally {
+                    seriesList.inSelection = false;
                 }
             }
         });

@@ -77,20 +77,12 @@ public class CircSpiral extends JPanel {
             GeneralPath.Float gp = new GeneralPath.Float();
             gp.moveTo(x[0], y[0]);
 
-            if (false) {
-                gp.lineTo(x[1], y[1]);
+            gp.quadTo(x[1], y[0], x[1], y[1]);
 
-                gp.lineTo(x[2], y[2]);
-                gp.lineTo(x[3], y[3]);
-                gp.lineTo(x[4], y[4]);
-            } else {
-                gp.quadTo(x[1], y[0], x[1], y[1]);
-
-                gp.quadTo(x[1], y[2], x[2], y[2]);
-                gp.quadTo(x[3], y[2], x[3], y[3]);
-                gp.quadTo(x[3], y[4], x[4], y[4]);
-                gp.lineTo(x[0], y[0]);
-            }
+            gp.quadTo(x[1], y[2], x[2], y[2]);
+            gp.quadTo(x[3], y[2], x[3], y[3]);
+            gp.quadTo(x[3], y[4], x[4], y[4]);
+            gp.lineTo(x[0], y[0]);
 
             gp.closePath();
 
@@ -103,46 +95,6 @@ public class CircSpiral extends JPanel {
             */
         }
 
-
-        if (false) {
-            gc.setColor(Color.RED);
-
-            for (int i = 0; i < 4; i++) {
-                ((Graphics2D) gc).setStroke(new BasicStroke(4 - i));
-                final int ovalHeight;
-                final int ovalWidth;
-                final int startAngle;
-                switch (i) {
-                    default:
-                    case 0: {
-                        ovalHeight = (int) Math.round((1 - factor * values[i]) * nodeHeight);
-                        gc.drawLine(centerX, centerY - nodeHeight / 2, centerX, centerY - nodeHeight / 2 + (nodeHeight - ovalHeight) / 2);
-                        ovalWidth = (int) Math.round((1 - factor * values[i + 1]) * nodeWidth);
-                        startAngle = 90;
-                        break;
-                    }
-                    case 1: {
-                        ovalHeight = (int) Math.round((1 - factor * values[i + 1]) * nodeHeight);
-                        ovalWidth = (int) Math.round((1 - factor * values[i]) * nodeWidth);
-                        startAngle = 180;
-                        break;
-                    }
-                    case 2: {
-                        ovalHeight = (int) Math.round((1 - factor * values[i]) * nodeHeight);
-                        ovalWidth = (int) Math.round((1 - factor * values[i + 1]) * nodeWidth);
-                        startAngle = 270;
-                        break;
-                    }
-                    case 3: {
-                        ovalHeight = (int) Math.round((1 - factor * values[i + 1]) * nodeHeight);
-                        ovalWidth = (int) Math.round((1 - factor * values[i]) * nodeWidth);
-                        startAngle = 0;
-                        break;
-                    }
-                }
-                gc.drawArc(centerX - ovalWidth / 2, centerY - ovalHeight / 2, ovalWidth, ovalHeight, 180 - startAngle, -90);
-            }
-        }
 
         gc.setColor(Color.BLACK);
         gc.drawArc(minX - 3, minY - 3, nodeWidth + 6, nodeHeight + 6, 0, 360);

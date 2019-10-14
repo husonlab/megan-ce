@@ -98,70 +98,67 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
 
         for (int i = 0; i < numberOfThreads; i++) {
             final int threadNumber = i;
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
+            executorService.submit(() -> {
+                try {
+                    final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
 
-                        while (true) {
-                            final IReadBlock readBlock = queue.take();
-                            if (readBlock == sentinel)
-                                break;
+                    while (true) {
+                        final IReadBlock readBlock = queue.take();
+                        if (readBlock == sentinel)
+                            break;
 
-                            if (progress.isUserCancelled())
-                                break;
+                        if (progress.isUserCancelled())
+                            break;
 
-                            ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cName, activeMatches);
-                            totalMatches[threadNumber] += activeMatches.cardinality();
+                        ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cName, activeMatches);
+                        totalMatches[threadNumber] += activeMatches.cardinality();
 
-                            int speciesId = 0; // assigns weights at the species level
-                            for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
-                                final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                int id = matchBlock.getTaxonId();
+                        int speciesId = 0; // assigns weights at the species level
+                        for (int i1 = activeMatches.nextSetBit(0); i1 != -1; i1 = activeMatches.nextSetBit(i1 + 1)) {
+                            final IMatchBlock matchBlock = readBlock.getMatchBlock(i1);
+                            int id = matchBlock.getTaxonId();
+                            if (id > 0) {
+                                id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a potential problem here: what if the match is to a higher rank and that is incompatible with the majority species?
                                 if (id > 0) {
-                                    id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a potential problem here: what if the match is to a higher rank and that is incompatible with the majority species?
-                                    if (id > 0) {
-                                        if (speciesId == 0)
-                                            speciesId = id;
-                                        else if (speciesId != id) {
-                                            speciesId = -1; // means mismatch
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (speciesId > 0) {
-                                for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
-                                    final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                                    int id = matchBlock.getTaxonId();
-                                    if (id > 0) {
-                                        id = taxon2SpeciesMapping.getSpecies(id);
-                                        if (id == speciesId) {
-                                            if (ref2weight != null) {
-                                                final String ref = matchBlock.getTextFirstWord();
-                                                synchronized (syncRef) {
-                                                    final Integer count = Basic.replaceNull(ref2weight.get(ref), 0);
-                                                    ref2weight.put(ref, count + Math.max(1, readBlock.getReadWeight()));
-                                                }
-                                            } else {
-                                                final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
-                                                synchronized (syncRef) {
-                                                    refId2weight[refId] += Math.max(1, readBlock.getReadWeight());
-                                                }
-                                            }
-                                            totalWeight[threadNumber] += Math.max(1, readBlock.getReadWeight());
-                                        }
+                                    if (speciesId == 0)
+                                        speciesId = id;
+                                    else if (speciesId != id) {
+                                        speciesId = -1; // means mismatch
+                                        break;
                                     }
                                 }
                             }
                         }
-                    } catch (Exception ex) {
-                        Basic.caught(ex);
-                    } finally {
-                        countDownLatch.countDown();
+
+                        if (speciesId > 0) {
+                            for (int i1 = activeMatches.nextSetBit(0); i1 != -1; i1 = activeMatches.nextSetBit(i1 + 1)) {
+                                final IMatchBlock matchBlock = readBlock.getMatchBlock(i1);
+                                int id = matchBlock.getTaxonId();
+                                if (id > 0) {
+                                    id = taxon2SpeciesMapping.getSpecies(id);
+                                    if (id == speciesId) {
+                                        if (ref2weight != null) {
+                                            final String ref = matchBlock.getTextFirstWord();
+                                            synchronized (syncRef) {
+                                                final Integer count = Basic.replaceNull(ref2weight.get(ref), 0);
+                                                ref2weight.put(ref, count + Math.max(1, readBlock.getReadWeight()));
+                                            }
+                                        } else {
+                                            final int refId = ((MatchBlockDAA) matchBlock).getSubjectId();
+                                            synchronized (syncRef) {
+                                                refId2weight[refId] += Math.max(1, readBlock.getReadWeight());
+                                            }
+                                        }
+                                        totalWeight[threadNumber] += Math.max(1, readBlock.getReadWeight());
+                                    }
+                                }
+                            }
+                        }
                     }
+                } catch (Exception ex) {
+                    Basic.caught(ex);
+                } finally {
+                    countDownLatch.countDown();
                 }
             });
         }
@@ -202,13 +199,6 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         System.err.println(String.format("Total weights:    %,12d ", Basic.getSum(totalWeight)));
         System.err.println();
 
-        if (false) {
-            SortedSet<String> refs = new TreeSet<>();
-            refs.addAll(ref2weight.keySet());
-            for (String ref : refs) {
-                System.err.println(String.format("%s ->%5d", ref, ref2weight.get(ref)));
-            }
-        }
     }
 
     /**

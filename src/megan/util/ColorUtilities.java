@@ -25,7 +25,7 @@ import java.awt.*;
  * Some utilities for colors
  * Daniel Huson, 12.2015
  */
-public class ColorUtilities {
+class ColorUtilities {
 
     /**
      * interpolate colors

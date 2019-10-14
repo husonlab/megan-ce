@@ -48,8 +48,7 @@ public class CollapseAllOtherCommand extends CommandBase implements ICommand {
         Set<Integer> doNotCollapse = new HashSet<>();
         for (String name : names) {
             Integer id = classificationViewer.getClassification().getName2IdMap().get(name);
-            SortedSet<Node> set = new TreeSet<>();
-            set.addAll(classificationViewer.getNodes(id));
+            SortedSet<Node> set = new TreeSet<>(classificationViewer.getNodes(id));
             for (Node v : set) {
                 while (true) {
                     doNotCollapse.add((Integer) v.getInfo());

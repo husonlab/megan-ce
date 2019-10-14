@@ -47,7 +47,7 @@ import java.util.*;
  * * compute contrasts command
  * * Daniel Huson, 8.2014
  */
-public class ComputeContrastsCommand extends CommandBase implements ICommand {
+class ComputeContrastsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "compute contrasts data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), ",") + "}";
     }
@@ -100,11 +100,7 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
                             NodeData nd = (NodeData) v.getData();
                             for (int t = 0; t < samples.length; t++) {
                                 String sample = samples[t];
-                                Map<String, Double> classId2Counts = data.get(sample);
-                                if (classId2Counts == null) {
-                                    classId2Counts = new HashMap<>();
-                                    data.put(sample, classId2Counts);
-                                }
+                                Map<String, Double> classId2Counts = data.computeIfAbsent(sample, k -> new HashMap<>());
                                 classId2Counts.put(name2IdMap.get(classId), (double) (v.getOutDegree() > 0 ? nd.getAssigned()[t] : nd.getSummarized()[t]));
                             }
                             numberOfNodes++;
@@ -126,7 +122,7 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
                     System.out.println("Group " + twoGroupIds.getSecond() + ": " + Basic.toString(second, ","));
 
                     System.out.println("Results for group " + twoGroupIds.getFirst() + " vs group " + twoGroupIds.getSecond() + ":");
-                    Map<String, Double> results = contrasts.getSplitScores(first.toArray(new String[first.size()]), second.toArray(new String[second.size()]));
+                    Map<String, Double> results = contrasts.getSplitScores(first.toArray(new String[0]), second.toArray(new String[0]));
 
                     SortedSet<Pair<Double, String>> sorted = new TreeSet<>();
                     System.out.println(String.format("%-20s\tScore", viewerName));

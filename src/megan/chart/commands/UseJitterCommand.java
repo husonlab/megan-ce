@@ -27,7 +27,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class UseJitterCommand extends CommandBase implements ICheckBoxCommand {
+class UseJitterCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         if (chartViewer.getChartDrawer() instanceof Plot2DDrawer) {

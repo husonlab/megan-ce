@@ -18,19 +18,14 @@
  */
 package megan.clusteranalysis.nnet;
 
-/**
- * author daniel Huson
- * 7.04
- */
-
 import java.util.Comparator;
 
 /**
  * compares two splits first by their cardinality, then by their id.
  */
 public class SplitCardinalityComparator implements Comparator {
-    int splitID;
-    int cardinality;
+    private int splitID;
+    private int cardinality;
 
     public SplitCardinalityComparator() {
     }

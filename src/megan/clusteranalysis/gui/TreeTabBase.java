@@ -47,8 +47,8 @@ import java.util.Set;
  */
 public class TreeTabBase extends JPanel {
     private final ViewerBase graphView;
-    protected final ClusterViewer clusterViewer;
-    protected final IObjectSearcher searcher;
+    final ClusterViewer clusterViewer;
+    private final IObjectSearcher searcher;
 
 
     /**
@@ -69,11 +69,9 @@ public class TreeTabBase extends JPanel {
                 if (size.getWidth() == 0 || size.getHeight() == 0) {
                     try {
 
-                        Runnable runnable = new Runnable() {
-                            public void run() {
-                                TreeTabBase.this.validate();
-                                getScrollPane().validate();
-                            }
+                        Runnable runnable = () -> {
+                            TreeTabBase.this.validate();
+                            getScrollPane().validate();
                         };
                         if (SwingUtilities.isEventDispatchThread())
                             runnable.run(); // already in the swing thread, just run
@@ -147,11 +145,7 @@ public class TreeTabBase extends JPanel {
         graphView.getScrollPane().setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         graphView.trans.removeAllChangeListeners();
-        graphView.trans.addChangeListener(new ITransformChangeListener() {
-            public void hasChanged(Transform trans) {
-                graphView.recomputeMargins();
-            }
-        });
+        graphView.trans.addChangeListener(trans -> graphView.recomputeMargins());
 
         graphView.getScrollPane().addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {

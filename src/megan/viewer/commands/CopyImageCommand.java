@@ -30,7 +30,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class CopyImageCommand extends CommandBase implements ICommand {
+class CopyImageCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

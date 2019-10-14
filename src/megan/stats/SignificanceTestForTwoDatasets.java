@@ -37,7 +37,7 @@ public class SignificanceTestForTwoDatasets {
     /*
      * class attributes
      */
-    private Vector<Vector<Double>> dataset = new Vector<>();
+    private final Vector<Vector<Double>> dataset = new Vector<>();
     private double significance = 0.05;
 
     //x1,n1,x2,n2 used for Q.A
@@ -171,7 +171,7 @@ public class SignificanceTestForTwoDatasets {
 
     //special calculation for proportion test
 
-    public double getChi_SquareValueWithContinuityCorrectionTwoTailed() {
+    private double getChi_SquareValueWithContinuityCorrectionTwoTailed() {
         double result;
 
         double p1 = x1 / n1;
@@ -272,23 +272,21 @@ public class SignificanceTestForTwoDatasets {
      * erase content in "dataset"
      */
 
-    public void clearDataset() {
+    private void clearDataset() {
         dataset.clear();
     }
 
     public void addAllDatasets(Vector<Vector<Double>> data) {
-        for (Vector<Double> v : data) {
-            dataset.add(v);
-        }
+        dataset.addAll(data);
     }
 
-    protected Vector<Double> getRowtotal() {
+    private Vector<Double> getRowtotal() {
         double tmpsumme = 0d;
         Vector<Double> rowtotal = new Vector<>();
 
         for (Vector<Double> aDataset : dataset) {
-            for (int i = 0; i < aDataset.size(); i++) {
-                tmpsumme += aDataset.get(i);
+            for (Double aDouble : aDataset) {
+                tmpsumme += aDouble;
             }
             rowtotal.add(tmpsumme);
             tmpsumme = 0d;
@@ -297,7 +295,7 @@ public class SignificanceTestForTwoDatasets {
         return rowtotal;
     }
 
-    protected Vector<Double> getColumentotal() {
+    private Vector<Double> getColumentotal() {
         Vector<Double> columentotal = new Vector<>();
 
         for (int j = 0; j < dataset.get(0).size(); j++) {
@@ -312,7 +310,7 @@ public class SignificanceTestForTwoDatasets {
         return columentotal;
     }
 
-    protected int getD_FValue() {
+    private int getD_FValue() {
         return (dataset.size() - 1) * (dataset.get(0).size() - 1);
     }
 
@@ -321,7 +319,7 @@ public class SignificanceTestForTwoDatasets {
      * diese Umsetzung entstand aus nicht sorgfaeltigem Design
      */
 
-    protected double[][] getE_table() {
+    private double[][] getE_table() {
         double total = 0.0d;
         for (int i = 0; i < getRowtotal().size(); i++) {
             total += getRowtotal().get(i);
@@ -339,7 +337,7 @@ public class SignificanceTestForTwoDatasets {
         return e_table;
     }
 
-    protected double[][] getArrayOfdataset() {
+    private double[][] getArrayOfdataset() {
         double[][] o_table = new double[dataset.size()][dataset.get(0).size()];
 
         for (int i = 0; i < dataset.size(); i++) {
@@ -355,7 +353,7 @@ public class SignificanceTestForTwoDatasets {
      * calculate Chi Square value of bigger array
      */
 
-    public double getChi_SquareValue() {
+    private double getChi_SquareValue() {
         double result = 0.0d;
         double[][] o_table = getArrayOfdataset();
         double[][] e_table = getE_table();
@@ -373,11 +371,11 @@ public class SignificanceTestForTwoDatasets {
      * calculate p value for QA and QB with the class from colt.jar Copyright 1999 CERN - European Organization for Nuclear Research
      */
 
-    public double getPValueForChi_Squrare() {
+    private double getPValueForChi_Squrare() {
         return Probability.chiSquareComplemented(getD_FValue(), getChi_SquareValue());
     }
 
-    public double getPValueForProportionTest() {
+    private double getPValueForProportionTest() {
         return Probability.chiSquareComplemented(1.0, getChi_SquareValueWithContinuityCorrectionTwoTailed());
     }
 

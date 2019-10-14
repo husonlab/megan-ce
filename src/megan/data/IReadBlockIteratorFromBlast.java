@@ -22,7 +22,7 @@ package megan.data;
  * Iterator over a set of read blocks
  * Daniel Huson, 4.2010
  */
-public interface IReadBlockIteratorFromBlast extends IReadBlockIterator {
+interface IReadBlockIteratorFromBlast extends IReadBlockIterator {
     /**
      * gets the location manager for the blast and read files
      *

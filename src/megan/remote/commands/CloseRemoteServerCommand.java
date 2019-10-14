@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * close remote server connection
  * Daniel Huson, 10.2014
  */
-public class CloseRemoteServerCommand extends CommandBase implements ICommand {
+class CloseRemoteServerCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -77,13 +77,13 @@ public class CloseRemoteServerCommand extends CommandBase implements ICommand {
         }
     }
 
-    public static final String NAME = "Close";
+    private static final String NAME = "Close";
 
     public String getName() {
         return NAME;
     }
 
-    public static final String ALT_NAME = "Close Remote Server...";
+    private static final String ALT_NAME = "Close Remote Server...";
 
     public String getAltName() {
         return ALT_NAME;

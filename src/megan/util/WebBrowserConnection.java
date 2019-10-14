@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * listens for commands from webbrowser
@@ -45,20 +46,18 @@ public class WebBrowserConnection implements Runnable {
         } catch (IOException e) {
             Basic.caught(e);
         }
-        server.createContext("/start", new HttpHandler() {
-            public void handle(HttpExchange httpExchange) throws IOException {
-                URI uri = httpExchange.getRequestURI();
-                System.err.println("URI: " + uri);
+        Objects.requireNonNull(server).createContext("/start", httpExchange -> {
+            URI uri = httpExchange.getRequestURI();
+            System.err.println("URI: " + uri);
 
-                String command = uri.toString().substring(uri.toString().indexOf('?') + 1);
-                System.err.println("Command: " + command);
+            String command = uri.toString().substring(uri.toString().indexOf('?') + 1);
+            System.err.println("Command: " + command);
 
-                String response = "ok";
-                httpExchange.sendResponseHeaders(200, 2);
-                OutputStream outputStream = httpExchange.getResponseBody();
-                outputStream.write(response.getBytes());
-                outputStream.close();
-            }
+            String response = "ok";
+            httpExchange.sendResponseHeaders(200, 2);
+            OutputStream outputStream = httpExchange.getResponseBody();
+            outputStream.write(response.getBytes());
+            outputStream.close();
         });
         server.setExecutor(null);
         server.start();

@@ -25,6 +25,7 @@ import megan.io.IInputReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -69,10 +70,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
      */
     public float getWeightedSum(Integer key) {
         Integer value = id2WeightedSum.get(key);
-        if (value == null)
-            return 0;
-        else
-            return value;
+        return Objects.requireNonNullElse(value, 0);
     }
 
     /**
@@ -97,7 +95,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
             pair = new Pair<>();
             id2SumAndPos.put(key, pair);
         }
-        pair.setFirst((int) sum);
+        pair.setFirst(sum);
     }
 
     public long getPos(Integer key) {
@@ -117,7 +115,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
         pair.setSecond(pos);
     }
 
-    public void setSumAndPos(Integer key, int sum, long pos) {
+    private void setSumAndPos(Integer key, int sum, long pos) {
         id2SumAndPos.put(key, new Pair<>(sum, pos));
 
     }
@@ -152,7 +150,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
      */
     public int load(IInputReader r) throws IOException {
         id2SumAndPos.clear();
-        try {
+        try (r) {
             int numberOfClasses = 0;
             while (r.getPosition() < r.length()) {
                 int classId = r.readInt();
@@ -169,8 +167,6 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
             // System.err.println("Loaded:\n"+toString());
 
             return numberOfClasses;
-        } finally {
-            r.close();
         }
     }
 

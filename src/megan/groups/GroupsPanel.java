@@ -123,7 +123,7 @@ public class GroupsPanel extends JPanel {
     /**
      * sync current state of list to document
      */
-    public void syncListToDocument() {
+    private void syncListToDocument() {
         updateGroupSizes();
 
         String groupId = null;
@@ -144,7 +144,7 @@ public class GroupsPanel extends JPanel {
     /**
      * updates the group size
      */
-    public void updateGroupSizes() {
+    private void updateGroupSizes() {
         int ungroupedCount = 0;
 
         Group currentGroup = null;
@@ -247,7 +247,7 @@ public class GroupsPanel extends JPanel {
             return null;
     }
 
-    public class MySelectionListener implements ListSelectionListener {
+    class MySelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 // The mouse button has not yet been released
@@ -353,7 +353,7 @@ public class GroupsPanel extends JPanel {
         }
     }
 
-    public void showPopupMenu(final MouseEvent e) {
+    private void showPopupMenu(final MouseEvent e) {
         final int index = jList.locationToIndex(e.getPoint()); //select the item
         final Group group = listModel.getElementAt(index);
         if (group.isGroupHeader()) {
@@ -428,7 +428,7 @@ public class GroupsPanel extends JPanel {
     /**
      * cell renderer
      */
-    class MyCellRenderer implements ListCellRenderer<Group> {
+    static class MyCellRenderer implements ListCellRenderer<Group> {
         private final JPanel p = new JPanel(new BorderLayout());
         private final JLabel label = new JLabel("", JLabel.CENTER);
         private final LineBorder selectedBorder = (LineBorder) BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER);
@@ -495,9 +495,9 @@ public class GroupsPanel extends JPanel {
 
     public class GroupTransferHandler extends TransferHandler {
 
-        private JList list;
+        private final JList list;
 
-        private Set<Group> selected = new HashSet<>();
+        private final Set<Group> selected = new HashSet<>();
 
         public GroupTransferHandler(JList list) {
             this.list = list;
@@ -585,9 +585,9 @@ public class GroupsPanel extends JPanel {
 
     public static class GroupTransferable implements Transferable {
 
-        public static final DataFlavor GROUP_DATA_FLAVOR = new DataFlavor(Group.class, "GroupList");
+        static final DataFlavor GROUP_DATA_FLAVOR = new DataFlavor(Group.class, "GroupList");
 
-        private List<Group> groups;
+        private final List<Group> groups;
 
         public GroupTransferable(List<Group> groups) {
             this.groups = new ArrayList<>(groups.size());

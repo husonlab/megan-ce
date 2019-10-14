@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * set color by attribute
  * Daniel Huson, 7.2012
  */
-public class SetAttributeColorCommand extends CommandBase implements ICommand {
+class SetAttributeColorCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

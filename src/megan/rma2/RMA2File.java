@@ -40,7 +40,7 @@ public class RMA2File {
 
     private final File file;
 
-    protected final InfoSection infoSection;
+    private final InfoSection infoSection;
     private String creator = "MEGAN";
 
     /**
@@ -102,7 +102,7 @@ public class RMA2File {
      *
      * @throws IOException
      */
-    public void storeInfoSection() throws IOException {
+    private void storeInfoSection() throws IOException {
         try (InputOutputReaderWriter io = new InputOutputReaderWriter(file, "rw")) {
             if (infoSection.getInfoSectionStart() <= 0)
                 throw new IOException("getInfoSectionStart(), illegal value: " + infoSection.getInfoSectionStart());
@@ -224,7 +224,7 @@ public class RMA2File {
         w.writeString(creator);
     }
 
-    public void readHeader(IInputReader r) throws IOException {
+    private void readHeader(IInputReader r) throws IOException {
         int magicNumber = r.readInt();
         if (magicNumber != MAGIC_NUMBER)
             throw new IOException("Not a RMA2 file");
@@ -247,7 +247,7 @@ public class RMA2File {
             throw new IOException("RMA2 file corrupt? Expected: " + expected + ", got: " + got);
     }
 
-    public File getFile() {
+    private File getFile() {
         return file;
     }
 
@@ -398,7 +398,7 @@ public class RMA2File {
                 }
             }
             if (prevLabel != null) {
-                String data = auxiliaryDataString.substring(prevDataStart, auxiliaryDataString.length());
+                String data = auxiliaryDataString.substring(prevDataStart);
                 result.put(prevLabel, data.getBytes());
             }
         } else {
@@ -414,7 +414,7 @@ public class RMA2File {
                 byte[] bytes = auxiliaryDataString.substring(0, pos).getBytes();
                 result.put(SampleAttributeTable.USER_STATE, bytes);
                 pos += "BEGIN_METADATA_TABLE".length();
-                bytes = auxiliaryDataString.substring(pos, auxiliaryDataString.length()).getBytes();
+                bytes = auxiliaryDataString.substring(pos).getBytes();
                 result.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, bytes);
             } else
                 result.put(SampleAttributeTable.USER_STATE, auxiliaryDataString.getBytes());

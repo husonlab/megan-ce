@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-public class SelectAllCommand extends CommandBase implements ICommand {
+class SelectAllCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set select={all|none|sample|name=<string>|row=<number>|col=<number>};";
     }

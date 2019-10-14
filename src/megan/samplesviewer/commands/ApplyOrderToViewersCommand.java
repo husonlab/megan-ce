@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * * reorder samples in viewer
  * * Daniel Huson, 9.2012
  */
-public class ApplyOrderToViewersCommand extends CommandBase implements ICommand {
+class ApplyOrderToViewersCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "reorder samples[=<name>...];";
     }

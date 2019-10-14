@@ -21,6 +21,7 @@ package megan.daa.io;
 
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * modifies a DAA file
@@ -34,15 +35,15 @@ public class DAAModifier {
         final DAAHeader header = new DAAHeader(fileName);
         header.load();
 
-        long newFileSize = -1l;
+        long newFileSize = -1L;
         for (int i = 0; i < header.getBlockTypeRankArrayLength(); i++) {
             BlockType type = header.getBlockType(i);
             if (type != BlockType.empty) {
                 if (type.toString().startsWith("megan")) {
-                    if (newFileSize == -1l)
+                    if (newFileSize == -1L)
                         newFileSize = header.getLocationOfBlockInFile(i);
                     header.setBlockTypeRank(i, BlockType.rank(BlockType.empty));
-                    header.setBlockSize(i, 0l);
+                    header.setBlockSize(i, 0L);
                 }
             }
 
@@ -149,9 +150,7 @@ public class DAAModifier {
      */
     public static void appendBlocks(DAAHeader header, BlockType type, byte[][] blocks, int[] sizes) throws IOException {
         BlockType[] types = new BlockType[blocks.length];
-        for (int i = 0; i < types.length; i++) {
-            types[i] = type;
-        }
+        Arrays.fill(types, type);
         appendBlocks(header, types, blocks, sizes);
     }
 }

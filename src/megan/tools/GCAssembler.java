@@ -76,7 +76,7 @@ public class GCAssembler {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Gene-centric assembly");
@@ -159,12 +159,7 @@ public class GCAssembler {
                 for (Integer id : classificationBlock.getKeySet()) {
                     if (id > 0 && classificationBlock.getSum(id) > 0)
                         classIdsList.add(id);
-                    classIdsList.sort(new Comparator<Integer>() {
-                        @Override
-                        public int compare(Integer i, Integer j) {
-                            return i.compareTo(j);
-                        }
-                    });
+                    classIdsList.sort((i, j) -> i.compareTo(j));
                 }
             } else {
                 classIdsList = new ArrayList<>(selectedClassIds.length);
@@ -205,66 +200,63 @@ public class GCAssembler {
         for (int t = 0; t < numberOfThreads; t++) {
             final int threadNumber = t;
 
-            service.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+            service.submit(() -> {
+                try {
+                    final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 
-                        final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
-                        final Document doc = new Document();
-                        doc.getMeganFile().setFileFromExistingFile(inputFile, true);
-                        doc.loadMeganFile();
-                        final IConnector connector = doc.getConnector();
+                    final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
+                    final Document doc = new Document();
+                    doc.getMeganFile().setFileFromExistingFile(inputFile, true);
+                    doc.loadMeganFile();
+                    final IConnector connector = doc.getConnector();
 
-                        while (true) {
-                            Integer classId = queue.take();
-                            if (classId.equals(sentinel))
-                                return;
-                            try (final IReadBlockIterator it = getIterator(connector, classificationName, classId)) {
-                                final List<ReadData> readData = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
-                                final String className = classification != null ? classification.getName2IdMap().get(classId) : "none";
+                    while (true) {
+                        Integer classId = queue.take();
+                        if (classId.equals(sentinel))
+                            return;
+                        try (final IReadBlockIterator it = getIterator(connector, classificationName, classId)) {
+                            final List<ReadData> readData = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+                            final String className = classification != null ? classification.getName2IdMap().get(classId) : "none";
+                            if (veryVerbose)
+                                System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
+
+                            final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
+                            final String label = classificationName + ". Id: " + classId;
+
+                            readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
+
+                            int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+
+                            if (veryVerbose)
+                                System.err.println(String.format("Number of contigs:%6d", count));
+
+                            if (doOverlapContigs) {
+                                count = ReadAssembler.mergeOverlappingContigs(remainingThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
                                 if (veryVerbose)
-                                    System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
-
-                                final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
-                                final String label = classificationName + ". Id: " + classId;
-
-                                readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
-
-                                int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
-
-                                if (veryVerbose)
-                                    System.err.println(String.format("Number of contigs:%6d", count));
-
-                                if (doOverlapContigs) {
-                                    count = ReadAssembler.mergeOverlappingContigs(remainingThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
-                                    if (veryVerbose)
-                                        System.err.println(String.format("Remaining contigs:%6d", count));
-                                }
-
-                                try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
-                                    readAssembler.writeContigs(w, progress);
-                                    if (veryVerbose) {
-                                        System.err.println("Contigs written to: " + outputFile);
-                                        readAssembler.reportContigStats();
-                                    }
-                                    numberOfFilesProduced[threadNumber]++;
-                                    totalContigs[threadNumber] += readAssembler.getContigs().size();
-                                }
+                                    System.err.println(String.format("Remaining contigs:%6d", count));
                             }
-                            synchronized (totalProgress) {
-                                totalProgress.incrementProgress();
+
+                            try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
+                                readAssembler.writeContigs(w, progress);
+                                if (veryVerbose) {
+                                    System.err.println("Contigs written to: " + outputFile);
+                                    readAssembler.reportContigStats();
+                                }
+                                numberOfFilesProduced[threadNumber]++;
+                                totalContigs[threadNumber] += readAssembler.getContigs().size();
                             }
                         }
-                    } catch (Exception e) {
-                        Basic.caught(e);
-                        if (e instanceof CanceledException) {
-                            System.exit(1);
+                        synchronized (totalProgress) {
+                            totalProgress.incrementProgress();
                         }
-                    } finally {
-                        countDownLatch.countDown();
                     }
+                } catch (Exception e) {
+                    Basic.caught(e);
+                    if (e instanceof CanceledException) {
+                        System.exit(1);
+                    }
+                } finally {
+                    countDownLatch.countDown();
                 }
             });
         }

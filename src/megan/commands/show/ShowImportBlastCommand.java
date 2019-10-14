@@ -71,7 +71,7 @@ public class ShowImportBlastCommand extends CommandBase implements ICommand {
         executeImmediately(getSyntax());
     }
 
-    public static final String NAME = "Import From BLAST...";
+    private static final String NAME = "Import From BLAST...";
 
     /**
      * get the name to be used as a menu label

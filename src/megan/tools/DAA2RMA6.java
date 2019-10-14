@@ -82,7 +82,7 @@ public class DAA2RMA6 {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
@@ -122,7 +122,7 @@ public class DAA2RMA6 {
             } else if (minSupportPercent0 == Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
                 minSupportPercent = 0;
                 minSupport = minSupport0;
-            } else if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 != Document.DEFAULT_MINSUPPORT) {
+            } else if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT) {
                 throw new IOException("Please specify a value for either --minSupport or --minSupportPercent, but not for both");
             } else {
                 minSupportPercent = minSupportPercent0;
@@ -342,8 +342,8 @@ public class DAA2RMA6 {
      * @param maxMatchesPerRead
      * @param progressListener  @throws CanceledException
      */
-    public static void createRMA6FileFromDAA(String creator, String daaFile, String rma6FileName, boolean useCompression, Document doc,
-                                             int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
+    private static void createRMA6FileFromDAA(String creator, String daaFile, String rma6FileName, boolean useCompression, Document doc,
+                                              int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
         final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);
     }
@@ -357,8 +357,8 @@ public class DAA2RMA6 {
      * @param maxMatchesPerRead
      * @param progressListener  @throws CanceledException
      */
-    public static void createRMA6FileFromDAAPair(String creator, String daaFile1, String daaFile2, String rma6FileName, boolean useCompression, Document doc,
-                                                 int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
+    private static void createRMA6FileFromDAAPair(String creator, String daaFile1, String daaFile2, String rma6FileName, boolean useCompression, Document doc,
+                                                  int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
         final RMA6FromBlastCreator rma6Creator =
                 new RMA6FromBlastCreator(creator, BlastFileFormat.DAA, doc.getBlastMode(), new String[]{daaFile1, daaFile2}, new String[]{}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);

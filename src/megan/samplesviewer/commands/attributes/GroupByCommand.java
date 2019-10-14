@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * * group by command
  * * Daniel Huson, 9.2105
  */
-public class GroupByCommand extends CommandBase implements ICommand {
+class GroupByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

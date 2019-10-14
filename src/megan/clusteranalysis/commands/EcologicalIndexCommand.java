@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * the ecological index
  * Daniel Huson, 6.2010
  */
-public abstract class EcologicalIndexCommand extends CommandBase {
+abstract class EcologicalIndexCommand extends CommandBase {
     /**
      * parses the given command and executes it
      *

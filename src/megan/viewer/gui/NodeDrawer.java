@@ -41,7 +41,7 @@ import java.awt.geom.Rectangle2D;
  */
 public class NodeDrawer implements INodeDrawer {
     static public Color pvalueColor = ProgramProperties.get(MeganProperties.PVALUE_COLOR, Color.CYAN);
-    static public Font selectionFont = ProgramProperties.get("selectionFont", Font.decode("Helvetica-PLAIN-11"));
+    private static final Font selectionFont = ProgramProperties.get("selectionFont", Font.decode("Helvetica-PLAIN-11"));
 
     public enum ScalingType {
         LOG, SQRT, LINEAR
@@ -292,7 +292,7 @@ public class NodeDrawer implements INodeDrawer {
      *
      * @param v
      */
-    public void hiliteLabel(Node v, NodeData data) {
+    private void hiliteLabel(Node v, NodeData data) {
         NodeView nv = viewer.getNV(v);
 
         if (nv.getLocation() == null)
@@ -440,7 +440,7 @@ public class NodeDrawer implements INodeDrawer {
      * @param nv
      * @param data
      */
-    void drawAsCoxComb(Node v, NodeView nv, NodeData data) {
+    private void drawAsCoxComb(Node v, NodeView nv, NodeData data) {
         Point2D location = nv.getLocation();
 
         if (location == null)
@@ -498,7 +498,7 @@ public class NodeDrawer implements INodeDrawer {
      * @param nv
      * @param data
      */
-    void drawAsPieChart(Node v, NodeView nv, NodeData data) {
+    private void drawAsPieChart(Node v, NodeView nv, NodeData data) {
         Point2D location = nv.getLocation();
 
         if (location == null)
@@ -768,7 +768,7 @@ public class NodeDrawer implements INodeDrawer {
      * @param pvalue
      * @return line width
      */
-    protected static int getWidthForPValue(double pvalue) {
+    private static int getWidthForPValue(double pvalue) {
         if (pvalue < 0) return 0;
         if (pvalue < Math.pow(10, -37)) return 9;
         if (pvalue < Math.pow(10, -32)) return 8;

@@ -35,12 +35,12 @@ import java.util.Map;
  * Daniel Huson, a small dialog for selecting one or more projects
  */
 public class ProjectChooser extends JDialog {
-    boolean allowSummaryProjects = true;
-    boolean allowComparisonProjects = true;
-    final JList jlist;
-    final DefaultListModel model;
-    List<Integer> result;
-    final Map<Integer, Integer> listIndex2projectIndex;
+    private boolean allowSummaryProjects = true;
+    private boolean allowComparisonProjects = true;
+    private final JList jlist;
+    private final DefaultListModel model;
+    private List<Integer> result;
+    private final Map<Integer, Integer> listIndex2projectIndex;
 
     /**
      * constructor
@@ -102,7 +102,7 @@ public class ProjectChooser extends JDialog {
         }
     }
 
-    AbstractAction allAction;
+    private AbstractAction allAction;
 
     private AbstractAction getAllAction() {
         AbstractAction action = allAction;
@@ -118,7 +118,7 @@ public class ProjectChooser extends JDialog {
         return allAction = action;
     }
 
-    AbstractAction cancelAction;
+    private AbstractAction cancelAction;
 
     private AbstractAction getCancelAction() {
         AbstractAction action = cancelAction;
@@ -134,7 +134,7 @@ public class ProjectChooser extends JDialog {
         return cancelAction = action;
     }
 
-    AbstractAction okAction;
+    private AbstractAction okAction;
 
     private AbstractAction getOkAction() {
         AbstractAction action = okAction;

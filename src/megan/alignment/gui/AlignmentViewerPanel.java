@@ -35,7 +35,7 @@ import java.awt.event.*;
  * Daniel Huson, 9.2011
  */
 public class AlignmentViewerPanel extends JPanel {
-    private int laneHeight = 20;
+    private final int laneHeight = 20;
 
     private final SelectedBlock selectedBlock = new SelectedBlock();
 
@@ -56,7 +56,7 @@ public class AlignmentViewerPanel extends JPanel {
     private final JScrollPane alignmentScrollPane;
     private final JScrollPane axisScrollPane;
 
-    public static int DEFAULT_SCALE = 11;
+    private static final int DEFAULT_SCALE = 11;
     private double hScale = DEFAULT_SCALE;
     private double vScale = DEFAULT_SCALE;
 
@@ -68,8 +68,8 @@ public class AlignmentViewerPanel extends JPanel {
     private boolean showConsensus = true;
     private boolean showAsMapping = false;
 
-    private String aminoAcidColorScheme = ColorSchemeAminoAcids.NAMES.Default.toString();
-    private String nuceoltidesColorScheme = ColorSchemeNucleotides.NAMES.Default.toString();
+    private final String aminoAcidColorScheme = ColorSchemeAminoAcids.NAMES.Default.toString();
+    private final String nuceoltidesColorScheme = ColorSchemeNucleotides.NAMES.Default.toString();
 
     /**
      * constructor
@@ -138,12 +138,10 @@ public class AlignmentViewerPanel extends JPanel {
         downButton.setMaximumSize(new Dimension(16, 16));
         downButton.setIcon(ResourceManager.getIcon("sun/Down16.gif"));
 
-        selectedBlock.addSelectionListener(new ISelectionListener() {
-            public void doSelectionChanged(boolean selected, int minRow, int minCol, int maxRow, int maxCol) {
-                upButton.setEnabled(getAlignment().getNumberOfSequences() > 0 && selectedBlock.isSelected() && selectedBlock.getFirstRow() > 0);
-                downButton.setEnabled(getAlignment().getNumberOfSequences() > 0 && selectedBlock.isSelected() && selectedBlock.getLastRow() < getAlignment().getNumberOfSequences() - 1);
+        selectedBlock.addSelectionListener((selected, minRow, minCol, maxRow, maxCol) -> {
+            upButton.setEnabled(getAlignment().getNumberOfSequences() > 0 && selectedBlock.isSelected() && selectedBlock.getFirstRow() > 0);
+            downButton.setEnabled(getAlignment().getNumberOfSequences() > 0 && selectedBlock.isSelected() && selectedBlock.getLastRow() < getAlignment().getNumberOfSequences() - 1);
 
-            }
         });
 
         showRefButton = new JButton(new AbstractAction() {
@@ -302,57 +300,47 @@ public class AlignmentViewerPanel extends JPanel {
         namesScrollPane.getVerticalScrollBar().setModel(alignmentScrollPane.getVerticalScrollBar().getModel());
         consensusScrollPane.getHorizontalScrollBar().setModel(alignmentScrollPane.getHorizontalScrollBar().getModel());
 
-        axisScrollPane.addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-            }
+        axisScrollPane.addMouseWheelListener(e -> {
         });
-        referenceScrollPane.addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-            }
+        referenceScrollPane.addMouseWheelListener(e -> {
         });
-        consensusScrollPane.addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-            }
+        consensusScrollPane.addMouseWheelListener(e -> {
         });
-        namesScrollPane.addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-                    namesScrollPane.getVerticalScrollBar().setValue(alignmentScrollPane.getVerticalScrollBar().getValue() + e.getUnitsToScroll());
-                }
+        namesScrollPane.addMouseWheelListener(e -> {
+            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                namesScrollPane.getVerticalScrollBar().setValue(alignmentScrollPane.getVerticalScrollBar().getValue() + e.getUnitsToScroll());
             }
         });
 
-        alignmentPanel.addMouseWheelListener(new MouseWheelListener() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-                    boolean doScaleHorizontal = !e.isMetaDown() && !e.isAltDown() && !e.isShiftDown();
-                    boolean doScaleVertical = !e.isMetaDown() && !e.isAltDown() && e.isShiftDown();
-                    boolean doScrollVertical = !e.isMetaDown() && e.isAltDown() && !e.isShiftDown();
-                    boolean doScrollHorizontal = !e.isMetaDown() && e.isAltDown() && e.isShiftDown();
-                    if (ProgramProperties.isMacOS()) // has two-dimensional scrolling
-                    {
-                        boolean tmp = doScaleHorizontal;
-                        doScaleHorizontal = doScaleVertical;
-                        doScaleVertical = tmp;
+        alignmentPanel.addMouseWheelListener(e -> {
+            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                boolean doScaleHorizontal = !e.isMetaDown() && !e.isAltDown() && !e.isShiftDown();
+                boolean doScaleVertical = !e.isMetaDown() && !e.isAltDown() && e.isShiftDown();
+                boolean doScrollVertical = !e.isMetaDown() && e.isAltDown() && !e.isShiftDown();
+                boolean doScrollHorizontal = !e.isMetaDown() && e.isAltDown() && e.isShiftDown();
+                if (ProgramProperties.isMacOS()) // has two-dimensional scrolling
+                {
+                    boolean tmp = doScaleHorizontal;
+                    doScaleHorizontal = doScaleVertical;
+                    doScaleVertical = tmp;
+                }
+                if (doScrollVertical) { //scroll
+                    alignmentScrollPane.getVerticalScrollBar().setValue(alignmentScrollPane.getVerticalScrollBar().getValue() + e.getUnitsToScroll());
+                } else if (doScaleVertical) { //scale
+                    double toScroll = 1.0 + (e.getUnitsToScroll() / 100.0);
+                    double s = (toScroll > 0 ? 1.0 / toScroll : toScroll);
+                    double scale = s * vScale;
+                    if (scale > 0 && scale < 100) {
+                        zoom("vertical", "" + scale, e.getPoint());
                     }
-                    if (doScrollVertical) { //scroll
-                        alignmentScrollPane.getVerticalScrollBar().setValue(alignmentScrollPane.getVerticalScrollBar().getValue() + e.getUnitsToScroll());
-                    } else if (doScaleVertical) { //scale
-                        double toScroll = 1.0 + (e.getUnitsToScroll() / 100.0);
-                        double s = (toScroll > 0 ? 1.0 / toScroll : toScroll);
-                        double scale = s * vScale;
-                        if (scale > 0 && scale < 100) {
-                            zoom("vertical", "" + scale, e.getPoint());
-                        }
-                    } else if (doScrollHorizontal) {
-                        alignmentScrollPane.getHorizontalScrollBar().setValue(alignmentScrollPane.getHorizontalScrollBar().getValue() + e.getUnitsToScroll());
-                    } else if (doScaleHorizontal) { //scale
-                        double units = 1.0 + (e.getUnitsToScroll() / 100.0);
-                        double s = (units > 0 ? 1.0 / units : units);
-                        double scale = s * hScale;
-                        if (scale > 0 && scale < 100) {
-                            zoom("horizontal", "" + scale, e.getPoint());
-                        }
+                } else if (doScrollHorizontal) {
+                    alignmentScrollPane.getHorizontalScrollBar().setValue(alignmentScrollPane.getHorizontalScrollBar().getValue() + e.getUnitsToScroll());
+                } else if (doScaleHorizontal) { //scale
+                    double units = 1.0 + (e.getUnitsToScroll() / 100.0);
+                    double s = (units > 0 ? 1.0 / units : units);
+                    double scale = s * hScale;
+                    if (scale > 0 && scale < 100) {
+                        zoom("horizontal", "" + scale, e.getPoint());
                     }
                 }
             }
@@ -364,7 +352,7 @@ public class AlignmentViewerPanel extends JPanel {
      *
      * @param connect
      */
-    public void connectNamePanel2AlignmentPane(boolean connect) {
+    private void connectNamePanel2AlignmentPane(boolean connect) {
         if (connect)
             namesScrollPane.getVerticalScrollBar().setModel(alignmentScrollPane.getVerticalScrollBar().getModel());
         else
@@ -738,7 +726,7 @@ public class AlignmentViewerPanel extends JPanel {
         }
     }
 
-    public boolean isNamesPanelVisible() {
+    private boolean isNamesPanelVisible() {
         return splitPane.getDividerLocation() > 0;
     }
 }

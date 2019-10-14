@@ -77,7 +77,7 @@ public class TableItemService extends Service<Integer> {
         return maxBitScoreProperty().get();
     }
 
-    public FloatProperty maxBitScoreProperty() {
+    private FloatProperty maxBitScoreProperty() {
         return maxBitScore;
     }
 
@@ -85,7 +85,7 @@ public class TableItemService extends Service<Integer> {
         return maxNormalizedBitScore;
     }
 
-    public IntegerProperty maxReadLengthProperty() {
+    private IntegerProperty maxReadLengthProperty() {
         if (maxReadLength == null)
             maxReadLength = new SimpleIntegerProperty();
         return maxReadLength;

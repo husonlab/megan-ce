@@ -303,7 +303,7 @@ public class ChartColorManager {
      * @param w
      * @throws java.io.IOException
      */
-    public void write(Writer w, String separator) throws IOException {
+    private void write(Writer w, String separator) throws IOException {
         for (Map.Entry<String, Color> entry : class2color.entrySet()) {
             Color color = entry.getValue();
             if (color != null)
@@ -333,7 +333,7 @@ public class ChartColorManager {
      * @param lines
      * @throws IOException
      */
-    public void read(String[] lines) {
+    private void read(String[] lines) {
         for (String aLine : lines) {
             aLine = aLine.trim();
             if (aLine.length() > 0 && !aLine.startsWith("#")) {
@@ -385,27 +385,15 @@ public class ChartColorManager {
     }
 
     public ColorGetter getSeriesColorGetter() {
-        return new ColorGetter() {
-            public Color get(String label) {
-                return getSampleColor(label);
-            }
-        };
+        return label -> getSampleColor(label);
     }
 
     public ColorGetter getClassColorGetter() {
-        return new ColorGetter() {
-            public Color get(String label) {
-                return getClassColor(label);
-            }
-        };
+        return label -> getClassColor(label);
     }
 
     public ColorGetter getAttributeColorGetter() {
-        return new ColorGetter() {
-            public Color get(String label) {
-                return Color.WHITE;
-            }
-        };
+        return label -> Color.WHITE;
     }
 
     public String getColorTableName() {

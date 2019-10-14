@@ -110,7 +110,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
                     if (!command.startsWith("!"))
                         dir.executeImmediately("show window=message;", getCommandManager());
                     else
-                        command = command.substring(1, command.length());
+                        command = command.substring(1);
                     if (!command.endsWith(";"))
                         command += ";";
                     command = command.trim();
@@ -197,7 +197,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Command input  - " + viewer.getTitle();
 
         if (!getFrame().getTitle().equals(newTitle)) {
@@ -215,7 +215,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
      *
      * @return command
      */
-    public String getCommand() {
+    private String getCommand() {
         return inputCBox.getCurrentText(false).trim();
     }
 

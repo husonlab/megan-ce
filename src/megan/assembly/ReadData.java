@@ -23,8 +23,8 @@ package megan.assembly;
  * Daniel Huson, 5.2015
  */
 public class ReadData {
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private String segment;
     private MatchData[] matches;
 

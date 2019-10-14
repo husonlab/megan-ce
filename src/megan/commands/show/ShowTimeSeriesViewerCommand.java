@@ -57,7 +57,7 @@ public class ShowTimeSeriesViewerCommand extends megan.commands.CommandBase impl
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfSamples() > 0 && getViewer() instanceof ClassificationViewer;
+        return getDir().getDocument().getNumberOfSamples() > 0 && getViewer() instanceof ClassificationViewer;
 
     }
 

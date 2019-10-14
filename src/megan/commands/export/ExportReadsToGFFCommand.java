@@ -45,7 +45,7 @@ import java.io.File;
  * export reads in GFF format
  * Daniel Huson, 3.2017
  */
-public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
+class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "export what=GFF file=<file-name> [classification={all|" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={true|false}]";
@@ -140,7 +140,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
      * @param frame
      * @return options
      */
-    public Triplet<Boolean, Boolean, String> getOptions(JFrame frame, boolean canExport, boolean canExcludeIncompatible) {
+    private Triplet<Boolean, Boolean, String> getOptions(JFrame frame, boolean canExport, boolean canExcludeIncompatible) {
         final JDialog dialog = new JDialog();
         {
             dialog.setModal(true);
@@ -238,17 +238,15 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         if (((Director) getDir()).getDocument().getBlastMode() == BlastMode.BlastX) {
             if (getViewer() instanceof ClassificationViewer) {
                 final ClassificationViewer viewer = (ClassificationViewer) getViewer();
-                if (viewer.getDocument().isLongReads() && viewer.getNumberSelectedNodes() > 0)
-                    return true;
+                return viewer.getDocument().isLongReads() && viewer.getNumberSelectedNodes() > 0;
             } else if (getViewer() instanceof LRInspectorViewer) {
-                if (((LRInspectorViewer) getViewer()).getNumberOfSelectedItems() > 0)
-                    return true;
+                return ((LRInspectorViewer) getViewer()).getNumberOfSelectedItems() > 0;
             }
         }
         return false;
     }
 
-    public static final String NAME = "Annotations in GFF Format...";
+    private static final String NAME = "Annotations in GFF Format...";
 
     public String getName() {
         return NAME;

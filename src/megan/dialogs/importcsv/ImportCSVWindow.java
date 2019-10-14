@@ -155,7 +155,7 @@ public class ImportCSVWindow extends JDialog {
         cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
         cPanel.setBorder(BorderFactory.createTitledBorder("Classifications"));
 
-        final String[] cNames = ClassificationManager.getAllSupportedClassifications().toArray(new String[ClassificationManager.getAllSupportedClassifications().size()]);
+        final String[] cNames = ClassificationManager.getAllSupportedClassifications().toArray(new String[0]);
 
         for (final String cName : cNames) {
             final JCheckBox checkBox = new JCheckBox();
@@ -188,8 +188,7 @@ public class ImportCSVWindow extends JDialog {
 
         final JCheckBox useAccessionIds = new JCheckBox();
 
-        final Set<String> classifications = new HashSet<>();
-        classifications.addAll(Arrays.asList(cNames));
+        final Set<String> classifications = new HashSet<>(Arrays.asList(cNames));
 
         useAccessionIds.setAction(new AbstractAction("Parse accessions ids") {
             public void actionPerformed(ActionEvent e) {

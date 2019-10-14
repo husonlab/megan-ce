@@ -22,7 +22,7 @@ package megan.rma3;
  * deflate and inflate SAM line based on previous one
  * Created by huson on 5/24/14.
  */
-public class SAMCompress {
+class SAMCompress {
     /**
      * deflate current SAM line by replacing all fields that equalOverShorterOfBoth previous line by an ampersand
      *

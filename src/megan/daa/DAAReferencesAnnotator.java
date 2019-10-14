@@ -44,7 +44,7 @@ import java.util.concurrent.Executors;
  * adds reference annotations to DAA file
  * Daniel Huson, 8.2105
  */
-public class DAAReferencesAnnotator {
+class DAAReferencesAnnotator {
     /**
      * add reference annotations to a DAA file
      *

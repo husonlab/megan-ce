@@ -32,7 +32,7 @@ import java.util.zip.DataFormatException;
  */
 public class InputReader implements IInputReader {
     private final boolean useAbsoluteFilePositions;
-    private Compressor compressor = new Compressor();
+    private final Compressor compressor = new Compressor();
     private final FileChannel channel;
     private final long start;
     private final long length;

@@ -22,7 +22,7 @@ package megan.util;
 /**
  * some simple calculations in the context of  Exchangeability Statistics
  */
-public class ExchangeabilityStatistics {
+class ExchangeabilityStatistics {
     /**
      * computes probility to see a split of taxa alignments along a read
      * Example:   A A A A | B B B B
@@ -43,7 +43,7 @@ public class ExchangeabilityStatistics {
      * @param k
      * @return
      */
-    public static long binomialCoefficient(int n, int k) {
+    private static long binomialCoefficient(int n, int k) {
         double result = 1;
 
         for (int i = 1; i <= k; i++) {

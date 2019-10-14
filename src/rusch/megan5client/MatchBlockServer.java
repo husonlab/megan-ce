@@ -53,7 +53,7 @@ public class MatchBlockServer {
 
     public MatchBlockServer(IMatchBlock mb, String[] classnames) {
         this.matchUid = mb.getUId();
-        class2id = new HashMap<String, Integer>();
+        class2id = new HashMap<>();
         for (String classname : classnames) {
             class2id.put(classname, mb.getId(classname));
         }
@@ -141,22 +141,20 @@ public class MatchBlockServer {
         this.text = text;
 
         // todo: have server serve these values rather than parsing them from text:
-        if (true) {
-            if (text.length() > 0) {
-                String word;
+        if (text.length() > 0) {
+            String word;
 
-                word = Basic.getWordAfter("Query:", text);
-                if (word != null && Basic.isInteger(word))
-                    alignedQueryStart = Basic.parseInt(word);
+            word = Basic.getWordAfter("Query:", text);
+            if (word != null && Basic.isInteger(word))
+                alignedQueryStart = Basic.parseInt(word);
 
-                word = Basic.getLastWord(Basic.getLastLineStartingWith("Query:", text));
-                if (word != null && Basic.isInteger(word))
-                    alignedQueryEnd = Basic.parseInt(word);
+            word = Basic.getLastWord(Basic.getLastLineStartingWith("Query:", text));
+            if (Basic.isInteger(word))
+                alignedQueryEnd = Basic.parseInt(word);
 
-                word = Basic.getWordAfter("Length =", Basic.skipFirstLine(text));
-                if (word != null && Basic.isInteger(word))
-                    refLength = Basic.parseInt(word);
-            }
+            word = Basic.getWordAfter("Length =", Basic.skipFirstLine(text));
+            if (word != null && Basic.isInteger(word))
+                refLength = Basic.parseInt(word);
         }
     }
 

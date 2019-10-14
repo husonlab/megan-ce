@@ -28,7 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class ExpandVerticalCommand extends CommandBase implements ICommand {
+class ExpandVerticalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

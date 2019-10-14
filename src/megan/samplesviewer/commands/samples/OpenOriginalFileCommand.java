@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * * open original file
  * * Daniel Huson, 10.2015
  */
-public class OpenOriginalFileCommand extends CommandBase implements ICommand {
+class OpenOriginalFileCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

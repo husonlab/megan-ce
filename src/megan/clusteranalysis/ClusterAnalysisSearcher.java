@@ -32,11 +32,11 @@ import java.util.Collection;
  * Daniel Huson, 7.2010
  */
 public class ClusterAnalysisSearcher implements IObjectSearcher {
-    public static final String NAME = "Network";
+    private static final String NAME = "Network";
 
-    ClusterViewer clusterViewer;
+    private ClusterViewer clusterViewer;
 
-    IObjectSearcher currentSearcher;
+    private IObjectSearcher currentSearcher;
 
     /**
      * empty constructor. Searcher doesn't work until setup has been called
@@ -59,7 +59,7 @@ public class ClusterAnalysisSearcher implements IObjectSearcher {
      *
      * @param clusterViewer
      */
-    public void setup(ClusterViewer clusterViewer) {
+    private void setup(ClusterViewer clusterViewer) {
         this.clusterViewer = clusterViewer;
         updateCurrent();
     }

@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set series label
  * Daniel Huson, 6.2012
  */
-public class SetCountsLabelCommand extends CommandBase implements ICommand {
+class SetCountsLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set countsLabel=<label>;";
     }

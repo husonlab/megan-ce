@@ -35,11 +35,11 @@ import java.util.concurrent.Future;
  * Daniel Huson, 9.2009
  */
 public class Loader {
-    private InspectorWindow inspectorWindow;
+    private final InspectorWindow inspectorWindow;
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private Future future;
 
-    private Queue<LoaderTask> tasks = new LinkedList<>();
+    private final Queue<LoaderTask> tasks = new LinkedList<>();
 
     /**
      * constructor
@@ -63,34 +63,32 @@ public class Loader {
     /**
      * runs all loader tasks in queue
      */
-    public void processQueue() {
+    private void processQueue() {
         final Director dir = inspectorWindow.dir;
         if (!dir.isLocked() && (future == null || future.isDone())) {
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    ProgressDialog progressDialog = new ProgressDialog("", "", inspectorWindow.getFrame());
-                    dir.getDocument().setProgressListener(progressDialog);
-                    try {
-                        dir.notifyLockInput();
-                        progressDialog.setTasks("Loading data from file", inspectorWindow.dir.getDocument().getMeganFile().getName());
-                        progressDialog.setDebug(Basic.getDebugMode());
-                        while (tasks.size() > 0) {
-                            final LoaderTask task = tasks.remove();
-                            // System.err.println("Task: " + task);
-                            try {
-                                task.run(progressDialog);
-                            } catch (CanceledException ex) {
-                                // System.err.println("USER CANCELED EXECUTE");
-                            } catch (Exception ex) {
-                                Basic.caught(ex);
-                                NotificationsInSwing.showError(inspectorWindow.getFrame(), "Load data failed: " + ex.getMessage());
-                            }
+            future = executorService.submit(() -> {
+                ProgressDialog progressDialog = new ProgressDialog("", "", inspectorWindow.getFrame());
+                dir.getDocument().setProgressListener(progressDialog);
+                try {
+                    dir.notifyLockInput();
+                    progressDialog.setTasks("Loading data from file", inspectorWindow.dir.getDocument().getMeganFile().getName());
+                    progressDialog.setDebug(Basic.getDebugMode());
+                    while (tasks.size() > 0) {
+                        final LoaderTask task = tasks.remove();
+                        // System.err.println("Task: " + task);
+                        try {
+                            task.run(progressDialog);
+                        } catch (CanceledException ex) {
+                            // System.err.println("USER CANCELED EXECUTE");
+                        } catch (Exception ex) {
+                            Basic.caught(ex);
+                            NotificationsInSwing.showError(inspectorWindow.getFrame(), "Load data failed: " + ex.getMessage());
                         }
-                    } finally {
-                        dir.getDocument().getProgressListener().close();
-                        dir.notifyUnlockInput();
-                        inspectorWindow.updateView(Director.ALL);
                     }
+                } finally {
+                    dir.getDocument().getProgressListener().close();
+                    dir.notifyUnlockInput();
+                    inspectorWindow.updateView(Director.ALL);
                 }
             });
         }

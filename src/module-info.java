@@ -9,7 +9,6 @@ module megan {
     requires Jama;
     requires commons.codec;
     requires spring.web;
-    requires org.apache.commons.collections4;
     requires sis.jhdf5.batteries.included;
     requires sqlite.jdbc;
     requires gson;

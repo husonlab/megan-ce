@@ -509,7 +509,7 @@ public class CSVExportFViewer {
             else
                 v = null;
         }
-        final String[] array = path.toArray(new String[path.size()]);
+        final String[] array = path.toArray(new String[0]);
         final StringBuilder buf = new StringBuilder();
         for (int i = array.length - 1; i >= 0; i--) {
             if (array[i] != null)

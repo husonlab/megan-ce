@@ -170,8 +170,8 @@ public class ExportAlignedReads2GFF3Format {
      * @param intervals
      * @return GFF line
      */
-    public static String createGFFLines(final BlastMode blastMode, final String readName, final int readLength, final String[] cNames, final String classificationToReport,
-                                        IntervalTree<IMatchBlock> intervals, final int readTaxonId, final boolean excludeIncompatible, final boolean excludeDominated) {
+    private static String createGFFLines(final BlastMode blastMode, final String readName, final int readLength, final String[] cNames, final String classificationToReport,
+                                         IntervalTree<IMatchBlock> intervals, final int readTaxonId, final boolean excludeIncompatible, final boolean excludeDominated) {
 
         if (excludeDominated) {
             intervals = IntervalTree4Matches.extractDominatingIntervals(intervals, cNames, classificationToReport);
@@ -226,7 +226,7 @@ public class ExportAlignedReads2GFF3Format {
             } else
                 taxRel = null;
 
-            if (!reportAllClassifications && !(idToReport > 0 && classificationToReportIndex >= 0))
+            if (!reportAllClassifications && !(classificationToReportIndex >= 0))
                 continue; // something wrong here...
 
             // seqname source feature start end score strand frame attribute
@@ -324,7 +324,7 @@ public class ExportAlignedReads2GFF3Format {
      *
      * @return header
      */
-    public static String getHeader() {
+    private static String getHeader() {
         return "##gff-version 3.2.1\n";
     }
 }

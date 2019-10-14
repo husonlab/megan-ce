@@ -43,7 +43,7 @@ import java.util.concurrent.BlockingQueue;
  * Daniel Huson, 2.2011, 4.2015
  */
 public class BlastXMLParser extends DefaultHandler {
-    static private final long AVERAGE_CHARACTERS_PER_READ = 10000l; // guess used in progress bar
+    static private final long AVERAGE_CHARACTERS_PER_READ = 10000L; // guess used in progress bar
 
     static private SAXParserFactory saxParserFactory;
 
@@ -68,7 +68,7 @@ public class BlastXMLParser extends DefaultHandler {
     private HSP hsp;
     private final List<Hit> iterationHits = new LinkedList<>();
 
-    private TreeSet<Match> matches = new TreeSet<>(new Match()); // set of matches found for a given query
+    private final TreeSet<Match> matches = new TreeSet<>(new Match()); // set of matches found for a given query
 
     private final long maximumProgress;
 
@@ -399,7 +399,7 @@ public class BlastXMLParser extends DefaultHandler {
         return totalDiscardedMatches;
     }
 
-    public int getMaxMatchesPerRead() {
+    private int getMaxMatchesPerRead() {
         return maxMatchesPerRead;
     }
 
@@ -431,12 +431,12 @@ public class BlastXMLParser extends DefaultHandler {
         buffer.append(alignedQuery.replaceAll("-", "")).append("\t");
         buffer.append("*\t");
 
-        buffer.append(String.format("AS:i:%d\t", (int) Math.round(bitScore)));
+        buffer.append(String.format("AS:i:%d\t", Math.round(bitScore)));
         buffer.append(String.format("NM:i:%d\t", Utilities.computeEditDistance(alignedQuery, alignedReference)));
         buffer.append(String.format("ZL:i:%d\t", referenceLength));
         buffer.append(String.format("ZR:i:%d\t", rawScore));
         buffer.append(String.format("ZE:f:%g\t", expect));
-        buffer.append(String.format("ZI:i:%d\t", (int) Math.round(percentIdentity)));
+        buffer.append(String.format("ZI:i:%d\t", Math.round(percentIdentity)));
         if (frame != 0)
             buffer.append(String.format("ZF:i:%d\t", frame));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
@@ -449,21 +449,21 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * blast iteration
      */
-    public class Iteration {
-        public long iterNum;
+    static class Iteration {
+        long iterNum;
         // public String queryID;
-        public String queryDef;
-        public int queryLen;
+        String queryDef;
+        int queryLen;
     }
 
     /**
      * a hit as retrieved in XML file
      */
-    public class Hit {
-        public String def;
-        public String accession;
-        public String id;
-        public int len;
-        public HSP hsp;
+    static class Hit {
+        String def;
+        String accession;
+        String id;
+        int len;
+        HSP hsp;
     }
 }

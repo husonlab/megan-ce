@@ -27,9 +27,9 @@ package rusch.megan5client.connector;
  */
 public class Parameter {
 
-    public String parameterName;
-    public boolean required;
-    public String defaultValue;
+    private String parameterName;
+    private boolean required;
+    private String defaultValue;
 
 
     public Parameter(String parameterName, boolean required,

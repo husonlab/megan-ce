@@ -50,13 +50,10 @@ public class BlastProgram extends Application {
         final ChoiceBox<String> databaseChoice = new ChoiceBox<>();
         databaseChoice.setMinWidth(100);
 
-        programChoice.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                databaseChoice.getItems().setAll(RemoteBlastClient.getDatabaseNames(
-                        RemoteBlastClient.BlastProgram.valueOf(programChoice.getValue())));
-                databaseChoice.getSelectionModel().select(databaseChoice.getItems().get(0));
-            }
+        programChoice.setOnAction(e -> {
+            databaseChoice.getItems().setAll(RemoteBlastClient.getDatabaseNames(
+                    RemoteBlastClient.BlastProgram.valueOf(programChoice.getValue())));
+            databaseChoice.getSelectionModel().select(databaseChoice.getItems().get(0));
         });
         for (RemoteBlastClient.BlastProgram program : RemoteBlastClient.BlastProgram.values()) {
             programChoice.getItems().add(program.toString());
@@ -75,12 +72,7 @@ public class BlastProgram extends Application {
         final ProgressBar progressBar = new ProgressBar();
         progressBar.setVisible(false);
         final Button loadExampleButton = new Button("Load Example");
-        loadExampleButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                queryField.setText("TAATTAGCCATAAAGAAAAACTGGCGCTGGAGAAAGATATTCTCTGGAGCGTCGGGCGAGCGATAATTCAGCTGATTATTGTCGGCTATGTGCTGAAGTAT");
-            }
-        });
+        loadExampleButton.setOnAction(e -> queryField.setText("TAATTAGCCATAAAGAAAAACTGGCGCTGGAGAAAGATATTCTCTGGAGCGTCGGGCGAGCGATAATTCAGCTGATTATTGTCGGCTATGTGCTGAAGTAT"));
         loadExampleButton.disableProperty().bind(queryField.textProperty().isNotEmpty());
 
         final Button cancelButton = new Button("Cancel");
@@ -95,65 +87,40 @@ public class BlastProgram extends Application {
         root.setPadding(new Insets(5, 5, 5, 5));
 
         final BlastService blastService = new BlastService();
-        blastService.messageProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                alignmentArea.setText(alignmentArea.getText() + newValue + "\n");
-            }
+        blastService.messageProperty().addListener((observable, oldValue, newValue) -> alignmentArea.setText(alignmentArea.getText() + newValue + "\n"));
+        blastService.setOnScheduled(e -> {
+            progressBar.setVisible(true);
+            progressBar.progressProperty().bind(blastService.progressProperty());
+            alignmentArea.clear();
         });
-        blastService.setOnScheduled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                progressBar.setVisible(true);
-                progressBar.progressProperty().bind(blastService.progressProperty());
-                alignmentArea.clear();
-            }
+        blastService.setOnSucceeded(e -> {
+            if (blastService.getValue().length() > 0)
+                alignmentArea.setText(blastService.getValue());
+            else
+                alignmentArea.setText(alignmentArea.getText() + "*** No hits found ***\n");
+            progressBar.progressProperty().unbind();
+            progressBar.setVisible(false);
         });
-        blastService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                if (blastService.getValue().length() > 0)
-                    alignmentArea.setText(blastService.getValue());
-                else
-                    alignmentArea.setText(alignmentArea.getText() + "*** No hits found ***\n");
-                progressBar.progressProperty().unbind();
-                progressBar.setVisible(false);
-            }
+        blastService.setOnCancelled(e -> {
+            progressBar.progressProperty().unbind();
+            alignmentArea.setText(alignmentArea.getText() + "*** Canceled ***\n");
+            progressBar.setVisible(false);
         });
-        blastService.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                progressBar.progressProperty().unbind();
-                alignmentArea.setText(alignmentArea.getText() + "*** Canceled ***\n");
-                progressBar.setVisible(false);
-            }
-        });
-        blastService.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                progressBar.progressProperty().unbind();
-                alignmentArea.setText(alignmentArea.getText() + "*** Failed ***\n");
-                progressBar.setVisible(false);
-            }
+        blastService.setOnFailed(e -> {
+            progressBar.progressProperty().unbind();
+            alignmentArea.setText(alignmentArea.getText() + "*** Failed ***\n");
+            progressBar.setVisible(false);
         });
 
         queryField.disableProperty().bind(blastService.runningProperty());
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                blastService.cancel();
-            }
-        });
+        cancelButton.setOnAction(e -> blastService.cancel());
         cancelButton.disableProperty().bind(blastService.runningProperty().not());
 
-        applyButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                blastService.setProgram(RemoteBlastClient.BlastProgram.valueOf(programChoice.getValue()));
-                blastService.setDatabase(databaseChoice.getValue());
-                blastService.setQuery("read", queryField.getText());
-                blastService.restart();
-            }
+        applyButton.setOnAction(e -> {
+            blastService.setProgram(RemoteBlastClient.BlastProgram.valueOf(programChoice.getValue()));
+            blastService.setDatabase(databaseChoice.getValue());
+            blastService.setQuery("read", queryField.getText());
+            blastService.restart();
         });
         applyButton.disableProperty().bind(queryField.textProperty().isEmpty().or(blastService.runningProperty()));
 

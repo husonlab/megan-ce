@@ -50,7 +50,7 @@ public class ReadBlockIteratorRMA2 implements IReadBlockIterator {
 
     private final List<Pair<Integer, Long>> classes = new LinkedList<>();
     private Pair<Integer, Long> currentClass;
-    int currentCount = 0;
+    private int currentCount = 0;
 
     private long totalReads;
     private long countReads = 0;

@@ -31,13 +31,14 @@ import megan.chart.gui.SelectionGraphics;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * draws a stacked line chart
  * Daniel Huson, 5.2012
  */
 public class StackedLineChartDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "StackedLineChart";
+    private static final String NAME = "StackedLineChart";
 
     /**
      * constructor
@@ -317,7 +318,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT: {
-                        value *= percentFactor[i];
+                        value *= Objects.requireNonNull(percentFactor)[i];
                         break;
                     }
                     case LOG: {

@@ -40,7 +40,7 @@ import java.util.Set;
  * collapse rank command
  * Daniel Huson, 9.2015
  */
-public class CollapseByRankCommand extends CommandBase implements ICommand {
+class CollapseByRankCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "collapse rank={" + Basic.toString(TaxonomicLevels.getAllNames(), "|") + "}";
     }
@@ -82,7 +82,7 @@ public class CollapseByRankCommand extends CommandBase implements ICommand {
             choice = ((MainViewer) getViewer()).getPOWEREDBY();
         }
 
-        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, choice, new CallBack<String>() {
+        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, choice, new CallBack<>() {
             @Override
             public void call(String choice) {
                 execute("collapse rank='" + choice + "';select rank='" + choice + "';");

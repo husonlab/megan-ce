@@ -45,7 +45,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ReferenceCoverFilter {
     private boolean isActive = false;
     private float proportionToCover = 0;
-    private Set<String> referencesToUse = new HashSet<>();
+    private final Set<String> referencesToUse = new HashSet<>();
 
     private final int mask = 1023; // 2^10 - 1
     private final Object[] sync = new Object[mask + 1];
@@ -56,8 +56,7 @@ public class ReferenceCoverFilter {
      * @param percentToCover
      */
     public ReferenceCoverFilter(float percentToCover) {
-        for (int i = 0; i < sync.length; i++)
-            sync[i] = new Object();
+        Arrays.fill(sync, new Object());
         setPercentToCover(percentToCover);
     }
 
@@ -93,39 +92,36 @@ public class ReferenceCoverFilter {
                 final LinkedBlockingQueue<IReadBlock> queue = new LinkedBlockingQueue<>(1000);
 
                 for (int t = 0; t < numberOfThreads; t++) {
-                    service.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                while (true) {
-                                    final IReadBlock readBlock = queue.take();
-                                    if (readBlock == sentinel)
-                                        break;
-                                    final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
-                                    ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, null, activeMatches);
-                                    for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
-                                        final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-                                        final String refId = matchBlock.getTextFirstWord();
-                                        synchronized (sync[refId.hashCode() & mask]) {
-                                            if (ref2length.get(refId) == null)
-                                                ref2length.put(refId, matchBlock.getRefLength());
-                                            IntervalChain intervals = ref2intervals.get(refId);
-                                            if (intervals == null) {
-                                                intervals = new IntervalChain();
-                                                ref2intervals.put(refId, intervals);
-                                            }
-                                            final String matchText = matchBlock.getText();
-                                            final int start = BlastParsingUtils.getStartSubject(matchText);
-                                            final int end = BlastParsingUtils.getEndSubject(matchText);
-                                            intervals.add(start, end);
+                    service.submit(() -> {
+                        try {
+                            while (true) {
+                                final IReadBlock readBlock = queue.take();
+                                if (readBlock == sentinel)
+                                    break;
+                                final BitSet activeMatches = new BitSet(); // pre filter matches for taxon identification
+                                ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, null, activeMatches);
+                                for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
+                                    final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+                                    final String refId = matchBlock.getTextFirstWord();
+                                    synchronized (sync[refId.hashCode() & mask]) {
+                                        if (ref2length.get(refId) == null)
+                                            ref2length.put(refId, matchBlock.getRefLength());
+                                        IntervalChain intervals = ref2intervals.get(refId);
+                                        if (intervals == null) {
+                                            intervals = new IntervalChain();
+                                            ref2intervals.put(refId, intervals);
                                         }
+                                        final String matchText = matchBlock.getText();
+                                        final int start = BlastParsingUtils.getStartSubject(matchText);
+                                        final int end = BlastParsingUtils.getEndSubject(matchText);
+                                        intervals.add(start, end);
                                     }
                                 }
-                            } catch (Exception e) {
-                                Basic.caught(e);
-                            } finally {
-                                countDownLatch.countDown();
                             }
+                        } catch (Exception e) {
+                            Basic.caught(e);
+                        } finally {
+                            countDownLatch.countDown();
                         }
                     });
                 }
@@ -183,7 +179,7 @@ public class ReferenceCoverFilter {
         }
     }
 
-    public Set<String> getReferencesToUse() {
+    private Set<String> getReferencesToUse() {
         return referencesToUse;
     }
 
@@ -191,11 +187,11 @@ public class ReferenceCoverFilter {
         return !isActive || referencesToUse.contains(refId);
     }
 
-    public float getPercentToCover() {
+    private float getPercentToCover() {
         return 100 * proportionToCover;
     }
 
-    public void setPercentToCover(float percent) {
+    private void setPercentToCover(float percent) {
         this.proportionToCover = percent / 100.0f;
     }
 

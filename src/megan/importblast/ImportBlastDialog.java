@@ -52,26 +52,26 @@ import java.util.Collection;
  * Daniel Huson, 8.2008
  */
 public class ImportBlastDialog extends JDialog implements IDirectableViewer {
-    protected final Director dir;
+    private final Director dir;
     private boolean isLocked = false;
     private boolean isUpToDate = true;
 
-    final JTextField minScoreField = new JTextField(8);
-    final JTextField maxExpectedField = new JTextField(8);
-    final JTextField minPercentIdentityField = new JTextField(8);
+    private final JTextField minScoreField = new JTextField(8);
+    private final JTextField maxExpectedField = new JTextField(8);
+    private final JTextField minPercentIdentityField = new JTextField(8);
 
-    final JTextField topPercentField = new JTextField(8);
-    final JTextField minSupportField = new JTextField(8);
-    final JTextField minSupportPercentField = new JTextField(8);
+    private final JTextField topPercentField = new JTextField(8);
+    private final JTextField minSupportField = new JTextField(8);
+    private final JTextField minSupportPercentField = new JTextField(8);
 
-    final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
-    final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
+    private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
+    private final JComboBox<String> readAssignmentModeComboBox = new JComboBox<>();
 
 
-    final JTextField lcaCoveragePercentField = new JTextField(8);
-    final JTextField minComplexityField = new JTextField(8);
-    final JTextField minPercentReadCoveredField = new JTextField(8);
-    final JTextField minPercentReferenceCoveredField = new JTextField(8);
+    private final JTextField lcaCoveragePercentField = new JTextField(8);
+    private final JTextField minComplexityField = new JTextField(8);
+    private final JTextField minPercentReadCoveredField = new JTextField(8);
+    private final JTextField minPercentReferenceCoveredField = new JTextField(8);
 
 
     private boolean usePairedReads = false;
@@ -231,20 +231,16 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         getContentPane().add(new StatusBar(false), BorderLayout.SOUTH);
 
-        tabbedPane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent event) {
-                tabNumber.setText("Tab " + (tabbedPane.getSelectedIndex() + 1) + " of " + tabbedPane.getTabCount());
-            }
-        });
+        tabbedPane.addChangeListener(event -> tabNumber.setText("Tab " + (tabbedPane.getSelectedIndex() + 1) + " of " + tabbedPane.getTabCount()));
 
         getCommandManager().updateEnableState();
     }
 
-    public void addFilesTab(JTabbedPane tabbedPane) {
+    protected void addFilesTab(JTabbedPane tabbedPane) {
         tabbedPane.addTab("Files", new FilesPanel(this));
     }
 
-    public void addLCATab(JTabbedPane tabbedPane) {
+    protected void addLCATab(JTabbedPane tabbedPane) {
         tabbedPane.addTab("LCA Params", new LCAParametersPanel(this));
     }
 
@@ -259,7 +255,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return result;
     }
 
-    public double getMinScore() {
+    protected double getMinScore() {
         double value = Document.DEFAULT_MINSCORE;
         try {
             value = Double.parseDouble(minScoreField.getText());
@@ -269,11 +265,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setMinScore(double value) {
+    private void setMinScore(double value) {
         minScoreField.setText("" + (float) value);
     }
 
-    public double getTopPercent() {
+    protected double getTopPercent() {
         double value = Document.DEFAULT_TOPPERCENT;
         try {
             value = Double.parseDouble(topPercentField.getText());
@@ -283,11 +279,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setTopPercent(double value) {
+    private void setTopPercent(double value) {
         topPercentField.setText("" + (float) value);
     }
 
-    public double getMaxExpected() {
+    protected double getMaxExpected() {
         double value = Document.DEFAULT_MAXEXPECTED;
         try {
             value = Double.parseDouble(maxExpectedField.getText());
@@ -297,11 +293,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setMaxExpected(double value) {
+    private void setMaxExpected(double value) {
         maxExpectedField.setText("" + (float) value);
     }
 
-    public double getMinPercentIdentity() {
+    protected double getMinPercentIdentity() {
         double value = Document.DEFAULT_MIN_PERCENT_IDENTITY;
         try {
             value = Double.parseDouble(minPercentIdentityField.getText());
@@ -311,11 +307,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setMinPercentIdentity(double value) {
+    private void setMinPercentIdentity(double value) {
         minPercentIdentityField.setText("" + (float) value);
     }
 
-    public int getMinSupport() {
+    protected int getMinSupport() {
         int value = Document.DEFAULT_MINSUPPORT;
         try {
             value = Integer.parseInt(minSupportField.getText());
@@ -325,11 +321,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return Math.max(1, value);
     }
 
-    public void setMinSupport(int value) {
+    private void setMinSupport(int value) {
         minSupportField.setText("" + Math.max(0, value));
     }
 
-    public float getMinSupportPercent() {
+    protected float getMinSupportPercent() {
         float value = 0;
         try {
             value = Basic.parseFloat(minSupportPercentField.getText());
@@ -339,7 +335,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return Math.max(0f, value);
     }
 
-    public void setMinSupportPercent(float value) {
+    private void setMinSupportPercent(float value) {
         minSupportPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
@@ -357,9 +353,9 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         minComplexityField.setText("" + (float) value + (value <= 0 ? " (off)" : ""));
     }
 
-    String shortDescription = "";
+    private String shortDescription = "";
 
-    public String getShortDescription() {
+    protected String getShortDescription() {
         return shortDescription;
     }
 
@@ -367,7 +363,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         this.shortDescription = shortDescription;
     }
 
-    String blastFileName = "";
+    private String blastFileName = "";
 
     public void setBlastFileName(String name) {
         blastFileName = name;
@@ -377,7 +373,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return blastFileName;
     }
 
-    String readFileName = "";
+    private String readFileName = "";
 
     public void setReadFileName(final String name) {
         readFileName = name;
@@ -394,13 +390,13 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return readFileName;
     }
 
-    String meganFileName = "";
+    private String meganFileName = "";
 
     public void setMeganFileName(String name) {
         meganFileName = name;
     }
 
-    public String getMeganFileName() {
+    private String getMeganFileName() {
         return meganFileName;
     }
 
@@ -466,7 +462,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         readAssignmentModeComboBox.setSelectedItem(readAssignmentMode.toString());
     }
 
-    public Document.ReadAssignmentMode getReadAssignmentMode() {
+    protected Document.ReadAssignmentMode getReadAssignmentMode() {
         return Document.ReadAssignmentMode.valueOfIgnoreCase((String) readAssignmentModeComboBox.getSelectedItem());
     }
 
@@ -474,7 +470,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
     }
 
-    public double getLCACoveragePercent() {
+    protected double getLCACoveragePercent() {
         double value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
         try {
             value = Basic.parseDouble(lcaCoveragePercentField.getText());
@@ -484,7 +480,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setLCACoveragePercent(double value) {
+    private void setLCACoveragePercent(double value) {
         lcaCoveragePercentField.setText("" + (float) Math.max(0, Math.min(100, value)));
     }
 
@@ -496,7 +492,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return minPercentReadCoveredField;
     }
 
-    public double getMinPercentReadToCover() {
+    protected double getMinPercentReadToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_READ_TO_COVER;
         try {
             value = Basic.parseDouble(minPercentReadCoveredField.getText());
@@ -506,7 +502,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setMinPercentReadToCover(double value) {
+    private void setMinPercentReadToCover(double value) {
         minPercentReadCoveredField.setText("" + (float) Math.max(0, Math.min(100, value)));
     }
 
@@ -514,7 +510,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return minPercentReferenceCoveredField;
     }
 
-    public double getMinPercentReferenceToCover() {
+    protected double getMinPercentReferenceToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
         try {
             value = Basic.parseDouble(minPercentReferenceCoveredField.getText());
@@ -524,7 +520,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return value;
     }
 
-    public void setMinPercentReferenceToCover(double value) {
+    private void setMinPercentReferenceToCover(double value) {
         minPercentReferenceCoveredField.setText("" + (float) Math.max(0, Math.min(100, value)));
     }
 
@@ -689,7 +685,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
      *
      * @return all selected fnames
      */
-    public Collection<String> getSelectedFNames() {
+    protected Collection<String> getSelectedFNames() {
         final ArrayList<String> result = new ArrayList<>();
         for (String cName : cNames) {
             final ICheckBoxCommand command = (ICheckBoxCommand) commandManager.getCommand(SetAnalyse4ViewerCommand.getName(cName));
@@ -714,7 +710,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         ProgramProperties.put(MeganProperties.PAIRED_READ_SUFFIX1, pairedReadSuffix1);
     }
 
-    public String getPairedReadSuffix1() {
+    protected String getPairedReadSuffix1() {
         return pairedReadSuffix1;
     }
 
@@ -777,24 +773,22 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
                 }
             }
 
-            if (blastFileName.length() > 0) {
-                final String fileName = Basic.getFirstLine(blastFileName);
-                if (blastFormat.equals(BlastFileFormat.Unknown.toString())) {
-                    String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
-                    if (formatName != null)
-                        blastFormat = BlastFileFormat.valueOf(formatName).toString();
-                    else
-                        throw new IOException("Failed to detect BLAST format for file: " + fileName);
-                }
-                if (blastMode.equals(BlastMode.Unknown.toString())) {
-                    BlastMode mode = BlastModeUtils.detectMode(this, fileName, true);
-                    if (mode == null) // user canceled
-                        throw new CanceledException();
-                    else if (mode == BlastMode.Unknown)
-                        throw new IOException("Failed to detect BLAST mode for file: " + fileName);
-                    else
-                        blastMode = mode.toString();
-                }
+            final String fileName = Basic.getFirstLine(blastFileName);
+            if (blastFormat.equals(BlastFileFormat.Unknown.toString())) {
+                String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
+                if (formatName != null)
+                    blastFormat = BlastFileFormat.valueOf(formatName).toString();
+                else
+                    throw new IOException("Failed to detect BLAST format for file: " + fileName);
+            }
+            if (blastMode.equals(BlastMode.Unknown.toString())) {
+                BlastMode mode = BlastModeUtils.detectMode(this, fileName, true);
+                if (mode == null) // user canceled
+                    throw new CanceledException();
+                else if (mode == BlastMode.Unknown)
+                    throw new IOException("Failed to detect BLAST mode for file: " + fileName);
+                else
+                    blastMode = mode.toString();
             }
 
             if (readFileName.length() > 0) {

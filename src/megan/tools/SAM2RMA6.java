@@ -82,7 +82,7 @@ public class SAM2RMA6 {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
@@ -215,8 +215,7 @@ public class SAM2RMA6 {
 
         if (readsFiles.length == 0) {
             readsFiles = new String[samFiles.length];
-            for (int i = 0; i < readsFiles.length; i++)
-                readsFiles[i] = "";
+            Arrays.fill(readsFiles, "");
         } else if (readsFiles.length != samFiles.length)
             throw new IOException("Number of reads files must equal number of SAM files");
 
@@ -294,14 +293,6 @@ public class SAM2RMA6 {
             progressListener.close();
 
             final RMA6Connector connector = new RMA6Connector(outputFiles[i]);
-            if (false) {
-                System.err.println(String.format("Total reads:   %,15d", connector.getNumberOfReads()));
-                System.err.println(String.format("Total matches: %,15d ", connector.getNumberOfMatches()));
-
-                for (String name : connector.getAllClassificationNames()) {
-                    System.err.println(String.format("Class. %-13s%,10d", name + ":", connector.getClassificationSize(name)));
-                }
-            }
 
             if (metaDataFiles.length > 0) {
                 try {
@@ -329,8 +320,8 @@ public class SAM2RMA6 {
      * @param maxMatchesPerRead
      * @param progressListener  @throws CanceledException
      */
-    public static void createRMA6FileFromSAM(String creator, String samFile, String queryFile, String rma6FileName, boolean useCompression, Document doc,
-                                             int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
+    private static void createRMA6FileFromSAM(String creator, String samFile, String queryFile, String rma6FileName, boolean useCompression, Document doc,
+                                              int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
         final RMA6FromBlastCreator rma6Creator =
                 new RMA6FromBlastCreator(creator, BlastFileFormat.SAM, doc.getBlastMode(), new String[]{samFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);

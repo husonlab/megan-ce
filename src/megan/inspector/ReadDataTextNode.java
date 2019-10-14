@@ -29,7 +29,7 @@ public class ReadDataTextNode extends NodeBase {
         setText(text);
     }
 
-    public void setText(String text) {
+    private void setText(String text) {
         if (text.endsWith("\n"))
             this.text = text;
         else

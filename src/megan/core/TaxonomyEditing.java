@@ -32,7 +32,7 @@ import java.util.*;
  * supports taxonomy editing
  * Daniel Huson, 2.2011
  */
-public class TaxonomyEditing {
+class TaxonomyEditing {
     private final List<Edit> list = new LinkedList<>();
     private final HashMap<Integer, String> newTaxId2TaxName = new HashMap<>();
 
@@ -173,7 +173,7 @@ class Edit {
         type = DELETE;
     }
 
-    public Edit(int taxId, String taxName) {
+    private Edit(int taxId, String taxName) {
         this.taxId = taxId;
         this.taxName = taxName;
         type = RENAME;

@@ -65,7 +65,7 @@ public class AAdderRun {
     /**
      * run the program
      */
-    public void run(String[] args) throws CanceledException, IOException, UsageException {
+    private void run(String[] args) throws CanceledException, IOException, UsageException {
         final ArgsOptions options = new ArgsOptions(args, this, "Adds functional accessions to DNA alignments");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -240,9 +240,9 @@ public class AAdderRun {
         }
     }
 
-    private static Pattern pattern = Pattern.compile("[0-9]+[MDN]+");
+    private static final Pattern pattern = Pattern.compile("[0-9]+[MDN]+");
 
-    public static int getRefLength(String cigar) {
+    private static int getRefLength(String cigar) {
         final Matcher matcher = pattern.matcher(cigar);
         final ArrayList<String> pairs = new ArrayList<>();
         while (matcher.find())

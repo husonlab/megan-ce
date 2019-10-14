@@ -23,6 +23,7 @@ import megan.io.IInputReader;
 import megan.io.IOutputWriter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A match
@@ -167,10 +168,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     }
 
     public void setTaxId(Integer id) {
-        if (id == null)
-            this.taxId = 0;
-        else
-            this.taxId = id;
+        this.taxId = Objects.requireNonNullElse(id, 0);
     }
 
     public int getKeggId() {
@@ -178,10 +176,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     }
 
     public void setKeggId(Integer id) {
-        if (id == null)
-            this.keggId = 0;
-        else
-            this.keggId = id;
+        this.keggId = Objects.requireNonNullElse(id, 0);
     }
 
     public int getSeedId() {
@@ -189,10 +184,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     }
 
     public void setSeedId(Integer id) {
-        if (id == null)
-            this.seedId = 0;
-        else
-            this.seedId = id;
+        this.seedId = Objects.requireNonNullElse(id, 0);
     }
 
     public int getCogId() {
@@ -200,10 +192,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     }
 
     public void setCogId(Integer id) {
-        if (id == null)
-            this.cogId = 0;
-        else
-            this.cogId = id;
+        this.cogId = Objects.requireNonNullElse(id, 0);
     }
 
     public int getPfamId() {
@@ -211,10 +200,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     }
 
     public void setPfamId(Integer id) {
-        if (id == null)
-            this.pfamId = 0;
-        else
-            this.pfamId = id;
+        this.pfamId = Objects.requireNonNullElse(id, 0);
     }
 
     public long getFileOffset() {

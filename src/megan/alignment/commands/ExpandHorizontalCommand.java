@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * font size
  * Daniel Huson, 8.2011
  */
-public class ExpandHorizontalCommand extends CommandBase implements ICommand {
+class ExpandHorizontalCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -63,7 +63,7 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
         executeImmediately("expand axis=horizontal what=in;");
     }
 
-    public static final String NAME = "Expand Horizontal";
+    private static final String NAME = "Expand Horizontal";
 
     public String getName() {
         return NAME;

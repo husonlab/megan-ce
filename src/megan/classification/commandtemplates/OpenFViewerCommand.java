@@ -73,14 +73,11 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
                 return;
             }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                classificationViewer.updateView(Director.ALL);
-                classificationViewer.getFrame().setVisible(true);
-                classificationViewer.getFrame().setState(JFrame.NORMAL);
-                classificationViewer.getFrame().toFront();
-            }
+        SwingUtilities.invokeLater(() -> {
+            classificationViewer.updateView(Director.ALL);
+            classificationViewer.getFrame().setVisible(true);
+            classificationViewer.getFrame().setState(JFrame.NORMAL);
+            classificationViewer.getFrame().toFront();
         });
     }
 
@@ -141,7 +138,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     /**
      * icon to represent classification
      */
-    class MyImageIcon extends ImageIcon {
+    static class MyImageIcon extends ImageIcon {
         /**
          * construct icon
          *

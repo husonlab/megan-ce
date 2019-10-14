@@ -31,7 +31,7 @@ import java.util.List;
  * select all series
  * Daniel Huson, 7.2012
  */
-public class SelectAllSeriesCommand extends CommandBase implements ICommand {
+class SelectAllSeriesCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

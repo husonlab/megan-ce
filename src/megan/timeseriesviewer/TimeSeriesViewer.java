@@ -63,7 +63,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
     private final RememberingComboBox subjectDefiningAttribute;
     private final RememberingComboBox timepointsDefiningAttribute;
 
-    final SelectionSet.SelectionListener selectionListener;
+    private final SelectionSet.SelectionListener selectionListener;
 
 
     /**
@@ -119,11 +119,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
 
         seriesScrollPane.getVerticalScrollBar().setModel(dataScrollPane.getVerticalScrollBar().getModel());
 
-        selectionListener = new SelectionSet.SelectionListener() {
-            public void changed(Collection<String> labels, boolean selected) {
-                dataJTable.selectSamples(labels, selected);
-            }
-        };
+        selectionListener = (labels, selected) -> dataJTable.selectSamples(labels, selected);
         dir.getDocument().getSampleSelection().addSampleSelectionListener(selectionListener);
 
 
@@ -147,7 +143,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
             final JButton applyButton = new JButton(new AbstractAction("Apply") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setupTable(subjectDefiningAttribute.getSelectedItem().toString(), timepointsDefiningAttribute.getSelectedItem().toString());
+                    setupTable(Objects.requireNonNull(subjectDefiningAttribute.getSelectedItem()).toString(), Objects.requireNonNull(timepointsDefiningAttribute.getSelectedItem()).toString());
                 }
             });
 
@@ -172,13 +168,11 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
             timepointsDefiningAttribute = new RememberingComboBox();
             timepointsDefiningAttribute.setEditable(false);
             timepointsDefiningAttribute.setMaximumSize(new Dimension(150, 20));
-            timepointsDefiningAttribute.addItemListener(new ItemListener() {
-                public void itemStateChanged(ItemEvent e) {
-                    Object a = subjectDefiningAttribute.getSelectedItem();
-                    Object b = timepointsDefiningAttribute.getSelectedItem();
-                    applyButton.setEnabled(a != null && b != null && ((String) a).length() > 0 && ((String) b).length() > 0
-                            && !a.equals(b));
-                }
+            timepointsDefiningAttribute.addItemListener(e -> {
+                Object a = subjectDefiningAttribute.getSelectedItem();
+                Object b = timepointsDefiningAttribute.getSelectedItem();
+                applyButton.setEnabled(a != null && b != null && ((String) a).length() > 0 && ((String) b).length() > 0
+                        && !a.equals(b));
             });
             buttonsPanel.add(timepointsDefiningAttribute);
             timepointsDefiningAttribute.setToolTipText("Select metadata attribute that defines the different time points");
@@ -288,7 +282,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Time Series Viewer - " + dir.getDocument().getTitle();
 
         /*
@@ -338,7 +332,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
      * @param seriesAttribute
      * @param timePointAttribute
      */
-    public void setupTable(String seriesAttribute, String timePointAttribute) {
+    private void setupTable(String seriesAttribute, String timePointAttribute) {
         final Table<String, String, java.util.List<String>> seriesAndTimePoint2Samples = new Table<>();
 
         final ArrayList<String> subjectsOrder = new ArrayList<>();

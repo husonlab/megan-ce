@@ -26,7 +26,7 @@ import megan.core.Director;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ClearSetColorsCommand extends CommandBase implements ICommand {
+class ClearSetColorsCommand extends CommandBase implements ICommand {
 
 
     public String getSyntax() {
@@ -49,7 +49,7 @@ public class ClearSetColorsCommand extends CommandBase implements ICommand {
         return ((Director) getDir()).getDocument().getChartColorManager().hasChangedColors();
     }
 
-    public static String NAME = "Clear Set Colors";
+    private static final String NAME = "Clear Set Colors";
 
     public String getName() {
         return NAME;

@@ -97,13 +97,10 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      */
     public float getWeight(int classificationId, int classId) {
         Float result = weights[classificationId].get(classId);
-        if (result == null)
-            return 0;
-        else
-            return result;
+        return Objects.requireNonNullElse(result, 0f);
     }
 
-    public void setWeight(int classificationId, int classId, float weight) {
+    private void setWeight(int classificationId, int classId, float weight) {
         this.weights[classificationId].put(classId, weight);
     }
 
@@ -135,7 +132,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @param item
      */
-    public void setFirst(int classificationId, int classId, UpdateItem item) {
+    private void setFirst(int classificationId, int classId, UpdateItem item) {
         first[classificationId].put(classId, item);
     }
 
@@ -146,7 +143,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @return first
      */
-    public UpdateItem getLast(int classificationId, int classId) {
+    private UpdateItem getLast(int classificationId, int classId) {
         return last[classificationId].get(classId);
     }
 
@@ -158,7 +155,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classId
      * @param item
      */
-    public void setLast(int classificationId, int classId, UpdateItem item) {
+    private void setLast(int classificationId, int classId, UpdateItem item) {
         last[classificationId].put(classId, item);
     }
 
@@ -178,7 +175,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param classificationId
      * @param classId
      */
-    public void removeClass(int classificationId, int classId) {
+    private void removeClass(int classificationId, int classId) {
         first[classificationId].put(classId, null);
         first[classificationId].remove(classId);
         last[classificationId].put(classId, null);

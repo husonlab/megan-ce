@@ -150,8 +150,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
             } else {
                 ClassificationViewer viewer = (ClassificationViewer) getDir().getViewerByClassName(classificationName);
                 if (viewer != null) {
-                    if (viewer != null)
-                        classIds.addAll(viewer.getSelectedNodeIds());
+                    classIds.addAll(viewer.getSelectedNodeIds());
                 }
             }
         }
@@ -428,11 +427,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
         if (ProgramProperties.isMacOS() && (event != null && (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
             //Use native file dialog on mac
             java.awt.FileDialog dialog = new java.awt.FileDialog(getViewer().getFrame(), "Open output directory", java.awt.FileDialog.LOAD);
-            dialog.setFilenameFilter(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return true;
-                }
-            });
+            dialog.setFilenameFilter((dir, name) -> true);
             if (fileName != null) {
                 dialog.setDirectory(fileName);
                 //dialog.setFile(fileName);
@@ -468,7 +463,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
         return getViewer() instanceof ViewerBase && getDir().getDocument().getMeganFile().hasDataConnector() && ((ViewerBase) getViewer()).getSelectedNodes().size() > 0;
     }
 
-    static public String NAME = "Alignments...";
+    private static final String NAME = "Alignments...";
 
     public String getName() {
         return NAME;

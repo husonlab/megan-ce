@@ -35,7 +35,7 @@ public class DAAMatchRecord {
 
     private byte[] subjectName;
 
-    private PackedTranscript transcript = new PackedTranscript();
+    private final PackedTranscript transcript = new PackedTranscript();
 
     /**
      * constructor
@@ -185,9 +185,8 @@ public class DAAMatchRecord {
                     len = -(3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode);
                 } else
                     len = 3 * translatedQueryLen + frameShiftAdjustmentForBlastXMode;
-                int queryEnd = queryBegin + (len > 0 ? -1 : 1) + len;
                 //System.err.println("queryEnd: "+queryEnd);
-                return queryEnd;
+                return queryBegin + (len > 0 ? -1 : 1) + len;
             }
             case blastn: {
                 int len = translatedQueryLen * (frame > 0 ? -1 : 1);

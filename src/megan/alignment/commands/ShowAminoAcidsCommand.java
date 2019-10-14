@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxCommand {
+class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -75,7 +75,7 @@ public class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxComma
         execute("set showAminoAcids=true;");
     }
 
-    public static final String NAME = "Show Amino Acids";
+    private static final String NAME = "Show Amino Acids";
 
     public String getName() {
         return NAME;

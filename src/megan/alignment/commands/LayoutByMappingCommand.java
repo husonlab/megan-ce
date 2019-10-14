@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * mapping command
  * Daniel Huson, 11.2010
  */
-public class LayoutByMappingCommand extends CommandBase implements ICheckBoxCommand {
+class LayoutByMappingCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((AlignmentViewer) getViewer()).getAlignmentLayout() == AlignmentViewer.AlignmentLayout.Mapping;
     }
@@ -66,7 +66,7 @@ public class LayoutByMappingCommand extends CommandBase implements ICheckBoxComm
         execute("set layout=" + AlignmentViewer.AlignmentLayout.Mapping.toString() + ";expand axis=both what=fit;");
     }
 
-    public static final String NAME = "As Mapping";
+    private static final String NAME = "As Mapping";
 
     public String getName() {
         return NAME;

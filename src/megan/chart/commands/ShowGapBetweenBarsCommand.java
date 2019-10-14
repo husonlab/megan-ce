@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * show gap between bars in bar chart
  * Daniel Huson, 1.2016
  */
-public class ShowGapBetweenBarsCommand extends CommandBase implements ICheckBoxCommand {
+class ShowGapBetweenBarsCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return getViewer() instanceof ChartViewer && ((ChartViewer) getViewer()).isShowGapsBetweenBars();

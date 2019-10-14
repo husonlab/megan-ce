@@ -30,7 +30,7 @@ import java.io.StringWriter;
  * Created by huson on 5/16/14.
  */
 public abstract class BaseRMA3 {
-    protected String formatDef;
+    private String formatDef;
 
     /**
      * constructor
@@ -45,20 +45,20 @@ public abstract class BaseRMA3 {
         final IOutputWriter w = new OutputWriterHumanReadable(new StringWriter());
         try {
             write(w);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return w.toString();
     }
 
     abstract public void read(IInputReader reader, long startPos) throws IOException;
 
-    abstract public void write(IOutputWriter writer) throws IOException;
+    protected abstract void write(IOutputWriter writer) throws IOException;
 
-    public String getFormatDef() {
+    String getFormatDef() {
         return formatDef;
     }
 
-    public void setFormatDef(String formatDef) {
+    void setFormatDef(String formatDef) {
         this.formatDef = formatDef;
     }
 }

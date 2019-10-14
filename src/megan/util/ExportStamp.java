@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * Created by huson on 1/13/16.
  */
 public class ExportStamp {
-    private static String[] ranks =
+    private static final String[] ranks =
             {TaxonomicLevels.Domain,
                     TaxonomicLevels.Phylum,
                     TaxonomicLevels.Class,
@@ -51,7 +51,7 @@ public class ExportStamp {
                     TaxonomicLevels.Genus,
                     TaxonomicLevels.Species
             };
-    private static char[] letters = {'k', 'p', 'c', 'o', 'f', 'g', 's'};
+    private static final char[] letters = {'k', 'p', 'c', 'o', 'f', 'g', 's'};
 
     /**
      * apply the exporter
@@ -279,8 +279,7 @@ public class ExportStamp {
 
         int missing = maxRankIndex - path.size();
         buf.append(path.remove(path.size() - 1));
-        for (int i = 0; i < missing; i++)
-            buf.append("\t-");
+        buf.append("\t-".repeat(Math.max(0, missing)));
         while (path.size() > 0) {
             buf.append("\t").append(path.remove(path.size() - 1));
         }

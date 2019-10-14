@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * * show all arrows
  * * Daniel Huson, 4.2017
  */
-public class ShowAllAlignmentsCommand extends CommandBase implements ICommand {
+class ShowAllAlignmentsCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

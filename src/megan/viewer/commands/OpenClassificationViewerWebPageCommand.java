@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-public class OpenClassificationViewerWebPageCommand extends CommandBase implements ICommand {
+class OpenClassificationViewerWebPageCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show url=<url>;";
     }
@@ -77,7 +77,7 @@ public class OpenClassificationViewerWebPageCommand extends CommandBase implemen
         return viewer != null && (viewer.hasURLsForSelection());
     }
 
-    public static final String NAME = "Open Web Page...";
+    private static final String NAME = "Open Web Page...";
 
     public String getName() {
         return NAME;

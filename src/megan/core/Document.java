@@ -81,7 +81,7 @@ public class Document {
         }
     }
 
-    final static Map<String, String> name2versionInfo = new HashMap<>(); // used to track versions of tree etc
+    private final static Map<String, String> name2versionInfo = new HashMap<>(); // used to track versions of tree etc
 
     private long numberReads = 0;
     private long additionalReads = 0;
@@ -168,15 +168,13 @@ public class Document {
         //fullTaxonomy.getInduceTaxonomy(collapsedTaxa, false, inducedTaxonomy);
         setupChartColorManager(false);
 
-        sampleLabelGetter = new ILabelGetter() {
-            public String getLabel(String name) {
-                String label = getSampleAttributeTable().getSampleLabel(name);
-                if (label != null)
-                    return label;
-                    //   return label + " (" + Basic.abbreviateDotDotDot(name, 15) + ")";
-                else
-                    return name;
-            }
+        sampleLabelGetter = name -> {
+            String label = getSampleAttributeTable().getSampleLabel(name);
+            if (label != null)
+                return label;
+                //   return label + " (" + Basic.abbreviateDotDotDot(name, 15) + ")";
+            else
+                return name;
         };
         setLcaCoveragePercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_LCA_COVERAGE_PERCENT));
     }
@@ -199,11 +197,7 @@ public class Document {
         if (!useProgramColorTable) {
             chartColorManager = new ChartColorManager(ColorTableManager.getDefaultColorTable());
             chartColorManager.setHeatMapTable(ColorTableManager.getDefaultColorTableHeatMap().getName());
-            chartColorManager.setSeriesOverrideColorGetter(new ChartColorManager.ColorGetter() {
-                public Color get(String label) {
-                    return getSampleAttributeTable().getSampleColor(label);
-                }
-            });
+            chartColorManager.setSeriesOverrideColorGetter(label -> getSampleAttributeTable().getSampleColor(label));
         } else {
             chartColorManager = ChartColorManager.programChartColorManager;
         }
@@ -241,7 +235,7 @@ public class Document {
      *
      * @throws IOException
      */
-    public void reloadFromConnector(String parametersOverride) throws IOException {
+    private void reloadFromConnector(String parametersOverride) throws IOException {
         if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
             SyncArchiveAndDataTable.syncArchive2Summary(getReadAssignmentMode(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
@@ -373,8 +367,7 @@ public class Document {
                 {
                     String fNamesString = (np.findIgnoreCase(tokens, "fNames=", "{", "}", "").trim());
                     if (fNamesString.length() > 0) {
-                        final Set<String> cNames = new HashSet<>();
-                        cNames.addAll(Arrays.asList(fNamesString.split("\\s+")));
+                        final Set<String> cNames = new HashSet<>(Arrays.asList(fNamesString.split("\\s+")));
                         if (cNames.size() > 0) {
                             getActiveViewers().clear();
                             for (final String cName : cNames) {
@@ -385,8 +378,7 @@ public class Document {
                                         System.err.println("Unknown classification name: '" + cName + "': ignored");
                                 }
                             }
-                            if (!getActiveViewers().contains(Classification.Taxonomy))
-                                getActiveViewers().add(Classification.Taxonomy);
+                            getActiveViewers().add(Classification.Taxonomy);
                         }
                     }
                 }
@@ -793,11 +785,7 @@ public class Document {
             for (Integer taxId : class2counts.keySet()) {
                 String taxonName = TaxonomyData.getName2IdMap().get(taxId);
                 if (taxonName != null) {
-                    Map<String, Number> series2value = label2series2value.get(taxonName);
-                    if (series2value == null) {
-                        series2value = new TreeMap<>();
-                        label2series2value.put(taxonName, series2value);
-                    }
+                    Map<String, Number> series2value = label2series2value.computeIfAbsent(taxonName, k -> new TreeMap<>());
                     float[] counts = class2counts.get(taxId);
                     if (counts != null) {
                         for (int i = 0; i < counts.length; i++) {
@@ -984,7 +972,7 @@ public class Document {
             renameSample(pid + 1, newName);
     }
 
-    public void renameSample(Integer pid, String newName) throws IOException {
+    private void renameSample(Integer pid, String newName) throws IOException {
         if (getSampleNames().contains(newName))
             throw new IOException("Can't change sample name, name already used: " + newName);
         String currentName = getDataTable().getSampleNamesArray()[pid - 1];
@@ -1113,7 +1101,7 @@ public class Document {
         this.openDAAFileOnlyIfMeganized = openDAAFileOnlyIfMeganized;
     }
 
-    public boolean isOpenDAAFileOnlyIfMeganized() {
+    private boolean isOpenDAAFileOnlyIfMeganized() {
         return openDAAFileOnlyIfMeganized;
     }
 

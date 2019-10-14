@@ -50,15 +50,15 @@ public class Director implements IDirectableViewer, IDirector {
 
     private final Document doc;
     private boolean docInUpdate = false;
-    final List<IDirectableViewer> viewers = new LinkedList<>();
-    final List<IDirectorListener> directorListeners = new LinkedList<>();
+    private final List<IDirectableViewer> viewers = new LinkedList<>();
+    private final List<IDirectorListener> directorListeners = new LinkedList<>();
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private Future future;
 
     private boolean internalDocument = false; // will this remain hidden
     private IProjectsChangedListener projectsChangedListener;
 
-    boolean locked = false;
+    private boolean locked = false;
 
     /**
      * create a new director
@@ -110,12 +110,12 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * waits until all viewers are uptodate
      */
-    public void WaitUntilAllViewersAreUptoDate() {
+    private void WaitUntilAllViewersAreUptoDate() {
 
         while (!isAllViewersUptodate()) {
             try {
                 Thread.sleep(10);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -125,7 +125,7 @@ public class Director implements IDirectableViewer, IDirector {
      *
      * @return true, if all viewers uptodate
      */
-    public boolean isAllViewersUptodate() {
+    private boolean isAllViewersUptodate() {
         for (IDirectableViewer viewer : viewers) {
             if (!viewer.isUptoDate()) {
                 //System.err.println("not up-to-date: "+viewer.getTitle()+" "+viewer.getClass().get());
@@ -147,16 +147,14 @@ public class Director implements IDirectableViewer, IDirector {
         synchronized (directorListeners) {
             for (IDirectorListener directorListener : directorListeners) {
                 final IDirectorListener d = directorListener;
-                final Runnable runnable = new Runnable() {
-                    public void run() {
-                        try {
-                            d.setUptoDate(false);
-                            d.updateView(what);
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        } finally {
-                            d.setUptoDate(true);
-                        }
+                final Runnable runnable = () -> {
+                    try {
+                        d.setUptoDate(false);
+                        d.updateView(what);
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
+                    } finally {
+                        d.setUptoDate(true);
                     }
                 };
 
@@ -174,7 +172,7 @@ public class Director implements IDirectableViewer, IDirector {
     public void notifyLockInput() {
         if (!locked) {
             synchronized (directorListeners) {
-                IDirectorListener[] listeners = directorListeners.toArray(new IDirectorListener[directorListeners.size()]);
+                IDirectorListener[] listeners = directorListeners.toArray(new IDirectorListener[0]);
                 for (IDirectorListener directorListener : listeners) {
                     if (directorListener != this)
                         directorListener.lockUserInput();
@@ -191,7 +189,7 @@ public class Director implements IDirectableViewer, IDirector {
     public void notifyUnlockInput() {
         if (locked) {
             synchronized (directorListeners) {
-                IDirectorListener[] listeners = directorListeners.toArray(new IDirectorListener[directorListeners.size()]);
+                IDirectorListener[] listeners = directorListeners.toArray(new IDirectorListener[0]);
                 for (IDirectorListener directorListener : listeners) {
                     if (directorListener != this)
                         directorListener.unlockUserInput();
@@ -214,7 +212,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * notify all director event listeners to destroy themselves
      */
-    public void notifyDestroyViewer() throws CanceledException {
+    private void notifyDestroyViewer() throws CanceledException {
 
         synchronized (directorListeners) {
             while (directorListeners.size() > 0) { // need to do this in this way because  destroyView may modify this list
@@ -330,41 +328,39 @@ public class Director implements IDirectableViewer, IDirector {
                 System.err.println("Warning: execute(" + command + "): concurrent execution");
             notifyLockInput();
 
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    docInUpdate = true;
-                    // final ProgressListener progressDialog=new ProgressPercentage();
-                    final ProgressListener progressDialog = ProgramProperties.isUseGUI() ? new ProgressDialog("", "", parent) : new ProgressPercentage();
-                    progressDialog.setDebug(Basic.getDebugMode());
-                    doc.setProgressListener(progressDialog);
-                    long start = System.currentTimeMillis();
-                    boolean ok = false;
-                    try {
-                        if (commandManager != null) {
-                            commandManager.execute(command);
-                            ok = true;
-                        } else
-                            throw new Exception("Internal error: commandManager==null");
-                    } catch (CanceledException ex) {
-                        System.err.println("USER CANCELED EXECUTE");
-                    } catch (Exception ex) {
-                        Basic.caught(ex);
-                        NotificationsInSwing.showError("Execute failed: " + ex);
-                    }
+            future = executorService.submit(() -> {
+                docInUpdate = true;
+                // final ProgressListener progressDialog=new ProgressPercentage();
+                final ProgressListener progressDialog = ProgramProperties.isUseGUI() ? new ProgressDialog("", "", parent) : new ProgressPercentage();
+                progressDialog.setDebug(Basic.getDebugMode());
+                doc.setProgressListener(progressDialog);
+                long start = System.currentTimeMillis();
+                boolean ok = false;
+                try {
+                    if (commandManager != null) {
+                        commandManager.execute(command);
+                        ok = true;
+                    } else
+                        throw new Exception("Internal error: commandManager==null");
+                } catch (CanceledException ex) {
+                    System.err.println("USER CANCELED EXECUTE");
+                } catch (Exception ex) {
+                    Basic.caught(ex);
+                    NotificationsInSwing.showError("Execute failed: " + ex);
+                }
 
-                    notifyUpdateViewer(Director.ALL);
-                    WaitUntilAllViewersAreUptoDate();
-                    notifyUnlockInput();
+                notifyUpdateViewer(Director.ALL);
+                WaitUntilAllViewersAreUptoDate();
+                notifyUnlockInput();
 
-                    doc.getProgressListener().close();
-                    doc.setProgressListener(null);
+                doc.getProgressListener().close();
+                doc.setProgressListener(null);
 
-                    docInUpdate = false;
-                    final int timeInSeconds = (int) ((System.currentTimeMillis() - start) / 1000);
-                    if (ok && timeInSeconds > 8) // if it took more than 8 seconds to complete, notify
-                    {
-                        NotificationsInSwing.showInformation("Command completed (" + timeInSeconds + "s): " + command);
-                    }
+                docInUpdate = false;
+                final int timeInSeconds = (int) ((System.currentTimeMillis() - start) / 1000);
+                if (ok && timeInSeconds > 8) // if it took more than 8 seconds to complete, notify
+                {
+                    NotificationsInSwing.showInformation("Command completed (" + timeInSeconds + "s): " + command);
                 }
             });
         } else
@@ -376,7 +372,7 @@ public class Director implements IDirectableViewer, IDirector {
      *
      * @return viewer
      */
-    public Component getParent() {
+    private Component getParent() {
         if (viewer != null)
             return viewer.getFrame();
         else
@@ -428,7 +424,7 @@ public class Director implements IDirectableViewer, IDirector {
                     if (name.equals(className))
                         return viewer;
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             if (viewer.getClass().getName().equals(className))
                 return viewer;
@@ -548,68 +544,66 @@ public class Director implements IDirectableViewer, IDirector {
             System.err.println("Warning: executeOpen: concurrent execution");
         notifyLockInput();
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                docInUpdate = true;
-                ProgressListener progressDialog = ProgramProperties.isUseGUI() ? new ProgressDialog("Open startup files", "", getParent()) : new ProgressCmdLine("Open startup files", "");
-                progressDialog.setDebug(Basic.getDebugMode());
-                doc.setProgressListener(progressDialog);
-                try {
-                    if (taxonomyFileName != null && taxonomyFileName.length() > 0) {
-                        if (ResourceManager.fileExists(taxonomyFileName))
-                            commandManager.execute("load taxonomyFile='" + taxonomyFileName + "';");
-                        else
-                            throw new IOException("Can't read taxonomy file: <" + taxonomyFileName + ">");
-                    }
-                    if (meganFiles != null && meganFiles.length > 0) {
-                        StringBuilder buf = new StringBuilder();
-                        for (String fileName : meganFiles) {
-                            fileName = fileName.trim();
-                            if (fileName.length() > 0) {
-                                File file = new File(fileName);
+        Runnable runnable = () -> {
+            docInUpdate = true;
+            ProgressListener progressDialog = ProgramProperties.isUseGUI() ? new ProgressDialog("Open startup files", "", getParent()) : new ProgressCmdLine("Open startup files", "");
+            progressDialog.setDebug(Basic.getDebugMode());
+            doc.setProgressListener(progressDialog);
+            try {
+                if (taxonomyFileName != null && taxonomyFileName.length() > 0) {
+                    if (ResourceManager.fileExists(taxonomyFileName))
+                        commandManager.execute("load taxonomyFile='" + taxonomyFileName + "';");
+                    else
+                        throw new IOException("Can't read taxonomy file: <" + taxonomyFileName + ">");
+                }
+                if (meganFiles != null && meganFiles.length > 0) {
+                    StringBuilder buf = new StringBuilder();
+                    for (String fileName : meganFiles) {
+                        fileName = fileName.trim();
+                        if (fileName.length() > 0) {
+                            File file = new File(fileName);
 
-                                if (file.canRead()) {
-                                    buf.append("open file='").append(fileName).append("';");
-                                } else {
-                                    System.err.println("Warning: Can't read MEGAN file: '" + fileName + "'");
-                                }
+                            if (file.canRead()) {
+                                buf.append("open file='").append(fileName).append("';");
+                            } else {
+                                System.err.println("Warning: Can't read MEGAN file: '" + fileName + "'");
                             }
                         }
-                        if (buf.toString().length() > 0)
-                            commandManager.execute(buf.toString());
                     }
-                    getMainViewer().setDoReInduce(true);
-                    getMainViewer().setDoReset(true);
-                    commandManager.execute(";");
+                    if (buf.toString().length() > 0)
+                        commandManager.execute(buf.toString());
+                }
+                getMainViewer().setDoReInduce(true);
+                getMainViewer().setDoReset(true);
+                commandManager.execute(";");
 
-                    if (initCommand != null && initCommand.length() > 0) {
-                        String[] tokens = initCommand.split(";");
-                        for (String command : tokens) {
-                            if (command.equalsIgnoreCase("quit"))
-                                System.exit(0);
-                            else
-                                executeImmediately(command + ";", commandManager);
-                        }
+                if (initCommand != null && initCommand.length() > 0) {
+                    String[] tokens = initCommand.split(";");
+                    for (String command : tokens) {
+                        if (command.equalsIgnoreCase("quit"))
+                            System.exit(0);
+                        else
+                            executeImmediately(command + ";", commandManager);
                     }
-                } catch (CanceledException ex) {
-                    System.err.println("USER CANCELED EXECUTE");
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                    NotificationsInSwing.showError("Execute failed: " + ex);
                 }
-
-                if (TaxonomyData.getTree().getRoot() == null) {
-                    NotificationsInSwing.showError(viewer.getFrame(), "Initialization files not found. Please reinstall the program.");
-                    executeImmediately("quit;", commandManager);
-                }
-                notifyUpdateViewer(Director.ALL);
-                WaitUntilAllViewersAreUptoDate();
-                notifyUnlockInput();
-
-                progressDialog.close();
-                doc.setProgressListener(null);
-                docInUpdate = false;
+            } catch (CanceledException ex) {
+                System.err.println("USER CANCELED EXECUTE");
+            } catch (Exception ex) {
+                Basic.caught(ex);
+                NotificationsInSwing.showError("Execute failed: " + ex);
             }
+
+            if (TaxonomyData.getTree().getRoot() == null) {
+                NotificationsInSwing.showError(viewer.getFrame(), "Initialization files not found. Please reinstall the program.");
+                executeImmediately("quit;", commandManager);
+            }
+            notifyUpdateViewer(Director.ALL);
+            WaitUntilAllViewersAreUptoDate();
+            notifyUnlockInput();
+
+            progressDialog.close();
+            doc.setProgressListener(null);
+            docInUpdate = false;
         };
 
         if (ProgramProperties.isUseGUI())
@@ -676,11 +670,7 @@ public class Director implements IDirectableViewer, IDirector {
             return null;
         }
         if (!dir.isInternalDocument()) {
-            dir.projectsChangedListener = new IProjectsChangedListener() {
-                public void doHasChanged() {
-                    viewer.getCommandManager().updateEnableState("Compare...");
-                }
-            };
+            dir.projectsChangedListener = () -> viewer.getCommandManager().updateEnableState("Compare...");
             ProjectManager.addProjectsChangedListener(dir.projectsChangedListener);
         }
         ProjectManager.addProject(dir, viewer);

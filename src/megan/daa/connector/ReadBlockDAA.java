@@ -36,7 +36,6 @@ public class ReadBlockDAA implements IReadBlock {
     private int numberOfMatches;
     private IMatchBlock[] matchBlocks;
 
-    private float readComplexity = 0;
     private int readWeight = 1;
 
     /**
@@ -141,7 +140,6 @@ public class ReadBlockDAA implements IReadBlock {
      * @param readComplexity
      */
     public void setComplexity(float readComplexity) {
-        this.readComplexity = readComplexity;
     }
 
     public float getComplexity() {

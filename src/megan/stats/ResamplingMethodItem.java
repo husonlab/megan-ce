@@ -37,18 +37,18 @@ import java.util.*;
  * Daniel Huson, 2.2008
  */
 public class ResamplingMethodItem extends JButton implements IMethodItem {
-    final ResamplingMethod resamplingMethod;
-    final JPanel panel;
-    final JTextField resamplingSizeTF;
-    final JTextField repeatitionsTF;
-    final JTextField percentileLeftTF;
-    final JCheckBox useInternalCB;
-    final JCheckBox useNoHitsUnassignedCB;
+    private final ResamplingMethod resamplingMethod;
+    private final JPanel panel;
+    private final JTextField resamplingSizeTF;
+    private final JTextField repeatitionsTF;
+    private final JTextField percentileLeftTF;
+    private final JCheckBox useInternalCB;
+    private final JCheckBox useNoHitsUnassignedCB;
 
-    boolean optionUseUnassigned = false;
-    boolean optionUseInternal = false;
+    private boolean optionUseUnassigned = false;
+    private boolean optionUseInternal = false;
 
-    public static String NAME = "Resampling";
+    public static final String NAME = "Resampling";
 
     /**
      * constructor
@@ -188,24 +188,22 @@ public class ResamplingMethodItem extends JButton implements IMethodItem {
      * @param dir2
      */
     static void displayResult(Map<Integer, Double> taxId2score, Director dir1, Director dir2) {
-        SortedSet<Pair<Integer, Double>> set = new TreeSet<>(new Comparator<Pair<Integer, Double>>() {
-            public int compare(Pair<Integer, Double> p1, Pair<Integer, Double> p2) {
-                int taxId1 = p1.getFirst();
-                double value1 = p1.getSecond();
-                int taxId2 = p2.getFirst();
-                double value2 = p2.getSecond();
-                if (value1 > value2)
-                    return -1;
-                else if (value1 < value2)
-                    return 1;
-                else if (taxId1 < taxId2)
-                    return -1;
-                else if (taxId1 > taxId2)
-                    return 1;
-                else
-                    return 0;
+        SortedSet<Pair<Integer, Double>> set = new TreeSet<>((p1, p2) -> {
+            int taxId1 = p1.getFirst();
+            double value1 = p1.getSecond();
+            int taxId2 = p2.getFirst();
+            double value2 = p2.getSecond();
+            if (value1 > value2)
+                return -1;
+            else if (value1 < value2)
+                return 1;
+            else if (taxId1 < taxId2)
+                return -1;
+            else if (taxId1 > taxId2)
+                return 1;
+            else
+                return 0;
 
-            }
         });
 
         for (Integer taxId : taxId2score.keySet()) {

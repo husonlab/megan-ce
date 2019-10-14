@@ -90,7 +90,7 @@ public class PopupChoice<T> extends JPopupMenu {
                         callBack.call(obj);
                     }
                 });
-                if (initialChoice != null && obj.equals(initialChoice))
+                if (obj.equals(initialChoice))
                     checkBoxMenuItem.setSelected(true);
                 if (icons != null && i < icons.length && icons[i] != null)
                     checkBoxMenuItem.setIcon(icons[i]);

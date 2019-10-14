@@ -119,7 +119,7 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
      * @param readBlock
      * @return number of ids
      */
-    public IntervalTree<IMatchBlock> computeAcceptedMatches(BitSet activeMatches, IReadBlock readBlock) {
+    private IntervalTree<IMatchBlock> computeAcceptedMatches(BitSet activeMatches, IReadBlock readBlock) {
         if (activeMatches == null) {
             activeMatches = new BitSet();
             for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {

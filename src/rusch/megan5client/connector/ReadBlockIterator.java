@@ -33,7 +33,7 @@ public class ReadBlockIterator implements IReadBlockIterator {
     private ReadBlockPage currentPage;
     private final Megan5ServerConnector connector;
     private int posInPage = 0;
-    private long totalNumberOfReads;
+    private final long totalNumberOfReads;
     private long progress = 0;
 
     public ReadBlockIterator(Megan5ServerConnector connector, ReadBlockPage page) {

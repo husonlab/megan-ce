@@ -41,7 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class ListPathCommand extends CommandBase implements ICommand {
+class ListPathCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "list paths nodes=selected [outFile=<name>];";
     }

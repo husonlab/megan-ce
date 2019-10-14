@@ -62,7 +62,7 @@ public class UseContaminantsFilterCommand extends CommandBase implements ICheckB
         return NAME;
     }
 
-    public final static String DESCRIPTION = "Filter reads that align to any of the provided contaminants";
+    private final static String DESCRIPTION = "Filter reads that align to any of the provided contaminants";
 
     public String getDescription() {
         return DESCRIPTION;

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-public class ExportCSVForAllLevelsCommand extends CommandBase implements ICommand {
+class ExportCSVForAllLevelsCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
 

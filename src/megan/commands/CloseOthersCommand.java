@@ -44,7 +44,7 @@ public class CloseOthersCommand extends CommandBase implements ICommand {
         return NAME;
     }
 
-    public static final String NAME = "Close All Other Windows...";
+    private static final String NAME = "Close All Other Windows...";
 
     /**
      * get description to be used as a tooltip

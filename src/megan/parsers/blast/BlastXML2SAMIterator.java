@@ -67,22 +67,20 @@ public class BlastXML2SAMIterator implements ISAMIterator {
         blastXMLParser = new BlastXMLParser(new File(fileName), queue, maxNumberOfMatchesPerRead);
 
         executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(new Runnable() {
-            public void run() {
+        executorService.execute(() -> {
+            try {
+                blastXMLParser.apply();
+            } catch (Exception e) {
+                Basic.caught(e);
+                NotificationsInSwing.showError(Basic.getShortName(e.getClass()) + ": " + e.getMessage());
+            } finally {
                 try {
-                    blastXMLParser.apply();
-                } catch (Exception e) {
+                    queue.put(sentinel);
+                } catch (InterruptedException e) {
+                    done = true;
                     Basic.caught(e);
-                    NotificationsInSwing.showError(Basic.getShortName(e.getClass()) + ": " + e.getMessage());
-                } finally {
-                    try {
-                        queue.put(sentinel);
-                    } catch (InterruptedException e) {
-                        done = true;
-                        Basic.caught(e);
-                    }
-                    executorService.shutdownNow();
                 }
+                executorService.shutdownNow();
             }
         });
     }

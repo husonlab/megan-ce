@@ -37,13 +37,13 @@ public class RMA6File implements Closeable {
     public final static int MINOR_VERSION = 0;
 
     final public static String READ_ONLY = "r";
-    final public static String READ_WRITE = "rw";
+    final static String READ_WRITE = "rw";
 
-    protected final HeaderSectionRMA6 headerSectionRMA6;
-    protected final FooterSectionRMA6 footerSectionRMA6;
+    private final HeaderSectionRMA6 headerSectionRMA6;
+    final FooterSectionRMA6 footerSectionRMA6;
 
-    protected String fileName;
-    protected IInputReaderOutputWriter readerWriter;
+    String fileName;
+    IInputReaderOutputWriter readerWriter;
 
     /**
      * constructor
@@ -69,7 +69,7 @@ public class RMA6File implements Closeable {
      * @param mode
      * @throws IOException
      */
-    public void load(String fileName, String mode) throws IOException {
+    private void load(String fileName, String mode) throws IOException {
         this.fileName = fileName;
 
         this.readerWriter = new InputOutputReaderWriter(fileName, mode);

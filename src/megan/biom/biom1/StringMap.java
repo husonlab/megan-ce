@@ -24,5 +24,5 @@ import java.util.HashMap;
 /**
  * String map
  */
-public class StringMap<T> extends HashMap<String, T> {
+class StringMap<T> extends HashMap<String, T> {
 }

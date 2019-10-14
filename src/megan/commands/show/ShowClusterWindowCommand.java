@@ -32,7 +32,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ShowClusterWindowCommand extends CommandBase implements ICommand {
+class ShowClusterWindowCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show window=clusterViewer;";
     }
@@ -71,7 +71,7 @@ public class ShowClusterWindowCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return ((Director) getDir()).getDocument().getNumberOfSamples() >= 4 && getViewer() instanceof ClassificationViewer;
+        return getDir().getDocument().getNumberOfSamples() >= 4 && getViewer() instanceof ClassificationViewer;
 
     }
 

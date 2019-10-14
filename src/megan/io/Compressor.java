@@ -35,8 +35,8 @@ import java.util.zip.Inflater;
  * Daniel Huson, 8.2008
  */
 public class Compressor {
-    protected final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
-    protected final Inflater inflater = new Inflater(true);
+    private final Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION, true);
+    private final Inflater inflater = new Inflater(true);
     private byte[] buffer;
     public static final int MIN_SIZE_FOR_DEFLATION = 90;
     private boolean enabled = true;
@@ -78,7 +78,7 @@ public class Compressor {
      * @param bytes       array to write bytes to
      * @return number of bytes written  (negative number, if bytes are not deflated)
      */
-    public int deflateString2ByteArray(String inputString, byte[] bytes) {
+    private int deflateString2ByteArray(String inputString, byte[] bytes) {
         byte[] input;
         try {
             input = inputString.getBytes("UTF-8");

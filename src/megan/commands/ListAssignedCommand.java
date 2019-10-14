@@ -39,7 +39,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
-public class ListAssignedCommand extends CommandBase implements ICommand {
+class ListAssignedCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "list assigned nodes={all|selected} [outFile=<name>];";
     }

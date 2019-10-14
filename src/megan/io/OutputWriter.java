@@ -29,7 +29,7 @@ import java.io.IOException;
  * Daniel Huson, 6.2009, 8.2015
  */
 public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
-    public static int BUFFER_SIZE = 8192;
+    private static final int BUFFER_SIZE = 8192;
     private final BufferedOutputStream outs;
     private long position;
 

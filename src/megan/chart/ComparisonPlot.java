@@ -178,12 +178,8 @@ public class ComparisonPlot extends ChartViewer {
                 for (Node v : viewer.getSelectedNodes()) {
                     float[] counts = ((NodeData) v.getData()).getAssigned();
                     if (j < counts.length && counts[i] > 0 || counts[j] > 0) {
-                        Collection<Pair<Number, Number>> pairs = plotName2Counts.get(name);
-                        if (pairs == null) {
-                            pairs = new LinkedList<>();
-                            plotName2Counts.put(name, pairs);
-                        }
-                        pairs.add(new Pair<Number, Number>(counts[i], counts[i + 1]));
+                        Collection<Pair<Number, Number>> pairs = plotName2Counts.computeIfAbsent(name, k -> new LinkedList<>());
+                        pairs.add(new Pair<>(counts[i], counts[i + 1]));
 
                     }
                 }
@@ -198,7 +194,7 @@ public class ComparisonPlot extends ChartViewer {
      * @param pairs
      * @return r
      */
-    public static double computePearsonsCorrelation(Collection<Pair<Number, Number>> pairs) {
+    private static double computePearsonsCorrelation(Collection<Pair<Number, Number>> pairs) {
         double[] mean = new double[2];
 
         for (Pair<Number, Number> pair : pairs) {

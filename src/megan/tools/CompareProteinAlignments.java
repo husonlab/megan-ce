@@ -62,7 +62,7 @@ public class CompareProteinAlignments {
      *
      * @param args
      */
-    public void run(String[] args) throws Exception {
+    private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Compares protein alignments for different analyses of the same sequences");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -355,11 +355,7 @@ public class CompareProteinAlignments {
         for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
             final String accession = matchBlock.getTextFirstWord();
-            ArrayList<IMatchBlock> matches = map.get(accession);
-            if (matches == null) {
-                matches = new ArrayList<>();
-                map.put(accession, matches);
-            }
+            ArrayList<IMatchBlock> matches = map.computeIfAbsent(accession, k -> new ArrayList<>());
             matches.add(matchBlock);
         }
         return map;
@@ -385,7 +381,7 @@ public class CompareProteinAlignments {
     /**
      * reports the result of a comparison
      */
-    public class ComparisonResult {
+    public static class ComparisonResult {
         String name;
 
         int lengthA;
@@ -420,7 +416,7 @@ public class CompareProteinAlignments {
             this.lengthB = lengthB;
         }
 
-        public void add(ComparisonResult that) {
+        void add(ComparisonResult that) {
             this.lengthA += that.lengthA;
 
             this.coveredInA += that.coveredInA;
@@ -466,7 +462,7 @@ public class CompareProteinAlignments {
                     coveredInB, (100.0 * coveredInB) / lengthB);
         }
 
-        public String getFormatString() {
+        String getFormatString() {
             return "name length-A (covered-A %) only-A (aa %) longer-A (aa + %) both (aa %) longer-B (aa + %) only-B (a %) length-B (covered-B %)";
         }
     }

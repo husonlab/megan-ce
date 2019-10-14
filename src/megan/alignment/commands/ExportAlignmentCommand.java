@@ -45,7 +45,7 @@ import java.io.Writer;
  * save data command
  * Daniel Huson, 11.2010
  */
-public class ExportAlignmentCommand extends CommandBase implements ICommand {
+class ExportAlignmentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export alignment file=<filename> [what={all|selected}];";
     }

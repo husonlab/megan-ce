@@ -235,7 +235,7 @@ public class CreateAccessionMappingDatabase {
      * @param tableName name of the table
      * @return size of the table tableName
      */
-    public int computeSize(String tableName) throws SQLException {
+    private int computeSize(String tableName) throws SQLException {
         int counter = 0;
 
         try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement();

@@ -35,16 +35,16 @@ import java.util.List;
  * applies or unapplies the signficance test
  * Daniel Huson, 6.2008
  */
-public class
+class
 ApplySignificanceTest {
     public static final String NO_CORRECTION = "none";
     public static String BONFERRONI = "bonferroni";
     public static String HOLM_BONFERRONI = "holm_bonferroni";
     public static final String CONTRASTS = "contrasts";
 
-    public static final int NO_CORRECTION_ID = 1;
-    public static final int BONFERRONI_ID = 2;
-    public static final int HOLM_BONFERRONI_ID = 3;
+    private static final int NO_CORRECTION_ID = 1;
+    private static final int BONFERRONI_ID = 2;
+    private static final int HOLM_BONFERRONI_ID = 3;
     public static final int CONTRASTS_ID = 4;
 
     /**
@@ -147,9 +147,9 @@ ApplySignificanceTest {
 
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
             NodeData vd = (NodeData) v.getData();
-            if (vd.getDownPValue() != Double.NaN && vd.getDownPValue() != -1 && v.getOutDegree() > 1)
+            if (!Double.isNaN(vd.getDownPValue()) && vd.getDownPValue() != -1 && v.getOutDegree() > 1)
                 numberOfDownCases++;
-            if (vd.getUpPValue() != Double.NaN && vd.getUpPValue() != -1 && v.getInDegree() > 0)
+            if (!Double.isNaN(vd.getUpPValue()) && vd.getUpPValue() != -1 && v.getInDegree() > 0)
                 numberOfUpCases++;
         }
         if (numberOfDownCases == 0) numberOfDownCases = 1;
@@ -157,9 +157,9 @@ ApplySignificanceTest {
 
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
             NodeData vd = (NodeData) v.getData();
-            if (vd.getUpPValue() != Double.NaN && vd.getUpPValue() != -1 && v.getInDegree() > 0)
+            if (!Double.isNaN(vd.getUpPValue()) && vd.getUpPValue() != -1 && v.getInDegree() > 0)
                 vd.setUpPValue(Math.min(1, vd.getUpPValue() * numberOfUpCases));
-            if (vd.getDownPValue() != Double.NaN && vd.getDownPValue() != -1 && v.getOutDegree() > 1)
+            if (!Double.isNaN(vd.getDownPValue()) && vd.getDownPValue() != -1 && v.getOutDegree() > 1)
                 vd.setDownPValue(Math.min(1, vd.getDownPValue() * numberOfDownCases));
         }
     }
@@ -178,16 +178,16 @@ ApplySignificanceTest {
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
             NodeData vd = (NodeData) v.getData();
 
-            if (vd.getDownPValue() != Double.NaN && vd.getDownPValue() != -1 && v.getOutDegree() > 1) {
+            if (!Double.isNaN(vd.getDownPValue()) && vd.getDownPValue() != -1 && v.getOutDegree() > 1) {
                 downPairs.add(new Pair<>(vd.getDownPValue(), countDown++));
             }
-            if (vd.getUpPValue() != Double.NaN && vd.getUpPValue() != -1 && v.getInDegree() > 0) {
+            if (!Double.isNaN(vd.getUpPValue()) && vd.getUpPValue() != -1 && v.getInDegree() > 0) {
                 upPairs.add(new Pair<>(vd.getUpPValue(), countUp++));
             }
         }
 
-        Pair[] upArray = upPairs.toArray(new Pair[upPairs.size()]);
-        Pair[] downArray = downPairs.toArray(new Pair[downPairs.size()]);
+        Pair[] upArray = upPairs.toArray(new Pair[0]);
+        Pair[] downArray = downPairs.toArray(new Pair[0]);
 
         Arrays.sort(upArray, new CompareFirst());
         for (int i = 0; i < upArray.length; i++) {
@@ -196,10 +196,6 @@ ApplySignificanceTest {
             double uncorrected = pair.getFirstDouble();
             double bonferroni = Math.min(1, uncorrected * countUp);
             double bholm = Math.min(1, pair.getFirstDouble() * (i + 1));
-            if (false) {
-                System.err.println("UPv: uncorr=" + uncorrected + " BHolm=" + bholm
-                        + " Bonferroni=" + bonferroni);
-            }
             pair.setFirst(bholm);
         }
         Arrays.sort(upArray, new CompareSecond());
@@ -211,10 +207,6 @@ ApplySignificanceTest {
             double uncorrected = pair.getFirstDouble();
             double bonferroni = Math.min(1, uncorrected * countUp);
             double bholm = Math.min(1, pair.getFirstDouble() * (i + 1));
-            if (false) {
-                System.err.println("DPv: uncorr=" + uncorrected + " BHolm=" + bholm
-                        + " Bonferroni=" + bonferroni);
-            }
             pair.setFirst(bholm);
         }
         Arrays.sort(downArray, new CompareSecond());
@@ -224,13 +216,13 @@ ApplySignificanceTest {
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
             NodeData vd = (NodeData) v.getData();
 
-            if (vd.getDownPValue() != Double.NaN && vd.getDownPValue() != -1 && v.getOutDegree() > 1) {
+            if (!Double.isNaN(vd.getDownPValue()) && vd.getDownPValue() != -1 && v.getOutDegree() > 1) {
                 if (downArray[countDown].getSecondInt() != countDown)
                     System.err.println("Holm-Bonferroni failed, illegal ordering");
                 vd.setDownPValue(downArray[countDown].getFirstDouble());
                 countDown++;
             }
-            if (vd.getUpPValue() != Double.NaN && vd.getUpPValue() != -1 && v.getInDegree() > 0) {
+            if (!Double.isNaN(vd.getUpPValue()) && vd.getUpPValue() != -1 && v.getInDegree() > 0) {
                 if (upArray[countUp].getSecondInt() != countUp)
                     System.err.println("Holm-Bonferroni failed, illegal ordering");
                 vd.setUpPValue(upArray[countUp].getFirstDouble());
@@ -246,21 +238,13 @@ class CompareFirst implements Comparator<Pair> {
             return -1;
         if (a.getFirstDouble() < b.getFirstDouble())
             return 1;
-        if (a.getSecondInt() < b.getSecondInt())
-            return -1;
-        if (a.getSecondInt() > b.getSecondInt())
-            return 1;
-        return 0;
+        return Integer.compare(a.getSecondInt(), b.getSecondInt());
     }
 }
 
 class CompareSecond implements Comparator<Pair> {
     public int compare(Pair a, Pair b) {
-        if (a.getSecondInt() < b.getSecondInt())
-            return -1;
-        if (a.getSecondInt() > b.getSecondInt())
-            return 1;
-        return 0;
+        return Integer.compare(a.getSecondInt(), b.getSecondInt());
     }
 
 }

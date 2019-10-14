@@ -80,7 +80,7 @@ public class PasteByAttributeCommand extends ClipboardBase implements ICommand {
         return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() > 0;
     }
 
-    public static final String ALT_NAME = "Samples Viewer Paste By Attribute";
+    private static final String ALT_NAME = "Samples Viewer Paste By Attribute";
 
     public String getAltName() {
         return ALT_NAME;

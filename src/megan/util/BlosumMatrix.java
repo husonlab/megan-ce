@@ -39,7 +39,7 @@ public class BlosumMatrix {
     private static BlosumMatrix BLOSUM50;
     private static BlosumMatrix BLOSUM45;
 
-    public final static String BLOSUM90_INPUT =
+    private final static String BLOSUM90_INPUT =
             "A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  J  Z  X  * \n" +
                     "A  5 -2 -2 -3 -1 -1 -1  0 -2 -2 -2 -1 -2 -3 -1  1  0 -4 -3 -1 -2 -2 -1 -1 -6 \n" +
                     "R -2  6 -1 -3 -5  1 -1 -3  0 -4 -3  2 -2 -4 -3 -1 -2 -4 -3 -3 -2 -3  0 -1 -6 \n" +
@@ -67,7 +67,7 @@ public class BlosumMatrix {
                     "X -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -6 \n" +
                     "* -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6  1 \n";
 
-    public final static String BLOSUM80_INPUT =
+    private final static String BLOSUM80_INPUT =
             "A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  J  Z  X  * \n" +
                     "A  5 -2 -2 -2 -1 -1 -1  0 -2 -2 -2 -1 -1 -3 -1  1  0 -3 -2  0 -2 -2 -1 -1 -6 \n" +
                     "R -2  6 -1 -2 -4  1 -1 -3  0 -3 -3  2 -2 -4 -2 -1 -1 -4 -3 -3 -1 -3  0 -1 -6 \n" +
@@ -95,7 +95,7 @@ public class BlosumMatrix {
                     "X -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -6 \n" +
                     "* -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6  1 \n";
 
-    public final static String BLOSUM62_INPUT =
+    private final static String BLOSUM62_INPUT =
             "A R N D C Q E G H I L K M F P S T W Y V B Z X *\n" +
                     "A 4 -1 -2 -2 0 -1 -1 0 -2 -1 -1 -1 -1 -2 -1 1 0 -3 -2 0 -2 -1 0 -4 \n" +
                     "R -1 5 0 -2 -3 1 0 -2 0 -3 -2 2 -1 -3 -2 -1 -1 -3 -2 -3 -1 0 -1 -4 \n" +
@@ -122,7 +122,7 @@ public class BlosumMatrix {
                     "X 0 -1 -1 -1 -2 -1 -1 -1 -1 -1 -1 -1 -1 -1 -2 0 0 -2 -1 -1 -1 -1 -1 -4 \n" +
                     "* -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 -4 1 \n";
 
-    public final static String BLOSUM50_INPUT =
+    private final static String BLOSUM50_INPUT =
             "A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  Z  X  * \n" +
                     "A 5 -2 -1 -2 -1 -1 -1  0 -2 -1 -2 -1 -1 -3 -1  1  0 -3 -2  0 -2 -1 -1 -5  \n" +
                     "R -2  7 -1 -2 -4  1  0 -3  0 -4 -3  3 -2 -3 -3 -1 -1 -3 -1 -3 -1  0 -1 -5  \n" +
@@ -149,7 +149,7 @@ public class BlosumMatrix {
                     "X -1 -1 -1 -1 -2 -1 -1 -2 -1 -1 -1 -1 -1 -2 -2 -1  0 -3 -1 -1 -1 -1 -1 -5  \n" +
                     "* -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5  1  \n";
 
-    public final static String BLOSUM45_INPUT =
+    private final static String BLOSUM45_INPUT =
             "A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  J  Z  X  * \n" +
                     "A  5 -2 -1 -2 -1 -1 -1  0 -2 -1 -1 -1 -1 -2 -1  1  0 -2 -2  0 -1 -1 -1 -1 -5 \n" +
                     "R -2  7  0 -1 -3  1  0 -2  0 -3 -2  3 -1 -2 -2 -1 -1 -2 -1 -2 -1 -3  1 -1 -5 \n" +
@@ -217,7 +217,7 @@ public class BlosumMatrix {
      *
      * @return blosum 90
      */
-    public static BlosumMatrix getBlosum90() {
+    private static BlosumMatrix getBlosum90() {
         try {
             if (BLOSUM90 == null) {
                 BLOSUM90 = new BlosumMatrix();
@@ -234,7 +234,7 @@ public class BlosumMatrix {
      *
      * @return blosum 80
      */
-    public static BlosumMatrix getBlosum80() {
+    private static BlosumMatrix getBlosum80() {
         try {
             if (BLOSUM80 == null) {
                 BLOSUM80 = new BlosumMatrix();
@@ -268,7 +268,7 @@ public class BlosumMatrix {
      *
      * @return blosum 50
      */
-    public static BlosumMatrix getBlosum50() {
+    private static BlosumMatrix getBlosum50() {
         try {
             if (BLOSUM50 == null) {
                 BLOSUM50 = new BlosumMatrix();
@@ -285,7 +285,7 @@ public class BlosumMatrix {
      *
      * @return blosum 45
      */
-    public static BlosumMatrix getBlosum45() {
+    private static BlosumMatrix getBlosum45() {
         try {
             if (BLOSUM45 == null) {
                 BLOSUM45 = new BlosumMatrix();
@@ -303,7 +303,7 @@ public class BlosumMatrix {
      * @param r0
      * @throws IOException
      */
-    public void load(Reader r0) throws IOException {
+    private void load(Reader r0) throws IOException {
         BufferedReader r = new BufferedReader(r0);
 
         char[] mapPos2Char = null;
@@ -320,8 +320,7 @@ public class BlosumMatrix {
                 cols = tokens.length;
                 if (tokens.length < 20)
                     throw new IOException("Expected >=20 tokens, got: " + tokens.length + " in line: " + aLine);
-                List<String> list = new LinkedList<>();
-                list.addAll(Arrays.asList(tokens));
+                List<String> list = new LinkedList<>(Arrays.asList(tokens));
                 int count = 0;
                 mapPos2Char = new char[list.size()];
                 for (String label : list) {

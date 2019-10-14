@@ -83,11 +83,11 @@ public class MatrixTab extends JPanel {
         System.err.println("Select From Previous: not implemented for MatrixTab");
     }
 
-    class MyTableModel extends AbstractTableModel {
+    static class MyTableModel extends AbstractTableModel {
         private final Taxa taxa;
         private final Distances distances;
 
-        public MyTableModel(Taxa taxa, Distances distances) {
+        MyTableModel(Taxa taxa, Distances distances) {
             this.taxa = taxa;
             this.distances = distances;
         }

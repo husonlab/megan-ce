@@ -39,7 +39,7 @@ import java.util.Set;
  * * add command
  * * Daniel Huson, 9.2012
  */
-public class AddSampleFromExistingDocumentCommand extends CommandBase implements ICommand {
+class AddSampleFromExistingDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -164,11 +164,7 @@ public class AddSampleFromExistingDocumentCommand extends CommandBase implements
             bottom.add(applyButton);
             mainPanel.add(bottom, BorderLayout.SOUTH);
 
-            list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                    applyButton.setEnabled(list.getSelectionModel().getMaxSelectionIndex() >= 0);
-                }
-            });
+            list.getSelectionModel().addListSelectionListener(listSelectionEvent -> applyButton.setEnabled(list.getSelectionModel().getMaxSelectionIndex() >= 0));
 
             if (loadList(list) > 0)
                 setVisible(true);

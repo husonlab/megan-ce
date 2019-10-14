@@ -45,7 +45,7 @@ import java.io.File;
  * export BIOM 1.0 format
  * Daniel Huson, 2012
  */
-public class ExportBIOMCommand extends CommandBase implements ICommand {
+class ExportBIOMCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export format=biom");
@@ -107,7 +107,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
                     officialRanksOnly = true;
             }
         } else if (getViewer() instanceof ClassificationViewer)
-            choice = ((ClassificationViewer) getViewer()).getClassName();
+            choice = getViewer().getClassName();
         else
             return;
 

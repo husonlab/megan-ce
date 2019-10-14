@@ -105,7 +105,7 @@ public class Diff {
      * @param diff
      * @return list of difference elements
      */
-    public static List<DiffElement> decode(final String diff) {
+    private static List<DiffElement> decode(final String diff) {
         /*
         The MD field aims to achieve SNP/indel calling without looking at the reference. For example, a string �10A5^AC6� means
         from the leftmost reference base in the alignment, there are 10 matches followed by an A on the reference which is different

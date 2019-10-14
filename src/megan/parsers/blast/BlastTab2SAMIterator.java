@@ -36,7 +36,7 @@ import java.util.TreeSet;
 public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000], 0);
 
-    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     /**
@@ -216,9 +216,9 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         buffer.append("*\t");
         buffer.append("*\t");
 
-        buffer.append(String.format("AS:i:%d\t", (int) Math.round(bitScore)));
+        buffer.append(String.format("AS:i:%d\t", Math.round(bitScore)));
         buffer.append(String.format("ZE:f:%g\t", expect));
-        buffer.append(String.format("ZI:i:%d\t", (int) Math.round(percentIdentity)));
+        buffer.append(String.format("ZI:i:%d\t", Math.round(percentIdentity)));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
         buffer.append(String.format("ZQ:i:%s\t", queryEnd));
         buffer.append(String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' ')));

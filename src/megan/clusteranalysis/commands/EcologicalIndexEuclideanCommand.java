@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * method=Euclidean command
  * Daniel Huson, 6.2010
  */
-public class EcologicalIndexEuclideanCommand extends CommandBase implements ICheckBoxCommand {
+class EcologicalIndexEuclideanCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

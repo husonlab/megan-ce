@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * set color
  * Daniel Huson, 4.2011
  */
-public class SetLabelColorCommand extends CommandBase implements ICommand {
+class SetLabelColorCommand extends CommandBase implements ICommand {
 
     /**
      * get the name to be used as a menu label

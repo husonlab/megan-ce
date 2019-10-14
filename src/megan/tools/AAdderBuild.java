@@ -45,7 +45,7 @@ public class AAdderBuild {
     final public static byte[] MAGIC_NUMBER_IDX = "AAddIdxV0.1.".getBytes();
     final public static byte[] MAGIC_NUMBER_DBX = "AAddDbxV0.1.".getBytes();
 
-    final public static String INDEX_CREATOR = "AADD";
+    private final static String INDEX_CREATOR = "AADD";
 
     /**
      * add functional annotations to DNA alignments
@@ -70,7 +70,7 @@ public class AAdderBuild {
     /**
      * run the program
      */
-    public void run(String[] args) throws CanceledException, IOException, UsageException {
+    private void run(String[] args) throws CanceledException, IOException, UsageException {
         final ArgsOptions options = new ArgsOptions(args, this, "Build the index for AAdd");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");

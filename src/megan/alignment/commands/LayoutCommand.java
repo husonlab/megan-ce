@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * layout command
  * Daniel Huson, 8.2011
  */
-public class LayoutCommand extends CommandBase implements ICommand {
+class LayoutCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
@@ -72,7 +72,7 @@ public class LayoutCommand extends CommandBase implements ICommand {
 
     }
 
-    public static final String NAME = "Layout";
+    private static final String NAME = "Layout";
 
     public String getName() {
         return NAME;

@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 11.2010
  */
-public class ClearCommand extends CommandBase implements ICommand {
+class ClearCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -68,7 +68,7 @@ public class ClearCommand extends CommandBase implements ICommand {
         executeImmediately(getSyntax());
     }
 
-    public static final String NAME = "Clear";
+    private static final String NAME = "Clear";
 
     public String getName() {
         return NAME;

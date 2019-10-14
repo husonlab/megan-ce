@@ -76,7 +76,7 @@ public class SetChartDrawerSpecificCommand extends CommandBase implements ICheck
         return false;
     }
 
-    public static String getName(String displayName) {
+    private static String getName(String displayName) {
         return "Use " + displayName;
     }
 

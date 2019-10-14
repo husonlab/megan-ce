@@ -29,8 +29,8 @@ import java.io.OutputStream;
  * byte output stream
  */
 public final class ByteOutputStream extends OutputStream implements IOutput {
-    protected byte[] buf;
-    protected int count;
+    private byte[] buf;
+    private int count;
 
     public ByteOutputStream() {
         this(1024);

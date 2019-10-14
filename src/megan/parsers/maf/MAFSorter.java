@@ -44,7 +44,7 @@ public class MAFSorter {
      * @return name of temporary file containing all sorted alignments
      * @throws IOException
      */
-    public static String apply(File readsFile, File mafFile, ProgressListener progress) throws IOException, CanceledException {
+    private static String apply(File readsFile, File mafFile, ProgressListener progress) throws IOException, CanceledException {
         if (isUnsorted(mafFile)) {
             String header = getHeaderLines(mafFile);
             return createSortedFile(header, readsFile, mafFile, progress);
@@ -205,7 +205,7 @@ public class MAFSorter {
      * @return
      * @throws IOException
      */
-    public static ArrayList<Long> getBatchStartPositions(File mafFile, ProgressListener progress) throws IOException, CanceledException {
+    private static ArrayList<Long> getBatchStartPositions(File mafFile, ProgressListener progress) throws IOException, CanceledException {
         progress.setSubtask("Determining batches in MAF file");
         final ArrayList<Long> batchStartPositions = new ArrayList<>();
 

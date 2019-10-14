@@ -82,7 +82,7 @@ public class IntFileGetterPagedMemory implements IIntGetter {
                         length = length0;
 
                     array = new int[length];
-                    long toSkip = (long) dIndex * (long) length0 * 4l;
+                    long toSkip = (long) dIndex * (long) length0 * 4L;
                     raf.seek(toSkip);
 
                     for (int pos = 0; pos < array.length; pos++) {

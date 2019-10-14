@@ -32,7 +32,7 @@ import java.util.Set;
  * select by name
  * Daniel Huson, 2.2011
  */
-public class SelectNodesByNameCommand extends CommandBase implements ICommand {
+class SelectNodesByNameCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "select name=<name> <name> ... [state={true|false}];";

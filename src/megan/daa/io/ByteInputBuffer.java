@@ -86,7 +86,7 @@ public class ByteInputBuffer {
         return (((int) bytes[pos++] & 0xFF)) | (((int) bytes[pos++] & 0xFF) << 8) | (((int) bytes[pos++] & 0xFF) << 16) | (((int) bytes[pos++]) << 24);
     }
 
-    public int readCharLittleEndian() {
+    private int readCharLittleEndian() {
         return (((int) bytes[pos++] & 0xFF) | (((int) bytes[pos++] & 0xFF) << 8)) & 0xFFFF;
     }
 

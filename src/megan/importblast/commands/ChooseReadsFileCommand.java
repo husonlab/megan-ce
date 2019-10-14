@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * choose reads file
@@ -70,7 +71,7 @@ public class ChooseReadsFileCommand extends CommandBase implements ICommand {
 
         List<File> files = ChooseFileDialog.chooseFilesToOpen(importBlastDialog, lastOpenFile, fastAFileFilter, fastAFileFilter, event, "Open reads file(s)");
 
-        if (files != null && files.size() > 0) {
+        if (files.size() > 0) {
             ProgramProperties.put(MeganProperties.READSFILE, files.get(0).getPath());
             try {
                 for (File file : files) {
@@ -141,6 +142,6 @@ public class ChooseReadsFileCommand extends CommandBase implements ICommand {
      */
     public boolean isApplicable() {
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
-        return !importBlastDialog.getFormatCBox().getSelectedItem().toString().equalsIgnoreCase("daa");
+        return !Objects.requireNonNull(importBlastDialog.getFormatCBox().getSelectedItem()).toString().equalsIgnoreCase("daa");
     }
 }

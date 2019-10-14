@@ -24,7 +24,7 @@ import jloda.swing.window.MenuConfiguration;
  * configuration for menu and toolbar
  * Daniel Huson, 7.2010
  */
-public class GUIConfiguration {
+class GUIConfiguration {
 
     /**
      * get the menu configuration

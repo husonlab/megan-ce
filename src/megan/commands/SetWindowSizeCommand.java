@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.StringTokenizer;
 
-public class SetWindowSizeCommand extends jloda.swing.commands.CommandBase implements ICommand {
+class SetWindowSizeCommand extends jloda.swing.commands.CommandBase implements ICommand {
     public String getSyntax() {
         return "set windowSize=<width> x <height>;";
     }

@@ -33,9 +33,9 @@ import java.awt.geom.Point2D;
  * Daniel Huson, 6.2012
  */
 public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "BubbleChart";
+    private static final String NAME = "BubbleChart";
 
-    protected int maxRadius = 30;
+    int maxRadius = 30;
 
     /**
      * constructor
@@ -290,7 +290,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         }
     }
 
-    public int getMaxRadius() {
+    private int getMaxRadius() {
         return maxRadius;
     }
 
@@ -413,7 +413,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         }
     }
 
-    public void drawScaleLegend(Graphics gc, Rectangle box) {
+    private void drawScaleLegend(Graphics gc, Rectangle box) {
         final int boxMidX = (int) Math.round(box.getX() + box.getWidth() / 2);
         final int boxBottomY = (int) Math.round(box.getY() + box.getHeight());
         final int roundedMaxValue = replaceAllButFirstDigitByZero((int) getMaxValue());
@@ -445,7 +445,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
                 final int maxLog = (int) Math.log(getMaxValue());
                 final int logRoundedMaxValue = (int) Math.log(roundedMaxValue);
 
-                diameterAndNumber[0][0] = 2 * (int) Math.round(logRoundedMaxValue * maxRadius / maxLog);
+                diameterAndNumber[0][0] = 2 * Math.round(logRoundedMaxValue * maxRadius / maxLog);
                 diameterAndNumber[0][1] = roundedMaxValue;
                 int number = replaceFirstDigitByOne(roundedMaxValue);
                 for (int i = 1; i <= 2; i++) {
@@ -463,7 +463,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
                 final int maxSqrt = (int) Math.sqrt(getMaxValue());
                 final int sqrtRoundedMaxValue = (int) Math.sqrt(roundedMaxValue);
 
-                diameterAndNumber[0][0] = 2 * (int) Math.round(sqrtRoundedMaxValue * maxRadius / maxSqrt);
+                diameterAndNumber[0][0] = 2 * Math.round(sqrtRoundedMaxValue * maxRadius / maxSqrt);
                 diameterAndNumber[0][1] = roundedMaxValue;
                 int number = replaceFirstDigitByOne(roundedMaxValue);
                 for (int i = 1; i <= 2; i++) {

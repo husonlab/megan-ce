@@ -38,14 +38,12 @@ import java.util.TreeSet;
 public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     private final Pair<byte[], Integer> matchesTextAndLength = new Pair<>(new byte[10000000], 0);
 
-    private final BlastMode blastMode;
-
-    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     private String currentMatchLine = null;
 
-    final SAMMatch samMatch;
+    private final SAMMatch samMatch;
 
     /**
      * constructor
@@ -55,7 +53,6 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
      */
     protected SAM2SAMIterator(String fileName, int maxNumberOfMatchesPerRead, BlastMode blastMode) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
-        this.blastMode = blastMode;
         samMatch = new SAMMatch(blastMode);
         if (!SAMFileFilter.getInstance().accept(fileName)) {
             NotificationsInSwing.showWarning("Might not be a SAM file: " + fileName);

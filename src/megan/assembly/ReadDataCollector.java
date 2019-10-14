@@ -101,7 +101,7 @@ public class ReadDataCollector {
                     }
                 }
             }
-            readData.setMatches(matches.toArray(new MatchData[matches.size()]));
+            readData.setMatches(matches.toArray(new MatchData[0]));
         }
         return readData;
     }

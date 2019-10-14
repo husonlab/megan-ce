@@ -33,9 +33,9 @@ import java.util.*;
  * Created by huson on 10/3/14.
  */
 public class RemoteServiceManager {
-    public static final String LOCAL = "Local::";
+    private static final String LOCAL = "Local::";
 
-    public static final String DEFAULT_MEGAN_SERVER = "meganserver2.informatik.uni-tuebingen.de/Public";
+    private static final String DEFAULT_MEGAN_SERVER = "meganserver2.informatik.uni-tuebingen.de/Public";
 
     private static final Map<String, IRemoteService> url2node = new HashMap<>();
 
@@ -98,7 +98,7 @@ public class RemoteServiceManager {
      * @param localFileName
      * @return short name
      */
-    public static String getServerShortName(String localFileName) {
+    private static String getServerShortName(String localFileName) {
         int pos = localFileName.indexOf(("::"));
         if (pos > 0)
             return localFileName.substring(0, pos);
@@ -172,7 +172,7 @@ public class RemoteServiceManager {
      * @param localFileName
      * @return true, if local name of a remote file
      */
-    public static boolean isRemoteFile(String localFileName) {
+    private static boolean isRemoteFile(String localFileName) {
         return localFileName.contains("::");
     }
 
@@ -222,7 +222,7 @@ public class RemoteServiceManager {
     /**
      * save all credentials to properties
      */
-    public static void saveCredentialsToProperties() {
+    private static void saveCredentialsToProperties() {
         List<String> list = new LinkedList<>();
 
         for (String server : server2Credentials.keySet()) {
@@ -231,7 +231,7 @@ public class RemoteServiceManager {
             String encodedPassword = Base64.encodeBase64String(pair.get2().getBytes());
             list.add(server + "::" + user + "::" + encodedPassword);
         }
-        ProgramProperties.put("MeganServerCredentials", list.toArray(new String[list.size()]));
+        ProgramProperties.put("MeganServerCredentials", list.toArray(new String[0]));
     }
 
     /**
@@ -259,10 +259,9 @@ public class RemoteServiceManager {
             else
                 ProgramProperties.put("RemoteServers", remoteServices + "%%%" + DEFAULT_MEGAN_SERVER);
 
-            final List<String> credentials = new LinkedList<>();
-            credentials.addAll(Arrays.asList(ProgramProperties.get("MeganServerCredentials", new String[0])));
+            final List<String> credentials = new LinkedList<>(Arrays.asList(ProgramProperties.get("MeganServerCredentials", new String[0])));
             credentials.add(DEFAULT_MEGAN_SERVER + "::" + user + "::" + encodedPassword);
-            ProgramProperties.put("MeganServerCredentials", credentials.toArray(new String[credentials.size()]));
+            ProgramProperties.put("MeganServerCredentials", credentials.toArray(new String[0]));
         }
     }
 }

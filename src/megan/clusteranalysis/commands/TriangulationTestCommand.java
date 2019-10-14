@@ -36,7 +36,7 @@ import java.util.List;
  * apply the triangulation test
  * Daniel Huson, 11.2015
  */
-public class TriangulationTestCommand extends CommandBase implements ICommand {
+class TriangulationTestCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "triangulationTest attribute=<name>;";
     }
@@ -74,7 +74,7 @@ public class TriangulationTestCommand extends CommandBase implements ICommand {
             String choice = ProgramProperties.get("TriangulationTestChoice", choices.get(0));
             if (!choices.contains(choice))
                 choice = choices.get(0);
-            final String[] array = choices.toArray(new String[choices.size()]);
+            final String[] array = choices.toArray(new String[0]);
             choice = (String) JOptionPane.showInputDialog(getViewer().getFrame(), "Attribute that defines biological replicates:",
                     "Setup triangulation test", JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), array, choice);
             if (choice != null) {

@@ -328,11 +328,7 @@ public class DefaultChartData implements IChartData {
     public void putValue(String series, String className, Number value) {
         if (value == null)
             value = 0;
-        Map<String, Number> class2value = series2Class2Values.get(series);
-        if (class2value == null) {
-            class2value = new HashMap<>();
-            series2Class2Values.put(series, class2value);
-        }
+        Map<String, Number> class2value = series2Class2Values.computeIfAbsent(series, k -> new HashMap<>());
         class2value.put(className, value);
         Pair<Number, Number> range = getRange(series);
         if (range == null) {
@@ -512,7 +508,7 @@ public class DefaultChartData implements IChartData {
     }
 
     public String[] getClassNamesIncludingDisabled() {
-        return classes2size.keySet().toArray(new String[classes2size.size()]);
+        return classes2size.keySet().toArray(new String[0]);
     }
 
     public boolean isUseTotalSize() {

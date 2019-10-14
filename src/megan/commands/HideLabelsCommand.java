@@ -27,7 +27,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class HideLabelsCommand extends CommandBase implements ICommand {
+class HideLabelsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "hide labels=selected;";
     }

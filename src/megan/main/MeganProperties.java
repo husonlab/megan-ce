@@ -42,15 +42,15 @@ public class MeganProperties {
     public static final String CONTAMINANT_FILE = "ContaminantFile";
 
     public static final String MICROBIALATTRIBUTESFILE = "MicrobialAttributesFiles";
-    public static final String MAPPINGFILE = "MappingFile";
+    private static final String MAPPINGFILE = "MappingFile";
 
     public static final String TAXONOMY_SYNONYMS_FILE = "TaxonomySynonymsMapFile";
 
     public static final String PARSE_TAXON_NAMES = "UseParseTextTaxonomy";
 
-    public static final String EXPORTFILE = "ExportFile";
+    private static final String EXPORTFILE = "ExportFile";
     public static final String RECENTFILES = "RecentFiles";
-    public static final String MAXRECENTFILES = "MaxRecentFiles";
+    private static final String MAXRECENTFILES = "MaxRecentFiles";
     public static final String EXTRACT_OUTFILE_DIR = "ExtractOutFileDir";
     public static final String EXTRACT_OUTFILE_TEMPLATE = "ExtractOutFileTemplate";
 
@@ -63,7 +63,7 @@ public class MeganProperties {
     public static final String READSFILE = "ReadsFile";
     public static final String CSVFILE = "CSVFile";
     public static final String BIOMFILE = "BIOMFile";
-    public static final String BLASTOUTFILE = "BlastOutFile";
+    private static final String BLASTOUTFILE = "BlastOutFile";
 
     public static final String COMPARISON_STYLE = "CompareStyle";
 
@@ -85,8 +85,8 @@ public class MeganProperties {
     public static final String MININUM_READS_IN_ALIGNMENT = "MinReadsInAlignment";
 
     public static final String DEFAULT_TAXONOMYFILE = "ncbi.tre";
-    public static final String DEFAULT_MAPPINGFILE = "ncbi.map";
-    public static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
+    private static final String DEFAULT_MAPPINGFILE = "ncbi.map";
+    private static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
     
     /**
      * sets the program properties
@@ -182,7 +182,7 @@ public class MeganProperties {
         }
     }
 
-    static final java.util.List<PropertiesListListener> propertieslistListeners = new LinkedList<>();
+    private static final java.util.List<PropertiesListListener> propertieslistListeners = new LinkedList<>();
 
     /**
      * notify listeners that list of values for the given name has changed

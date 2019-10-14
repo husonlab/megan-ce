@@ -25,7 +25,7 @@ import megan.core.DataTable;
  * <p/>
  * Daniel Huson, 9.2010
  */
-public class SyncDataTableAndNetwork {
+class SyncDataTableAndNetwork {
 
     /**
      * sync network formatting to summary

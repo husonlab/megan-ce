@@ -186,7 +186,7 @@ public class TaxaChart extends ChartViewer {
 
                 chartData.setAllSeries(doc.getSampleNames());
 
-                final String[] names = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
+                final String[] names = doc.getSampleNames().toArray(new String[0]);
                 final float[] totalSizes = new float[doc.getSampleNames().size()];
 
                 syncedNodes = mainViewer.getSelectedNodes();

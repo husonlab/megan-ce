@@ -24,7 +24,7 @@ import java.io.IOException;
  * interface for read-write access
  * Daniel Huson, 6.2009
  */
-public interface IInputOutput extends IBaseIO {
+interface IInputOutput extends IBaseIO {
     int read() throws IOException;
 
     int read(byte[] bytes, int offset, int len) throws IOException;

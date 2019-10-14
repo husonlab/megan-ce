@@ -42,7 +42,7 @@ import java.util.Map;
  * * compare by command
  * * Daniel Huson, 9.2015
  */
-public class CompareByAttributeCommand extends CommandBase implements ICommand {
+class CompareByAttributeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "compareBy attribute=<name> [mode={relative|absolute}] [samples=<names>];";
     }
@@ -86,7 +86,7 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
                     final String tarSample = (attribute.equals(SampleAttributeTable.SAMPLE_ID) ? value : attribute + ":" + value);
                     if (tarSample2SrcSamples.get(tarSample) == null) {
                         tarSamples.add(tarSample);
-                        tarSample2SrcSamples.put(tarSample, new ArrayList<String>());
+                        tarSample2SrcSamples.put(tarSample, new ArrayList<>());
                     }
                     tarSample2SrcSamples.get(tarSample).add(sample);
                     tarSample2Value.put(tarSample, value);

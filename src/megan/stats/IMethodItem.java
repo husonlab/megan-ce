@@ -29,7 +29,7 @@ import java.util.Map;
  * an item that manages a statistical method
  * Daniel Huson, 2.2008
  */
-public interface IMethodItem {
+interface IMethodItem {
     String NAME = "";
 
     JPanel getOptionsPanel();

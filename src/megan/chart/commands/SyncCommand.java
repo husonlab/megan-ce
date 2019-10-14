@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class SyncCommand extends CommandBase implements ICommand {
+class SyncCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "sync;";
     }

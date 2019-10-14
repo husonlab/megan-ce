@@ -26,8 +26,8 @@ import java.util.Map;
  * based class for color scheme
  * Daniel Huson, 4.2012
  */
-public abstract class ColorSchemeBase {
-    protected final Map<Integer, Color> definedColors = new HashMap<>();
+abstract class ColorSchemeBase {
+    private final Map<Integer, Color> definedColors = new HashMap<>();
 
     /**
      * get the foreground color
@@ -55,7 +55,7 @@ public abstract class ColorSchemeBase {
      * @param rgb the color to use for this amino acid
      * @return amino acid color
      */
-    protected Color getDefinedColor(int ch, int rgb) {
+    Color getDefinedColor(int ch, int rgb) {
         Color result = definedColors.get(ch);
         if (result == null) {
             result = new Color(rgb);

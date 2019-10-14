@@ -63,7 +63,7 @@ public class ContaminantManager {
             }
         }
         if (contaminants.size() > 0)
-            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains(TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ContaminantManager {
      * @param allNodes
      */
     private void setAllDescendentsRec(Node v, boolean mustAddToAll, Set<Integer> internalNodes, Set<Integer> allNodes) {
-        if (!mustAddToAll && internalNodes.contains((Integer) v.getInfo()))
+        if (!mustAddToAll && internalNodes.contains(v.getInfo()))
             mustAddToAll = true;
 
         if (mustAddToAll)
@@ -111,7 +111,7 @@ public class ContaminantManager {
             }
         }
         if (contaminants.size() > 0)
-            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains(TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**
@@ -154,11 +154,6 @@ public class ContaminantManager {
      * @return iterable
      */
     public Iterable<Integer> getContaminants() {
-        return new Iterable<Integer>() {
-            @Override
-            public Iterator<Integer> iterator() {
-                return contaminants.iterator();
-            }
-        };
+        return () -> contaminants.iterator();
     }
 }

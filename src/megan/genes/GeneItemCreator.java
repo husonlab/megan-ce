@@ -73,12 +73,7 @@ public class GeneItemCreator {
     }
 
     public Iterable<String> cNames() {
-        return new Iterable<String>() {
-            @Override
-            public Iterator<String> iterator() {
-                return Arrays.asList(cNames).iterator();
-            }
-        };
+        return () -> Arrays.asList(cNames).iterator();
     }
 
     /**

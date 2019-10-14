@@ -68,14 +68,12 @@ public class OpenRemoteServerCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
         if (!((megan.remote.RemoteServiceBrowser) getViewer()).selectServiceTab(url)) {
             IRemoteService service = RemoteServiceManager.createService(url, user, password);
-            if (service != null) {
-                if (service instanceof LocalService) {
-                    ((LocalService) service).rescan(((Director) getDir()).getDocument().getProgressListener());
-                }
-                if (service.isAvailable()) {
-                    ((megan.remote.RemoteServiceBrowser) getViewer()).addService(service);
-                    ((megan.remote.RemoteServiceBrowser) getViewer()).saveConfig();
-                }
+            if (service instanceof LocalService) {
+                ((LocalService) service).rescan(((Director) getDir()).getDocument().getProgressListener());
+            }
+            if (service.isAvailable()) {
+                ((megan.remote.RemoteServiceBrowser) getViewer()).addService(service);
+                ((megan.remote.RemoteServiceBrowser) getViewer()).saveConfig();
             }
         }
     }
@@ -119,7 +117,7 @@ public class OpenRemoteServerCommand extends CommandBase implements ICommand {
         }
     }
 
-    public static final String NAME = "Open";
+    private static final String NAME = "Open";
 
     public String getName() {
         return NAME;

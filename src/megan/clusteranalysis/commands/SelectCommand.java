@@ -27,7 +27,7 @@ import javax.swing.*;
  * select all nodes
  * Daniel Huson, 6.2010
  */
-public abstract class SelectCommand extends CommandBase {
+abstract class SelectCommand extends CommandBase {
     /**
      * get icon to be used in menu or button
      *

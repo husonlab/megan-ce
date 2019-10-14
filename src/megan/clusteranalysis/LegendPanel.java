@@ -156,7 +156,7 @@ public class LegendPanel extends JPanel {
         this.fontColor = fontColor;
     }
 
-    public Color getFontColor() {
+    private Color getFontColor() {
         return fontColor;
     }
 }

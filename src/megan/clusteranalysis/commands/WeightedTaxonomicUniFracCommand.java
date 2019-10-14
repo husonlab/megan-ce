@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * UnweightedTaxonomicUniFrac command
  * Daniel Huson, 11.2017
  */
-public class WeightedTaxonomicUniFracCommand extends CommandBase implements ICheckBoxCommand {
+class WeightedTaxonomicUniFracCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

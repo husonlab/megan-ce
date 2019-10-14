@@ -34,10 +34,10 @@ import java.util.Map;
  * Daniel Huson, 9.2010, 3.2016
  */
 public class MatchBlockRMA2 implements IMatchBlock {
-    public static final String TAXONOMY = "Taxonomy";
-    public static final String SEED = "SEED";
-    public static final String KEGG = "KEGG";
-    public static final String COG = "EGGNOG";
+    private static final String TAXONOMY = "Taxonomy";
+    private static final String SEED = "SEED";
+    private static final String KEGG = "KEGG";
+    private static final String COG = "EGGNOG";
 
     private final Map<String, Integer> cName2id = new HashMap<>();
 
@@ -387,7 +387,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
         if (length != 0)
             w.write("length: " + length + "\n");
         if (ignore)
-            w.write("ignore: " + ignore + "\n");
+            w.write("ignore: " + "\n");
         w.write("text: " + text + "\n");
         return w.toString();
     }

@@ -43,7 +43,7 @@ import java.io.Writer;
  * save data command
  * Daniel Huson, 11.2010
  */
-public class ExportConsensusCommand extends CommandBase implements ICommand {
+class ExportConsensusCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export consensus file=<filename> [what={all|selection}];";
     }

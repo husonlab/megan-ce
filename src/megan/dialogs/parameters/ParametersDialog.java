@@ -53,7 +53,7 @@ import java.util.Set;
  * Daniel Huson, 8.2008, 4.2017
  */
 public class ParametersDialog extends JDialog {
-    final JTextField minScoreField = new JTextField(8);
+    private final JTextField minScoreField = new JTextField(8);
 
     private final JTextField topPercentField = new JTextField(8);
     private final JTextField maxExpectedField = new JTextField(8);
@@ -68,7 +68,7 @@ public class ParametersDialog extends JDialog {
 
     private final AbstractButton useContaminantsFilter;
     private final AbstractButton listContaminants;
-    private String contaminants;
+    private final String contaminants;
     private String contaminantsFileName;
 
     private final JComboBox<String> lcaAlgorithmComboBox = new JComboBox<>();
@@ -586,7 +586,7 @@ public class ParametersDialog extends JDialog {
         return panel;
     }
 
-    public double getMinScore() {
+    private double getMinScore() {
         double value = Document.DEFAULT_MINSCORE;
         try {
             value = Double.parseDouble(minScoreField.getText());
@@ -596,7 +596,7 @@ public class ParametersDialog extends JDialog {
         return value;
     }
 
-    public double getTopPercent() {
+    private double getTopPercent() {
         double value = Document.DEFAULT_TOPPERCENT;
         try {
             value = Double.parseDouble(topPercentField.getText());
@@ -606,7 +606,7 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, Math.min(100, value));
     }
 
-    public double getMaxExpected() {
+    private double getMaxExpected() {
         double value = Document.DEFAULT_MAXEXPECTED;
         try {
             value = Double.parseDouble(maxExpectedField.getText());
@@ -616,7 +616,7 @@ public class ParametersDialog extends JDialog {
         return value;
     }
 
-    public double getMinComplexity() {
+    private double getMinComplexity() {
         double value = Document.DEFAULT_MINCOMPLEXITY;
         try {
             value = Double.parseDouble(minComplexityField.getText());
@@ -626,7 +626,7 @@ public class ParametersDialog extends JDialog {
         return value;
     }
 
-    public float getMinPercentIdentity() {
+    private float getMinPercentIdentity() {
         float value = Document.DEFAULT_MIN_PERCENT_IDENTITY;
         try {
             value = Float.parseFloat(minPercentIdentityField.getText());
@@ -636,19 +636,19 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, Math.min(100, value));
     }
 
-    public void setMinScore(double value) {
+    private void setMinScore(double value) {
         minScoreField.setText("" + (float) value);
     }
 
-    public void setTopPercent(double value) {
+    private void setTopPercent(double value) {
         topPercentField.setText("" + (float) value);
     }
 
-    public void setMaxExpected(double value) {
+    private void setMaxExpected(double value) {
         maxExpectedField.setText("" + (float) value);
     }
 
-    public int getMinSupport() {
+    private int getMinSupport() {
         int value = Document.DEFAULT_MINSUPPORT;
         try {
             value = Integer.parseInt(minSupportField.getText());
@@ -658,11 +658,11 @@ public class ParametersDialog extends JDialog {
         return Math.max(1, value);
     }
 
-    public void setMinSupport(int value) {
+    private void setMinSupport(int value) {
         minSupportField.setText("" + Math.max(1, value));
     }
 
-    public float getMinSupportPercent() {
+    private float getMinSupportPercent() {
         float value = 0;
         try {
             value = Basic.parseFloat(minSupportPercentField.getText());
@@ -672,19 +672,19 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, value);
     }
 
-    public void setMinSupportPercent(float value) {
+    private void setMinSupportPercent(float value) {
         minSupportPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
-    public void setMinComplexity(double value) {
+    private void setMinComplexity(double value) {
         minComplexityField.setText("" + (float) value);
     }
 
-    public void setMinPercentReadToCover(double value) {
+    private void setMinPercentReadToCover(double value) {
         minPercentReadToCoverField.setText("" + (float) value);
     }
 
-    public double getMinPercentReadToCover() {
+    private double getMinPercentReadToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_READ_TO_COVER;
         try {
             value = Double.parseDouble(minPercentReadToCoverField.getText());
@@ -694,11 +694,11 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, Math.min(100, value));
     }
 
-    public void setMinPercentReferenceToCover(double value) {
+    private void setMinPercentReferenceToCover(double value) {
         minPercentReferenceToCoverField.setText("" + (float) value);
     }
 
-    public double getMinPercentReferenceToCover() {
+    private double getMinPercentReferenceToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
         try {
             value = Double.parseDouble(minPercentReferenceToCoverField.getText());
@@ -708,51 +708,51 @@ public class ParametersDialog extends JDialog {
         return Math.max(0, Math.min(100, value));
     }
 
-    public void setMinPercentIdentity(double value) {
+    private void setMinPercentIdentity(double value) {
         minPercentIdentityField.setText("" + (float) value);
     }
 
-    public boolean isLongReads() {
+    private boolean isLongReads() {
         return longReadsCBox.isSelected();
     }
 
-    public void setLongReads(boolean longReads) {
+    private void setLongReads(boolean longReads) {
         longReadsCBox.setSelected(longReads);
     }
 
-    public boolean isPairedReads() {
+    private boolean isPairedReads() {
         return pairReadsCBox.isSelected();
     }
 
-    public void setPairedReads(boolean pairedReads) {
+    private void setPairedReads(boolean pairedReads) {
         pairReadsCBox.setSelected(pairedReads);
     }
 
-    public boolean isUsePercentIdentity() {
+    private boolean isUsePercentIdentity() {
         return usePercentIdentityCBox.isSelected();
     }
 
-    public void setUsePercentIdentity(boolean usePercentIdentity) {
+    private void setUsePercentIdentity(boolean usePercentIdentity) {
         usePercentIdentityCBox.setSelected(usePercentIdentity);
     }
 
-    public Document.LCAAlgorithm getLcaAlgorithm() {
+    private Document.LCAAlgorithm getLcaAlgorithm() {
         return Document.LCAAlgorithm.valueOf((String) lcaAlgorithmComboBox.getSelectedItem());
     }
 
-    public void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
+    private void setLcaAlgorithm(Document.LCAAlgorithm lcaAlgorithm) {
         lcaAlgorithmComboBox.setSelectedItem(lcaAlgorithm.toString());
     }
 
-    public Document.ReadAssignmentMode getReadAssignmentMode() {
+    private Document.ReadAssignmentMode getReadAssignmentMode() {
         return Document.ReadAssignmentMode.valueOf((String) readAssignmentModeComboBox.getSelectedItem());
     }
 
-    public void setReadAssignmentMode(Document.ReadAssignmentMode readAssignmentMode) {
+    private void setReadAssignmentMode(Document.ReadAssignmentMode readAssignmentMode) {
         readAssignmentModeComboBox.setSelectedItem(readAssignmentMode.toString());
     }
 
-    public float getLCACoveragePercent() {
+    private float getLCACoveragePercent() {
         float value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
         try {
             value = Basic.parseFloat(lcaCoveragePercent.getText());
@@ -762,7 +762,7 @@ public class ParametersDialog extends JDialog {
         return Math.min(100, Math.max(0, value));
     }
 
-    public void setWeightedLCAPercent(float value) {
+    private void setWeightedLCAPercent(float value) {
         lcaCoveragePercent.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
@@ -793,7 +793,7 @@ public class ParametersDialog extends JDialog {
                 + " fNames=" + Basic.toString(activeFNames, " ");
     }
 
-    public boolean isCanceled() {
+    private boolean isCanceled() {
         return canceled;
     }
 

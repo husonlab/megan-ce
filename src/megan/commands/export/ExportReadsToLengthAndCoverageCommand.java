@@ -39,7 +39,7 @@ import java.io.File;
  * export reads in length and amount covered
  * Daniel Huson, 3.2017
  */
-public class ExportReadsToLengthAndCoverageCommand extends CommandBase implements ICommand {
+class ExportReadsToLengthAndCoverageCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -84,7 +84,7 @@ public class ExportReadsToLengthAndCoverageCommand extends CommandBase implement
         return getViewer() instanceof ClassificationViewer && ((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0;
     }
 
-    public static final String NAME = "Export Read Lengths and Coverage...";
+    private static final String NAME = "Export Read Lengths and Coverage...";
 
     public String getName() {
         return NAME;

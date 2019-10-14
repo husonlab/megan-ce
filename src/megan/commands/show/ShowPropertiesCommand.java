@@ -27,7 +27,7 @@ import megan.viewer.PropertiesWindow;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ShowPropertiesCommand extends CommandBase implements ICommand {
+class ShowPropertiesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show window=properties;";
     }

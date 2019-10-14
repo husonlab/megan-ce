@@ -60,11 +60,7 @@ public class Dialogs {
                 confirmed.set(true);
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        confirmed.set(showConfirmation(swingParent, title, message));
-                    }
-                });
+                SwingUtilities.invokeAndWait(() -> confirmed.set(showConfirmation(swingParent, title, message)));
             } catch (Exception e) {
                 Basic.caught(e);
             }
@@ -81,7 +77,7 @@ public class Dialogs {
      * @param initialValue
      * @return
      */
-    public static String showInput(final Component swingParent, final String title, final String message, final String initialValue) {
+    private static String showInput(final Component swingParent, final String title, final String message, final String initialValue) {
         final Single<String> input = new Single<>(null);
 
         if (Platform.isFxApplicationThread()) {
@@ -90,19 +86,13 @@ public class Dialogs {
             dialog.setHeaderText(message);
 
             final Optional<String> result = dialog.showAndWait();
-            if (result.isPresent()) {
-                input.set(result.get());
-            }
+            result.ifPresent(input::set);
 
         } else if (javax.swing.SwingUtilities.isEventDispatchThread()) {
             input.set(JOptionPane.showInputDialog(swingParent, message, initialValue));
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        input.set(showInput(swingParent, title, message, initialValue));
-                    }
-                });
+                SwingUtilities.invokeAndWait(() -> input.set(showInput(swingParent, title, message, initialValue)));
             } catch (Exception e) {
                 Basic.caught(e);
             }

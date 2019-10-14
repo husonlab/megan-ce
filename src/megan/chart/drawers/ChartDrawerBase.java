@@ -48,42 +48,42 @@ import java.util.concurrent.ExecutorService;
  * Daniel Huson, 5.2012
  */
 public class ChartDrawerBase extends JPanel {
-    protected double classLabelAngle = Math.PI / 4;
+    double classLabelAngle = Math.PI / 4;
 
-    protected final Map<String, Pair<Font, Color>> fonts = new HashMap<>();
+    final Map<String, Pair<Font, Color>> fonts = new HashMap<>();
 
-    protected int leftMargin = 80;
-    protected int rightMargin = 75;
-    protected int bottomMargin = 200;
-    protected int topMargin = 20;
+    int leftMargin = 80;
+    int rightMargin = 75;
+    int bottomMargin = 200;
+    int topMargin = 20;
 
-    protected IData chartData;
-    protected Label2LabelMapper class2HigherClassMapper;
-    protected ILabelGetter seriesLabelGetter;
+    IData chartData;
+    Label2LabelMapper class2HigherClassMapper;
+    ILabelGetter seriesLabelGetter;
 
-    protected boolean transpose = false;
-    protected boolean showValues = false;
+    boolean transpose = false;
+    boolean showValues = false;
 
-    protected boolean showXAxis = true;
-    protected boolean showYAxis = true;
+    boolean showXAxis = true;
+    private boolean showYAxis = true;
 
-    protected String chartTitle = "Chart";
+    String chartTitle = "Chart";
 
-    protected ChartViewer.ScalingType scalingType = ChartViewer.ScalingType.LINEAR;
-    protected final EnumSet<ChartViewer.ScalingType> supportedScalingTypes = EnumSet.of(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.LOG,
+    ChartViewer.ScalingType scalingType = ChartViewer.ScalingType.LINEAR;
+    private final EnumSet<ChartViewer.ScalingType> supportedScalingTypes = EnumSet.of(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.LOG,
             ChartViewer.ScalingType.PERCENT, ChartViewer.ScalingType.SQRT);
 
-    protected final static Stroke NORMAL_STROKE = new BasicStroke(1);
-    protected final static Stroke HEAVY_STROKE = new BasicStroke(2);
+    final static Stroke NORMAL_STROKE = new BasicStroke(1);
+    final static Stroke HEAVY_STROKE = new BasicStroke(2);
 
-    protected Rectangle2D scrollBackReferenceRect = null;  // reference rectangle
-    protected Point2D scrollBackWindowPoint = null;
-    protected Point2D scrollBackReferencePoint = null;
+    private Rectangle2D scrollBackReferenceRect = null;  // reference rectangle
+    private Point2D scrollBackWindowPoint = null;
+    private Point2D scrollBackReferencePoint = null;
 
     // used when drawing values:
-    protected final LinkedList<DrawableValue> valuesList = new LinkedList<>();
-    protected ChartViewer viewer;
-    protected ExecutorService executorService;
+    final LinkedList<DrawableValue> valuesList = new LinkedList<>();
+    ChartViewer viewer;
+    ExecutorService executorService;
 
     boolean transposedHeightsAdditive = false;
 
@@ -135,12 +135,10 @@ public class ChartDrawerBase extends JPanel {
         }
         // double dy= 0.5 * labelSize.height;
         double dy = 0;
-        if (true) { // fixes bug in Java7:
-            // see: http://stackoverflow.com/questions/14569475/java-rotated-text-has-reversed-characters-sequence
-            FontRenderContext frc = new FontRenderContext(gc.getTransform(), true, true);
-            gc.drawGlyphVector(gc.getFont().createGlyphVector(frc, label), (int) (apt.getX()), (int) (apt.getY() + dy));
-        } else
-            gc.drawString(label, (int) (apt.getX()), (int) (apt.getY() + dy));
+        // fixes bug in Java7:
+        // see: http://stackoverflow.com/questions/14569475/java-rotated-text-has-reversed-characters-sequence
+        FontRenderContext frc = new FontRenderContext(gc.getTransform(), true, true);
+        gc.drawGlyphVector(gc.getFont().createGlyphVector(frc, label), (int) (apt.getX()), (int) (apt.getY() + dy));
 
         gc.setColor(Color.BLACK);
         gc.setTransform(saveTransform);

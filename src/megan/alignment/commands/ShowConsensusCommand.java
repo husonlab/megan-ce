@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ShowConsensusCommand extends CommandBase implements ICheckBoxCommand {
+class ShowConsensusCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -75,7 +75,7 @@ public class ShowConsensusCommand extends CommandBase implements ICheckBoxComman
         execute("set show-consensus=" + !isSelected() + ";");
     }
 
-    public static final String NAME = "Show Consensus";
+    private static final String NAME = "Show Consensus";
 
     public String getName() {
         return NAME;

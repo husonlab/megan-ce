@@ -41,7 +41,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ExportReadsCommand extends CommandBase implements ICommand {
+class ExportReadsCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "export what=reads [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";

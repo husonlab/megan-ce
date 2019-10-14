@@ -54,8 +54,8 @@ public class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
         if (getViewer() instanceof IViewerWithLegend) {
             IViewerWithLegend viewer = (IViewerWithLegend) getViewer();
             viewer.setShowLegend(which);
-            if (getViewer() instanceof IDirectableViewer) {
-                ((IDirectableViewer) getViewer()).updateView(IDirector.ENABLE_STATE);
+            if (getViewer() != null) {
+                getViewer().updateView(IDirector.ENABLE_STATE);
             }
         }
     }

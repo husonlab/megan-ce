@@ -44,7 +44,7 @@ import java.util.concurrent.Executors;
  * find reads and display in inspector window
  * Daniel Huson, 11.2010
  */
-public class ShowReadsCommand extends CommandBase implements ICommand {
+class ShowReadsCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -73,21 +73,19 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
         try (IReadBlockIterator it = doc.getConnector().getFindAllReadsIterator(regExpression, findSelection, canceled)) {
             progress.setMaximum(it.getMaximumProgress());
             final ExecutorService executor = Executors.newFixedThreadPool(1);
-            executor.submit(new Runnable() {
-                public void run() {
-                    try {
-                        while (!canceled.get()) {
-                            progress.setProgress(it.getProgress());
-                            Thread.sleep(100);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (CanceledException ex) {
-                        System.err.println("USER CANCELED EXECUTE");
-                    } finally {
-                        canceled.set(true);
-                        executor.shutdownNow();
+            executor.submit(() -> {
+                try {
+                    while (!canceled.get()) {
+                        progress.setProgress(it.getProgress());
+                        Thread.sleep(100);
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (CanceledException ex) {
+                    System.err.println("USER CANCELED EXECUTE");
+                } finally {
+                    canceled.set(true);
+                    executor.shutdownNow();
                 }
             });
 
@@ -132,7 +130,7 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
         }
     }
 
-    public static final String NAME = "Show Reads...";
+    private static final String NAME = "Show Reads...";
 
     public String getName() {
         return NAME;

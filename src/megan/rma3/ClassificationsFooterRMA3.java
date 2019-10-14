@@ -190,7 +190,7 @@ public class ClassificationsFooterRMA3 extends BaseRMA3 {
         startLocation.put(type, location);
     }
 
-    public long getEnd(ClassificationType type) {
+    private long getEnd(ClassificationType type) {
         Long value = endLocation.get(type);
         return value != null ? value : 0L;
     }
@@ -255,11 +255,11 @@ public class ClassificationsFooterRMA3 extends BaseRMA3 {
         }
     }
 
-    public String getClassificationBlockFormat() {
+    private String getClassificationBlockFormat() {
         return classificationBlockFormat;
     }
 
-    public void setClassificationBlockFormat(String classificationBlockFormat) {
+    private void setClassificationBlockFormat(String classificationBlockFormat) {
         this.classificationBlockFormat = classificationBlockFormat;
     }
 }

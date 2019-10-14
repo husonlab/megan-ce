@@ -41,11 +41,11 @@ import java.util.concurrent.Future;
  * Daniel Huson, 6.2012
  */
 public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMultiChartDrawable {
-    public static final String NAME = "WordCloud";
+    private static final String NAME = "WordCloud";
 
     private boolean useRectangleShape = false;
     private int maxFontSize = 128;
-    static Map<Integer, Font> size2font = new HashMap<>();
+    private static final Map<Integer, Font> size2font = new HashMap<>();
     private final Set<String> previousClasses = new HashSet<>();
     private ChartViewer.ScalingType previousScalingType = null;
     private final RTree<Pair<String, Integer>> rTree;
@@ -149,8 +149,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     private boolean mustUpdateCoordinates() {
         boolean mustUpdate = (previousScalingType != scalingType) || (((IChartData) chartData).getMaxTotalSeries() > 0 && rTree.size() == 0);
         if (!mustUpdate) {
-            Set<String> currentClasses = new HashSet<>();
-            currentClasses.addAll(getChartData().getSeriesNames());
+            Set<String> currentClasses = new HashSet<>(getChartData().getSeriesNames());
             if (!previousClasses.equals(currentClasses))
                 mustUpdate = true;
         }
@@ -186,14 +185,12 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         final Triplet<Integer, Integer, Dimension> previous = new Triplet<>(-1, 1, new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         final Point center = new Point(0, 0);
 
-        SortedSet<Pair<Double, String>> sorted = new TreeSet<>(new Comparator<Pair<Double, String>>() {
-            public int compare(Pair<Double, String> pair1, Pair<Double, String> pair2) {
-                if (pair1.get1() > pair2.get1())
-                    return -1;
-                if (pair1.get1() < pair2.get1())
-                    return 1;
-                return pair1.get2().compareTo(pair2.get2());
-            }
+        SortedSet<Pair<Double, String>> sorted = new TreeSet<>((pair1, pair2) -> {
+            if (pair1.get1() > pair2.get1())
+                return -1;
+            if (pair1.get1() < pair2.get1())
+                return 1;
+            return pair1.get2().compareTo(pair2.get2());
         });
         for (String label : getChartData().getSeriesNames()) {
             Double value = getChartData().getTotalForSeries(label);
@@ -300,8 +297,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     private boolean mustUpdateCoordinatesTransposed() {
         boolean mustUpdate = (previousScalingType != scalingType) || ((IChartData) chartData).getMaxTotalClass() > 0 && rTree.size() == 0;
         if (!mustUpdate) {
-            Set<String> currentClasses = new HashSet<>();
-            currentClasses.addAll(getChartData().getClassNames());
+            Set<String> currentClasses = new HashSet<>(getChartData().getClassNames());
             if (!previousClasses.equals(currentClasses))
                 mustUpdate = true;
         }
@@ -337,14 +333,12 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         final Triplet<Integer, Integer, Dimension> previous = new Triplet<>(-1, 1, new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         Point center = new Point(0, 0);
 
-        SortedSet<Pair<Double, String>> sorted = new TreeSet<>(new Comparator<Pair<Double, String>>() {
-            public int compare(Pair<Double, String> pair1, Pair<Double, String> pair2) {
-                if (pair1.get1() > pair2.get1())
-                    return -1;
-                if (pair1.get1() < pair2.get1())
-                    return 1;
-                return pair1.get2().compareTo(pair2.get2());
-            }
+        SortedSet<Pair<Double, String>> sorted = new TreeSet<>((pair1, pair2) -> {
+            if (pair1.get1() > pair2.get1())
+                return -1;
+            if (pair1.get1() < pair2.get1())
+                return 1;
+            return pair1.get2().compareTo(pair2.get2());
         });
         for (String label : getChartData().getClassNames()) {
             double value = getChartData().getTotalForClass(label);
@@ -457,7 +451,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         }
     }
 
-    public boolean isUseRectangleShape() {
+    private boolean isUseRectangleShape() {
         return useRectangleShape;
     }
 
@@ -477,11 +471,11 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         return false;
     }
 
-    public int getMaxFontSize() {
+    private int getMaxFontSize() {
         return maxFontSize;
     }
 
-    public void setMaxFontSize(int maxFontSize) {
+    private void setMaxFontSize(int maxFontSize) {
         this.maxFontSize = maxFontSize;
     }
 
@@ -492,29 +486,25 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
                 future = null;
             }
             inUpdateCoordinates = true;
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    try {
-                        if (isTranspose()) {
-                            updateCoordinatesTransposed();
-                        } else
-                            updateCoordinates();
-                        if (SwingUtilities.isEventDispatchThread()) {
+            future = executorService.submit(() -> {
+                try {
+                    if (isTranspose()) {
+                        updateCoordinatesTransposed();
+                    } else
+                        updateCoordinates();
+                    if (SwingUtilities.isEventDispatchThread()) {
+                        inUpdateCoordinates = false;
+                        viewer.repaint();
+                        future = null;
+                    } else {
+                        SwingUtilities.invokeAndWait(() -> {
                             inUpdateCoordinates = false;
                             viewer.repaint();
                             future = null;
-                        } else {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                public void run() {
-                                    inUpdateCoordinates = false;
-                                    viewer.repaint();
-                                    future = null;
-                                }
-                            });
-                        }
-                    } catch (Exception e) {
-                        inUpdateCoordinates = false;
+                        });
                     }
+                } catch (Exception e) {
+                    inUpdateCoordinates = false;
                 }
             });
         }

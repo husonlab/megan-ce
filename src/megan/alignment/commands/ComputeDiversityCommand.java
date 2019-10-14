@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ComputeDiversityCommand extends CommandBase implements ICommand {
+class ComputeDiversityCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -78,7 +78,7 @@ public class ComputeDiversityCommand extends CommandBase implements ICommand {
         execute("compute diversityRatio kmer=25 step=25 mindepth=10;");
     }
 
-    public static final String NAME = "Compute Diversity...";
+    private static final String NAME = "Compute Diversity...";
 
     public String getName() {
         return NAME;

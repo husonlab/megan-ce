@@ -28,7 +28,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ComputeShannonIndexCommand extends CommandBase implements ICommand {
+class ComputeShannonIndexCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute index=");

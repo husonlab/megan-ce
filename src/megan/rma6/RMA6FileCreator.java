@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class RMA6FileCreator extends RMA6File {
     private boolean isPairedReads;
-    private boolean useCompression;
+    private final boolean useCompression;
 
     private int numberOfClassificationNames;
 

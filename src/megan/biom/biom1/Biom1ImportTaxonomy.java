@@ -30,7 +30,7 @@ import java.util.Map;
  * imports a BIOME file of type Taxonomy table or OTU table
  * Daniel Huson, 9.2012
  */
-public class Biom1ImportTaxonomy {
+class Biom1ImportTaxonomy {
     /**
      * gets a sample to class to value map from the data
      *
@@ -57,7 +57,7 @@ public class Biom1ImportTaxonomy {
                     obj = metaData.get("Organism");
                 if (obj == null)
                     obj = metaData.get("ontology");
-                if (obj != null && obj instanceof ArrayList) {
+                if (obj instanceof ArrayList) {
                     final ArrayList<String> orig = ((ArrayList<String>) obj);
                     taxonId = QIIMETaxonParser.parseTaxon(orig.toArray(new String[0]), taxonomyIgnorePath);
                 }
@@ -105,11 +105,7 @@ public class Biom1ImportTaxonomy {
 
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];
-                    Map<Integer, Integer> class2count = sample2class2value.get(col2series[col]);
-                    if (class2count == null) {
-                        class2count = new HashMap<>();
-                        sample2class2value.put(col2series[col], class2count);
-                    }
+                    Map<Integer, Integer> class2count = sample2class2value.computeIfAbsent(col2series[col], k -> new HashMap<>());
                     Integer previous = class2count.get(row2class[row]);
                     if (previous != null)
                         value += previous;
@@ -130,11 +126,7 @@ public class Biom1ImportTaxonomy {
                 int value = array3[2];
                 // System.err.println("Class: " + obj.getClass());
                 // System.err.println("Row: " + Basic.toString(array3));
-                Map<Integer, Integer> class2count = sample2class2value.get(col2series[col]);
-                if (class2count == null) {
-                    class2count = new HashMap<>();
-                    sample2class2value.put(col2series[col], class2count);
-                }
+                Map<Integer, Integer> class2count = sample2class2value.computeIfAbsent(col2series[col], k -> new HashMap<>());
                 Integer previous = class2count.get(row2class[row]);
                 if (previous != null)
                     value += previous;

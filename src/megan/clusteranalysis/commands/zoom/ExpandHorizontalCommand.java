@@ -29,7 +29,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ExpandHorizontalCommand extends CommandBase implements ICommand {
+class ExpandHorizontalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "expand direction=horizontal;";
     }

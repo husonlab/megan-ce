@@ -31,7 +31,7 @@ import java.io.IOException;
  * Some utilities for creating Rma6 files
  * Created by huson on 5/23/14.
  */
-public class Utilities {
+class Utilities {
     /**
      * find the query in the reads file. When found, FileIterator is pointing to location of query in file
      *
@@ -214,7 +214,7 @@ public class Utilities {
      * @param lineLength
      * @return true, if name matches name in line
      */
-    public static boolean matchName(byte[] queryName, int queryNameLength, byte[] line, int lineLength) {
+    private static boolean matchName(byte[] queryName, int queryNameLength, byte[] line, int lineLength) {
         int start = 0;
         if (line[start] == '>' || line[0] == '@')
             start++;
@@ -331,7 +331,7 @@ public class Utilities {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return false;
     }

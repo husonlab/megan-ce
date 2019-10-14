@@ -33,7 +33,7 @@ import java.util.Collection;
  * draw selected nodes as squares
  * Daniel Huson, 3.2013
  */
-public class DrawSquaresCommand extends CommandBase implements ICommand {
+class DrawSquaresCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

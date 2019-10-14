@@ -37,7 +37,7 @@ public class BlastService extends Service<String> {
 
     @Override
     protected Task<String> createTask() {
-        return new Task<String>() {
+        return new Task<>() {
             @Override
             protected String call() throws Exception {
                 final RemoteBlastClient remoteBlastClient = new RemoteBlastClient();
@@ -91,7 +91,7 @@ public class BlastService extends Service<String> {
         };
     }
 
-    public Collection<Pair<String, String>> getQueries() {
+    private Collection<Pair<String, String>> getQueries() {
         return queries;
     }
 
@@ -100,10 +100,10 @@ public class BlastService extends Service<String> {
     }
 
     public void setQuery(String name, String sequence) {
-        setQueries(Collections.singletonList(new Pair<String, String>(name, sequence)));
+        setQueries(Collections.singletonList(new Pair<>(name, sequence)));
     }
 
-    public RemoteBlastClient.BlastProgram getProgram() {
+    private RemoteBlastClient.BlastProgram getProgram() {
         return program;
     }
 
@@ -111,7 +111,7 @@ public class BlastService extends Service<String> {
         this.program = program;
     }
 
-    public String getDatabase() {
+    private String getDatabase() {
         return database;
     }
 

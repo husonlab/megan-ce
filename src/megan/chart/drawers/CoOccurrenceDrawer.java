@@ -524,28 +524,28 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
         ProgramProperties.put("COMethod", method.toString());
     }
 
-    class NodeData {
+    static class NodeData {
         private String label;
         private Integer prevalence;
         private Point2D location;
 
-        public String getLabel() {
+        String getLabel() {
             return label;
         }
 
-        public void setLabel(String label) {
+        void setLabel(String label) {
             this.label = label;
         }
 
-        public Integer getPrevalence() {
+        Integer getPrevalence() {
             return prevalence;
         }
 
-        public void setPrevalence(Integer prevalence) {
+        void setPrevalence(Integer prevalence) {
             this.prevalence = prevalence;
         }
 
-        public Point2D getLocation() {
+        Point2D getLocation() {
             return location;
         }
 
@@ -553,7 +553,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             this.location = location;
         }
 
-        public void setLocation(double x, double y) {
+        void setLocation(double x, double y) {
             this.location = new Point2D.Double(x, y);
         }
     }

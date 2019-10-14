@@ -44,14 +44,14 @@ public class DAAParser {
     private final byte[] sourceAlphabet;
     private final byte[] alignmentAlphabet;
 
-    private jloda.util.BlastMode blastMode;
+    private final jloda.util.BlastMode blastMode;
 
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
     public final static Pair<DAAQueryRecord, DAAMatchRecord[]> SENTINEL_QUERY_MATCH_BLOCKS = new Pair<>();
 
-    final IntervalTree<DAAMatchRecord> intervalTree = new IntervalTree<>(); // used in parsing of long reads
-    final ArrayList<DAAMatchRecord> list = new ArrayList<>();
+    private final IntervalTree<DAAMatchRecord> intervalTree = new IntervalTree<>(); // used in parsing of long reads
+    private final ArrayList<DAAMatchRecord> list = new ArrayList<>();
 
     /**
      * constructor

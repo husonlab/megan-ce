@@ -52,7 +52,7 @@ import java.util.Collection;
  * Daniel Huson, 6.2010
  */
 public class OpenFileCommand extends CommandBase implements ICommand {
-    static long timeOfLastOpen = 0;
+    private static long timeOfLastOpen = 0;
 
     /**
      * constructor
@@ -100,12 +100,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
             newDir.execute(np.getQuotedTokensRespectCase(null, ";") + ";", newDir.getMainViewer().getCommandManager());
         } else {
             try {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewer.getFrame().toFront();
-                    }
-                });
+                SwingUtilities.invokeLater(() -> viewer.getFrame().toFront());
                 np.matchIgnoreCase("open file=");
 
                 String fileName = np.getAbsoluteFileName();
@@ -221,7 +216,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
             getDir().notifyUnlockInput();
         }
 
-        if (files != null && files.size() > 0) {
+        if (files.size() > 0) {
             final StringBuilder buf = new StringBuilder();
             for (File file : files) {
                 if (file != null && file.exists() && file.canRead()) {

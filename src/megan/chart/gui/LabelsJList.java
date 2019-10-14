@@ -42,9 +42,9 @@ import java.util.*;
  * Daniel Huson, 6.2012
  */
 public class LabelsJList extends JList<String> {
-    protected final IDirectableViewer viewer;
-    protected final JListSearcher searcher;
-    protected boolean doClustering;
+    final IDirectableViewer viewer;
+    private final JListSearcher searcher;
+    private boolean doClustering;
     private int tabIndex = -1;
 
     private boolean inSync = false;
@@ -61,7 +61,7 @@ public class LabelsJList extends JList<String> {
      * @param popupMenu
      */
     public LabelsJList(final IDirectableViewer viewer, final SyncListener syncListener, final JPopupMenu popupMenu) {
-        super(new DefaultListModel<String>());
+        super(new DefaultListModel<>());
         this.viewer = viewer;
         this.syncListener = syncListener;
         this.popupMenu = popupMenu;
@@ -87,11 +87,9 @@ public class LabelsJList extends JList<String> {
             }
         });
 
-        addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!inSync && !inSelection)
-                    viewer.updateView("enable_state");
-            }
+        addListSelectionListener(event -> {
+            if (!inSync && !inSelection)
+                viewer.updateView("enable_state");
         });
 
         setCellRenderer(new MyCellRenderer());
@@ -286,8 +284,7 @@ public class LabelsJList extends JList<String> {
      * @return disabled labels
      */
     public LinkedList<String> getDisabledLabels() {
-        final LinkedList<String> result = new LinkedList<>();
-        result.addAll(disabledLabels);
+        final LinkedList<String> result = new LinkedList<>(disabledLabels);
         return result;
     }
 
@@ -330,40 +327,38 @@ public class LabelsJList extends JList<String> {
             inSync = true;
             this.label2ToolTips = label2toolTip;
             try {
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        disabledLabels.clear();
-                        if (clearOldOrder)
-                            ((DefaultListModel) getModel()).removeAllElements();
+                Runnable runnable = () -> {
+                    disabledLabels.clear();
+                    if (clearOldOrder)
+                        ((DefaultListModel) getModel()).removeAllElements();
 
-                        final Set<String> labelsSet = new HashSet<>();
-                        labelsSet.addAll(labels);
+                    final Set<String> labelsSet = new HashSet<>();
+                    labelsSet.addAll(labels);
 
-                        final Set<String> toDelete = new HashSet<>();
-                        for (String label : disabledLabels) {
-                            if (!labelsSet.contains(label))
-                                toDelete.add(label);
-                        }
-                        disabledLabels.removeAll(toDelete);
-
-                        final List<String> toKeep = new LinkedList<>();
-                        for (int i = 0; i < getModel().getSize(); i++) {
-                            String label = getModel().getElementAt(i);
-                            if (labelsSet.contains(label))
-                                toKeep.add(label);
-                        }
-                        ((DefaultListModel<String>) getModel()).removeAllElements();
-                        for (String label : toKeep) {
-                            ((DefaultListModel<String>) getModel()).addElement(label);
-                        }
-                        final Set<String> seen = new HashSet<>();
-                        seen.addAll(toKeep);
-                        for (String label : labels) {
-                            if (!seen.contains(label))
-                                ((DefaultListModel<String>) getModel()).addElement(label);
-                        }
-                        validate();
+                    final Set<String> toDelete = new HashSet<>();
+                    for (String label : disabledLabels) {
+                        if (!labelsSet.contains(label))
+                            toDelete.add(label);
                     }
+                    disabledLabels.removeAll(toDelete);
+
+                    final List<String> toKeep = new LinkedList<>();
+                    for (int i = 0; i < getModel().getSize(); i++) {
+                        String label = getModel().getElementAt(i);
+                        if (labelsSet.contains(label))
+                            toKeep.add(label);
+                    }
+                    ((DefaultListModel<String>) getModel()).removeAllElements();
+                    for (String label : toKeep) {
+                        ((DefaultListModel<String>) getModel()).addElement(label);
+                    }
+                    final Set<String> seen = new HashSet<>();
+                    seen.addAll(toKeep);
+                    for (String label : labels) {
+                        if (!seen.contains(label))
+                            ((DefaultListModel<String>) getModel()).addElement(label);
+                    }
+                    validate();
                 };
                 if (SwingUtilities.isEventDispatchThread())
                     runnable.run();
@@ -410,7 +405,7 @@ public class LabelsJList extends JList<String> {
         private final JPanel box = new JPanel();
         private final JLabel label = new JLabel();
 
-        public MyCellRenderer() {
+        MyCellRenderer() {
             final Dimension dim = new Dimension(10, 10);
             if (getColorGetter() != null) {
                 box.setMinimumSize(dim);
@@ -466,7 +461,7 @@ public class LabelsJList extends JList<String> {
         return popupMenu;
     }
 
-    public ChartColorManager.ColorGetter getColorGetter() {
+    ChartColorManager.ColorGetter getColorGetter() {
         return null;
     }
 

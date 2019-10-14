@@ -28,7 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class ShowValuesCommand extends CommandBase implements ICheckBoxCommand {
+class ShowValuesCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return isApplicable() && chartViewer.isShowValues();

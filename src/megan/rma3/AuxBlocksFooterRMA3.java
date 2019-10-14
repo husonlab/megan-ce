@@ -104,19 +104,19 @@ public class AuxBlocksFooterRMA3 extends BaseRMA3 {
         }
     }
 
-    public String getAuxDataFormat() {
+    private String getAuxDataFormat() {
         return auxDataFormat;
     }
 
-    public void setAuxDataFormat(String auxDataFormat) {
+    private void setAuxDataFormat(String auxDataFormat) {
         this.auxDataFormat = auxDataFormat;
     }
 
-    public int getCount() {
+    private int getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    private void setCount(int count) {
         this.count = count;
     }
 

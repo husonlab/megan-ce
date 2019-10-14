@@ -40,7 +40,7 @@ import java.util.*;
  * exports the average number of frame-shifts per kilo-base of aligned sequence
  * Daniel Huson, 13.2018
  */
-public class CSVExportFrameShiftsPerKb {
+class CSVExportFrameShiftsPerKb {
     /**
      * export mapping of read names to frame-shifts per kilo-base
      *
@@ -131,7 +131,7 @@ public class CSVExportFrameShiftsPerKb {
      * @param readBlock
      * @return frame shifts per KB
      */
-    public static float computeFrameShiftsPerKb(IReadBlock readBlock, boolean excludeDominated) {
+    private static float computeFrameShiftsPerKb(IReadBlock readBlock, boolean excludeDominated) {
         int countFrameShifts = 0;
         int countAlignedBases = 0;
 

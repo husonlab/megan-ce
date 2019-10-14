@@ -26,10 +26,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * Daniel Huson, 2.2006
  */
 public class NodeBase extends DefaultMutableTreeNode implements Comparable<NodeBase> {
-    protected String name;
-    protected float rank;
+    private String name;
+    float rank;
     private static long maxId = 0;
-    protected final long id;
+    private final long id;
     private boolean completed = true;
 
     public NodeBase() {
@@ -99,11 +99,6 @@ public class NodeBase extends DefaultMutableTreeNode implements Comparable<NodeB
                 return value;
         }
 
-        if (id < v.id)
-            return -1;
-        else if (id > v.id)
-            return 1;
-        else
-            return 0;
+        return Long.compare(id, v.id);
     }
 }

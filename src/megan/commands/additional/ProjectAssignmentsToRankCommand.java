@@ -42,7 +42,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectAssignmentsToRankCommand extends CommandBase implements ICommand {
+class ProjectAssignmentsToRankCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "project rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "} [minPercent={number}];";
@@ -161,9 +161,9 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
     }
 
     public void actionPerformed(ActionEvent event) {
-        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[TaxonomicLevels.getAllMajorRanks().size()]);
+        final String[] ranks = TaxonomicLevels.getAllMajorRanks().toArray(new String[0]);
 
-        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, null, new CallBack<String>() {
+        PopupChoice<String> popupChoice = new PopupChoice<>(ranks, null, new CallBack<>() {
             @Override
             public void call(String choice) {
                 execute("collapse rank='" + choice + "';project rank='" + choice + "' minPercent=0;");

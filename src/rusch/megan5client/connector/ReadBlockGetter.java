@@ -32,12 +32,12 @@ import java.io.IOException;
  */
 public class ReadBlockGetter implements IReadBlockGetter {
 
-    private String fileId;
-    private float minScore;
-    private float maxExpected;
-    private boolean wantReadText;
-    private boolean wantMatches;
-    private Megan5ServerConnector connector;
+    private final String fileId;
+    private final float minScore;
+    private final float maxExpected;
+    private final boolean wantReadText;
+    private final boolean wantMatches;
+    private final Megan5ServerConnector connector;
 
     public ReadBlockGetter(String fileId, float minScore, float maxExpected, boolean wantReadText, boolean wantMatches, Megan5ServerConnector connector) {
         this.fileId = fileId;

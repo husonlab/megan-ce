@@ -36,7 +36,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implements ICommand {
+class ExportFrameShiftCorrectedReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export correctedReads file=<filename> [what={all|selected}];";
     }

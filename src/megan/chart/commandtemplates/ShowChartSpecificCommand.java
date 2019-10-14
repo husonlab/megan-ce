@@ -59,7 +59,7 @@ public class ShowChartSpecificCommand extends CommandBase implements ICommand {
 
     }
 
-    public static String getName(String displayName) {
+    private static String getName(String displayName) {
         return "Show " + displayName + "";
     }
 

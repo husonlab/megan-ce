@@ -36,7 +36,7 @@ import java.awt.event.ActionEvent;
  * Set scale command
  * Daniel Huson, 6.2010
  */
-public class SetScaleCommand extends CommandBase implements ICommand {
+class SetScaleCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *

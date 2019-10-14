@@ -115,32 +115,12 @@ public class TableItemTask extends Task<Integer> {
 
 
             final Set<String> readsToUse; // todo: need to add this to GUI?
-            if (false) {
-                final LongestReadsFilter longestReadsFilter = new LongestReadsFilter(1000);
-                try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
-                    while (it.hasNext()) {
-                        final IReadBlock readBlock = it.next();
-                        final String readName = readBlock.getReadName();
-                        final int readLength;
-                        if (readBlock.getReadLength() > 0)
-                            readLength = readBlock.getReadLength();
-                        else if (readBlock.getReadSequence() != null)
-                            readLength = readBlock.getReadSequence().length();
-                        else
-                            readLength = 0;
-                        longestReadsFilter.add(readName, readLength);
-                    }
-                }
-                readsToUse = longestReadsFilter.computeValues();
-            } else
-                readsToUse = null;
+            readsToUse = null;
 
             try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                 while (it.hasNext()) {
                     final IReadBlock readBlock = it.next();
                     final String readName = readBlock.getReadName();
-                    if (readsToUse != null && !readsToUse.contains(readName))
-                        continue;
 
                     // make sure we have a useful read length:
                     int readLength = readBlock.getReadLength();
@@ -211,98 +191,84 @@ public class TableItemTask extends Task<Integer> {
     private void flushBuffer(Collection<TableItem> buffer) {
         final TableItem[] items = buffer.toArray(new TableItem[0]);
         buffer.clear();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                tableView.getItems().addAll(items);
-            }
-        });
+        Platform.runLater(() -> tableView.getItems().addAll(items));
     }
 
     private ListChangeListener<IMatchBlock> createChangeListener(final TableItem tableItem, final LongProperty previousSelectionTime) {
         final ReadLayoutPane pane = tableItem.getPane();
-        return new ListChangeListener<IMatchBlock>() {
-            @Override
-            public void onChanged(Change<? extends IMatchBlock> c) {
-                if (c.next()) {
+        return c -> {
+            if (c.next()) {
 
-                    if (!pane.getMatchSelection().isEmpty())
-                        tableView.getSelectionModel().select(tableItem);
-                }
-                if (System.currentTimeMillis() - 200 > previousSelectionTime.get()) { // only if sufficient time has passed since last scroll...
-                    try {
-                        final double focusCoordinate;
-                        int focusIndex = pane.getMatchSelection().getFocusIndex();
-                        if (focusIndex >= 0 && pane.getMatchSelection().getItems()[focusIndex] != null) {
-                            final IMatchBlock focusMatch = pane.getMatchSelection().getItems()[focusIndex];
-                            focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
-                            double leadingWidth = 0;
-                            double lastWidth = 0;
-                            double totalWidth = 0;
-                            {
-                                int numberOfColumns = tableView.getColumns().size();
-                                int columns = 0;
-                                for (TableColumn col : tableView.getColumns()) {
-                                    if (col.isVisible()) {
-                                        if (columns < numberOfColumns - 1)
-                                            leadingWidth += col.getWidth();
-                                        else
-                                            lastWidth = col.getWidth();
-                                        totalWidth += col.getWidth();
-                                    }
-                                    columns++;
+                if (!pane.getMatchSelection().isEmpty())
+                    tableView.getSelectionModel().select(tableItem);
+            }
+            if (System.currentTimeMillis() - 200 > previousSelectionTime.get()) { // only if sufficient time has passed since last scroll...
+                try {
+                    final double focusCoordinate;
+                    int focusIndex = pane.getMatchSelection().getFocusIndex();
+                    if (focusIndex >= 0 && pane.getMatchSelection().getItems()[focusIndex] != null) {
+                        final IMatchBlock focusMatch = pane.getMatchSelection().getItems()[focusIndex];
+                        focusCoordinate = 0.5 * (focusMatch.getAlignedQueryStart() + focusMatch.getAlignedQueryEnd());
+                        double leadingWidth = 0;
+                        double lastWidth = 0;
+                        double totalWidth = 0;
+                        {
+                            int numberOfColumns = tableView.getColumns().size();
+                            int columns = 0;
+                            for (TableColumn col : tableView.getColumns()) {
+                                if (col.isVisible()) {
+                                    if (columns < numberOfColumns - 1)
+                                        leadingWidth += col.getWidth();
+                                    else
+                                        lastWidth = col.getWidth();
+                                    totalWidth += col.getWidth();
                                 }
-                            }
-
-                            final double coordinateToShow = leadingWidth + lastWidth * (focusCoordinate / maxReadLength.get());
-                            final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
-
-                            if (hScrollBar != null) { // should never be null, but best to check...
-                                final double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((coordinateToShow) / totalWidth);
-
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tableView.scrollTo(tableItem);
-                                        hScrollBar.setValue(newPos);
-                                    }
-                                });
+                                columns++;
                             }
                         }
-                    } catch (Exception ex) {
+
+                        final double coordinateToShow = leadingWidth + lastWidth * (focusCoordinate / maxReadLength.get());
+                        final ScrollBar hScrollBar = FXUtilities.findScrollBar(tableView, Orientation.HORIZONTAL);
+
+                        if (hScrollBar != null) { // should never be null, but best to check...
+                            final double newPos = (hScrollBar.getMax() - hScrollBar.getMin()) * ((coordinateToShow) / totalWidth);
+
+                            Platform.runLater(() -> {
+                                tableView.scrollTo(tableItem);
+                                hScrollBar.setValue(newPos);
+                            });
+                        }
                     }
+                } catch (Exception ignored) {
                 }
-                previousSelectionTime.set(System.currentTimeMillis());
             }
+            previousSelectionTime.set(System.currentTimeMillis());
         };
     }
 
-    class LongestReadsFilter {
+    static class LongestReadsFilter {
         private final TreeSet<Pair<String, Integer>> set;
         private final int capacity;
 
         LongestReadsFilter(int capacity) {
             this.capacity = capacity;
-            this.set = new TreeSet<>(new Comparator<Pair<String, Integer>>() {
-                @Override
-                public int compare(Pair<String, Integer> o1, Pair<String, Integer> o2) {
-                    if (o1.getSecond() > o2.getSecond())
-                        return -1;
-                    else if (o1.getSecond() < o2.getSecond())
-                        return 1;
-                    else
-                        return o1.getFirst().compareTo(o2.getFirst());
-                }
+            this.set = new TreeSet<>((o1, o2) -> {
+                if (o1.getSecond() > o2.getSecond())
+                    return -1;
+                else if (o1.getSecond() < o2.getSecond())
+                    return 1;
+                else
+                    return o1.getFirst().compareTo(o2.getFirst());
             });
         }
 
-        public void add(String readName, int readLength) {
+        void add(String readName, int readLength) {
             set.add(new Pair<>(readName, readLength));
             if (set.size() > capacity)
                 set.remove(set.last());
         }
 
-        public Set<String> computeValues() {
+        Set<String> computeValues() {
             final HashSet<String> values = new HashSet<>();
             for (Pair<String, Integer> value : set) {
                 values.add(value.getFirst());

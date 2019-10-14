@@ -54,7 +54,7 @@ public class ComputeEllipse {
      * @param points input 2D points
      * @return algebraic parameters of the fitting ellipse
      */
-    public static double[] apply(final double[][] points) {
+    private static double[] apply(final double[][] points) {
         final int nPoints = points.length;
         final double[] centroid = getMean(points);
         final double xCenter = centroid[0];
@@ -150,7 +150,7 @@ public class ComputeEllipse {
      * @param variables
      * @return dimensions centerX,centerY,lengthAxisA,lengthAxisB,angle
      */
-    public static double[] convertVariablesToDimension(final double[] variables) {
+    private static double[] convertVariablesToDimension(final double[] variables) {
         final double a = variables[0];
         final double b = variables[1] / 2;
         final double c = variables[2];

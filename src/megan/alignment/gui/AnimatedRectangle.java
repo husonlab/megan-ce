@@ -44,7 +44,7 @@ public class AnimatedRectangle {
     static private final BasicStroke oddStroke = new BasicStroke(2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 1, new float[]{5, 5}, 5);
     static private final BasicStroke basicStroke = new BasicStroke(1);
     static private final Rectangle2D drawRectangle = new Rectangle2D.Float();
-    protected final static Color highlightColor = ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.darker();
+    private final static Color highlightColor = ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.darker();
 
 
     private JPanel panel;
@@ -59,20 +59,16 @@ public class AnimatedRectangle {
         this.panel = panel;
         if (scheduler == null) {
             scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    try {
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            public void run() {
-                                synchronized (animatedRectangles) {
-                                    for (WeakReference<AnimatedRectangle> weak : animatedRectangles) {
-                                        weak.get().draw();
-                                    }
-                                }
+            scheduler.scheduleAtFixedRate(() -> {
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        synchronized (animatedRectangles) {
+                            for (WeakReference<AnimatedRectangle> weak : animatedRectangles) {
+                                weak.get().draw();
                             }
-                        });
-                    } catch (InterruptedException | InvocationTargetException e) {
-                    }
+                        }
+                    });
+                } catch (InterruptedException | InvocationTargetException ignored) {
                 }
             }, 0, 500, MILLISECONDS);
         }

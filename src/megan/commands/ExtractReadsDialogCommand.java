@@ -140,7 +140,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
         return getDir().getDocument().getNumberOfReads() > 0;
     }
 
-    final public static String NAME = "Extract Reads...";
+    private final static String NAME = "Extract Reads...";
 
     public String getName() {
         return NAME;

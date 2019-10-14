@@ -44,7 +44,7 @@ import java.io.Writer;
  * save overlap graph
  * Daniel Huson, 5.2015
  */
-public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
+class ExportOverlapGraphCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export overlapGraph file=<filename> [minOverap=<number>] [showGraph={false|true}];";
     }

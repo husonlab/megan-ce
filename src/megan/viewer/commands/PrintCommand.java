@@ -33,7 +33,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterJob;
 
-public class PrintCommand extends CommandBase implements ICommand {
+class PrintCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show window=print;";
     }

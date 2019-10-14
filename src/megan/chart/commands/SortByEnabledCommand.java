@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 
-public class SortByEnabledCommand extends CommandBase implements ICommand {
+class SortByEnabledCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set sort=enabled;";
     }
@@ -40,8 +40,7 @@ public class SortByEnabledCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(getSyntax());
         ChartViewer chartViewer = (ChartViewer) getViewer();
         final LabelsJList list = chartViewer.getActiveLabelsJList();
-        LinkedList<String> disabled = new LinkedList<>();
-        disabled.addAll(list.getDisabledLabels());
+        LinkedList<String> disabled = new LinkedList<>(list.getDisabledLabels());
         LinkedList<String> labels = new LinkedList<>();
         labels.addAll(list.getEnabledLabels());
         labels.addAll(list.getDisabledLabels());

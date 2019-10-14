@@ -38,7 +38,7 @@ import java.util.Set;
  * select from previous window
  * Daniel Huson, 5.2015
  */
-public class SelectFromPreviousWindowCommand extends CommandBase implements ICommand {
+class SelectFromPreviousWindowCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

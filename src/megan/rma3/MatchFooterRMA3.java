@@ -143,7 +143,7 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         numberOfReads++;
     }
 
-    public void setNumberOfReads(long numberOfReads) {
+    private void setNumberOfReads(long numberOfReads) {
         this.numberOfReads = numberOfReads;
     }
 
@@ -155,47 +155,47 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         numberOfMatches++;
     }
 
-    public void setNumberOfMatches(long numberOfMatches) {
+    private void setNumberOfMatches(long numberOfMatches) {
         this.numberOfMatches = numberOfMatches;
     }
 
-    public int getMaxMatchesPerRead() {
+    private int getMaxMatchesPerRead() {
         return maxMatchesPerRead;
     }
 
-    public void setMaxMatchesPerRead(int maxMatchesPerRead) {
+    private void setMaxMatchesPerRead(int maxMatchesPerRead) {
         this.maxMatchesPerRead = maxMatchesPerRead;
     }
 
-    public boolean isUseKegg() {
+    private boolean isUseKegg() {
         return useKegg;
     }
 
-    public void setUseKegg(boolean useKegg) {
+    private void setUseKegg(boolean useKegg) {
         this.useKegg = useKegg;
     }
 
-    public boolean isUseSeed() {
+    private boolean isUseSeed() {
         return useSeed;
     }
 
-    public void setUseSeed(boolean useSeed) {
+    private void setUseSeed(boolean useSeed) {
         this.useSeed = useSeed;
     }
 
-    public boolean isUseCog() {
+    private boolean isUseCog() {
         return useCog;
     }
 
-    public void setUseCog(boolean useCog) {
+    private void setUseCog(boolean useCog) {
         this.useCog = useCog;
     }
 
-    public boolean isUsePfam() {
+    private boolean isUsePfam() {
         return usePfam;
     }
 
-    public void setUsePfam(boolean usePfam) {
+    private void setUsePfam(boolean usePfam) {
         this.usePfam = usePfam;
     }
 
@@ -203,7 +203,7 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         return readFormatDef;
     }
 
-    public void setReadFormatDef(String readFormatDef) {
+    private void setReadFormatDef(String readFormatDef) {
         this.readFormatDef = readFormatDef;
     }
 
@@ -211,7 +211,7 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         return matchFormatDef;
     }
 
-    public void setMatchFormatDef(String matchFormatDef) {
+    private void setMatchFormatDef(String matchFormatDef) {
         this.matchFormatDef = matchFormatDef;
     }
 

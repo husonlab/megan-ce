@@ -187,7 +187,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
         try {
             // w.writeString(classificationType.toString()+":\n");
             write(w, null);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return w.toString();
     }

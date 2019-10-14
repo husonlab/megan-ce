@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 4.2012
  */
-public class SetAminoAcidColorSchemeCommand extends CommandBase implements ICommand {
+class SetAminoAcidColorSchemeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -82,7 +82,7 @@ public class SetAminoAcidColorSchemeCommand extends CommandBase implements IComm
         }
     }
 
-    public static final String NAME = "Set Amino Acid Colors...";
+    private static final String NAME = "Set Amino Acid Colors...";
 
     public String getName() {
         return NAME;

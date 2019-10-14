@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Biom2MetaData {
+class Biom2MetaData {
     /**
      * read metadata from a BIOM2 file
      *

@@ -117,8 +117,6 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
 
         if (reader.getPosition() < end) {
             if (uid >= 0) {
-                if (streamOnly)
-                    throw new IOException("getReadBlock(uid=" + uid + ") failed: streamOnly");
             }
             final ReadBlockDAA readBlock = (reuseableReadBlock == null ? new ReadBlockDAA() : reuseableReadBlock);
 

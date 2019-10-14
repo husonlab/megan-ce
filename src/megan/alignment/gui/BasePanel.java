@@ -31,22 +31,18 @@ import java.awt.geom.Point2D;
 abstract public class BasePanel extends JPanel implements Scrollable {
     public static int MIN_CELL_HEIGHT = 6;
 
-    protected double cellWidth;
-    protected double cellHeight;
-    protected Font sequenceFont = new Font(Font.MONOSPACED, Font.PLAIN, 14);
-    protected final static Color highlightColor = ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.darker();
-    protected final static Color highlightColorSemiTransparent = new Color(ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.getRed(),
+    double cellWidth;
+    double cellHeight;
+    Font sequenceFont = new Font(Font.MONOSPACED, Font.PLAIN, 14);
+    final static Color highlightColor = ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.darker();
+    final static Color highlightColorSemiTransparent = new Color(ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.getRed(),
             ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.getGreen(), ProgramProperties.SELECTION_COLOR_ADDITIONAL_TEXT.getBlue(), 60);
 
-    protected final SelectedBlock selectedBlock;
+    final SelectedBlock selectedBlock;
 
     public BasePanel(SelectedBlock selectedBlock) {
         this.selectedBlock = selectedBlock;
-        selectedBlock.addSelectionListener(new ISelectionListener() {
-            public void doSelectionChanged(boolean selected, int minRow, int minCol, int maxRow, int maxCol) {
-                repaint();
-            }
-        });
+        selectedBlock.addSelectionListener((selected, minRow, minCol, maxRow, maxCol) -> repaint());
     }
 
     public double getX(int col) {
@@ -57,7 +53,7 @@ abstract public class BasePanel extends JPanel implements Scrollable {
         return cellHeight * (row + 1);
     }
 
-    public Font getSequenceFont() {
+    Font getSequenceFont() {
         return sequenceFont;
     }
 
@@ -72,17 +68,17 @@ abstract public class BasePanel extends JPanel implements Scrollable {
     abstract void revalidateGrid();
 
 
-    public int getRow(Point2D aPt) {
+    int getRow(Point2D aPt) {
         return (int) (aPt.getY() / cellHeight);
 
     }
 
-    public int getCol(Point2D aPt) {
+    int getCol(Point2D aPt) {
         return (int) (aPt.getX() / cellWidth);
 
     }
 
-    public SelectedBlock getSelectedBlock() {
+    SelectedBlock getSelectedBlock() {
         return selectedBlock;
     }
 

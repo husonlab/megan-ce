@@ -30,11 +30,7 @@ import java.util.HashMap;
  * checks for possible chimeric read
  * Daniel Huson, 9.2017
  */
-public class ChimericCheck {
-    private static int minNumberOfBasesCoveredPerSide = 1000;
-    private static double minProportionOfBasesCoveredBothSides = 0.6;
-    private static double minProportionOfAlignedBasedCoveredPerSide = 0.2;
-    private static double minProportionOfAlignedBasesCoveredBothSides = 0;// 0.8;
+class ChimericCheck {
 
     /**
      * report any long reads that look like they may be chimeric
@@ -64,6 +60,8 @@ public class ChimericCheck {
                 final IntervalList intervals1 = taxa2intervals.get(taxon1);
                 if (intervals1 != null) {
                     final int covered1 = intervals1.getCovered();
+                    double minProportionOfAlignedBasedCoveredPerSide = 0.2;
+                    int minNumberOfBasesCoveredPerSide = 1000;
                     if (covered1 >= minNumberOfBasesCoveredPerSide && covered1 >= minProportionOfAlignedBasedCoveredPerSide * totalCovered) {
                         final int min1 = intervals1.computeMin();
                         final int max1 = intervals1.computeMax();
@@ -74,7 +72,10 @@ public class ChimericCheck {
                                 final IntervalList intervals2 = taxa2intervals.get(taxon2);
                                 if (intervals2 != null) {
                                     final Integer covered2 = intervals2.getCovered();
+                                    double minProportionOfBasesCoveredBothSides = 0.6;
                                     if (readLength == 0 || covered1 + covered2 >= minProportionOfBasesCoveredBothSides * readLength) {
+                                        // 0.8;
+                                        double minProportionOfAlignedBasesCoveredBothSides = 0;
                                         if (covered2 >= minNumberOfBasesCoveredPerSide && covered2 >= minProportionOfAlignedBasedCoveredPerSide * totalCovered
                                                 && covered1 + covered2 >= minProportionOfAlignedBasesCoveredBothSides * totalCovered) {
                                             final int min2 = intervals2.computeMin();

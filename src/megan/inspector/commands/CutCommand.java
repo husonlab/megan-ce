@@ -52,7 +52,7 @@ public class CutCommand extends ClipboardBase implements ICommand {
         return inspectorWindow != null && inspectorWindow.hasSelectedNodes();
     }
 
-    public static final String ALT_NAME = "Inspector Cut";
+    private static final String ALT_NAME = "Inspector Cut";
 
     public String getAltName() {
         return ALT_NAME;

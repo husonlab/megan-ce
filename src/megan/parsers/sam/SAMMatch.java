@@ -27,6 +27,7 @@ import megan.util.BlosumMatrix;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * a match in SAM format
@@ -39,7 +40,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     private final String pairedReadSuffix2;
     private final BlastMode mode;
 
-    public static boolean warnAboutProblems = true;
+    public static final boolean warnAboutProblems = true;
 
     private String[] tokens = new String[12];
 
@@ -277,14 +278,14 @@ public class SAMMatch implements megan.rma3.IMatch {
      */
     private int determineQueryEnd(int alignedQueryStart) {
         final Object zq = optionalFields.get("ZQ");
-        if (zq != null && zq instanceof Integer) {
+        if (zq instanceof Integer) {
             return (Integer) zq;
         }
 
         int alignedQueryLength = computeAlignedQuerySegmentLength(getSequence());
         if (mode == BlastMode.BlastX) {
             final Object df = optionalFields.get("ZF");
-            final boolean reverse = (df != null && df instanceof Integer && ((Integer) df) < 0);
+            final boolean reverse = (df instanceof Integer && ((Integer) df) < 0);
             if (reverse)
                 return alignedQueryStart - alignedQueryLength + 1;
         }
@@ -414,7 +415,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (Integer) optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -428,7 +429,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         int qEnd = 0;
         int sStart = !isReverseComplemented() ? getPos() : (getPos() + refLength - 1);
         int sEnd = 0;
-        for (int pos = 0; pos < aligned[0].length(); pos += ALIGNMENT_FOLD) {
+        for (int pos = 0; pos < Objects.requireNonNull(aligned[0]).length(); pos += ALIGNMENT_FOLD) {
             if (getSequence() != null && aligned[0] != null) {
                 int qAdd = Math.min(ALIGNMENT_FOLD, aligned[0].length() - pos);
                 String qPart = aligned[0].substring(pos, pos + qAdd);
@@ -457,7 +458,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                     sStart = sEnd - 1;
             }
         }
-        if (aligned[0] != null && qEnd > 0 && qEnd != (getAlignedQueryStart() + queryLength - 1) && warnAboutProblems)
+        if (qEnd > 0 && qEnd != getAlignedQueryStart() + queryLength - 1 && warnAboutProblems)
             System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (getAlignedQueryStart() + queryLength - 1));
         if (aligned[2] != null) {
             int sEndShouldBe = (!isReverseComplemented() ? (getPos() + refLength - 1) : getPos());
@@ -513,7 +514,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (Integer) optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -531,7 +532,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         int qEnd = 0;
         int sStart = getPos();
         int sEnd = 0;
-        for (int pos = 0; pos < aligned[0].length(); pos += ALIGNMENT_FOLD) {
+        for (int pos = 0; pos < Objects.requireNonNull(aligned[0]).length(); pos += ALIGNMENT_FOLD) {
             if (getSequence() != null && aligned[0] != null) {
                 int qAdd = Math.min(ALIGNMENT_FOLD, aligned[0].length() - pos);
                 String qPart = aligned[0].substring(pos, pos + qAdd);
@@ -554,7 +555,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 sStart = sEnd + 1;
             }
         }
-        if (aligned[0] != null && qEnd > 0 && qEnd != (getAlignedQueryStart() + queryLength - 1) && warnAboutProblems)
+        if (qEnd > 0 && qEnd != getAlignedQueryStart() + queryLength - 1 && warnAboutProblems)
             System.err.println("Internal error writing BLAST format: qEnd=" + qEnd + ", should be: " + (getAlignedQueryStart() + queryLength - 1));
         if (aligned[2] != null) {
             int sEndShouldBe = (getPos() + refLength - 1);
@@ -605,7 +606,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         final int qFrame;
         {
             final Object obj = optionalFields.get("ZF");
-            if (obj != null && obj instanceof Integer) {
+            if (obj instanceof Integer) {
                 qFrame = (Integer) obj;
             } else
                 qFrame = 0;
@@ -622,7 +623,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (Integer) optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -643,7 +644,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         int sStartPart = sStart;
         int sEnd = 0;
         int qStartPart = determineQueryStart();
-        for (int pos = 0; pos < aligned[0].length(); pos += ALIGNMENT_FOLD) {
+        for (int pos = 0; pos < Objects.requireNonNull(aligned[0]).length(); pos += ALIGNMENT_FOLD) {
             if (getSequence() != null && aligned[0] != null) {
                 int qAdd = Math.min(ALIGNMENT_FOLD, aligned[0].length() - pos);
                 String qPart = aligned[0].substring(pos, pos + qAdd);
@@ -675,7 +676,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         }
 
-        if (aligned[0] != null && qEnd > 0 && qEnd != alignedQueryEnd && warnAboutProblems) {
+        if (qEnd > 0 && qEnd != alignedQueryEnd && warnAboutProblems) {
             // System.err.println(buffer.toString());
             System.err.println("Internal error writing BLAST format: query length is incorrect");
         }
@@ -772,7 +773,7 @@ public class SAMMatch implements megan.rma3.IMatch {
      *
      * @return edit distance
      */
-    public int getEditDistance() {
+    private int getEditDistance() {
         Integer value = (Integer) getOptionalFields().get("NM");
         return value != null ? value : 0;
     }
@@ -786,7 +787,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         }
     }
 
-    public int getRawScore() {
+    private int getRawScore() {
         try {
             return (Integer) optionalFields.get("ZR");
         } catch (Exception ex) {
@@ -851,7 +852,7 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @param query trimmed query string
      * @return alignment
      */
-    public String[] computeAlignment(String query) {
+    private String[] computeAlignment(String query) {
         if (getCigar().getCigarElements().size() == 0) // not available
         {
             return new String[]{"No alignment", "mapQ=0 (not uniquely mapped)", ""};
@@ -904,7 +905,7 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @param query trimmed query string
      * @return alignment
      */
-    public String[] computeAlignmentPair(String query) {
+    private String[] computeAlignmentPair(String query) {
         if (getCigar().getCigarElements().size() == 0) // not available
         {
             return new String[]{"No alignment", "mapQ=0 (not uniquely mapped)", ""};
@@ -993,7 +994,7 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @param query query sequence
      * @return aligned query length
      */
-    public int computeAlignedQuerySegmentLength(String query) {
+    private int computeAlignedQuerySegmentLength(String query) {
         if (query.equals("*") || query.length() == 0)
             return 0;
 
@@ -1049,15 +1050,15 @@ public class SAMMatch implements megan.rma3.IMatch {
         return queryName;
     }
 
-    public void setQueryName(String queryName) {
+    private void setQueryName(String queryName) {
         this.queryName = queryName;
     }
 
-    public int getFlag() {
+    private int getFlag() {
         return flag;
     }
 
-    public void setFlag(int flag) {
+    private void setFlag(int flag) {
         this.flag = flag;
     }
 
@@ -1066,48 +1067,48 @@ public class SAMMatch implements megan.rma3.IMatch {
         return refName;
     }
 
-    public void setRefName(String refName) {
+    private void setRefName(String refName) {
         this.refName = refName;
     }
 
-    public int getPos() {
+    private int getPos() {
         return pos;
     }
 
-    public void setPos(int pos) {
+    private void setPos(int pos) {
         this.pos = pos;
     }
 
-    public int getMapQuality() {
+    private int getMapQuality() {
         return mapQuality;
     }
 
-    public void setMapQuality(int mapQuality) {
+    private void setMapQuality(int mapQuality) {
         this.mapQuality = mapQuality;
     }
 
-    public String getCigarString() {
+    private String getCigarString() {
         return cigarString;
     }
 
-    public void setCigarString(String cigarString) {
+    private void setCigarString(String cigarString) {
         this.cigarString = cigarString;
         setCigar(TextCigarCodec.getSingleton().decode(cigarString));
     }
 
-    public String getRNext() {
+    private String getRNext() {
         return RNext;
     }
 
-    public void setRNext(String RNext) {
+    private void setRNext(String RNext) {
         this.RNext = RNext;
     }
 
-    public int getPNext() {
+    private int getPNext() {
         return PNext;
     }
 
-    public void setPNext(int PNext) {
+    private void setPNext(int PNext) {
         this.PNext = PNext;
     }
 
@@ -1115,39 +1116,39 @@ public class SAMMatch implements megan.rma3.IMatch {
         return TLength;
     }
 
-    public void setTLength(int TLength) {
+    private void setTLength(int TLength) {
         this.TLength = TLength;
     }
 
-    public String getSequence() {
+    private String getSequence() {
         return sequence;
     }
 
-    public void setSequence(String sequence) {
+    private void setSequence(String sequence) {
         this.sequence = sequence;
     }
 
-    public String getQuality() {
+    private String getQuality() {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    private void setQuality(String quality) {
         this.quality = quality;
     }
 
-    public Map<String, Object> getOptionalFields() {
+    private Map<String, Object> getOptionalFields() {
         return optionalFields;
     }
 
-    public Cigar getCigar() {
+    private Cigar getCigar() {
         return cigar;
     }
 
-    public void setCigar(Cigar cigar) {
+    private void setCigar(Cigar cigar) {
         this.cigar = cigar;
     }
 
-    public boolean isReverseComplemented() {
+    private boolean isReverseComplemented() {
         return (getFlag() & 0x10) != 0;
     }
 
@@ -1170,7 +1171,7 @@ public class SAMMatch implements megan.rma3.IMatch {
 
     public int getRefLength() {
         Object obj = optionalFields.get("ZL");
-        if (obj != null && obj instanceof Integer)
+        if (obj instanceof Integer)
             return (Integer) optionalFields.get("ZL");
         else
             return 0;

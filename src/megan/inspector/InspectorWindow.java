@@ -62,20 +62,20 @@ import java.util.*;
  * Daniel Huson , 3.2006 ,  rewrote 10.2009
  */
 public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBar, Printable, IReadsProvider {
-    boolean uptodate = true;
-    final JFrame frame;
+    private boolean uptodate = true;
+    private final JFrame frame;
     private final JPanel mainPanel;
 
-    final JScrollPane scrollPane;
-    final StatusBar statusBar;
+    private final JScrollPane scrollPane;
+    private final StatusBar statusBar;
     final Director dir;
     final JTree dataTree;
-    public boolean doClear = false; // if this is set, window will be cleared on next rescan
+    private boolean doClear = false; // if this is set, window will be cleared on next rescan
 
     private boolean isDirty = false;
 
     // by default, the different types of nodes sorted alphabetically, alternative: by rank
-    boolean sortReadsAlphabetically = true;
+    private boolean sortReadsAlphabetically = true;
 
     private final CommandManager commandManager;
     private final MenuBar menuBar;
@@ -130,7 +130,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         dataTree = new JTree(rootNode);
         //dataTree.setRootVisible(false);
 
-        final String[] cNames = dir.getDocument().getActiveViewers().toArray(new String[dir.getDocument().getActiveViewers().size()]);
+        final String[] cNames = dir.getDocument().getActiveViewers().toArray(new String[0]);
         NodeBase[] rootNodes = new NodeBase[cNames.length];
         for (int i = 0; i < cNames.length; i++) {
             String cName = cNames[i];
@@ -160,11 +160,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
             }
         });
 
-        dataTree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent treeSelectionEvent) {
-                getCommandManager().updateEnableState();
-            }
-        });
+        dataTree.addTreeSelectionListener(treeSelectionEvent -> getCommandManager().updateEnableState());
 
         dataTree.setCellRenderer(new MultiLineCellRenderer());
         scrollPane = new JScrollPane(dataTree);
@@ -240,58 +236,50 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         dataTree.expandPath(new TreePath(new Object[]{rootNode, classificationRoot}));
         statusBar.setText2("Rows: " + countVisibleNodes());
 
-        loader.execute(new LoaderTask() {
-            public void run(ProgressListener progressListener) throws Exception {
-                progressListener.setMaximum(name2Count2Ids.size());
-                progressListener.setProgress(0);
-                long startTime = System.currentTimeMillis();
-                long diff = 500;
-                boolean needsFinalRefresh = false;
+        loader.execute(progressListener -> {
+            progressListener.setMaximum(name2Count2Ids.size());
+            progressListener.setProgress(0);
+            long startTime = System.currentTimeMillis();
+            long diff = 500;
+            boolean needsFinalRefresh = false;
 
-                try {
-                    for (final Triplet<String, Float, Collection<Integer>> triplet : name2Count2Ids) {
-                        final String name = triplet.getFirst();
-                        boolean isPresent = false;
-                        // first determine whether taxon already present as child of parent:
-                        Enumeration level1Enumeration = classificationRoot.children();
-                        while (!isPresent && level1Enumeration.hasMoreElements()) {
-                            NodeBase level1Node = (NodeBase) level1Enumeration.nextElement();
-                            if (level1Node instanceof TopLevelNode && level1Node.getName().equals(name)) {
-                                isPresent = true;
-                            }
+            try {
+                for (final Triplet<String, Float, Collection<Integer>> triplet : name2Count2Ids) {
+                    final String name = triplet.getFirst();
+                    boolean isPresent = false;
+                    // first determine whether taxon already present as child of parent:
+                    Enumeration level1Enumeration = classificationRoot.children();
+                    while (!isPresent && level1Enumeration.hasMoreElements()) {
+                        NodeBase level1Node = (NodeBase) level1Enumeration.nextElement();
+                        if (level1Node instanceof TopLevelNode && level1Node.getName().equals(name)) {
+                            isPresent = true;
                         }
-                        if (!isPresent) {
-                            final boolean doRefresh = (System.currentTimeMillis() - startTime > diff);
-                            if (doRefresh) {
-                                diff *= 2;
-                            }
-
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                public void run() {
-                                    try {
-                                        final NodeBase node = new TopLevelNode(name, Math.round(triplet.getSecond()), triplet.getThird(), classificationName);
-                                        classificationRoot.add(node);
-                                        if (doRefresh) {
-                                            ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                                            statusBar.setText2("Rows: " + countVisibleNodes());
-                                        }
-                                    } catch (Exception ex) {
-                                        // Basic.caught(ex);
-                                    }
-                                }
-                            });
-                            needsFinalRefresh = !doRefresh;
-                        }
-                        progressListener.incrementProgress();
                     }
-                } finally {
-                    if (needsFinalRefresh) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
+                    if (!isPresent) {
+                        final boolean doRefresh = (System.currentTimeMillis() - startTime > diff);
+                        if (doRefresh) {
+                            diff *= 2;
+                        }
+
+                        SwingUtilities.invokeAndWait(() -> {
+                            try {
+                                final NodeBase node = new TopLevelNode(name, Math.round(triplet.getSecond()), triplet.getThird(), classificationName);
+                                classificationRoot.add(node);
+                                if (doRefresh) {
+                                    ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
+                                    statusBar.setText2("Rows: " + countVisibleNodes());
+                                }
+                            } catch (Exception ex) {
+                                // Basic.caught(ex);
                             }
                         });
+                        needsFinalRefresh = !doRefresh;
                     }
+                    progressListener.incrementProgress();
+                }
+            } finally {
+                if (needsFinalRefresh) {
+                    SwingUtilities.invokeLater(() -> ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot));
                 }
             }
         });
@@ -319,29 +307,25 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         }
         dataTree.expandPath(new TreePath(classificationRoot));
 
-        loader.execute(new LoaderTask() {
-            public void run(ProgressListener progressListener) throws Exception {
-                progressListener.setMaximum(-1);
+        loader.execute(progressListener -> {
+            progressListener.setMaximum(-1);
 
-                boolean isPresent = false;
-                // first determine whether taxon already present as child of parent:
-                Enumeration level1Enumeration = classificationRoot.children();
-                while (!isPresent && level1Enumeration.hasMoreElements()) {
-                    NodeBase level1Node = (NodeBase) level1Enumeration.nextElement();
-                    if (level1Node instanceof TopLevelNode && level1Node.getName().equals(name)) {
-                        isPresent = true;
-                    }
+            boolean isPresent = false;
+            // first determine whether taxon already present as child of parent:
+            Enumeration level1Enumeration = classificationRoot.children();
+            while (!isPresent && level1Enumeration.hasMoreElements()) {
+                NodeBase level1Node = (NodeBase) level1Enumeration.nextElement();
+                if (level1Node instanceof TopLevelNode && level1Node.getName().equals(name)) {
+                    isPresent = true;
                 }
-                if (!isPresent) {
-                    final int classId = (Integer) key;
-                    final int size = dir.getDocument().getConnector().getClassSize(classificationName, classId);
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            classificationRoot.add(new TopLevelNode(name, size, classId, classificationName));
-                            ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                        }
-                    });
-                }
+            }
+            if (!isPresent) {
+                final int classId = (Integer) key;
+                final int size = dir.getDocument().getConnector().getClassSize(classificationName, classId);
+                SwingUtilities.invokeAndWait(() -> {
+                    classificationRoot.add(new TopLevelNode(name, size, classId, classificationName));
+                    ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
+                });
             }
         });
     }
@@ -366,11 +350,9 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         final ReadHeadLineNode node = new ReadHeadLineNode(readBlock);
 
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    classificationRoot.add(node);
-                    ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
-                }
+            SwingUtilities.invokeAndWait(() -> {
+                classificationRoot.add(node);
+                ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(classificationRoot);
             });
         } catch (InterruptedException | InvocationTargetException e) {
             Basic.caught(e);
@@ -383,62 +365,56 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param parent
      */
     public void addChildren(final TopLevelNode parent) {
-        loader.execute(new LoaderTask() {
-            public void run(ProgressListener progressListener) throws Exception {
-                long lastRefreshTime = System.currentTimeMillis();
-                long diff = 10;
-                boolean needsFinalRefresh = false;
+        loader.execute(progressListener -> {
+            long lastRefreshTime = System.currentTimeMillis();
+            long diff = 10;
+            boolean needsFinalRefresh = false;
 
-                try {
-                    progressListener.setMaximum((int) parent.getRank());
-                    progressListener.setProgress(0);
+            try {
+                progressListener.setMaximum((int) parent.getRank());
+                progressListener.setProgress(0);
 
-                    IConnector connector = dir.getDocument().getConnector();
+                IConnector connector = dir.getDocument().getConnector();
 
-                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(parent.getClassificationName(), parent.getClassIds(), 0, 100000, true, true)) {
-                        while (it.hasNext()) {
-                            IReadBlock readBlock = it.next();
-                            if (readBlock != null) {
-                                final ReadHeadLineNode node = new ReadHeadLineNode(readBlock);
-                                final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
+                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(parent.getClassificationName(), parent.getClassIds(), 0, 100000, true, true)) {
+                    while (it.hasNext()) {
+                        IReadBlock readBlock = it.next();
+                        if (readBlock != null) {
+                            final ReadHeadLineNode node = new ReadHeadLineNode(readBlock);
+                            final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
+                            if (doRefresh) {
+                                if (diff == 10)
+                                    diff = 50;
+                                else
+                                    diff *= 2;
+                            }
+                            SwingUtilities.invokeAndWait(() -> {
+                                parent.add(node);
                                 if (doRefresh) {
-                                    if (diff == 10)
-                                        diff = 50;
-                                    else
-                                        diff *= 2;
+                                    if (sortReadsAlphabetically)
+                                        sortChildrenAlphabetically(parent);
+                                    ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
+                                    statusBar.setText2("Rows: " + countVisibleNodes());
                                 }
-                                SwingUtilities.invokeAndWait(new Runnable() {
-                                    public void run() {
-                                        parent.add(node);
-                                        if (doRefresh) {
-                                            if (sortReadsAlphabetically)
-                                                sortChildrenAlphabetically(parent);
-                                            ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                                            statusBar.setText2("Rows: " + countVisibleNodes());
-                                        }
-                                    }
-                                });
-                                if (doRefresh)
-                                    lastRefreshTime = System.currentTimeMillis();
-                                needsFinalRefresh = !doRefresh;
-                            }
-                            progressListener.incrementProgress();
+                            });
+                            if (doRefresh)
+                                lastRefreshTime = System.currentTimeMillis();
+                            needsFinalRefresh = !doRefresh;
                         }
+                        progressListener.incrementProgress();
                     }
-                } catch (CanceledException ex) {
-                    parent.setCompleted(false);
-                    throw ex;
-                } finally {
-                    if (needsFinalRefresh) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                if (sortReadsAlphabetically)
-                                    sortChildrenAlphabetically(parent);
-                                ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                                statusBar.setText2("Rows: " + countVisibleNodes());
-                            }
-                        });
-                    }
+                }
+            } catch (CanceledException ex) {
+                parent.setCompleted(false);
+                throw ex;
+            } finally {
+                if (needsFinalRefresh) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (sortReadsAlphabetically)
+                            sortChildrenAlphabetically(parent);
+                        ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
+                        statusBar.setText2("Rows: " + countVisibleNodes());
+                    });
                 }
             }
         });
@@ -450,108 +426,98 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param parent
      */
     public void addChildren(final ReadHeadLineNode parent, final String classificationName) {
-        loader.execute(new LoaderTask() {
-            public void run(ProgressListener progressListener) throws Exception {
-                boolean needsFinalRefresh = true; // true, because we add data node before entering loop
+        loader.execute(progressListener -> {
+            boolean needsFinalRefresh = true; // true, because we add data node before entering loop
 
-                try {
-                    progressListener.setMaximum((int) parent.getRank());
-                    progressListener.setProgress(0);
+            try {
+                progressListener.setMaximum((int) parent.getRank());
+                progressListener.setProgress(0);
 
-                    IConnector connector = dir.getDocument().getConnector();
+                IConnector connector = dir.getDocument().getConnector();
 
-                    long uId = parent.getUId();
-                    IReadBlock readBlock;
-                    try (IReadBlockGetter readBlockGetter = connector.getReadBlockGetter(0, 100000, true, true)) {
-                        readBlock = readBlockGetter.getReadBlock(uId);
+                long uId = parent.getUId();
+                IReadBlock readBlock;
+                try (IReadBlockGetter readBlockGetter = connector.getReadBlockGetter(0, 100000, true, true)) {
+                    readBlock = readBlockGetter.getReadBlock(uId);
+                }
+                final String header = readBlock.getReadHeader();
+                final String sequence = readBlock.getReadSequence();
+                int length = readBlock.getReadLength();
+                if (length == 0 && sequence != null)
+                    length = Basic.getNumberOfNonSpaceCharacters(sequence);
+                parent.setCompleted(true);
+                final ReadDataHeadLineNode readDataHeadLineNode = new ReadDataHeadLineNode("DATA", length, readBlock.getComplexity(), readBlock.getReadWeight(), header + (sequence != null ? "\n" + sequence : ""));
+
+                // add data node
+                SwingUtilities.invokeAndWait(() -> parent.add(readDataHeadLineNode));
+
+                long lastRefreshTime = System.currentTimeMillis();
+                long diff = 10;
+
+                final Document doc = dir.getDocument();
+                final BitSet activeMatches = new BitSet();
+                ActiveMatches.compute(doc.getMinScore(), doc.isLongReads() ? 100 : doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
+
+                for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+                    IMatchBlock matchBlock = readBlock.getMatchBlock(m);
+                    final StringBuilder buf = new StringBuilder();
+                    final int taxId = matchBlock.getTaxonId();
+
+                    {
+                        String taxonName = TaxonomyData.getName2IdMap().get(taxId);
+                        if (taxonName == null) {
+                            if (taxId > 0)
+                                buf.append(String.format("%d;", taxId));
+                            else
+                                buf.append("?;");
+                        } else
+                            buf.append(taxonName).append(";");
                     }
-                    final String header = readBlock.getReadHeader();
-                    final String sequence = readBlock.getReadSequence();
-                    int length = readBlock.getReadLength();
-                    if (length == 0 && sequence != null)
-                        length = Basic.getNumberOfNonSpaceCharacters(sequence);
-                    parent.setCompleted(true);
-                    final ReadDataHeadLineNode readDataHeadLineNode = new ReadDataHeadLineNode("DATA", length, readBlock.getComplexity(), readBlock.getReadWeight(), header + (sequence != null ? "\n" + sequence : ""));
 
-                    // add data node
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            parent.add(readDataHeadLineNode);
+                    for (String cName : doc.getActiveViewers()) {
+                        if (!cName.equals(Classification.Taxonomy)) {
+                            final int id = matchBlock.getId(cName);
+                            if (id > 0) {
+                                String label = ClassificationManager.get(cName, true).getName2IdMap().get(id);
+                                if (label != null) {
+                                    label = Basic.abbreviateDotDotDot(label, 50);
+                                    buf.append(" ").append(label).append(";");
+                                }
+                            }
+                        }
+                    }
+
+                    final MatchHeadLineNode node = new MatchHeadLineNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(), activeMatches.get(m), matchBlock.getUId(), taxId, matchBlock.getText());
+                    // add match node
+
+                    final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
+                    if (doRefresh) {
+                        if (diff == 10)
+                            diff = 50;
+                        else
+                            diff *= 2;
+                    }
+                    SwingUtilities.invokeAndWait(() -> {
+                        parent.add(node);
+                        if (doRefresh) {
+                            ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
+                            statusBar.setText2("Rows: " + countVisibleNodes());
                         }
                     });
-
-                    long lastRefreshTime = System.currentTimeMillis();
-                    long diff = 10;
-
-                    final Document doc = dir.getDocument();
-                    final BitSet activeMatches = new BitSet();
-                    ActiveMatches.compute(doc.getMinScore(), doc.isLongReads() ? 100 : doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
-
-                    for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-                        IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-                        final StringBuilder buf = new StringBuilder();
-                        final int taxId = matchBlock.getTaxonId();
-
-                        {
-                            String taxonName = TaxonomyData.getName2IdMap().get(taxId);
-                            if (taxonName == null) {
-                                if (taxId > 0)
-                                    buf.append(String.format("%d;", taxId));
-                                else
-                                    buf.append("?;");
-                            } else
-                                buf.append(taxonName).append(";");
-                        }
-
-                        for (String cName : doc.getActiveViewers()) {
-                            if (!cName.equals(Classification.Taxonomy)) {
-                                final int id = matchBlock.getId(cName);
-                                if (id > 0) {
-                                    String label = ClassificationManager.get(cName, true).getName2IdMap().get(id);
-                                    if (label != null) {
-                                        label = Basic.abbreviateDotDotDot(label, 50);
-                                        buf.append(" ").append(label).append(";");
-                                    }
-                                }
-                            }
-                        }
-
-                        final MatchHeadLineNode node = new MatchHeadLineNode(buf.toString(), matchBlock.getBitScore(), matchBlock.isIgnore(), activeMatches.get(m), matchBlock.getUId(), taxId, matchBlock.getText());
-                        // add match node
-
-                        final boolean doRefresh = (System.currentTimeMillis() - lastRefreshTime > diff);
-                        if (doRefresh) {
-                            if (diff == 10)
-                                diff = 50;
-                            else
-                                diff *= 2;
-                        }
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            public void run() {
-                                parent.add(node);
-                                if (doRefresh) {
-                                    ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                                    statusBar.setText2("Rows: " + countVisibleNodes());
-                                }
-                            }
-                        });
-                        if (doRefresh)
-                            lastRefreshTime = System.currentTimeMillis();
-                        needsFinalRefresh = !doRefresh;
-                        progressListener.incrementProgress();
-                    }
-                } catch (CanceledException ex) {
-                    parent.setCompleted(false);
-                    throw ex;
-                } finally {
-                    if (needsFinalRefresh) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                                statusBar.setText2("Rows: " + countVisibleNodes());
-                            }
-                        });
-                    }
+                    if (doRefresh)
+                        lastRefreshTime = System.currentTimeMillis();
+                    needsFinalRefresh = !doRefresh;
+                    progressListener.incrementProgress();
+                }
+            } catch (CanceledException ex) {
+                parent.setCompleted(false);
+                throw ex;
+            } finally {
+                if (needsFinalRefresh) {
+                    SwingUtilities.invokeLater(() -> {
+                        ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
+                        statusBar.setText2("Rows: " + countVisibleNodes());
+                    });
                 }
             }
         });
@@ -572,17 +538,13 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param parent
      */
     public void addChildren(final MatchHeadLineNode parent) {
-        loader.execute(new LoaderTask() {
-            public void run(ProgressListener progressListener) throws Exception {
-                progressListener.setMaximum(-1);
-                final MatchTextNode node = new MatchTextNode(parent.getMatchText() == null ? "Unknown" : parent.getMatchText());
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        parent.add(node);
-                        ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
-                    }
-                });
-            }
+        loader.execute(progressListener -> {
+            progressListener.setMaximum(-1);
+            final MatchTextNode node = new MatchTextNode(parent.getMatchText() == null ? "Unknown" : parent.getMatchText());
+            SwingUtilities.invokeAndWait(() -> {
+                parent.add(node);
+                ((DefaultTreeModel) dataTree.getModel()).nodeStructureChanged(parent);
+            });
         });
     }
 
@@ -609,14 +571,12 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param node
      */
     private void sortChildrenAlphabetically(NodeBase node) {
-        SortedSet<NodeBase> children = new TreeSet<>(new Comparator<NodeBase>() {
-            public int compare(NodeBase n1, NodeBase n2) {
-                int value = n1.getName().compareTo(n2.getName());
-                if (value == 0)
-                    return String.format("%5d", n1.getId()).compareTo(String.format("%5d", n2.getId()));
-                else
-                    return value;
-            }
+        SortedSet<NodeBase> children = new TreeSet<>((n1, n2) -> {
+            int value = n1.getName().compareTo(n2.getName());
+            if (value == 0)
+                return String.format("%5d", n1.getId()).compareTo(String.format("%5d", n2.getId()));
+            else
+                return value;
         });
         for (int i = 0; i < node.getChildCount(); i++) {
             NodeBase child = (NodeBase) node.getChildAt(i);
@@ -827,7 +787,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "Inspector - " + dir.getDocument().getTitle();
 
         if (isDirty())
@@ -850,7 +810,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param path
      * @return read head node or null
      */
-    public ReadHeadLineNode getReadHeadLineNodeFromPath(TreePath path) {
+    private ReadHeadLineNode getReadHeadLineNodeFromPath(TreePath path) {
         Object[] components = path.getPath();
         for (Object component : components) {
             if (component instanceof ReadHeadLineNode)
@@ -865,7 +825,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param path
      * @return read head node or null
      */
-    public MatchHeadLineNode getMatchHeadLineNodeFromPath(TreePath path) {
+    private MatchHeadLineNode getMatchHeadLineNodeFromPath(TreePath path) {
         Object[] components = path.getPath();
         for (Object component : components) {
             if (component instanceof MatchHeadLineNode)
@@ -946,7 +906,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         return list;
     }
 
-    public boolean isDirty() {
+    private boolean isDirty() {
         return isDirty;
     }
 
@@ -1021,7 +981,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
             double scale_x = paper_w / image_w;
             double scale_y = paper_h / image_h;
-            double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+            double scale = Math.min(scale_x, scale_y);
 
             double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
             double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;
@@ -1111,14 +1071,14 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
         return list;
     }
 
-    public Director getDir() {
+    private Director getDir() {
         return dir;
     }
 }
 
 class MyTreeListener implements TreeWillExpandListener, TreeExpansionListener {
-    final Director dir;
-    final InspectorWindow inspectorWindow;
+    private final Director dir;
+    private final InspectorWindow inspectorWindow;
 
     MyTreeListener(Director dir, InspectorWindow inspectorWindow) {
         this.dir = dir;
@@ -1142,7 +1102,7 @@ class MyTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     public void treeCollapsed(TreeExpansionEvent event) {
         final TreePath path = event.getPath();
         final NodeBase node = (NodeBase) path.getLastPathComponent();
-        if (!inspectorWindow.getClassification2RootNode().values().contains(node)) {
+        if (!inspectorWindow.getClassification2RootNode().containsValue(node)) {
             //node.removeAllChildren();
             DefaultTreeModel model = (DefaultTreeModel) inspectorWindow.dataTree.getModel();
             model.nodeStructureChanged(node);

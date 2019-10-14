@@ -37,7 +37,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
     private final BlockingQueue<Pair<byte[], byte[]>> queue;
     private final ExecutorService executorService;
 
-    long count = 0;
+    private long count = 0;
     private Pair<byte[], byte[]> next = null;
 
     /**
@@ -54,13 +54,11 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
 
         // start a thread that loads queue:
         executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
-            public void run() {
-                try {
-                    daaParser.getAllAlignmentsSAMFormat(maxMatchesPerRead, queue, parseLongReads);
-                } catch (IOException e) {
-                    Basic.caught(e);
-                }
+        executorService.submit(() -> {
+            try {
+                daaParser.getAllAlignmentsSAMFormat(maxMatchesPerRead, queue, parseLongReads);
+            } catch (IOException e) {
+                Basic.caught(e);
             }
         });
     }

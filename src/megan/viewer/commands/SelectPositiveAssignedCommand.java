@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * selection command
  * Daniel Huson, 7.2018
  */
-public class SelectPositiveAssignedCommand extends CommandBase implements ICommand {
+class SelectPositiveAssignedCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

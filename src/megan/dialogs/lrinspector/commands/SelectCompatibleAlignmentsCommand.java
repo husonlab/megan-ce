@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * * select all alignments that are compatible with the assignment of the read
  * * Daniel Huson, 4.2017
  */
-public class SelectCompatibleAlignmentsCommand extends CommandBase implements ICommand {
+class SelectCompatibleAlignmentsCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

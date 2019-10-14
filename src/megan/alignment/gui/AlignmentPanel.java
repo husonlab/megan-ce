@@ -34,6 +34,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 import java.util.SortedSet;
 
 /**
@@ -45,8 +46,8 @@ public class AlignmentPanel extends BasePanel {
     private IColorScheme colorScheme = new ColorSchemeText();
     private boolean showColors = true;
     private boolean showUnalignedChars = false;
-    protected final AnimatedRectangle selectionRectangle;
-    protected final ToolTipHelper toolTipHelper;
+    private final AnimatedRectangle selectionRectangle;
+    private final ToolTipHelper toolTipHelper;
 
     private boolean colorMatchesVsReference = false;
     private boolean colorMismatchesVsReference = true;
@@ -62,11 +63,7 @@ public class AlignmentPanel extends BasePanel {
      */
     public AlignmentPanel(final SelectedBlock selectedBlock) {
         super(selectedBlock);
-        selectedBlock.addSelectionListener(new ISelectionListener() {
-            public void doSelectionChanged(boolean selected, int minRow, int minCol, int maxRow, int maxCol) {
-                repaint();
-            }
-        });
+        selectedBlock.addSelectionListener((selected, minRow, minCol, maxRow, maxCol) -> repaint());
         toolTipHelper = new ToolTipHelper(this) {
             public String computeToolTip(Point mousePosition) {
                 int read = alignment.getHitRead(getRow(mousePosition), getCol(mousePosition));
@@ -126,7 +123,7 @@ public class AlignmentPanel extends BasePanel {
             super.paint(g);
             paintSequences(g);
             paintSelection(g);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -135,7 +132,7 @@ public class AlignmentPanel extends BasePanel {
      *
      * @param g0 the graphics context of the sequence panel
      */
-    public void paintSequences(Graphics g0) {
+    private void paintSequences(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         Rectangle visibleRect = getVisibleRect();
         // add preceeding column so that we see their letters, even when only partially
@@ -171,7 +168,7 @@ public class AlignmentPanel extends BasePanel {
             if ((!alignment.isTranslate() && cellWidth < 1) || cellWidth < 0.5) {    // very small, draw gray bars
                 minVisibleCol = 0;
                 g.setColor(Color.GRAY);
-                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().size()]);
+                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToOriginalColumns().toArray(new Integer[0]);
                 for (int row = minVisibleRow; row <= maxVisibleRow; row++) {
                     for (int read : rowCompressor.getCompressedRow2Reads(row)) {
                         Lane lane = alignment.getLane(read);
@@ -215,7 +212,7 @@ public class AlignmentPanel extends BasePanel {
                 if (showColors && colorScheme != null) {          // color scheme selected?
                     boolean notTiny = (cellHeight > 6);
                     final int inset = notTiny ? 1 : 0;
-                    Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+                    Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
                     g.setColor(Color.WHITE);
                     for (int row = minVisibleRow; row <= maxVisibleRow; row++) {
                         for (int read : rowCompressor.getCompressedRow2Reads(row)) {
@@ -238,7 +235,7 @@ public class AlignmentPanel extends BasePanel {
                                         g.draw(drawLine);
                                     }
 
-                                    char ch = lane.charAt(trueCol);
+                                    char ch = Objects.requireNonNull(lane).charAt(trueCol);
 
                                     if (ch != 0) {
                                         if (ch != ' ') {
@@ -268,7 +265,7 @@ public class AlignmentPanel extends BasePanel {
 
             if (sequenceFont.getSize() > 6) {    // font is big enough, draw text
                 g.setColor(Color.BLACK);
-                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+                Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
                 for (int row = minVisibleRow; row <= maxVisibleRow; row++) {
                     for (int read : rowCompressor.getCompressedRow2Reads(row)) {
                         int jc = 0;
@@ -339,7 +336,7 @@ public class AlignmentPanel extends BasePanel {
      *
      * @param g0
      */
-    public void paintSelection(Graphics g0) {
+    private void paintSelection(Graphics g0) {
         if (selectedBlock.isSelected()) {
             Graphics2D g = (Graphics2D) g0;
             double xMin = Math.min(getX(selectedBlock.getFirstCol()), getSize().width);
@@ -384,7 +381,7 @@ public class AlignmentPanel extends BasePanel {
         }
     }
 
-    public IColorScheme getColorScheme() {
+    private IColorScheme getColorScheme() {
         return colorScheme;
     }
 
@@ -462,12 +459,9 @@ public class AlignmentPanel extends BasePanel {
 
 
     class MyMouseListener extends MouseAdapter implements MouseListener, MouseMotionListener {
-        private final int inClick = 1;
         private final int inMove = 2;
         private final int inRubberband = 3;
         private final int inScrollByMouse = 4;
-
-        private boolean shiftDown = false;
 
         private boolean stillDownWithoutMoving = false;
 
@@ -477,6 +471,7 @@ public class AlignmentPanel extends BasePanel {
         @Override
         public void mouseClicked(MouseEvent me) {
             super.mouseClicked(me);
+            int inClick = 1;
             current = inClick;
 
             int row = getRow(me.getPoint());
@@ -517,7 +512,7 @@ public class AlignmentPanel extends BasePanel {
         public void mousePressed(MouseEvent me) {
             super.mousePressed(me);
             mouseDown = me.getPoint();
-            shiftDown = me.isShiftDown();
+            boolean shiftDown = me.isShiftDown();
             requestFocusInWindow();
 
             if (me.isAltDown() || me.isShiftDown()) {
@@ -535,7 +530,7 @@ public class AlignmentPanel extends BasePanel {
                             synchronized (this) {
                                 wait(500);
                             }
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                         }
                         if (stillDownWithoutMoving) {
                             current = inRubberband;

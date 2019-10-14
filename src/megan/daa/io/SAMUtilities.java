@@ -106,7 +106,7 @@ public class SAMUtilities {
      * @param editTranscript
      * @return alignment, cigar and MD string
      */
-    public static byte[][] computeCigarAndAlignedQueryAndMD(byte[] queryDNA, int start, byte[] queryAlphabet, PackedTranscript editTranscript) {
+    private static byte[][] computeCigarAndAlignedQueryAndMD(byte[] queryDNA, int start, byte[] queryAlphabet, PackedTranscript editTranscript) {
         final ByteOutputBuffer alignedQueryBuf = new ByteOutputBuffer();
         //final ByteOutputBuffer alignedReferenceBuf=new ByteOutputBuffer();
         final ByteOutputBuffer cigarBuf = new ByteOutputBuffer();

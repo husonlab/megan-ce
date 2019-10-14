@@ -36,7 +36,7 @@ import java.awt.event.KeyEvent;
  * zoom to fit
  * Daniel Huson, 6.2010
  */
-public class ZoomToFitCommand extends CommandBase implements ICommand {
+class ZoomToFitCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *

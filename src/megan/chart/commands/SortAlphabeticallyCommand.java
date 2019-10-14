@@ -35,7 +35,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 
-public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
+class SortAlphabeticallyCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set sort={up|down|alphabetically|alphaBackward|enabled};";
     }
@@ -47,22 +47,19 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
 
         final ChartViewer chartViewer = (ChartViewer) getViewer();
         final LabelsJList list = chartViewer.getActiveLabelsJList();
-        final LinkedList<String> disabled = new LinkedList<>();
-        disabled.addAll(list.getDisabledLabels());
+        final LinkedList<String> disabled = new LinkedList<>(list.getDisabledLabels());
 
         switch (which.toLowerCase()) {
             case "up":
             case "down": {
                 final int direction = (which.equalsIgnoreCase("up") ? -1 : 1);
 
-                final SortedSet<Pair<Number, String>> sorted = new TreeSet<>(new Comparator<Pair<Number, String>>() {
-                    public int compare(Pair<Number, String> pair1, Pair<Number, String> pair2) {
-                        if (pair1.get1().doubleValue() > pair2.get1().doubleValue())
-                            return -direction;
-                        if (pair1.get1().doubleValue() < pair2.get1().doubleValue())
-                            return direction;
-                        return pair1.get2().compareTo(pair2.get2());
-                    }
+                final SortedSet<Pair<Number, String>> sorted = new TreeSet<>((pair1, pair2) -> {
+                    if (pair1.get1().doubleValue() > pair2.get1().doubleValue())
+                        return -direction;
+                    if (pair1.get1().doubleValue() < pair2.get1().doubleValue())
+                        return direction;
+                    return pair1.get2().compareTo(pair2.get2());
                 });
                 if (list == chartViewer.getSeriesList()) {
                     final IData chartData = chartViewer.getChartData();
@@ -98,28 +95,21 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
             case "alphabetically":
             case "alphabackward": {
                 final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
-                final SortedSet<String> sorted = new TreeSet<>(new Comparator<String>() {
-                    public int compare(String s, String s1) {
-                        return direction * s.compareToIgnoreCase(s1);
-                    }
-                });
+                final SortedSet<String> sorted = new TreeSet<>((s, s1) -> direction * s.compareToIgnoreCase(s1));
                 sorted.addAll(list.getAllLabels());
                 list.sync(sorted, list.getLabel2ToolTips(), true);
                 break;
             }
             case "enabled": {
-                final String[] array = list.getAllLabels().toArray(new String[list.getAllLabels().size()]);
+                final String[] array = list.getAllLabels().toArray(new String[0]);
                 final Set<String> disabledSet = new HashSet<>(disabled);
-                Arrays.sort(array, new Comparator<String>() {
-                    @Override
-                    public int compare(String a, String b) {
-                        if (!disabledSet.contains(a) && disabledSet.contains(b))
-                            return -1;
-                        else if (disabledSet.contains(a) && !disabledSet.contains(b))
-                            return 1;
-                        else
-                            return 0;
-                    }
+                Arrays.sort(array, (a, b) -> {
+                    if (!disabledSet.contains(a) && disabledSet.contains(b))
+                        return -1;
+                    else if (disabledSet.contains(a) && !disabledSet.contains(b))
+                        return 1;
+                    else
+                        return 0;
                 });
                 list.sync(Arrays.asList(array), list.getLabel2ToolTips(), true);
                 break;

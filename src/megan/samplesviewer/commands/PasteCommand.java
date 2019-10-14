@@ -40,17 +40,14 @@ public class PasteCommand extends ClipboardBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                SamplesViewer samplesViewer = (SamplesViewer) getViewer();
-                samplesViewer.getSamplesTableView().pasteClipboard();
-                samplesViewer.getSamplesTableView().syncFromViewToDocument();
-                samplesViewer.getCommandManager().updateEnableStateFXItems();
-                if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTableView().getUpdate() > 0) {
-                    samplesViewer.getDocument().setDirty(true);
-                    samplesViewer.setWindowTitle();
-                }
+        Platform.runLater(() -> {
+            SamplesViewer samplesViewer = (SamplesViewer) getViewer();
+            samplesViewer.getSamplesTableView().pasteClipboard();
+            samplesViewer.getSamplesTableView().syncFromViewToDocument();
+            samplesViewer.getCommandManager().updateEnableStateFXItems();
+            if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTableView().getUpdate() > 0) {
+                samplesViewer.getDocument().setDirty(true);
+                samplesViewer.setWindowTitle();
             }
         });
     }

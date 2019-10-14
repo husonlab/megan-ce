@@ -40,7 +40,7 @@ import java.util.Map;
  * export reference sequence to reads mapping
  * Daniel Huson, 1.2013
  */
-public class CSVExportReference2Read {
+class CSVExportReference2Read {
     /**
      * export reference sequence to reads mapping
      *
@@ -77,11 +77,7 @@ public class CSVExportReference2Read {
                             if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                                     (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                                 String reference = Basic.getFirstLine(matchBlock.getText());
-                                List<String> list = reference2reads.get(reference);
-                                if (list == null) {
-                                    list = new LinkedList<>();
-                                    reference2reads.put(reference, list);
-                                }
+                                List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
                                 list.add(readBlock.getReadName());
                                 if (eachReadOnceOnly)
                                     break;
@@ -106,11 +102,7 @@ public class CSVExportReference2Read {
                                     IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
                                         String reference = Basic.getFirstLine(matchBlock.getText());
-                                        List<String> list = reference2reads.get(reference);
-                                        if (list == null) {
-                                            list = new LinkedList<>();
-                                            reference2reads.put(reference, list);
-                                        }
+                                        List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
                                         list.add(readBlock.getReadName());
                                         if (eachReadOnceOnly)
                                             break;

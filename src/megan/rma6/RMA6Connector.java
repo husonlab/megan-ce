@@ -209,9 +209,9 @@ public class RMA6Connector implements IConnector {
 
     @Override
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
-        final Map<String, byte[]> label2data = new HashMap<>();
+        final Map<String, byte[]> label2data;
         try (RMA6File rma6File = new RMA6File(fileName, RMA6File.READ_ONLY)) {
-            label2data.putAll(rma6File.readAuxBlocks());
+            label2data = new HashMap<>(rma6File.readAuxBlocks());
         }
         return label2data;
     }

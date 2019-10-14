@@ -37,7 +37,7 @@ import java.util.Optional;
  * draw selected nodes as circles
  * Daniel Huson, 3.2013
  */
-public class SetSampleShapeCommand extends CommandBase implements ICommand {
+class SetSampleShapeCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
@@ -124,19 +124,14 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
                 nodeShape = NodeShape.Oval;
             final NodeShape nodeShape1 = nodeShape;
 
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    final ChoiceDialog<NodeShape> dialog = new ChoiceDialog<>(nodeShape1, NodeShape.values());
-                    dialog.setTitle("MEGAN choice");
-                    dialog.setHeaderText("Choose shape to represent sample(s)");
-                    dialog.setContentText("Shape:");
+            Runnable runnable = () -> {
+                final ChoiceDialog<NodeShape> dialog = new ChoiceDialog<>(nodeShape1, NodeShape.values());
+                dialog.setTitle("MEGAN choice");
+                dialog.setHeaderText("Choose shape to represent sample(s)");
+                dialog.setContentText("Shape:");
 
-                    final Optional<NodeShape> result = dialog.showAndWait();
-                    if (result.isPresent()) {
-                        execute("set nodeShape=" + result.get() + " sample='" + Basic.toString(selected, "' '") + "';");
-                    }
-                }
+                final Optional<NodeShape> result = dialog.showAndWait();
+                result.ifPresent(shape -> execute("set nodeShape=" + shape + " sample='" + Basic.toString(selected, "' '") + "';"));
             };
             if (Platform.isFxApplicationThread())
                 runnable.run();

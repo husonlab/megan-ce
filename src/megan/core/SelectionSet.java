@@ -29,9 +29,7 @@ public class SelectionSet {
 
     private final Set<String> selectedLabels = new HashSet<>();
     private final List<SelectionListener> selectionListenerList = new LinkedList<>();
-    private final SelectionListener listener = new SelectionListener() {
-        public void changed(Collection<String> labels, boolean selected) {
-        }
+    private final SelectionListener listener = (labels, selected) -> {
     };
 
     /**
@@ -99,8 +97,7 @@ public class SelectionSet {
         if (!selectionIsChanging) {
             selectionIsChanging = true;
             try {
-                Set<String> selected = new HashSet<>();
-                selected.addAll(this.selectedLabels);
+                Set<String> selected = new HashSet<>(this.selectedLabels);
                 this.selectedLabels.clear();
                 fireChanged(selected, false);
             } finally {
@@ -113,7 +110,7 @@ public class SelectionSet {
         return selectedLabels.size();
     }
 
-    public void fireChanged(java.util.Collection<String> labels, boolean select) {
+    private void fireChanged(java.util.Collection<String> labels, boolean select) {
         for (SelectionListener selectionListener : selectionListenerList) {
             selectionListener.changed(labels, select);
         }

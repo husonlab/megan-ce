@@ -28,7 +28,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetMaxNodeHeightCommand extends CommandBase implements ICommand {
+class SetMaxNodeHeightCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set maxNodeHeight=<number>;";
     }

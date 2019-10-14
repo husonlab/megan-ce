@@ -243,7 +243,7 @@ public class OverlapGraphViewer {
 
         CommandManager commandManager = new CommandManager(dir, graphView, new String[]{"megan.commands"});
 
-        commandManager.addCommands(this, Collections.singletonList((ICommand) (new SelectFromPreviousWindowCommand())), true);
+        commandManager.addCommands(this, Collections.singletonList(new SelectFromPreviousWindowCommand()), true);
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 

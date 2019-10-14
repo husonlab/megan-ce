@@ -95,7 +95,7 @@ public class LegendPanel extends JPanel {
      *
      * @param gc
      */
-    protected void draw(Graphics2D gc, Dimension size) {
+    void draw(Graphics2D gc, Dimension size) {
         if (gc != null && doc.getNumberOfSamples() > 1) {
             boolean vertical = viewer.getShowLegend().equals("vertical");
 
@@ -183,7 +183,7 @@ public class LegendPanel extends JPanel {
         this.fontColor = fontColor;
     }
 
-    public Color getFontColor() {
+    private Color getFontColor() {
         return fontColor;
     }
 

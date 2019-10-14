@@ -43,6 +43,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class SaveCommand extends CommandBase implements ICommand {
@@ -106,7 +107,7 @@ public class SaveCommand extends CommandBase implements ICommand {
             System.err.println("done");
             MeganProperties.addRecentFile(file);
         } catch (IOException ex) {
-            NotificationsInSwing.showError(viewer.getFrame(), "Save file '" + fileName + "'failed: " + ex, Integer.MAX_VALUE);
+            NotificationsInSwing.showError(Objects.requireNonNull(viewer).getFrame(), "Save file '" + fileName + "'failed: " + ex, Integer.MAX_VALUE);
             throw ex;
         }
     }

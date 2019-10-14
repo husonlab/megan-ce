@@ -147,7 +147,7 @@ public class DataJTable {
         return jTable;
     }
 
-    public Font getFont() {
+    private Font getFont() {
         return jTable.getFont();
     }
 
@@ -162,7 +162,7 @@ public class DataJTable {
         }
     }
 
-    public void selectColumn(int col, boolean select) {
+    private void selectColumn(int col, boolean select) {
         if (col >= 0) {
             for (int row = 0; row < tableModel.getRowCount(); row++) {
                 final DataNode dataNode = (DataNode) tableModel.getValueAt(row, col);
@@ -211,7 +211,7 @@ public class DataJTable {
     }
 
 
-    public boolean isEnabled(int modelRow) {
+    private boolean isEnabled(int modelRow) {
         Object sampleName = jTable.getModel().getValueAt(modelRow, 0);
         return sampleName != null && !disabledSamples.contains(sampleName.toString());
     }
@@ -244,8 +244,7 @@ public class DataJTable {
         ArrayList<String> selectedSamples = new ArrayList<>(tableModel.getRowCount() * tableModel.getColumnCount());
         int[] columnsInView = getColumnsInView();
         for (int row = 0; row < tableModel.getRowCount(); row++) {
-            for (int i = 0; i < columnsInView.length; i++) {
-                int col = columnsInView[i];
+            for (int col : columnsInView) {
                 final DataNode dataNode = (DataNode) tableModel.getValueAt(row, col);
                 if (dataNode != null && dataNode.isSelected()) {
                     selectedSamples.add(dataNode.getName());
@@ -255,7 +254,7 @@ public class DataJTable {
         return selectedSamples;
     }
 
-    public int[] getColumnsInView() {
+    private int[] getColumnsInView() {
         int[] result = new int[jTable.getColumnCount()];
 
         // Use an enumeration
@@ -274,15 +273,15 @@ public class DataJTable {
         private DataNode[][] data;
         private String[] columnNames;
 
-        public MyTableModel() {
+        MyTableModel() {
         }
 
-        public void resize(int rows, int cols) {
+        void resize(int rows, int cols) {
             data = new DataNode[rows][cols];
             columnNames = new String[cols];
         }
 
-        public void put(int row, int col, String name) {
+        void put(int row, int col, String name) {
             data[row][col] = new DataNode(name);
         }
 
@@ -298,7 +297,7 @@ public class DataJTable {
             return columnNames[col];
         }
 
-        public void setColumnName(int col, String name) {
+        void setColumnName(int col, String name) {
             columnNames[col] = name;
         }
 
@@ -333,19 +332,19 @@ public class DataJTable {
         }
     }
 
-    class DataNode {
+    static class DataNode {
         private final String name;
         private boolean selected;
 
-        public DataNode(String name) {
+        DataNode(String name) {
             this.name = name;
         }
 
-        public boolean isSelected() {
+        boolean isSelected() {
             return selected;
         }
 
-        public void setSelected(boolean selected) {
+        void setSelected(boolean selected) {
             this.selected = selected;
         }
 
@@ -353,7 +352,7 @@ public class DataJTable {
             return name;
         }
 
-        public String getName() {
+        String getName() {
             return name;
         }
     }
@@ -414,10 +413,10 @@ public class DataJTable {
         }
     }
 
-    private class Swatch extends JPanel {
+    private static class Swatch extends JPanel {
         private String shape;
 
-        public void setShape(String shape) {
+        void setShape(String shape) {
             this.shape = shape;
         }
 
@@ -479,7 +478,7 @@ public class DataJTable {
         }
     }
 
-    public void showPopupMenu(final MouseEvent e) {
+    private void showPopupMenu(final MouseEvent e) {
         // show the header popup menu:
         if (e.getSource() instanceof JTableHeader) {
             columnPressed = jTable.getTableHeader().columnAtPoint(e.getPoint());
@@ -505,7 +504,7 @@ public class DataJTable {
         }
     }
 
-    public class MySelectionListener implements ListSelectionListener {
+    class MySelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 // The mouse button has not yet been released

@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * scroll to a specific node
  * Daniel Huson, 8.2011
  */
-public class ScrollToSelectionCommand extends CommandBase implements ICommand {
+class ScrollToSelectionCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

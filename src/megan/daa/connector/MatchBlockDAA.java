@@ -36,7 +36,7 @@ public class MatchBlockDAA implements IMatchBlock {
     private static long countUids = 0;
     private static final Object sync = new Object();
 
-    private DAAParser daaParser;
+    private final DAAParser daaParser;
     private DAAMatchRecord matchRecord;
 
     private long uid;
@@ -216,20 +216,15 @@ public class MatchBlockDAA implements IMatchBlock {
      * @return
      */
     public String getText() {
-        if (false) {
-            String[] alignment = computeAlignmentBlastX(matchRecord, daaParser.getAlignmentAlphabet());
-            return Basic.toString(alignment, "\n");
-        } else {
-            try { // todo: do this directly and more efficently
-                ByteOutputBuffer buffer = new ByteOutputBuffer();
-                SAMUtilities.createSAM(daaParser, matchRecord, buffer, daaParser.getAlignmentAlphabet());
-                SAMMatch match = new SAMMatch(daaParser.getBlastMode());
-                match.parse(buffer.getBytes(), buffer.size());
-                return match.getBlastAlignmentText();
-            } catch (Exception e) {
-                Basic.caught(e);
-                return "";
-            }
+        try { // todo: do this directly and more efficently
+            ByteOutputBuffer buffer = new ByteOutputBuffer();
+            SAMUtilities.createSAM(daaParser, matchRecord, buffer, daaParser.getAlignmentAlphabet());
+            SAMMatch match = new SAMMatch(daaParser.getBlastMode());
+            match.parse(buffer.getBytes(), buffer.size());
+            return match.getBlastAlignmentText();
+        } catch (Exception e) {
+            Basic.caught(e);
+            return "";
         }
     }
 

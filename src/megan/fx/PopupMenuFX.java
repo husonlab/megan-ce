@@ -27,6 +27,8 @@ import jloda.swing.commands.TeXGenerator;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
 
+import java.util.Objects;
+
 /**
  * popup menu
  * Daniel Huson, 11.2010
@@ -75,7 +77,7 @@ public class PopupMenuFX extends ContextMenu {
                         getItems().add(menuItem);
                     }
                     if (menuItem.getGraphic() == null)
-                        menuItem.setGraphic(CommandManagerFX.asImageViewFX(ResourceManager.getIcon("Empty16.gif")));
+                        menuItem.setGraphic(CommandManagerFX.asImageViewFX(Objects.requireNonNull(ResourceManager.getIcon("Empty16.gif"))));
                 }
             }
         }
@@ -84,7 +86,7 @@ public class PopupMenuFX extends ContextMenu {
         }
         try {
             commandManager.updateEnableState();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 }

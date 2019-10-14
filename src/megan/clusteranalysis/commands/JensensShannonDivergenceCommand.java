@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * JensensShannonDivergenceCommand
  * Daniel Huson, 7.2014
  */
-public class JensensShannonDivergenceCommand extends CommandBase implements ICheckBoxCommand {
+class JensensShannonDivergenceCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *
@@ -41,7 +41,7 @@ public class JensensShannonDivergenceCommand extends CommandBase implements IChe
         return viewer.getEcologicalIndex().equalsIgnoreCase(JensenShannonDivergence.NAME);
     }
 
-    public static final String NAME = "Use JSD";
+    private static final String NAME = "Use JSD";
 
     /**
      * get the name to be used as a menu label

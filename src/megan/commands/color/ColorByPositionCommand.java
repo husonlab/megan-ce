@@ -26,7 +26,7 @@ import megan.core.Director;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ColorByPositionCommand extends CommandBase implements ICheckBoxCommand {
+class ColorByPositionCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return ((Director) getDir()).getDocument().getChartColorManager().isColorByPosition();
@@ -48,7 +48,7 @@ public class ColorByPositionCommand extends CommandBase implements ICheckBoxComm
         return true;
     }
 
-    public static String NAME = "Color Classes By Position";
+    public static final String NAME = "Color Classes By Position";
 
     public String getName() {
         return NAME;

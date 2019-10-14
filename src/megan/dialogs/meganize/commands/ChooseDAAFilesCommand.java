@@ -126,7 +126,7 @@ public class ChooseDAAFilesCommand extends CommandBase implements ICommand {
         return true;
     }
 
-    public class DAAFileFilter extends FileFilterBase implements FilenameFilter {
+    public static class DAAFileFilter extends FileFilterBase implements FilenameFilter {
         /**
          * constructor
          */

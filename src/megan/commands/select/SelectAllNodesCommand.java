@@ -38,7 +38,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-public class SelectAllNodesCommand extends CommandBase implements ICommand {
+class SelectAllNodesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "select nodes={all|none|leaves|internal|previous|subtree|leavesBelow|nodesAbove|intermediate|invert}";
     }

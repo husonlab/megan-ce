@@ -38,23 +38,23 @@ public class InfoBlock {
     }
 
     public void add(String name, String value) {
-        list.add(new Pair<String, Object>(name, value));
+        list.add(new Pair<>(name, value));
     }
 
     public void addInt(String name, String value) {
-        list.add(new Pair<String, Object>(name, Basic.parseInt(value)));
+        list.add(new Pair<>(name, Basic.parseInt(value)));
     }
 
     public void addLong(String name, String value) {
-        list.add(new Pair<String, Object>(name, Basic.parseLong(value)));
+        list.add(new Pair<>(name, Basic.parseLong(value)));
     }
 
     public void addFloat(String name, String value) {
-        list.add(new Pair<String, Object>(name, Basic.parseFloat(value)));
+        list.add(new Pair<>(name, Basic.parseFloat(value)));
     }
 
     public void addDouble(String name, String value) {
-        list.add(new Pair<String, Object>(name, Basic.parseDouble(value)));
+        list.add(new Pair<>(name, Basic.parseDouble(value)));
     }
 
     public String toString() {

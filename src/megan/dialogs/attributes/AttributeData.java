@@ -16,9 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- */
 package megan.dialogs.attributes;
 
 import jloda.swing.window.NotificationsInSwing;
@@ -47,19 +44,6 @@ import java.util.*;
 public class AttributeData {
     public final static String[] attributeList = {"Gram Stain", "Endospores", "Motility",
             "Pathogenic", "Salinity", "Oxygen Req", "Habitat", "Temp Range", "Genome Size", "GC Content", "Group", "Domain"};
-    private final int KINGDOM_POS = 3;
-    private final int GROUP_POS = 4;
-    private final int GENOMESIZE_POS = 6;
-    private final int GCCONTENT_POS = 7;
-    private final int GRAM_POS = 8;
-    private final int ENDOSPORES_POS = 11;
-    private final int MOTILITY_POS = 12;
-    private final int SALINITY_POS = 13;
-    private final int OXYGEN_POS = 14;
-    private final int HABITAT_POS = 15;
-    private final int TEMPRANGE_POS = 16;
-    //    private final int OPTTEMP_POS = 17;
-    private final int PATHOGENIC_POS = 18; //17
     //    private final int DESEASE_POS = 19;
     private final Map<String, Integer> attribute2index = new HashMap<>();
 
@@ -110,7 +94,7 @@ public class AttributeData {
      *
      * @param fileName
      */
-    public void loadAttributeData(String fileName) throws IOException {
+    private void loadAttributeData(String fileName) throws IOException {
         InputStream ins = ResourceManager.getFileAsStream(fileName);
         loadAttributeData(ins);
         ins.close();
@@ -165,7 +149,7 @@ public class AttributeData {
      * 20 "Genbank accessions"
      * 21 "Refseq accessions"
      */
-    public final void loadAttributeData(InputStream ins) throws IOException {
+    private void loadAttributeData(InputStream ins) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(ins));
         String aLine;
         while ((aLine = r.readLine()) != null) {
@@ -231,18 +215,32 @@ public class AttributeData {
                         attribute2Property.put(anAttributeList, "");
                     }
                 } else {
-                    attribute2Property.put(AttributeData.attributeList[0], attributes[this.GRAM_POS]);
-                    attribute2Property.put(AttributeData.attributeList[1], attributes[this.ENDOSPORES_POS]);
-                    attribute2Property.put(AttributeData.attributeList[2], attributes[this.MOTILITY_POS]);
-                    attribute2Property.put(AttributeData.attributeList[3], attributes[this.PATHOGENIC_POS]);
-                    attribute2Property.put(AttributeData.attributeList[4], attributes[this.SALINITY_POS]);
-                    attribute2Property.put(AttributeData.attributeList[5], attributes[this.OXYGEN_POS]);
-                    attribute2Property.put(AttributeData.attributeList[6], attributes[this.HABITAT_POS]);
-                    attribute2Property.put(AttributeData.attributeList[7], attributes[this.TEMPRANGE_POS]);
-                    attribute2Property.put(AttributeData.attributeList[8], attributes[this.GENOMESIZE_POS]);
-                    attribute2Property.put(AttributeData.attributeList[9], attributes[this.GCCONTENT_POS]);
-                    attribute2Property.put(AttributeData.attributeList[10], attributes[this.GROUP_POS]);
-                    attribute2Property.put(AttributeData.attributeList[11], attributes[this.KINGDOM_POS]);
+                    int GRAM_POS = 8;
+                    attribute2Property.put(AttributeData.attributeList[0], attributes[GRAM_POS]);
+                    int ENDOSPORES_POS = 11;
+                    attribute2Property.put(AttributeData.attributeList[1], attributes[ENDOSPORES_POS]);
+                    int MOTILITY_POS = 12;
+                    attribute2Property.put(AttributeData.attributeList[2], attributes[MOTILITY_POS]);
+                    //    private final int OPTTEMP_POS = 17;
+                    //17
+                    int PATHOGENIC_POS = 18;
+                    attribute2Property.put(AttributeData.attributeList[3], attributes[PATHOGENIC_POS]);
+                    int SALINITY_POS = 13;
+                    attribute2Property.put(AttributeData.attributeList[4], attributes[SALINITY_POS]);
+                    int OXYGEN_POS = 14;
+                    attribute2Property.put(AttributeData.attributeList[5], attributes[OXYGEN_POS]);
+                    int HABITAT_POS = 15;
+                    attribute2Property.put(AttributeData.attributeList[6], attributes[HABITAT_POS]);
+                    int TEMPRANGE_POS = 16;
+                    attribute2Property.put(AttributeData.attributeList[7], attributes[TEMPRANGE_POS]);
+                    int GENOMESIZE_POS = 6;
+                    attribute2Property.put(AttributeData.attributeList[8], attributes[GENOMESIZE_POS]);
+                    int GCCONTENT_POS = 7;
+                    attribute2Property.put(AttributeData.attributeList[9], attributes[GCCONTENT_POS]);
+                    int GROUP_POS = 4;
+                    attribute2Property.put(AttributeData.attributeList[10], attributes[GROUP_POS]);
+                    int KINGDOM_POS = 3;
+                    attribute2Property.put(AttributeData.attributeList[11], attributes[KINGDOM_POS]);
                 }
                 taxaName2Attributes2Properties.put(taxname, attribute2Property);
             }
@@ -312,8 +310,7 @@ public class AttributeData {
     }
 
     public static ArrayList<String> getAttributeList() {
-        ArrayList<String> list = new ArrayList<>();
-        list.addAll(Arrays.asList(attributeList));
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(attributeList));
         return list;
     }
 
@@ -344,12 +341,18 @@ public class AttributeData {
                         case "Gram Stain":
                         case "Endospores":
                         case "Motility":
-                            if (parsed.equals("+") || parsed.equals("Yes")) {
-                                this.updateAttributes2TaxaNames(attribute, 0, taxname);
-                            } else if (parsed.equals("-") || parsed.equals("No")) {
-                                updateAttributes2TaxaNames(attribute, 1, taxname);
-                            } else if (parsed.equals("")) { //unknown
-                                this.updateAttributes2TaxaNames(attribute, 2, taxname);
+                            switch (parsed) {
+                                case "+":
+                                case "Yes":
+                                    this.updateAttributes2TaxaNames(attribute, 0, taxname);
+                                    break;
+                                case "-":
+                                case "No":
+                                    updateAttributes2TaxaNames(attribute, 1, taxname);
+                                    break;
+                                case "":  //unknown
+                                    this.updateAttributes2TaxaNames(attribute, 2, taxname);
+                                    break;
                             }
                             break;
                         case "Pathogenic":
@@ -473,8 +476,8 @@ public class AttributeData {
      * @param taxa2dataset2value
      * @param attribute2taxa2value
      */
-    public void computeAttributes2Taxa2Values(Map<String, Map<String, Number>> taxa2dataset2value,
-                                              Map<String, Map<String, Number>> attribute2taxa2value) {
+    private void computeAttributes2Taxa2Values(Map<String, Map<String, Number>> taxa2dataset2value,
+                                               Map<String, Map<String, Number>> attribute2taxa2value) {
         attribute2taxa2value.clear();
 
         for (String attribute : attribute2kind2taxaNames.keySet()) {

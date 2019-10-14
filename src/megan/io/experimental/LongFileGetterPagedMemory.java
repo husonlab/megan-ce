@@ -83,7 +83,7 @@ public class LongFileGetterPagedMemory implements ILongGetter {
                         length = length0;
 
                     array = new long[length];
-                    long toSkip = (long) dIndex * (long) length0 * 8l;
+                    long toSkip = (long) dIndex * (long) length0 * 8L;
                     raf.seek(toSkip);
 
                     for (int pos = 0; pos < array.length; pos++) {

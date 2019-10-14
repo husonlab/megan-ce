@@ -51,7 +51,7 @@ public class CopyCommand extends ClipboardBase implements ICommand {
         return inspectorWindow != null && inspectorWindow.hasSelectedNodes();
     }
 
-    public static final String ALT_NAME = "Inspector Copy";
+    private static final String ALT_NAME = "Inspector Copy";
 
     public String getAltName() {
         return ALT_NAME;

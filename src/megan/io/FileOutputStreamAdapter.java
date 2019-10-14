@@ -25,7 +25,7 @@ import java.io.*;
  * Daniel Huson, 6.2009
  */
 public class FileOutputStreamAdapter implements IOutput {
-    public static int BUFFER_SIZE = 8192;
+    private static final int BUFFER_SIZE = 8192;
     private final BufferedOutputStream outs;
     private long position;
 

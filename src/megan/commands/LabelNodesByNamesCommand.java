@@ -26,7 +26,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class LabelNodesByNamesCommand extends CommandBase implements ICheckBoxCommand {
+class LabelNodesByNamesCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer != null && viewer.isNodeLabelNames();

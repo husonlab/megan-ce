@@ -30,7 +30,7 @@ import java.io.*;
  * Daniel Huson, 4.2010, 4.2015
  */
 class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
-    public static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
+    private static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
 
     private IIntGetter reader = null;
 

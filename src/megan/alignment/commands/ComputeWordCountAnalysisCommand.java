@@ -36,7 +36,7 @@ import java.util.TreeMap;
  * command
  * Daniel Huson, 8.2011
  */
-public class ComputeWordCountAnalysisCommand extends CommandBase implements ICommand {
+class ComputeWordCountAnalysisCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -87,7 +87,7 @@ public class ComputeWordCountAnalysisCommand extends CommandBase implements ICom
         execute("compute wordCount kmer=25 step=25 mindepth=10;");
     }
 
-    public static final String NAME = "Compute Diversity...";
+    private static final String NAME = "Compute Diversity...";
 
     public String getName() {
         return NAME;

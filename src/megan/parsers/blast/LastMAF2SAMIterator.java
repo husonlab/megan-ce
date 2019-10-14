@@ -39,7 +39,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
 
     private final BlastMode blastMode;
 
-    private TreeSet<Match> matches = new TreeSet<>(new Match());
+    private final TreeSet<Match> matches = new TreeSet<>(new Match());
     private final IntervalTree<Match> matchesIntervalTree = new IntervalTree<>();
 
     private double lambda = -1;

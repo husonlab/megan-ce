@@ -57,7 +57,7 @@ public class PackedTranscript {
      *
      * @return size
      */
-    public int size() {
+    private int size() {
         return size;
     }
 
@@ -92,6 +92,6 @@ public class PackedTranscript {
             }
             list.add(cop);
         }
-        return list.toArray(new CombinedOperation[list.size()]);
+        return list.toArray(new CombinedOperation[0]);
     }
 }

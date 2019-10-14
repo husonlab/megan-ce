@@ -93,8 +93,6 @@ public class ReadBlockGetterRMA6 implements IReadBlockGetter {
 
         if (reader.getPosition() < end) {
             if (uid >= 0) {
-                if (streamOnly)
-                    throw new IOException("getReadBlock(uid=" + uid + ") failed: streamOnly");
             }
             final ReadBlockRMA6 readBlock = (reuseableReadBlock == null ? new ReadBlockRMA6(rma6File.getHeaderSectionRMA6().getBlastMode(), rma6File.getHeaderSectionRMA6().isPairedReads(), rma6File.getHeaderSectionRMA6().getMatchClassNames()) : reuseableReadBlock);
             readBlock.read(reader, wantReadSequence, wantMatches, minScore, maxExpected);

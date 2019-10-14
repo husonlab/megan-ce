@@ -40,7 +40,7 @@ public class BlastModeUtils {
      * @param label
      * @return value or null
      */
-    public static jloda.util.BlastMode valueOfIgnoreCase(String label) {
+    private static jloda.util.BlastMode valueOfIgnoreCase(String label) {
         for (jloda.util.BlastMode type : jloda.util.BlastMode.values())
             if (label.equalsIgnoreCase(type.toString()))
                 return type;
@@ -152,7 +152,7 @@ public class BlastModeUtils {
      * @param xmlFile
      * @return blast mode
      */
-    public static jloda.util.BlastMode determineBlastModeXMLFile(String xmlFile) {
+    private static jloda.util.BlastMode determineBlastModeXMLFile(String xmlFile) {
         try (final FileInputIterator it = new FileInputIterator(xmlFile)) {
             for (int i = 0; i < 50; i++) { // expect to figure out blast mode within the first 50 lines
                 if (it.hasNext()) {

@@ -54,9 +54,9 @@ import java.util.ArrayList;
  * analyse a sequence on NCBI
  * Daniel Huson, 3/2017
  */
-public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
-    static BlastService blastService;
-    static boolean serviceIsRunning = false;
+class RunBlastOnNCBICommand extends CommandBase implements ICommand {
+    private static BlastService blastService;
+    private static boolean serviceIsRunning = false;
 
     public String getSyntax() {
         return "remoteBlastNCBI readsFile=<file-name> [longReads={false|true}] [blastMode={blastn|blastx|blastp}] [blastDB={nr|<name>}];";
@@ -121,175 +121,134 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         doc.setProgressListener(new ProgressDialog("Blasting at NCBI", "Running", getViewer().getFrame()));
         doc.getProgressListener().setMaximum(1000);
 
-        final ChangeListener<Number> progressChangeListener = new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                try {
-                    if (doc.getProgressListener() != null)
-                        doc.getProgressListener().setProgress(Math.round(1000 * newValue.doubleValue()));
-                } catch (CanceledException e) {
-                    blastService.cancel();
-                }
+        final ChangeListener<Number> progressChangeListener = (observable, oldValue, newValue) -> {
+            try {
+                if (doc.getProgressListener() != null)
+                    doc.getProgressListener().setProgress(Math.round(1000 * newValue.doubleValue()));
+            } catch (CanceledException e) {
+                blastService.cancel();
             }
         };
 
-        final ChangeListener<String> messageChangeListener = new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                System.err.println(newValue);
-                if (doc.getProgressListener() != null)
-                    doc.getProgressListener().setSubtask(newValue);
-            }
+        final ChangeListener<String> messageChangeListener = (observable, oldValue, newValue) -> {
+            System.err.println(newValue);
+            if (doc.getProgressListener() != null)
+                doc.getProgressListener().setSubtask(newValue);
         };
 
         // if user cancels progress listener, cancels service
-        final Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (serviceIsRunning) {
-                    if (doc.getProgressListener().isUserCancelled()) {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (blastService.isRunning())
-                                    blastService.cancel();
-                            }
-                        });
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                    }
+        final Thread thread = new Thread(() -> {
+            while (serviceIsRunning) {
+                if (doc.getProgressListener().isUserCancelled()) {
+                    Platform.runLater(() -> {
+                        if (blastService.isRunning())
+                            blastService.cancel();
+                    });
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
                 }
             }
         });
-        thread.run();
+        thread.start();
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                blastService.setOnRunning(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent event) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                serviceIsRunning = true;
-                                getCommandManager().updateEnableState(NAME);
-                            }
-                        });
-                    }
-                });
+        Platform.runLater(() -> {
+            blastService.setOnRunning(event -> SwingUtilities.invokeLater(() -> {
+                serviceIsRunning = true;
+                getCommandManager().updateEnableState(NAME);
+            }));
 
-                blastService.messageProperty().addListener(messageChangeListener);
-                blastService.progressProperty().addListener(progressChangeListener);
-                blastService.restart();
+            blastService.messageProperty().addListener(messageChangeListener);
+            blastService.progressProperty().addListener(progressChangeListener);
+            blastService.restart();
 
-                blastService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(final WorkerStateEvent event) {
-                        blastService.progressProperty().removeListener(progressChangeListener);
-                        blastService.messageProperty().removeListener(messageChangeListener);
+            blastService.setOnSucceeded(event -> {
+                blastService.progressProperty().removeListener(progressChangeListener);
+                blastService.messageProperty().removeListener(messageChangeListener);
 
-                        final String result = blastService.getValue();
+                final String result = blastService.getValue();
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    if (result != null && result.length() > 0) {
-                                        try {
-                                            final File blastFile = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), Basic.replaceFileSuffix(readsFile, "." + blastMode), new MeganFileFilter(), new MeganFileFilter(), null, "Save BLAST file", "." + blastMode);
-                                            if (blastFile != null) {
-                                                try (BufferedWriter w = new BufferedWriter(new FileWriter(blastFile))) {
-                                                    w.write(result);
-                                                }
-                                                System.err.println("Alignments written to: " + blastFile.getPath());
-                                                if (ProgramProperties.isUseGUI()) {
-                                                    final int result = JOptionPane.showConfirmDialog(null, "Import remotely BLASTED file into MEGAN?", "Import - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION);
-                                                    getDir().notifyUnlockInput();
-                                                    if (result == JOptionPane.YES_OPTION) {
-                                                        final ImportBlastDialog importBlastDialog = new ImportBlastDialog(getViewer().getFrame(), (Director) getDir(), "Import Blast File");
-                                                        importBlastDialog.getBlastFileNameField().setText(blastFile.getPath());
-                                                        importBlastDialog.getReadFileNameField().setText(readsFile.getPath());
-                                                        importBlastDialog.setLongReads(longReads);
-                                                        importBlastDialog.getMeganFileNameField().setText(Basic.replaceFileSuffix(blastFile.getPath(), "-" + blastMode + ".rma6"));
-                                                        importBlastDialog.updateView(IDirector.ALL);
-                                                        final String command = importBlastDialog.showAndGetCommand();
-                                                        if (command != null) {
-                                                            getDir().notifyUnlockInput();
-                                                            getDir().execute(command, getViewer().getCommandManager());
-                                                        }
-                                                    }
-                                                }
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        if (result != null && result.length() > 0) {
+                            try {
+                                final File blastFile = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), Basic.replaceFileSuffix(readsFile, "." + blastMode), new MeganFileFilter(), new MeganFileFilter(), null, "Save BLAST file", "." + blastMode);
+                                if (blastFile != null) {
+                                    try (BufferedWriter w = new BufferedWriter(new FileWriter(blastFile))) {
+                                        w.write(result);
+                                    }
+                                    System.err.println("Alignments written to: " + blastFile.getPath());
+                                    if (ProgramProperties.isUseGUI()) {
+                                        final int result1 = JOptionPane.showConfirmDialog(null, "Import remotely BLASTED file into MEGAN?", "Import - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION);
+                                        getDir().notifyUnlockInput();
+                                        if (result1 == JOptionPane.YES_OPTION) {
+                                            final ImportBlastDialog importBlastDialog = new ImportBlastDialog(getViewer().getFrame(), (Director) getDir(), "Import Blast File");
+                                            importBlastDialog.getBlastFileNameField().setText(blastFile.getPath());
+                                            importBlastDialog.getReadFileNameField().setText(readsFile.getPath());
+                                            importBlastDialog.setLongReads(longReads);
+                                            importBlastDialog.getMeganFileNameField().setText(Basic.replaceFileSuffix(blastFile.getPath(), "-" + blastMode + ".rma6"));
+                                            importBlastDialog.updateView(IDirector.ALL);
+                                            final String command = importBlastDialog.showAndGetCommand();
+                                            if (command != null) {
+                                                getDir().notifyUnlockInput();
+                                                getDir().execute(command, getViewer().getCommandManager());
                                             }
-                                        } catch (Exception ex) {
-                                            NotificationsInSwing.showError("Create RMA file failed: " + ex.getMessage());
-                                            getDir().notifyUnlockInput();
-                                            getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
                                         }
-                                    } else {
-                                        NotificationsInSwing.showInformation("No hits found");
-                                        getDir().notifyUnlockInput();
-                                        getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
-                                    }
-                                } finally {
-                                    serviceIsRunning = false;
-                                    if (doc.getProgressListener() != null)
-                                        doc.getProgressListener().close();
-                                }
-                            }
-                        });
-                    }
-                });
-                blastService.setOnFailed(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent event) {
-                        blastService.progressProperty().removeListener(progressChangeListener);
-                        blastService.messageProperty().removeListener(messageChangeListener);
-                        NotificationsInSwing.showError("Remote blast failed: " + blastService.getException());
-
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    doc.getProgressListener().close();
-                                    getDir().notifyUnlockInput();
-                                    getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
-                                } finally {
-                                    serviceIsRunning = false;
-                                }
-                            }
-                        });
-
-                    }
-                });
-                blastService.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent event) {
-                        blastService.progressProperty().removeListener(progressChangeListener);
-                        blastService.messageProperty().removeListener(messageChangeListener);
-                        if (serviceIsRunning)
-                            NotificationsInSwing.showWarning("Remote blast canceled");
-
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (serviceIsRunning) {
-                                    try {
-                                        getDir().notifyUnlockInput();
-                                        getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
-                                    } finally {
-                                        serviceIsRunning = false;
-                                        if (doc.getProgressListener() != null)
-                                            doc.getProgressListener().close();
                                     }
                                 }
+                            } catch (Exception ex) {
+                                NotificationsInSwing.showError("Create RMA file failed: " + ex.getMessage());
+                                getDir().notifyUnlockInput();
+                                getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
                             }
-                        });
+                        } else {
+                            NotificationsInSwing.showInformation("No hits found");
+                            getDir().notifyUnlockInput();
+                            getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
+                        }
+                    } finally {
+                        serviceIsRunning = false;
+                        if (doc.getProgressListener() != null)
+                            doc.getProgressListener().close();
                     }
                 });
-            }
+            });
+            blastService.setOnFailed(event -> {
+                blastService.progressProperty().removeListener(progressChangeListener);
+                blastService.messageProperty().removeListener(messageChangeListener);
+                NotificationsInSwing.showError("Remote blast failed: " + blastService.getException());
+
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        doc.getProgressListener().close();
+                        getDir().notifyUnlockInput();
+                        getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
+                    } finally {
+                        serviceIsRunning = false;
+                    }
+                });
+
+            });
+            blastService.setOnCancelled(event -> {
+                blastService.progressProperty().removeListener(progressChangeListener);
+                blastService.messageProperty().removeListener(messageChangeListener);
+                if (serviceIsRunning)
+                    NotificationsInSwing.showWarning("Remote blast canceled");
+
+                SwingUtilities.invokeLater(() -> {
+                    if (serviceIsRunning) {
+                        try {
+                            getDir().notifyUnlockInput();
+                            getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
+                        } finally {
+                            serviceIsRunning = false;
+                            if (doc.getProgressListener() != null)
+                                doc.getProgressListener().close();
+                        }
+                    }
+                });
+            });
         });
     }
 
@@ -316,7 +275,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         return getViewer() instanceof IReadsProvider && (blastService == null || !serviceIsRunning) && ((IReadsProvider) getViewer()).isReadsAvailable();
     }
 
-    public static final String NAME = "BLAST on NCBI...";
+    private static final String NAME = "BLAST on NCBI...";
 
     public String getName() {
         return NAME;

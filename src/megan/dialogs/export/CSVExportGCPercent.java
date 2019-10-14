@@ -42,7 +42,7 @@ import java.util.Collections;
  * export mapping read names to GC percent
  * Daniel Huson, 2.2019
  */
-public class CSVExportGCPercent {
+class CSVExportGCPercent {
     /**
      * apply
      *

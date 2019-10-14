@@ -41,7 +41,7 @@ import java.util.Collections;
  * export ref-seq related data
  * Daniel Huson, 8.2011
  */
-public class CSVExportHeaders {
+class CSVExportHeaders {
     /**
      * export readname to refseq id naming
      *

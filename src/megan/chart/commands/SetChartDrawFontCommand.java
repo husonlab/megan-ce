@@ -37,7 +37,7 @@ import java.awt.event.ActionEvent;
  * set series label
  * Daniel Huson, 6.2012
  */
-public class SetChartDrawFontCommand extends CommandBase implements ICommand {
+class SetChartDrawFontCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set chartfont=<name-style-size> color={<color>|default} target={" + Basic.toString(ChartViewer.FontKeys.values(), "|") + "};";
     }

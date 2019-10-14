@@ -202,19 +202,19 @@ public class FileFooterRMA3 extends BaseRMA3 {
         formatDefinition.finishWrite();
     }
 
-    public String getCreator() {
+    private String getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    private void setCreator(String creator) {
         this.creator = creator;
     }
 
-    public long getCreationDate() {
+    private long getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(long creationDate) {
+    private void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -230,7 +230,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return alignmentFileFormat;
     }
 
-    public void setAlignmentFileFormat(String alignmentFileFormat) {
+    private void setAlignmentFileFormat(String alignmentFileFormat) {
         this.alignmentFileFormat = alignmentFileFormat;
     }
 
@@ -238,7 +238,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return blastMode;
     }
 
-    public void setBlastMode(String blastMode) {
+    private void setBlastMode(String blastMode) {
         this.blastMode = blastMode;
     }
 
@@ -246,7 +246,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return alignmentFileSize;
     }
 
-    public void setAlignmentFileSize(long alignmentFileSize) {
+    private void setAlignmentFileSize(long alignmentFileSize) {
         this.alignmentFileSize = alignmentFileSize;
     }
 
@@ -262,7 +262,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return readsFileFormat;
     }
 
-    public void setReadsFileFormat(String readsFileFormat) {
+    private void setReadsFileFormat(String readsFileFormat) {
         this.readsFileFormat = readsFileFormat;
     }
 
@@ -270,7 +270,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return readsFileSize;
     }
 
-    public void setReadsFileSize(long readsFileSize) {
+    private void setReadsFileSize(long readsFileSize) {
         this.readsFileSize = readsFileSize;
     }
 
@@ -290,7 +290,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return matchesFooter;
     }
 
-    public void setMatchesFooter(long matchesFooter) {
+    private void setMatchesFooter(long matchesFooter) {
         this.matchesFooter = matchesFooter;
     }
 
@@ -306,7 +306,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return classificationsStart;
     }
 
-    public void setClassificationsStart(long classificationsStart) {
+    private void setClassificationsStart(long classificationsStart) {
         this.classificationsStart = classificationsStart;
     }
 
@@ -330,7 +330,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
         return matchesStart;
     }
 
-    public void setMatchesStart(long matchesStart) {
+    private void setMatchesStart(long matchesStart) {
         this.matchesStart = matchesStart;
     }
 }

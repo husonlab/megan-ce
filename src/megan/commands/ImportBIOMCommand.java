@@ -40,7 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class ImportBIOMCommand extends CommandBase implements ICommand {
+class ImportBIOMCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import format=biom file=<fileName> [type={TAXONOMY|KEGG|SEED|UNKNOWN}] [taxonomyIgnorePath={false|true}];";
     }
@@ -114,7 +114,7 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
 
         final List<File> files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, new BiomFileFilter(), new BiomFileFilter(), event, "Open BIOM file(s)");
 
-        if (files != null && files.size() > 0) {
+        if (files.size() > 0) {
 
             final String[] choices = new String[]{"Taxonomy", "KEGG", "SEED", "Unknown"};
             final String[] taxonomyAssignmentAlgorithm = new String[]{"Match taxonomic path (more conservative)", "Match most specific node (more specific)"};

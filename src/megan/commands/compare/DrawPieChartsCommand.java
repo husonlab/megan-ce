@@ -32,7 +32,7 @@ import megan.viewer.gui.NodeDrawer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class DrawPieChartsCommand extends CommandBase implements ICheckBoxCommand {
+class DrawPieChartsCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer != null && viewer.getNodeDrawer().getStyle() == NodeDrawer.Style.PieChart;

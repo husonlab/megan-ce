@@ -46,7 +46,7 @@ import java.io.IOException;
  * export taxonomic segmentation of reads
  * Daniel Huson, 8.2018
  */
-public class ExportSegmentationOfReadsCommand extends CommandBase implements ICommand {
+class ExportSegmentationOfReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export segmentedReads file=<filename> [rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "|next}" +
                 " [switchPenalty=<number>] [compatibleFactor=<number>] [incompatibleFactor=<number>];";

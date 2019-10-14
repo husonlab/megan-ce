@@ -122,7 +122,7 @@ public class SyncArchiveAndDataTable {
      * @param classificationBlock
      * @param table
      */
-    static public void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
+    private static void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
         boolean useWeights = (readAssignmentMode != Document.ReadAssignmentMode.readCount);
 
         final Map<Integer, float[]> classId2count = new HashMap<>();

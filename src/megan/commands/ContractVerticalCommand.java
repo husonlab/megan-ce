@@ -26,7 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ContractVerticalCommand extends CommandBase implements ICommand {
+class ContractVerticalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

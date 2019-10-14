@@ -48,7 +48,7 @@ import java.util.Map;
 public class ViewerJTable extends JTable {
     private final ClassificationViewer classificationViewer;
     private final DefaultTableModel model;
-    private MyCellRender cellRenderer;
+    private final MyCellRender cellRenderer;
     private final Map<Integer, Integer> id2row = new HashMap<>();
     private final JPopupMenu popupMenu;
     private IPopupMenuModifier popupMenuModifier;
@@ -112,7 +112,7 @@ public class ViewerJTable extends JTable {
         }
 
         if (classificationViewer.getTree().getRoot() != null) {
-            buildHeatMapRec(classificationViewer.getTree().getRoot(), new HashSet<Integer>());
+            buildHeatMapRec(classificationViewer.getTree().getRoot(), new HashSet<>());
         }
 
         float[] maxCounts = new float[classificationViewer.getNumberOfDatasets()];
@@ -148,7 +148,7 @@ public class ViewerJTable extends JTable {
                 if (!seen.contains(id)) {
                     seen.add(id);
                     String name = classificationViewer.getClassification().getName2IdMap().get(id);
-                    rowData[0] = new Pair<String, Integer>(name, id) {
+                    rowData[0] = new Pair<>(name, id) {
                         public String toString() {
                             return getFirst();
                         }
@@ -171,7 +171,7 @@ public class ViewerJTable extends JTable {
     /**
      * erase the table
      */
-    public void clear() {
+    private void clear() {
         id2row.clear();
         clearSelection();
         while (model.getRowCount() > 0)
@@ -218,12 +218,7 @@ public class ViewerJTable extends JTable {
             }
             if (first != -1) {
                 final int firstf = first;
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollRectToVisible(new Rectangle(getCellRect(firstf, 0, true)));
-                    }
-                };
+                final Runnable runnable = () -> scrollRectToVisible(new Rectangle(getCellRect(firstf, 0, true)));
                 if (SwingUtilities.isEventDispatchThread())
                     runnable.run();
                 else
@@ -257,7 +252,7 @@ public class ViewerJTable extends JTable {
         }
     }
 
-    public void showPopupMenu(MouseEvent e) {
+    private void showPopupMenu(MouseEvent e) {
         if (popupMenuModifier != null) {
             popupMenuModifier.apply(popupMenu, classificationViewer.getCommandManager());
             popupMenuModifier = null;
@@ -342,7 +337,7 @@ class MyCellRender implements TableCellRenderer {
             int number;
 
             try {
-                number = (int) Math.round(Float.parseFloat(String.valueOf(value)));
+                number = Math.round(Float.parseFloat(String.valueOf(value)));
             } catch (NumberFormatException nfe) {
                 return new JLabel("?");
             }

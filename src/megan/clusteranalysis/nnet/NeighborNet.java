@@ -23,6 +23,7 @@ import jloda.util.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 
+import java.util.Objects;
 import java.util.Stack;
 
 
@@ -82,7 +83,7 @@ public class NeighborNet {
     /**
      * Run the neighbor net algorithm
      */
-    public void runNeighborNet(ProgressListener progressListener, int ntax, double[][] D, int ordering[]) throws CanceledException {
+    private void runNeighborNet(ProgressListener progressListener, int ntax, double[][] D, int[] ordering) throws CanceledException {
         NetNode netNodes = new NetNode();
 
         /* Nodes are stored in a doubly linked list that we set up here */
@@ -107,7 +108,7 @@ public class NeighborNet {
     /**
      * Agglomerates the nodes
      */
-    int agglomNodes(ProgressListener progressListener, Stack amalgs, double D[][], NetNode netNodes, int num_nodes) throws CanceledException {
+    private int agglomNodes(ProgressListener progressListener, Stack amalgs, double[][] D, NetNode netNodes, int num_nodes) throws CanceledException {
         //System.err.println("agglomNodes");
 
         NetNode p, q, Cx, Cy, x, y;
@@ -151,7 +152,7 @@ public class NeighborNet {
                                 Dpq = D[p.id][q.id];
                             else if ((p.nbr != null) && (q.nbr == null))
                                 Dpq = (D[p.id][q.id] + D[p.nbr.id][q.id]) / 2.0;
-                            else if ((p.nbr == null) && (q.nbr != null))
+                            else if (p.nbr == null)
                                 Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id]) / 2.0;
                             else
                                 Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id] + D[p.nbr.id][q.id] + D[p.nbr.id][q.nbr.id]) / 4.0;
@@ -184,7 +185,7 @@ public class NeighborNet {
                         Dpq = D[p.id][q.id];
                     else if ((p.nbr != null) && (q.nbr == null))
                         Dpq = (D[p.id][q.id] + D[p.nbr.id][q.id]) / 2.0;
-                    else if ((p.nbr == null) && (q.nbr != null))
+                    else if (p.nbr == null)
                         Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id]) / 2.0;
                     else
                         Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id] + D[p.nbr.id][q.id] + D[p.nbr.id][q.nbr.id]) / 4.0;
@@ -202,11 +203,11 @@ public class NeighborNet {
             x = Cx;
             y = Cy;
 
-            if (Cx.nbr != null || Cy.nbr != null) {
+            if (Objects.requireNonNull(Cx).nbr != null || Objects.requireNonNull(Cy).nbr != null) {
                 Cx.Rx = ComputeRx(Cx, Cx, Cy, D, netNodes);
                 if (Cx.nbr != null)
                     Cx.nbr.Rx = ComputeRx(Cx.nbr, Cx, Cy, D, netNodes);
-                Cy.Rx = ComputeRx(Cy, Cx, Cy, D, netNodes);
+                Objects.requireNonNull(Cy).Rx = ComputeRx(Cy, Cx, Cy, D, netNodes);
                 if (Cy.nbr != null)
                     Cy.nbr.Rx = ComputeRx(Cy.nbr, Cx, Cy, D, netNodes);
             }
@@ -243,7 +244,7 @@ public class NeighborNet {
             }
 
             /* We perform an agglomeration... one of three types */
-            if ((null == x.nbr) && (null == y.nbr)) {   /* Both vertices are isolated...add edge {x,y} */
+            if ((null == Objects.requireNonNull(x).nbr) && (null == Objects.requireNonNull(y).nbr)) {   /* Both vertices are isolated...add edge {x,y} */
                 agg2way(x, y);
                 num_clusters--;
             } else if (null == x.nbr) {     /* X is isolated,  Y  is not isolated*/
@@ -251,7 +252,7 @@ public class NeighborNet {
                 num_nodes += 2;
                 num_active--;
                 num_clusters--;
-            } else if ((null == y.nbr) || (num_active == 4)) { /* Y is isolated,  X is not isolated
+            } else if ((null == Objects.requireNonNull(y).nbr) || (num_active == 4)) { /* Y is isolated,  X is not isolated
                                                         OR theres only four active nodes and none are isolated */
                 agg3way(y, x, x.nbr, amalgs, D, netNodes, num_nodes);
                 num_nodes += 2;
@@ -272,7 +273,7 @@ public class NeighborNet {
      * @param x one node
      * @param y other node
      */
-    void agg2way(NetNode x, NetNode y) {
+    private void agg2way(NetNode x, NetNode y) {
         x.nbr = y;
         y.nbr = x;
     }
@@ -287,8 +288,8 @@ public class NeighborNet {
      * @param z other node
      * @return one of the new nodes
      */
-    NetNode agg3way(NetNode x, NetNode y, NetNode z,
-                    Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) {
+    private NetNode agg3way(NetNode x, NetNode y, NetNode z,
+                            Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) {
         /* Agglomerate x,y, and z to give TWO new nodes, u and v */
 /* In terms of the linked list: we replace x and z
        by u and v and remove y from the linked list.
@@ -354,8 +355,8 @@ public class NeighborNet {
      * @param y2 a node
      * @return the new number of nodes
      */
-    int agg4way(NetNode x2, NetNode x, NetNode y, NetNode y2,
-                Stack amalgs, double[][] D, NetNode netNodes, int num_nodes) {
+    private int agg4way(NetNode x2, NetNode x, NetNode y, NetNode y2,
+                        Stack amalgs, double[][] D, NetNode netNodes, int num_nodes) {
 /* Replace x2,x,y,y2 by with two vertices... performed using two
        3 way amalgamations */
 
@@ -378,8 +379,8 @@ public class NeighborNet {
      * @param netNodes the net nodes
      * @return the Rx value
      */
-    double ComputeRx(NetNode z, NetNode Cx, NetNode Cy, double[][] D,
-                     NetNode netNodes) {
+    private double ComputeRx(NetNode z, NetNode Cx, NetNode Cy, double[][] D,
+                             NetNode netNodes) {
         double Rx = 0.0;
 
         for (NetNode p = netNodes.next; p != null; p = p.next) {
@@ -400,8 +401,8 @@ public class NeighborNet {
      * @param netNodes  the net nodes
      * @param ordering  the ordering
      */
-    void expandNodes(ProgressListener progressListener, int num_nodes, int ntax, Stack amalgs, NetNode netNodes,
-                     int[] ordering) throws CanceledException {
+    private void expandNodes(ProgressListener progressListener, int num_nodes, int ntax, Stack amalgs, NetNode netNodes,
+                             int[] ordering) throws CanceledException {
         //System.err.println("expandNodes");
         NetNode x, y, z, u, v, a;
 

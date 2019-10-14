@@ -31,7 +31,6 @@ import java.util.*;
  * Daniel Huson, 9.2011
  */
 public class Alignment {
-    private boolean debug = false;
     private String name = "Untitled";
     private int length = -1;
     private final Vector<Lane> lanes;
@@ -48,7 +47,7 @@ public class Alignment {
     private Lane untranslatedConsensus;
     private Lane translatedConsensus;
 
-    static public final String UNKNOWN = "Unknown";
+    private static final String UNKNOWN = "Unknown";
     static public final String DNA = "DNA";
     static public final String cDNA = "codingDNA";
     static public final String PROTEIN = "PROTEIN";
@@ -117,7 +116,7 @@ public class Alignment {
             return null;
     }
 
-    public int getLaneLength(int row0) {
+    private int getLaneLength(int row0) {
         Lane lane = getLane(row0);
         try {
             return lane.getLength();
@@ -201,7 +200,7 @@ public class Alignment {
         StringWriter w = new StringWriter();
 
         if (!getRowCompressor().isEnabled()) {
-            final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+            final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
             maxRow = Math.min(maxRow, getNumberOfSequences() - 1);
             for (int read = minRow; read <= maxRow; read++) {
                 String readName = getName(read);
@@ -240,7 +239,7 @@ public class Alignment {
             }
         } else {
             maxRow = Math.min(maxRow, getRowCompressor().getNumberRows() - 1);
-            final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+            final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
             int minTrueCol = gapColumnContractor.getTotalJumpBeforeLayoutColumn(minLayoutCol) + minLayoutCol;
             int maxTrueCol = gapColumnContractor.getTotalJumpBeforeLayoutColumn(maxLayoutCol - 1) + maxLayoutCol;
 
@@ -341,9 +340,8 @@ public class Alignment {
 
     public void setOrder(List<Integer> order) {
         if (order.size() < this.order.size()) {
-            final List<Integer> oldOrder = new LinkedList<>();
             this.order.removeAll(order);
-            oldOrder.addAll(this.order);
+            final List<Integer> oldOrder = new LinkedList<>(this.order);
             this.order.clear();
             this.order.addAll(order);
             this.order.addAll(oldOrder);
@@ -393,7 +391,7 @@ public class Alignment {
             list.add(pair);
         }
 
-        final Pair<Integer, Integer>[] array = (Pair<Integer, Integer>[]) list.toArray(new Pair[list.size()]); // pair position,row
+        final Pair<Integer, Integer>[] array = (Pair<Integer, Integer>[]) list.toArray(new Pair[0]); // pair position,row
         Arrays.sort(array);
 
         ProgressPercentage progress = new ProgressPercentage();
@@ -404,9 +402,7 @@ public class Alignment {
 
         // prefix of gaps:
         final int firstPos = array.length > 0 ? array[0].get1() : getLength();
-        for (int col = 1; col <= firstPos; col++) {
-            buf.append('-');
-        }
+        buf.append("-".repeat(Math.max(0, firstPos)));
         progress.incrementProgress();
 
         final Set<Integer> activeRows = new HashSet<>();
@@ -429,6 +425,7 @@ public class Alignment {
 
             final int nextPos = (i + 1 < array.length ? array[i + 1].get1() : getLength());
 
+            boolean debug = false;
             if (debug)
                 System.err.println("Active rows: " + Basic.toString(activeRows, ","));
             if (activeRows.size() > 0) {
@@ -444,11 +441,7 @@ public class Alignment {
                         if (debug)
                             System.err.println("row: " + lane.getFirstNonGapPosition() + " - " + lane.getLastNonGapPosition());
                         if (Character.isLetter(ch) || ch == ' ') {
-                            Integer count = char2count.get(ch);
-                            if (count == null)
-                                char2count.put(ch, 1);
-                            else
-                                char2count.put(ch, count + 1);
+                            char2count.merge(ch, 1, Integer::sum);
                         }
                     }
                     Character best = null;
@@ -469,17 +462,14 @@ public class Alignment {
                         buf.append('-');
                 }
             } else {
-                for (int col = pos; col < nextPos; col++) {
-                    buf.append('-');
-                }
+                buf.append("-".repeat(Math.max(0, nextPos - pos)));
             }
         }
         // suffix of gaps:
         // prefix of gaps:
         int lastPos = array.length > 0 ? array[array.length - 1].get1() : getLength();
-        for (int col = lastPos; col < lastPos; col++) { // todo: FIXME
-            buf.append('-');
-        }
+        // todo: FIXME
+        buf.append("-".repeat(lastPos - lastPos));
         progress.incrementProgress();
         progress.close();
 
@@ -496,7 +486,7 @@ public class Alignment {
     public String getConsensusString(int minLayoutCol, int maxLayoutCol) {
         StringWriter w = new StringWriter();
 
-        final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+        final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
         final Lane lane = getConsensus();
         int jc = 0;
         int jumped = 0;
@@ -532,7 +522,7 @@ public class Alignment {
     public String getReferenceString(int minLayoutCol, int maxLayoutCol) {
         StringWriter w = new StringWriter();
 
-        final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().size()]);
+        final Integer[] jumpCols = gapColumnContractor.getJumpPositionsRelativeToLayoutColumns().toArray(new Integer[0]);
         Lane lane = getReference();
         int jc = 0;
         int jumped = 0;

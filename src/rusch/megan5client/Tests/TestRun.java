@@ -75,25 +75,23 @@ public class TestRun {
         now = System.currentTimeMillis();
         System.out.println(String.format("Loading dataset UID, and isReadonly)(in ms): %s", (now - time)));
 
-        if (true) {
-            time = System.currentTimeMillis();
-            try (IReadBlockIterator it = connector.getAllReadsIterator(500, 0, true, false)) {
-                int pos = 0;
-                while (it.hasNext()) {
-                    IReadBlock block = it.next();
-                    pos++;
-                    if (pos % 5000 == 0) {
-                        long t = System.currentTimeMillis() - time;
-                        double rpms = (double) pos / ((double) t / 1000);
-                        System.out.println(String.format("%s Reads in %s. This means %s reads per second.", pos, t, rpms));
-                    }
-                    for (IMatchBlock mblock : block.getMatchBlocks()) {
-                        //System.out.println(mblock);
-                    }
+        time = System.currentTimeMillis();
+        try (IReadBlockIterator it = connector.getAllReadsIterator(500, 0, true, false)) {
+            int pos = 0;
+            while (it.hasNext()) {
+                IReadBlock block = it.next();
+                pos++;
+                if (pos % 5000 == 0) {
+                    long t = System.currentTimeMillis() - time;
+                    double rpms = (double) pos / ((double) t / 1000);
+                    System.out.println(String.format("%s Reads in %s. This means %s reads per second.", pos, t, rpms));
                 }
-                now = System.currentTimeMillis();
-                System.out.println(String.format("Loading readblocks(Allreadblockit) (number of readblocks %s)(in ms): %s", pos, (now - time)));
+                for (IMatchBlock mblock : block.getMatchBlocks()) {
+                    //System.out.println(mblock);
+                }
             }
+            now = System.currentTimeMillis();
+            System.out.println(String.format("Loading readblocks(Allreadblockit) (number of readblocks %s)(in ms): %s", pos, (now - time)));
         }
 
 

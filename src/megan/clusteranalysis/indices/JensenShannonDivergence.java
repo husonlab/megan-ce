@@ -107,7 +107,7 @@ public class JensenShannonDivergence {
      * @param doc
      * @return profiles. First index is sample, second is class
      */
-    public static double[][] computeProfiles(Document doc, ViewerBase graphView) {
+    private static double[][] computeProfiles(Document doc, ViewerBase graphView) {
         final int totalSamples = doc.getNumberOfSamples();
         int totalClasses = 0;
 

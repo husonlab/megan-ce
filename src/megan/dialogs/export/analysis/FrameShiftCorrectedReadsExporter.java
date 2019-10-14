@@ -123,15 +123,12 @@ public class FrameShiftCorrectedReadsExporter {
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);
                                         try {
-                                            SwingUtilities.invokeAndWait(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
-                                                        case JOptionPane.NO_OPTION:
-                                                        case JOptionPane.CANCEL_OPTION: // close and abort
-                                                            ok.set(false);
-                                                        default:
-                                                    }
+                                            SwingUtilities.invokeAndWait(() -> {
+                                                switch (JOptionPane.showConfirmDialog(null, "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                                                    case JOptionPane.NO_OPTION:
+                                                    case JOptionPane.CANCEL_OPTION: // close and abort
+                                                        ok.set(false);
+                                                    default:
                                                 }
                                             });
                                         } catch (InterruptedException | InvocationTargetException e) {
@@ -193,30 +190,28 @@ public class FrameShiftCorrectedReadsExporter {
 
         final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.computeIntervalTree(readBlock, null, null);
 
-        final SortedSet<Interval<IMatchBlock>> sortedIntervals = new TreeSet<>(new Comparator<Interval<IMatchBlock>>() { // sort by decreasing bit score, then by decreasing length
-            @Override
-            public int compare(Interval<IMatchBlock> interval1, Interval<IMatchBlock> interval2) {
-                final IMatchBlock matchBlock1 = interval1.getData();
-                final IMatchBlock matchBlock2 = interval2.getData();
+        // sort by decreasing bit score, then by decreasing length
+        final TreeSet<Interval<IMatchBlock>> sortedIntervals = new TreeSet<>((interval1, interval2) -> {
+            final IMatchBlock matchBlock1 = interval1.getData();
+            final IMatchBlock matchBlock2 = interval2.getData();
 
-                if (matchBlock1.getBitScore() > matchBlock2.getBitScore())
-                    return -1;
-                else if (matchBlock1.getBitScore() < matchBlock2.getBitScore())
-                    return 1;
-                else if (interval1.length() > interval2.length())
-                    return -1;
-                else if (interval1.length() < interval2.length())
-                    return 1;
-                else
-                    return matchBlock1.getTextFirstWord().compareTo(matchBlock2.getTextFirstWord());
-            }
+            if (matchBlock1.getBitScore() > matchBlock2.getBitScore())
+                return -1;
+            else if (matchBlock1.getBitScore() < matchBlock2.getBitScore())
+                return 1;
+            else if (interval1.length() > interval2.length())
+                return -1;
+            else if (interval1.length() < interval2.length())
+                return 1;
+            else
+                return matchBlock1.getTextFirstWord().compareTo(matchBlock2.getTextFirstWord());
         });
         sortedIntervals.addAll(intervals.getAllIntervals(false));
 
         final ArrayList<Edit> edits = new ArrayList<>();
 
         while (true) {
-            final Interval<IMatchBlock> interval = ((TreeSet<Interval<IMatchBlock>>) sortedIntervals).pollFirst();
+            final Interval<IMatchBlock> interval = sortedIntervals.pollFirst();
             if (interval == null)
                 break;
             sortedIntervals.removeAll(intervals.getIntervals(interval));
@@ -227,15 +222,12 @@ public class FrameShiftCorrectedReadsExporter {
         int countPositiveFrameShifts = 0;
         int countNegativeFrameShift = 0;
 
-        edits.sort(new Comparator<Edit>() {
-            @Override
-            public int compare(Edit a, Edit b) {
-                if (a.pos < b.pos)
-                    return -1;
-                else if (a.pos > b.pos)
-                    return 1;
-                else return a.type.compareTo(b.type);
-            }
+        edits.sort((a, b) -> {
+            if (a.pos < b.pos)
+                return -1;
+            else if (a.pos > b.pos)
+                return 1;
+            else return a.type.compareTo(b.type);
         });
 
         final StringBuilder buf = new StringBuilder();
@@ -352,16 +344,16 @@ public class FrameShiftCorrectedReadsExporter {
         private final EditType type;
         private int pos; // 0-based position
 
-        public Edit(EditType type, int pos) {
+        Edit(EditType type, int pos) {
             this.type = type;
             this.pos = pos;
         }
 
-        public EditType getType() {
+        EditType getType() {
             return type;
         }
 
-        public int getPos() {
+        int getPos() {
             return pos;
         }
 

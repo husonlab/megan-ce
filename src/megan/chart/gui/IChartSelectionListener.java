@@ -22,6 +22,6 @@ package megan.chart.gui;
  * listens for changes of selection state
  * Daniel Huson, 7.2012
  */
-public interface IChartSelectionListener {
+interface IChartSelectionListener {
     void selectionChanged(ChartSelection chartSelection);
 }

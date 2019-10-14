@@ -30,6 +30,7 @@ import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * tree cell Renderer
@@ -42,7 +43,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
     private final JLabel label = new JLabel();
     private final LineBorder selectedBorder = (LineBorder) BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER);
 
-    private IIconProducer iconProducer = null;
+    private Function<Integer,ImageIcon>  iconProducer = null;
 
     /**
      * constructor
@@ -79,7 +80,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
                 label.setText(name);
             }
 
-            selected = classificationViewer.getSelectedNodeIds().contains((Integer) v.getInfo());
+            selected = classificationViewer.getSelectedNodeIds().contains(v.getInfo());
 
             if (selected) {
                 label.setBackground(ProgramProperties.SELECTION_COLOR);
@@ -92,7 +93,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
                 label.setBorder(null);
             }
             if (iconProducer != null)
-                label.setIcon(iconProducer.getIcon(classId));
+                label.setIcon(iconProducer.apply(classId));
         } else {
             label.setText(value.toString());
         }
@@ -104,7 +105,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
         return label;
     }
 
-    public void setIconProducer(IIconProducer iconProducer) {
+    public void setIconProducer(Function<Integer,ImageIcon> iconProducer) {
         this.iconProducer = iconProducer;
     }
 }

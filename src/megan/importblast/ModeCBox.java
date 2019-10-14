@@ -22,6 +22,7 @@ import jloda.util.BlastMode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * combo box for choosing blast format
@@ -48,7 +49,7 @@ public class ModeCBox extends JComboBox<String> {
      * @return selected format
      */
     public String getSelectedMode() {
-        return getSelectedItem().toString();
+        return Objects.requireNonNull(getSelectedItem()).toString();
     }
 
     /**

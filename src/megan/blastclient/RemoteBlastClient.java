@@ -26,10 +26,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -52,7 +49,7 @@ public class RemoteBlastClient {
 
     public enum Status {stopped, searching, hitsFound, noHitsFound, failed, unknown}
 
-    public static boolean verbose = false;
+    private static final boolean verbose = false;
     private final static String baseURL = "https://blast.ncbi.nlm.nih.gov/blast/Blast.cgi";
 
     private BlastProgram program;
@@ -273,7 +270,7 @@ public class RemoteBlastClient {
      * @param beforeLineStartingWithThis stop reporting lines upon seeing a line starting on this, or a the end, if null
      * @return delimited text
      */
-    public static String[] getLinesBetween(String text, String afterLineEndingOnThis, String beforeLineStartingWithThis) {
+    private static String[] getLinesBetween(String text, String afterLineEndingOnThis, String beforeLineStartingWithThis) {
         final ArrayList<String> lines = new ArrayList<>();
         boolean reporting = (afterLineEndingOnThis == null);
         try (BufferedReader reader = new BufferedReader(new StringReader(text))) {
@@ -291,7 +288,7 @@ public class RemoteBlastClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[0]);
     }
 
     /**
@@ -382,7 +379,7 @@ public class RemoteBlastClient {
     }
 
     public static String[] getDatabaseNames(String blastProgram) {
-        return getDatabaseNames(BlastProgram.valueOfIgnoreCase(blastProgram));
+        return getDatabaseNames(Objects.requireNonNull(BlastProgram.valueOfIgnoreCase(blastProgram)));
     }
 
     public static String[] getDatabaseNames(BlastProgram blastProgram) {

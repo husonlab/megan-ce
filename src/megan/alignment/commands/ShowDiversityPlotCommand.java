@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ShowDiversityPlotCommand extends CommandBase implements ICommand {
+class ShowDiversityPlotCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
@@ -89,7 +89,7 @@ public class ShowDiversityPlotCommand extends CommandBase implements ICommand {
         execute("chart wordCount kmer=25 step=" + step + " mindepth=10;");
     }
 
-    public static final String NAME = "Chart Diversity...";
+    private static final String NAME = "Chart Diversity...";
 
     public String getName() {
         return NAME;

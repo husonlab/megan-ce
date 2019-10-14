@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class FileManagerRMA3 {
     private boolean dontAskAny = !ProgramProperties.isUseGUI();
-    private Set<String> tabooSet = new HashSet<>();
+    private final Set<String> tabooSet = new HashSet<>();
     private static FileManagerRMA3 instance;
 
     private FileManagerRMA3() {
@@ -144,8 +144,7 @@ public class FileManagerRMA3 {
                         throw new IOException("No such file: " + altFile);
 
 
-                    RMA3FileModifier modifier = new RMA3FileModifier(rma3File);
-                    try {
+                    try (RMA3FileModifier modifier = new RMA3FileModifier(rma3File)) {
                         final FileFooterRMA3 footer = modifier.getFileFooter();
 
                         if (alignmentFile) {
@@ -165,8 +164,6 @@ public class FileManagerRMA3 {
                             io.seek(footer.getFileFooter());
                             footer.write(io);
                         }
-                    } finally {
-                        modifier.close();
                     }
                     return altFile;
 

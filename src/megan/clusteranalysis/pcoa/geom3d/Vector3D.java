@@ -74,7 +74,7 @@ public class Vector3D extends VectorN {
      * @param z
      * @param w
      */
-    public void set(double x, double y, double z, double w) {
+    private void set(double x, double y, double z, double w) {
         set(0, x);
         set(1, y);
         set(2, z);
@@ -88,7 +88,7 @@ public class Vector3D extends VectorN {
      * @param y
      * @param z
      */
-    void set(double x, double y, double z) {
+    private void set(double x, double y, double z) {
         set(x, y, z, 1);
     }
 }

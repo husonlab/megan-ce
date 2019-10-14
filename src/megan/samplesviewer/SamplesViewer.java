@@ -61,12 +61,12 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
     private final JFrame frame;
     private final JPanel mainPanel;
-    public StatusBar statusbar;
+    private final StatusBar statusbar;
 
     private final Director dir;
     private final Document doc;
 
-    final SelectionSet.SelectionListener selectionListener;
+    private final SelectionSet.SelectionListener selectionListener;
 
     private boolean showFindToolBar = false;
     private boolean showReplaceToolBar = false;
@@ -79,8 +79,6 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     private final Set<String> needToReselectSamples = new HashSet<>();
 
     private final SamplesTableView sampleTableView;
-
-    private final TableViewSearcher tableViewSearcher;
 
     /**
      * constructor
@@ -117,7 +115,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
 
         MenuConfiguration menuConfig = GUIConfiguration.getMenuConfiguration();
 
-        tableViewSearcher = new TableViewSearcher(sampleTableView.getTableView());
+        TableViewSearcher tableViewSearcher = new TableViewSearcher(sampleTableView.getTableView());
         searchManager = new SearchManager(dir, this, tableViewSearcher, false, true);
 
         this.menuBar = new MenuBar(this, menuConfig, getCommandManager());

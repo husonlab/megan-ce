@@ -39,9 +39,9 @@ import java.util.BitSet;
  * <p/>
  * x[i][j] is the split {i+1,i+2,...,j} | -------
  */
-public class CircularSplitWeights {
+class CircularSplitWeights {
     /* Epsilon constant for the conjugate gradient algorithm */
-    static final double CG_EPSILON = 0.0001;
+    private static final double CG_EPSILON = 0.0001;
 
 
     /**
@@ -302,8 +302,10 @@ public class CircularSplitWeights {
         CircularSplitWeights.runUnconstrainedLS(ntax, d, x);
         boolean all_positive = true;
         for (int k = 0; k < npairs && all_positive; k++)
-            if (x[k] < 0.0)
+            if (x[k] < 0.0) {
                 all_positive = false;
+                break;
+            }
 
         if (all_positive) /* If the unconstrained optimum is feasible then it is also the constrained optimum */
             return;
@@ -333,17 +335,16 @@ public class CircularSplitWeights {
                     CircularSplitWeights.circularConjugateGrads(ntax, npairs, r, w, p, y, W, AtWd, active, x);
                 first_pass = false;
 
-                if (collapse_many_negs) { /* Typically, a large number of edges are negative, so on the first
+                /* Typically, a large number of edges are negative, so on the first
                                                 pass of the algorithm we add the worst 60% to the active set */
-                    int[] entriesToContract = worstIndices(x, 0.6);
-                    if (entriesToContract != null) {
-                        int numToContract = entriesToContract.length;
-                        for (int index : entriesToContract) {
-                            x[index] = 0.0;
-                            active[index] = true;
-                        }
-                        CircularSplitWeights.circularConjugateGrads(ntax, npairs, r, w, p, y, W, AtWd, active, x); /* Re-optimise, so that the current x is always optimal */
+                int[] entriesToContract = worstIndices(x, 0.6);
+                if (entriesToContract != null) {
+                    int numToContract = entriesToContract.length;
+                    for (int index : entriesToContract) {
+                        x[index] = 0.0;
+                        active[index] = true;
                     }
+                    CircularSplitWeights.circularConjugateGrads(ntax, npairs, r, w, p, y, W, AtWd, active, x); /* Re-optimise, so that the current x is always optimal */
                 }
                 int min_i = -1;
                 double min_xi = -1.0;

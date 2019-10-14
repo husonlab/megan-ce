@@ -97,29 +97,27 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         try {
             int whichToken = 0;
             while (whichToken < tokens.length) {
-                if (whichToken < tokens.length) {
-                    String name = tokens[whichToken++];
-                    if (name.equals("Root"))
-                        name = "root";
-                    path.append(name).append(";");
-                    String scoreString = tokens[whichToken++];
-                    if (!scoreString.endsWith(")")) {
-                        System.err.println("Expected (number) in: " + line);
-                        break;
-                    }
-                    float bitScore = Basic.parseFloat(scoreString);
+                String name = tokens[whichToken++];
+                if (name.equals("Root"))
+                    name = "root";
+                path.append(name).append(";");
+                String scoreString = tokens[whichToken++];
+                if (!scoreString.endsWith(")")) {
+                    System.err.println("Expected (number) in: " + line);
+                    break;
+                }
+                float bitScore = Basic.parseFloat(scoreString);
 
-                    if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
-                        Match match = new Match();
-                        match.bitScore = bitScore;
-                        match.id = matchId++;
+                if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
+                    Match match = new Match();
+                    match.bitScore = bitScore;
+                    match.id = matchId++;
 
-                        String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
-                        match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
-                        matches.add(match);
-                        if (matches.size() > getMaxNumberOfMatchesPerRead())
-                            matches.remove(matches.last());
-                    }
+                    String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+                    match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
+                    matches.add(match);
+                    if (matches.size() > getMaxNumberOfMatchesPerRead())
+                        matches.remove(matches.last());
                 }
             }
         } catch (Exception ex) {

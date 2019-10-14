@@ -35,7 +35,7 @@ public class RMA6ToSAMIterator implements ISAMIterator {
     private final IInputReader reader;
 
     private final ListOfLongs list;
-    private int positionInList = 0;
+    private final int positionInList = 0;
 
     private final String[] cNames;
     private final boolean pairedReads;

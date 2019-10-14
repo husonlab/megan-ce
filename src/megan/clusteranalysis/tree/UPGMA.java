@@ -45,7 +45,7 @@ public class UPGMA {
         if (instance == null)
             instance = new UPGMA();
         instance.computeUPMATree(taxa, distances, treeView.getPhyloTree());
-        instance.embedTree(treeView);
+        embedTree(treeView);
     }
 
     /**

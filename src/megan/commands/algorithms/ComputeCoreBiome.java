@@ -128,13 +128,11 @@ public class ComputeCoreBiome {
             for (int i = 0; i < array.length; i++) {
                 array[i] *= detectionThresholdPercent / 100.0;
             }
-            if (true) {
-                System.err.println("Read detection thresholds for " + classificationName + ":");
-                for (float value : array) {
-                    System.err.print(String.format(" %,12.0f", value));
-                }
-                System.err.println();
+            System.err.println("Read detection thresholds for " + classificationName + ":");
+            for (float value : array) {
+                System.err.print(String.format(" %,12.0f", value));
             }
+            System.err.println();
         }
         for (int i = 0; i < array.length; i++) { // need at least 1 to detect
             array[i] = Math.max(1, array[i]);

@@ -210,7 +210,7 @@ public class NJ {
      *
      * @return true, if embedding was computed
      */
-    public boolean computeEmbedding(PhyloTreeView treeView, PhyloTree tree) {
+    private boolean computeEmbedding(PhyloTreeView treeView, PhyloTree tree) {
         treeView.removeAllInternalPoints();
 
         if (tree.getNumberOfNodes() == 0)

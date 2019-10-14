@@ -40,11 +40,7 @@ public class NamesPanel extends BasePanel {
      */
     public NamesPanel(final SelectedBlock selectedBlock) {
         super(selectedBlock);
-        selectedBlock.addSelectionListener(new ISelectionListener() {
-            public void doSelectionChanged(boolean selected, int minRow, int minCol, int maxRow, int maxCol) {
-                repaint();
-            }
-        });
+        selectedBlock.addSelectionListener((selected, minRow, minCol, maxRow, maxCol) -> repaint());
 
         MyMouseListener listener = new MyMouseListener();
         addMouseListener(listener);
@@ -71,7 +67,7 @@ public class NamesPanel extends BasePanel {
             super.paint(g);
             paintNames(g);
             paintSelection(g);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -80,7 +76,7 @@ public class NamesPanel extends BasePanel {
      *
      * @param g0 the graphics context of the sequence panel
      */
-    public void paintNames(Graphics g0) {
+    private void paintNames(Graphics g0) {
         final Graphics2D g = (Graphics2D) g0;
         final Rectangle visibleRect = getVisibleRect();
         final Rectangle2D drawRect = new Rectangle2D.Double();
@@ -121,7 +117,7 @@ public class NamesPanel extends BasePanel {
      *
      * @param g0
      */
-    public void paintSelection(Graphics g0) {
+    private void paintSelection(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         SelectedBlock selectedBlock = getSelectedBlock();
         if (selectedBlock.isSelected()) {
@@ -151,12 +147,9 @@ public class NamesPanel extends BasePanel {
     }
 
     class MyMouseListener extends MouseAdapter implements MouseListener, MouseMotionListener {
-        private final int inClick = 1;
         private final int inMove = 2;
         private final int inRubberband = 3;
         private final int inScrollByMouse = 4;
-
-        private boolean shiftDown = false;
 
         private boolean stillDownWithoutMoving = false;
 
@@ -167,6 +160,7 @@ public class NamesPanel extends BasePanel {
         @Override
         public void mouseClicked(MouseEvent me) {
             super.mouseClicked(me);
+            int inClick = 1;
             current = inClick;
             if (me.getClickCount() == 1) {
                 if (me.isShiftDown()) {
@@ -190,7 +184,7 @@ public class NamesPanel extends BasePanel {
             super.mousePressed(me);
             mouseDown = me.getPoint();
             paintedRubberband = false;
-            shiftDown = me.isShiftDown();
+            boolean shiftDown = me.isShiftDown();
 
             if (me.isAltDown() || me.isShiftDown()) {
                 current = inRubberband;
@@ -207,7 +201,7 @@ public class NamesPanel extends BasePanel {
                             synchronized (this) {
                                 wait(500);
                             }
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                         }
                         if (stillDownWithoutMoving) {
                             current = inRubberband;

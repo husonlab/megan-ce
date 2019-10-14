@@ -41,7 +41,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     public static final String NAME = "Plot2D";
 
 
-    private Double maxDisplayedXValue = null;
+    private final Double maxDisplayedXValue = null;
     private Double maxDisplayedYValue = null;
 
     public enum GridStyle {ABOVE, BELOW, NONE}
@@ -198,13 +198,8 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         int startX = 0;
-        if (startX > botX) {
-            while (startX > botX)
-                startX -= tickStepX;
-        } else {
-            while (startX + tickStepX < botX) {
-                startX += tickStepX;
-            }
+        while (startX + tickStepX < botX) {
+            startX += tickStepX;
         }
         double offsetX = botX - startX;
 
@@ -217,19 +212,14 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
                 Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
                 double xPos = x0 + value * xFactor - offsetX;
                 //  if (xPos - x0 > tickStepX)
-                if (false) {
-                    gc.drawString(label, (float) (xPos - labelSize.getWidth() / 2.0), (float) (y0 + labelSize.getHeight() + 2));
-                    gc.drawLine((int) xPos, y0, (int) xPos, y0 - 2);
-                } else {
-                    Point2D apt = new Point2D.Double(xPos, (y0 + labelSize.getHeight() + 2));
-                    if (classLabelAngle == 0) {
-                        apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
-                    } else if (classLabelAngle > Math.PI / 2) {
-                        apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
-                    }
-                    drawString(gc, label, apt.getX(), apt.getY(), classLabelAngle);
-                    gc.drawLine((int) xPos, y0, (int) xPos, y0 - 2);
+                Point2D apt = new Point2D.Double(xPos, (y0 + labelSize.getHeight() + 2));
+                if (classLabelAngle == 0) {
+                    apt.setLocation(apt.getX() - labelSize.getWidth() / 2, apt.getY());
+                } else if (classLabelAngle > Math.PI / 2) {
+                    apt = Geometry.translateByAngle(apt, classLabelAngle, -labelSize.width);
                 }
+                drawString(gc, label, apt.getX(), apt.getY(), classLabelAngle);
+                gc.drawLine((int) xPos, y0, (int) xPos, y0 - 2);
             }
         }
     }
@@ -327,13 +317,8 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         int startY = 0;
-        if (startY > botY) {
-            while (startY > botY)
-                startY -= tickStepY;
-        } else {
-            while (startY + tickStepY < botY) {
-                startY += tickStepY;
-            }
+        while (startY + tickStepY < botY) {
+            startY += tickStepY;
         }
         double offsetY = botY - startY;
 
@@ -495,13 +480,8 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         int startX = 0;
-        if (startX > botX) {
-            while (startX > botX)
-                startX -= tickStepX;
-        } else {
-            while (startX + tickStepX < botX) {
-                startX += tickStepX;
-            }
+        while (startX + tickStepX < botX) {
+            startX += tickStepX;
         }
         double offsetX = botX - startX;
 
@@ -539,13 +519,8 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
 
         int startY = 0;
-        if (startY > botY) {
-            while (startY > botY)
-                startY -= tickStepY;
-        } else {
-            while (startY + tickStepY < botY) {
-                startY += tickStepY;
-            }
+        while (startY + tickStepY < botY) {
+            startY += tickStepY;
         }
         double offsetY = botY - startY;
         Random random = new Random(666);
@@ -661,7 +636,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             seriesWithoutLines.add(series);
     }
 
-    public boolean isShowLines(String series) {
+    private boolean isShowLines(String series) {
         return !seriesWithoutLines.contains(series);
     }
 
@@ -672,7 +647,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             seriesWithoutDots.add(series);
     }
 
-    public boolean isShowDots(String series) {
+    private boolean isShowDots(String series) {
         return !seriesWithoutDots.contains(series);
     }
 

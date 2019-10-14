@@ -34,7 +34,7 @@ import java.util.Collection;
  * compute biome
  * Daniel Huson, 2.2013
  */
-public class ComputeTotalBiomeCommand extends CommandBase implements ICommand {
+class ComputeTotalBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

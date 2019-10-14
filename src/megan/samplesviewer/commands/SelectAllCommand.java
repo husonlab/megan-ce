@@ -37,8 +37,8 @@ import java.util.Set;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-public class SelectAllCommand extends CommandBase implements ICommand {
-    public static final String[] legalOptions = {"all", "none", "similar", "commentLike", "numerical", "uninformative", "romPrevious", "samples"};
+class SelectAllCommand extends CommandBase implements ICommand {
+    private static final String[] legalOptions = {"all", "none", "similar", "commentLike", "numerical", "uninformative", "romPrevious", "samples"};
     public String getSyntax() {
         return "select {" + Basic.toString(legalOptions, "|") + "} [name=<string>] [value=<string>];";
     }

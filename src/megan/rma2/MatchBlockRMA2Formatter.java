@@ -36,7 +36,7 @@ public class MatchBlockRMA2Formatter {
     static public final String DEFAULT_RMA2_1 = "BitScore:float;Identity:float;TaxonId:int;RefSeqID:BBI;";
     static public final String DEFAULT_RMA2_5 = "BitScore:float;Identity:float;Expected:float;TaxonId:int;SeedId:int;CogId:int;KeggId:int;PfamId:int;";
 
-    private String format;
+    private final String format;
 
     private int numberOfBytes = 0;
 
@@ -64,7 +64,7 @@ public class MatchBlockRMA2Formatter {
         decode(format);
     }
 
-    public void decode(String format) {
+    private void decode(String format) {
         LinkedList<Object[]> list = new LinkedList<>();
         StringTokenizer tokenizer = new StringTokenizer(format, ";");
         while (tokenizer.hasMoreElements()) {

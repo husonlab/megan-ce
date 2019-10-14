@@ -29,9 +29,9 @@ import java.util.LinkedList;
  */
 public class ComparisonStatsActions {
     public final static String DEPENDS_ON_ONE_SELECTED = "ONE";
-    public final static String DEPENDS_ON_TWO_SELECTED = "TWO";
+    private final static String DEPENDS_ON_TWO_SELECTED = "TWO";
 
-    public final java.util.List<AbstractAction> all = new LinkedList<>();
+    private final java.util.List<AbstractAction> all = new LinkedList<>();
 
     private final JComboBox comboBox1;
     private final JComboBox comboBox2;

@@ -23,7 +23,7 @@ package megan.inspector;
  * Daniel Huson, 2.2006
  */
 public class MatchTextNode extends NodeBase {
-    private String text;
+    private final String text;
 
     public MatchTextNode(String text) {
         if (text == null)

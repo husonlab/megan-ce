@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * info section of RMA2 file
@@ -38,7 +39,7 @@ public class InfoSection {
 
     private byte version = VERSION_RMA2_0;
 
-    private byte AUXILIARY_DATA_AS_MAP_BYTE = (byte) 254;
+    private final byte AUXILIARY_DATA_AS_MAP_BYTE = (byte) 254;
 
     private long creationDate;
     private long modificationDate;
@@ -115,20 +116,14 @@ public class InfoSection {
             case Reference:
                 w.writeInt(textFileNames.length);
                 for (String textFileName : textFileNames) {
-                    if (textFileName != null)
-                        w.writeString(textFileName);
-                    else
-                        w.writeString("");
+                    w.writeString(Objects.requireNonNullElse(textFileName, ""));
                 }
                 if (textFileSizes == null)
                     w.writeInt(0);
                 else {
                     w.writeInt(textFileSizes.length);
                     for (Long textFileSize : textFileSizes) {
-                        if (textFileSize != null)
-                            w.writeLong(textFileSize);
-                        else
-                            w.writeLong(-1);
+                        w.writeLong(Objects.requireNonNullElse(textFileSize, -1L));
                     }
                 }
                 break;
@@ -321,15 +316,15 @@ public class InfoSection {
         return creationDate;
     }
 
-    public void setCreationDate(long creationDate) {
+    private void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
 
-    public long getModificationDate() {
+    private long getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(long modificationDate) {
+    private void setModificationDate(long modificationDate) {
         this.modificationDate = modificationDate;
     }
 
@@ -357,11 +352,11 @@ public class InfoSection {
         return classificationSizes[i];
     }
 
-    public void setClassificationSize(int i, int size) {
+    private void setClassificationSize(int i, int size) {
         this.classificationSizes[i] = size;
     }
 
-    public long getDataDumpSectionStart() {
+    private long getDataDumpSectionStart() {
         return dataDumpSectionStart;
     }
 
@@ -369,7 +364,7 @@ public class InfoSection {
         this.dataDumpSectionStart = dataDumpSectionStart;
     }
 
-    public long getDataDumpSectionEnd() {
+    private long getDataDumpSectionEnd() {
         return dataDumpSectionEnd;
     }
 
@@ -406,7 +401,7 @@ public class InfoSection {
         return classificationIndexSectionStart[i];
     }
 
-    public void setClassificationIndexSectionStart(int i, long classificationSectionStart) {
+    private void setClassificationIndexSectionStart(int i, long classificationSectionStart) {
         this.classificationIndexSectionStart[i] = classificationSectionStart;
     }
 
@@ -414,7 +409,7 @@ public class InfoSection {
         return classificationIndexSectionEnd[i];
     }
 
-    public void setClassificationIndexSectionEnd(int i, long classificationSectionEnd) {
+    private void setClassificationIndexSectionEnd(int i, long classificationSectionEnd) {
         this.classificationIndexSectionEnd[i] = classificationSectionEnd;
     }
 
@@ -422,7 +417,7 @@ public class InfoSection {
         return classificationDumpSectionStart[i];
     }
 
-    public void setClassificationDumpSectionStart(int i, long classificationSectionStart) {
+    private void setClassificationDumpSectionStart(int i, long classificationSectionStart) {
         this.classificationDumpSectionStart[i] = classificationSectionStart;
     }
 
@@ -430,11 +425,11 @@ public class InfoSection {
         return classificationDumpSectionEnd[i];
     }
 
-    public void setClassificationDumpSectionEnd(int i, long classificationSectionEnd) {
+    private void setClassificationDumpSectionEnd(int i, long classificationSectionEnd) {
         this.classificationDumpSectionEnd[i] = classificationSectionEnd;
     }
 
-    public int getNumberOfClassifications() {
+    private int getNumberOfClassifications() {
         return classificationNames.length;
     }
 
@@ -446,7 +441,7 @@ public class InfoSection {
         return classificationNames;
     }
 
-    public void setClassificationName(int i, String classificationName) {
+    private void setClassificationName(int i, String classificationName) {
         this.classificationNames[i] = classificationName;
     }
 
@@ -470,7 +465,7 @@ public class InfoSection {
         return hasAuxiliaryMap;
     }
 
-    public void setHasAuxiliaryMap(boolean hasAuxiliaryMap) {
+    private void setHasAuxiliaryMap(boolean hasAuxiliaryMap) {
         this.hasAuxiliaryMap = hasAuxiliaryMap;
     }
 
@@ -482,7 +477,7 @@ public class InfoSection {
         this.textStoragePolicy = textStoragePolicy;
     }
 
-    public String[] getTextFileNames() {
+    private String[] getTextFileNames() {
         return textFileNames;
     }
 
@@ -490,7 +485,7 @@ public class InfoSection {
         this.textFileNames = textFileNames;
     }
 
-    public Long[] getTextFileSizes() {
+    private Long[] getTextFileSizes() {
         return textFileSizes;
     }
 

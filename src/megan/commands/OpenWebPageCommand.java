@@ -75,7 +75,7 @@ public class OpenWebPageCommand extends CommandBase implements ICommand {
         if (getViewer() instanceof MainViewer || getViewer() instanceof TaxaChart)
             name = "Taxonomy";
         else if (getViewer() instanceof ClassificationViewer) {
-            name = ((ClassificationViewer) getViewer()).getClassName();
+            name = getViewer().getClassName();
         } else if (getViewer() instanceof FViewerChart) {
             name = ((FViewerChart) getViewer()).getCName();
         }

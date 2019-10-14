@@ -62,7 +62,7 @@ public class TextStorageReader {
             try {
                 if (r != null)
                     r.close();
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -149,7 +149,7 @@ public class TextStorageReader {
      * @return header and sequence
      * @throws IOException
      */
-    public void getHeaderAndSequence(Location location, Pair<String, String> headerAndSequence) throws IOException {
+    private void getHeaderAndSequence(Location location, Pair<String, String> headerAndSequence) throws IOException {
         String string = getText(location);
 
         if (string == null) {
@@ -162,7 +162,7 @@ public class TextStorageReader {
                 headerAndSequence.setSecond(null);
             } else {
                 headerAndSequence.setFirst(string.substring(0, eol));
-                headerAndSequence.setSecond(string.substring(eol + 1, string.length()));
+                headerAndSequence.setSecond(string.substring(eol + 1));
             }
         }
     }

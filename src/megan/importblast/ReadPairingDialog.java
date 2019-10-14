@@ -160,9 +160,9 @@ public class ReadPairingDialog {
         return !canceled;
     }
 
-    AbstractAction cancelAction;
+    private AbstractAction cancelAction;
 
-    public AbstractAction getCancelAction() {
+    private AbstractAction getCancelAction() {
         AbstractAction action = cancelAction;
 
         if (action != null)
@@ -178,9 +178,9 @@ public class ReadPairingDialog {
         return cancelAction = action;
     }
 
-    AbstractAction applyAction;
+    private AbstractAction applyAction;
 
-    public AbstractAction getApplyAction() {
+    private AbstractAction getApplyAction() {
         AbstractAction action = applyAction;
 
         if (action != null)
@@ -218,7 +218,7 @@ public class ReadPairingDialog {
      * @param readsFile
      * @return patterns
      */
-    String[] guessPairedSuffixes(String readsFile) {
+    private String[] guessPairedSuffixes(String readsFile) {
         String pattern1 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX1, "?");
         String pattern2 = ProgramProperties.get(MeganProperties.PAIRED_READ_SUFFIX2, "?");
 
@@ -269,12 +269,12 @@ public class ReadPairingDialog {
                         }
                     }
                 }
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             } finally {
                 if (r != null)
                     try {
                         r.close();
-                    } catch (IOException e) {
+                    } catch (IOException ignored) {
                     }
             }
         }

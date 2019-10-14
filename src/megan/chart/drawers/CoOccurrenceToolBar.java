@@ -76,11 +76,9 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         minPrevalenceSlider.setToolTipText(minPrevalenceField.getToolTipText());
         minPrevalenceSlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
-        minPrevalenceSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                minPrevalenceField.setText("" + newValue);
-            }
+        minPrevalenceSlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            minPrevalenceField.setText("" + newValue);
         });
 
         minPrevalenceField.addActionListener(new AbstractAction() {
@@ -104,11 +102,9 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         maxPrevalenceSlider.setToolTipText(maxPrevalenceField.getToolTipText());
         maxPrevalenceSlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
-        maxPrevalenceSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                maxPrevalenceField.setText("" + newValue);
-            }
+        maxPrevalenceSlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            maxPrevalenceField.setText("" + newValue);
         });
 
         maxPrevalenceField.addActionListener(new AbstractAction() {
@@ -132,11 +128,9 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         minProbabilitySlider.setToolTipText(minProbabilityField.getToolTipText());
         minProbabilitySlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
-        minProbabilitySlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                int newValue = ((JSlider) e.getSource()).getValue();
-                minProbabilityField.setText("" + newValue);
-            }
+        minProbabilitySlider.addChangeListener(e -> {
+            int newValue = ((JSlider) e.getSource()).getValue();
+            minProbabilityField.setText("" + newValue);
         });
 
         minProbabilityField.addActionListener(new AbstractAction() {

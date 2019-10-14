@@ -221,12 +221,7 @@ public class FilesPanel extends JPanel {
             dialog.getMaxNumberOfMatchesPerReadField().setToolTipText("Specify the maximum number of matches to save per read." +
                     " A small value reduces the size of the MEGAN file, but may exclude some important matches.");
             below3.add(dialog.getMaxNumberOfMatchesPerReadField());
-            longReadsCBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    dialog.getMaxNumberOfMatchesPerReadField().setEnabled(!longReadsCBox.isSelected());
-                }
-            });
+            longReadsCBox.addActionListener(e -> dialog.getMaxNumberOfMatchesPerReadField().setEnabled(!longReadsCBox.isSelected()));
 
             below3.add(Box.createHorizontalGlue());
 

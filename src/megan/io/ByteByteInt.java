@@ -19,6 +19,7 @@
 package megan.io;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * two bytes and an integer, used for RefSeqs and similar accession numbers.
@@ -58,13 +59,9 @@ public class ByteByteInt {
      */
     public ByteByteInt(String string) {
         if (string != null && string.length() >= 2) {
-            try {
-                byte[] bytes = string.substring(0, 2).getBytes("UTF-8");
-                byte1 = bytes[0];
-                byte2 = bytes[1];
-            } catch (UnsupportedEncodingException ex) {
-//                Basic.caught(ex);
-            }
+            byte[] bytes = string.substring(0, 2).getBytes(StandardCharsets.UTF_8);
+            byte1 = bytes[0];
+            byte2 = bytes[1];
             int a = 0;
             int b = 0;
             for (int pos = 2; pos < string.length(); pos++) {
@@ -134,7 +131,7 @@ public class ByteByteInt {
 
     public int hashCode() {
         int result;
-        result = (int) byte1;
+        result = byte1;
         result = 31 * result + (int) byte2;
         result = 31 * result + value;
         return result;

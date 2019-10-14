@@ -95,7 +95,7 @@ public class ContigBuilder {
                     if (i + 1 < contig.length) {
                         int nextReadId = (Integer) contig[i + 1].getInfo();
                         int length = alignment.getLane(nextReadId).getFirstNonGapPosition() - iLane.getFirstNonGapPosition();
-                        sequenceBuffer.append(iLane.getBlock().substring(0, length));
+                        sequenceBuffer.append(iLane.getBlock(), 0, length);
                     } else {
                         sequenceBuffer.append(iLane.getBlock());
                     }
@@ -161,20 +161,13 @@ public class ContigBuilder {
      * @param alignment
      */
     private void sortAlignmentByContigs(final Alignment alignment) {
-        Arrays.sort(paths, new Comparator<Node[]>() {
-            public int compare(Node[] a, Node[] b) {
-                Integer posA = alignment.getLane((Integer) a[0].getInfo()).getFirstNonGapPosition();
-                Integer posB = alignment.getLane((Integer) b[0].getInfo()).getFirstNonGapPosition();
-                return posA.compareTo(posB);
-            }
+        Arrays.sort(paths, (a, b) -> {
+            Integer posA = alignment.getLane((Integer) a[0].getInfo()).getFirstNonGapPosition();
+            Integer posB = alignment.getLane((Integer) b[0].getInfo()).getFirstNonGapPosition();
+            return posA.compareTo(posB);
         });
 
-        Arrays.sort(paths, new Comparator<Node[]>() {
-            @Override
-            public int compare(Node[] a, Node[] b) {
-                return -Integer.compare(a.length, b.length);
-            }
-        });
+        Arrays.sort(paths, (a, b) -> -Integer.compare(a.length, b.length));
 
         // sort reads by contigs:
         List<Integer> order = new ArrayList<>(alignment.getNumberOfSequences());

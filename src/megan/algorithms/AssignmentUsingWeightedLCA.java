@@ -247,12 +247,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         if (origLength == 0)
             return "";
         // sort:
-        Arrays.sort(array, 0, origLength, new Comparator<WeightedAddress>() {
-            @Override
-            public int compare(WeightedAddress a, WeightedAddress b) {
-                return a.address.compareTo(b.address);
-            }
-        });
+        Arrays.sort(array, 0, origLength, (a, b) -> a.address.compareTo(b.address));
         // setup links:
         for (int i = 0; i < origLength - 1; i++) {
             array[i].next = array[i + 1];
@@ -366,7 +361,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
      * @param address
      * @return as numbers
      */
-    public static String toNumbers(String address) {
+    private static String toNumbers(String address) {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < address.length(); i++)
             buf.append(String.format("%d.", (int) address.charAt(i)));
@@ -380,7 +375,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
      * @param size
      * @return new array
      */
-    public static WeightedAddress[] resizeArray(WeightedAddress[] array, int size) {
+    private static WeightedAddress[] resizeArray(WeightedAddress[] array, int size) {
         final WeightedAddress[] result = new WeightedAddress[size];
         System.arraycopy(array, 0, result, 0, array.length);
         for (int i = array.length; i < result.length; i++)
@@ -429,12 +424,12 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             this.weight = weight;
         }
 
-        public void set(String address, int weight) {
+        void set(String address, int weight) {
             this.address = address;
             this.weight = weight;
         }
 
-        public String getAddress() {
+        String getAddress() {
             return address;
         }
 

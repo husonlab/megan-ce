@@ -53,7 +53,7 @@ import java.util.Set;
  * assemble all reads associated with a selected node
  * Daniel Huson, 5.2015
  */
-public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
+class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [minPercentIdentity=<number>] [maxNumberOfReads=<number>] [showGraph={false|true}];";
@@ -170,7 +170,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             }
             if (ProgramProperties.isUseGUI()) {
                 if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
-                    final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), null, outputFile, "contig");
+                    final String commandString = RemoteBlastDialog.apply(getViewer(), getDir(), null, outputFile, "contig");
                     if (commandString != null) {
                         final Director newDir = Director.newProject();
                         newDir.getMainViewer().getFrame().setVisible(true);
@@ -219,7 +219,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
                     if (ProgramProperties.isUseGUI()) {
                         if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
-                            final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), null, outputFile, "contig");
+                            final String commandString = RemoteBlastDialog.apply(getViewer(), getDir(), null, outputFile, "contig");
                             if (commandString != null) {
                                 final Director newDir = Director.newProject();
                                 newDir.getMainViewer().setDoReInduce(true);
@@ -277,8 +277,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             addOn = Basic.toCleanName(((AlignmentViewer) getViewer()).getAlignment().getName()).replaceAll("[_]+", "_");
         } else if (getViewer() instanceof ViewerBase) {
             addOn = getViewer().getClassName().toLowerCase();
-            final Set<String> labels = new HashSet<>();
-            labels.addAll(((ViewerBase) getViewer()).getSelectedNodeLabels(false));
+            final Set<String> labels = new HashSet<>(((ViewerBase) getViewer()).getSelectedNodeLabels(false));
             if (labels.size() == 1)
                 addOn += "-" + Basic.toCleanName(labels.iterator().next()).replaceAll("[_]+", "_");
         }

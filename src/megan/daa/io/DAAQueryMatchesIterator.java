@@ -38,7 +38,7 @@ public class DAAQueryMatchesIterator implements ICloseableIterator<Pair<DAAQuery
     private final BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> queue;
     private final ExecutorService executorService;
 
-    long count = 0;
+    private long count = 0;
     private Pair<DAAQueryRecord, DAAMatchRecord[]> next = null;
 
     /**
@@ -56,13 +56,11 @@ public class DAAQueryMatchesIterator implements ICloseableIterator<Pair<DAAQuery
 
         // start a thread that loads queue:
         executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
-            public void run() {
-                try {
-                    daaParser.getAllQueriesAndMatches(wantMatches, maxMatchesPerRead, queue, longReads);
-                } catch (IOException e) {
-                    Basic.caught(e);
-                }
+        executorService.submit(() -> {
+            try {
+                daaParser.getAllQueriesAndMatches(wantMatches, maxMatchesPerRead, queue, longReads);
+            } catch (IOException e) {
+                Basic.caught(e);
             }
         });
     }

@@ -140,7 +140,7 @@ public class FViewerChart extends ChartViewer {
             IChartData chartData = (IChartData) getChartData();
             chartData.clear();
 
-            Document doc = ((Director) dir).getDocument();
+            Document doc = dir.getDocument();
             setChartTitle(cName + " profile for " + doc.getTitle());
             int numberOfSamples = doc.getNumberOfSamples();
             if (numberOfSamples > 0) {
@@ -148,7 +148,7 @@ public class FViewerChart extends ChartViewer {
                     viewer.selectAllLeaves();
                 }
                 chartData.setAllSeries(doc.getSampleNames());
-                String[] sampleNames = doc.getSampleNames().toArray(new String[doc.getSampleNames().size()]);
+                String[] sampleNames = doc.getSampleNames().toArray(new String[0]);
 
                 java.util.Collection<Integer> ids = viewer.getSelectedIds();
                 LinkedList<String> classNames = new LinkedList<>();

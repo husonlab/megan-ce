@@ -33,55 +33,48 @@ public class SpiralNode8 extends JPanel {
     public void paintComponent(Graphics gc) {
         float[] values = {1.0f, 1.0f, 1.0f, 0.8f, 0, 1.0f, 1.0f, 1.0f, 0.8f, 0, 0, 0, 0, 0, 0, 0.7f, 0.7f, 0.6f, 0.6f, 0.3f, 0.1f, 0.01f, 0f, 0.7f, 0.6f, 0.6f, 0.3f, 0f};
 
-        if (values.length > 0) {
-            ArrayList<Float> sorted = new ArrayList<>();
-            for (float f : values)
-                sorted.add(f);
-            sorted.sort(new Comparator<Float>() {
-                @Override
-                public int compare(Float a, Float b) {
-                    return -a.compareTo(b);
-                }
-            });
+        ArrayList<Float> sorted = new ArrayList<>();
+        for (float f : values)
+            sorted.add(f);
+        sorted.sort((a, b) -> -a.compareTo(b));
 
-            final int nodeHeight = 200;
-            final int nodeWidth = 200;
+        final int nodeHeight = 200;
+        final int nodeWidth = 200;
 
-            final int centerX = (getSize().width - nodeHeight) / 2;
-            final int centerY = (getSize().height - nodeHeight) / 2;
-            final int minX = centerX - nodeWidth / 2;
-            final int minY = centerY - nodeHeight / 2;
+        final int centerX = (getSize().width - nodeHeight) / 2;
+        final int centerY = (getSize().height - nodeHeight) / 2;
+        final int minX = centerX - nodeWidth / 2;
+        final int minY = centerY - nodeHeight / 2;
 
-            gc.setColor(Color.LIGHT_GRAY);
-            gc.fillArc(minX - 1, minY - 1, nodeWidth + 2, nodeHeight + 2, 0, 360);
+        gc.setColor(Color.LIGHT_GRAY);
+        gc.fillArc(minX - 1, minY - 1, nodeWidth + 2, nodeHeight + 2, 0, 360);
 
 
-            {
-                final int steps = Math.min(36, sorted.size());
-                final int add = Math.max(1, sorted.size() / steps);
-                final float max = sorted.get(0);
-                final double scale = 0.5 * (max > 0 ? 1.0 / max : 1);
+        {
+            final int steps = Math.min(36, sorted.size());
+            final int add = Math.max(1, sorted.size() / steps);
+            final float max = sorted.get(0);
+            final double scale = 0.5 * (max > 0 ? 1.0 / max : 1);
 
-                GeneralPath.Float gp = new GeneralPath.Float();
-                gp.moveTo(centerX, minY);
-                final double radius = 0.5 * nodeHeight;
-                final double delta = 2 * Math.PI / steps;
+            GeneralPath.Float gp = new GeneralPath.Float();
+            gp.moveTo(centerX, minY);
+            final double radius = 0.5 * nodeHeight;
+            final double delta = 2 * Math.PI / steps;
 
-                for (int i = 0; i < steps; i += add) {
-                    double angle = Math.PI + i * delta;
-                    double dist = radius * (1 - scale * sorted.get(i));
-                    Point2D apt = Geometry.rotate(new Point2D.Double(0, dist), angle);
-                    gp.lineTo(centerX + apt.getX(), centerY + apt.getY());
-                }
-                gp.closePath();
-
-                gc.setColor(Color.WHITE);
-                ((Graphics2D) gc).fill(gp);
+            for (int i = 0; i < steps; i += add) {
+                double angle = Math.PI + i * delta;
+                double dist = radius * (1 - scale * sorted.get(i));
+                Point2D apt = Geometry.rotate(new Point2D.Double(0, dist), angle);
+                gp.lineTo(centerX + apt.getX(), centerY + apt.getY());
             }
+            gp.closePath();
 
-            gc.setColor(Color.BLACK);
-            gc.drawArc(minX - 1, minY - 1, nodeWidth + 2, nodeHeight + 2, 0, 360);
+            gc.setColor(Color.WHITE);
+            ((Graphics2D) gc).fill(gp);
         }
+
+        gc.setColor(Color.BLACK);
+        gc.drawArc(minX - 1, minY - 1, nodeWidth + 2, nodeHeight + 2, 0, 360);
 
     }
 

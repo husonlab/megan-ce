@@ -31,7 +31,7 @@ import java.io.IOException;
  * draw as rounded phylogram
  * Daniel Huson, 5.2015
  */
-public class SetRoundedPhylogramCommand extends CommandBase implements ICheckBoxCommand {
+class SetRoundedPhylogramCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((ViewerBase) getViewer()).getDrawerType().equals(ViewerBase.DiagramType.RoundedPhylogram);
     }

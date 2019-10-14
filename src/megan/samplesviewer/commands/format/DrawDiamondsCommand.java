@@ -33,7 +33,7 @@ import java.util.Collection;
  * draw selected nodes as diamonds
  * Daniel Huson, 3.2013
  */
-public class DrawDiamondsCommand extends CommandBase implements ICommand {
+class DrawDiamondsCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

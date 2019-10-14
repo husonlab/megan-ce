@@ -28,13 +28,14 @@ import megan.chart.gui.SelectionGraphics;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * draws a line chart
  * Daniel Huson, 5.2012
  */
 public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "LineChart";
+    private static final String NAME = "LineChart";
 
     /**
      * constructor
@@ -255,7 +256,7 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT: {
-                        value *= percentFactor[i];
+                        value *= Objects.requireNonNull(percentFactor)[i];
                         break;
                     }
                     case LOG: {

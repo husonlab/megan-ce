@@ -51,23 +51,23 @@ public class IdMapper {
 
     private final String cName;
 
-    protected final EnumMap<MapType, String> map2Filename = new EnumMap<>(MapType.class);
+    private final EnumMap<MapType, String> map2Filename = new EnumMap<>(MapType.class);
 
-    protected final EnumSet<MapType> loadedMaps = EnumSet.noneOf(MapType.class);
+    private final EnumSet<MapType> loadedMaps = EnumSet.noneOf(MapType.class);
 
-    protected final EnumSet<MapType> activeMaps = EnumSet.noneOf(MapType.class);
+    private final EnumSet<MapType> activeMaps = EnumSet.noneOf(MapType.class);
 
-    protected final ClassificationFullTree fullTree;
-    protected final Name2IdMap name2IdMap;
+    final ClassificationFullTree fullTree;
+    private final Name2IdMap name2IdMap;
 
-    protected boolean useTextParsing;
+    private boolean useTextParsing;
 
     private final Set<Integer> disabledIds = new HashSet<>();
 
-    protected IString2IntegerMap accessionMap = null;
-    protected String2IntegerMap synonymsMap = null;
+    private IString2IntegerMap accessionMap = null;
+    private String2IntegerMap synonymsMap = null;
 
-    protected IdParser.Algorithm algorithm;
+    private final IdParser.Algorithm algorithm;
 
     /**
      * constructor
@@ -273,7 +273,7 @@ public class IdMapper {
         return disabledIds;
     }
 
-    public void closeAccessionMap() {
+    private void closeAccessionMap() {
         if (accessionMap != null) {
             try {
                 accessionMap.close();

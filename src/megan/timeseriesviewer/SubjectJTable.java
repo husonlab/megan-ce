@@ -132,14 +132,14 @@ public class SubjectJTable {
         private String columnName = "Subject";
         private DataNode[][] data;
 
-        public MyTableModel() {
+        MyTableModel() {
         }
 
-        public void resize(int rows) {
+        void resize(int rows) {
             data = new DataNode[rows][1];
         }
 
-        public void put(int row, String name) {
+        void put(int row, String name) {
             data[row][0] = new DataNode(name);
         }
 
@@ -155,7 +155,7 @@ public class SubjectJTable {
             return (col == 0 ? columnName : "??");
         }
 
-        public void setColumnName(int col, String name) {
+        void setColumnName(int col, String name) {
             if (col == 0)
                 columnName = name;
         }
@@ -190,11 +190,11 @@ public class SubjectJTable {
         }
     }
 
-    class DataNode {
+    static class DataNode {
         private final String name;
         private boolean selected;
 
-        public DataNode(String name) {
+        DataNode(String name) {
             this.name = name;
         }
 
@@ -210,7 +210,7 @@ public class SubjectJTable {
             return name;
         }
 
-        public String getName() {
+        String getName() {
             return name;
         }
     }
@@ -247,13 +247,13 @@ public class SubjectJTable {
             return panel;
         }
 
-        public boolean isEnabled(int modelRow) {
+        boolean isEnabled(int modelRow) {
             //String sampleName = tableModel.getValueAt(modelRow, 0).toString();
             return true;
         }
     }
 
-    public class MySelectionListener implements ListSelectionListener {
+    class MySelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 // The mouse button has not yet been released
@@ -284,7 +284,7 @@ public class SubjectJTable {
         }
     }
 
-    public void showPopupMenu(final MouseEvent e) {
+    private void showPopupMenu(final MouseEvent e) {
         // show the header popup menu:
         if (e.getSource() instanceof JTableHeader) {
             (new PopupMenu(this, GUIConfiguration.getSubjectColumnHeaderPopupConfiguration(), dir.getCommandManager())).show(e.getComponent(), e.getX(), e.getY());

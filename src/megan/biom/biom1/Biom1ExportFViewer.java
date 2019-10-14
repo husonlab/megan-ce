@@ -68,7 +68,7 @@ public class Biom1ExportFViewer {
             colItem.put("metadata", new StringMap());
             colList.add(colItem);
         }
-        biom1Data.setColumns(colList.toArray(new Map[colList.size()]));
+        biom1Data.setColumns(colList.toArray(new Map[0]));
 
         final NodeSet selectedNodes = viewer.getSelectedNodes();
         if (selectedNodes.size() == 0) {
@@ -82,7 +82,7 @@ public class Biom1ExportFViewer {
         final LinkedList<Map> rowList = new LinkedList<>();
         final LinkedList<float[]> dataList = new LinkedList<>();
 
-        visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<String>(), rowList, dataList, new HashSet<Integer>(), progressListener);
+        visitSelectedLeavesRec(viewer, viewer.getTree().getRoot(), selectedNodes, new Vector<>(), rowList, dataList, new HashSet<>(), progressListener);
         int numberOfRows = rowList.size();
         biom1Data.setRows(rowList.toArray(new Map[numberOfRows]));
 

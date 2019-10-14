@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-public class ShowUnalignedSequenceCommand extends CommandBase implements ICheckBoxCommand {
+class ShowUnalignedSequenceCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -76,7 +76,7 @@ public class ShowUnalignedSequenceCommand extends CommandBase implements ICheckB
         execute("set show-unaligned=" + !isSelected() + ";");
     }
 
-    public static final String NAME = "Show Unaligned";
+    private static final String NAME = "Show Unaligned";
 
     public String getName() {
         return NAME;

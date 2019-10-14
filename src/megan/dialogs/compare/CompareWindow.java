@@ -46,9 +46,9 @@ import java.util.*;
  * Daniel Huson, 3.2007
  */
 public class CompareWindow extends JDialog {
-    final ActionJList<MyListItem> jList;
-    final DefaultListModel<MyListItem> listModel;
-    Comparer.COMPARISON_MODE mode = Comparer.COMPARISON_MODE.RELATIVE;
+    private final ActionJList<MyListItem> jList;
+    private final DefaultListModel<MyListItem> listModel;
+    private Comparer.COMPARISON_MODE mode = Comparer.COMPARISON_MODE.RELATIVE;
     private boolean ignoreNoHits;
     private boolean keep1;
 
@@ -93,11 +93,7 @@ public class CompareWindow extends JDialog {
         if (files != null)
             loadList(files, false);
 
-        jList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                commandManager.updateEnableState();
-            }
-        });
+        jList.addListSelectionListener(listSelectionEvent -> commandManager.updateEnableState());
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -347,23 +343,20 @@ public class CompareWindow extends JDialog {
                 ok = false;
         }
         if (ok) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isCanceled()) {
-                        try {
-                            MyListItem item = new MyListItem(fileName, true);
-                            int index = listModel.size();
-                            listModel.add(index, item);
-                            int[] selection = jList.getSelectedIndices();
-                            int[] newSelection = new int[selection.length + 1];
-                            System.arraycopy(selection, 0, newSelection, 0, selection.length);
-                            newSelection[selection.length] = index;
-                            jList.setSelectedIndices(newSelection);
-                            jList.repaint();
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
-                        }
+            SwingUtilities.invokeLater(() -> {
+                if (!isCanceled()) {
+                    try {
+                        MyListItem item = new MyListItem(fileName, true);
+                        int index = listModel.size();
+                        listModel.add(index, item);
+                        int[] selection = jList.getSelectedIndices();
+                        int[] newSelection = new int[selection.length + 1];
+                        System.arraycopy(selection, 0, newSelection, 0, selection.length);
+                        newSelection[selection.length] = index;
+                        jList.setSelectedIndices(newSelection);
+                        jList.repaint();
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
                     }
                 }
             });

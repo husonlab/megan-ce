@@ -28,8 +28,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class ShowNotificationsCommand extends CommandBase implements ICheckBoxCommand {
-    static final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+class ShowNotificationsCommand extends CommandBase implements ICheckBoxCommand {
+    private static final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 
     @Override
     public boolean isSelected() {

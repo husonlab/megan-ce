@@ -18,20 +18,17 @@
  */
 package megan.clusteranalysis.tree;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * maintains the taxa associated with a tree or network
  * Daniel Huson, 6.2007
  */
 public class Taxa {
-    final Map<String, Integer> name2index;
-    final Map<Integer, String> index2name;
-    final BitSet bits;
-    int ntax;
+    private final Map<String, Integer> name2index;
+    private final Map<Integer, String> index2name;
+    private final BitSet bits;
+    private int ntax;
 
     /**
      * constructor
@@ -62,10 +59,7 @@ public class Taxa {
      */
     public int indexOf(String name) {
         Integer index = name2index.get(name);
-        if (index == null)
-            return -1;
-        else
-            return index;
+        return Objects.requireNonNullElse(index, -1);
 
     }
 
@@ -76,7 +70,7 @@ public class Taxa {
      * @return the index of the taxon
      */
     public int add(String name) {
-        if (!name2index.keySet().contains(name)) {
+        if (!name2index.containsKey(name)) {
             ntax++;
             bits.set(ntax);
             Integer index = ntax;

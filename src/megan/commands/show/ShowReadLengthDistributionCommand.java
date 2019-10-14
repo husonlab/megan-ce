@@ -54,7 +54,7 @@ public class ShowReadLengthDistributionCommand extends CommandBase implements IC
                 && ((ClassificationViewer) getViewer()).getSelectedNodes().size() == 1;
     }
 
-    final public static String NAME = "Show Read Length Distribution...";
+    private final static String NAME = "Show Read Length Distribution...";
 
     public String getName() {
         return NAME;

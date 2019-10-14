@@ -27,7 +27,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetLabelDown45Command extends CommandBase implements ICheckBoxCommand {
+class SetLabelDown45Command extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();

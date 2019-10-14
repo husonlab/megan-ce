@@ -46,23 +46,23 @@ public class CDS {
     public CDS() {
     }
 
-    public void setDnaId(String dnaId) {
+    private void setDnaId(String dnaId) {
         this.dnaId = dnaId;
     }
 
-    public void setStart(int start) {
+    private void setStart(int start) {
         this.start = start;
     }
 
-    public void setEnd(int end) {
+    private void setEnd(int end) {
         this.end = end;
     }
 
-    public void setReverse(boolean reverse) {
+    private void setReverse(boolean reverse) {
         this.reverse = reverse;
     }
 
-    public void setProteinId(String proteinId) {
+    private void setProteinId(String proteinId) {
         this.proteinId = proteinId;
     }
 
@@ -142,8 +142,8 @@ public class CDS {
                 dnaAccessionIterator.restart(tokens[0]);
                 if (dnaAccessionIterator.hasNext()) {
                     cds.setDnaId(dnaAccessionIterator.getFirst());
-                    cds.setStart(Integer.valueOf(tokens[3]));
-                    cds.setEnd(Integer.valueOf(tokens[4]));
+                    cds.setStart(Integer.parseInt(tokens[3]));
+                    cds.setEnd(Integer.parseInt(tokens[4]));
                     cds.setReverse(tokens[6].equals("-"));
                     if (!"+-".contains(tokens[6]))
                         System.err.println("Expected + or - in line: " + aLine);
@@ -216,7 +216,7 @@ public class CDS {
      * @param tags
      * @return first tagged accession
      */
-    public static String getFirstTaggedAccession(String reference, String... tags) {
+    private static String getFirstTaggedAccession(String reference, String... tags) {
         for (String tag : tags) {
             int pos = reference.indexOf(tag);
             while (pos != -1) {

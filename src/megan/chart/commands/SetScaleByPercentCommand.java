@@ -27,7 +27,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class SetScaleByPercentCommand extends CommandBase implements ICheckBoxCommand {
+class SetScaleByPercentCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().getScalingType() == ChartViewer.ScalingType.PERCENT;

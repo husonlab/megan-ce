@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * bring window to front
  * Daniel Huson, 2.2011
  */
-public class ToFrontCommand extends CommandBase implements ICommand {
+class ToFrontCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("toFront");

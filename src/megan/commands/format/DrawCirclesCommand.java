@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * draw selected nodes as circles
  * Daniel Huson, 3.2013
  */
-public class DrawCirclesCommand extends CommandBase implements ICommand {
+class DrawCirclesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

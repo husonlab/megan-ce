@@ -35,11 +35,11 @@ public class TaxonomicLevels {
     public static final String Class = "Class";
     public static final String Order = "Order";
     public static final String Family = "Family";
-    public static final String Varietas = "Varietas";
+    private static final String Varietas = "Varietas";
     public static final String Genus = "Genus";
-    public static final String Species_group = "Species_group";
+    private static final String Species_group = "Species_group";
     public static final String Species = "Species";
-    public static final String Subspecies = "Subspecies";
+    private static final String Subspecies = "Subspecies";
 
     private final BitSet majorRanks = new BitSet();
 
@@ -50,7 +50,7 @@ public class TaxonomicLevels {
      *
      * @return instance
      */
-    public static TaxonomicLevels getInstance() {
+    private static TaxonomicLevels getInstance() {
         if (instance == null)
             instance = new TaxonomicLevels();
         return instance;
@@ -117,7 +117,7 @@ public class TaxonomicLevels {
         if (rank == 127)
             return 1;
         int nextRank = getInstance().majorRanks.nextSetBit(rank + 1);
-        return nextRank > 0 ? nextRank : 0
+        return Math.max(nextRank, 0)
                 ;
     }
 

@@ -24,7 +24,7 @@ package megan.daa.io;
  * Daniel Huson, 8.2015
  */
 public class PackedOperation {
-    int code;
+    private final int code;
 
     /**
      * constructor

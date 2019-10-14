@@ -90,9 +90,7 @@ public class CSVSummaryParser {
         String[] names = null;
 
         final Map<Integer, float[]>[] class2counts = new HashMap[cNames.length];
-        for (int i = 0; i < class2counts.length; i++) {
-            class2counts[i] = new HashMap<>();
-        }
+        Arrays.fill(class2counts, new HashMap<>());
 
         float[][] total = new float[cNames.length][];
 
@@ -152,9 +150,7 @@ public class CSVSummaryParser {
                                 names[i] = "Sample" + (i + 1);
                         }
 
-                        for (int i = 0; i < total.length; i++) {
-                            total[i] = new float[names.length];
-                        }
+                        Arrays.fill(total, new float[names.length]);
                         if (headerLinePresent)
                             continue; // don't try to parse numbers from header line
                     }
@@ -219,7 +215,7 @@ public class CSVSummaryParser {
             }
         }
 
-        float[] sizes = new float[names.length];
+        float[] sizes = new float[Objects.requireNonNull(names).length];
         if (taxonomyIndex == -1) {
             System.arraycopy(total[0], 0, sizes, 0, sizes.length);
             final Map<Integer, float[]> unassigned = new HashMap<>();
@@ -261,11 +257,7 @@ public class CSVSummaryParser {
      * @return entry
      */
     private static float[] getOrCreate(Map<Integer, float[]> map, Integer id, int size) {
-        float[] result = map.get(id);
-        if (result == null) {
-            result = new float[size];
-            map.put(id, result);
-        }
+        float[] result = map.computeIfAbsent(id, k -> new float[size]);
         return result;
     }
 
@@ -299,12 +291,12 @@ public class CSVSummaryParser {
                 return 0;
             else
                 result = aLine.split(separator).length;
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         } finally {
             if (r != null)
                 try {
                     r.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
         }
         return result;
@@ -325,12 +317,12 @@ public class CSVSummaryParser {
                 aLine = r.readLine().trim();
             if (aLine != null)
                 return aLine.contains("\t");
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         } finally {
             if (r != null)
                 try {
                     r.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
         }
         return false;

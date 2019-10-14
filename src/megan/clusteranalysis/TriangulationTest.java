@@ -223,11 +223,7 @@ public class TriangulationTest {
                 ok = false;
                 break;
             } else {
-                Integer count = value2count.get(value);
-                if (count == null)
-                    value2count.put(value, 1);
-                else
-                    value2count.put(value, count + 1);
+                value2count.merge(value, 1, Integer::sum);
             }
         }
         if (ok) {

@@ -44,7 +44,7 @@ public class Biom2ParserTest {
      * @return Document
      * @throws IOException
      */
-    public static Document apply(String inputFile, boolean preservePaths) throws IOException {
+    private static Document apply(String inputFile, boolean preservePaths) throws IOException {
         Writer dumpWriter = new BufferedWriter(new FileWriter(Basic.replaceFileSuffix(inputFile, (preservePaths ? "+p" : "-p") + "-dmp.txt")));
 
         final Document doc = new Document();
@@ -103,7 +103,7 @@ public class Biom2ParserTest {
 
             final Map<String, Map<Integer, float[]>> classication2class2counts = new HashMap<>();
             for (String classificationName : classifications) {
-                classication2class2counts.put(classificationName, new HashMap<Integer, float[]>());
+                classication2class2counts.put(classificationName, new HashMap<>());
             }
 
             final Map<Integer, float[]> class2counts = classication2class2counts.get("taxonomy");
@@ -141,11 +141,7 @@ public class Biom2ParserTest {
 
                         //System.err.println(taxonId+" -> "+TaxonomyData.getName2IdMap().get(taxonId)+"- > "+data[j]);
 
-                        float[] array = class2counts.get(taxonId);
-                        if (array == null) {
-                            array = new float[sampleIds.length];
-                            class2counts.put(taxonId, array);
-                        }
+                        float[] array = class2counts.computeIfAbsent(taxonId, k -> new float[sampleIds.length]);
                         array[i] += data[j];
                     }
                 }
@@ -197,12 +193,12 @@ public class Biom2ParserTest {
 
         boolean preservePaths = false;
 
-        Document doc = apply(inputFile, preservePaths);
+        Document doc = apply(inputFile, false);
         OutputStreamWriter w = new OutputStreamWriter(System.err);
         doc.getDataTable().write(w);
         doc.getSampleAttributeTable().write(w, false, true);
 
-        final String outputFile = Basic.replaceFileSuffix(inputFile, (preservePaths ? "+p" : "-p") + ".megan");
+        final String outputFile = Basic.replaceFileSuffix(inputFile, "-p" + ".megan");
         System.err.println("Writing file: " + outputFile);
         try (Writer writer = new FileWriter(outputFile)) {
             doc.getDataTable().write(writer);

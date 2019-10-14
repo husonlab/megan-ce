@@ -64,11 +64,7 @@ public class MatchData implements Comparator<MatchData> {
             return 1;
         if (o1.lastPosInRef > o2.lastPosInRef)
             return -1;
-        if (o1.read.getId() < o2.read.getId())
-            return -1;
-        if (o1.read.getId() > o2.read.getId())
-            return 1;
-        return 0;
+        return Integer.compare(o1.read.getId(), o2.read.getId());
     }
 
     public ReadData getRead() {

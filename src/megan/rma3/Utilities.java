@@ -31,7 +31,7 @@ import java.io.IOException;
  * Some utilities for creating RMA3 files
  * Created by huson on 5/23/14.
  */
-public class Utilities {
+class Utilities {
     /**
      * find the query in the reads file. When found, FileIterator is pointing to location of query in file
      *
@@ -212,7 +212,7 @@ public class Utilities {
      * @param lineLength
      * @return true, if name matches name in line
      */
-    public static boolean matchName(String queryName, byte[] line, int lineLength) {
+    private static boolean matchName(String queryName, byte[] line, int lineLength) {
         int start = 0;
         if (line[start] == '>' || line[0] == '@')
             start++;
@@ -253,7 +253,7 @@ public class Utilities {
 
         if (isFastA) {
             letter = (char) reader.read();
-            while (letter != '>' && letter != -1) {
+            while (letter != '>') {
                 if (letter != '\r')
                     buf.append(letter);
                 letter = (char) reader.read();
@@ -262,7 +262,7 @@ public class Utilities {
         {
             boolean seenFirstEndOfLine = false;
             letter = (char) reader.read();
-            while (letter != -1) {
+            while (true) {
                 if (letter != '\r')
                     buf.append(letter);
                 if (letter == '\n') {
@@ -329,7 +329,7 @@ public class Utilities {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return false;
     }

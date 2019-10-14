@@ -33,10 +33,10 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 8.2008
  */
 public class ParametersDialogSmall extends JDialog {
-    final JTextField minScoreField = new JTextField(8);
-    final JTextField topPercentField = new JTextField(8);
-    final JTextField minSupportPercentField = new JTextField(8);
-    final JTextField minSupportField = new JTextField(8);
+    private final JTextField minScoreField = new JTextField(8);
+    private final JTextField topPercentField = new JTextField(8);
+    private final JTextField minSupportPercentField = new JTextField(8);
+    private final JTextField minSupportField = new JTextField(8);
     // no mincomplexity field because we don't get to see the sequences
 
     private boolean ok = false;
@@ -187,11 +187,11 @@ public class ParametersDialogSmall extends JDialog {
         return value;
     }
 
-    public void setMinScore(double value) {
+    private void setMinScore(double value) {
         minScoreField.setText("" + (float) value);
     }
 
-    public void setTopPercent(double value) {
+    private void setTopPercent(double value) {
         topPercentField.setText("" + value);
     }
 
@@ -205,7 +205,7 @@ public class ParametersDialogSmall extends JDialog {
         return Math.max(1, value);
     }
 
-    public void setMinSupport(int value) {
+    private void setMinSupport(int value) {
         minSupportField.setText("" + Math.max(1, value));
     }
 
@@ -220,22 +220,22 @@ public class ParametersDialogSmall extends JDialog {
         return Math.max(0, value);
     }
 
-    public void setMinSupportPercent(float value) {
+    private void setMinSupportPercent(float value) {
         minSupportPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
     /**
      * updates the enable state of all action items...
      */
-    public void updateEnableState() {
+    private void updateEnableState() {
         // originally false, true once some replace has been entered
         applyAction.setEnabled(true);
     }
 
 
-    AbstractAction cancelAction;
+    private AbstractAction cancelAction;
 
-    public AbstractAction getCancelAction() {
+    private AbstractAction getCancelAction() {
         AbstractAction action = cancelAction;
 
         if (action != null)
@@ -251,9 +251,9 @@ public class ParametersDialogSmall extends JDialog {
         return cancelAction = action;
     }
 
-    AbstractAction applyAction;
+    private AbstractAction applyAction;
 
-    public AbstractAction getApplyAction() {
+    private AbstractAction getApplyAction() {
         AbstractAction action = applyAction;
         if (action != null)
             return action;

@@ -27,7 +27,7 @@ import java.io.*;
 public class FileInputStreamAdapter implements IInput {
     private final BufferedInputStream bif;
     private long position;
-    private long length;
+    private final long length;
 
     public FileInputStreamAdapter(String fileName) throws FileNotFoundException {
         this(new File(fileName));

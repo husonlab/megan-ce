@@ -45,7 +45,7 @@ public class Black2RedGradient {
      * @param count
      * @return color
      */
-    public Color getColor(int count) {
+    private Color getColor(int count) {
         if (maxCount == 0)
             return Color.BLACK;
         if (count > maxCount)

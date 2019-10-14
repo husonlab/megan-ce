@@ -31,10 +31,10 @@ import java.util.*;
  * Daniel Huson, 6.2007
  */
 public class SplitSystem {
-    int nsplits;
+    private int nsplits;
 
-    final Map index2split;
-    final Map split2index;
+    private final Map index2split;
+    private final Map split2index;
 
     /**
      * constructor
@@ -98,10 +98,7 @@ public class SplitSystem {
      */
     public int indexOf(Split split) {
         Integer index = (Integer) split2index.get(split);
-        if (index == null)
-            return -1;
-        else
-            return index;
+        return Objects.requireNonNullElse(index, -1);
     }
 
     /**
@@ -110,8 +107,8 @@ public class SplitSystem {
      * @param split
      * @return true, if contained
      */
-    public boolean contains(Split split) {
-        return split2index.keySet().contains(split);
+    private boolean contains(Split split) {
+        return split2index.containsKey(split);
     }
 
     /**
@@ -143,7 +140,7 @@ public class SplitSystem {
      *
      * @return getLetterCodeIterator
      */
-    public Iterator iterator() {
+    private Iterator iterator() {
         return split2index.keySet().iterator();
     }
 
@@ -286,7 +283,7 @@ public class SplitSystem {
         int count = 0;
         for (Iterator it = splits.iterator(); it.hasNext(); ) {
             Split split = (Split) it.next();
-            if (!split2index.keySet().contains(split)) {
+            if (!split2index.containsKey(split)) {
                 addSplit(split);
                 count++;
             }
@@ -328,7 +325,7 @@ public class SplitSystem {
      * @param split
      * @return split
      */
-    public Split get(Split split) {
+    private Split get(Split split) {
         Integer index = (Integer) split2index.get(split);
         if (index != null)
             return getSplit(index);

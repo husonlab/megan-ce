@@ -92,7 +92,7 @@ public class LegendPanel extends JPanel {
      * @param gc
      * @param size
      */
-    protected void draw(Graphics2D gc, Dimension size) {
+    void draw(Graphics2D gc, Dimension size) {
         if (!chartViewer.isTranspose())
             drawLegend(gc, size);
         else
@@ -104,7 +104,7 @@ public class LegendPanel extends JPanel {
      *
      * @param gc
      */
-    protected void drawLegend(Graphics2D gc, Dimension size) {
+    private void drawLegend(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         boolean doDraw = (size == null);
 
@@ -211,13 +211,13 @@ public class LegendPanel extends JPanel {
      *
      * @param gc
      */
-    protected void drawLegendTransposed(Graphics2D gc, Dimension size) {
+    private void drawLegendTransposed(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
         boolean vertical = chartViewer.getShowLegend().equals("vertical");
         try {
             gc.setFont(chartViewer.getFont(ChartViewer.FontKeys.LegendFont.toString()));
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
 
         boolean doDraw = (size == null);

@@ -43,7 +43,7 @@ public class GeneItem {
         ids = new int[creator.numberOfClassifications()];
     }
 
-    public byte[] getProteinId() {
+    private byte[] getProteinId() {
         return proteinId;
     }
 
@@ -56,7 +56,7 @@ public class GeneItem {
         return getId(creator.rank(classificationName));
     }
 
-    public int getId(Integer rank) {
+    private int getId(Integer rank) {
         return rank == null ? 0 : ids[rank];
     }
 
@@ -68,7 +68,7 @@ public class GeneItem {
         ids[rank] = id;
     }
 
-    public boolean isReverse() {
+    private boolean isReverse() {
         return reverse;
     }
 

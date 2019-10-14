@@ -40,7 +40,7 @@ import java.util.Optional;
  * * color by command
  * * Daniel Huson, 9.2105
  */
-public class ColorSamplesByCommand extends CommandBase implements ICommand {
+class ColorSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "colorBy attribute=<name>;";
     }
@@ -88,34 +88,26 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
 
         if (attributes.size() > 0) {
             final JFrame frame = getViewer().getFrame();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    String defaultChoice = ProgramProperties.get("SetByAttribute", "");
+            Platform.runLater(() -> {
+                String defaultChoice = ProgramProperties.get("SetByAttribute", "");
 
-                    if (!attributes.contains(defaultChoice))
-                        defaultChoice = attributes.get(0);
+                if (!attributes.contains(defaultChoice))
+                    defaultChoice = attributes.get(0);
 
-                    final ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
-                    dialog.setTitle("MEGAN6 " + getViewer().getClassName() + " choice");
-                    dialog.setHeaderText("Select attribute to color by");
-                    dialog.setContentText("Choose attribute:");
+                final ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultChoice, attributes);
+                dialog.setTitle("MEGAN6 " + getViewer().getClassName() + " choice");
+                dialog.setHeaderText("Select attribute to color by");
+                dialog.setContentText("Choose attribute:");
 
-                    if (frame != null) {
-                        dialog.setX(frame.getX() + (frame.getWidth() - 200) / 2);
-                        dialog.setY(frame.getY() + (frame.getHeight() - 200) / 2);
-                    }
+                if (frame != null) {
+                    dialog.setX(frame.getX() + (frame.getWidth() - 200) / 2);
+                    dialog.setY(frame.getY() + (frame.getHeight() - 200) / 2);
+                }
 
-                    final Optional<String> result = dialog.showAndWait();
-                    if (result.isPresent()) {
-                        final String choice = result.get();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                execute("colorBy attribute='" + choice + "';");
-                            }
-                        });
-                    }
+                final Optional<String> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    final String choice = result.get();
+                    SwingUtilities.invokeLater(() -> execute("colorBy attribute='" + choice + "';"));
                 }
             });
         }
@@ -126,7 +118,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
         return doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes() > 0;
     }
 
-    public static final String NAME = "Color Samples By Attribute";
+    private static final String NAME = "Color Samples By Attribute";
 
     public String getName() {
         return NAME;

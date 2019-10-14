@@ -30,7 +30,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 
-public class CopyEdgeLabelCommand extends CommandBase implements ICommand {
+class CopyEdgeLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

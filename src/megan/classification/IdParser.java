@@ -233,7 +233,7 @@ public class IdParser {
                             }
                         }
                     }
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
                 }
             }
 
@@ -244,7 +244,7 @@ public class IdParser {
                 for (int i = 0; i < countLabels; i++) {
                     final String label = multiWords.getWord(i);
                     final int id = idMapper.getName2IdMap().get(label);
-                    if (id != 0 && !id2segment.keySet().contains(id)) {
+                    if (id != 0 && !id2segment.containsKey(id)) {
                         boolean overlaps = false;
                         int[] pair = multiWords.getPair(i);
                         for (int[] previousPair : id2segment.values()) { // make sure this doesn't overlap some other segment already used for an id

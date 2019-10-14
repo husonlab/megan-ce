@@ -41,20 +41,18 @@ class Result {
     }
 
     static public Comparator<Result> getScaleComparator() {
-        return new Comparator<Result>() {
-            public int compare(Result r1, Result r2) {
+        return (r1, r2) -> {
 
-                if (r1.scale < r2.scale)
-                    return -1;
-                else if (r1.scale > r2.scale)
-                    return 1;
-                else if (r1.gennum < r2.gennum)
-                    return -1;
-                else if (r1.gennum > r2.gennum)
-                    return 1;
-                else
-                    return 0;
-            }
+            if (r1.scale < r2.scale)
+                return -1;
+            else if (r1.scale > r2.scale)
+                return 1;
+            else if (r1.gennum < r2.gennum)
+                return -1;
+            else if (r1.gennum > r2.gennum)
+                return 1;
+            else
+                return 0;
         };
     }
 

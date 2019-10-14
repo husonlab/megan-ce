@@ -27,7 +27,7 @@ import megan.viewer.gui.NodeDrawer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ScaleByNoneCommand extends CommandBase implements ICheckBoxCommand {
+class ScaleByNoneCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer != null && viewer.getNodeDrawer().getScaleBy() == NodeDrawer.ScaleBy.None;

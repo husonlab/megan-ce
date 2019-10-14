@@ -35,7 +35,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
-public class ExportMetaDataCommand extends CommandBase implements ICommand {
+class ExportMetaDataCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export metaData=<file> [format={metaDataMapping}];";
     }

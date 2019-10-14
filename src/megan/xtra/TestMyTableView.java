@@ -61,9 +61,7 @@ public class TestMyTableView extends Application {
         root.setTop(findToolBar);
 
 
-        tableView.setAdditionColHeaderMenuItems((col) -> {
-            return Arrays.asList(new MenuItem("Color samples by attribute '" + col + "'"));
-        });
+        tableView.setAdditionColHeaderMenuItems((col) -> Arrays.asList(new MenuItem("Color samples by attribute '" + col + "'")));
 
         tableView.setAdditionRowHeaderMenuItems((rows) -> {
             final MenuItem moveSamplesUp = new MenuItem("Move Samples Up");

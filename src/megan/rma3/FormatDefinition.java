@@ -32,7 +32,7 @@ public class FormatDefinition {
     public enum Type {
         Integer, Long, Float, String, Character, Byte;
 
-        public static Type getType(Object object) throws IOException {
+        static Type getType(Object object) throws IOException {
             if (object instanceof java.lang.Integer) return Integer;
             if (object instanceof java.lang.Long) return Long;
             if (object instanceof java.lang.Float) return Float;
@@ -49,7 +49,7 @@ public class FormatDefinition {
 
     private Iterator<Pair<String, Type>> writerIterator = null;
 
-    public void addItem(String word, Type type) {
+    private void addItem(String word, Type type) {
         Pair<String, Type> pair = new Pair<>(word, type);
         list.add(pair);
         map.put(word, pair);
@@ -72,7 +72,7 @@ public class FormatDefinition {
     }
 
     public boolean hasItem(String word) {
-        return map.keySet().contains(word);
+        return map.containsKey(word);
     }
 
     public void clear() {

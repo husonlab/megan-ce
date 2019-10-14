@@ -24,8 +24,6 @@ package megan.classification.util;
  */
 public class Tools {
 
-    /** Taken from FastUtil implementation */
-
     /**
      * Return the least power of two greater than or equalOverShorterOfBoth to the specified value.
      * <p/>
@@ -34,7 +32,7 @@ public class Tools {
      * @param x a long integer smaller than or equalOverShorterOfBoth to 2<sup>62</sup>.
      * @return the least power of two greater than or equalOverShorterOfBoth to the specified value.
      */
-    public static long nextPowerOfTwo(long x) {
+    private static long nextPowerOfTwo(long x) {
         if (x == 0) return 1;
         x--;
         x |= x >> 1;

@@ -37,18 +37,18 @@ import java.util.Map;
  * todo: merge with AssignmentUsingLCA
  */
 public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
-    protected String[] addresses;
+    private String[] addresses;
     private final BitSet activeSet;
     private final Map<Character, Integer> ch2weight;
 
-    protected final boolean useIdentityFilter;
-    protected float proportionToCover = 1;
+    private final boolean useIdentityFilter;
+    private float proportionToCover = 1;
 
-    protected final ClassificationFullTree fullTree;
-    protected final IdMapper idMapper;
-    protected final Name2IdMap name2IdMap;
+    private final ClassificationFullTree fullTree;
+    private final IdMapper idMapper;
+    private final Name2IdMap name2IdMap;
 
-    protected final boolean ignoreAncestralTaxa;
+    private final boolean ignoreAncestralTaxa;
 
     /**
      * constructor
@@ -310,11 +310,7 @@ public class AssignmentUsingLCAForTaxonomy implements IAssignmentAlgorithm {
                     //  weightToCover -= 1;   // this node lies on route to best node, so it is covered and its weight can  be removed from weightToCover
                 } else {
                     char ch = addresses[i].charAt(pos);
-                    Integer count = ch2weight.get(ch);
-                    if (count == null)
-                        ch2weight.put(ch, 1);
-                    else
-                        ch2weight.put(ch, count + 1);
+                    ch2weight.merge(ch, 1, Integer::sum);
                 }
             }
             if (activeSet.cardinality() == 0)

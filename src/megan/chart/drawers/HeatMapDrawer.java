@@ -45,15 +45,15 @@ import java.util.concurrent.Future;
  * Daniel Huson, 6.2012
  */
 public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
-    public static final String NAME = "HeatMap";
+    private static final String NAME = "HeatMap";
 
     private String[] seriesNames;
     private String[] classNames;
 
     private ColorTable colorTable;
 
-    protected final Table<String, String, Double> zScores = new Table<>();
-    private double zScoreCutoff = 3;
+    private final Table<String, String, Double> zScores = new Table<>();
+    private final double zScoreCutoff = 3;
 
     private final ArrayList<String> previousSamples = new ArrayList<>();
     private final ArrayList<String> previousClasses = new ArrayList<>();
@@ -65,11 +65,11 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     private boolean previousClusterSeries;
     private boolean previousClusterClasses;
 
-    protected final int topTreeSpace = ProgramProperties.get("topTreeSpace", 100);
-    protected final int rightTreeSpace = ProgramProperties.get("rightTreeSpace", 100);
+    private final int topTreeSpace = ProgramProperties.get("topTreeSpace", 100);
+    private final int rightTreeSpace = ProgramProperties.get("rightTreeSpace", 100);
 
     private Future future; // used in recompute
-    protected boolean inUpdateCoordinates = true;
+    private boolean inUpdateCoordinates = true;
 
     /**
      * constructor
@@ -559,7 +559,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
      * @param y
      * @param height
      */
-    protected void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
+    private void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
         final int x0 = x + Math.max(10, width - 25);
 
         int xLabel = x0 + 15;
@@ -793,32 +793,28 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 future.cancel(true);
                 future = null;
             }
-            future = executorService.submit(new Runnable() {
-                public void run() {
-                    try {
-                        inUpdateCoordinates = true;
-                        updateCoordinates();
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            public void run() {
-                                try {
-                                    if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
-                                        updateClassesJList();
-                                    previousClusterClasses = viewer.getClassesList().isDoClustering();
-                                    if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
-                                        updateSeriesJList();
-                                    previousClusterSeries = viewer.getSeriesList().isDoClustering();
-                                    viewer.repaint();
-                                } catch (Exception e) {
-                                    Basic.caught(e);
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        //Basic.caught(e);
-                    } finally {
-                        future = null;
-                        inUpdateCoordinates = false;
-                    }
+            future = executorService.submit(() -> {
+                try {
+                    inUpdateCoordinates = true;
+                    updateCoordinates();
+                    SwingUtilities.invokeAndWait(() -> {
+                        try {
+                            if (!previousClusterClasses && viewer.getClassesList().isDoClustering())
+                                updateClassesJList();
+                            previousClusterClasses = viewer.getClassesList().isDoClustering();
+                            if (!previousClusterSeries && viewer.getSeriesList().isDoClustering())
+                                updateSeriesJList();
+                            previousClusterSeries = viewer.getSeriesList().isDoClustering();
+                            viewer.repaint();
+                        } catch (Exception e) {
+                            Basic.caught(e);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Basic.caught(e);
+                } finally {
+                    future = null;
+                    inUpdateCoordinates = false;
                 }
             });
         } else {
@@ -842,7 +838,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * computes z-scores on scale of -zScoreCutoff to zScoreCutoff
      */
-    protected void updateCoordinates() {
+    private void updateCoordinates() {
         System.err.println("Updating...");
 
         zScores.clear();
@@ -858,13 +854,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final String[] currentClasses;
         {
             final Collection<String> list = getViewer().getClassesList().getEnabledLabels();
-            currentClasses = list.toArray(new String[list.size()]);
+            currentClasses = list.toArray(new String[0]);
         }
 
         final String[] currentSeries;
         {
             final Collection<String> list = getViewer().getSeriesList().getEnabledLabels();
-            currentSeries = list.toArray(new String[list.size()]);
+            currentSeries = list.toArray(new String[0]);
         }
 
         for (String className : currentClasses) {
@@ -884,7 +880,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             classesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.TOP : ClusteringTree.SIDE.RIGHT);
             classesClusteringTree.updateClustering(zScores);
             final Collection<String> list = classesClusteringTree.getLabelOrder();
-            classNames = list.toArray(new String[list.size()]);
+            classNames = list.toArray(new String[0]);
         } else
             classNames = currentClasses;
 
@@ -893,7 +889,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             seriesClusteringTree.setRootSide(isTranspose() ? ClusteringTree.SIDE.RIGHT : ClusteringTree.SIDE.TOP);
             seriesClusteringTree.updateClustering(zScores);
             final Collection<String> list = seriesClusteringTree.getLabelOrder();
-            seriesNames = list.toArray(new String[list.size()]);
+            seriesNames = list.toArray(new String[0]);
         } else
             seriesNames = currentSeries;
     }
@@ -920,42 +916,38 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     }
 
     public IPopupMenuModifier getPopupMenuModifier() {
-        return new IPopupMenuModifier() {
-            @Override
-            public void apply(JPopupMenu menu, final CommandManager commandManager) {
-                menu.addSeparator();
+        return (menu, commandManager) -> {
+            menu.addSeparator();
 
-                final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (classesClusteringTree.hasSelectedSubTree()) {
-                            //System.err.println("Rotate Classes");
-                            classesClusteringTree.rotateSelectedSubTree();
-                            final Collection<String> list = classesClusteringTree.getLabelOrder();
-                            classNames = list.toArray(new String[list.size()]);
-                            updateClassesJList();
-                            getJPanel().repaint();
-                        } else if (seriesClusteringTree.hasSelectedSubTree()) {
-                            // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
-                            //System.err.println("Rotate Series");
-                            seriesClusteringTree.rotateSelectedSubTree();
-                            //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
-                            final Collection<String> list = seriesClusteringTree.getLabelOrder();
-                            seriesNames = list.toArray(new String[list.size()]);
-                            updateSeriesJList();
-                            getJPanel().repaint();
-                        }
+            final AbstractAction action = (new AbstractAction("Flip Selected Subtree") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (classesClusteringTree.hasSelectedSubTree()) {
+                        //System.err.println("Rotate Classes");
+                        classesClusteringTree.rotateSelectedSubTree();
+                        final Collection<String> list = classesClusteringTree.getLabelOrder();
+                        classNames = list.toArray(new String[list.size()]);
+                        updateClassesJList();
+                        getJPanel().repaint();
+                    } else if (seriesClusteringTree.hasSelectedSubTree()) {
+                        // System.err.println("Old order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                        //System.err.println("Rotate Series");
+                        seriesClusteringTree.rotateSelectedSubTree();
+                        //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
+                        final Collection<String> list = seriesClusteringTree.getLabelOrder();
+                        seriesNames = list.toArray(new String[list.size()]);
+                        updateSeriesJList();
+                        getJPanel().repaint();
                     }
-                });
-                action.setEnabled(classesClusteringTree.hasSelectedSubTree() != seriesClusteringTree.hasSelectedSubTree());
-                menu.add(action);
-            }
+                }
+            });
+            action.setEnabled(classesClusteringTree.hasSelectedSubTree() != seriesClusteringTree.hasSelectedSubTree());
+            menu.add(action);
         };
     }
 
     private void updateSeriesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedSeries());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedSeries());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(seriesNames));
         final Collection<String> others = viewer.getSeriesList().getAllLabels();
         others.removeAll(ordered);
@@ -966,8 +958,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     }
 
     private void updateClassesJList() {
-        final Collection<String> selected = new ArrayList<>();
-        selected.addAll(viewer.getChartSelection().getSelectedClasses());
+        final Collection<String> selected = new ArrayList<>(viewer.getChartSelection().getSelectedClasses());
         final Collection<String> ordered = new ArrayList<>(Arrays.asList(classNames));
         final Collection<String> others = viewer.getClassesList().getAllLabels();
         others.removeAll(ordered);

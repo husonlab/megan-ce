@@ -28,7 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class UncollapseAllNodesCommand extends CommandBase implements ICommand {
+class UncollapseAllNodesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

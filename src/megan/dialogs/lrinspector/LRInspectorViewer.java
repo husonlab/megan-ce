@@ -94,7 +94,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
 
     private boolean showFindToolBar = false;
     private final SearchManager searchManager;
-    private CompositeObjectSearcher searcher;
+    private final CompositeObjectSearcher searcher;
 
     private final JFrame frame;
 
@@ -181,30 +181,19 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
 
         swingPanel4FX = new SwingPanel4FX<>(this.getClass());
 
-        swingPanel4FX.runLaterInSwing(new Runnable() {
-            @Override
-            public void run() {
-                mainPanel.add(swingPanel4FX.getPanel(), BorderLayout.CENTER); // add panel once initialization complete
-                mainPanel.validate();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            swingPanel4FX.getController().setupControls(LRInspectorViewer.this, toolBar);
-                            swingPanel4FX.getController().updateScene(LRInspectorViewer.this);
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getCommandManager().updateEnableState();
-                                }
-                            });
-                            // uptodate is set by controller
-                        } catch (IOException e) {
-                            Basic.caught(e);
-                        }
-                    }
-                });
-            }
+        swingPanel4FX.runLaterInSwing(() -> {
+            mainPanel.add(swingPanel4FX.getPanel(), BorderLayout.CENTER); // add panel once initialization complete
+            mainPanel.validate();
+            Platform.runLater(() -> {
+                try {
+                    swingPanel4FX.getController().setupControls(LRInspectorViewer.this, toolBar);
+                    swingPanel4FX.getController().updateScene(LRInspectorViewer.this);
+                    SwingUtilities.invokeLater(() -> getCommandManager().updateEnableState());
+                    // uptodate is set by controller
+                } catch (IOException e) {
+                    Basic.caught(e);
+                }
+            });
         });
     }
 
@@ -220,12 +209,9 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         uptoDate = false;
         setTitle();
         if (what.equals(Director.ALL)) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (swingPanel4FX.getPanel() != null)
-                        swingPanel4FX.getController().recolor();
-                }
+            Platform.runLater(() -> {
+                if (swingPanel4FX.getPanel() != null)
+                    swingPanel4FX.getController().recolor();
             });
         }
         FindToolBar findToolBar = searchManager.getFindDialogAsToolBar();
@@ -273,12 +259,9 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     }
 
     public void destroyView() throws CanceledException {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if (swingPanel4FX != null)
-                    swingPanel4FX.getController().getService().cancel();
-            }
+        Platform.runLater(() -> {
+            if (swingPanel4FX != null)
+                swingPanel4FX.getController().getService().cancel();
         });
         if (runOnDestroy != null)
             runOnDestroy.run();
@@ -295,7 +278,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     /**
      * set the title of the window
      */
-    public void setTitle() {
+    private void setTitle() {
         String newTitle = "LR Inspector [" + getClassIdDisplayName() + "] - " + dir.getDocument().getTitle();
 
         /*
@@ -378,7 +361,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
 
             double scale_x = paper_w / image_w;
             double scale_y = paper_h / image_h;
-            double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+            double scale = Math.min(scale_x, scale_y);
 
             double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
             double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;
@@ -478,7 +461,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                         return true;
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return false;
     }
@@ -622,12 +605,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     }
 
     public void updateEnableState() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                commandManager.updateEnableState();
-            }
-        };
+        Runnable runnable = () -> commandManager.updateEnableState();
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
         else
@@ -639,14 +617,11 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      */
     public void copy() {
         final String selection = getSelection(dir.getDocument().getProgressListener());
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final Clipboard clipboard = Clipboard.getSystemClipboard();
-                final ClipboardContent content = new ClipboardContent();
-                content.putString(selection);
-                clipboard.setContent(content);
-            }
+        Platform.runLater(() -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(selection);
+            clipboard.setContent(content);
         });
     }
 
@@ -673,7 +648,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                     progress.checkForCancel();
                 }
             }
-        } catch (CanceledException ex) {
+        } catch (CanceledException ignored) {
         }
         return buf.toString();
     }

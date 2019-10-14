@@ -169,11 +169,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
                             }
                             lca = fullTree.getAddress2Id(LCAAddressing.getCommonPrefix(addresses, false));
                         }
-                        Integer count = taxa2covered.get(lca);
-                        if (count == null)
-                            taxa2covered.put(lca, segmentLength);
-                        else
-                            taxa2covered.put(lca, count + segmentLength);
+                        taxa2covered.merge(lca, segmentLength, Integer::sum);
                     }
                 }
                 // update the set of current matches:
@@ -233,7 +229,7 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
      * @param node2covered
      */
     private int computeNodes2CoveredRec(final Node v, Set<Node> allNodes, HashMap<Integer, Integer> tax2covered, Map<Node, Integer> node2covered) {
-        Integer count = tax2covered.get((Integer) v.getInfo());
+        Integer count = tax2covered.get(v.getInfo());
         if (count == null)
             count = 0;
 
@@ -257,14 +253,14 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
      * @param node2covered
      * @return best taxon
      */
-    public int computeBestTaxon(Node v, Map<Node, Integer> node2covered) {
+    private int computeBestTaxon(Node v, Map<Node, Integer> node2covered) {
         final double toCover = coverFactor * node2covered.get(v);
 
         while (true) {
             Node goodChild = null;
             for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
                 final Node w = e.getTarget();
-                if (node2covered.keySet().contains(w)) {
+                if (node2covered.containsKey(w)) {
                     if (node2covered.get(w) >= toCover) {
                         goodChild = w;
                         break;
@@ -289,47 +285,44 @@ public class AssignmentUsingSegmentLCA implements IAssignmentAlgorithm {
     }
 
     private Comparator<StartStopEvent> createComparator() {
-        return new Comparator<StartStopEvent>() {
-            @Override
-            public int compare(StartStopEvent a, StartStopEvent b) {
-                if (a.getPos() < b.getPos())
-                    return -1;
-                else if (a.getPos() > b.getPos())
-                    return 1;
-                else if (a.isStart() && b.isEnd())
-                    return -1;
-                else if (a.isEnd() && b.isStart())
-                    return 1;
-                else
-                    return 0;
-            }
+        return (a, b) -> {
+            if (a.getPos() < b.getPos())
+                return -1;
+            else if (a.getPos() > b.getPos())
+                return 1;
+            else if (a.isStart() && b.isEnd())
+                return -1;
+            else if (a.isEnd() && b.isStart())
+                return 1;
+            else
+                return 0;
         };
     }
 
-    private class StartStopEvent {
+    private static class StartStopEvent {
         private boolean start;
         private int pos;
         private int matchId;
 
-        public void set(boolean start, int pos, int matchId) {
+        void set(boolean start, int pos, int matchId) {
             this.start = start;
             this.pos = pos;
             this.matchId = matchId;
         }
 
-        public boolean isStart() {
+        boolean isStart() {
             return start;
         }
 
-        public boolean isEnd() {
+        boolean isEnd() {
             return !start;
         }
 
-        public int getPos() {
+        int getPos() {
             return pos;
         }
 
-        public int getMatchId() {
+        int getMatchId() {
             return matchId;
         }
     }

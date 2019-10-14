@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * draw selected nodes as triangles
  * Daniel Huson, 3.2013
  */
-public class DrawTrianglesCommand extends CommandBase implements ICommand {
+class DrawTrianglesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

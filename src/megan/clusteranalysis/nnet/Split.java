@@ -93,7 +93,7 @@ public class Split implements Comparable, Comparator {
      *
      * @param split
      */
-    public void copy(Split split) {
+    private void copy(Split split) {
         setA(split.getA());
         setB(split.getB());
         setWeight(split.getWeight());
@@ -266,7 +266,7 @@ public class Split implements Comparable, Comparator {
      *
      * @param A
      */
-    public void setA(BitSet A) {
+    private void setA(BitSet A) {
         this.A.clear();
         this.A.or(A);
     }
@@ -276,7 +276,7 @@ public class Split implements Comparable, Comparator {
      *
      * @param B
      */
-    public void setB(BitSet B) {
+    private void setB(BitSet B) {
         this.B.clear();
         this.B.or(B);
     }
@@ -298,7 +298,7 @@ public class Split implements Comparable, Comparator {
      * @param B
      * @param weight
      */
-    public void set(BitSet A, BitSet B, double weight) {
+    private void set(BitSet A, BitSet B, double weight) {
         this.A.clear();
         this.A.or(A);
         this.B.clear();
@@ -322,7 +322,7 @@ public class Split implements Comparable, Comparator {
      * @param split
      * @return true, if equalOverShorterOfBoth
      */
-    public boolean equals(Split split) {
+    private boolean equals(Split split) {
         return (A.equals(split.A) && B.equals(split.B)) || (A.equals(split.B) && B.equals(split.A));
     }
 
@@ -365,12 +365,7 @@ public class Split implements Comparable, Comparator {
             a = P.nextSetBit(a + 1);
             b = Q.nextSetBit(b + 1);
         }
-        if (a < b)
-            return -1;
-        else if (a > b)
-            return 1;
-
-        else return 0;
+        return Integer.compare(a, b);
     }
 
     /**
@@ -390,7 +385,7 @@ public class Split implements Comparable, Comparator {
      *
      * @return first part
      */
-    public BitSet getFirstPart() {
+    private BitSet getFirstPart() {
         if (A.nextSetBit(0) < B.nextSetBit(0))
             return A;
         else
@@ -402,7 +397,7 @@ public class Split implements Comparable, Comparator {
      *
      * @return first part
      */
-    public BitSet getSecondPart() {
+    private BitSet getSecondPart() {
         if (A.nextSetBit(0) >= B.nextSetBit(0))
             return A;
         else
@@ -551,17 +546,15 @@ public class Split implements Comparable, Comparator {
      * @return weight-based comparator
      */
     public static Comparator createWeightComparator() {
-        return new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Split split1 = (Split) o1;
-                Split split2 = (Split) o2;
-                if (split1.getWeight() > split2.getWeight())
-                    return -1;
-                else if (split1.getWeight() < split2.getWeight())
-                    return 1;
-                else
-                    return split1.compareTo(split2);
-            }
+        return (o1, o2) -> {
+            Split split1 = (Split) o1;
+            Split split2 = (Split) o2;
+            if (split1.getWeight() > split2.getWeight())
+                return -1;
+            else if (split1.getWeight() < split2.getWeight())
+                return 1;
+            else
+                return split1.compareTo(split2);
         };
     }
 

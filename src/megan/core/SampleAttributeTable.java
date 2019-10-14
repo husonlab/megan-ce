@@ -53,7 +53,7 @@ public class SampleAttributeTable {
          *
          * @return prefix
          */
-        public static String getPrefix() {
+        static String getPrefix() {
             return "@";
         }
 
@@ -326,7 +326,7 @@ public class SampleAttributeTable {
      *
      * @param attributes
      */
-    public void removeAttributes(Collection<String> attributes) {
+    private void removeAttributes(Collection<String> attributes) {
         attributeOrder.removeAll(attributes);
         attribute2type.keySet().removeAll(attributes);
         for (String attribute : attributes) {
@@ -391,7 +391,7 @@ public class SampleAttributeTable {
      *
      * @return true, if at least one attribute was removed
      */
-    public boolean removeUndefinedAttributes() {
+    private boolean removeUndefinedAttributes() {
         LinkedList<String> undefined = new LinkedList<>();
         for (String attribute : getAttributeSet()) {
             Map<String, Object> sample2values = getSamples2Values(attribute);
@@ -425,7 +425,7 @@ public class SampleAttributeTable {
         return type;
     }
 
-    public void setAttributeType(String attribute, Type type) {
+    private void setAttributeType(String attribute, Type type) {
         attribute2type.put(attribute, type);
     }
 
@@ -446,7 +446,7 @@ public class SampleAttributeTable {
         return table.rowKeySet();
     }
 
-    public Set<String> getAttributeSet() {
+    private Set<String> getAttributeSet() {
         return table.columnKeySet();
     }
 
@@ -516,7 +516,7 @@ public class SampleAttributeTable {
      * @param attribute
      * @return value or null
      */
-    public Object get(String sample, HiddenAttribute attribute) {
+    private Object get(String sample, HiddenAttribute attribute) {
         return table.get(sample, attribute.toString());
     }
 
@@ -674,7 +674,7 @@ public class SampleAttributeTable {
      *
      * @param attribute
      */
-    public void setAttributeTypeFromValues(String attribute) {
+    private void setAttributeTypeFromValues(String attribute) {
         boolean isFloat = true;
         boolean isInteger = true;
         boolean isDate = true;
@@ -742,7 +742,7 @@ public class SampleAttributeTable {
     /**
      * set the attribute types from given values
      */
-    public void setAllAttributeTypesFromValues() {
+    private void setAllAttributeTypesFromValues() {
         for (String attribute : getAttributeSet()) {
             setAttributeTypeFromValues(attribute);
         }
@@ -856,7 +856,7 @@ public class SampleAttributeTable {
         StringWriter w = new StringWriter();
         try {
             write(w, false, true);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return w.toString().getBytes();
     }
@@ -983,8 +983,7 @@ public class SampleAttributeTable {
      */
     public Collection<String> getNumericalAttributes() {
         final Map<String, float[]> attributes = getNumericalAttributes(getUnhiddenAttributes());
-        final SortedSet<String> result = new TreeSet<>();
-        result.addAll(attributes.keySet());
+        final SortedSet<String> result = new TreeSet<>(attributes.keySet());
         return result;
     }
 
@@ -1108,27 +1107,23 @@ public class SampleAttributeTable {
                     undefined.add(sample);
             }
 
-            Pair<Object, String>[] array = list.toArray(new Pair[list.size()]);
+            Pair<Object, String>[] array = list.toArray(new Pair[0]);
 
             switch (getAttributeType(attribute)) {
                 case Integer:
                 case Float:
-                    Arrays.sort(array, new Comparator<Pair<Object, String>>() {
-                        public int compare(Pair<Object, String> p1, Pair<Object, String> p2) {
-                            Float a1 = Float.parseFloat(p1.get1().toString());
-                            Float a2 = Float.parseFloat(p2.get1().toString());
-                            return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
-                        }
+                    Arrays.sort(array, (p1, p2) -> {
+                        Float a1 = Float.parseFloat(p1.get1().toString());
+                        Float a2 = Float.parseFloat(p2.get1().toString());
+                        return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
                     });
                     break;
                 default:
                 case String:
-                    Arrays.sort(array, new Comparator<Pair<Object, String>>() {
-                        public int compare(Pair<Object, String> p1, Pair<Object, String> p2) {
-                            String a1 = p1.get1().toString();
-                            String a2 = p2.get1().toString();
-                            return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
-                        }
+                    Arrays.sort(array, (p1, p2) -> {
+                        String a1 = p1.get1().toString();
+                        String a2 = p2.get1().toString();
+                        return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
                     });
                     break;
             }

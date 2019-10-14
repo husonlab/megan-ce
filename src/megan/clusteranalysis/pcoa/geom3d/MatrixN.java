@@ -42,7 +42,7 @@ public class MatrixN {
      *
      * @return size
      */
-    public int size() {
+    private int size() {
         return v.length;
     }
 
@@ -64,7 +64,7 @@ public class MatrixN {
      * @param j
      * @param f
      */
-    public void set(int i, int j, double f) {
+    void set(int i, int j, double f) {
         v[i].set(j, f);
     }
 
@@ -74,23 +74,23 @@ public class MatrixN {
      * @param i
      * @return
      */
-    public VectorN get(int i) {
+    private VectorN get(int i) {
         return v[i];
     }
 
-    public void set(int i, VectorN vec) {
+    private void set(int i, VectorN vec) {
         v[i].set(vec);
     }
 
-    public void set(MatrixN mat) {
+    private void set(MatrixN mat) {
         for (int i = 0; i < size(); i++)
             set(i, mat.get(i));
     }
 
     public String toString() {
-        String s = "{";
+        StringBuilder s = new StringBuilder("{");
         for (int i = 0; i < size(); i++)
-            s += (i == 0 ? "" : ",") + get(i);
+            s.append(i == 0 ? "" : ",").append(get(i));
         return s + "}";
     }
 
@@ -108,7 +108,7 @@ public class MatrixN {
      *
      * @param mat
      */
-    public void preMultiply(MatrixN mat) {
+    void preMultiply(MatrixN mat) {
         final MatrixN tmp = new MatrixN(size());
         for (int j = 0; j < size(); j++)
             for (int i = 0; i < size(); i++) {

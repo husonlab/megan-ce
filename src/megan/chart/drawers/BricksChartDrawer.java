@@ -34,7 +34,7 @@ import java.awt.geom.Rectangle2D;
  * Daniel Huson, 3.2013
  */
 public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer {
-    public static final String NAME = "BricksChart";
+    private static final String NAME = "BricksChart";
 
     /**
      * constructor

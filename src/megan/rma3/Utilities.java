@@ -19,8 +19,8 @@
 package megan.rma3;
 
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
-import jloda.util.FileIterator;
+import jloda.util.FileLineIterator;
+import jloda.util.FileLineBytesIterator;
 import jloda.util.Single;
 import megan.io.InputReader;
 
@@ -33,14 +33,14 @@ import java.io.IOException;
  */
 class Utilities {
     /**
-     * find the query in the reads file. When found, FileIterator is pointing to location of query in file
+     * find the query in the reads file. When found, FileLineBytesIterator is pointing to location of query in file
      *
      * @param queryName
      * @param it
      * @param isFastA
      * @return true, if found
      */
-    public static boolean findQuery(String queryName, FileIterator it, boolean isFastA) {
+    public static boolean findQuery(String queryName, FileLineBytesIterator it, boolean isFastA) {
         try {
             if (isFastA) {
                 while (it.hasNext()) {
@@ -80,13 +80,13 @@ class Utilities {
     }
 
     /**
-     * assuming that the FileIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
+     * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
      *
      * @param it
      * @param isFastA
      * @return string
      */
-    public static String getFastAText(FileIterator it, boolean isFastA) {
+    public static String getFastAText(FileLineBytesIterator it, boolean isFastA) {
         final StringBuilder buf = new StringBuilder();
 
         if (isFastA) {
@@ -120,12 +120,12 @@ class Utilities {
     }
 
     /**
-     * assuming that the FileIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
+     * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
      *
      * @param it
      * @param isFastA
      */
-    public static void skipFastAText(FileIterator it, boolean isFastA) {
+    public static void skipFastAText(FileLineBytesIterator it, boolean isFastA) {
         if (isFastA) {
             while (it.hasNext() && it.peekNextByte() != '>') {
                 it.next();
@@ -146,13 +146,13 @@ class Utilities {
 
 
     /**
-     * assuming that the FileIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
+     * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
      *
      * @param it
      * @param isFastA
      * @return size
      */
-    public static int getFastAText(FileIterator it, boolean isFastA, Single<byte[]> result) { // todo: has not been tested!
+    public static int getFastAText(FileLineBytesIterator it, boolean isFastA, Single<byte[]> result) { // todo: has not been tested!
         byte[] buffer = result.get();
         if (isFastA) {
             byte[] bytes = it.getLine();
@@ -318,7 +318,7 @@ class Utilities {
         if (!suffix.toLowerCase().equals(".sam"))
             return false;
         try {
-            try (FileInputIterator it = new FileInputIterator(file.getPath())) {
+            try (FileLineIterator it = new FileLineIterator(file.getPath())) {
                 while (it.hasNext()) {
                     String aLine = it.next();
                     if (aLine.startsWith("@")) {

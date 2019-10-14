@@ -20,7 +20,7 @@ package megan.parsers.blast;
 
 import jloda.swing.util.FastaFileFilter;
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import jloda.util.ProgramProperties;
 import megan.daa.io.DAAParser;
 import megan.util.*;
@@ -115,7 +115,7 @@ public class BlastModeUtils {
      * @throws java.io.IOException
      */
     public static jloda.util.BlastMode determineBlastModeSAMFile(String samFile) {
-        try (final FileInputIterator it = new FileInputIterator(samFile)) {
+        try (final FileLineIterator it = new FileLineIterator(samFile)) {
             for (int i = 0; i < 50; i++) { // expect to figure out blast mode within the first 50 lines
                 if (it.hasNext()) {
                     String aLine = it.next().trim();
@@ -153,7 +153,7 @@ public class BlastModeUtils {
      * @return blast mode
      */
     private static jloda.util.BlastMode determineBlastModeXMLFile(String xmlFile) {
-        try (final FileInputIterator it = new FileInputIterator(xmlFile)) {
+        try (final FileLineIterator it = new FileLineIterator(xmlFile)) {
             for (int i = 0; i < 50; i++) { // expect to figure out blast mode within the first 50 lines
                 if (it.hasNext()) {
                     String line = it.next().trim().toLowerCase();

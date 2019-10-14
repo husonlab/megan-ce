@@ -102,7 +102,7 @@ public class HMM2Blastx {
         int countAlignments = 0;
 
         for (String inputFile : inputFiles) {
-            try (final FileInputIterator it = new FileInputIterator(inputFile)) {
+            try (final FileLineIterator it = new FileLineIterator(inputFile)) {
                 final ProgressPercentage progress = new ProgressPercentage("Parsing file: " + inputFile, it.getMaximumProgress());
 
                 EXPECTING state = EXPECTING.NextRefOrQuery;

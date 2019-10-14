@@ -18,7 +18,7 @@
  */
 package megan.io;
 
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class IntFileGetterHashMap implements IIntGetter {
     public IntFileGetterHashMap(File file) throws IOException {
         map = new HashMap<>();
 
-        final FileInputIterator it = new FileInputIterator(file.getPath());
+        final FileLineIterator it = new FileLineIterator(file.getPath());
         while (it.hasNext()) {
             String aLine = it.next().trim();
             if (!aLine.startsWith("#")) {

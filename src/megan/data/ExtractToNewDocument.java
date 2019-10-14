@@ -67,7 +67,7 @@ public class ExtractToNewDocument {
 
 
                     final StringBuilder blastTextBuf = new StringBuilder();
-                    blastTextBuf.append(FileInputIterator.PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING);
+                    blastTextBuf.append(FileLineIterator.PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING);
                     blastTextBuf.append("Query= ").append(readBlock.getReadHeader()).append("\n");
 
                     final int[][] match2classification2id = new int[numberOfMatches][classifications.length];

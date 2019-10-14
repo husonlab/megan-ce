@@ -141,7 +141,7 @@ public class AAdderRun {
 
                 final Set<String> refNotFound = new HashSet<>();
 
-                try (final FileInputIterator it = new FileInputIterator(inputFile, true);
+                try (final FileLineIterator it = new FileLineIterator(inputFile, true);
                      final BufferedWriter w = new BufferedWriter(new OutputStreamWriter(gzipOutput ? new GZIPOutputStream(new FileOutputStream(outputFile)) : new FileOutputStream(outputFile)))) {
                     System.err.println("Writing file: " + outputFile);
 

@@ -51,14 +51,11 @@ import megan.core.Document;
 import megan.core.SelectionSet;
 import megan.dialogs.input.InputDialog;
 import megan.main.MeganProperties;
-import megan.util.Appliable;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -69,6 +66,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * viewer for distance-based comparison of metagenome datasets
@@ -129,7 +127,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
     private final ClassificationViewer parentViewer;
 
-    public static Appliable clusterViewerAddOn;
+    public static Consumer<ClusterViewer> clusterViewerAddOn;
 
 
     /**

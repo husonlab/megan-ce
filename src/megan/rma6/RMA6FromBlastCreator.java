@@ -173,10 +173,10 @@ public class RMA6FromBlastCreator {
             progress.setProgress(0);
             progress.setMaximum(iterator.getMaximumProgress());
 
-            final FileIterator fastaIterator;
+            final FileLineBytesIterator fastaIterator;
             final boolean isFasta;
             if (readsFiles != null && readsFiles.length > fileNumber && Basic.fileExistsAndIsNonEmpty(readsFiles[fileNumber])) {
-                fastaIterator = new FileIterator(readsFiles[fileNumber]);
+                fastaIterator = new FileLineBytesIterator(readsFiles[fileNumber]);
                 isFasta = (fastaIterator.peekNextByte() == '>');
                 if (!isFasta && (fastaIterator.peekNextByte() != '@'))
                     throw new IOException("Cannot determine type of reads file (doesn't start with '>' or '@': " + readsFiles[fileNumber]);

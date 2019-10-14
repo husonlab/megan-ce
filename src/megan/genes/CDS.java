@@ -100,7 +100,7 @@ public class CDS {
         for (String fileName : inputFiles) {
             progress.setTasks("Processing GFF files", fileName);
 
-            try (FileInputIterator it = new FileInputIterator(fileName)) {
+            try (FileLineIterator it = new FileLineIterator(fileName)) {
                 if (it.hasNext()) {
                     {
                         final String aLine = it.next();

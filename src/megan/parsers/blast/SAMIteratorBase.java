@@ -18,7 +18,7 @@
  */
 package megan.parsers.blast;
 
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 
 import java.io.IOException;
 
@@ -28,7 +28,7 @@ import java.io.IOException;
  * Daniel Huson, 4.2015
  */
 public class SAMIteratorBase {
-    private final FileInputIterator iterator;
+    private final FileLineIterator iterator;
     private final int maxNumberOfMatchesPerRead;
     private int maxNumberOfErrors = 1000;
     private int numberOfErrors = 0;
@@ -44,7 +44,7 @@ public class SAMIteratorBase {
      * @throws IOException
      */
     public SAMIteratorBase(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
-        iterator = new FileInputIterator(fileName);
+        iterator = new FileLineIterator(fileName);
         this.maxNumberOfMatchesPerRead = maxNumberOfMatchesPerRead;
         postProcessMatches = new PostProcessMatches();
     }

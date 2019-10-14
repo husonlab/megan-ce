@@ -27,7 +27,6 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -99,7 +98,7 @@ public class SortLastMAFAlignmentsByQuery {
         long alignmentsIn = 0;
         long alignmentsOut = 0;
 
-        try (FileInputIterator it = new FileInputIterator(lastMAFFile);
+        try (FileLineIterator it = new FileLineIterator(lastMAFFile);
              BufferedWriter w = new BufferedWriter(outputFile.equals("stdout") ? new OutputStreamWriter(System.out) : new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 
             try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + lastMAFFile)) {

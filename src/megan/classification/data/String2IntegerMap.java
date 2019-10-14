@@ -20,7 +20,7 @@ package megan.classification.data;
 
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
 
@@ -45,7 +45,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
     public void loadFile(IName2IdMap label2id, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         System.err.println("Loading map from file: " + fileName);
 
-        try (FileInputIterator it = new FileInputIterator(fileName)) {
+        try (FileLineIterator it = new FileLineIterator(fileName)) {
             it.setSkipCommentLines(true);
             it.setSkipEmptyLines(true);
             progressListener.setProgress(0);

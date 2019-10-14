@@ -19,7 +19,7 @@
 package megan.parsers.blast;
 
 import jloda.util.Basic;
-import jloda.util.FileIterator;
+import jloda.util.FileLineBytesIterator;
 import megan.util.SAMFileFilter;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.Iterator;
  * @deprecated
  */
 public class SAM2SAMIteratorOld implements ISAMIterator {
-    private final FileIterator samFileIterator;
+    private final FileLineBytesIterator samFileIterator;
     private final AlignedIterator alignedIterator; // iterators over all sam lines delivered by the samFileIterator that have an alignment
     private final int maxMatchesPerRead;
 
@@ -56,7 +56,7 @@ public class SAM2SAMIteratorOld implements ISAMIterator {
 
         if (!SAMFileFilter.getInstance().accept(fileName))
             throw new IOException("File not in SAM format (or incorrect file suffix?): " + fileName);
-        samFileIterator = new FileIterator(fileName);
+        samFileIterator = new FileLineBytesIterator(fileName);
         // skip header lines:
         while (samFileIterator.hasNext() && samFileIterator.peekNextByte() == '@')
             samFileIterator.next();
@@ -215,11 +215,11 @@ public class SAM2SAMIteratorOld implements ISAMIterator {
      * iterator that only return SAM lines for which an alignment is present
      */
     static class AlignedIterator implements Iterator<byte[]> {
-        final private FileIterator iterator;
+        final private FileLineBytesIterator iterator;
         private byte[] next = null;
         private int length = 0;
 
-        AlignedIterator(final FileIterator iterator) {
+        AlignedIterator(final FileLineBytesIterator iterator) {
             this.iterator = iterator;
         }
 

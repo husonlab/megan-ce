@@ -21,7 +21,7 @@
 package megan.accessiondb;
 
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -120,7 +120,7 @@ public class CreateAccessionMappingDatabase {
             connection.setAutoCommit(false);
 
             try (PreparedStatement insertStmd = connection.prepareStatement("INSERT INTO " + classificationName + " VALUES (?, ?);")) {
-                try (FileInputIterator it = new FileInputIterator(pathToReferenceFile, true)) {
+                try (FileLineIterator it = new FileLineIterator(pathToReferenceFile, true)) {
                     while (it.hasNext()) {
                         final String[] tokens = it.next().split("\t");
                         final String accession = tokens[0];

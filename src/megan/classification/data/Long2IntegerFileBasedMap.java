@@ -60,7 +60,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
         int totalIn = 0;
         int totalSkipped = -100; // allow ourselves 100 skips more than totalIn before we give up...
 
-        try (final FileInputIterator it = new FileInputIterator(file)) {
+        try (final FileLineIterator it = new FileLineIterator(file)) {
             progress.setTasks("Loading file", file.getName());
             progress.setProgress(0);
             progress.setMaximum(it.getMaximumProgress());
@@ -138,7 +138,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
         System.err.println("Converting " + dmpFile.getName() + " to " + binFile.getName() + "...");
 
         long totalOut = 0;
-        try (final FileInputIterator it = new FileInputIterator(dmpFile, true);
+        try (final FileLineIterator it = new FileLineIterator(dmpFile, true);
              OutputWriter outs = new OutputWriter(binFile)) {
             System.err.println("Writing file: " + binFile);
             outs.writeInt(MAGIC_NUMBER);

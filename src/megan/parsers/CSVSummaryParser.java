@@ -20,7 +20,7 @@ package megan.parsers;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -105,7 +105,7 @@ public class CSVSummaryParser {
         int[] warnings = new int[cNames.length];
 
         int numberOfLines = 0;
-        try (FileInputIterator it = new FileInputIterator(fileName)) {
+        try (FileLineIterator it = new FileLineIterator(fileName)) {
             while (it.hasNext()) {
                 numberOfLines++;
                 String aLine = it.next().trim();

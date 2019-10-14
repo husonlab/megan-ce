@@ -96,7 +96,7 @@ public class CSVReadsHitsParser {
         int countClassNames = 0;
         int countUnrecognizedClassNames = 0;
 
-        try (FileInputIterator it = new FileInputIterator(fileName)) {
+        try (FileLineIterator it = new FileLineIterator(fileName)) {
             progress.setMaximum(it.getMaximumProgress());
             progress.setProgress(0);
 

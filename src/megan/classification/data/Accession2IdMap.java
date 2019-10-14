@@ -43,7 +43,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
      */
     public Accession2IdMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
         map = new HashMap<>();
-        try (FileInputIterator it = new FileInputIterator(fileName)) {
+        try (FileLineIterator it = new FileLineIterator(fileName)) {
             progress.setSubtask("Loading file: " + fileName);
             progress.setMaximum(it.getMaximumProgress());
             progress.setProgress(it.getProgress());

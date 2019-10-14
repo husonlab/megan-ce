@@ -22,14 +22,13 @@ package megan.core;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
 
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -50,7 +49,7 @@ public class ContaminantManager {
         contaminants.clear();
         contaminantsAndDescendants.clear();
 
-        try (FileInputIterator it = new FileInputIterator(file)) {
+        try (FileLineIterator it = new FileLineIterator(file)) {
             while (it.hasNext()) {
                 final String aLine = it.next();
                 final int taxonId;

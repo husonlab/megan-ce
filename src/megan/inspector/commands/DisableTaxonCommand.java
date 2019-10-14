@@ -34,7 +34,7 @@ import java.util.TreeSet;
  * disable taxon associated with selected match
  * Daniel Huson, Nov 2017
  */
-class DisableTaxonCommand extends ClipboardBase implements ICommand {
+public class DisableTaxonCommand extends ClipboardBase implements ICommand {
     public String getSyntax() {
         return null;
     }

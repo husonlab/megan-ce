@@ -31,7 +31,7 @@ import java.io.IOException;
  * draw as rectangular cladogram
  * Daniel Huson, 11.2010
  */
-class SetRectangularPhylogramCommand extends CommandBase implements ICheckBoxCommand {
+public class SetRectangularPhylogramCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((ViewerBase) getViewer()).getDrawerType().equals(ViewerBase.DiagramType.RectangularPhylogram);
     }

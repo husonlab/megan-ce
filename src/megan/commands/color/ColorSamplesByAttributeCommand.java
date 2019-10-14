@@ -28,7 +28,7 @@ import megan.samplesviewer.SamplesViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ColorSamplesByAttributeCommand extends CommandBase implements ICheckBoxCommand {
+public class ColorSamplesByAttributeCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return ((Director) getDir()).getDocument().getSampleAttributeTable().isSomeSampleColored();

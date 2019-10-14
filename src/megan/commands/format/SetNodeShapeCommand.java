@@ -40,7 +40,7 @@ import java.util.List;
  * draw selected nodes as circles
  * Daniel Huson, 3.2013
  */
-class SetNodeShapeCommand extends CommandBase implements ICommand {
+public class SetNodeShapeCommand extends CommandBase implements ICommand {
     /**
      * get command-line usage description
      *

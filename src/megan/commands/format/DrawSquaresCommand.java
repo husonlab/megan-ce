@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * draw selected nodes as squares
  * Daniel Huson, 3.2013
  */
-class DrawSquaresCommand extends CommandBase implements ICommand {
+public class DrawSquaresCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

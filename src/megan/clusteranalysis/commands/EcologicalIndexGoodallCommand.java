@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * method=Goodall command
  * Daniel Huson, 6.2010
  */
-class EcologicalIndexGoodallCommand extends CommandBase implements ICheckBoxCommand {
+public class EcologicalIndexGoodallCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

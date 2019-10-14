@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Daniel Huson, 3.2017
  */
-class ListAttributeSummaryCommand extends CommandBase implements ICommand {
+public class ListAttributeSummaryCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

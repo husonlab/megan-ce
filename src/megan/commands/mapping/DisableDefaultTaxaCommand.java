@@ -26,7 +26,7 @@ import megan.viewer.MainViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class DisableDefaultTaxaCommand extends CommandBase implements ICommand {
+public class DisableDefaultTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

@@ -27,7 +27,7 @@ import megan.core.Document;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class UseProgramColorsCommand extends CommandBase implements ICheckBoxCommand {
+public class UseProgramColorsCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return ((Director) getDir()).getDocument().getChartColorManager().isUsingProgramColors();

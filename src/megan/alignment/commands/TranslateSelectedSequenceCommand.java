@@ -36,7 +36,7 @@ import java.io.StringWriter;
  * translate selected sequence command
  * Daniel Huson, 11.2011
  */
-class TranslateSelectedSequenceCommand extends CommandBase implements ICommand {
+public class TranslateSelectedSequenceCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

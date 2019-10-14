@@ -27,7 +27,7 @@ import megan.viewer.MainViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class KeepNonProkaryotesCollapsedCommand extends CommandBase implements ICheckBoxCommand {
+public class KeepNonProkaryotesCollapsedCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return ProgramProperties.get("KeepOthersCollapsed", "").equals("prokaryotes");

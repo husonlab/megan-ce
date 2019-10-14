@@ -47,7 +47,7 @@ import java.util.*;
  * * compute contrasts command
  * * Daniel Huson, 8.2014
  */
-class ComputeContrastsCommand extends CommandBase implements ICommand {
+public class ComputeContrastsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "compute contrasts data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), ",") + "}";
     }

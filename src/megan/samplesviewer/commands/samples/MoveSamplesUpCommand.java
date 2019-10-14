@@ -37,7 +37,7 @@ import java.util.Set;
  * * delete command
  * * Daniel Huson, 9.2015
  */
-class MoveSamplesUpCommand extends CommandBase implements ICommand {
+public class MoveSamplesUpCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "move sample=<name> [<name>...] direction={up|down};";
     }

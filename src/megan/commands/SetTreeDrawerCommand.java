@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * sets the tree drawer
  * Daniel Huson, 5.2015
  */
-class SetTreeDrawerCommand extends CommandBase implements ICommand {
+public class SetTreeDrawerCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

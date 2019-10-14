@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
+public class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "correlate class={name|number ...} classification={name} attribute={name} ;";

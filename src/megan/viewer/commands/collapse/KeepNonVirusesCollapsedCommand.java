@@ -27,7 +27,7 @@ import megan.viewer.MainViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class KeepNonVirusesCollapsedCommand extends CommandBase implements ICheckBoxCommand {
+public class KeepNonVirusesCollapsedCommand extends CommandBase implements ICheckBoxCommand {
     @Override
     public boolean isSelected() {
         return ProgramProperties.get("KeepOthersCollapsed", "").equals("viruses");

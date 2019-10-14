@@ -26,7 +26,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ComputeSimpsonReciprocalIndexCommand extends CommandBase implements ICommand {
+public class ComputeSimpsonReciprocalIndexCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
     }
 

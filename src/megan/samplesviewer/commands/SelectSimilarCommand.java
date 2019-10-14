@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-class SelectSimilarCommand extends CommandBase implements ICommand {
+public class SelectSimilarCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

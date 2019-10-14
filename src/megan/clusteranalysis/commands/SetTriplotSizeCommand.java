@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * choose number of triplot vectors
  * Daniel Huson, 4.2015
  */
-class SetTriplotSizeCommand extends CommandBase implements ICommand {
+public class SetTriplotSizeCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it

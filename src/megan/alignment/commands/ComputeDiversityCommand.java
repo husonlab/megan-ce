@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-class ComputeDiversityCommand extends CommandBase implements ICommand {
+public class ComputeDiversityCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

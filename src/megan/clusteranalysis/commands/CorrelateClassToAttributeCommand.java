@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
-class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
+public class CorrelateClassToAttributeCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return null;

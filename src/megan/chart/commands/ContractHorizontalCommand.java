@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-class ContractHorizontalCommand extends CommandBase implements ICommand {
+public class ContractHorizontalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "contract direction={horizontal|vertical};";
     }

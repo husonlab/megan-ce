@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * draw selected nodes as nothing
  * Daniel Huson, 3.2013
  */
-class DrawNoneCommand extends CommandBase implements ICommand {
+public class DrawNoneCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

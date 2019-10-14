@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * zoom to selection
  * Daniel Huson, 2005
  */
-class ZoomToSelectionCommand extends CommandBase implements ICommand {
+public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

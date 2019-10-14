@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * show groups as ellipses
  * Daniel Huson, 9.2016
  */
-class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowGroupsCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

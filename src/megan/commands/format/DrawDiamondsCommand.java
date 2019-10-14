@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * draw selected nodes as diamonds
  * Daniel Huson, 3.2013
  */
-class DrawDiamondsCommand extends CommandBase implements ICommand {
+public class DrawDiamondsCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

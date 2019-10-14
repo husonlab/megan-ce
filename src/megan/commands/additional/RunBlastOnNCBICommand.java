@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * analyse a sequence on NCBI
  * Daniel Huson, 3/2017
  */
-class RunBlastOnNCBICommand extends CommandBase implements ICommand {
+public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
     private static BlastService blastService;
     private static boolean serviceIsRunning = false;
 

@@ -49,7 +49,7 @@ import java.util.List;
  * assemble all reads associated with a selected node
  * Daniel Huson, 5.2015
  */
-class ExportOverlapGraphCommand extends CommandBase implements ICommand {
+public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "export overlapGraph file=<name> [minOverlap=<number>] [showGraph={false|true}];";

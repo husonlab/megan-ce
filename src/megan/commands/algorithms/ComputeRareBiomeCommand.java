@@ -36,7 +36,7 @@ import java.util.Collection;
  * compute rea biome
  * Daniel Huson, 2.2013
  */
-class ComputeRareBiomeCommand extends CommandBase implements ICommand {
+public class ComputeRareBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

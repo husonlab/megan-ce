@@ -36,7 +36,7 @@ import java.util.List;
  * apply the triangulation test
  * Daniel Huson, 11.2015
  */
-class TriangulationTestCommand extends CommandBase implements ICommand {
+public class TriangulationTestCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "triangulationTest attribute=<name>;";
     }

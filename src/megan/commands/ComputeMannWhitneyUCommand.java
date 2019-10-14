@@ -30,7 +30,7 @@ import org.apache.commons.math3.stat.inference.MannWhitneyUTest;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ComputeMannWhitneyUCommand extends CommandBase implements ICommand {
+public class ComputeMannWhitneyUCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());

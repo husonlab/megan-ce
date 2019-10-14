@@ -31,7 +31,7 @@ import megan.viewer.TaxonomyData;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class EnableTaxaCommand extends CommandBase implements ICommand {
+public class EnableTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "enable taxa={selected|all|<name,...>};";
     }

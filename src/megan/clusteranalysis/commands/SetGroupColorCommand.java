@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set group color
  * Daniel Huson, 10.2017
  */
-class SetGroupColorCommand extends CommandBase implements ICommand {
+public class SetGroupColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it

@@ -39,7 +39,7 @@ import java.io.File;
  * export reads in length and amount covered
  * Daniel Huson, 3.2017
  */
-class ExportReadsToLengthAndCoverageCommand extends CommandBase implements ICommand {
+public class ExportReadsToLengthAndCoverageCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

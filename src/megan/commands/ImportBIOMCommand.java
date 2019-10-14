@@ -40,7 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-class ImportBIOMCommand extends CommandBase implements ICommand {
+public class ImportBIOMCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import format=biom file=<fileName> [type={TAXONOMY|KEGG|SEED|UNKNOWN}] [taxonomyIgnorePath={false|true}];";
     }

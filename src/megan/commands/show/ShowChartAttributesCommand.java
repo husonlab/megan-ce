@@ -28,7 +28,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ShowChartAttributesCommand extends CommandBase implements ICommand {
+public class ShowChartAttributesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

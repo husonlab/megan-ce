@@ -40,7 +40,7 @@ import java.util.Set;
  * collapse rank command
  * Daniel Huson, 9.2015
  */
-class CollapseByRankCommand extends CommandBase implements ICommand {
+public class CollapseByRankCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "collapse rank={" + Basic.toString(TaxonomicLevels.getAllNames(), "|") + "}";
     }

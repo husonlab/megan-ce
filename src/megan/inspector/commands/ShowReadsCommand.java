@@ -44,7 +44,7 @@ import java.util.concurrent.Executors;
  * find reads and display in inspector window
  * Daniel Huson, 11.2010
  */
-class ShowReadsCommand extends CommandBase implements ICommand {
+public class ShowReadsCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

@@ -48,7 +48,7 @@ import java.util.Set;
  * * add command
  * * Daniel Huson, 9.2012
  */
-class AddSampleFromFileCommand extends CommandBase implements ICommand {
+public class AddSampleFromFileCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "addSample [sample=<name>] source=<filename|pid> ... [overwrite={false|true}];";
     }

@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 
-class SortByEnabledCommand extends CommandBase implements ICommand {
+public class SortByEnabledCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set sort=enabled;";
     }

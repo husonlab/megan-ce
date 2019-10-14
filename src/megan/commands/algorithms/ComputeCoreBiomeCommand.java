@@ -36,7 +36,7 @@ import java.util.Collection;
  * compute biome
  * Daniel Huson, 2.2013, 7.2016
  */
-class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
+public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

@@ -29,7 +29,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class SetAccessionTagsCommand extends CommandBase implements ICommand {
+public class SetAccessionTagsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set accessionTags=<word ...>;";
     }

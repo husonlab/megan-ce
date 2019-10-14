@@ -28,7 +28,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class RectangularWordCloudCommand extends CommandBase implements ICheckBoxCommand {
+public class RectangularWordCloudCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return chartViewer.isUseRectangleShape();

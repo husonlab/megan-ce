@@ -29,7 +29,7 @@ import java.io.File;
  * set the working directory
  * Daniel Huson, 1.2011
  */
-class SetDirectoryCommand extends CommandBase implements ICommand {
+public class SetDirectoryCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

@@ -40,7 +40,7 @@ import java.util.Collection;
  * group nodes in PCoA plot
  * Daniel Huson, 7.2014
  */
-class GroupNodesCommand extends CommandBase implements ICommand {
+public class GroupNodesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

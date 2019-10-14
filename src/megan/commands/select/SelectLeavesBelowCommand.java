@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-class SelectLeavesBelowCommand extends CommandBase implements ICommand {
+public class SelectLeavesBelowCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

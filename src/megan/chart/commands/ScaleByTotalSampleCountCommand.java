@@ -28,7 +28,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ScaleByTotalSampleCountCommand extends CommandBase implements ICheckBoxCommand {
+public class ScaleByTotalSampleCountCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         final ChartViewer chartViewer = (ChartViewer) getViewer();

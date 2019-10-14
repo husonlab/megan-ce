@@ -27,7 +27,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class SetTitleCommand extends CommandBase implements ICommand {
+public class SetTitleCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set title=<string>;";
     }

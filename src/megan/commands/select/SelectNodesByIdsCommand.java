@@ -34,7 +34,7 @@ import java.util.Set;
  * select by name
  * Daniel Huson, 2.2011
  */
-class SelectNodesByIdsCommand extends CommandBase implements ICommand {
+public class SelectNodesByIdsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "select id=<number> ...;";
     }

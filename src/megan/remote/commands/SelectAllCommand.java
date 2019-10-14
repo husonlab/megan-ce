@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-class SelectAllCommand extends CommandBase implements ICommand {
+public class SelectAllCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "select samples={all|none};";
     }

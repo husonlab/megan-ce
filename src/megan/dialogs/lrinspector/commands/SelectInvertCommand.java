@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 4.2017
  */
-class SelectInvertCommand extends CommandBase implements ICommand {
+public class SelectInvertCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
     }

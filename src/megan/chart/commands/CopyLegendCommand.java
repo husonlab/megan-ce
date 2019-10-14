@@ -29,7 +29,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-class CopyLegendCommand extends CommandBase implements ICommand {
+public class CopyLegendCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "copyLegend;";
     }

@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-class LabelSummarizedCommand extends CommandBase implements ICheckBoxCommand {
+public class LabelSummarizedCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer != null && viewer.isNodeLabelSummarized();

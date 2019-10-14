@@ -42,7 +42,7 @@ import java.util.Map;
  * * compare by command
  * * Daniel Huson, 9.2015
  */
-class CompareByAttributeCommand extends CommandBase implements ICommand {
+public class CompareByAttributeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "compareBy attribute=<name> [mode={relative|absolute}] [samples=<names>];";
     }

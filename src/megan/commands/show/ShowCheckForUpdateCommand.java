@@ -42,7 +42,7 @@ import java.awt.event.ActionEvent;
  * show the message window
  * Daniel Huson, 6.2010
  */
-class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
+public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
     private final static String NAME = "Check For Updates...";
 
     /**

@@ -29,7 +29,7 @@ import java.awt.event.ActionEvent;
  * flip vertically
  * Daniel Huson, 3.2013
  */
-class FlipVCommand extends CommandBase implements ICheckBoxCommand {
+public class FlipVCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

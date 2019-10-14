@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * draw as rectangular cladogram
  * Daniel Huson, 11.2010
  */
-class SetRectangularCladogramCommand extends CommandBase implements ICheckBoxCommand {
+public class SetRectangularCladogramCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((ViewerBase) getViewer()).getDrawerType().equals(ViewerBase.DiagramType.RectangularCladogram);
     }

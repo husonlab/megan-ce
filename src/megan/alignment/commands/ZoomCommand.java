@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * font size
  * Daniel Huson, 8.2011
  */
-class ZoomCommand extends CommandBase implements ICommand {
+public class ZoomCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

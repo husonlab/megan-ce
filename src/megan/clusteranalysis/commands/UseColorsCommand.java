@@ -31,7 +31,7 @@ import java.awt.event.KeyEvent;
  * use colors
  * Daniel Huson, 6.2010
  */
-class UseColorsCommand extends CommandBase implements ICheckBoxCommand {
+public class UseColorsCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

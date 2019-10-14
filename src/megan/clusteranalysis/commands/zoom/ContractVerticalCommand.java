@@ -29,7 +29,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ContractVerticalCommand extends CommandBase implements ICommand {
+public class ContractVerticalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "contract direction=vertical;";
     }

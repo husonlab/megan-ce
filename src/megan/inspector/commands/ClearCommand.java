@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 11.2010
  */
-class ClearCommand extends CommandBase implements ICommand {
+public class ClearCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

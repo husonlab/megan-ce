@@ -29,7 +29,7 @@ import megan.chart.gui.LabelsJList;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ShowClusteringCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowClusteringCommand extends CommandBase implements ICheckBoxCommand {
 
     @Override
     public boolean isSelected() {

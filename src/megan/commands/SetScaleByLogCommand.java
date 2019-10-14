@@ -28,7 +28,7 @@ import megan.viewer.gui.NodeDrawer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class SetScaleByLogCommand extends CommandBase implements ICheckBoxCommand {
+public class SetScaleByLogCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer.getNodeDrawer().getScalingType() == NodeDrawer.ScalingType.LOG;

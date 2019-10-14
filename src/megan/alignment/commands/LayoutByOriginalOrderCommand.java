@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 11.2010
  */
-class LayoutByOriginalOrderCommand extends CommandBase implements ICheckBoxCommand {
+public class LayoutByOriginalOrderCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((AlignmentViewer) getViewer()).getAlignmentLayout() == AlignmentViewer.AlignmentLayout.Unsorted;
     }

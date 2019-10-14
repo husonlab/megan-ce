@@ -37,7 +37,7 @@ import java.util.Optional;
  * draw selected nodes as circles
  * Daniel Huson, 3.2013
  */
-class SetSampleShapeCommand extends CommandBase implements ICommand {
+public class SetSampleShapeCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-class ListDisabledCommand extends CommandBase implements ICommand {
+public class ListDisabledCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "list taxa=disabled;";
     }

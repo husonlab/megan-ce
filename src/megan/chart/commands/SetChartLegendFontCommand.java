@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
  * set font
  * Daniel Huson, 9.2012
  */
-class SetChartLegendFontCommand extends CommandBase implements ICommand {
+public class SetChartLegendFontCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

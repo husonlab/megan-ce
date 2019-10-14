@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * choose number of biplot vectors
  * Daniel Huson, 7.2014
  */
-class SetBiplotSizeCommand extends CommandBase implements ICommand {
+public class SetBiplotSizeCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it

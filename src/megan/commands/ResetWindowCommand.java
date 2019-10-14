@@ -26,7 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ResetWindowCommand extends jloda.swing.commands.CommandBase implements ICommand {
+public class ResetWindowCommand extends jloda.swing.commands.CommandBase implements ICommand {
     public String getSyntax() {
         return "reset windowLocation;";
     }

@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-class TransposeCommand extends CommandBase implements ICheckBoxCommand {
+public class TransposeCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return chartViewer.isTranspose();

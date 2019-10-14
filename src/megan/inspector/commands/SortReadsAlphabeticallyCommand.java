@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 11.2010
  */
-class SortReadsAlphabeticallyCommand extends CommandBase implements ICheckBoxCommand {
+public class SortReadsAlphabeticallyCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         InspectorWindow inspectorWindow = (InspectorWindow) getViewer();

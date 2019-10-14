@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-class SelectFromPreviousCommand extends CommandBase implements ICommand {
+public class SelectFromPreviousCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

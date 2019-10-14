@@ -33,7 +33,7 @@ import java.util.Collection;
  * draw selected nodes as circles
  * Daniel Huson, 3.2013
  */
-class DrawCirclesCommand extends CommandBase implements ICommand {
+public class DrawCirclesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *

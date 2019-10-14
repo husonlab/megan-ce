@@ -30,7 +30,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 
-class CopyNodeLabelCommand extends CommandBase implements ICommand {
+public class CopyNodeLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

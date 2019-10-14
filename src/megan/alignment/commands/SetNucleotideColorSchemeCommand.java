@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 4.2012
  */
-class SetNucleotideColorSchemeCommand extends CommandBase implements ICommand {
+public class SetNucleotideColorSchemeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

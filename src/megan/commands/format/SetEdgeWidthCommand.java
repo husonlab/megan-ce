@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set shape
  * Daniel Huson, 4.2011
  */
-class SetEdgeWidthCommand extends CommandBase implements ICommand {
+public class SetEdgeWidthCommand extends CommandBase implements ICommand {
 
     /**
      * get the name to be used as a menu label

@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * mapping command
  * Daniel Huson, 11.2010
  */
-class LayoutByMappingCommand extends CommandBase implements ICheckBoxCommand {
+public class LayoutByMappingCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((AlignmentViewer) getViewer()).getAlignmentLayout() == AlignmentViewer.AlignmentLayout.Mapping;
     }

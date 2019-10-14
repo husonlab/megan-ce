@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * * select comment like attributes
  * * Daniel Huson, 4.2017
  */
-class SelectCommentLikeCommand extends CommandBase implements ICommand {
+public class SelectCommentLikeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

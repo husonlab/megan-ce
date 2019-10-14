@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * select all series
  * Daniel Huson, 7.2012
  */
-class SelectNoneCommand extends CommandBase implements ICommand {
+public class SelectNoneCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

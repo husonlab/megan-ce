@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 8.2011
  */
-class ShowDiversityPlotCommand extends CommandBase implements ICommand {
+public class ShowDiversityPlotCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

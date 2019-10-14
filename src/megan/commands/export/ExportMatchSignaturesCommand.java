@@ -35,7 +35,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-class ExportMatchSignaturesCommand extends CommandBase implements ICommand {
+public class ExportMatchSignaturesCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=matchPatterns");
 

@@ -35,7 +35,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 
-class SortAlphabeticallyCommand extends CommandBase implements ICommand {
+public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set sort={up|down|alphabetically|alphaBackward|enabled};";
     }

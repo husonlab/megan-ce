@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 8.2011
  */
-class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();

@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  * Open the Find dialog
  * Daniel Huson, 7 2010
  */
-class FindCommand extends CommandBase implements ICheckBoxCommand {
+public class FindCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         return getViewer() instanceof IViewerWithFindToolBar && ((IViewerWithFindToolBar) getViewer()).isShowFindToolBar();

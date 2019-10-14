@@ -34,7 +34,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ShowChartRareFactionCommand extends CommandBase implements ICommand {
+public class ShowChartRareFactionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show rarefaction data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "};";
     }

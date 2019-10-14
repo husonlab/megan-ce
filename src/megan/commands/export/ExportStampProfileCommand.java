@@ -43,7 +43,7 @@ import java.io.File;
  * export as STAMP profile
  * Daniel Huson, 1.2016
  */
-class ExportStampProfileCommand extends CommandBase implements ICommand {
+public class ExportStampProfileCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export format=stamp");
 

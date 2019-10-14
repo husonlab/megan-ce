@@ -29,7 +29,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class EditEdgeLabelCommand extends CommandBase implements ICommand {
+public class EditEdgeLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

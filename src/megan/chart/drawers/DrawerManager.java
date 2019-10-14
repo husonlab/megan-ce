@@ -18,7 +18,7 @@
  */
 package megan.chart.drawers;
 
-import jloda.swing.util.PluginClassLoader;
+import jloda.util.PluginClassLoader;
 import megan.chart.IChartDrawer;
 
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class DrawerManager {
             final boolean fillAllSupportedDrawers = (allSupportedChartDrawers.size() == 0);
 
             final Map<String, IChartDrawer> name2DrawerInstance = new HashMap<>();
-            for (Object object : PluginClassLoader.getInstances(paths, IChartDrawer.class)) {
+            for (Object object : PluginClassLoader.getInstances(IChartDrawer.class,paths)) {
                 if (object instanceof IChartDrawer) {
                     final IChartDrawer drawer = (IChartDrawer) object;
                     if (!(drawer instanceof MultiChartDrawer) && drawer.isEnabled()) {

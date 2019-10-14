@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
  * choose nj tab
  * Daniel Huson, 7.2010
  */
-class ShowNJTreeTabCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowNJTreeTabCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * get the name to be used as a menu label
      *

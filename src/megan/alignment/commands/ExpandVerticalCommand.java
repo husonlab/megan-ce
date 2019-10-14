@@ -26,7 +26,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ExpandVerticalCommand extends CommandBase implements ICommand {
+public class ExpandVerticalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

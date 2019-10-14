@@ -47,7 +47,7 @@ import java.util.Collection;
  * meganize DAA files
  * Daniel Huson, 3.2016
  */
-class MeganizeDAACommand extends CommandBase implements ICommand {
+public class MeganizeDAACommand extends CommandBase implements ICommand {
 
     /**
      * get command-line usage description

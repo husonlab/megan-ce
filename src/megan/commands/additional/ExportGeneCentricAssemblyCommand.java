@@ -53,7 +53,7 @@ import java.util.Set;
  * assemble all reads associated with a selected node
  * Daniel Huson, 5.2015
  */
-class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
+public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "export assembly file=<name> [minOverlap=<number>] [minReads=<number>] [minLength=<number>] [minAvCoverage=<number>] [minPercentIdentity=<number>] [maxNumberOfReads=<number>] [showGraph={false|true}];";

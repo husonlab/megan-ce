@@ -28,7 +28,7 @@ import megan.viewer.gui.NodeDrawer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class DrawCirclesCommand extends CommandBase implements ICheckBoxCommand {
+public class DrawCirclesCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
         return viewer != null && viewer.getNodeDrawer().getStyle() == NodeDrawer.Style.Circle;

@@ -26,7 +26,7 @@ import megan.core.Director;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ClearSetColorsCommand extends CommandBase implements ICommand {
+public class ClearSetColorsCommand extends CommandBase implements ICommand {
 
 
     public String getSyntax() {

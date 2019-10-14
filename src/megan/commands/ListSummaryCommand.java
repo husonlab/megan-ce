@@ -39,7 +39,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
-class ListSummaryCommand extends CommandBase implements ICommand {
+public class ListSummaryCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "list summary nodes={all|selected} [outFile=<name>];";
     }

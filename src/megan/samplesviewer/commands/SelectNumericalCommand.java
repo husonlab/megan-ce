@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * * select numerical attributes
  * * Daniel Huson, 4.2017
  */
-class SelectNumericalCommand extends CommandBase implements ICommand {
+public class SelectNumericalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

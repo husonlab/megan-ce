@@ -28,7 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-class CollapseToTopCommand extends CommandBase implements ICommand {
+public class CollapseToTopCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

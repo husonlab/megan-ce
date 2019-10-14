@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 11.2010
  */
-class SelectLeavesCommand extends CommandBase implements ICommand {
+public class SelectLeavesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * PC1 vs PC3
  * Daniel Huson, 9.2012
  */
-class SetPC1vsPC2vsPC3Command extends CommandBase implements ICheckBoxCommand {
+public class SetPC1vsPC2vsPC3Command extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

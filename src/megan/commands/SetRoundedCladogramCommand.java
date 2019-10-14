@@ -31,7 +31,7 @@ import java.io.IOException;
  * draw as rounded cladogram
  * Daniel Huson, 5.2015
  */
-class SetRoundedCladogramCommand extends CommandBase implements ICheckBoxCommand {
+public class SetRoundedCladogramCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return ((ViewerBase) getViewer()).getDrawerType().equals(ViewerBase.DiagramType.RoundedCladogram);
     }

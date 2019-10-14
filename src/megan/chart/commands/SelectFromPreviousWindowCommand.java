@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * select from previous window
  * Daniel Huson, 7.2012
  */
-class SelectFromPreviousWindowCommand extends CommandBase implements ICommand {
+public class SelectFromPreviousWindowCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

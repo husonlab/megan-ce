@@ -27,7 +27,7 @@ import megan.viewer.gui.NodeDrawer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ScaleByAssignedCommand extends CommandBase implements ICheckBoxCommand {
+public class ScaleByAssignedCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();

@@ -40,7 +40,7 @@ import java.util.*;
  * * shape by command
  * * Daniel Huson, 9.2105
  */
-class ShapeSamplesByCommand extends CommandBase implements ICommand {
+public class ShapeSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "shapeBy attribute=<name>;";
     }

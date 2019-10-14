@@ -26,7 +26,7 @@ import jloda.util.parse.NexusStreamParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ListVersionCommand extends CommandBase implements ICommand {
+public class ListVersionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "version;";
     }

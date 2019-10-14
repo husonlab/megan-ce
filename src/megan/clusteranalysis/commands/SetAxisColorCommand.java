@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * set axes color
  * Daniel Huson, 10.2017
  */
-class SetAxisColorCommand extends CommandBase implements ICommand {
+public class SetAxisColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it

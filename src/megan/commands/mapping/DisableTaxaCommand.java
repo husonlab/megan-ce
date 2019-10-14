@@ -34,7 +34,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-class DisableTaxaCommand extends CommandBase implements ICommand {
+public class DisableTaxaCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "disable taxa={default|selected|<name,...>};";
 

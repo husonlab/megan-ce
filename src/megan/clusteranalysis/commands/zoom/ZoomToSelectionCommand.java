@@ -28,7 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-class ZoomToSelectionCommand extends CommandBase implements ICommand {
+public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-class ExportSelectionCommand extends CommandBase implements ICommand {
+public class ExportSelectionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export what=selection file=<filename>;";
     }

@@ -27,7 +27,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class DrawComparisonOnLeavesOnlyCommand extends CommandBase implements ICheckBoxCommand {
+public class DrawComparisonOnLeavesOnlyCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return getViewer() != null && ((ClassificationViewer) getViewer()).isDrawLeavesOnly();
     }

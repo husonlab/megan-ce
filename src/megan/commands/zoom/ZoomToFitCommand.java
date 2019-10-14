@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * zoom to fit
  * Daniel Huson, 2005
  */
-class ZoomToFitCommand extends CommandBase implements ICommand {
+public class ZoomToFitCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

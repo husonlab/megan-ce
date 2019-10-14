@@ -39,7 +39,7 @@ import java.io.IOException;
  * * selection command
  * * Daniel Huson, 4.2017
  */
-class ExportSelectedCommand extends CommandBase implements ICommand {
+public class ExportSelectedCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export-selection file=");

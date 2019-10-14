@@ -40,7 +40,7 @@ import java.util.Map;
  * show long read inspector command
  * Daniel Huson, 2.2107
  */
-class ShowLRInspectorCommand extends CommandBase implements ICommand {
+public class ShowLRInspectorCommand extends CommandBase implements ICommand {
     private static final Map<Pair<String, Integer>, LRInspectorViewer> classification2viewer = new HashMap<>();
 
     /**

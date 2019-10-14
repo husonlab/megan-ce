@@ -37,7 +37,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-class ShowComparisonPlotCommand extends CommandBase implements ICommand {
+public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show comparisonPlot [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "]};";
     }

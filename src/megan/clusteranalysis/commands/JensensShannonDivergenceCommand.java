@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * JensensShannonDivergenceCommand
  * Daniel Huson, 7.2014
  */
-class JensensShannonDivergenceCommand extends CommandBase implements ICheckBoxCommand {
+public class JensensShannonDivergenceCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

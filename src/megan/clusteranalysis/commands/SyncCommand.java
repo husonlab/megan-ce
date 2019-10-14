@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * close the window
  * Daniel Huson, 6.2010
  */
-class SyncCommand extends CommandBase implements ICommand {
+public class SyncCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "sync;";
     }

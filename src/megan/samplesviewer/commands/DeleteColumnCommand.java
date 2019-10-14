@@ -37,7 +37,7 @@ import java.util.Set;
  * * delete command
  * * Daniel Huson, 9.2015
  */
-class DeleteColumnCommand extends CommandBase implements ICommand {
+public class DeleteColumnCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "delete attribute=<name> [<name>...];";
     }

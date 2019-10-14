@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set series label
  * Daniel Huson, 6.2012
  */
-class SetClassesLabelCommand extends CommandBase implements ICommand {
+public class SetClassesLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set classesLabel=<label>;";
     }

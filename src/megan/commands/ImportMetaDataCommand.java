@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileReader;
 
-class ImportMetaDataCommand extends CommandBase implements ICommand {
+public class ImportMetaDataCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import metaData=<file> [clearExisting={true|false}];";
     }

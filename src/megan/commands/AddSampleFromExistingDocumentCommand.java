@@ -39,7 +39,7 @@ import java.util.Set;
  * * add command
  * * Daniel Huson, 9.2012
  */
-class AddSampleFromExistingDocumentCommand extends CommandBase implements ICommand {
+public class AddSampleFromExistingDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

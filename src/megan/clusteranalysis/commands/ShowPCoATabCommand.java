@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
  * choose mds tab
  * Daniel Huson, 7.2010
  */
-class ShowPCoATabCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowPCoATabCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * get the name to be used as a menu label
      *

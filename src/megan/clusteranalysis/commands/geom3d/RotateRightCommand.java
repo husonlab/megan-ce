@@ -31,7 +31,7 @@ import java.awt.event.KeyEvent;
 /**
  * rotate command
  */
-class RotateRightCommand extends CommandBase implements ICommand {
+public class RotateRightCommand extends CommandBase implements ICommand {
     /**
      * get icon to be used in menu or button
      *

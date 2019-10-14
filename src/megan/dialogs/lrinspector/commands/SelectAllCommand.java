@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * * selection command
  * * Daniel Huson, 4.2017
  */
-class SelectAllCommand extends CommandBase implements ICommand {
+public class SelectAllCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select what=");

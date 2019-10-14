@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * show triplot
  * Daniel Huson, 7.2014
  */
-class ShowTriplotCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowTriplotCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

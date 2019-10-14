@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * zoom to full
  * Daniel Huson, 2005
  */
-class ZoomToFullCommand extends CommandBase implements ICommand {
+public class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "zoom what={fit|full|selection}";
     }

@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
 /**
  * rescan some of the computation
  */
-class UpdateCommand extends CommandBase implements ICommand {
+public class UpdateCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "update [reProcess={false|true}] [reset={false|true}] [reInduce={false|true}];";
     }

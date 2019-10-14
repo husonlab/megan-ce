@@ -28,7 +28,7 @@ import java.awt.event.ActionEvent;
  * choose network tab
  * Daniel Huson, 7.2010
  */
-class ShowNetworkTabCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowNetworkTabCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * get the name to be used as a menu label
      *

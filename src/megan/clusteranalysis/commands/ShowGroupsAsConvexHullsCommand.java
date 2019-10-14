@@ -29,7 +29,7 @@ import java.awt.event.ActionEvent;
  * show groups
  * Daniel Huson, 7.2014
  */
-class ShowGroupsAsConvexHullsCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowGroupsAsConvexHullsCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

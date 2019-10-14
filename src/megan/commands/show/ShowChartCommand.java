@@ -47,7 +47,7 @@ import java.io.IOException;
  * show chart command
  * Daniel Huson, 6.2012
  */
-class ShowChartCommand extends CommandBase implements ICommand {
+public class ShowChartCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "show chart drawer={" + Basic.toString(DrawerManager.getAllSupportedChartDrawers(), ",") + "} data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "|attributes|metadata};";

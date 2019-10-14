@@ -42,7 +42,7 @@ import java.io.IOException;
  * export data command
  * Daniel Huson, 6.2010
  */
-class ExportDataCommand extends CommandBase implements ICommand {
+public class ExportDataCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

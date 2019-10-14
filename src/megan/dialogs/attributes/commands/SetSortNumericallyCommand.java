@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * command
  * Daniel Huson, 11.2010
  */
-class SetSortNumericallyCommand extends CommandBase implements ICommand {
+public class SetSortNumericallyCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

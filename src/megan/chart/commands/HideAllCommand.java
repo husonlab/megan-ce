@@ -34,7 +34,7 @@ import java.util.Set;
  * show all
  * Daniel Huson, 7.2012
  */
-class HideAllCommand extends CommandBase implements ICommand {
+public class HideAllCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

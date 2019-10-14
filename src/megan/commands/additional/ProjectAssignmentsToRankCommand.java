@@ -42,7 +42,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-class ProjectAssignmentsToRankCommand extends CommandBase implements ICommand {
+public class ProjectAssignmentsToRankCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
         return "project rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "} [minPercent={number}];";

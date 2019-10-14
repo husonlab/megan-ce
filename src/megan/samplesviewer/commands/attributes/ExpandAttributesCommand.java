@@ -39,7 +39,7 @@ import java.util.TreeSet;
  * * make a new attribute
  * * Daniel Huson, 19.2015
  */
-class ExpandAttributesCommand extends CommandBase implements ICommand {
+public class ExpandAttributesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "expand attribute=<name>;";
     }

@@ -28,7 +28,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ClusterClassesCommand extends CommandBase implements ICheckBoxCommand {
+public class ClusterClassesCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
         return isApplicable() && chartViewer.getClassesList().isDoClustering();

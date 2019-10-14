@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 4.2012
  */
-class SetAminoAcidColorSchemeCommand extends CommandBase implements ICommand {
+public class SetAminoAcidColorSchemeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

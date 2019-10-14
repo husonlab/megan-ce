@@ -36,7 +36,7 @@ import java.util.TreeMap;
  * command
  * Daniel Huson, 8.2011
  */
-class ComputeWordCountAnalysisCommand extends CommandBase implements ICommand {
+public class ComputeWordCountAnalysisCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

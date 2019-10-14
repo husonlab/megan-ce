@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
  * copy the currently selected labels
  * Daniel Huson, DATE
  */
-class CopyLabelCommand extends CommandBase implements ICommand {
+public class CopyLabelCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

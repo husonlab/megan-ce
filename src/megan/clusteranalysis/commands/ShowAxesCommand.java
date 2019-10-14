@@ -31,7 +31,7 @@ import java.awt.event.KeyEvent;
  * show axes
  * Daniel Huson, 1.2016
  */
-class ShowAxesCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowAxesCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

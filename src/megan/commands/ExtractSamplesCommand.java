@@ -40,7 +40,7 @@ import java.util.List;
  * * extract samples command
  * * Daniel Huson, 6.2015
  */
-class ExtractSamplesCommand extends CommandBase implements ICommand {
+public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "extract samples=<name1 name2 ...>;";
     }

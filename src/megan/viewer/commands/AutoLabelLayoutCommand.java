@@ -27,7 +27,7 @@ import megan.viewer.ClassificationViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class AutoLabelLayoutCommand extends CommandBase implements ICheckBoxCommand {
+public class AutoLabelLayoutCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         return getViewer() != null && ((ClassificationViewer) getViewer()).getAutoLayoutLabels();
     }

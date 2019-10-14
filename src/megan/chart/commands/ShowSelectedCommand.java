@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * show all
  * Daniel Huson, 7.2012
  */
-class ShowSelectedCommand extends CommandBase implements ICommand {
+public class ShowSelectedCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

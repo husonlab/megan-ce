@@ -27,7 +27,7 @@ import jloda.util.parse.NexusStreamParser;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class EditNodeLabelCommand extends CommandBase implements ICommand {
+public class EditNodeLabelCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

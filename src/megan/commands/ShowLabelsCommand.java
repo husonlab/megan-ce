@@ -27,7 +27,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ShowLabelsCommand extends CommandBase implements ICommand {
+public class ShowLabelsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show labels=selected;";
     }

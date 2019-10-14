@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * font size
  * Daniel Huson, 8.2011
  */
-class ExpandHorizontalCommand extends CommandBase implements ICommand {
+public class ExpandHorizontalCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

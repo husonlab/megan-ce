@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * method=ChiSquare command
  * Daniel Huson, 6.2010
  */
-class EcologicalIndexBrayCurtisCommand extends CommandBase implements ICheckBoxCommand {
+public class EcologicalIndexBrayCurtisCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

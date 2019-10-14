@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * show biplot
  * Daniel Huson, 7.2014
  */
-class ShowBiplotCommand extends CommandBase implements ICheckBoxCommand {
+public class ShowBiplotCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

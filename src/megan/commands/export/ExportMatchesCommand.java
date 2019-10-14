@@ -41,7 +41,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-class ExportMatchesCommand extends CommandBase implements ICommand {
+public class ExportMatchesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export what=matches [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
     }

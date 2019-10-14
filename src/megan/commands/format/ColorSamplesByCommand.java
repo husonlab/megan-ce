@@ -40,7 +40,7 @@ import java.util.Optional;
  * * color by command
  * * Daniel Huson, 9.2105
  */
-class ColorSamplesByCommand extends CommandBase implements ICommand {
+public class ColorSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "colorBy attribute=<name>;";
     }

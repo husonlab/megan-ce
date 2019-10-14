@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  * select all series
  * Daniel Huson, 7.2012
  */
-class SelectTopCommand extends CommandBase implements ICommand {
+public class SelectTopCommand extends CommandBase implements ICommand {
     static private int previousValue = 10;
 
     /**

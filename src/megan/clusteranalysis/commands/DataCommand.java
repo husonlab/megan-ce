@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * `
  * Daniel Huson, 6.2010
  */
-class DataCommand extends CommandBase implements ICommand {
+public class DataCommand extends CommandBase implements ICommand {
     /**
      * get the name to be used as a menu label
      *

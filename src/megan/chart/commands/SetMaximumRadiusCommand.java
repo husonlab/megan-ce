@@ -35,7 +35,7 @@ import java.awt.event.ActionEvent;
  * set max radius
  * Daniel Huson, 2.2015
  */
-class SetMaximumRadiusCommand extends CommandBase implements ICommand {
+public class SetMaximumRadiusCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "set maxRadius=<number>;";
     }

@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-class UncollapseSelectedNodesCommand extends CommandBase implements ICommand {
+public class UncollapseSelectedNodesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "uncollapse nodes={selected|all|subtree};";
     }

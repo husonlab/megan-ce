@@ -42,7 +42,7 @@ import java.io.IOException;
  * export data command
  * Daniel Huson, 11.2010
  */
-class ExportDataCommand extends CommandBase implements ICommand {
+public class ExportDataCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "export what=chartData file=<filename>;";
     }

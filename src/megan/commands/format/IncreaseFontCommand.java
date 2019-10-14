@@ -41,7 +41,7 @@ import java.util.Set;
  * set size
  * Daniel Huson, 4.2011
  */
-class IncreaseFontCommand extends CommandBase implements ICommand {
+public class IncreaseFontCommand extends CommandBase implements ICommand {
 
     /**
      * get the name to be used as a menu label

@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-class InspectAssignmentsCommand extends CommandBase implements ICommand {
+public class InspectAssignmentsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "inspector nodes=selected;";
     }

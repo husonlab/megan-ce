@@ -32,7 +32,7 @@ import java.awt.event.KeyEvent;
  * show all
  * Daniel Huson, 7.2012
  */
-class HideSelectedCommand extends CommandBase implements ICommand {
+public class HideSelectedCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
 
-class ListAsTextCommand extends ClipboardBase implements ICommand {
+public class ListAsTextCommand extends ClipboardBase implements ICommand {
     public String getSyntax() {
         return null;
     }

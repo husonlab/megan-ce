@@ -34,7 +34,7 @@ import java.util.Collection;
  * * delete command
  * * Daniel Huson, 9.2015
  */
-class MoveSamplesDownCommand extends CommandBase implements ICommand {
+public class MoveSamplesDownCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

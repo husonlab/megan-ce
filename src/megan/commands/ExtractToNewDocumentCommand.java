@@ -55,7 +55,7 @@ import java.util.Set;
  * extract to new document command
  * Daniel Huson, 2.2011, 4.2015
  */
-class ExtractToNewDocumentCommand extends CommandBase implements ICommand {
+public class ExtractToNewDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "extract what=document file=<megan-filename> [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
                 "\t[ids=<SELECTED|numbers...>] [includeCollapsed={true|false}];";

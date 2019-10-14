@@ -45,7 +45,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-class ImportCSVCommand extends CommandBase implements ICommand {
+public class ImportCSVCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "import csv={reads|summary} separator={comma|tab} file=<fileName> fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|")
                 + ",...} [topPercent=<num>] [minScore=<num>] [minSupportPercent=<num>]  [minSupport=<num>] [multiplier=<number>];";

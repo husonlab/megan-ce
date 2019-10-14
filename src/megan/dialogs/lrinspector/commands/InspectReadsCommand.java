@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.LinkedList;
 
-class InspectReadsCommand extends CommandBase implements ICommand {
+public class InspectReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "inspector reads=all;";
     }

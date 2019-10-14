@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * set node radius
  * Daniel Huson, 9.2012
  */
-class SetNodeRadiusCommand extends CommandBase implements ICommand {
+public class SetNodeRadiusCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

@@ -28,7 +28,7 @@ import megan.chart.gui.ChartViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class SetScaleLinearCommand extends CommandBase implements ICheckBoxCommand {
+public class SetScaleLinearCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         return chartViewer.getChartDrawer() != null && chartViewer.getScalingType() == ChartViewer.ScalingType.LINEAR;

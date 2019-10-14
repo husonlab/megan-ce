@@ -37,7 +37,7 @@ import java.util.Optional;
  * * group by command
  * * Daniel Huson, 9.2105
  */
-class GroupSamplesByCommand extends CommandBase implements ICommand {
+public class GroupSamplesByCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "groupBy attribute=<name>;";
     }

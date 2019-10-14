@@ -31,7 +31,7 @@ import java.util.List;
  * select all series
  * Daniel Huson, 7.2012
  */
-class DeselectAllSeriesCommand extends CommandBase implements ICommand {
+public class DeselectAllSeriesCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *

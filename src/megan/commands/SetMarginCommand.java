@@ -25,7 +25,7 @@ import megan.viewer.ViewerBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class SetMarginCommand extends CommandBase implements ICommand {
+public class SetMarginCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set margin");

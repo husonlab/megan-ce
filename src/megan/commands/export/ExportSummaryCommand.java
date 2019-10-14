@@ -33,7 +33,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-class ExportSummaryCommand extends CommandBase implements ICommand {
+public class ExportSummaryCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

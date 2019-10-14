@@ -27,7 +27,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ShowAboutWindowCommand extends CommandBase implements ICommand {
+public class ShowAboutWindowCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "show window=about;";
     }

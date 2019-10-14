@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  * command
  * Daniel Huson, 11.2010
  */
-class ContractGapsCommand extends CommandBase implements ICheckBoxCommand {
+public class ContractGapsCommand extends CommandBase implements ICheckBoxCommand {
 
     public boolean isSelected() {
         AlignmentViewer viewer = (AlignmentViewer) getViewer();

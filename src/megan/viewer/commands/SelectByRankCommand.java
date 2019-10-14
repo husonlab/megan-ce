@@ -36,7 +36,7 @@ import java.awt.event.ActionEvent;
  * selection command
  * Daniel Huson, 9.2015
  */
-class SelectByRankCommand extends CommandBase implements ICommand {
+public class SelectByRankCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "select rank={" + Basic.toString(TaxonomicLevels.getAllNames(), "|") + "}";
     }

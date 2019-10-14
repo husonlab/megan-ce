@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * set size
  * Daniel Huson, 4.2011
  */
-class SetNodeSizeCommand extends CommandBase implements ICommand {
+public class SetNodeSizeCommand extends CommandBase implements ICommand {
 
     /**
      * get the name to be used as a menu label

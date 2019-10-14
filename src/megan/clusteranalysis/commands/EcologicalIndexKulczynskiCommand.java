@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * method=Kulczynski command
  * Daniel Huson, 6.2010
  */
-class EcologicalIndexKulczynskiCommand extends CommandBase implements ICheckBoxCommand {
+public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * this is currently selected?
      *

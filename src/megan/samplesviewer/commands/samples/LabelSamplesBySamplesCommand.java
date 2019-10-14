@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
  * label by command
  * Daniel Huson, 9.2105
  */
-class LabelSamplesBySamplesCommand extends CommandBase implements ICommand {
+public class LabelSamplesBySamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }

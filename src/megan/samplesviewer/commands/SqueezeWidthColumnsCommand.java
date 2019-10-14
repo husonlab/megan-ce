@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
  * * reorder samples in viewer
  * * Daniel Huson, 9.2012
  */
-class SqueezeWidthColumnsCommand extends CommandBase implements ICommand {
+public class SqueezeWidthColumnsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "squeeze above=<number> to=<number>;";
     }

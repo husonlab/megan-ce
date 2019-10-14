@@ -33,7 +33,7 @@ import java.util.Map;
  * <p/>
  * Mapping file for all Connector requests
  */
-class RMAControllerMappings {
+public class RMAControllerMappings {
     //ADMIN
 
 
@@ -609,8 +609,7 @@ class RMAControllerMappings {
         LOAD_READ_PAGE_REQUEST.put("Description", LOAD_READ_PAGE_DESCRIPTION);
     }
 
-
-    private static final Map<String, Map<String, Object>> REQUESTS = new HashMap<>();
+    public static final Map<String, Map<String, Object>> REQUESTS = new HashMap<>();
 
     static {
         REQUESTS.put(HELP_MAPPING, HELP_REQUEST);

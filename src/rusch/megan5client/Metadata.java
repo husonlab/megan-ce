@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Hans-Joachim Ruscheweyh
  * 2:17:16 PM - Dec 23, 2014
  */
-class Metadata {
+public class Metadata {
 
     /**
      * A simple method to translate the way how Metadata is stored in RMA to a more user friendly {@link Map<String, String>} format.

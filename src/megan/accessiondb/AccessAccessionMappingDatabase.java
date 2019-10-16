@@ -80,12 +80,12 @@ public class AccessAccessionMappingDatabase implements Closeable {
     public String getInfo() throws SQLException {
         final StringBuilder buf = new StringBuilder();
         try {
-            buf.append(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)).append("\n");
+            buf.append(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0));
         } catch (IndexOutOfBoundsException e) {
             throw new SQLException(e);
         }
         for (String name : getClassificationNames()) {
-            buf.append(name).append(": ").append(getInfo(name)).append("\n");
+            buf.append("\n").append(name).append(": ").append(getInfo(name));
         }
         return buf.toString();
     }

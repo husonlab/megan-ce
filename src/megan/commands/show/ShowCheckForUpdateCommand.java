@@ -95,7 +95,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
 
         final UpdateDescriptor updateDescriptor;
         try {
-            updateDescriptor = UpdateChecker.getUpdateDescriptor("http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/updates.xml", applicationDisplayMode);
+            updateDescriptor = UpdateChecker.getUpdateDescriptor("http://software-ab.informatik.uni-tuebingen.de/download/megan6/updates.xml", applicationDisplayMode);
         } catch (Exception e) {
             Basic.caught(e);
             new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);
@@ -111,7 +111,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
                         */
 
                 new InfoMessage(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
-                        + "\nPlease download from: http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/", true);
+                        + "\nPlease download from: \"http://software-ab.informatik.uni-tuebingen.de/download/megan6", true);
                 return;
             }
         } else {

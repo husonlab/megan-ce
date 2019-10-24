@@ -91,6 +91,11 @@ public class ComputeComparison {
 
         options.done();
 
+        for(String fileName:inputFiles) {
+            if(!Basic.fileExistsAndIsNonEmpty(fileName))
+                throw new IOException("No such file or file empty: "+fileName);
+        }
+
         final Director dir = Director.newProject(false);
         final Document doc = dir.getDocument();
         doc.setProgressListener(new ProgressSilent());

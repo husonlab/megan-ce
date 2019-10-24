@@ -173,7 +173,7 @@ class CSVExportTaxonomy {
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            final boolean wantMatches = (format.endsWith("PathPercent"));
+            final boolean wantMatches = (format.endsWith("PathPercent")); // PathPercent has been disabled
 
             for (int taxonId : taxonIds) {
                 final Set<Long> seen = new HashSet<>();
@@ -433,7 +433,7 @@ class CSVExportTaxonomy {
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
             return Basic.getInCleanQuotes(getPath(taxonId));
-        else if (format.endsWith("taxonPathPercent"))
+        else if (format.endsWith("taxonPathPercent")) // // PathPercent has been disabled
             return getPathPercent(dir, readBlock);
         else
             return "" + taxonId;
@@ -465,14 +465,14 @@ class CSVExportTaxonomy {
         }
         return buf.toString();
     }
-
-
+    
     /**
      * gets the full path to the named taxon with percent
      *
      * @param dir
      * @param readBlock
      * @return path
+     * @deprecated
      */
     private static String getPathPercent(Director dir, IReadBlock readBlock) {
         final Document doc = dir.getDocument();

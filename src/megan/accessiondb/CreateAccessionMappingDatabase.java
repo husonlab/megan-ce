@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class CreateAccessionMappingDatabase {
      *
      * @param databaseFile String like "path/to/database/file/databaseName.db"
      */
-    public CreateAccessionMappingDatabase(String databaseFile, String info) throws IOException, InvalidPathException, SQLException {
+    public CreateAccessionMappingDatabase(String databaseFile, String info, boolean overwrite) throws IOException, SQLException {
         this.databaseFile = databaseFile;
         this.tables = new ArrayList<>();
 
@@ -62,28 +61,29 @@ public class CreateAccessionMappingDatabase {
         config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
         config.setJournalMode(SQLiteConfig.JournalMode.WAL);
 
-        // check if file already exists and delete it if that is the case. Opening the DB with sqlite
-        // will automatically create a new database
-        try {
-            final File f = new File(databaseFile);
-            if (f.isDirectory() || !f.getParentFile().exists()) {
-                throw new InvalidPathException(databaseFile, "Path is invalid");
+        if (overwrite) {
+            // check if file already exists and delete it if that is the case. Opening the DB with sqlite
+            // will automatically create a new database
+            try {
+                final File f = new File(databaseFile);
+                if (f.isDirectory() || !f.getParentFile().exists()) {
+                    throw new IOException("Invalid file specification");
+                }
+            } catch (NullPointerException e) {
+                // if f has no parent directory f.getParentFile will cause NullPointerException
+                // this is still a valid path so catching this exception and do nothing
             }
-        } catch (NullPointerException e) {
-            // if f has no parent directory f.getParentFile will cause NullPointerException
-            // this is still a valid path so catching this exception and do nothing
-        }
 
-        try {
-            Files.deleteIfExists(Paths.get(databaseFile));   // throws no error if file does not exist
-        } catch (FileSystemException e) {
-            throw new InvalidPathException(databaseFile, "Path is invalid or can not be overwritten.");
-        } catch (NullPointerException e) {
-            throw new InvalidPathException("", "Path is invalid");
-        }
+            try {
+                Files.deleteIfExists(Paths.get(databaseFile));   // throws no error if file does not exist
+            } catch (FileSystemException | NullPointerException e) {
+                throw new IOException("Failed to delete existing file");
+            }
 
-        execute("CREATE TABLE info(id TEXT PRIMARY KEY, info_string TEXT, size NUMERIC ); ",
-                "INSERT INTO info VALUES ('general', '" + info + "', NULL);");
+            execute("CREATE TABLE info(id TEXT PRIMARY KEY, info_string TEXT, size NUMERIC );");
+
+        }
+        execute("INSERT INTO info VALUES ('general', '" + info + "', NULL);");
     }
 
     /**
@@ -102,15 +102,15 @@ public class CreateAccessionMappingDatabase {
     }
 
     /**
-     * inserts a new classifier into the database (separate table). Merging is done into a separate method mergeTables()
+     * inserts a new classifier into the database (separate table). Merging is done in mergeTables()
      *
-     * @param classificationName  name of the classifier used in the db
-     * @param pathToReferenceFile path to file
-     * @param description         description string to describe the used reference
+     * @param classificationName name of the classifier used in the db
+     * @param inputFile          path to file
+     * @param description        description string to describe the used reference
      */
-    public void insertClassification(String classificationName, String pathToReferenceFile, String description) throws SQLException, IOException {
+    public void insertClassification(String classificationName, String inputFile, String description) throws SQLException, IOException {
         if (classificationName == null) {
-            throw new NullPointerException("classifierName can not be null");
+            throw new NullPointerException("classificationName");
         }
         int count = 0;
 
@@ -120,12 +120,12 @@ public class CreateAccessionMappingDatabase {
             connection.setAutoCommit(false);
 
             try (PreparedStatement insertStmd = connection.prepareStatement("INSERT INTO " + classificationName + " VALUES (?, ?);")) {
-                try (FileLineIterator it = new FileLineIterator(pathToReferenceFile, true)) {
+                try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
                         final String[] tokens = it.next().split("\t");
                         final String accession = tokens[0];
                         final int value = Basic.parseInt(tokens[1]);
-                        if(value!=0) {
+                        if (value != 0) {
                             insertStmd.setString(1, accession);
                             insertStmd.setInt(2, value);
                             insertStmd.execute();
@@ -230,24 +230,6 @@ public class CreateAccessionMappingDatabase {
     }
 
     /**
-     * queries the table tableName and returns the number of rows in that table
-     *
-     * @param tableName name of the table
-     * @return size of the table tableName
-     */
-    private int computeSize(String tableName) throws SQLException {
-        int counter = 0;
-
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery("SELECT count(*) AS q FROM " + tableName + ";")) {
-                while (rs.next()) {
-                    counter = rs.getInt("q"); // todo: is this correct?
-                }
-        }
-        return counter;
-    }
-
-    /**
      * performs the cleanUp after Joining the tables into one.
      * drops the merged tables and performs a VACUUM
      */
@@ -274,4 +256,64 @@ public class CreateAccessionMappingDatabase {
         final SQLiteConfig config = new SQLiteConfig();
         config.setJournalMode(SQLiteConfig.JournalMode.DELETE);
     }
+
+    /**
+     * queries the table tableName and returns the number of rows in that table
+     *
+     * @param tableName name of the table
+     * @return size of the table tableName
+     */
+    private int computeSize(String tableName) throws SQLException {
+        int counter = 0;
+
+        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery("SELECT count(*) AS q FROM " + tableName + ";")) {
+            while (rs.next()) {
+                counter = rs.getInt("q"); // todo: is this correct?
+            }
+        }
+        return counter;
+    }
+
+
+    /**
+     * adds a new column
+     *
+     * @param classificationName
+     * @param inputFile
+     * @param description
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void addNewColumn(String classificationName, String inputFile, String description) throws SQLException, IOException {
+        if (classificationName == null) {
+            throw new NullPointerException("classificationName");
+        }
+        int count = 0;
+
+        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement()) {
+            statement.execute("ALTER TABLE mappings ADD COLUMN " + classificationName + " INTEGER;");
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement insertStmd = connection.prepareStatement("UPDATE mappings SET " + classificationName + "=? WHERE Accession=?")) {
+                try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
+                    while (it.hasNext()) {
+                        final String[] tokens = it.next().split("\t");
+                        final String accession = tokens[0];
+                        final int value = Basic.parseInt(tokens[1]);
+                        if (value != 0) {
+                            insertStmd.setString(2, accession);
+                            insertStmd.setInt(1, value);
+                            insertStmd.execute();
+                            count++;
+                        }
+                    }
+                }
+            }
+            connection.commit();
+            connection.setAutoCommit(true);
+            statement.execute("INSERT INTO info VALUES ('" + classificationName + "', '" + description + "', " + count + ");");
+        }
+    }
+
 }

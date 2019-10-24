@@ -85,7 +85,7 @@ public class CompareCommand extends CommandBase implements ICommand {
         try {
             if (np.peekMatchIgnoreCase("pid")) {
                 np.matchIgnoreCase("pid=");
-                while (true) {
+                do {
                     int pid = np.getInt();
                     Director newDir = (Director) ProjectManager.getProject(pid);
                     if (newDir == null)
@@ -96,14 +96,12 @@ public class CompareCommand extends CommandBase implements ICommand {
                     comparer.addDirector(newDir);
                     if (np.peekMatchIgnoreCase(",")) // for backward compatibility
                         np.matchAnyTokenIgnoreCase(",");
-                    if (np.peekMatchAnyTokenIgnoreCase("; meganFile"))
-                        break;
-                }
+                } while (!np.peekMatchAnyTokenIgnoreCase("; meganFile"));
             }
             if (np.peekMatchIgnoreCase("meganFile")) {
                 np.matchIgnoreCase("meganFile=");
-                ArrayList<String> files = new ArrayList<>();
-                while (true) {
+                final ArrayList<String> files = new ArrayList<>();
+                do {
                     String fileName = np.getWordRespectCase();
 
                     if (fileName.contains("::")) {
@@ -114,9 +112,7 @@ public class CompareCommand extends CommandBase implements ICommand {
 
                     if (np.peekMatchIgnoreCase(","))
                         np.matchAnyTokenIgnoreCase(",");   // for backward compatibility
-                    if (np.peekMatchIgnoreCase(";"))
-                        break;
-                }
+                } while (!np.peekMatchIgnoreCase(";"));
                 np.matchIgnoreCase(";");
 
                 progress.setProgress(0);

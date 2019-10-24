@@ -465,7 +465,7 @@ class CSVExportTaxonomy {
         }
         return buf.toString();
     }
-    
+
     /**
      * gets the full path to the named taxon with percent
      *

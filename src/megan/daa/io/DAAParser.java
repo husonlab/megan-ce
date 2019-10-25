@@ -272,11 +272,16 @@ public class DAAParser {
 
                 while (inputBuffer.getPosition() < inputBuffer.size()) {
                     DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
-                    matchRecord.parseBuffer(inputBuffer, refIns);
-                    if (numberOfMatches < maxMatchesPerRead)
-                        matchRecords[numberOfMatches++] = matchRecord;
-                    else
-                        break;
+                    try {
+                        matchRecord.parseBuffer(inputBuffer, refIns);
+                        if (numberOfMatches < maxMatchesPerRead)
+                            matchRecords[numberOfMatches++] = matchRecord;
+                        else
+                            break;
+                    }
+                    catch(Exception ex) {
+                        Basic.caught(ex);
+                    }
                 }
             } else {
                 intervalTree.clear();

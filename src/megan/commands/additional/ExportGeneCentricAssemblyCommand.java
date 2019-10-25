@@ -196,35 +196,39 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
                     System.err.println(String.format("Number of contigs:%6d", count));
 
-                    if (doOverlapContigs) {
-                        final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
-                        count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
-                        System.err.println(String.format("Remaining contigs:%6d", count));
-                    }
-
-                    if (ProgramProperties.get("verbose-assembly", false)) {
-                        for (Pair<String, String> contig : readAssembler.getContigs()) {
-                            System.err.println(contig.getFirst());
+                    if (count == 0) {
+                        message = "Could not assemble reads, 0 contigs created.";
+                    } else {
+                        if (doOverlapContigs) {
+                            final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
+                            count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
+                            System.err.println(String.format("Remaining contigs:%6d", count));
                         }
-                    }
 
-                    try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
-                        readAssembler.writeContigs(w, progress);
-                        System.err.println("Contigs written to: " + outputFile);
-                        readAssembler.reportContigStats();
-                        message += "Wrote " + count + " contigs\n";
-                    }
-                    if (showGraph)
-                        readAssembler.showOverlapGraph(dir, progress);
+                        if (ProgramProperties.get("verbose-assembly", false)) {
+                            for (Pair<String, String> contig : readAssembler.getContigs()) {
+                                System.err.println(contig.getFirst());
+                            }
+                        }
 
-                    if (ProgramProperties.isUseGUI()) {
-                        if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
-                            final String commandString = RemoteBlastDialog.apply(getViewer(), getDir(), null, outputFile, "contig");
-                            if (commandString != null) {
-                                final Director newDir = Director.newProject();
-                                newDir.getMainViewer().setDoReInduce(true);
-                                newDir.getMainViewer().setDoReset(true);
-                                newDir.executeImmediately(commandString, newDir.getMainViewer().getCommandManager());
+                        try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
+                            readAssembler.writeContigs(w, progress);
+                            System.err.println("Contigs written to: " + outputFile);
+                            readAssembler.reportContigStats();
+                            message += "Wrote " + count + " contigs\n";
+                        }
+                        if (showGraph)
+                            readAssembler.showOverlapGraph(dir, progress);
+
+                        if (ProgramProperties.isUseGUI()) {
+                            if (JOptionPane.showConfirmDialog(null, "BLAST contigs on NCBI?", "Remote BLAST - MEGAN", JOptionPane.YES_NO_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
+                                final String commandString = RemoteBlastDialog.apply(getViewer(), getDir(), null, outputFile, "contig");
+                                if (commandString != null) {
+                                    final Director newDir = Director.newProject();
+                                    newDir.getMainViewer().setDoReInduce(true);
+                                    newDir.getMainViewer().setDoReset(true);
+                                    newDir.executeImmediately(commandString, newDir.getMainViewer().getCommandManager());
+                                }
                             }
                         }
                     }

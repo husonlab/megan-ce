@@ -18,6 +18,7 @@
  */
 package megan.main;
 
+import javafx.embed.swing.JFXPanel;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.message.MessageWindow;
@@ -46,6 +47,7 @@ public class Megan6 {
      */
     public static void main(String[] args) {
         try {
+            ensureInitFXInSwingProgram();
             NotificationsInSwing.setTitle("MEGAN6");
 
             //install shutdown hook
@@ -144,5 +146,10 @@ public class Megan6 {
                 Basic.caught(e);
             }
         });
+    }
+
+    public static void ensureInitFXInSwingProgram() {
+        final JFrame jframe=new JFrame("Not used");
+        jframe.add( new JFXPanel());
     }
 }

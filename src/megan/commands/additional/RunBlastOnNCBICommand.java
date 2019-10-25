@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;

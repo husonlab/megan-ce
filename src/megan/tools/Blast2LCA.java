@@ -47,6 +47,7 @@ import java.util.BitSet;
  * Program that parses Blast input and computes a taxonomy classification and also a KEGG mapping, if desired
  * Daniel Huson, 3.2012
  */
+@Deprecated
 public class Blast2LCA {
     /**
      * prepare DNA protein for pDNA

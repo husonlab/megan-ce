@@ -88,7 +88,7 @@ public class DAAMeganizer {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Files");
-        final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file", new String[0]);
+        final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file(s). Each is meganized separately", new String[0]);
         final String[] metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in files", new String[0]);
 
         options.comment("Reads");

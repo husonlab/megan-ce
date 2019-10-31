@@ -54,8 +54,9 @@ public class FrameShiftCorrectedReadsExporter {
         int total = 0;
         try {
             progress.setTasks("Export", "Writing all corrected reads");
+            final String fName = fileName.replaceAll("%t", "all").replaceAll("%i", "all");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(fName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
                 progress.setMaximum(it.getMaximumProgress());
                 progress.setProgress(0);
                 while (it.hasNext()) {

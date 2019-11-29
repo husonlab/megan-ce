@@ -38,15 +38,16 @@ public class AccessAccessionAdapter implements IString2IntegerMap {
 
     /**
      * constructor
+     *
      * @param mappingDBFile
      * @param classificationName
      * @throws IOException
      * @throws SQLException
      */
     public AccessAccessionAdapter(final String mappingDBFile, final String classificationName) throws IOException, SQLException {
-        this.mappingDBFile=mappingDBFile;
+        this.mappingDBFile = mappingDBFile;
         accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(mappingDBFile);
-       this.classificationName=classificationName;
+        this.classificationName = classificationName;
         size = accessAccessionMappingDatabase.getSize(classificationName);
     }
 

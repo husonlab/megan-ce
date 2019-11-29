@@ -156,7 +156,7 @@ public class CSVExporter {
         } else if (format.equalsIgnoreCase("taxonName_to_percent") || format.equalsIgnoreCase("taxonId_to_percent") || format.equalsIgnoreCase("taxonRank_to_percent") || format.equalsIgnoreCase("taxonPath_to_percent")) {
             count = CSVExportFViewer.exportName2Percent(format, dir.getMainViewer(), file, separator, true, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")) {
-                // disabled: || format.equalsIgnoreCase("readName_to_taxonPathPercent")) {
+            // disabled: || format.equalsIgnoreCase("readName_to_taxonPathPercent")) {
             count = CSVExportTaxonomy.exportReadName2Taxon(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_taxonMatches")) {
             count = CSVExportTaxonomy.exportReadName2Matches(format, dir, file, separator, progressListener);

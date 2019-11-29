@@ -31,7 +31,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 
 /**
  * read layout pane searcher

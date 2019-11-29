@@ -18,8 +18,8 @@
  */
 package megan.dialogs.attributes;
 
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.core.Document;

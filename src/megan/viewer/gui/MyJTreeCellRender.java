@@ -43,7 +43,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
     private final JLabel label = new JLabel();
     private final LineBorder selectedBorder = (LineBorder) BorderFactory.createLineBorder(ProgramProperties.SELECTION_COLOR_DARKER);
 
-    private Function<Integer,ImageIcon>  iconProducer = null;
+    private Function<Integer, ImageIcon> iconProducer = null;
 
     /**
      * constructor
@@ -105,7 +105,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
         return label;
     }
 
-    public void setIconProducer(Function<Integer,ImageIcon> iconProducer) {
+    public void setIconProducer(Function<Integer, ImageIcon> iconProducer) {
         this.iconProducer = iconProducer;
     }
 }

@@ -21,8 +21,8 @@ package megan.commands.find;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IViewerWithFindToolBar;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;

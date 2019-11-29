@@ -26,8 +26,6 @@ import megan.importblast.commands.SetUseIdentityFilterCommand;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * panel for setting LCA parameters
@@ -102,7 +100,7 @@ public class LCAParametersPanel extends JPanel {
             }
 
             lcaAlgorithmComboBox.addActionListener(e -> {
-                if(lcaAlgorithmComboBox.getSelectedItem()!=null) {
+                if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
                             dialog.getLcaCoveragePercentField().setText("100");

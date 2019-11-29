@@ -118,28 +118,28 @@ public class LegendPanel extends JPanel {
 
             if (viewer.getGraphView() != null) {
                 for (String sampleName : doc.getSampleNames()) {
-                        String label = doc.getSampleLabelGetter().getLabel(sampleName);
-                        if (!label.equals(sampleName))
-                            label += " (" + sampleName + ")";
-                        final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
-                        int boxSize = labelSize.height - 2;
-                        if (x + boxSize + labelSize.width + 2 > getWidth() || vertical) {
-                            x = 3;
-                            y += 1.5 * gc.getFont().getSize();
-                        }
-                        if (doDraw) {
-                            final Image image = GraphicsUtilities.makeSampleIconSwing(doc, sampleName, true, true, boxSize + 1);
-                            gc.drawImage(image, x, y - boxSize, this);
-                            gc.setColor(getFontColor());
-                            gc.drawString(label, x + boxSize + 2, y);
-                        }
-                        maxX = Math.max(maxX, x);
-                        x += boxSize + 2 + labelSize.width + 10;
-                        if (vertical)
-                            maxX = Math.max(maxX, x);
+                    String label = doc.getSampleLabelGetter().getLabel(sampleName);
+                    if (!label.equals(sampleName))
+                        label += " (" + sampleName + ")";
+                    final Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
+                    int boxSize = labelSize.height - 2;
+                    if (x + boxSize + labelSize.width + 2 > getWidth() || vertical) {
+                        x = 3;
+                        y += 1.5 * gc.getFont().getSize();
                     }
-                    if (size != null)
-                        size.setSize(maxX, y);
+                    if (doDraw) {
+                        final Image image = GraphicsUtilities.makeSampleIconSwing(doc, sampleName, true, true, boxSize + 1);
+                        gc.drawImage(image, x, y - boxSize, this);
+                        gc.setColor(getFontColor());
+                        gc.drawString(label, x + boxSize + 2, y);
+                    }
+                    maxX = Math.max(maxX, x);
+                    x += boxSize + 2 + labelSize.width + 10;
+                    if (vertical)
+                        maxX = Math.max(maxX, x);
+                }
+                if (size != null)
+                    size.setSize(maxX, y);
             }
         }
     }

@@ -70,18 +70,18 @@ public class NewAttributeCommand extends CommandBase implements ICommand {
             index = viewer.getSamplesTableView().getSampleCount();
 
         String name = null;
-            if (Platform.isFxApplicationThread()) {
-                TextInputDialog dialog = new TextInputDialog("Attribute");
-                dialog.setTitle("New attribute");
-                dialog.setHeaderText("Enter attribute name:");
+        if (Platform.isFxApplicationThread()) {
+            TextInputDialog dialog = new TextInputDialog("Attribute");
+            dialog.setTitle("New attribute");
+            dialog.setHeaderText("Enter attribute name:");
 
-                Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    name = result.get().trim();
-                }
-            } else if (javax.swing.SwingUtilities.isEventDispatchThread()) {
-                name = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter new attribute name", "Untitled");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                name = result.get().trim();
             }
+        } else if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+            name = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter new attribute name", "Untitled");
+        }
 
         if (name != null)
             executeImmediately("new attribute='" + name + "' position=" + index + ";");

@@ -36,7 +36,10 @@ import megan.main.Megan6;
 import megan.main.MeganProperties;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.*;
 
 /**

@@ -50,7 +50,7 @@ public class SetExtendedModeCommand extends CommandBase implements ICheckBoxComm
 
     }
 
-    public static final String NAME="Extended Mode";
+    public static final String NAME = "Extended Mode";
 
     public String getName() {
         return NAME;

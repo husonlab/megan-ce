@@ -158,7 +158,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             System.err.println(String.format("Number of contigs:%6d", count));
 
             if (doOverlapContigs) {
-                final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
+                final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
                 count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
                 System.err.println(String.format("Remaining contigs:%6d", count));
             }

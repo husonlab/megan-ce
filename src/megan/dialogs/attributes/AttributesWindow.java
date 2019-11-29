@@ -34,8 +34,6 @@ import megan.main.MeganProperties;
 import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;

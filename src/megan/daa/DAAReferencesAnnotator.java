@@ -81,14 +81,14 @@ class DAAReferencesAnnotator {
 
                 final int numberOfTasks = (int) Math.ceil((double) header.getNumberOfReferences() / chunkSize);
 
-                 final CountDownLatch countDownLatch = new CountDownLatch(numberOfTasks);
+                final CountDownLatch countDownLatch = new CountDownLatch(numberOfTasks);
 
                 final int numberOfThreads = Math.min(numberOfTasks, ProgramExecutorService.getNumberOfCoresToUse());
 
                 //System.err.println("Number of tasks: "+numberOfTasks);
                 //System.err.println("Number of threads: "+numberOfThreads);
 
-                progress.setMaximum(numberOfTasks/numberOfThreads);
+                progress.setMaximum(numberOfTasks / numberOfThreads);
                 progress.setProgress(0);
 
                 for (int t = 0; t < numberOfThreads; t++) {
@@ -121,9 +121,8 @@ class DAAReferencesAnnotator {
                                             }
                                         }
                                     }
-                                }
-                                finally {
-                                    if(task==0)
+                                } finally {
+                                    if (task == 0)
                                         progress.incrementProgress();
                                     countDownLatch.countDown();
                                 }
@@ -162,10 +161,10 @@ class DAAReferencesAnnotator {
                         try {
                             final IdParser[] idParsers = new IdParser[cNames.length];
 
-                           // need to use only one database per thread.
+                            // need to use only one database per thread.
 
                             for (int i = 0; i < cNames.length; i++) {
-                                    idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
+                                idParsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
                             }
 
                             for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {

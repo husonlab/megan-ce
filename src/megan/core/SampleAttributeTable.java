@@ -316,9 +316,9 @@ public class SampleAttributeTable {
      * @param attribute
      */
     public void removeAttribute(String attribute) {
-            attributeOrder.remove(attribute);
-            attribute2type.keySet().remove(attribute);
-            table.removeColumn(attribute);
+        attributeOrder.remove(attribute);
+        attribute2type.keySet().remove(attribute);
+        table.removeColumn(attribute);
     }
 
     /**

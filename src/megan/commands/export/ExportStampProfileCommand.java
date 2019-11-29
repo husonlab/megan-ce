@@ -19,9 +19,9 @@
 package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
@@ -93,10 +93,10 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
 
         boolean allLevels = false;
         switch (JOptionPane.showConfirmDialog(viewer.getFrame(), "Export all levels above selected nodes as well?", "Export to STAMP option", JOptionPane.YES_NO_CANCEL_OPTION)) {
-                case JOptionPane.CANCEL_OPTION:
-                    return;
-                case JOptionPane.YES_OPTION:
-                    allLevels = true;
+            case JOptionPane.CANCEL_OPTION:
+                return;
+            case JOptionPane.YES_OPTION:
+                allLevels = true;
         }
 
         String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".spf");

@@ -19,7 +19,6 @@
 package megan.fx;
 
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
@@ -39,8 +38,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * manages commands in context of FX

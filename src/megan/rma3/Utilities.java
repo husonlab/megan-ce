@@ -19,8 +19,8 @@
 package megan.rma3;
 
 import jloda.util.Basic;
-import jloda.util.FileLineIterator;
 import jloda.util.FileLineBytesIterator;
+import jloda.util.FileLineIterator;
 import jloda.util.Single;
 import megan.io.InputReader;
 

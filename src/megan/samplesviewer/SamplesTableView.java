@@ -138,14 +138,14 @@ public class SamplesTableView {
 
         tableView.updateProperty().addListener((c, o, n) -> {
             if (n.longValue() > initialUpdate) {
-                    SwingUtilities.invokeLater(()->{
-                        syncFromViewToDocument();
+                SwingUtilities.invokeLater(() -> {
+                    syncFromViewToDocument();
                     if (!samplesViewer.getDocument().isDirty()) {
                         samplesViewer.getDocument().setDirty(true);
                         //samplesViewer.getDir().notifyUpdateViewer(IDirector.TITLE);
                     }
-                     samplesViewer.getDir().notifyUpdateViewer(IDirector.ALL);
-                    });
+                    samplesViewer.getDir().notifyUpdateViewer(IDirector.ALL);
+                });
             }
         });
         tableView.setAllowAddCol(true);

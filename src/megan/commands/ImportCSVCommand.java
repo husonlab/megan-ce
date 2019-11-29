@@ -19,10 +19,10 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;

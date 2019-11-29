@@ -130,8 +130,8 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     public ImageIcon getIcon() {
         final String iconFile = ClassificationManager.getIconFileName(cName);
         if (ResourceManager.getImage(iconFile) == null && ResourceManager.getIcon(iconFile) == null) { // no icon file found, build an icon....
-                ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
-            }
+            ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
+        }
         return ResourceManager.getIcon(iconFile);
     }
 

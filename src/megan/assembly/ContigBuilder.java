@@ -66,7 +66,7 @@ public class ContigBuilder {
             return;
         }
 
-        final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
+        final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
         final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(paths.length);
 

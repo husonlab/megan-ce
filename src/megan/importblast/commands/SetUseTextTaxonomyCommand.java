@@ -50,7 +50,7 @@ public class SetUseTextTaxonomyCommand extends jloda.swing.commands.CommandBase 
     }
 
     public boolean isApplicable() {
-        return  !ClassificationManager.isUseFastAccessionMappingMode();
+        return !ClassificationManager.isUseFastAccessionMappingMode();
     }
 
     final public static String NAME = "Parse Taxon Names";

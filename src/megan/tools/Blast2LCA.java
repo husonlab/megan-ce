@@ -133,10 +133,10 @@ public class Blast2LCA {
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
 
-        if(mapDBFile.length()>0 && (acc2TaxaFile.length() > 0 || synonyms2TaxaFile.length() > 0 || acc2KeggFile.length() > 0 || synonyms2KeggFile.length() > 0))
+        if (mapDBFile.length() > 0 && (acc2TaxaFile.length() > 0 || synonyms2TaxaFile.length() > 0 || acc2KeggFile.length() > 0 || synonyms2KeggFile.length() > 0))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if(mapDBFile.length()>0)
+        if (mapDBFile.length() > 0)
             ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         if (topPercent == 0)

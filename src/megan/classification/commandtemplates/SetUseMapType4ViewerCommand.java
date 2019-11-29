@@ -51,7 +51,7 @@ public class SetUseMapType4ViewerCommand extends CommandBase implements ICheckBo
      */
     @Override
     public boolean isSelected() {
-        if(ClassificationManager.isUseFastAccessionMappingMode() && mapType== IdMapper.MapType.MeganMapDB)
+        if (ClassificationManager.isUseFastAccessionMappingMode() && mapType == IdMapper.MapType.MeganMapDB)
             return ClassificationManager.canUseMeganMapDBFile();
         else
             return ClassificationManager.isActiveMapper(cName, mapType);

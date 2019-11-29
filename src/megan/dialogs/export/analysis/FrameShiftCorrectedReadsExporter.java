@@ -32,7 +32,9 @@ import megan.data.IReadBlockIterator;
 import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
 /**

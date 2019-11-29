@@ -48,7 +48,7 @@ public class SetUseMapTypeCommand extends CommandBase implements ICommand {
         final boolean state = np.getBoolean();
         np.matchIgnoreCase(";");
 
-       ClassificationManager.setActiveMapper(cName, mapType,state);
+        ClassificationManager.setActiveMapper(cName, mapType, state);
 
         if (getParent() instanceof ImportBlastDialog) {
             ((ImportBlastDialog) getParent()).getCommandManager().execute("use cViewer=" + cName + " state=" + ClassificationManager.get(cName, true).getIdMapper().hasActiveAndLoaded() + ";");

@@ -19,8 +19,8 @@
 package megan.dialogs.parameters.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.ContaminantManager;

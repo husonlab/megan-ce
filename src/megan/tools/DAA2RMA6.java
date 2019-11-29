@@ -184,11 +184,11 @@ public class DAA2RMA6 {
             Basic.checkFileReadableNonEmpty(fileName);
         }
 
-        final Collection<String> mapDBClassifications= AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if(mapDBClassifications.size()>0 && (Basic.hasPositiveLengthValue(class2AccessionFile)|| Basic.hasPositiveLengthValue(class2SynonymsFile)))
+        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if(mapDBClassifications.size()>0)
+        if (mapDBClassifications.size() > 0)
             ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         final ArrayList<String> cNames = new ArrayList<>();

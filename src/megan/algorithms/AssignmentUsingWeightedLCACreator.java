@@ -34,7 +34,9 @@ import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -83,7 +85,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
         } else
             ref2weight = new HashMap<>(10000000);
 
-        final int numberOfThreads =ProgramExecutorService.getNumberOfCoresToUse();
+        final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
         final ExecutorService executorService = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 

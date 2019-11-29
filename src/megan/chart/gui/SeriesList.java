@@ -25,9 +25,6 @@ import megan.chart.ChartColorManager;
 import megan.chart.data.IChartData;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.util.LinkedList;
 
 /**
  * side list for series

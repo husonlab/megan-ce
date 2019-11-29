@@ -278,8 +278,7 @@ public class DAAParser {
                             matchRecords[numberOfMatches++] = matchRecord;
                         else
                             break;
-                    }
-                    catch(Exception ex) {
+                    } catch (Exception ex) {
                         Basic.caught(ex);
                     }
                 }

@@ -18,7 +18,6 @@
  */
 package megan.chart.drawers;
 
-import jloda.swing.commands.CommandManager;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ColorTable;
 import jloda.swing.util.Geometry;

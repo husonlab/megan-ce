@@ -37,7 +37,6 @@
  */
 package megan.assembly.align;
 
-import jloda.util.Basic;
 import jloda.util.BlastMode;
 import jloda.util.ReusableByteBuffer;
 

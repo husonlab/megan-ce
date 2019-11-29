@@ -211,7 +211,7 @@ public class Name2IdMap implements IName2IdMap {
     public void writeMapping(Writer w) throws IOException {
         w.write("# Mapping file, generated " + (new Date()) + "\n");
         for (Integer key : id2name.keySet()) {
-            w.write(key + "\t" + id2name.get(key).replaceAll("\\s+"," ") + "\n");
+            w.write(key + "\t" + id2name.get(key).replaceAll("\\s+", " ") + "\n");
         }
     }
 

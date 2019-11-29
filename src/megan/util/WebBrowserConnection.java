@@ -18,8 +18,6 @@
  */
 package megan.util;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import jloda.util.Basic;
 

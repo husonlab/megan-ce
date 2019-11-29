@@ -24,9 +24,6 @@ import jloda.swing.util.PopupMenu;
 import megan.chart.ChartColorManager;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.util.LinkedList;
 
 /**
  * side by list for attributes

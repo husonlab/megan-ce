@@ -125,13 +125,13 @@ public class ReferencesAnnotator {
 
         Basic.checkFileReadableNonEmpty(inputFile);
 
-        final Collection<String> mapDBClassifications= AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if(mapDBClassifications.size()>0 && (Basic.hasPositiveLengthValue(class2AccessionFile)|| Basic.hasPositiveLengthValue(class2SynonymsFile)))
+        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (mapDBClassifications.contains(cName)  || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+            if (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
                 cNames.add(cName);
         }
         if (cNames.size() > 0)

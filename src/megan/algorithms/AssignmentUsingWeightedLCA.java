@@ -31,7 +31,10 @@ import megan.daa.connector.MatchBlockDAA;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * computes the assignment for a read, using the Weighted LCA algorithm
@@ -260,7 +263,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         int length = mergeIdentical(head, origLength);
 
         int totalWeight = getTotalWeight(head);
-        int weightToCover = (int) Math.min(totalWeight,Math.ceil((totalWeight / 100.0) * percentToCover));
+        int weightToCover = (int) Math.min(totalWeight, Math.ceil((totalWeight / 100.0) * percentToCover));
 
         for (int pos = 0; ; pos++) { // look at next letter after current prefix
             ch2weight.clear();
@@ -276,7 +279,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                         if (ignoreAncestors) {
                             // this node lies on route to best node, so it is covered and its weight can  be removed from totalWeight
                             totalWeight -= current.weight;
-                            weightToCover = ((int) Math.min(totalWeight,Math.ceil((totalWeight / 100.0) * percentToCover)));
+                            weightToCover = ((int) Math.min(totalWeight, Math.ceil((totalWeight / 100.0) * percentToCover)));
                             // Note: prev does not change
                         }
                     } else {

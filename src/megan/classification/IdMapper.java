@@ -112,7 +112,7 @@ public class IdMapper {
             case Accession: {
                 if (accessionMap == null || reload) {
                     if (accessionMap != null) {
-                       closeAccessionMap();
+                        closeAccessionMap();
                     }
                     try {
                         this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
@@ -156,7 +156,7 @@ public class IdMapper {
                         closeAccessionMap();
                     }
                     try {
-                        this.accessionMap =new AccessAccessionAdapter(fileName,cName);
+                        this.accessionMap = new AccessAccessionAdapter(fileName, cName);
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
@@ -205,11 +205,11 @@ public class IdMapper {
      */
     public IdParser createIdParser() {
         // the follow code ensures that we use multiple accesses to the sqlite mapping database
-        if(accessionMap instanceof AccessAccessionAdapter) {
-            final IdMapper copy=new IdMapper(cName,fullTree,name2IdMap);
-            copy.setActiveMap(MapType.MeganMapDB,true);
+        if (accessionMap instanceof AccessAccessionAdapter) {
+            final IdMapper copy = new IdMapper(cName, fullTree, name2IdMap);
+            copy.setActiveMap(MapType.MeganMapDB, true);
             try {
-                copy.loadMappingFile(((AccessAccessionAdapter)accessionMap).getMappingDBFile(),MapType.MeganMapDB,false,new ProgressSilent());
+                copy.loadMappingFile(((AccessAccessionAdapter) accessionMap).getMappingDBFile(), MapType.MeganMapDB, false, new ProgressSilent());
             } catch (CanceledException e) {
                 Basic.caught(e);
             }
@@ -217,8 +217,7 @@ public class IdMapper {
             idParser.setAlgorithm(algorithm);
             return idParser;
 
-        }
-        else {
+        } else {
             final IdParser idParser = new IdParser(this);
             idParser.setAlgorithm(algorithm);
             return idParser;
@@ -281,7 +280,7 @@ public class IdMapper {
                 Basic.caught(e);
             }
         }
-        accessionMap=null;
+        accessionMap = null;
     }
 
     public boolean isDisabled(int id) {

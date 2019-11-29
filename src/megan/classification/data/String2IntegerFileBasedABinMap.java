@@ -137,7 +137,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      */
     public int get(String keyString) throws IOException {
         byte[] key = keyString.getBytes();
-        final int keyHash = computeHash(key,  mask);
+        final int keyHash = computeHash(key, mask);
         long dataOffset = extended ? dataByteBuffer.getLong(8 * keyHash + indexStartPos) : dataByteBuffer.getInt(4 * keyHash + indexStartPos);
         if (dataOffset == 0)
             return 0;

@@ -30,7 +30,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * the combobox item for the resampling method

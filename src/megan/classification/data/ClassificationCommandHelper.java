@@ -79,11 +79,11 @@ public class ClassificationCommandHelper {
         for (String cName : cNames) {
             commands.add(new SetAnalyse4ViewerCommand(cName));
             commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.Accession));
-            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.Accession));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames, cName, IdMapper.MapType.Accession));
             commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.MeganMapDB));
-            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.MeganMapDB));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames, cName, IdMapper.MapType.MeganMapDB));
             commands.add(new SetUseMapType4ViewerCommand(cName, IdMapper.MapType.Synonyms));
-            commands.add(new LoadMappingFile4ViewerCommand(cNames,cName, IdMapper.MapType.Synonyms));
+            commands.add(new LoadMappingFile4ViewerCommand(cNames, cName, IdMapper.MapType.Synonyms));
             commands.add(new SetUseIdParsing4ViewerCommand(cName));
             commands.add(new SetUseLCA4ViewerCommand(cName));
         }

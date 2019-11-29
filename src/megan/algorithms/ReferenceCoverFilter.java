@@ -80,7 +80,7 @@ public class ReferenceCoverFilter {
             progress.setSubtask("Determining reference coverage");
             System.err.println(String.format("Running reference coverage filter with threshold=%.1f%%", getPercentToCover()));
 
-            final int numberOfThreads = Math.min( ProgramExecutorService.getNumberOfCoresToUse(), connector.getNumberOfReads());
+            final int numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), connector.getNumberOfReads());
             if (numberOfThreads == 0)
                 return; // no reads
 

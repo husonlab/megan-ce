@@ -47,11 +47,12 @@ public class AccessAccessionMappingDatabase implements Closeable {
 
     private final Connection connection;
 
-    public static IntUnaryOperator accessionFilter =(x)->(x>-1000?x:0);
-    public static Function<String,Boolean> fileFilter=(x)->!x.endsWith("_UE");
+    public static IntUnaryOperator accessionFilter = (x) -> (x > -1000 ? x : 0);
+    public static Function<String, Boolean> fileFilter = (x) -> !x.endsWith("_UE");
 
     /**
      * constructor, opens and maintains connection to database
+     *
      * @param dbFile
      * @throws IOException
      * @throws SQLException
@@ -64,12 +65,12 @@ public class AccessAccessionMappingDatabase implements Closeable {
         // https://stackoverflow.com/questions/784173/what-are-the-performance-characteristics-of-sqlite-with-very-large-database-files
         final SQLiteConfig config = new SQLiteConfig();
         config.setCacheSize(10000);
-         config.setReadOnly(true);
+        config.setReadOnly(true);
 
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
-        if(!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))
-            throw new IOException("Mapping file "+Basic.getFileNameWithoutPath(dbFile)+" is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
+        if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))
+            throw new IOException("Mapping file " + Basic.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
     }
 
     /**
@@ -173,8 +174,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
      */
     private String getInfo(String classificationName) throws SQLException {
         try {
-            final String infoString=executeQueryString("SELECT info_string FROM info WHERE id = '" + classificationName + "';", 1).get(0);
-            return String.format("%s, size: %,d",infoString,getSize(classificationName));
+            final String infoString = executeQueryString("SELECT info_string FROM info WHERE id = '" + classificationName + "';", 1).get(0);
+            return String.format("%s, size: %,d", infoString, getSize(classificationName));
         } catch (IndexOutOfBoundsException e) {
             throw new SQLException(e);
         }
@@ -196,15 +197,16 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @param accession accession String to query to database for
      * @return int[] or null
      */
-    public int getValue(String classificationName,String accession) throws SQLException {
-        final ResultSet rs = connection.createStatement().executeQuery("SELECT "+classificationName+" FROM mappings WHERE Accession = '" + accession + "';");
+    public int getValue(String classificationName, String accession) throws SQLException {
+        final ResultSet rs = connection.createStatement().executeQuery("SELECT " + classificationName + " FROM mappings WHERE Accession = '" + accession + "';");
         while (rs.next()) {
-            final int value=rs.getInt(classificationName);
-            if(value!=0)
+            final int value = rs.getInt(classificationName);
+            if (value != 0)
                 return accessionFilter.applyAsInt(value);
         }
         return 0;
     }
+
     /**
      * alternative implementation for getValue
      * for an array of string accessions the method queries the database at once for all accessions in that array
@@ -305,6 +307,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
 
     /**
      * setups up the classification name to output index.
+     *
      * @param classificationNames
      * @return index, or max-int, if classification not included in database
      * @throws SQLException
@@ -312,8 +315,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
     public int[] setupMapClassificationId2DatabaseRank(final String[] classificationNames) throws SQLException {
         final int[] result = new int[classificationNames.length];
         for (int i = 0; i < classificationNames.length; i++) {
-            final int index=getClassificationIndex(classificationNames[i]);
-            result[i] = (index>=0?index - 2:Integer.MAX_VALUE);
+            final int index = getClassificationIndex(classificationNames[i]);
+            result[i] = (index >= 0 ? index - 2 : Integer.MAX_VALUE);
         }
         return result;
     }

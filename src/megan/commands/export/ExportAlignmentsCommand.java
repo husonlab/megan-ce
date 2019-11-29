@@ -19,8 +19,8 @@
 package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
@@ -40,7 +40,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.HashSet;
 import java.util.Set;
 

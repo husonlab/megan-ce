@@ -171,7 +171,6 @@ public class GeneItemAccessor {
 
     /**
      * dump gene table to standard out
-     *
      */
     public static void main() throws IOException, UsageException, CanceledException {
         String[] args = new String[]{"-i", "/Users/huson/data/malt/gff/index/aadd.idx"};

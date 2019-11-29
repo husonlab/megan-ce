@@ -164,27 +164,27 @@ public class RMA6FromBlastCreator {
 
         try {
             for (int fileNumber = 0; fileNumber < blastFiles.length; fileNumber++) {
-            int missingReadWarnings = 0;
-            final String blastFile = blastFiles[fileNumber];
-            progress.setTasks("Parsing file", Basic.getFileNameWithoutPath(blastFile));
-            System.err.println("Parsing file: " + blastFile);
+                int missingReadWarnings = 0;
+                final String blastFile = blastFiles[fileNumber];
+                progress.setTasks("Parsing file", Basic.getFileNameWithoutPath(blastFile));
+                System.err.println("Parsing file: " + blastFile);
 
-            final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);
+                final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);
 
-            progress.setProgress(0);
-            progress.setMaximum(iterator.getMaximumProgress());
+                progress.setProgress(0);
+                progress.setMaximum(iterator.getMaximumProgress());
 
-            final FileLineBytesIterator fastaIterator;
-            final boolean isFasta;
-            if (readsFiles != null && readsFiles.length > fileNumber && Basic.fileExistsAndIsNonEmpty(readsFiles[fileNumber])) {
-                fastaIterator = new FileLineBytesIterator(readsFiles[fileNumber]);
-                isFasta = (fastaIterator.peekNextByte() == '>');
-                if (!isFasta && (fastaIterator.peekNextByte() != '@'))
-                    throw new IOException("Cannot determine type of reads file (doesn't start with '>' or '@': " + readsFiles[fileNumber]);
-            } else {
-                fastaIterator = null;
-                isFasta = false; // don't care, won't use
-            }
+                final FileLineBytesIterator fastaIterator;
+                final boolean isFasta;
+                if (readsFiles != null && readsFiles.length > fileNumber && Basic.fileExistsAndIsNonEmpty(readsFiles[fileNumber])) {
+                    fastaIterator = new FileLineBytesIterator(readsFiles[fileNumber]);
+                    isFasta = (fastaIterator.peekNextByte() == '>');
+                    if (!isFasta && (fastaIterator.peekNextByte() != '@'))
+                        throw new IOException("Cannot determine type of reads file (doesn't start with '>' or '@': " + readsFiles[fileNumber]);
+                } else {
+                    fastaIterator = null;
+                    isFasta = false; // don't care, won't use
+                }
 
                 // MAIN LOOP:
                 while (iterator.hasNext()) {
@@ -242,21 +242,21 @@ public class RMA6FromBlastCreator {
 
                         if (numberOfMatches >= matchLineRMA6s.length) {
                             final MatchLineRMA6[] tmp = new MatchLineRMA6[2 * numberOfMatches];
-                            System.arraycopy(matchLineRMA6s, 0, tmp, 0,  matchLineRMA6s.length);
-                            for (int i =  matchLineRMA6s.length; i < tmp.length; i++) {
+                            System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchLineRMA6s.length);
+                            for (int i = matchLineRMA6s.length; i < tmp.length; i++) {
                                 tmp[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
                             }
                             matchLineRMA6s = tmp;
                         }
 
                         if (numberOfMatches >= match2classification2id.length) {
-                            match2classification2id= new int[2*numberOfMatches][cNames.length];
+                            match2classification2id = new int[2 * numberOfMatches][cNames.length];
                         }
 
                         for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
                             queries[matchCount] = getFirstWord(Utilities.getToken(2, matchesText, offset));
 
-                          final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
+                            final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
                             matchLineRMA6.parse(matchesText, offset);
                             offset = Utilities.nextNewLine(matchesText, offset) + 1;
                         }
@@ -271,13 +271,11 @@ public class RMA6FromBlastCreator {
                                         final int id = ids[dbRank];
                                         match2classification2id[matchCount][c] = id;
                                         matchLineRMA6s[matchCount].setFId(c, id);
-                                    }
-                                    else
+                                    } else
                                         match2classification2id[matchCount][c] = 0;
                                 }
-                            }
-                            else
-                                Arrays.fill(match2classification2id[matchCount],0);
+                            } else
+                                Arrays.fill(match2classification2id[matchCount], 0);
                         }
                     } else { // use mapping files
                         int offset = 0;
@@ -313,9 +311,8 @@ public class RMA6FromBlastCreator {
                     progress.setProgress(iterator.getProgress());
                 } // end of iterator
             } // end of files
-        }
-        finally{
-            if(accessAccessionMappingDatabase!=null)
+        } finally {
+            if (accessAccessionMappingDatabase != null)
                 accessAccessionMappingDatabase.close();
         }
 
@@ -381,14 +378,14 @@ public class RMA6FromBlastCreator {
     }
 
     private static String getFirstWord(String string) {
-        int a=0;
-        while(a<string.length() && (string.charAt(a)=='>' || Character.isWhitespace(string.charAt(a)))) {
+        int a = 0;
+        while (a < string.length() && (string.charAt(a) == '>' || Character.isWhitespace(string.charAt(a)))) {
             a++;
         }
-        int b=a;
-        while(b<string.length() && (string.charAt(b)=='_' || Character.isLetterOrDigit(string.charAt(b)))) {
+        int b = a;
+        while (b < string.length() && (string.charAt(b) == '_' || Character.isLetterOrDigit(string.charAt(b)))) {
             b++;
         }
-        return   string.substring(a,b);
+        return string.substring(a, b);
     }
 }

@@ -39,6 +39,7 @@ import java.util.Set;
  */
 public class SelectAllCommand extends CommandBase implements ICommand {
     private static final String[] legalOptions = {"all", "none", "similar", "commentLike", "numerical", "uninformative", "romPrevious", "samples"};
+
     public String getSyntax() {
         return "select {" + Basic.toString(legalOptions, "|") + "} [name=<string>] [value=<string>];";
     }

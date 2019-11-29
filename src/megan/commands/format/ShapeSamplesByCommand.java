@@ -34,7 +34,10 @@ import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * * shape by command

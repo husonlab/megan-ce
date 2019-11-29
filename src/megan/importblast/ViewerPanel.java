@@ -62,7 +62,7 @@ public class ViewerPanel extends JPanel {
         panel1.setLayout(new BorderLayout());
 
         final JPanel aPanel = new JPanel(new GridLayout(6, 1));
-        
+
         {
             final ICommand useFastMode = commandManager.getCommand(SetFastModeCommand.NAME);
             final AbstractButton useFastModeButton = commandManager.getButton(useFastMode);

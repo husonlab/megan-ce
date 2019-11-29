@@ -91,9 +91,9 @@ public class ComputeComparison {
 
         options.done();
 
-        for(String fileName:inputFiles) {
-            if(!Basic.fileExistsAndIsNonEmpty(fileName))
-                throw new IOException("No such file or file empty: "+fileName);
+        for (String fileName : inputFiles) {
+            if (!Basic.fileExistsAndIsNonEmpty(fileName))
+                throw new IOException("No such file or file empty: " + fileName);
         }
 
         final Director dir = Director.newProject(false);

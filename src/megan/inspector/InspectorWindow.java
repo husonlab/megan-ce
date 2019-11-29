@@ -44,7 +44,9 @@ import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;

@@ -20,8 +20,8 @@ package megan.commands.show;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.parse.NexusStreamParser;

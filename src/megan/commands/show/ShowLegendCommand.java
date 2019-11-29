@@ -20,7 +20,6 @@ package megan.commands.show;
 
 
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.IViewerWithLegend;
 import jloda.swing.util.ResourceManager;

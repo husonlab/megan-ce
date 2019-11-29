@@ -59,7 +59,6 @@ public class TaxonomicSegmentation {
     }
 
 
-
     /**
      * constructor
      */

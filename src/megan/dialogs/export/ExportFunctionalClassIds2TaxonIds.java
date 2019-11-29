@@ -54,7 +54,6 @@ class ExportFunctionalClassIds2TaxonIds {
     /**
      * export a table of functional classification ids to taxa
      *
-     *
      * @param classificationName
      * @param format
      * @param dir

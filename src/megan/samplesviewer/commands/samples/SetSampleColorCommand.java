@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ * SetSampleColorCommand.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,29 +15,32 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 package megan.samplesviewer.commands.samples;
 
-import javafx.application.Platform;
-import javafx.scene.control.ChoiceDialog;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.graphview.NodeShape;
+import jloda.swing.util.ChooseColorDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
+import megan.core.Director;
+import megan.core.Document;
 import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * set sample node shape
- * Daniel Huson, 3.2013
+ * draw sample node color
+ * Daniel Huson, 11.2019
  */
-public class SetSampleShapeCommand extends CommandBase implements ICommand {
+public class SetSampleColorCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
@@ -45,6 +48,33 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
      * @throws Exception
      */
     public void apply(NexusStreamParser np) throws Exception {
+        final Document doc = ((Director) getDir()).getDocument();
+
+        np.matchIgnoreCase("set nodeColor=");
+        Color color = null;
+        if (np.peekMatchIgnoreCase("null"))
+            np.matchIgnoreCase("null");
+        else
+            color = np.getColor();
+        final List<String> samples = new LinkedList<>();
+        if (np.peekMatchIgnoreCase("sample=")) {
+            np.matchIgnoreCase("sample=");
+            while (!np.peekMatchIgnoreCase(";")) {
+                samples.add(np.getWordRespectCase());
+            }
+        }
+        np.matchIgnoreCase(";");
+
+        if (samples.size() == 0)
+            samples.addAll(doc.getSampleSelection().getAll());
+
+        if (samples.size() > 0) {
+            for (String sample : samples) {
+                doc.getSampleAttributeTable().putSampleColor(sample, color);
+            }
+            ((Director) getDir()).getDocument().setDirty(true);
+        }
+
     }
 
     /**
@@ -76,7 +106,7 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
      * @return name
      */
     public String getName() {
-        return "Set Shape...";
+        return "Set Color...";
     }
 
     /**
@@ -85,7 +115,7 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Set the sample shape";
+        return "Set the sample color";
     }
 
     /**
@@ -94,7 +124,7 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("BlueTriangle16.gif");
+        return ResourceManager.getIcon("YellowSquare16.gif");
     }
 
     /**
@@ -117,26 +147,10 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
         final Collection<String> selected = viewer.getSamplesTableView().getSelectedSamples();
 
         if (selected.size() > 0) {
-            String sample = selected.iterator().next();
-            String shapeLabel = viewer.getSampleAttributeTable().getSampleShape(sample);
-            NodeShape nodeShape = NodeShape.valueOfIgnoreCase(shapeLabel);
-            if (nodeShape == null)
-                nodeShape = NodeShape.Oval;
-            final NodeShape nodeShape1 = nodeShape;
+            Color color = ChooseColorDialog.showChooseColorDialog(getViewer().getFrame(), "Choose sample color", null);
 
-            Runnable runnable = () -> {
-                final ChoiceDialog<NodeShape> dialog = new ChoiceDialog<>(nodeShape1, NodeShape.values());
-                dialog.setTitle("MEGAN choice");
-                dialog.setHeaderText("Choose shape to represent sample(s)");
-                dialog.setContentText("Shape:");
-
-                final Optional<NodeShape> result = dialog.showAndWait();
-                result.ifPresent(shape -> execute("set nodeShape=" + shape + " sample='" + Basic.toString(selected, "' '") + "';"));
-            };
-            if (Platform.isFxApplicationThread())
-                runnable.run();
-            else
-                Platform.runLater(runnable);
+            if (color != null)
+                execute("set nodeColor=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " sample='" + Basic.toString(selected, "' '") + "';");
         }
     }
 

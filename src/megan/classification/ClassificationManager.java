@@ -136,8 +136,8 @@ public class ClassificationManager {
     }
 
     public static void setActiveMapper(String name, IdMapper.MapType mapType, boolean active) {
-            if (active || name2classification.get(name) != null)
-                get(name, true).getIdMapper().setActiveMap(mapType, active);
+        if (active || name2classification.get(name) != null)
+            get(name, true).getIdMapper().setActiveMap(mapType, active);
     }
 
     public static boolean hasTaxonomicRanks(String classificationName) {
@@ -172,16 +172,17 @@ public class ClassificationManager {
     }
 
     public static void setMeganMapDBFile(String meganMapDBFile) throws IOException {
-        if(meganMapDBFile!=null && !Basic.fileExistsAndIsNonEmpty(meganMapDBFile))
-            throw new IOException("File not found or not readable: "+meganMapDBFile);
+        if (meganMapDBFile != null && !Basic.fileExistsAndIsNonEmpty(meganMapDBFile))
+            throw new IOException("File not found or not readable: " + meganMapDBFile);
         ClassificationManager.meganMapDBFile = meganMapDBFile;
-        if(meganMapDBFile!=null)
+        if (meganMapDBFile != null)
             setUseFastAccessionMappingMode(true);
     }
 
     public static boolean canUseMeganMapDBFile() {
-        return getMeganMapDBFile()!=null && isUseFastAccessionMappingMode();
+        return getMeganMapDBFile() != null && isUseFastAccessionMappingMode();
     }
+
     public static boolean isUseFastAccessionMappingMode() {
         return useFastAccessionMappingMode;
     }

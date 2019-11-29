@@ -29,7 +29,6 @@ import megan.dialogs.extractor.ExtractReadsViewer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 
 /**
  * choose directory

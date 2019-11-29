@@ -19,8 +19,6 @@
 
 package megan.fx;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollBar;

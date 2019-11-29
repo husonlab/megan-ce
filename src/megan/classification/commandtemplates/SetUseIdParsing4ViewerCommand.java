@@ -109,7 +109,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return  !ClassificationManager.isUseFastAccessionMappingMode();
+        return !ClassificationManager.isUseFastAccessionMappingMode();
     }
 
     /**

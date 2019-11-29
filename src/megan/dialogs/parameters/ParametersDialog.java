@@ -368,7 +368,7 @@ public class ParametersDialog extends JDialog {
                     else
                         lcaCoveragePercent.setText("80");
                 }
-                if(lcaAlgorithmComboBox.getSelectedItem()!=null) {
+                if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
                         case naive:
                             lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
@@ -414,7 +414,7 @@ public class ParametersDialog extends JDialog {
                 if (readAssignmentModeComboBox.getSelectedItem() != null) {
                     ProgramProperties.put("ReadAssignmentModeComboBox", getReadAssignmentMode().toString());
                 }
-                if(readAssignmentModeComboBox.getSelectedItem()!=null) {
+                if (readAssignmentModeComboBox.getSelectedItem() != null) {
                     switch (Document.ReadAssignmentMode.valueOfIgnoreCase(readAssignmentModeComboBox.getSelectedItem().toString())) {
                         case readCount:
                             readAssignmentModeComboBox.setToolTipText("Display read counts as 'assigned reads' in taxonomy viewer");

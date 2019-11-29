@@ -41,11 +41,11 @@ public class SetFastModeCommand extends CommandBase implements ICheckBoxCommand 
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set accessionMapMode=");
-        final boolean fast=np.getWordMatchesIgnoringCase("fast extended").equalsIgnoreCase("fast");
+        final boolean fast = np.getWordMatchesIgnoringCase("fast extended").equalsIgnoreCase("fast");
         np.matchIgnoreCase(";");
         ClassificationManager.setUseFastAccessionMappingMode(fast);
-        if(fast) {
-            for(String cName:ClassificationManager.getAllSupportedClassifications()) {
+        if (fast) {
+            for (String cName : ClassificationManager.getAllSupportedClassifications()) {
                 executeImmediately("use mapType=" + IdMapper.MapType.Accession + " cName=" + cName + " state=false;");
                 executeImmediately("use mapType=" + IdMapper.MapType.Synonyms + " cName=" + cName + " state=false;");
                 executeImmediately("set idParsing=false cName=" + cName + ";");
@@ -64,7 +64,7 @@ public class SetFastModeCommand extends CommandBase implements ICheckBoxCommand 
 
     }
 
-    public static final String NAME="Fast Mode";
+    public static final String NAME = "Fast Mode";
 
     public String getName() {
         return NAME;
@@ -86,7 +86,7 @@ public class SetFastModeCommand extends CommandBase implements ICheckBoxCommand 
     }
 
     public boolean isApplicable() {
-        return ClassificationManager.getMeganMapDBFile()!=null;
+        return ClassificationManager.getMeganMapDBFile() != null;
     }
 
 

@@ -21,7 +21,10 @@ package megan.data;
 import jloda.util.*;
 import megan.core.Document;
 import megan.core.MeganFile;
-import megan.parsers.blast.*;
+import megan.parsers.blast.BlastN2SAMIterator;
+import megan.parsers.blast.BlastP2SAMIterator;
+import megan.parsers.blast.BlastX2SAMIterator;
+import megan.parsers.blast.ISAMIterator;
 import megan.rma6.RMA6FileCreator;
 
 import java.io.IOException;

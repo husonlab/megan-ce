@@ -19,7 +19,6 @@
 package megan.classification.util;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * some additional utils for parsing taxon names and similar

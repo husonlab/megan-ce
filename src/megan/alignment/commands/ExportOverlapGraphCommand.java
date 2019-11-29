@@ -21,10 +21,10 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;

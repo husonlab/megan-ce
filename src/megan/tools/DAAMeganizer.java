@@ -154,7 +154,7 @@ public class DAAMeganizer {
         }
 
         options.comment(ArgsOptions.OTHER);
-        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p","threads","Number of threads",8));
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p", "threads", "Number of threads", 8));
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
@@ -186,16 +186,16 @@ public class DAAMeganizer {
         }
 
 
-        final Collection<String> mapDBClassifications= AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if(mapDBClassifications.size()>0 && (Basic.hasPositiveLengthValue(class2AccessionFile)|| Basic.hasPositiveLengthValue(class2SynonymsFile)))
+        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if(mapDBClassifications.size()>0)
+        if (mapDBClassifications.size() > 0)
             ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (mapDBClassifications.contains(cName) ||  class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+            if (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
                 cNames.add(cName);
         }
         if (cNames.size() > 0)

@@ -186,11 +186,11 @@ public class BLAST2RMA6 {
             Basic.checkFileReadableNonEmpty(fileName);
         }
 
-        final Collection<String> mapDBClassifications= AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if(mapDBClassifications.size()>0 && (class2AccessionFile.size() > 0 || class2SynonymsFile.size() > 0))
+        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if (mapDBClassifications.size() > 0 && (class2AccessionFile.size() > 0 || class2SynonymsFile.size() > 0))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if(mapDBClassifications.size()>0)
+        if (mapDBClassifications.size() > 0)
             ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         final ArrayList<String> cNames = new ArrayList<>();

@@ -39,8 +39,6 @@ import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;

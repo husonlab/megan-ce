@@ -81,7 +81,7 @@ class GUIConfiguration {
     }
 
     public static String getSampleRowHeaderPopupConfiguration() {
-        return "Move Up;Move Down;|;Rename Sample...;|;Open RMA File...;|;Set Shape...;"; // we add the color menu item after these
+        return "Move Up;Move Down;|;Rename Sample...;|;Open RMA File...;|;Set Shape...;Set Color...;"; // we add the color menu item after these
     }
 
     /**

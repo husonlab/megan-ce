@@ -31,7 +31,10 @@ import megan.samplesviewer.SamplesViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * list a report over all attributes

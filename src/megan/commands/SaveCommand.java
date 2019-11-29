@@ -19,9 +19,10 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.NotificationsInSwing;
+import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
@@ -105,14 +106,13 @@ public class SaveCommand extends CommandBase implements ICommand {
             }
 
             System.err.println("done");
-            MeganProperties.addRecentFile(file);
+            if (Basic.getFileSuffix(file.getPath()).equalsIgnoreCase(".megan"))
+                MeganProperties.addRecentFile(file);
         } catch (IOException ex) {
             NotificationsInSwing.showError(Objects.requireNonNull(viewer).getFrame(), "Save file '" + fileName + "'failed: " + ex, Integer.MAX_VALUE);
             throw ex;
         }
     }
-
-// todo: inAskToSave mechanism needs to be repaired
 
     public void actionPerformed(ActionEvent event) {
         Director dir = getDir();
@@ -135,6 +135,13 @@ public class SaveCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN file", ".megan");
 
         if (file != null) {
+            // if file name has no suffix, add one, unless file with suffix already exists.
+            if (file.getPath().equals(Basic.replaceFileSuffix(file.getPath(), ""))) {
+                final File other = Basic.replaceFileSuffix(file, ".megan");
+                if (!other.exists())
+                    file = other;
+            }
+
             ProgramProperties.put(MeganProperties.SAVEFILE, file);
             String cmd = "save file='" + file.getPath() + "' summary=true;";
             if (inAskToSave)

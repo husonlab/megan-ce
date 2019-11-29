@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *  export taxonomic segmentation
+ * export taxonomic segmentation
  * Daniel Huson, 8.2018
  */
 public class SegmentationOfReadsExporter {

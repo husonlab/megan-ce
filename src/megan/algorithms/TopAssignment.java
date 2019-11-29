@@ -33,7 +33,6 @@ public class TopAssignment {
     /**
      * computes the top KEGG assignments for a read
      *
-     *
      * @param classificationName
      * @param readBlock
      * @return top assignments

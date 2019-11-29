@@ -292,7 +292,7 @@ public class Comparer {
                 // wait until all jobs are done
                 countDownLatch.await();
             } catch (InterruptedException e) {
-               Basic.caught(e);
+                Basic.caught(e);
                 if (exception.get() == null)
                     exception.set(new IOException("Comparison computation failed: " + e.getMessage(), e));
             }
@@ -328,8 +328,7 @@ public class Comparer {
             }
 
             result.setTotalReads((int) Basic.getSum(originalNumberOfReads));
-        }
-        finally{
+        } finally {
             // unlock all projects involved in the comparison
             for (final Director dir : myLocked) {
                 dir.notifyUnlockInput();
@@ -351,7 +350,7 @@ public class Comparer {
         String newName = name;
         while (!ok && count < 1000) {
             ok = true;
-            for (int i = 0;i < pos; i++) {
+            for (int i = 0; i < pos; i++) {
                 if (newName.equalsIgnoreCase(names[i])) {
                     ok = false;
                     break;

@@ -20,7 +20,6 @@ package megan.assembly;
 
 import jloda.graph.*;
 import jloda.swing.commands.CommandManager;
-import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.graphview.EdgeActionAdapter;
 import jloda.swing.graphview.EdgeView;

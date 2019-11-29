@@ -21,7 +21,6 @@ package megan.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 
 /**

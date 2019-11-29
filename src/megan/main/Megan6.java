@@ -22,10 +22,10 @@ import javafx.embed.swing.JFXPanel;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.message.MessageWindow;
-import jloda.swing.window.NotificationsInSwing;
-import jloda.swing.window.About;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
+import jloda.swing.window.About;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import megan.chart.data.ChartCommandHelper;
@@ -149,7 +149,7 @@ public class Megan6 {
     }
 
     public static void ensureInitFXInSwingProgram() {
-        final JFrame jframe=new JFrame("Not used");
-        jframe.add( new JFXPanel());
+        final JFrame jframe = new JFrame("Not used");
+        jframe.add(new JFXPanel());
     }
 }

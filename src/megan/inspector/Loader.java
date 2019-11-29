@@ -18,8 +18,8 @@
  */
 package megan.inspector;
 
-import jloda.swing.window.NotificationsInSwing;
 import jloda.swing.util.ProgressDialog;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import megan.core.Director;

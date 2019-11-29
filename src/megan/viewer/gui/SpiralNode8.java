@@ -26,7 +26,6 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class SpiralNode8 extends JPanel {
 

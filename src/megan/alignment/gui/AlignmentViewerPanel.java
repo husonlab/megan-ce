@@ -28,7 +28,10 @@ import megan.alignment.gui.colors.ColorSchemeText;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseWheelEvent;
 
 /**
  * an alignment viewer panel

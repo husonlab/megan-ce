@@ -52,7 +52,7 @@ public class CSVReadsHitsParser {
         final char separator = (tabSeparator ? '\t' : ',');
 
         System.err.println("Importing list of read to CLASS-id hits from CSV file");
-        System.err.println("Line format: readname,CLASS-id,score     - for one of the following classificiatons: " + Basic.toString(cNames, " name,"));
+        System.err.println("Line format: readname,CLASS-id,score     - for one of the following classifications: " + Basic.toString(cNames, " name,"));
 
         System.err.println("Using topPercent=" + doc.getTopPercent() + " minScore=" + doc.getMinScore() +
                 (doc.getMinSupportPercent() > 0 ? " minSupportPercent=" + doc.getMinSupportPercent() : "") +

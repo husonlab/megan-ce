@@ -35,6 +35,7 @@ import megan.parsers.blast.IteratorManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -238,26 +239,28 @@ public class RMA6FromBlastCreator {
                     if (mapClassificationId2DatabaseRank != null) { // use mapping database
                         int offset = 0;
                         final String[] queries = new String[numberOfMatches];
+
+                        if (numberOfMatches >= matchLineRMA6s.length) {
+                            final MatchLineRMA6[] tmp = new MatchLineRMA6[2 * numberOfMatches];
+                            System.arraycopy(matchLineRMA6s, 0, tmp, 0,  matchLineRMA6s.length);
+                            for (int i =  matchLineRMA6s.length; i < tmp.length; i++) {
+                                tmp[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
+                            }
+                            matchLineRMA6s = tmp;
+                        }
+
+                        if (numberOfMatches >= match2classification2id.length) {
+                            match2classification2id= new int[2*numberOfMatches][cNames.length];
+                        }
+
                         for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
                             queries[matchCount] = getFirstWord(Utilities.getToken(2, matchesText, offset));
 
-                            if (matchCount == matchLineRMA6s.length) { // double the array...
-                                MatchLineRMA6[] tmp = new MatchLineRMA6[2 * numberOfMatches];
-                                System.arraycopy(matchLineRMA6s, 0, tmp, 0, matchCount);
-                                matchLineRMA6s = tmp;
-                                for (int i = matchCount; i < matchLineRMA6s.length; i++)
-                                    matchLineRMA6s[i] = new MatchLineRMA6(cNames.length, taxonMapperIndex);
-                            }
-                            if (matchCount == match2classification2id.length) {
-                                int[][] tmp = new int[2 * numberOfMatches][cNames.length];
-                                System.arraycopy(match2classification2id, 0, tmp, 0, matchCount);
-                                match2classification2id = tmp;
-                            }
-
-                            final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
+                          final MatchLineRMA6 matchLineRMA6 = matchLineRMA6s[matchCount];
                             matchLineRMA6.parse(matchesText, offset);
                             offset = Utilities.nextNewLine(matchesText, offset) + 1;
                         }
+
                         final Map<String, int[]> query2ids = accessAccessionMappingDatabase.getValues(queries, queries.length);
                         for (int matchCount = 0; matchCount < queries.length; matchCount++) {
                             final int[] ids = query2ids.get(queries[matchCount]);
@@ -269,8 +272,12 @@ public class RMA6FromBlastCreator {
                                         match2classification2id[matchCount][c] = id;
                                         matchLineRMA6s[matchCount].setFId(c, id);
                                     }
+                                    else
+                                        match2classification2id[matchCount][c] = 0;
                                 }
                             }
+                            else
+                                Arrays.fill(match2classification2id[matchCount],0);
                         }
                     } else { // use mapping files
                         int offset = 0;

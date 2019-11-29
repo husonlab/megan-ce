@@ -109,6 +109,20 @@ public class CreateAccessionMappingDatabase {
      * @param description        description string to describe the used reference
      */
     public void insertClassification(String classificationName, String inputFile, String description) throws SQLException, IOException {
+        insertClassification(classificationName,inputFile,0,1,description);
+    }
+
+
+    /**
+     * inserts a new classifier into the database (separate table). Merging is done in mergeTables()
+     *
+     * @param classificationName name of the classifier used in the db
+     * @param inputFile          path to file
+     * @oaram accessionColumn  accession column in input file (0-based)
+     * @oaram classColumn class column in input file (0-based)
+     * @param description        description string to describe the used reference
+     */
+    public void insertClassification(String classificationName, String inputFile, int accessionColumn,int classColumn,String description) throws SQLException, IOException {
         if (classificationName == null) {
             throw new NullPointerException("classificationName");
         }
@@ -123,13 +137,15 @@ public class CreateAccessionMappingDatabase {
                 try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
                         final String[] tokens = it.next().split("\t");
-                        final String accession = tokens[0];
-                        final int value = Basic.parseInt(tokens[1]);
-                        if (value != 0) {
-                            insertStmd.setString(1, accession);
-                            insertStmd.setInt(2, value);
-                            insertStmd.execute();
-                            count++;
+                        if(accessionColumn <tokens.length && classColumn<tokens.length && Basic.isInteger(tokens[classColumn])) {
+                            final String accession = tokens[accessionColumn];
+                            final int value = Basic.parseInt(tokens[classColumn]);
+                            if (value != 0) {
+                                insertStmd.setString(1, accession);
+                                insertStmd.setInt(2, value);
+                                insertStmd.execute();
+                                count++;
+                            }
                         }
                     }
                 }

@@ -138,13 +138,14 @@ public class SamplesTableView {
 
         tableView.updateProperty().addListener((c, o, n) -> {
             if (n.longValue() > initialUpdate) {
-                Platform.runLater(() -> {
-                    SwingUtilities.invokeLater(this::syncFromViewToDocument);
+                    SwingUtilities.invokeLater(()->{
+                        syncFromViewToDocument();
                     if (!samplesViewer.getDocument().isDirty()) {
                         samplesViewer.getDocument().setDirty(true);
-                        samplesViewer.getDir().notifyUpdateViewer(IDirector.TITLE);
+                        //samplesViewer.getDir().notifyUpdateViewer(IDirector.TITLE);
                     }
-                });
+                     samplesViewer.getDir().notifyUpdateViewer(IDirector.ALL);
+                    });
             }
         });
         tableView.setAllowAddCol(true);
@@ -378,6 +379,11 @@ public class SamplesTableView {
             throw new RuntimeException("Table size mismatch");
         sampleAttributeTable.getSampleOrder().clear();
         sampleAttributeTable.getSampleOrder().addAll(tableView.getRowNames());
+        try {
+            samplesViewer.getDocument().getDataTable().reorderSamples(sampleAttributeTable.getSampleOrder());
+        } catch (IOException e) {
+            Basic.caught(e);
+        }
 
         final ArrayList<String> toDelete = new ArrayList<>();
         for (String attribute : sampleAttributeTable.getAttributeOrder()) {

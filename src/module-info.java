@@ -137,6 +137,8 @@ module megan {
     opens megan.resources.icons;
     opens megan.resources.images;
     opens megan.resources.files;
+    opens  megan.biom.biom1;
+    opens  megan.biom.biom2;
 
     opens megan.dialogs.lrinspector;
     opens megan.dialogs.reads;

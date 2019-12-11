@@ -191,7 +191,7 @@ public class CreateAccessionMappingDatabase {
     }
 
     /**
-     * Creates the joining query variably and then performes the join. Resulting table is called ID_mappings (= mappings)
+     * Creates the joining query variably and then performs the join. Resulting table is called ID_mappings (= mappings)
      */
     private void joinTables() throws SQLException {
         System.err.println("Joining tables...");

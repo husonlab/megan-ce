@@ -121,6 +121,32 @@ public class TaxonomicLevels {
                 ;
     }
 
+    /**
+     * get letter from one letter code
+     * @param oneLetterLabel
+     * @return level
+     */
+    public static int getLevelForOneLetterCode(String oneLetterLabel) {
+        switch(oneLetterLabel.toLowerCase()) {
+            case "d":
+                return getId(Domain);
+            case "p":
+                return getId(Phylum);
+            case "c":
+                return getId(Class);
+            case "o":
+                return getId(Order);
+            case "f":
+                return getId(Family);
+            case "g":
+                return getId(Genus);
+            case "s":
+                return getId(Species);
+            default:
+                return 0;
+        }
+    }
+
     /* used to set up table
      */
 

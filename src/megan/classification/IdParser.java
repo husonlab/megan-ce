@@ -76,7 +76,7 @@ public class IdParser {
 
         final boolean accessionOrDB = (idMapper.isActiveMap(IdMapper.MapType.Accession) && idMapper.isLoaded(IdMapper.MapType.Accession)) || (idMapper.isActiveMap(IdMapper.MapType.MeganMapDB) && idMapper.isLoaded(IdMapper.MapType.MeganMapDB));
 
-        taggedIds = new TaggedValueIterator(true, true, idMapper.getIdTags());
+        taggedIds = new TaggedValueIterator(false, true, idMapper.getIdTags());
         accTaggedIds = new TaggedValueIterator(ProgramProperties.get(PROPERTIES_FIRST_WORD_IS_ACCESSION, true), accessionOrDB, ProgramProperties.get(PROPERTIES_ACCESSION_TAGS, ACCESSION_TAGS));
     }
 

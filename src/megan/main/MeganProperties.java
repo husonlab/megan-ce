@@ -21,6 +21,7 @@ package megan.main;
 import jloda.swing.export.ExportImageDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
+import jloda.util.ProgressListener;
 import jloda.util.PropertiesListListener;
 import megan.util.ReadMagnitudeParser;
 
@@ -43,8 +44,6 @@ public class MeganProperties {
 
     public static final String MICROBIALATTRIBUTESFILE = "MicrobialAttributesFiles";
     private static final String MAPPINGFILE = "MappingFile";
-
-    public static final String TAXONOMY_SYNONYMS_FILE = "TaxonomySynonymsMapFile";
 
     public static final String PARSE_TAXON_NAMES = "UseParseTextTaxonomy";
 
@@ -87,6 +86,8 @@ public class MeganProperties {
     public static final String DEFAULT_TAXONOMYFILE = "ncbi.tre";
     private static final String DEFAULT_MAPPINGFILE = "ncbi.map";
     private static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
+
+    public static final String TAXONOMY_VIEWERS="TaxonomyViewers";
 
     /**
      * sets the program properties
@@ -132,6 +133,9 @@ public class MeganProperties {
         }
 
         ProgramProperties.put(MeganProperties.DEFAULT_PROPERTIES, "");
+
+        ProgramProperties.put("GTDBUseLCA",true);
+        ProgramProperties.put(TAXONOMY_VIEWERS,new String[]{"Taxonomy","GTDB"});
 
         ReadMagnitudeParser.setEnabled(ProgramProperties.get("allow-read-weights", false));
         ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));

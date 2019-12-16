@@ -203,15 +203,15 @@ public class OpenFileCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
 
-        MeganAndRMAFileFilter meganAndRMAFileFilter = new MeganAndRMAFileFilter();
-        meganAndRMAFileFilter.setAllowGZipped(true);
-        meganAndRMAFileFilter.setAllowZipped(true);
-        meganAndRMAFileFilter.add(MeganizedDAAFileFilter.getInstance());
+        MeganAndRMAFileFilter meganRmaDaaFileFilter = new MeganAndRMAFileFilter();
+        meganRmaDaaFileFilter.setAllowGZipped(true);
+        meganRmaDaaFileFilter.setAllowZipped(true);
+        meganRmaDaaFileFilter.add(MeganizedDAAFileFilter.getInstance());
         getDir().notifyLockInput();
 
         Collection<File> files;
         try {
-            files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, meganAndRMAFileFilter, meganAndRMAFileFilter, ev, "Open MEGAN file");
+            files = ChooseFileDialog.chooseFilesToOpen(getViewer().getFrame(), lastOpenFile, meganRmaDaaFileFilter, meganRmaDaaFileFilter, ev, "Open MEGAN file");
         } finally {
             getDir().notifyUnlockInput();
         }

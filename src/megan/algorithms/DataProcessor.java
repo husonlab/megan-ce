@@ -31,6 +31,7 @@ import megan.core.ReadAssignmentCalculator;
 import megan.core.SyncArchiveAndDataTable;
 import megan.data.*;
 import megan.io.InputOutputReaderWriter;
+import megan.main.MeganProperties;
 import megan.rma6.RMA6File;
 import megan.rma6.ReadBlockRMA6;
 
@@ -104,7 +105,7 @@ public class DataProcessor {
 
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int c = 0; c < numberOfClassifications; c++) {
-                if (c == taxonomyIndex) {
+                if (Basic.contains(ProgramProperties.get(MeganProperties.TAXONOMY_VIEWERS,new String[0]),cNames[c])) {
                     switch (doc.getLcaAlgorithm()) {
                         default:
                         case naive:

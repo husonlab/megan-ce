@@ -122,11 +122,11 @@ public class TaxonomicLevels {
     }
 
     /**
-     * get letter from one letter code
+     * get ranke from one letter code
      * @param oneLetterLabel
      * @return level
      */
-    public static int getLevelForOneLetterCode(String oneLetterLabel) {
+    public static int getRankForOneLetterCode(String oneLetterLabel) {
         switch(oneLetterLabel.toLowerCase()) {
             case "d":
                 return getId(Domain);
@@ -145,6 +145,21 @@ public class TaxonomicLevels {
             default:
                 return 0;
         }
+    }
+
+    /**
+     * get one letter code for rank, or null
+     * @param rank
+     * @return code or null
+     */
+    public static String getOneLetterCodeFromRank(int rank) {
+        if(isMajorRank(rank)) {
+            for (String name : getAllMajorRanks()) {
+                if (getId(name) == rank)
+                    return name.substring(0, 1).toLowerCase();
+            }
+        }
+        return null;
     }
 
     /* used to set up table

@@ -42,6 +42,7 @@ public class ClassificationManager {
     private static boolean useFastAccessionMappingMode;
 
     static {
+        defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
         defaultClassificationsListExcludingNCBITaxonomy.add("INTERPRO2GO");
         defaultClassificationsListExcludingNCBITaxonomy.add("EGGNOG");
         defaultClassificationsListExcludingNCBITaxonomy.add("SEED");

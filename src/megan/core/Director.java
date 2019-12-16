@@ -662,13 +662,7 @@ public class Director implements IDirectableViewer, IDirector {
         dir.setInternalDocument(internalDocument);
         doc.setDir(dir);
         dir.setID(ProjectManager.getNextID());
-        final MainViewer viewer;
-        try {
-            viewer = new MainViewer(dir, visible);
-        } catch (Exception e) {
-            Basic.caught(e);
-            return null;
-        }
+        final MainViewer viewer= new MainViewer(dir, visible);
         if (!dir.isInternalDocument()) {
             dir.projectsChangedListener = () -> viewer.getCommandManager().updateEnableState("Compare...");
             ProjectManager.addProjectsChangedListener(dir.projectsChangedListener);

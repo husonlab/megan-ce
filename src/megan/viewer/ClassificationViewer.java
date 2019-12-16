@@ -108,7 +108,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param visible
      * @throws Exception
      */
-    public ClassificationViewer(final Director dir, final Classification classification, boolean visible) throws Exception {
+    public ClassificationViewer(final Director dir, final Classification classification, boolean visible) {
         super(dir, new PhyloTree(), false);
         this.classification = classification;
 
@@ -335,11 +335,16 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         legendPanel.setPopupMenu(new PopupMenu(this, megan.chart.gui.GUIConfiguration.getLegendPanelPopupConfiguration(), commandManager));
 
         setupKeyListener();
-        splitPane.setDividerLocation(1.0);
+
+        splitPane.setDividerLocation(1);
+        if (doc.getNumberOfSamples() > 1 || Basic.contains(ProgramProperties.get(MeganProperties.TAXONOMY_VIEWERS,new String[0]),classification.getName())) {
+            getMainSplitPane().getLeftComponent().setMinimumSize(new Dimension());
+            getMainSplitPane().setDividerLocation(0);
+        }
+
+
         getFrame().setVisible(visible);
     }
-
-    private Thread thread = null;
 
     /**
      * display number of selected nodes etc as tooltip on status bar.
@@ -364,7 +369,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 statusBar.setToolTipText(line);
             } else
                 statusBar.setToolTipText(null);
-            thread = null;
         });
     }
 
@@ -1306,11 +1310,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         // draw all labels
         for (Node v : drawableNodeLabels) {
-            if (getSelected(v)) {
-                //getNV(v).hiliteLabel(gc, trans, getFont());
-                nodeDrawer.drawLabel(v, true);
-            } else
-                getNV(v).drawLabel(gc, trans, getFont());
+                nodeDrawer.drawLabel(v, getSelected(v));
         }
     }
 

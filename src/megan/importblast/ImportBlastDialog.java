@@ -202,9 +202,9 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         addFilesTab(tabbedPane);
 
         if (showTaxonomyPane)
-            tabbedPane.addTab(Classification.Taxonomy, new ViewerPanel(commandManager, Classification.Taxonomy));
+            addViewTab(Classification.Taxonomy, new ViewerPanel(commandManager, Classification.Taxonomy));
         for (String fName : cNames) {
-            tabbedPane.addTab(fName, new ViewerPanel(commandManager, fName));
+            addViewTab(fName, new ViewerPanel(commandManager, fName));
         }
 
         addLCATab(tabbedPane);
@@ -242,6 +242,9 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         tabbedPane.addTab("LCA Params", new LCAParametersPanel(this));
     }
 
+    protected void addViewTab(String title,JPanel jpanel) {
+        tabbedPane.addTab(title,jpanel);
+    }
 
     /**
      * show the dialog and return the entered command string, or null

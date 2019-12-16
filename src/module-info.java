@@ -85,6 +85,7 @@ module megan {
     exports megan.dialogs.lrinspector.commands;
     exports megan.dialogs.meganize;
     exports megan.dialogs.meganize.commands;
+    exports megan.dialogs.reanalyze.commands;
     exports megan.dialogs.parameters;
     exports megan.dialogs.parameters.commands;
     exports megan.dialogs.profile;

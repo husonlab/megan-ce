@@ -342,7 +342,7 @@ public class TaxonomyData {
         for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
             Node w = e.getTarget();
             Integer id = (Integer) w.getInfo();
-            if (id != 131567)// cellular organisms
+            if (id != 131567 && id != 2 && id!=2157)// cellular organisms
                 ids2collapse.add(id);
         }
         ids2collapse.add(2759); // eukaryotes
@@ -369,7 +369,7 @@ public class TaxonomyData {
         for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
             Node w = e.getTarget();
             Integer id = (Integer) w.getInfo();
-            if (id != 10239 && id != 12884)// virsuses  or viroids
+            if (id != 10239 && id != 12884)// viruses  or viroids
                 ids2collapse.add(id);
         }
         return ids2collapse;

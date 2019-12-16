@@ -68,11 +68,11 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
      * @param visible
      * @throws Exception
      */
-    public MainViewer(final Director dir, boolean visible) throws Exception {
+    public MainViewer(final Director dir, boolean visible) {
         super(dir, ClassificationManager.get(Classification.Taxonomy, false), visible);
 
-        getMainSplitPane().getLeftComponent().setMinimumSize(new Dimension());
-        getMainSplitPane().setDividerLocation(0.0d);
+        //getMainSplitPane().getLeftComponent().setMinimumSize(new Dimension());
+        //getMainSplitPane().setDividerLocation(0.0d);
 
         selectedSeries = doc.getSampleSelection();
 

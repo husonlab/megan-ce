@@ -142,8 +142,13 @@ public class RecomputeCommand extends CommandBase implements ICommand {
             getDoc().getActiveViewers().clear();
             getDoc().getActiveViewers().add(Classification.Taxonomy);
             np.matchIgnoreCase("fNames=");
-            while (!np.peekMatchIgnoreCase(";"))
-                getDoc().getActiveViewers().add(np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), " ")));
+            while (!np.peekMatchIgnoreCase(";")) {
+                final String cName=np.getWordRespectCase();
+                if(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy().contains(cName))
+                    getDoc().getActiveViewers().add(cName);
+                else
+                    System.err.println("Warning: Unknown classification: "+cName);
+            }
         }
         np.matchIgnoreCase(";");
 

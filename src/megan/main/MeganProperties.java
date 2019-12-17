@@ -45,6 +45,8 @@ public class MeganProperties {
     public static final String MICROBIALATTRIBUTESFILE = "MicrobialAttributesFiles";
     private static final String MAPPINGFILE = "MappingFile";
 
+    public static final String TAXONOMY_SYNONYMS_FILE = "TaxonomySynonymsMapFile";
+
     public static final String PARSE_TAXON_NAMES = "UseParseTextTaxonomy";
 
     private static final String EXPORTFILE = "ExportFile";
@@ -87,7 +89,7 @@ public class MeganProperties {
     private static final String DEFAULT_MAPPINGFILE = "ncbi.map";
     private static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
 
-    public static final String TAXONOMY_VIEWERS="TaxonomyViewers";
+    public static final String TAXONOMY_VIEWERS="AdditionalTaxonomyViewers";
 
     /**
      * sets the program properties

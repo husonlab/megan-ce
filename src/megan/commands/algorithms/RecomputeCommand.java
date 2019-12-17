@@ -48,7 +48,8 @@ import java.util.ArrayList;
 public class RecomputeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
-                "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+                "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
+                " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }

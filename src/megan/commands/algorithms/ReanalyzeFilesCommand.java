@@ -28,7 +28,9 @@ import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
+import jloda.util.ProgressPercentage;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.parse.NexusStreamTokenizer;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
@@ -43,10 +45,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * reanalyze a set of files
@@ -55,9 +55,10 @@ import java.util.Collections;
 public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
-                "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>] [minComplexity=<number>] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+                "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
+                " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
-                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
+                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "|*}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -71,15 +72,19 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
             files.add(np.getWordFileNamePunctuation());
         }
 
-        final ProgressListener progress= getDoc().getProgressListener();
+        final ProgressListener progress= (getDoc()!=null?getDoc().getProgressListener():new ProgressPercentage());
 
         progress.setMaximum(files.size());
         progress.setProgress(0);
 
-        final String recomputeParameters=Basic.toString(np.getTokensRespectCase(null,";")," ").replaceAll("fNames\\s*=.*","");
+        final List<String> tokens=np.getTokensRespectCase(null,";");
+        final String fNames=np.findIgnoreCase(tokens,"fName=",null,"*");
+        final boolean allFNames=(fNames.equals("*"));
+
+        final String recomputeParameters=Basic.toString(tokens," ").replaceAll("fNames\\s*=.*","");
 
         for(String file:files) {
-            getDoc().getProgressListener().setTasks("Reanalyzing",file);
+            progress.setTasks("Reanalyzing",file);
             {
                 final Director openDir = findOpenDirector(file);
                 if (openDir != null) {
@@ -89,7 +94,6 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
             }
             NotificationsInSwing.showInformation("Reanalyzing file: " + file);
 
-
             final Director dir=Director.newProject(false,true);
 
             try {
@@ -97,9 +101,9 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
                 doc.setOpenDAAFileOnlyIfMeganized(false);
                 doc.getMeganFile().setFileFromExistingFile(file, false);
 
-                final String[] fNames = Basic.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy");
+                final String fNamesToUse = (allFNames? Basic.toString(Basic.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy")," "):fNames).trim();
 
-                final String recomputeCommand = "recompute " + recomputeParameters + " fNames = " + Basic.toString(fNames, " ") + ";";
+                final String recomputeCommand = "recompute " + recomputeParameters +(fNamesToUse.length()>0? " fNames = " + fNamesToUse:"") + ";";
 
                 dir.getDocument().setProgressListener(getDoc().getProgressListener());
                 dir.executeImmediately(recomputeCommand, dir.getMainViewer().getCommandManager());

@@ -111,6 +111,7 @@ public class ReanalyzeDialog extends ImportBlastDialog {
                 buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
 
             buf.append(" minComplexity=").append(getMinComplexity());
+
             buf.append(" longReads=").append(isLongReads());
 
             buf.append(" pairedReads=").append(isUsePairedReads());

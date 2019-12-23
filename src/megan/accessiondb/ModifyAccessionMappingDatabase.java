@@ -24,13 +24,11 @@ import jloda.util.Basic;
 import jloda.util.FileLineIterator;
 import org.sqlite.SQLiteConfig;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Modify SQLITE database
@@ -43,17 +41,22 @@ public class ModifyAccessionMappingDatabase {
 
     /**
      * constructor
+     *
      * @param databaseFile
      */
-    public ModifyAccessionMappingDatabase(String databaseFile) {
+    public ModifyAccessionMappingDatabase(String databaseFile) throws IOException, SQLException {
         this.databaseFile = databaseFile;
+
+        System.err.print("Database '" + databaseFile + "', current contents: ");
+        try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(databaseFile)) {
+            System.err.println(accessAccessionMappingDatabase.getInfo());
+        }
 
         config = new SQLiteConfig();
         config.setCacheSize(10000);
         config.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
         config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
         config.setJournalMode(SQLiteConfig.JournalMode.WAL);
-
     }
 
     /**
@@ -87,10 +90,10 @@ public class ModifyAccessionMappingDatabase {
         int count = 0;
 
         try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement()) {
-            statement.execute("ALTER TABLE mappings ADD COLUMN " + classificationName + " INTEGER;");
+            statement.execute("ALTER TABLE mappings ADD COLUMN '" + classificationName + "' INTEGER;");
             connection.setAutoCommit(false);
 
-            try (PreparedStatement insertStmd = connection.prepareStatement("UPDATE mappings SET " + classificationName + "=? WHERE Accession=?")) {
+            try (PreparedStatement insertStmd = connection.prepareStatement("UPDATE mappings SET '" + classificationName + "'=? WHERE Accession=?")) {
                 try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
                         final String[] tokens = it.next().split("\t");

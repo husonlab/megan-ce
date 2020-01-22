@@ -47,7 +47,7 @@ public class ModifyAccessionMappingDatabase {
     public ModifyAccessionMappingDatabase(String databaseFile) throws IOException, SQLException {
         this.databaseFile = databaseFile;
 
-        System.err.print("Database '" + databaseFile + "', current contents: ");
+        System.err.println("Database '" + databaseFile + "', current contents: ");
         try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(databaseFile)) {
             System.err.println(accessAccessionMappingDatabase.getInfo());
         }
@@ -108,6 +108,7 @@ public class ModifyAccessionMappingDatabase {
                     }
                 }
             }
+            System.err.println("Committing...");
             connection.commit();
             connection.setAutoCommit(true);
             statement.execute("INSERT INTO info VALUES ('" + classificationName + "', '" + description + "', " + count + ");");

@@ -286,7 +286,7 @@ public class LRInspectorController {
         panelWidthSlider.setTooltip(new Tooltip("Change layout width"));
         panelWidthSlider.valueProperty().bindBidirectional(layoutCol.prefWidthProperty());
         panelWidthSlider.disableProperty().bind(getService().runningProperty());
-        panelWidthSlider.maxProperty().bind(Bindings.min(10000000, viewer.maxReadLengthProperty().multiply(10)));
+        panelWidthSlider.maxProperty().bind(Bindings.min(1000000, viewer.maxReadLengthProperty().multiply(10)));
 
         fontSize.getItems().addAll(6, 8, 10, 12, 16, 18, 22, 24);
         fontSize.getSelectionModel().select((Integer) ProgramProperties.get("LongReadLabelFontSize", 10));

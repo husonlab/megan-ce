@@ -181,7 +181,6 @@ public class ReadLayoutPane extends Pane {
         matchSelection.setItems(intervalTree.values());
 
         widthProperty().addListener((observable, oldValue, newValue) -> {
-            System.err.println(oldValue+" -> "+newValue);
             final double readWidth = (layoutWidth.get() - 60) / maxReadLength.get() * readLength;
             line.setEndX(readWidth);
             lengthLabel.setLayoutX(readWidth + 2);

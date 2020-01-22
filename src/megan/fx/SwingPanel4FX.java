@@ -23,11 +23,13 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.util.Basic;
 import jloda.util.Single;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A JavaFX panel that can be used in swing and is setup from an fxml file
@@ -40,6 +42,8 @@ public class SwingPanel4FX<C> {
     private C controller;
     private final List<Runnable> toRunLaterInSwing = new ArrayList<>();
 
+    private final ReentrantLock lock=new ReentrantLock();
+
     /**
      * constructor
      *
@@ -47,11 +51,12 @@ public class SwingPanel4FX<C> {
      */
     public SwingPanel4FX(final Class viewerClass) {
         this.viewerClass = viewerClass;
+        //System.err.println("SwingPanel4FX");
 
         if (SwingUtilities.isEventDispatchThread())
             initSwingLater();
         else {
-            SwingUtilities.invokeLater(() -> initSwingLater());
+            SwingUtilities.invokeLater(this::initSwingLater);
         }
     }
 
@@ -68,27 +73,45 @@ public class SwingPanel4FX<C> {
      * initialize swing
      */
     private void initSwingLater() {
+        // System.err.println("initSwingLater");
+
         jFXPanel = new JFXPanel();
-        Platform.runLater(() -> initFxLater());
+        try {
+            Platform.runLater(this::initFxLater);
+        }
+        catch(Exception ex) {
+            Basic.caught(ex);
+        }
     }
 
     /**
      * initialize JavaFX
      */
     private void initFxLater() {
-        synchronized (initialized) {
+        //System.err.println("initFxLater");
+
+        lock.lock();
+        try {
+
             if (!initialized.get()) {
                 try {
                     final ExtendedFXMLLoader<C> extendedFXMLLoader = new ExtendedFXMLLoader<>(viewerClass);
                     controller = extendedFXMLLoader.getController();
                     jFXPanel.setScene(new Scene(extendedFXMLLoader.getRoot()));
-                } finally {
+                } catch(Exception ex) {
+                    Basic.caught(ex);
+                }
+                finally {
                     initialized.set(true);
+                    //System.err.println("running to run later");
                     for (Runnable runnable : toRunLaterInSwing) {
                         SwingUtilities.invokeLater(runnable);
                     }
                 }
             }
+        }
+        finally {
+            lock.unlock();
         }
     }
 
@@ -98,11 +121,16 @@ public class SwingPanel4FX<C> {
      * @param runnable
      */
     public void runLaterInSwing(Runnable runnable) {
-        synchronized (initialized) {
+        lock.lock();
+        try {
             if (!initialized.get()) {
+                //System.err.println("setting to run later");
                 toRunLaterInSwing.add(runnable);
             } else
                 SwingUtilities.invokeLater(runnable);
+        }
+        finally {
+            lock.unlock();
         }
     }
 

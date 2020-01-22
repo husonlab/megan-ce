@@ -153,6 +153,9 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
 
         commandManager.updateEnableState();
 
+        // todo: this is a workaround: without this, closing a window appears to break JavaFX
+        getFrame().setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
         getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -183,6 +186,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         swingPanel4FX = new SwingPanel4FX<>(this.getClass());
 
         swingPanel4FX.runLaterInSwing(() -> {
+           // System.err.println("SETTING UP");
             mainPanel.add(swingPanel4FX.getPanel(), BorderLayout.CENTER); // add panel once initialization complete
             mainPanel.validate();
             Platform.runLater(() -> {
@@ -260,16 +264,21 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     }
 
     public void destroyView() throws CanceledException {
-        Platform.runLater(() -> {
-            if (swingPanel4FX != null)
-                swingPanel4FX.getController().getService().cancel();
-        });
-        if (runOnDestroy != null)
-            runOnDestroy.run();
-        MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
-        dir.removeViewer(this);
-        searchManager.getFindDialogAsToolBar().close();
-        dispose();
+       // todo: destroy breaks JavaFX
+        if(true) {
+            getFrame().setVisible(false);
+        }
+        else {
+            Platform.runLater(() -> {
+                if (swingPanel4FX != null)
+                    swingPanel4FX.getController().getService().cancel();
+            });
+            if (runOnDestroy != null)
+                runOnDestroy.run();
+            MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
+            dir.removeViewer(this);
+            searchManager.getFindDialogAsToolBar().close();
+        }
     }
 
     public void setUptoDate(boolean flag) {

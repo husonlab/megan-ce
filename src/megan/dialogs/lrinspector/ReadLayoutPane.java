@@ -87,7 +87,6 @@ public class ReadLayoutPane extends Pane {
 
     private final LongProperty previousSelectionTime = new SimpleLongProperty(0);
 
-
     /**
      * creates the visualization pane
      *
@@ -169,13 +168,10 @@ public class ReadLayoutPane extends Pane {
             geneArrow.setOnMousePressed(mousePressedHandler);
             geneArrow.setOnMouseClicked(mouseClickedHandler);
             geneArrow.setOnMouseReleased(mouseReleasedHandler);
-            EventHandler<MouseEvent> mouseDraggedHandlerY = new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    Node node = (Node) event.getSource();
-                    node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
-                    mouseDown[1] = event.getSceneY();
-                }
+            EventHandler<MouseEvent> mouseDraggedHandlerY = event -> {
+                Node node = (Node) event.getSource();
+                node.setLayoutY(node.getLayoutY() + (event.getSceneY() - mouseDown[1]));
+                mouseDown[1] = event.getSceneY();
             };
             geneArrow.setOnMouseDragged(mouseDraggedHandlerY);
 
@@ -185,6 +181,7 @@ public class ReadLayoutPane extends Pane {
         matchSelection.setItems(intervalTree.values());
 
         widthProperty().addListener((observable, oldValue, newValue) -> {
+            System.err.println(oldValue+" -> "+newValue);
             final double readWidth = (layoutWidth.get() - 60) / maxReadLength.get() * readLength;
             line.setEndX(readWidth);
             lengthLabel.setLayoutX(readWidth + 2);

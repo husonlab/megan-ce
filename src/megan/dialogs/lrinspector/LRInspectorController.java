@@ -20,6 +20,7 @@
 
 package megan.dialogs.lrinspector;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -147,7 +148,8 @@ public class LRInspectorController {
         tableItemService.setOnSucceeded(event -> {
             headerField.textProperty().unbind();
             headerField.setText(viewer.getClassIdDisplayName() + ": " + computeReadStats());
-            tableView.sort();
+           tableView.sort();
+            updateColumnWidths(tableView,layoutCol);
             recolor();
             setupSearcher();
             viewer.setUptoDate(true);
@@ -183,19 +185,13 @@ public class LRInspectorController {
             checkMenuItem.selectedProperty().bindBidirectional(col.visibleProperty());
             col.visibleProperty().addListener((observable, oldValue, newValue) -> ProgramProperties.put(col.getText() + "ColVisible", newValue));
             tableMenuButton.getItems().add(checkMenuItem);
+            checkMenuItem.selectedProperty().addListener(c-> updateColumnWidths(tableView,layoutCol));
         }
 
-        tableView.widthProperty().addListener((observable, oldValue, newValue) -> {
-            double newLayoutTableColumnWidth = newValue.doubleValue() - 20;
-            for (TableColumn col : tableView.getColumns()) {
-                if (col != layoutCol && col.isVisible())
-                    newLayoutTableColumnWidth -= (col.getWidth() + 5);
-            }
-            if (newLayoutTableColumnWidth > layoutCol.getWidth())
-                layoutCol.setPrefWidth(newLayoutTableColumnWidth);
-        });
+        tableView.widthProperty().addListener(c -> updateColumnWidths(tableView,layoutCol));
 
         layoutCol.setGraphic(createAxis(viewer.maxReadLengthProperty(), layoutCol.widthProperty()));
+        layoutCol.setResizable(false);
 
         overviewMenuItem.setOnAction(event -> {
             if (!overviewMenuItem.isSelected()) {
@@ -290,7 +286,7 @@ public class LRInspectorController {
         panelWidthSlider.setTooltip(new Tooltip("Change layout width"));
         panelWidthSlider.valueProperty().bindBidirectional(layoutCol.prefWidthProperty());
         panelWidthSlider.disableProperty().bind(getService().runningProperty());
-        panelWidthSlider.maxProperty().bind(Bindings.min(1000000, viewer.maxReadLengthProperty().multiply(10)));
+        panelWidthSlider.maxProperty().bind(Bindings.min(10000000, viewer.maxReadLengthProperty().multiply(10)));
 
         fontSize.getItems().addAll(6, 8, 10, 12, 16, 18, 22, 24);
         fontSize.getSelectionModel().select((Integer) ProgramProperties.get("LongReadLabelFontSize", 10));
@@ -302,6 +298,17 @@ public class LRInspectorController {
                 pane.layoutLabels();
             }
         });
+    }
+
+    private static void updateColumnWidths (TableView<TableItem> tableView, TableColumn layoutCol) {
+        double newLayoutTableColumnWidth = tableView.getWidth() - 20;
+        for (TableColumn col : tableView.getColumns()) {
+            if (col != layoutCol && col.isVisible())
+                newLayoutTableColumnWidth -= (col.getWidth() + 5);
+        }
+        if (newLayoutTableColumnWidth > layoutCol.getWidth())
+            layoutCol.setPrefWidth(newLayoutTableColumnWidth);
+
     }
 
     private String computeReadStats() {

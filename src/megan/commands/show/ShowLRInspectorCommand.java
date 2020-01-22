@@ -61,7 +61,6 @@ public class ShowLRInspectorCommand extends CommandBase implements ICommand {
             alwaysNew = false;
         np.matchIgnoreCase(";");
 
-
         if (getViewer() instanceof ClassificationViewer) {
             final Director dir = (Director) getDir();
             final ClassificationViewer parentViewer = (ClassificationViewer) getViewer();

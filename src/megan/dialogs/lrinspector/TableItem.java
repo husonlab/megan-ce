@@ -59,7 +59,7 @@ public class TableItem {
         setPercentCoverage(percentCoverage);
     }
 
-    private void setReadName(String value) {
+    public void setReadName(String value) {
         readNameProperty().set(value);
     }
 
@@ -67,12 +67,12 @@ public class TableItem {
         return readNameProperty().get();
     }
 
-    private StringProperty readNameProperty() {
+    public StringProperty readNameProperty() {
         if (readName == null) readName = new SimpleStringProperty(this, "readName");
         return readName;
     }
 
-    private void setReadSequence(String value) {
+    public void setReadSequence(String value) {
         readSequenceProperty().set(value);
     }
 
@@ -80,12 +80,12 @@ public class TableItem {
         return readSequenceProperty().get();
     }
 
-    private StringProperty readSequenceProperty() {
+    public StringProperty readSequenceProperty() {
         if (readSequence == null) readSequence = new SimpleStringProperty(this, "readSequence");
         return readSequence;
     }
 
-    private void setReadLength(Integer value) {
+    public void setReadLength(Integer value) {
         readLengthProperty().set(value);
     }
 
@@ -93,13 +93,13 @@ public class TableItem {
         return readLengthProperty().get();
     }
 
-    private IntegerProperty readLengthProperty() {
+    public IntegerProperty readLengthProperty() {
         if (readLength == null) readLength = new SimpleIntegerProperty(this, "readLength");
         return readLength;
     }
 
 
-    private void setClassId(Integer value) {
+    public void setClassId(Integer value) {
         classIdProperty().set(value);
     }
 
@@ -107,38 +107,38 @@ public class TableItem {
         return classIdProperty().get();
     }
 
-    private IntegerProperty classIdProperty() {
+    public IntegerProperty classIdProperty() {
         if (classId == null) classId = new SimpleIntegerProperty(this, "classId");
         return classId;
     }
 
-    private void setClassName(String value) {
+    public void setClassName(String value) {
         classNameProperty().set(value);
     }
 
-    private String getClassName() {
+    public String getClassName() {
         return classNameProperty().get();
     }
 
-    private StringProperty classNameProperty() {
+    public StringProperty classNameProperty() {
         if (className == null) className = new SimpleStringProperty(this, "className");
         return className;
     }
 
-    private void setHits(Integer value) {
+    public void setHits(Integer value) {
         hitsProperty().set(value);
     }
 
-    private Integer getHits() {
+    public Integer getHits() {
         return hitsProperty().get();
     }
 
-    private IntegerProperty hitsProperty() {
+    public IntegerProperty hitsProperty() {
         if (hits == null) hits = new SimpleIntegerProperty(this, "hits");
         return hits;
     }
 
-    private void setPercentCoverage(Integer value) {
+    public void setPercentCoverage(Integer value) {
         percentCoverageProperty().set(value);
     }
 
@@ -146,7 +146,7 @@ public class TableItem {
         return percentCoverageProperty().get();
     }
 
-    private IntegerProperty percentCoverageProperty() {
+    public IntegerProperty percentCoverageProperty() {
         if (percentCoverage == null) percentCoverage = new SimpleIntegerProperty(this, "percentCoverage");
         return percentCoverage;
     }
@@ -155,12 +155,12 @@ public class TableItem {
         return paneProperty().get();
     }
 
-    private ObjectProperty<ReadLayoutPane> paneProperty() {
+    public ObjectProperty<ReadLayoutPane> paneProperty() {
         if (pane == null) pane = new SimpleObjectProperty<>(this, "pane");
         return pane;
     }
 
-    private void setPane(ReadLayoutPane pane) {
+    public void setPane(ReadLayoutPane pane) {
         paneProperty().set(pane);
     }
 

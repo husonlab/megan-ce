@@ -139,6 +139,7 @@ public class MeganProperties {
 
         ProgramProperties.put("GTDBUseLCA",true);
         ProgramProperties.put(TAXONOMY_VIEWERS,new String[]{"Taxonomy","GTDB"});
+        //ProgramProperties.put(TAXONOMY_VIEWERS,new String[]{"Taxonomy"});
 
         ReadMagnitudeParser.setEnabled(ProgramProperties.get("allow-read-weights", false));
         ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));

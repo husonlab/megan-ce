@@ -25,6 +25,7 @@ import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.interval.Interval;
+import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -36,6 +37,7 @@ import megan.main.Megan6;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -71,7 +73,7 @@ public class AAdderBuild {
     /**
      * run the program
      */
-    private void run(String[] args) throws CanceledException, IOException, UsageException {
+    private void run(String[] args) throws CanceledException, IOException, UsageException, SQLException {
         final ArgsOptions options = new ArgsOptions(args, this, "Build the index for AAdd");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -82,6 +84,8 @@ public class AAdderBuild {
         final String indexDirectory = options.getOptionMandatory("-d", "index", "Index directory", "");
 
         options.comment("Classification mapping");
+        final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
+
 
         final HashMap<String, String> class2AccessionFile = new HashMap<>();
 
@@ -95,11 +99,22 @@ public class AAdderBuild {
         final boolean lookInside = options.getOption("-ex", "extraStrict", "When given an input directory, look inside every input file to check that it is indeed in GFF3 format", false);
         options.done();
 
+        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+        if (mapDBClassifications.size() > 0 && Basic.hasPositiveLengthValue(class2AccessionFile))
+            throw new UsageException("Illegal to use both --mapDB and ---acc2... options");
+
+        if (mapDBClassifications.size() > 0)
+            ClassificationManager.setMeganMapDBFile(mapDBFile);
+
         // setup the gff file:
         setupGFFFiles(gffFiles, lookInside);
 
         // setup gene item creator, in particular accession mapping
-        final GeneItemCreator creator = setupCreator(acc2TaxaFile, class2AccessionFile);
+        final GeneItemCreator creator;
+        if(mapDBFile.length()>0)
+            creator=setupCreator(mapDBFile);
+        else
+            creator=setupCreator(acc2TaxaFile, class2AccessionFile);
 
         // obtains the gene annotations:
         Map<String, ArrayList<Interval<GeneItem>>> dnaId2list = computeAnnotations(creator, gffFiles);
@@ -129,6 +144,16 @@ public class AAdderBuild {
                     System.err.println(String.format("Found: %,d", gffFiles.size()));
             }
         }
+    }
+
+    public static GeneItemCreator setupCreator(String mapDBFile) throws IOException, SQLException {
+        final AccessAccessionMappingDatabase database=new AccessAccessionMappingDatabase(mapDBFile);
+        final ArrayList<String> classificationNames=new ArrayList<>();
+        for(String cName:ClassificationManager.getAllSupportedClassifications()) {
+            if(database.getSize(cName)>0)
+                classificationNames.add(cName);
+        }
+        return new GeneItemCreator(classificationNames.toArray(new String[0]),database);
     }
 
     /**
@@ -219,7 +244,6 @@ public class AAdderBuild {
             for (String cName : creator.cNames()) {
                 dbxWriter.writeString(cName);
             }
-
 
             for (String dnaId : dnaIdOrder) {
                 idxWriter.writeString(dnaId);

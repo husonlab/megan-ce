@@ -20,10 +20,12 @@
 
 package megan.genes;
 
+import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +38,7 @@ public class GeneItemCreator {
     private final String[] cNames;
     private final Map<String, Integer> rank;
     private final IdMapper[] idMappers;
+    private final AccessAccessionMappingDatabase database;
     private final String[] shortTags;
 
     /**
@@ -46,6 +49,29 @@ public class GeneItemCreator {
     public GeneItemCreator(String[] cNames, IdMapper[] idMappers) {
         this.cNames = cNames.clone();
         this.idMappers = idMappers;
+        this.database=null;
+
+        rank = new HashMap<>();
+        for (int i = 0; i < this.cNames.length; i++) {
+            rank.put(this.cNames[i], i);
+        }
+        this.shortTags = new String[this.cNames.length];
+        for (int i = 0; i < cNames.length; i++) {
+            shortTags[i] = Classification.createShortTag(cNames[i]);
+        }
+    }
+
+    /**
+     * constructor
+     *
+     * @param cNames
+     */
+    public GeneItemCreator(String[] cNames,AccessAccessionMappingDatabase database) {
+        this.cNames = cNames.clone();
+        this.database=database;
+
+        this.idMappers = null;
+
         rank = new HashMap<>();
         for (int i = 0; i < this.cNames.length; i++) {
             rank.put(this.cNames[i], i);
@@ -83,9 +109,14 @@ public class GeneItemCreator {
      * @param ids
      * @throws IOException
      */
-    public void map(String accession, int[] ids) throws IOException {
+    public void map(String accession, int[] ids) throws IOException, SQLException {
+        if(idMappers!=null)
         for (int i = 0; i < idMappers.length; i++) {
             ids[i] = idMappers[i].getAccessionMap().get(accession);
+        } else {
+            for(int i=0;i<cNames.length;i++) {
+                ids[i]=database.getValue(cNames[i],accession);
+            }
         }
     }
 

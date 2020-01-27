@@ -26,6 +26,7 @@ import megan.io.OutputWriter;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.sql.SQLException;
 
 /**
  * a gene item
@@ -49,7 +50,10 @@ public class GeneItem {
 
     public void setProteinId(byte[] proteinId) throws IOException {
         this.proteinId = proteinId;
-        creator.map(Basic.toString(proteinId), ids);
+        try {
+            creator.map(Basic.toString(proteinId), ids);
+        } catch (SQLException ignored) {
+        }
     }
 
     public int getId(String classificationName) {

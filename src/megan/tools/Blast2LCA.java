@@ -218,7 +218,7 @@ public class Blast2LCA {
                                 }
 
                                 ActiveMatches.compute(minScore, topPercent, maxExpected, minPercentIdentity, readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-                                w.write(readBlock.getReadName() + "; ;" + TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, showTaxonIds, showRank, useOfficialRanksOnly) + "\n");
+                                w.write(readBlock.getReadName() + "; ;" + TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, showTaxonIds, showRank, useOfficialRanksOnly, true) + "\n");
                                 totalOut++;
                                 progressListener.setProgress(it.getProgress());
                             }

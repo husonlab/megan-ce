@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * Created by huson on 1/13/16.
  */
 public class ExportStamp {
-    private static final String[] ranks =
+    public static final String[] ranks =
             {TaxonomicLevels.Domain,
                     TaxonomicLevels.Phylum,
                     TaxonomicLevels.Class,
@@ -52,7 +52,8 @@ public class ExportStamp {
                     TaxonomicLevels.Genus,
                     TaxonomicLevels.Species
             };
-    private static final char[] letters = {'k', 'p', 'c', 'o', 'f', 'g', 's'};
+
+    public static final char[] letters = {'k', 'p', 'c', 'o', 'f', 'g', 's'};
 
     /**
      * apply the exporter

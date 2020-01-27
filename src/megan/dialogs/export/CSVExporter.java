@@ -85,9 +85,11 @@ public class CSVExporter {
             }
 
              */
+            formats.add("readName_to_" + shortName + "PathKPCOFGS");
 
             if (shortName.equals("taxon")) {
                 formats.add("readName_to_taxonMatches");
+                formats.add("readName_to_alignedBases");
                 formats.add("readName_to_frameShiftsPerKb");
             }
 
@@ -156,8 +158,8 @@ public class CSVExporter {
             count = CSVExportTaxonomy.exportTaxon2TotalLength(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("taxonName_to_percent") || format.equalsIgnoreCase("taxonId_to_percent") || format.equalsIgnoreCase("taxonRank_to_percent") || format.equalsIgnoreCase("taxonPath_to_percent")) {
             count = CSVExportFViewer.exportName2Percent(format, dir.getMainViewer(), file, separator, true, progressListener);
-        } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")) {
-            // disabled: || format.equalsIgnoreCase("readName_to_taxonPathPercent")) {
+        } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")
+            || format.equalsIgnoreCase("readName_to_taxonPathKPCOFGS")) {
             count = CSVExportTaxonomy.exportReadName2Taxon(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_taxonMatches")) {
             count = CSVExportTaxonomy.exportReadName2Matches(format, dir, file, separator, progressListener);
@@ -167,6 +169,8 @@ public class CSVExporter {
             count = CSVExportHeaders.exportReadName2Headers(dir.getMainViewer(), file, separator, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_frameShiftsPerKb")) {
             count = CSVExportFrameShiftsPerKb.apply(dir.getMainViewer(), file, separator, dir.getDocument().isLongReads(), progressListener);
+        } else if (format.equalsIgnoreCase("readName_to_alignedBases")) {
+            count = CSVExportAlignedBases.apply(dir.getMainViewer(), file, separator, dir.getDocument().isLongReads(), progressListener);
         } else if (format.equalsIgnoreCase("reference_to_readName")) {
             count = CSVExportReference2Read.exportReference2ReadName(dir.getMainViewer(), file, separator, progressListener);
         } else if (Basic.endsWithIgnoreCase(format, "Name_to_count") || Basic.endsWithIgnoreCase(format, "Path_to_count")) {

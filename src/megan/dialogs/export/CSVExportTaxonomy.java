@@ -174,7 +174,7 @@ class CSVExportTaxonomy {
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            final boolean wantMatches = (format.endsWith("PathPercent")); // PathPercent has been disabled
+            final boolean wantMatches = (format.endsWith("PathKPCOFGS")); // PathPercent has been disabled
 
             for (int taxonId : taxonIds) {
                 final Set<Long> seen = new HashSet<>();
@@ -412,7 +412,9 @@ class CSVExportTaxonomy {
         if (format.startsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId));
+            return Basic.getInCleanQuotes(getPath(taxonId,false));
+        else if (format.startsWith("taxonPathKPCOFGS"))
+            return getPath(taxonId,true);
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
@@ -433,13 +435,14 @@ class CSVExportTaxonomy {
         if (format.endsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId));
+            return Basic.getInCleanQuotes(getPath(taxonId,false));
+        else if (format.endsWith("taxonPathKPCOFGS"))
+            return getPath(taxonId,true);
         else if (format.endsWith("taxonPathPercent")) // // PathPercent has been disabled
             return getPathPercent(dir, readBlock);
         else
             return "" + taxonId;
     }
-
 
     /**
      * gets the full path to the named taxon
@@ -447,13 +450,22 @@ class CSVExportTaxonomy {
      * @param taxonId
      * @return
      */
-    private static String getPath(int taxonId) {
+    private static String getPath(int taxonId,boolean majorRanksWithPrefixes) {
         final List<String> path = new LinkedList<>();
         Node v = TaxonomyData.getTree().getANode(taxonId);
         while (v != null && v.getInfo() != null) {
             taxonId = (Integer) v.getInfo();
-            String name = TaxonomyData.getName2IdMap().get(taxonId);
-            path.add(name);
+            if(!majorRanksWithPrefixes) {
+                String name = TaxonomyData.getName2IdMap().get(taxonId);
+                path.add(name);
+            }
+            else {
+                final int rank=TaxonomyData.getTaxonomicRank(taxonId);
+                if(TaxonomicLevels.isMajorRank(rank)) {
+                    String name = TaxonomicLevels.getOneLetterCodeFromRank(rank)+"__"+TaxonomyData.getName2IdMap().get(taxonId);
+                    path.add(name);
+                }
+            }
             if (v.getInDegree() > 0)
                 v = v.getFirstInEdge().getSource();
             else
@@ -479,6 +491,6 @@ class CSVExportTaxonomy {
         final Document doc = dir.getDocument();
         final BitSet activeMatchesForTaxa = new BitSet();
         ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
-        return TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, false, true, true);
+        return TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, false, true, true, true);
     }
 }

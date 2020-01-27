@@ -206,7 +206,7 @@ public class TaxonomyData {
             {
                 Node w = v;
                 while (true) {
-                    if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get(w.getInfo())))
+                    if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get((Integer)w.getInfo())))
                         path.push(w);
                     if (w.getInDegree() > 0)
                         w = w.getFirstInEdge().getSource();
@@ -220,7 +220,7 @@ public class TaxonomyData {
                 Integer id = (Integer) w.getInfo();
                 if (id != null) {
                     if (majorRanksOnly) {
-                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get(w.getInfo()));
+                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer)w.getInfo()));
 
                         final char key = Character.toUpperCase(letters.charAt(0));
                         while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {

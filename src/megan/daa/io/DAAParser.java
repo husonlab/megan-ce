@@ -21,6 +21,8 @@
 package megan.daa.io;
 
 import jloda.util.Basic;
+import jloda.util.ByteInputBuffer;
+import jloda.util.ByteOutputBuffer;
 import jloda.util.Pair;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;

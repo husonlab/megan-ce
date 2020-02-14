@@ -20,6 +20,8 @@
 
 package megan.daa.io;
 
+import jloda.util.ByteOutputBuffer;
+
 import static megan.daa.io.Translator.FORWARD_SHIFT_CODE;
 import static megan.daa.io.Translator.REVERSE_SHIFT_CODE;
 

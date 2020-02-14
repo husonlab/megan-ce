@@ -20,6 +20,8 @@
 
 package megan.daa.io;
 
+import jloda.util.ByteInputBuffer;
+
 import java.util.ArrayList;
 
 /**

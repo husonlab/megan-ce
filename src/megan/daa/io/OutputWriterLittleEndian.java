@@ -22,6 +22,7 @@ package megan.daa.io;
 
 
 import jloda.util.Basic;
+import jloda.util.ByteInputBuffer;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileOutputStreamAdapter;
 import megan.io.IOutput;

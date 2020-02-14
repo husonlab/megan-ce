@@ -20,6 +20,7 @@
 package megan.daa.connector;
 
 import jloda.util.Basic;
+import jloda.util.ByteOutputBuffer;
 import megan.classification.IdParser;
 import megan.daa.io.*;
 import megan.data.IMatchBlock;

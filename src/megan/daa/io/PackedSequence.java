@@ -20,6 +20,8 @@
 
 package megan.daa.io;
 
+import jloda.util.ByteInputBuffer;
+
 /**
  * Packed sequence
  * Daniel Huson, 8.2015

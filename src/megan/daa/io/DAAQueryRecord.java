@@ -20,6 +20,9 @@
 
 package megan.daa.io;
 
+import jloda.util.ByteInputBuffer;
+import jloda.util.ByteOutputBuffer;
+
 /**
  * DAA query record
  * Daniel Huson, 8.2015

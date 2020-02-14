@@ -21,6 +21,7 @@
 package megan.daa.io;
 
 
+import jloda.util.ByteInputBuffer;
 import megan.io.ByteByteInt;
 import megan.io.IInput;
 import megan.io.IInputReader;

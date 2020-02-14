@@ -105,8 +105,9 @@ public class DAAModifier {
                 if (index >= header.getLastDefinedBlockIndex()) {
                     long newSize = header.getLocationOfBlockInFile(index);
                     if (newSize > 0) {
-                        RandomAccessFile raf = new RandomAccessFile(header.getFileName(), "rw");
-                        raf.setLength(newSize);
+                        try(RandomAccessFile raf = new RandomAccessFile(header.getFileName(), "rw")) {
+                            raf.setLength(newSize);
+                        }
                     }
                 } else
                     throw new IOException("Can't replace block, not last");

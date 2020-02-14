@@ -83,9 +83,11 @@ public class AAdderBuild {
         final List<String> gffFiles = options.getOptionMandatory("-igff", "inputGFF", "Input GFF3 files or directory (.gz ok)", new LinkedList<>());
         final String indexDirectory = options.getOptionMandatory("-d", "index", "Index directory", "");
 
-        options.comment("Classification mapping");
+        options.comment("Classification mapping:");
+
         final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
 
+        options.comment("Deprecated classification mapping options:");
 
         final HashMap<String, String> class2AccessionFile = new HashMap<>();
 

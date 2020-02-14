@@ -146,8 +146,11 @@ public class BLAST2RMA6 {
 
         options.comment("Classification support:");
 
-        final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
+
+        options.comment("Deprecated classification support options:");
+
+        final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accessopm-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
 
@@ -188,7 +191,7 @@ public class BLAST2RMA6 {
         }
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if (mapDBClassifications.size() > 0 && (class2AccessionFile.size() > 0 || class2SynonymsFile.size() > 0))
+        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
         if (mapDBClassifications.size() > 0)

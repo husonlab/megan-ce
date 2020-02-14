@@ -863,16 +863,35 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             currentSeries = list.toArray(new String[0]);
         }
 
-        for (String className : currentClasses) {
-            final Map<String, Double> series2value = new HashMap<>();
+        if(true)
+        {
+            final Map<String, HashMap<String,Double>> class2series2value = new HashMap<>();
             for (String series : currentSeries) {
-                final double total = getChartData().getTotalForSeries(series);
-                series2value.put(series, (total > 0 ? (getChartData().getValueAsDouble(series, className) / total) : 0));
+                for (String className : currentClasses) {
+                    HashMap<String, Double> series2value = class2series2value.computeIfAbsent(className, k -> new HashMap<>());
+                    final double total = getChartData().getTotalForSeries(series);
+                    series2value.put(series,total > 0 ? getChartData().getValueAsDouble(series, className) / total : total);
+                }
             }
-            final Statistics statistics = new Statistics(series2value.values());
-            for (String series : currentSeries) {
-                final double value = series2value.get(series);
-                zScores.put(series, className, statistics.getZScore(value));
+            for (String className : currentClasses) {
+                final Statistics statistics = new Statistics(class2series2value.get(className).values());
+                for(String series:currentSeries) {
+                    zScores.put(series, className, statistics.getZScore(class2series2value.get(className).get(series)));
+                }
+            }
+        }
+        else {
+            for (String className : currentClasses) {
+                final Map<String, Double> series2value = new HashMap<>();
+                for (String series : currentSeries) {
+                    final double total = getChartData().getTotalForSeries(series);
+                    series2value.put(series, (total > 0 ? (getChartData().getValueAsDouble(series, className) / total) : 0));
+                }
+                final Statistics statistics = new Statistics(series2value.values());
+                for (String series : currentSeries) {
+                    final double value = series2value.get(series);
+                    zScores.put(series, className, statistics.getZScore(value));
+                }
             }
         }
 

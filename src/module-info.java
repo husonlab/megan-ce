@@ -1,6 +1,7 @@
 module megan {
     requires transitive jloda;
     requires transitive javafx.swing;
+    requires transitive javafx.controls;
     requires transitive javafx.fxml;
     requires transitive com.install4j.runtime;
     requires transitive java.sql;

@@ -144,9 +144,9 @@ public class DefaultPlot2DData implements IPlot2DData {
         LinkedList<Pair<Number, Number>> list = new LinkedList<>(dataXY);
         series2DataXY.put(series, list);
         double minX = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
+        double maxX = Double.NEGATIVE_INFINITY;
         double minY = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
+        double maxY = Double.NEGATIVE_INFINITY;
 
         for (Pair<Number, Number> pair : list) {
             double x = pair.get1().doubleValue();

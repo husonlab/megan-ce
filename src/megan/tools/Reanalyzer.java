@@ -74,7 +74,7 @@ public class Reanalyzer {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Reanalyze DAA and RMA files");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String[] inputFiles = options.getOptionMandatory("-i", "input", "Input  file (stdin ok)", new String[0]);

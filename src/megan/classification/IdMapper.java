@@ -22,12 +22,10 @@ package megan.classification;
 import jloda.util.*;
 import megan.accessiondb.AccessAccessionAdapter;
 import megan.classification.data.*;
+import megan.main.MeganProperties;
 
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * tracks mapping files for a named type of classification
@@ -80,7 +78,7 @@ public class IdMapper {
         this.fullTree = fullTree;
         this.name2IdMap = name2IdMap;
 
-        algorithm = (ProgramProperties.get(cName + "UseLCAToParse", name.equals(Classification.Taxonomy)) ? IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
+        algorithm = (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])).contains(name) ?IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
     }
 
     /**

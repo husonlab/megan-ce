@@ -71,14 +71,11 @@ public class DataProcessor {
             final int numberOfClassifications = doc.getActiveViewers().size();
             final String[] cNames = doc.getActiveViewers().toArray(new String[numberOfClassifications]);
             final boolean[] useLCAForClassification = new boolean[numberOfClassifications];
-            final int taxonomyIndex = Basic.getIndex(Classification.Taxonomy, cNames);
-            for (int c = 0; c < numberOfClassifications; c++)
-                if (c == taxonomyIndex) {
+            for (int c = 0; c < numberOfClassifications; c++) {
+                ClassificationManager.ensureTreeIsLoaded(cNames[c]);
+                if (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(cNames[c]))
                     useLCAForClassification[c] = true;
-                } else {
-                    ClassificationManager.ensureTreeIsLoaded(cNames[c]);
-                    useLCAForClassification[c] = ProgramProperties.get(cNames[c] + "UseLCA", cNames[c].equals(Classification.Taxonomy));
-                }
+            }
 
             final UpdateItemList updateList = new UpdateItemList(numberOfClassifications);
 
@@ -104,25 +101,28 @@ public class DataProcessor {
 
             final boolean usingLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads);
 
+            int ncbiTaxonomyId = -1;
+
             final IAssignmentAlgorithmCreator[] assignmentAlgorithmCreators = new IAssignmentAlgorithmCreator[numberOfClassifications];
             for (int c = 0; c < numberOfClassifications; c++) {
-                if (Basic.contains(ProgramProperties.get(MeganProperties.TAXONOMY_VIEWERS,new String[0]),cNames[c])) {
+                if (cNames[c].equals(Classification.Taxonomy))
+                    ncbiTaxonomyId = c;
+
+                if (useLCAForClassification[c]) {
                     switch (doc.getLcaAlgorithm()) {
                         default:
                         case naive:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCAForTaxonomyCreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case weighted:
                             // we are assuming that taxonomy classification is The taxonomy classification
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(cNames[c],doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(doc);
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(cNames[c],doc);
                             break;
                     }
-                } else if (useLCAForClassification[c])
-                    assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c]);
-                else if (usingLongReadAlgorithm)
+                } else if (usingLongReadAlgorithm)
                     assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
                 else
                     assignmentAlgorithmCreators[c] = new AssignmentUsingBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
@@ -227,56 +227,59 @@ public class DataProcessor {
                         numberOfReadsWithLowComplexity += readBlock.getReadWeight();
 
                     int taxId = 0;
-                    if (taxonomyIndex >= 0) {
-                        final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
-                        ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
 
-                        if (referenceCoverFilter != null)
-                            referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
+                    for (int c = 0; c < numberOfClassifications; c++) {
+                        classIds[0]=0;
+                        if (c==1 && useLCAForClassification[c]) {
+                            final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
+                            ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForTaxa);
 
-                        if (minPercentReadToCover == 0 || ensureCovered(minPercentReadToCover, readBlock, activeMatchesForTaxa, intervals)) {
-                            if (doMatePairs && readBlock.getMateUId() > 0) {
-                                mateReader.seek(readBlock.getMateUId());
-                                mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForTaxa, readBlock);
-                                final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
-                                ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, Classification.Taxonomy, activeMatchesForMateTaxa);
-                                if (referenceCoverFilter != null)
-                                    referenceCoverFilter.applyFilter(readBlock, activeMatchesForMateTaxa);
+                            if (referenceCoverFilter != null)
+                                referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
 
-                                int mateTaxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                                if (mateTaxId > 0) {
-                                    if (taxId <= 0) {
-                                        taxId = mateTaxId;
-                                        numberAssignedViaMatePair++;
-                                    } else {
-                                        int bothId = assignmentAlgorithm[taxonomyIndex].getLCA(taxId, mateTaxId);
-                                        if (bothId == taxId)
-                                            taxId = mateTaxId;
-                                            // else if(bothId==taxId) taxId=taxId; // i.e, no change
-                                        else if (bothId != mateTaxId)
-                                            taxId = bothId;
+                            if (minPercentReadToCover == 0 || ensureCovered(minPercentReadToCover, readBlock, activeMatchesForTaxa, intervals)) {
+                                if (doMatePairs && readBlock.getMateUId() > 0) {
+                                    mateReader.seek(readBlock.getMateUId());
+                                    mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
+                                    classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
+                                    final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
+                                    ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, cNames[c], activeMatchesForMateTaxa);
+                                    if (referenceCoverFilter != null)
+                                        referenceCoverFilter.applyFilter(readBlock, activeMatchesForMateTaxa);
+
+                                    int mateTaxId = assignmentAlgorithm[c].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                                    if (mateTaxId > 0) {
+                                        if (classIds[c] <= 0) {
+                                            classIds[c] = mateTaxId;
+                                            if (c == ncbiTaxonomyId)
+                                                numberAssignedViaMatePair++;
+                                        } else {
+                                            int bothId = assignmentAlgorithm[c].getLCA(classIds[c], mateTaxId);
+                                            if (bothId == classIds[c])
+                                                classIds[c] = mateTaxId;
+                                                // else if(bothId==taxId) taxId=taxId; // i.e, no change
+                                            else if (bothId != mateTaxId)
+                                                classIds[c] = bothId;
+                                        }
                                     }
+                                } else {
+                                    classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
                                 }
-                            } else {
-                                taxId = assignmentAlgorithm[taxonomyIndex].computeId(activeMatchesForTaxa, readBlock);
                             }
-                        } else
-                            numberOfReadsFailedCoveredThreshold++;
-                        if (contaminantManager != null) {
-                            if ((usingLongReadAlgorithm && contaminantManager.isContaminantLongRead(taxId)) || (!usingLongReadAlgorithm && contaminantManager.isContaminantShortRead(readBlock, activeMatchesForTaxa)))
-                                taxId = IdMapper.CONTAMINANTS_ID;
                         }
+                        if (c == ncbiTaxonomyId)
+                            taxId = classIds[c];
                     }
 
                     for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
+
                         if (taxId == IdMapper.CONTAMINANTS_ID) {
                             id = IdMapper.CONTAMINANTS_ID;
                         } else if (hasLowComplexity) {
                             id = IdMapper.LOW_COMPLEXITY_ID;
-                        } else if (c == taxonomyIndex) {
-                            id = taxId;
+                        } else if (useLCAForClassification[c]) {
+                            id =classIds[c];
                         } else {
                             final BitSet activeMatchesForFunction = new BitSet(); // pre filter matches for taxon identification
                             ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForFunction);
@@ -362,7 +365,7 @@ public class DataProcessor {
             for (int c = 0; c < numberOfClassifications; c++) {
                 final String cName = cNames[c];
                 // todo: need to remove assignments to disabled ids when not using the LCA algorithm
-                if (useLCAForClassification[c] && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
+                if (useLCAForClassification[c] && countAssigned[c]>0 && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
                     progress.setTasks("Binning reads", "Applying min-support & disabled filter to " + cName + "...");
                     final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(c), doc.getMinSupport(), progress);
                     final Map<Integer, Integer> changes = minSupportFilter.apply();

@@ -27,9 +27,14 @@ import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.importblast.ImportBlastDialog;
+import megan.main.MeganProperties;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Set whether to use LCA for specific fViewer
@@ -48,7 +53,13 @@ public class SetUseLCACommand extends CommandBase implements ICommand {
         final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase(";");
 
-        ProgramProperties.put(cName + "UseLCA", useLCA);
+        final Set<String> set= new HashSet<>(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])));
+        if(useLCA)
+            set.add(cName);
+        else
+            set.remove(cName);
+
+        ProgramProperties.put(MeganProperties.TAXONOMIC_CLASSIFICATIONS,set.toArray(new String[0]));
 
         if (getParent() instanceof ImportBlastDialog) {
             final IdMapper mapper = ClassificationManager.get(cName, true).getIdMapper();

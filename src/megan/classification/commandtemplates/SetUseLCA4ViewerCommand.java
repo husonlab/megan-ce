@@ -24,9 +24,11 @@ import jloda.swing.commands.ICheckBoxCommand;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
+import megan.main.MeganProperties;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 
 /**
  * use LCS for the given fViewer and mapType
@@ -40,7 +42,7 @@ public class SetUseLCA4ViewerCommand extends CommandBase implements ICheckBoxCom
     }
 
     public boolean isSelected() {
-        return ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy));
+        return Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])).contains(cName);
     }
 
     /**

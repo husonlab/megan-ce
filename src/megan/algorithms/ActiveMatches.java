@@ -19,6 +19,7 @@
  */
 package megan.algorithms;
 
+import megan.classification.Classification;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
@@ -42,14 +43,14 @@ public class ActiveMatches {
      * @param activeMatchesForClassification
      * @throws IOException
      */
-    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String classificationName, BitSet activeMatchesForClassification) {
+    public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String cName, BitSet activeMatchesForClassification) {
         activeMatchesForClassification.clear();
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+            if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(cName,matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
                     (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
-                if (classificationName == null || matchBlock.getId(classificationName) > 0)
+                if (cName == null || matchBlock.getId(cName) > 0)
                     activeMatchesForClassification.set(i);
             }
         }

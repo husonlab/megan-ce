@@ -89,9 +89,20 @@ public class TaxonomyData {
      * @param taxonId
      * @return true, if disabled
      */
+    public static boolean isTaxonDisabled(String cName,Integer taxonId) {
+        return cName.equals(Classification.Taxonomy) && (taxonId == null || (taxonId > 0 && taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId)));
+    }
+
+    /**
+     * is this taxon, or one of its ancestors, disabled? Taxa that are disabled are ignored by LCA algorithm
+     *
+     * @param taxonId
+     * @return true, if disabled
+     */
     public static boolean isTaxonDisabled(Integer taxonId) {
         return taxonId == null || (taxonId > 0 && taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId));
     }
+
 
     /**
      * get all currently disabled taxa. Note that any taxon below a disabled taxon is also considered disabled

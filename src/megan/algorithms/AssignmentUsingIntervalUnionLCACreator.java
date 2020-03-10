@@ -29,6 +29,7 @@ import megan.core.Document;
  * Daniel Huson, 4.2017
  */
 public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgorithmCreator {
+    private final String cName;
     private final Document document;
 
     /**
@@ -36,12 +37,13 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      *
      * @param document
      */
-    public AssignmentUsingIntervalUnionLCACreator(Document document) {
+    public AssignmentUsingIntervalUnionLCACreator(String cName,Document document) {
+        this.cName=cName;
         this.document = document;
         if (ProgramProperties.get("use-segment-lca", false))
-            System.err.println("Using 'segment-LCA' algorithm for binning: " + Classification.Taxonomy);
+            System.err.println("Using 'segment-LCA' algorithm for binning: " + cName);
         else {
-            System.err.println(String.format("Using 'Interval-Union-LCA' algorithm (%.1f %%) for binning: %s", document.getLcaCoveragePercent(), Classification.Taxonomy));
+            System.err.println(String.format("Using 'Interval-Union-LCA' algorithm (%.1f %%) for binning: %s", document.getLcaCoveragePercent(), cName));
             //System.err.println("(setprop CheckForChimeras=true; to turn on experimental chimeric read identification)");
         }
     }
@@ -53,6 +55,6 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingIntervalUnionLCA(document);
+        return new AssignmentUsingIntervalUnionLCA(cName,document);
     }
 }

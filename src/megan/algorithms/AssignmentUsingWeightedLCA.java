@@ -23,7 +23,6 @@ package megan.algorithms;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
@@ -45,7 +44,6 @@ import java.util.Map;
  */
 public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     private final String cName;
-    private final boolean cNameIsTaxonomy;
     private final ClassificationFullTree fullTree;
     private final Name2IdMap name2IdMap;
     private final IdMapper idMapper;
@@ -78,7 +76,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         fullTree = ClassificationManager.get(cName, true).getFullTree();
         idMapper = ClassificationManager.get(cName, true).getIdMapper();
         name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
-        cNameIsTaxonomy = (cName.equals(Classification.Taxonomy));
         this.refId2weight = refId2Weight;
         this.ref2weight = ref2weight;
         this.taxon2SpeciesMapping = taxon2SpeciesMapping;
@@ -110,7 +107,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             // collect the addresses of all non-disabled taxa:
             for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                int taxId = matchBlock.getId(cName);
 
                 if (taxId > 0) {
                     if (!allowBelowSpeciesAssignment) {
@@ -149,7 +146,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
             if (arrayLength == 0 && hasDisabledMatches) {
                 for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
                     final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-                    int taxId = (cNameIsTaxonomy ? matchBlock.getTaxonId() : matchBlock.getId(cName));
+                    int taxId = matchBlock.getId(cName);
                     if (taxId > 0) {
                         if (!allowBelowSpeciesAssignment) {
                             taxId = taxon2SpeciesMapping.getSpeciesOrReturnTaxonId(taxId);
@@ -185,7 +182,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
                 int id = fullTree.getAddress2Id(address);
                 if (id > 0) {
                     if (useIdentityFilter) {
-                        return AssignmentUsingLCAForTaxonomy.adjustByPercentIdentity(id, activeMatches, readBlock, fullTree, name2IdMap);
+                        return AssignmentUsingLCA.adjustByPercentIdentity(id, activeMatches, readBlock, fullTree, name2IdMap);
                     }
                     if (allowBelowSpeciesAssignment)
                         return id;

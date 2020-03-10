@@ -25,7 +25,6 @@ import jloda.graph.Node;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.IntIntMap;
@@ -37,36 +36,20 @@ import megan.viewer.TaxonomicLevels;
  * Daniel Huson, May 2017
  */
 public class Taxon2SpeciesMapping {
-    private static final Object syncObject = new Object();
-    private static Taxon2SpeciesMapping instance;
 
     private final IntIntMap taxId2SpeciesId;
 
-    public static Taxon2SpeciesMapping getInstance(final ProgressListener progress) throws CanceledException {
-        if (instance == null) {
-            synchronized (syncObject) {
-                if (instance == null) {
-                    instance = new Taxon2SpeciesMapping(progress);
-
-                }
-            }
-        }
-        return instance;
-    }
-
-    private Taxon2SpeciesMapping(final ProgressListener progress) throws CanceledException {
-        ClassificationFullTree fullTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
-        final Name2IdMap name2IdMap = ClassificationManager.get(Classification.Taxonomy, true).getName2IdMap();
+   public Taxon2SpeciesMapping(final String cName,final ProgressListener progress) throws CanceledException {
+        ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
+        final Name2IdMap name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
         taxId2SpeciesId = new IntIntMap(fullTree.getNumberOfNodes(), 0.999f);
 
-        progress.setSubtask("Computing taxon-to-species map");
+        progress.setSubtask("Computing taxon-to-species map for '"+cName+"'");
         progress.setMaximum(fullTree.getNumberOfNodes());
         progress.setProgress(0);
         computeTax2SpeciesMapRec(fullTree.getRoot(), 0, taxId2SpeciesId, name2IdMap, progress);
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
-
-
     }
 
     /**
@@ -80,6 +63,7 @@ public class Taxon2SpeciesMapping {
         final int taxId = (Integer) v.getInfo();
 
         if (speciesId == 0) {
+            // todo: prepare for taxonomies that use other ids
             if (name2IdMap.getRank(taxId) == TaxonomicLevels.getSpeciesId()) {
                 speciesId = taxId;
                 taxId2SpeciesId.put(taxId, speciesId);

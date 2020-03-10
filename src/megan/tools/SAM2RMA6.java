@@ -88,7 +88,7 @@ public class SAM2RMA6 {
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
@@ -148,8 +148,6 @@ public class SAM2RMA6 {
             if (tags.length() > 0)
                 ProgramProperties.put(cName + "Tags", tags);
             ProgramProperties.put(cName + "ParseIds", tags.length() > 0);
-            // final boolean useLCA = options.getOption("-l_" + cName.toLowerCase(), "lca" + cName.toLowerCase(), "Use LCA for assigning to '" + cName + "', alternative: best hit", ProgramProperties.get(cName + "UseLCA", cName.equals(Classification.Taxonomy)));
-            // ProgramProperties.put(cName + "UseLCA", useLCA);
         }
 
         options.comment(ArgsOptions.OTHER);

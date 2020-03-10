@@ -80,7 +80,7 @@ public class ExtractBiome {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Extracts the total, core or rare biome from a MEGAN comparison file");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output:");

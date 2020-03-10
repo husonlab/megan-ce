@@ -24,7 +24,6 @@ import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
-import megan.classification.Classification;
 import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.connector.MatchBlockDAA;
@@ -54,17 +53,18 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
     private final boolean useIdentityFilter;
     private final float percentToCover;
 
-    private final String cName = Classification.Taxonomy;
+    private final String cName;
 
     private final Taxon2SpeciesMapping taxon2SpeciesMapping;
 
     /**
      * constructor
      */
-    public AssignmentUsingWeightedLCACreator(final Document doc, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
+    public AssignmentUsingWeightedLCACreator(final String cName,final Document doc, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
+        this.cName=cName;
         this.useIdentityFilter = usingIdentityFilter;
 
-        this.taxon2SpeciesMapping = Taxon2SpeciesMapping.getInstance(doc.getProgressListener());
+        this.taxon2SpeciesMapping = new Taxon2SpeciesMapping(cName,doc.getProgressListener());
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 
@@ -119,7 +119,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                         int speciesId = 0; // assigns weights at the species level
                         for (int i1 = activeMatches.nextSetBit(0); i1 != -1; i1 = activeMatches.nextSetBit(i1 + 1)) {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(i1);
-                            int id = matchBlock.getTaxonId();
+                            int id = matchBlock.getId(cName);
                             if (id > 0) {
                                 id = taxon2SpeciesMapping.getSpecies(id); // todo: there is a potential problem here: what if the match is to a higher rank and that is incompatible with the majority species?
                                 if (id > 0) {
@@ -136,7 +136,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
                         if (speciesId > 0) {
                             for (int i1 = activeMatches.nextSetBit(0); i1 != -1; i1 = activeMatches.nextSetBit(i1 + 1)) {
                                 final IMatchBlock matchBlock = readBlock.getMatchBlock(i1);
-                                int id = matchBlock.getTaxonId();
+                                int id = matchBlock.getId(cName);
                                 if (id > 0) {
                                     id = taxon2SpeciesMapping.getSpecies(id);
                                     if (id == speciesId) {

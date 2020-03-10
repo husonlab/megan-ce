@@ -1,5 +1,5 @@
 /*
- * AssignmentUsingLCACreator.java Copyright (C) 2020. Daniel H. Huson
+ * AssignmentUsingLCAForTaxonomyCreator.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -21,20 +21,27 @@
 package megan.algorithms;
 
 /**
- * create a LCA assignment algorithm
+ * create an LCA assignment algorithm for taxonomy
  * Daniel Huson, 3.2016
  */
 public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
     private final String cName;
+    private final boolean usePercentIdentityFilter;
+    private final float percentToCover;
 
     /**
      * constructor
      *
      * @param cName
      */
-    public AssignmentUsingLCACreator(String cName) {
+    public AssignmentUsingLCACreator(String cName, boolean usePercentIdentityFilter, float percentToCover) {
         this.cName = cName;
-        System.err.println("Using LCA algorithm for binning: " + cName);
+        this.usePercentIdentityFilter = usePercentIdentityFilter;
+        this.percentToCover = percentToCover;
+        if (percentToCover == 100)
+            System.err.println(String.format("Using 'Naive LCA' algorithm for binning: %s", cName));
+        else
+            System.err.println(String.format("Using 'Naive LCA' algorithm (%.1f %%) for binning: %s", percentToCover, cName));
     }
 
     /**
@@ -44,6 +51,6 @@ public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingLCA(cName);
+        return new AssignmentUsingLCA(cName, usePercentIdentityFilter, percentToCover);
     }
 }

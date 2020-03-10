@@ -65,7 +65,7 @@ public class ApplyLCA {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA to taxon-ids");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String inputFile = options.getOptionMandatory("-i", "input", "Input  file (stdin ok)", "");
@@ -74,7 +74,7 @@ public class ApplyLCA {
         final boolean firstLineIsHeader = options.getOption("-H", "hasHeaderLine", "Has header line", true);
         options.done();
 
-        final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy);
+        final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy,false,0);
 
         final Writer w = new BufferedWriter(outputFile.equalsIgnoreCase("stdout") ? new OutputStreamWriter(System.out) : new FileWriter(outputFile));
         try (BufferedReader r = new BufferedReader(inputFile.equals("stdin") ? new InputStreamReader(System.in) : new FileReader(inputFile))) {

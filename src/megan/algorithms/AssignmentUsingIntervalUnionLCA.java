@@ -38,6 +38,7 @@ import java.util.*;
  * Created by huson on 4/12/17.
  */
 public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
+    private final String cName;
     private final float weightedPercentFactor;
     private final float topPercent;
     private final ClassificationFullTree fullTree;
@@ -53,10 +54,11 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      */
-    public AssignmentUsingIntervalUnionLCA(Document doc) {
+    public AssignmentUsingIntervalUnionLCA(final String cName,Document doc) {
+        this.cName=cName;
         this.weightedPercentFactor = Math.min(1f, doc.getLcaCoveragePercent() / 100.0f);
         this.topPercent = doc.getTopPercent();
-        this.fullTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
+        this.fullTree = ClassificationManager.get(cName, true).getFullTree();
 
         comparator = createComparator();
     }
@@ -105,8 +107,8 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
         int numberOfEvents = 0;
         for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-            int taxonId = matchBlock.getTaxonId();
-            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(taxonId)) {
+            int taxonId = matchBlock.getId(cName);
+            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName,taxonId)) {
                 if (numberOfEvents + 1 >= events.length) { // need enough to add two new events
                     StartStopEvent[] tmp = new StartStopEvent[2 * events.length];
                     System.arraycopy(events, 0, tmp, 0, numberOfEvents);
@@ -140,9 +142,9 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                         taxon2BestScore.clear();
                         for (int m = currentMatches.nextSetBit(0); m != -1; m = currentMatches.nextSetBit(m + 1)) {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
-                            final int taxonId = matchBlock.getTaxonId(); // store the best score for each taxon
+                            final int taxonId = matchBlock.getId(cName); // store the best score for each taxon
 
-                            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(taxonId)) {
+                            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName,taxonId)) {
                                 Float bestScore = taxon2BestScore.get(taxonId);
                                 if (bestScore == null)
                                     taxon2BestScore.put(taxonId, matchBlock.getBitScore());

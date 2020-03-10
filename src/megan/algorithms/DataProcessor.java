@@ -228,47 +228,49 @@ public class DataProcessor {
 
                     int taxId = 0;
 
-                    for (int c = 0; c < numberOfClassifications; c++) {
-                        classIds[0]=0;
-                        if (c==1 && useLCAForClassification[c]) {
-                            final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
-                            ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForTaxa);
+                    if(!hasLowComplexity) {
+                        for (int c = 0; c < numberOfClassifications; c++) {
+                            classIds[c] = 0;
+                            if (useLCAForClassification[c]) {
+                                final BitSet activeMatchesForTaxa = new BitSet(); // pre filter matches for taxon identification
+                                ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForTaxa);
 
-                            if (referenceCoverFilter != null)
-                                referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
+                                if (referenceCoverFilter != null)
+                                    referenceCoverFilter.applyFilter(readBlock, activeMatchesForTaxa);
 
-                            if (minPercentReadToCover == 0 || ensureCovered(minPercentReadToCover, readBlock, activeMatchesForTaxa, intervals)) {
-                                if (doMatePairs && readBlock.getMateUId() > 0) {
-                                    mateReader.seek(readBlock.getMateUId());
-                                    mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
-                                    classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
-                                    final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
-                                    ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, cNames[c], activeMatchesForMateTaxa);
-                                    if (referenceCoverFilter != null)
-                                        referenceCoverFilter.applyFilter(readBlock, activeMatchesForMateTaxa);
+                                if (minPercentReadToCover == 0 || ensureCovered(minPercentReadToCover, readBlock, activeMatchesForTaxa, intervals)) {
+                                    if (doMatePairs && readBlock.getMateUId() > 0) {
+                                        mateReader.seek(readBlock.getMateUId());
+                                        mateReadBlock.read(mateReader, false, true, doc.getMinScore(), doc.getMaxExpected());
+                                        classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
+                                        final BitSet activeMatchesForMateTaxa = new BitSet(); // pre filter matches for mate-based taxon identification
+                                        ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), mateReadBlock, cNames[c], activeMatchesForMateTaxa);
+                                        if (referenceCoverFilter != null)
+                                            referenceCoverFilter.applyFilter(readBlock, activeMatchesForMateTaxa);
 
-                                    int mateTaxId = assignmentAlgorithm[c].computeId(activeMatchesForMateTaxa, mateReadBlock);
-                                    if (mateTaxId > 0) {
-                                        if (classIds[c] <= 0) {
-                                            classIds[c] = mateTaxId;
-                                            if (c == ncbiTaxonomyId)
-                                                numberAssignedViaMatePair++;
-                                        } else {
-                                            int bothId = assignmentAlgorithm[c].getLCA(classIds[c], mateTaxId);
-                                            if (bothId == classIds[c])
+                                        int mateTaxId = assignmentAlgorithm[c].computeId(activeMatchesForMateTaxa, mateReadBlock);
+                                        if (mateTaxId > 0) {
+                                            if (classIds[c] <= 0) {
                                                 classIds[c] = mateTaxId;
-                                                // else if(bothId==taxId) taxId=taxId; // i.e, no change
-                                            else if (bothId != mateTaxId)
-                                                classIds[c] = bothId;
+                                                if (c == ncbiTaxonomyId)
+                                                    numberAssignedViaMatePair++;
+                                            } else {
+                                                int bothId = assignmentAlgorithm[c].getLCA(classIds[c], mateTaxId);
+                                                if (bothId == classIds[c])
+                                                    classIds[c] = mateTaxId;
+                                                    // else if(bothId==taxId) taxId=taxId; // i.e, no change
+                                                else if (bothId != mateTaxId)
+                                                    classIds[c] = bothId;
+                                            }
                                         }
+                                    } else {
+                                        classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
                                     }
-                                } else {
-                                    classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
                                 }
                             }
+                            if (c == ncbiTaxonomyId)
+                                taxId = classIds[c];
                         }
-                        if (c == ncbiTaxonomyId)
-                            taxId = classIds[c];
                     }
 
                     for (int c = 0; c < numberOfClassifications; c++) {

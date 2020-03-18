@@ -34,6 +34,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
+import megan.main.CheckForUpdate;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
@@ -45,6 +46,7 @@ import java.awt.event.ActionEvent;
  */
 public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
     private final static String NAME = "Check For Updates...";
+
 
     /**
      * get the name to be used as a menu label
@@ -70,7 +72,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
      * @return icon
      */
     public ImageIcon getIcon() {
-        return ResourceManager.getIcon("sun/About16.gif");
+        return ResourceManager.getIcon("sun/Refresh16.gif");
     }
 
     /**
@@ -91,50 +93,7 @@ public class ShowCheckForUpdateCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
-
-        final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
-
-        final UpdateDescriptor updateDescriptor;
-        try {
-            updateDescriptor = UpdateChecker.getUpdateDescriptor("http://software-ab.informatik.uni-tuebingen.de/download/megan6/updates.xml", applicationDisplayMode);
-        } catch (Exception e) {
-            Basic.caught(e);
-            new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);
-            //NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
-            return;
-        }
-        if (updateDescriptor.getEntries().length > 0) {
-            if (!ProgramProperties.isUseGUI()) {
-                final UpdateDescriptorEntry entry = updateDescriptor.getEntries()[0];
-                /*
-                NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
-                        + "\nPlease download from: http://www-ab.informatik.uni-tuebingen.de/data/software/megan6/download/");
-                        */
-
-                new InfoMessage(MainViewer.getLastActiveFrame(), "New version available: " + entry.getNewVersion()
-                        + "\nPlease download from: \"http://software-ab.informatik.uni-tuebingen.de/download/megan6", true);
-                return;
-            }
-        } else {
-            new InfoMessage(MainViewer.getLastActiveFrame(), "Installed version is up-to-date", true);
-
-            //NotificationsInSwing.showInformation(MainViewer.getLastActiveFrame(), "Installed version is up-to-date");
-            return;
-        }
-
-
-        // This will return immediately if you call it from the EDT,
-// otherwise it will block until the installer application exits
-
-        ApplicationLauncher.launchApplicationInProcess("1691242905", null, new ApplicationLauncher.Callback() {
-            public void exited(int exitValue) {
-                //TODO add your code here (not invoked on event dispatch thread)
-            }
-
-            public void prepareShutdown() {
-                ProgramProperties.store();
-            }
-        }, ApplicationLauncher.WindowMode.FRAME, null);
+        CheckForUpdate.apply();
     }
 
     /**

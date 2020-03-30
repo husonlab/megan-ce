@@ -98,7 +98,6 @@ public class ReadExtractorTool {
             throw new UsageException("Must specific either option --classification or --all");
         }
 
-
         final boolean useStdout = (outputFiles.size() == 1 && outputFiles.get(0).equals("-"));
 
         if (outputFiles.size() == 1 && Basic.isDirectory(outputFiles.get(0))) {

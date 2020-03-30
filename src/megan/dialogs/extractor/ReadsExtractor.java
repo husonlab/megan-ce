@@ -76,7 +76,7 @@ public class ReadsExtractor {
 
         BufferedWriter w;
         if (useOneOutputFile) {
-            w = new BufferedWriter(fileName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName))) : new FileWriter(fileName));
+            w=new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
 
         } else {
             w = null;
@@ -109,7 +109,7 @@ public class ReadsExtractor {
                                     w.close();
                                 final String cName = classId2Name.get(classId);
                                 final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
-                                w = new BufferedWriter(fName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fName))) : new FileWriter(fName));
+                                w=new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fName)));
                             }
                             first = false;
                         }

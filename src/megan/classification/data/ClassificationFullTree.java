@@ -246,6 +246,7 @@ public class ClassificationFullTree extends PhyloTree {
             if (v.getInDegree() > 1)
                 System.err.println("Reticulate node: " + id + " (currently not supported)");
         }
+        if(false)
         System.err.println(String.format("Induced tree has %,d of %,d nodes", +keep.size(), getNumberOfNodes()));
 
         if (collapsedIds.size() > 0) { // ensure that set of collapsed ids is only as large as necessary for given data

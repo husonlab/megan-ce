@@ -29,7 +29,6 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
-import java.util.concurrent.Executors;
 
 /**
  * check for update
@@ -37,30 +36,39 @@ import java.util.concurrent.Executors;
  */
 public class CheckForUpdate {
     public static String programURL="http://software-ab.informatik.uni-tuebingen.de/download/megan6";
-    public static String applicationId="1691242905";
+    public static String updaterApplicationId ="1691242905";
     public static String updates="updates.xml";
 
     /**
      * check for update, download and install, if present
      */
     public static void apply() {
+        final boolean verbose=ProgramProperties.get("verbose-check-for-update",false);
          try {
             final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
-            final UpdateDescriptor updateDescriptor = UpdateChecker.getUpdateDescriptor(programURL +"/"+updates, applicationDisplayMode);
+            final String url=programURL +"/"+updates;
+            if(verbose)
+                System.err.println("URL: "+url);
+
+            final UpdateDescriptor updateDescriptor = UpdateChecker.getUpdateDescriptor(url, applicationDisplayMode);
             final UpdateDescriptorEntry possibleUpdate = updateDescriptor.getPossibleUpdateEntry();
+
+             if(verbose)
+                 System.err.println("Possible update: "+possibleUpdate);
             if (possibleUpdate == null) {
                 NotificationsInSwing.showInformation("Installed version is up-to-date");
             } else {
-                if (!ProgramProperties.isUseGUI()) {
-                    NotificationsInSwing.showInformation("New version available: "+ programURL+"/"+possibleUpdate.getFileName());
-                } else {
+                System.err.println("New version available: "+ programURL+"/"+possibleUpdate.getFileName());
+                if (ProgramProperties.isUseGUI()) {
                     final Runnable runnable = () -> {
-                        System.err.println("New version: "+ programURL+"/"+possibleUpdate.getFileName());
+                        if(verbose)
+                            System.err.println("Launching : update installer (id="+ updaterApplicationId +")...");
 
-                        ApplicationLauncher.launchApplicationInProcess(applicationId, null,
+                        ApplicationLauncher.launchApplicationInProcess(updaterApplicationId, null,
                                 new ApplicationLauncher.Callback() {
                                     public void exited(int exitValue) {
-                                        //System.err.println("Exit value: " + exitValue);
+                                        if(verbose)
+                                            System.err.println("Exit value: " + exitValue);
                                     }
 
                                     public void prepareShutdown() {

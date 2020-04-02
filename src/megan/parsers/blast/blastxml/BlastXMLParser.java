@@ -216,12 +216,21 @@ public class BlastXMLParser extends DefaultHandler {
                             int queryEnd = (int) (hsp.queryFrame >= 0 ? hsp.queryTo : hsp.queryFrom);
 
                             final StringBuilder buf = new StringBuilder();
-                            if (hit.accession != null)
-                                buf.append(hit.accession).append(" ");
-                            if (hit.id != null)
-                                buf.append(hit.id).append(" ");
                             if (hit.def != null)
                                 buf.append(hit.def);
+                            if (hit.id != null) {
+                                if(buf.length()>0)
+                                    buf.append(" ");
+                                buf.append(hit.id).append(" ");
+                            }
+                            if (hit.accession != null) {
+                                if(buf.length()>0)
+                                    buf.append(" ");
+                                buf.append("acc|").append(hit.accession);
+                            }
+
+                            if(buf.length()>0)
+                                buf.append(" ");
 
                             match.setSamLine(makeSAM(iteration.queryDef, buf.toString().replaceAll("\\s+", " "), hit.len, hsp.bitScore, (float) hsp.eValue,
                                     (int) hsp.score, hsp.identity, hsp.queryFrame, queryStart, queryEnd, (int) hsp.hitFrom, (int) hsp.hitTo, hsp.qSeq, hsp.hSeq));

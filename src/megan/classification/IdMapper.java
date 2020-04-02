@@ -207,6 +207,7 @@ public class IdMapper {
         if (accessionMap instanceof AccessAccessionAdapter) {
             final IdMapper copy = new IdMapper(cName, fullTree, name2IdMap);
             copy.setActiveMap(MapType.MeganMapDB, true);
+            copy.setUseTextParsing(isUseTextParsing());
             try {
                 copy.loadMappingFile(((AccessAccessionAdapter) accessionMap).getMappingDBFile(), MapType.MeganMapDB, false, new ProgressSilent());
             } catch (CanceledException e) {

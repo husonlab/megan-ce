@@ -128,6 +128,7 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
             reader.seek(uid);
         } else
             uid = reader.getPosition();
+
         readLine.read(reader);
         if (readLine.getReadUid() != uid)
             throw new IOException("getReadUid(): doesn't match expected: " + uid);

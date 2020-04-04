@@ -35,6 +35,8 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.rma3.RMA3File;
+import megan.rma6.RMA6File;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
 import megan.viewer.SyncDataTableAndTaxonomy;
@@ -933,9 +935,22 @@ public class Document {
      */
     public BlastMode getBlastMode() {
         BlastMode blastMode = dataTable.getBlastMode();
-        if (blastMode == BlastMode.Unknown && meganFile.isDAAFile()) {
-            dataTable.setBlastMode(0, DAAParser.getBlastMode(meganFile.getFileName()));
+        if (blastMode == BlastMode.Unknown) {
+            if (meganFile.isDAAFile()) {
+                dataTable.setBlastMode(0, DAAParser.getBlastMode(meganFile.getFileName()));
+            } else if (meganFile.isRMA3File()) {
+                try (final RMA3File rma3File = new RMA3File(meganFile.getFileName(), "r")) {
+                    dataTable.setBlastMode(0, rma3File.getBlastMode());
+                } catch (IOException ignored) {
+                }
+            } else if (meganFile.isRMA6File()) {
+                try (final RMA6File rma6File = new RMA6File(meganFile.getFileName(), "r")) {
+                    dataTable.setBlastMode(0, rma6File.getHeaderSectionRMA6().getBlastMode());
+                } catch (IOException ignored) {
+                }
+            }
         }
+
         if (blastMode == BlastMode.Unknown && !meganFile.isMeganSummaryFile() && meganFile.hasDataConnector() && !meganFile.isMeganServerFile()) {
             try (IReadBlockIterator it = meganFile.getConnector().getAllReadsIterator(1, 10, true, true)) {
                 while (it.hasNext()) {

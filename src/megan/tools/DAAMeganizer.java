@@ -126,7 +126,8 @@ public class DAAMeganizer {
 
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-        final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover", longReads ? 80 : Document.DEFAULT_LCA_COVERAGE_PERCENT);
+        final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover",
+                lcaAlgorithm== Document.LCAAlgorithm.longReads? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm== Document.LCAAlgorithm.weighted?Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA:Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
 
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));

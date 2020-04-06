@@ -473,7 +473,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     }
 
     protected double getLCACoveragePercent() {
-        double value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
+        double value = Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
         try {
             value = Basic.parseDouble(lcaCoveragePercentField.getText());
         } catch (NumberFormatException e) {

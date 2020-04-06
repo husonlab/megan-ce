@@ -185,7 +185,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (!ProgramProperties.isUseGUI())
                     executeImmediately("update;");
             } catch (Exception ex) {
-                // NotificationsInSwing.showError(viewer.getFrame(), "Open file failed: " + ex);
+                //NotificationsInSwing.showError(viewer.getFrame(), "Open file failed: " + ex);
                 doc.getMeganFile().setFileName(null);
                 if (doc.neverOpenedReads && ProjectManager.getNumberOfProjects() > 1) {
                     System.err.println("Closing window...");

@@ -126,7 +126,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("lcaAlgorithm=");
             lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(np.getWordRespectCase());
         }
-        float lcaCoveragePercent = Document.DEFAULT_LCA_COVERAGE_PERCENT;
+        float lcaCoveragePercent = Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
         if (np.peekMatchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent")) {
             np.matchAnyTokenIgnoreCase("lcaCoveragePercent weightedLCAPercent");
             np.matchIgnoreCase("=");

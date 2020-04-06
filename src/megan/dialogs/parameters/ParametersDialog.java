@@ -353,7 +353,6 @@ public class ParametersDialog extends JDialog {
                 }
             });
 
-
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
@@ -365,9 +364,11 @@ public class ParametersDialog extends JDialog {
                 if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                     if (getLcaAlgorithm().equals(Document.LCAAlgorithm.naive))
-                        lcaCoveragePercent.setText("100");
+                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS);
+                    else if (getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted))
+                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA);
                     else
-                        lcaCoveragePercent.setText("80");
+                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS);
                 }
                 if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
@@ -754,7 +755,7 @@ public class ParametersDialog extends JDialog {
     }
 
     private float getLCACoveragePercent() {
-        float value = Document.DEFAULT_LCA_COVERAGE_PERCENT;
+        float value = Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
         try {
             value = Basic.parseFloat(lcaCoveragePercent.getText());
         } catch (NumberFormatException e) {

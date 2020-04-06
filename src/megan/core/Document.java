@@ -104,7 +104,10 @@ public class Document {
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.naive;
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.longReads;
 
-    public final static float DEFAULT_LCA_COVERAGE_PERCENT = 100f;
+    public final static float DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS = 100;
+    public final static float DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA = 80;
+    public final static float DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS = 51;
+
     public final static float DEFAULT_MINCOMPLEXITY = 0f;
     public final static float DEFAULT_MIN_PERCENT_READ_TO_COVER = 0f;
     public final static float DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER = 0f;
@@ -125,7 +128,7 @@ public class Document {
     private int minSupport = DEFAULT_MINSUPPORT; // min summary count that a node needs to make it into the induced taxonomy
 
     private LCAAlgorithm lcaAlgorithm = DEFAULT_LCA_ALGORITHM_SHORT_READS;
-    private float lcaCoveragePercent = DEFAULT_LCA_COVERAGE_PERCENT;
+    private float lcaCoveragePercent = DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
@@ -179,7 +182,7 @@ public class Document {
             else
                 return name;
         };
-        setLcaCoveragePercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_LCA_COVERAGE_PERCENT));
+        setLcaCoveragePercent((float) ProgramProperties.get("WeightedLCAPercent", DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
     }
 
     public Director getDir() {

@@ -35,6 +35,7 @@ import jloda.util.Basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class TestMyTableView extends Application {
 
@@ -58,13 +59,13 @@ public class TestMyTableView extends Application {
         root.setCenter(tableView);
 
         final MyTableViewSearcher searcher = new MyTableViewSearcher(tableView);
-        final FindToolBar findToolBar = new FindToolBar(searcher);
+        final FindToolBar findToolBar = new FindToolBar(null, searcher);
         root.setTop(findToolBar);
 
 
-        tableView.setAdditionColHeaderMenuItems((col) -> Arrays.asList(new MenuItem("Color samples by attribute '" + col + "'")));
+        tableView.setAdditionColHeaderMenuItems(col -> Collections.singletonList(new MenuItem("Color samples by attribute '" + col + "'")));
 
-        tableView.setAdditionRowHeaderMenuItems((rows) -> {
+        tableView.setAdditionRowHeaderMenuItems(rows -> {
             final MenuItem moveSamplesUp = new MenuItem("Move Samples Up");
             moveSamplesUp.setOnAction((e) ->
             {

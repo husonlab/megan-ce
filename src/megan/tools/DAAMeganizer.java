@@ -39,9 +39,7 @@ import megan.util.DAAFileFilter;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * prepares a DAA file for use with MEGAN
@@ -127,7 +125,7 @@ public class DAAMeganizer {
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover",
-                lcaAlgorithm== Document.LCAAlgorithm.longReads? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm== Document.LCAAlgorithm.weighted?Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA:Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
+                lcaAlgorithm == Document.LCAAlgorithm.longReads ? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm == Document.LCAAlgorithm.weighted ? Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA : Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
 
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
                 Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
@@ -137,8 +135,9 @@ public class DAAMeganizer {
         options.comment("Classification support:");
 
         final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
+        final Set<String> selectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
 
-        options.comment("Deprecated classification support options:");
+        options.comment("Deprecated classification support:");
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
 
@@ -156,11 +155,11 @@ public class DAAMeganizer {
                 ProgramProperties.put(cName + "Tags", tags);
             ProgramProperties.put(cName + "ParseIds", tags.length() > 0);
         }
+        ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
+        ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
 
         options.comment(ArgsOptions.OTHER);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p", "threads", "Number of threads", 8));
-        ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
-        ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
         options.done();
 
         final String propertiesFile;
@@ -198,7 +197,8 @@ public class DAAMeganizer {
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+            if ((selectedClassifications.size() == 0 || selectedClassifications.contains(cName))
+                    && (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0))
                 cNames.add(cName);
         }
         if (cNames.size() > 0)

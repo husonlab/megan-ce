@@ -18,8 +18,8 @@
 -->
 	<project name="MEGAN" default="jar" basedir=".">
 
-		<property name="ant.build.javac.source" value="11"/>
-		<property name="ant.build.javac.target" value="11"/>
+		<property name="ant.build.javac.source" value="13"/>
+		<property name="ant.build.javac.target" value="13"/>
 
 		<property name="jfxDir" value="../../javafx/lib"/>
 		<property name="jlodaAntDir" value="../../jloda/antbuild"/>

@@ -19,6 +19,7 @@
  */
 package megan.tools;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
@@ -128,11 +129,10 @@ public class SAM2RMA6 {
 
         options.comment("Classification support:");
 
-        options.comment("Classification support:");
-
         final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
+        final Set<String> selectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
 
-        options.comment("Deprecated classification support options:");
+        options.comment("Deprecated classification support:");
 
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
@@ -150,9 +150,12 @@ public class SAM2RMA6 {
             ProgramProperties.put(cName + "ParseIds", tags.length() > 0);
         }
 
-        options.comment(ArgsOptions.OTHER);
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
+
+        options.comment(ArgsOptions.OTHER);
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p", "threads", "Number of threads", 8));
+
         options.done();
 
         final String propertiesFile;
@@ -188,7 +191,8 @@ public class SAM2RMA6 {
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0)
+            if ((selectedClassifications.size() == 0 || selectedClassifications.contains(cName))
+                    && (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0))
                 cNames.add(cName);
         }
         if (cNames.size() > 0)

@@ -37,7 +37,6 @@ public class SortLastMAFAlignmentsByQuery {
     /**
      * sort last MAF alignments
      *
-     * @param args
      * @throws UsageException
      * @throws java.io.FileNotFoundException
      */
@@ -159,12 +158,7 @@ public class SortLastMAFAlignmentsByQuery {
                             alignments.sort((a, b) -> {
                                 final int scoreA = parseScoreFromA(a[0]);
                                 final int scoreB = parseScoreFromA(b[0]);
-                                if (scoreA > scoreB)
-                                    return -1;
-                                else if (scoreA < scoreB)
-                                    return 1;
-                                else
-                                    return 0;
+                                return Integer.compare(scoreB, scoreA);
                             });
                             for (byte[][] alignment : alignments) {
                                 for (byte[] line : alignment) {

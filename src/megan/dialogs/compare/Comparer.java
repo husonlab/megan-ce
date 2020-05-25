@@ -70,8 +70,6 @@ public class Comparer {
 
     /**
      * add a project to be compared
-     *
-     * @param dir
      */
     public void addDirector(Director dir) {
         dirs.add(dir);
@@ -79,12 +77,8 @@ public class Comparer {
 
     /**
      * compute a comparison
-     *
-     * @param result
-     * @param progressListener
-     * @throws CanceledException
      */
-    public void computeComparison(SampleAttributeTable sampleAttributeTable, final DataTable result, final ProgressListener progressListener) throws IOException, CanceledException {
+    public void computeComparison(SampleAttributeTable sampleAttributeTable, final DataTable result, final ProgressListener progressListener) throws IOException {
         progressListener.setTasks("Comparison", "Initialization");
         progressListener.setMaximum(-1);
 
@@ -132,23 +126,23 @@ public class Comparer {
 
             final boolean useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
 
-            final long newSampleSize;
+            final double newSampleSize;
             {
-                long calculateNewSampleSize = 0;
+                double calculateNewSampleSize = 0;
                 if (useRelative) {
                     for (Director dir : dirs) {
                         final MainViewer mainViewer = dir.getMainViewer();
-                        final long numberOfReads;
+                        final double numberOfReads;
 
                         if (isIgnoreUnassigned())
                             numberOfReads = mainViewer.getTotalAssignedReads();
                         else {
-                            numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
+                            numberOfReads = mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized();
                         }
                         if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
                             calculateNewSampleSize = numberOfReads;
                     }
-                    System.err.println(String.format("Normalizing to: %,d reads per sample",calculateNewSampleSize));
+                    System.err.println(String.format("Normalizing to: %,.0f reads per sample",calculateNewSampleSize));
                 }
                 newSampleSize = calculateNewSampleSize;
             }
@@ -195,14 +189,14 @@ public class Comparer {
 
                             final DataTable table = dir.getDocument().getDataTable();
 
-                            final long numberOfReads;
+                            final double numberOfReads;
 
                             {
                                 final MainViewer mainViewer = dir.getMainViewer();
                                 if (isIgnoreUnassigned())
                                     numberOfReads = mainViewer.getTotalAssignedReads();
                                 else {
-                                    numberOfReads = Math.round(mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized());
+                                    numberOfReads = mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized();
                                 }
                             }
 
@@ -230,7 +224,7 @@ public class Comparer {
                                     }
                                 }
 
-                                final double factor = numberOfReads > 0 ? (double) newSampleSize / (double) numberOfReads : 1;
+                                final double factor = numberOfReads > 0 ? newSampleSize/numberOfReads : 1.0;
 
                                 for (Integer classId : class2countsSrc.keySet()) {
                                     // todo: here we assume that the nohits id is the same for all classifications...
@@ -250,7 +244,7 @@ public class Comparer {
                                         if (count == 0)
                                             countsTarget[pos] = 0;
                                         else if (useRelative) {
-                                            countsTarget[pos] = (int) Math.round(count * factor);
+                                            countsTarget[pos] = (float)(count * factor);
                                             if (countsTarget[pos] == 0 && isKeep1())
                                                 countsTarget[pos] = 1;
                                         } else
@@ -340,9 +334,6 @@ public class Comparer {
     /**
      * modifies given name so that it does not match any of names[0],..,names[pos-1]
      *
-     * @param names
-     * @param pos
-     * @param name
      * @return name or new name
      */
     private String getUniqueName(String[] names, int pos, String name) {
@@ -394,7 +385,6 @@ public class Comparer {
     /**
      * Convenience method: gets the mode encoded in the parameter string
      *
-     * @param parameterString
      * @return mode
      */
     static public COMPARISON_MODE parseMode(String parameterString) {
@@ -416,7 +406,6 @@ public class Comparer {
     /**
      * Convenience method: gets the normalization number encoded in the parameter string
      *
-     * @param parameterString
      * @return number of reads normalized by
      */
     public static int parseNormalizedTo(String parameterString) {
@@ -443,8 +432,6 @@ public class Comparer {
 
     /**
      * set the comparison mode
-     *
-     * @param mode
      */
     private void setMode(COMPARISON_MODE mode) {
         this.mode = mode;

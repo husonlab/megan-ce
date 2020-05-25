@@ -258,7 +258,7 @@ public class IdMapper {
     }
 
     public String[] getIdTags() {
-        if (ProgramProperties.get(cName + "ParseIds", false)) {
+       if (ProgramProperties.get(cName + "ParseIds", false)) {
             return ProgramProperties.get(cName + "Tags", createTags(cName)); // user can override tags using program property
         } else
             return new String[0];

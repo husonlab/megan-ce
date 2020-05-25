@@ -84,7 +84,7 @@ public class SAM2RMA6 {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
@@ -137,6 +137,11 @@ public class SAM2RMA6 {
         final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
+        {
+            final String tags = options.getOption("-t4t" , "tags4taxonomy" , "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
+            ProgramProperties.preset("TaxonomyTags", tags);
+            ProgramProperties.preset("TaxonomyParseIds", tags.length() > 0);
+        }
 
         final HashMap<String, String> class2AccessionFile = new HashMap<>();
         final HashMap<String, String> class2SynonymsFile = new HashMap<>();
@@ -145,13 +150,12 @@ public class SAM2RMA6 {
             class2AccessionFile.put(cName, options.getOption("-a2" + cName.toLowerCase(), "acc2" + cName.toLowerCase(), "Accession-to-" + cName + " mapping file", ""));
             class2SynonymsFile.put(cName, options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", ""));
             final String tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
-            if (tags.length() > 0)
-                ProgramProperties.put(cName + "Tags", tags);
-            ProgramProperties.put(cName + "ParseIds", tags.length() > 0);
+            ProgramProperties.preset(cName + "Tags", tags);
+            ProgramProperties.preset(cName + "ParseIds", tags.length() > 0);
         }
 
-        ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
-        ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
+        ProgramProperties.preset(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
+        ProgramProperties.preset(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
 
         options.comment(ArgsOptions.OTHER);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p", "threads", "Number of threads", 8));
@@ -329,7 +333,7 @@ public class SAM2RMA6 {
      * @param progressListener  @throws CanceledException
      */
     private static void createRMA6FileFromSAM(String creator, String samFile, String queryFile, String rma6FileName, boolean useCompression, Document doc,
-                                              int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
+                                              int maxMatchesPerRead, ProgressListener progressListener) throws IOException, SQLException {
         final RMA6FromBlastCreator rma6Creator =
                 new RMA6FromBlastCreator(creator, BlastFileFormat.SAM, doc.getBlastMode(), new String[]{samFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead);
         rma6Creator.parseFiles(progressListener);

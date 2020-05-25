@@ -139,6 +139,8 @@ public class MeganProperties {
 
         ReadMagnitudeParser.setEnabled(ProgramProperties.get("allow-read-weights", false));
         ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));
+
+        ProgramProperties.addPresets();
     }
 
     /**

@@ -122,7 +122,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 if (isShowValues()) {
                     gc.setColor(Color.DARK_GRAY);
                     gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
-                    gc.drawString(String.format("%.4f", edgeValue.get(e)), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
+                    gc.drawString(Basic.removeTrailingZerosAfterDot(String.format("%.4f", edgeValue.get(e))), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
                 }
             } catch (Exception ex) {
                 Basic.caught(ex);

@@ -186,14 +186,14 @@ public class RarefactionPlot extends ChartViewer {
                         int which = rand.nextInt(numberOfReads);
                         Node v = getIdRec(tree.getRoot(), which, numbering);
                         nodes.add(v);
-                        node2count[r].set(v, node2count[r].getValue(v) + 1);
+                        node2count[r].set(v, node2count[r].get(v) + 1);
                     }
                     progressListener.incrementProgress();
                 }
                 int count = 0;
                 for (int r = 0; r < numberOfReplicates; r++) {
                     for (Node v : nodes) {
-                        if (node2count[r].getValue(v) >= threshold)
+                        if (node2count[r].get(v) >= threshold)
                             count++;
                     }
                 }
@@ -244,7 +244,7 @@ public class RarefactionPlot extends ChartViewer {
     private static Node getIdRec(Node v, int which, NodeIntegerArray counts) {
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             Node w = e.getTarget();
-            if (which <= counts.getValue(w)) {
+            if (which <= counts.get(w)) {
                 return getIdRec(w, which, counts);
             }
         }

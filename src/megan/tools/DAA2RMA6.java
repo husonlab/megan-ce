@@ -176,7 +176,7 @@ public class DAA2RMA6 {
         ProgramProperties.preset(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
 
         options.comment(ArgsOptions.OTHER);
-        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-p", "threads", "Number of threads", 8));
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Number of threads", 8));
 
         options.done();
 

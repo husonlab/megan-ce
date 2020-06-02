@@ -1370,6 +1370,15 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     public void uncollapseAll() {
         getCollapsedIds().clear();
         updateTree();
+
+        /*
+        if(getClassName().equalsIgnoreCase("metacyc"))
+        for(Node node:getTree().nodes()) {
+            if(node.isLeaf()) {
+                System.err.println(getLabel(node)+"\t"+(node.getParent().getInfo()));
+            }
+        }`
+         */
     }
 
     /**

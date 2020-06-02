@@ -41,6 +41,12 @@ public class ReadMagnitudeParser {
      * @return weight or 1
      */
     public static int parseMagnitude(String aLine) {
+        return parseMagnitude(aLine,enabled);
+    }
+        /**
+         * attempt to parse the weight from the info line of a read
+         */
+    public static int parseMagnitude(String aLine,boolean enabled) {
         if (aLine != null) {
             if (underScoreEnabled) {
                 if (!warned) {

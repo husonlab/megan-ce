@@ -59,7 +59,6 @@ public class TaxonomicSegmentation {
                 + " incompatibleFactor=" + Basic.removeTrailingZerosAfterDot("" + incompatibleFactor);
     }
 
-
     /**
      * constructor
      */

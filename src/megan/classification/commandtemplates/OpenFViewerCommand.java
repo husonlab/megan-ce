@@ -130,10 +130,11 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     @Override
     public ImageIcon getIcon() {
         final String iconFile = ClassificationManager.getIconFileName(cName);
-        if (ResourceManager.getImage(iconFile) == null && ResourceManager.getIcon(iconFile) == null) { // no icon file found, build an icon....
-            ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
-        }
-        return ResourceManager.getIcon(iconFile);
+             if (ResourceManager.getImage(iconFile) == null && ResourceManager.getIcon(iconFile,false) == null) { // no icon file found, build an icon....
+                ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
+            }
+            return ResourceManager.getIcon(iconFile);
+
     }
 
     /**
@@ -150,8 +151,8 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
             Graphics2D g = image.createGraphics();
             g.setColor((new JButton()).getBackground());
             g.fillRect(0, 0, 16, 16);
-            g.setFont(new Font("Arial", Font.PLAIN, 15));
-            g.setColor(Color.BLACK);
+            g.setFont(new Font(Font.SERIF, Font.PLAIN, 15));
+            g.setColor(Color.GRAY);
             g.drawString(label.substring(0, 1).toUpperCase(), 1, 13);
             g.dispose();
             setImage(image);
@@ -185,7 +186,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
      */
     @Override
     public boolean isApplicable() {
-        if (ProgramProperties.get("always-allow-open-fviewer", false) || ProgramProperties.get("enable-open-empty-fviewer", false))
+        if (ProgramProperties.get("enable-open-empty-fviewer", false))
             return true;
         final Document doc = ((Director) getDir()).getDocument();
         return doc.getActiveViewers().contains(cName);

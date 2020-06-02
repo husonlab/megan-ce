@@ -54,8 +54,6 @@ public class DAAQueryRecord {
 
     /**
      * parses a buffer
-     *
-     * @param buffer
      */
     public void parseBuffer(ByteInputBuffer buffer) {
         queryLength = buffer.readIntLittleEndian();

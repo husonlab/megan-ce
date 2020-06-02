@@ -147,8 +147,9 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
             bottom.add(new JButton(new AbstractAction("Apply") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    final String prevFile=ProgramProperties.get("SegmentationExportFile",viewer.getDocument().getMeganFile().getFileName());
                     frame.setVisible(false);
-                    final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-%i-%t-segmentation.txt");
+                    final String fileName =Basic.replaceFileSuffix(Basic.getFilePath(prevFile,Basic.getFileNameWithoutPath(viewer.getDocument().getMeganFile().getFileName())), "-%i-%t-segmentation.txt");
                     File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(), new TextFileFilter(), e, "Save segmentation of reads file", ".txt");
 
                     if (file != null) {
@@ -160,6 +161,7 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
                         ProgramProperties.put("SegmentationSwitchPenalty", Basic.parseFloat(switchPenaltyField.getText()));
                         ProgramProperties.put("SegmentationCompatibleFactor", Basic.parseFloat(compatibleFactorField.getText()));
                         ProgramProperties.put("SegmentationIncompatibleFactor", Basic.parseFloat(incompatibleFactorField.getText()));
+                        ProgramProperties.put("SegmentationExportFile",file.getPath());
 
                         execute("export segmentedReads file='" + file.getPath() + "'"
                                 + " rank=" + rankMenu.getSelectedItem()

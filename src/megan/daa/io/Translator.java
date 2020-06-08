@@ -92,10 +92,9 @@ public class Translator {
             }};
 
     public static final byte[] DNA_ALPHABET = "ACGTN".getBytes();
-    public static final byte[] AMINO_ACID_ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*/\\".getBytes(); // last two must be: / and then \
 
-    public static final byte FORWARD_SHIFT_CODE = (byte) (AMINO_ACID_ALPHABET.length - 1); // last letter: backslash
-    public static final byte REVERSE_SHIFT_CODE = (byte) (AMINO_ACID_ALPHABET.length - 2); // second-to-last letter: forward slash
+    public static final byte[] AMINO_ACID_ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*_/\\".getBytes(); // last two must be: / and then \
+    public static final byte[] AMINO_ACID_ALPHABET_PRE_DIAMOND_132="ARNDCQEGHILKMFPSTWYVBJZX*/\\".getBytes(); // last two must be: / and then \
 
     /**
      * get reversed-complemented DNA

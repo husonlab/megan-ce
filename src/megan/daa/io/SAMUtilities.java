@@ -22,8 +22,6 @@ package megan.daa.io;
 
 import jloda.util.ByteOutputBuffer;
 
-import static megan.daa.io.Translator.FORWARD_SHIFT_CODE;
-import static megan.daa.io.Translator.REVERSE_SHIFT_CODE;
 
 /**
  * generates SAM lines
@@ -227,28 +225,6 @@ public class SAMUtilities {
         if (matches > 0) // finish md
             mdBuf.writeString(String.format("%d", matches));
         return new byte[][]{cigarBuf.copyBytes(), alignedQueryBuf.copyBytes(), mdBuf.copyBytes()};
-    }
-
-    /**
-     * compute the aligned query length correction required to accommodate frame shifts
-     *
-     * @param transcript
-     * @return frame shift correction
-     */
-    private static int computeFrameShiftCorrection(PackedTranscript transcript) {
-        int frameShiftCorrection = 0;
-
-        for (CombinedOperation editOp : transcript.gather()) {
-            // compute sequence:
-            if (editOp.getEditOperation() == PackedTranscript.EditOperation.op_substitution) {
-                if (editOp.getLetter() == REVERSE_SHIFT_CODE) {
-                    frameShiftCorrection += 4;
-                } else if (editOp.getLetter() == FORWARD_SHIFT_CODE) {
-                    frameShiftCorrection += 2;
-                }
-            }
-        }
-        return frameShiftCorrection;
     }
 
     /**

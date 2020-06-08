@@ -200,20 +200,16 @@ public class MatchBlockRMA6 implements IMatchBlock {
 
     /**
      * get the ignore status
-     *
-     * @return
-     * @deprecated
      */
+    @Deprecated
     public boolean isIgnore() {
         return false;
     }
 
     /**
      * set the ignore status
-     *
-     * @param ignore
-     * @deprecated
      */
+    @Deprecated
     public void setIgnore(boolean ignore) {
     }
 

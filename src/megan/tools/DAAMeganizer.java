@@ -147,7 +147,7 @@ public class DAAMeganizer {
         {
             final String tags = options.getOption("-t4t" , "tags4taxonomy" , "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
             ProgramProperties.preset("TaxonomyTags", tags);
-            ProgramProperties.preset("TaxonomyParseIds", tags.length() > 0);
+            ProgramProperties.preset("TaxonomyParseIds", tags.equals(""));
         }
 
         final HashMap<String, String> class2AccessionFile = new HashMap<>();
@@ -158,7 +158,7 @@ public class DAAMeganizer {
             class2SynonymsFile.put(cName, options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", ""));
             final String tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
             ProgramProperties.preset(cName + "Tags", tags);
-            ProgramProperties.preset(cName + "ParseIds", tags.length() > 0);
+            ProgramProperties.preset(cName + "ParseIds", tags.equals(""));
         }
         ProgramProperties.preset(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.preset(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
@@ -190,6 +190,9 @@ public class DAAMeganizer {
         if (metaDataFiles.length > 1 && metaDataFiles.length != daaFiles.length) {
             throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
         }
+        
+        if(Basic.notBlank(mapDBFile))
+            Basic.checkFileReadableNonEmpty(mapDBFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
         if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
@@ -201,7 +204,7 @@ public class DAAMeganizer {
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
             if ((selectedClassifications.size() == 0 || selectedClassifications.contains(cName))
-                    && (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0))
+                    && (mapDBClassifications.contains(cName) || Basic.notBlank(class2AccessionFile.get(cName)) || Basic.notBlank(class2SynonymsFile.get(cName))))
                 cNames.add(cName);
         }
         if (cNames.size() > 0)
@@ -215,13 +218,13 @@ public class DAAMeganizer {
             ClassificationManager.get(Classification.Taxonomy, true);
             taxonIdMapper.setUseTextParsing(parseTaxonNames);
 
-            if (mapDBFile.length() > 0) {
+            if (Basic.notBlank(mapDBFile)) {
                 taxonIdMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
             }
-            if (acc2TaxaFile.length() > 0) {
+            if (Basic.notBlank(acc2TaxaFile)) {
                 taxonIdMapper.loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
             }
-            if (synonyms2TaxaFile.length() > 0) {
+            if (Basic.notBlank(synonyms2TaxaFile)) {
                 taxonIdMapper.loadMappingFile(synonyms2TaxaFile, IdMapper.MapType.Synonyms, false, new ProgressPercentage());
             }
 
@@ -232,9 +235,9 @@ public class DAAMeganizer {
 
                 if (mapDBClassifications.contains(cName))
                     idMappers[i].loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
-                if (class2AccessionFile.get(cName).length() > 0)
+                if (Basic.notBlank(class2AccessionFile.get(cName)))
                     idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());
-                if (class2SynonymsFile.get(cName).length() > 0)
+                if (Basic.notBlank(class2SynonymsFile.get(cName)))
                     idMappers[i].loadMappingFile(class2SynonymsFile.get(cName), IdMapper.MapType.Synonyms, false, new ProgressPercentage());
             }
         }

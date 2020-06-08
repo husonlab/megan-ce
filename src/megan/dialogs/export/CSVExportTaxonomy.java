@@ -487,6 +487,7 @@ class CSVExportTaxonomy {
      * @return path
      * @deprecated
      */
+    @Deprecated
     private static String getPathPercent(Director dir, IReadBlock readBlock) {
         final Document doc = dir.getDocument();
         final BitSet activeMatchesForTaxa = new BitSet();

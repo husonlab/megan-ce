@@ -45,9 +45,6 @@ public class CreateAccessionMappingDatabase {
 
     /**
      * creates a new database file at the specified location
-     * WARNING an existing database file with the same name will be deleted and replaced by the new file
-     *
-     * @param databaseFile String like "path/to/database/file/databaseName.db"
      */
     public CreateAccessionMappingDatabase(String databaseFile, String info, boolean overwrite) throws IOException, SQLException {
         this.databaseFile = databaseFile;
@@ -81,27 +78,17 @@ public class CreateAccessionMappingDatabase {
             }
 
             execute("CREATE TABLE info(id TEXT PRIMARY KEY, info_string TEXT, size NUMERIC );");
-
         }
-        execute("INSERT INTO info VALUES ('general', '" + info + "', NULL);");
-    }
 
-    /**
-     * executes a list of commands
-     *
-     * @param commands String[] of complete queries
-     * @throws SQLException if something goes wrong with the database
-     */
-    private void execute(String... commands) throws SQLException {
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile);
-             Statement statement = connection.createStatement()) {
-            for (String q : commands) {
-                statement.execute(q);
-            }
+        if(info!=null) {
+            if(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).size()==0)
+                execute("INSERT INTO info VALUES ('general', '" + info + "', NULL);");
+            else
+                execute("UPDATE info SET info_string='" + info + "' WHERE id='general';");
         }
     }
 
-    /**
+     /**
      * inserts a new classifier into the database (separate table). Merging is done in mergeTables()
      *
      * @param classificationName name of the classifier used in the db
@@ -233,7 +220,7 @@ public class CreateAccessionMappingDatabase {
      */
     private String getTablesAlreadyIncluded() throws SQLException {
         final StringBuilder buf = new StringBuilder();
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile);
+        try (Connection connection = createConnection();
              ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM info WHERE id != 'general';")) {
             while (rs.next()) {
                 final String s = rs.getString("id");
@@ -282,7 +269,7 @@ public class CreateAccessionMappingDatabase {
     private int computeSize(String tableName) throws SQLException {
         int counter = 0;
 
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement();
+        try (Connection connection = createConnection(); Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery("SELECT count(*) AS q FROM " + tableName + ";")) {
             while (rs.next()) {
                 counter = rs.getInt("q"); // todo: is this correct?
@@ -307,7 +294,7 @@ public class CreateAccessionMappingDatabase {
         }
         int count = 0;
 
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile); Statement statement = connection.createStatement()) {
+        try (Connection connection = createConnection(); Statement statement = connection.createStatement()) {
             statement.execute("ALTER TABLE mappings ADD COLUMN " + classificationName + " INTEGER;");
             connection.setAutoCommit(false);
 
@@ -332,4 +319,55 @@ public class CreateAccessionMappingDatabase {
         }
     }
 
+    public Connection createConnection() throws SQLException {
+        return  config.createConnection("jdbc:sqlite:" + this.databaseFile);
+    }
+
+     /**
+     * executes a list of commands
+     *
+     * @param commands String[] of complete queries
+     * @throws SQLException if something goes wrong with the database
+     */
+    public void execute(String... commands) throws SQLException {
+        try(Connection connection=createConnection()) {
+            execute(connection, commands);
+        }
+    }
+
+    /**
+     * executes a list of commands
+     */
+    public static void execute(Connection connection,String... commands) throws SQLException {
+        if(false)
+            System.err.println("execute:\n"+Basic.toString(commands,"\n"));
+        final Statement statement = connection.createStatement();
+        {
+            for (String q : commands) {
+                statement.execute(q);
+            }
+        }
+    }
+
+    /**
+     * generic method for executing queries with results of type String
+     */
+    public  ArrayList<String> executeQueryString(String query, int index) throws SQLException {
+        try(Connection connection=createConnection()) {
+            return executeQueryString(connection,query,index);
+        }
+        }
+
+
+        /**
+         * generic method for executing queries with results of type String
+         */
+    public static ArrayList<String> executeQueryString(Connection connection,String query, int index) throws SQLException {
+        final ResultSet rs = connection.createStatement().executeQuery(query);
+        final ArrayList<String> result = new ArrayList<>();
+        while (rs.next()) {
+            result.add(rs.getString(index));
+        }
+        return result;
+    }
 }

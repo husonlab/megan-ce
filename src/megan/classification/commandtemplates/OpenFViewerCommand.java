@@ -62,23 +62,39 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 
+        final boolean firstOpen;
         final ClassificationViewer classificationViewer;
-        if (((Director) getDir()).getViewerByClassName(cName) != null)
+        if (((Director) getDir()).getViewerByClassName(cName) != null) {
             classificationViewer = (ClassificationViewer) ((Director) getDir()).getViewerByClassName(cName);
+            firstOpen=false;
+        }
         else {
             try {
                 classificationViewer = new ClassificationViewer((Director) getDir(), ClassificationManager.get(cName, true), true);
                 getDir().addViewer(classificationViewer);
+                firstOpen=true;
             } catch (Exception e) {
                 Basic.caught(e);
                 return;
             }
         }
         SwingUtilities.invokeLater(() -> {
-            classificationViewer.updateView(Director.ALL);
             classificationViewer.getFrame().setVisible(true);
             classificationViewer.getFrame().setState(JFrame.NORMAL);
             classificationViewer.getFrame().toFront();
+            classificationViewer.updateView(Director.ALL);
+
+            // aim of this is to prevent windowing opening blank:
+            if(firstOpen)
+            {
+                final Timer timer = new Timer(600, e -> {
+                    SwingUtilities.invokeLater(() -> {
+                        classificationViewer.getDir().execute("zoom what=fit;", classificationViewer.getCommandManager());
+                    });
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
         });
     }
 
@@ -134,7 +150,6 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
                 ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
             }
             return ResourceManager.getIcon(iconFile);
-
     }
 
     /**

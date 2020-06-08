@@ -135,6 +135,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
      * @return array index
      * @deprecated
      */
+    @Deprecated
     private int dataIndex(long index) {
         return (int) (index >>> BITS);
     }
@@ -146,6 +147,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
      * @return pos
      * @deprecated
      */
+    @Deprecated
     private int dataPos(long index) {
         return (int) (index & BIT_MASK);
     }

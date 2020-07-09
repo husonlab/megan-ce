@@ -52,6 +52,7 @@ public class ClassificationManager {
         defaultClassificationsListExcludingNCBITaxonomy.add("SEED");
         defaultClassificationsListExcludingNCBITaxonomy.add("KEGG");
         defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
+        defaultClassificationsListExcludingNCBITaxonomy.add("EC");
         allSupportedClassificationsExcludingNCBITaxonomy.addAll(defaultClassificationsListExcludingNCBITaxonomy);
 
         defaultClassificationsList.addAll(defaultClassificationsListExcludingNCBITaxonomy);

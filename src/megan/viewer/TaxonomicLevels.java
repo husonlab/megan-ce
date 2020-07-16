@@ -69,7 +69,7 @@ public class TaxonomicLevels {
         majorRanks.set(127);
 
         addLevel(1, Kingdom);
-        //majorRanks.set(1);  // don't use this because it will cause kingdoms to filled in
+        majorRanks.set(1);  // don't use this because it will cause kingdoms to be filled in
 
         addLevel(2, Phylum);
         majorRanks.set(2);
@@ -123,7 +123,7 @@ public class TaxonomicLevels {
     }
 
     /**
-     * get ranke from one letter code
+     * get rank from one letter code
      * @param oneLetterLabel
      * @return level
      */

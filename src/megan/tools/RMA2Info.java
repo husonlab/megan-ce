@@ -85,7 +85,7 @@ public class RMA2Info {
 
         options.comment("Input and Output");
         final String daaFile = options.getOptionMandatory("-i", "in", "Input RMA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file or '-' for stdout", "-");
+        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdou");
 
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
@@ -121,7 +121,7 @@ public class RMA2Info {
             throw new IOException("Incorrect file type: " + doc.getMeganFile().getFileType());
         doc.loadMeganFile();
 
-        try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) : new FileWriter(FileDescriptor.out))) {
+        try (Writer outs = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
             if (listGeneralInfo || listMoreStuff) {
                 final IConnector connector = doc.getConnector();
                 outs.write(String.format("# Number of reads:   %,d\n", doc.getNumberOfReads()));
@@ -238,13 +238,13 @@ public class RMA2Info {
                     for (Integer taxId : taxId2count.keySet()) {
                         if (taxId > 0 || !ignoreUnassigned) {
                             if (taxonomyRoot == 0 || isDescendant(Objects.requireNonNull(taxonomyTree), taxId, taxonomyRoot)) {
-                                final String className;
+                                final String classLabel;
                                 if (reportPaths) {
-                                    className = TaxonomyData.getPathOrId(taxId, majorRanksOnly);
+                                    classLabel = TaxonomyData.getPathOrId(taxId, majorRanksOnly);
                                 } else if (name2IdMap == null || name2IdMap.get(taxId) == null)
-                                    className = "" + taxId;
+                                    classLabel = "" + taxId;
                                 else
-                                    className = name2IdMap.get(taxId);
+                                    classLabel = name2IdMap.get(taxId);
                                 if (prefixRank) {
                                     int rank = TaxonomyData.getTaxonomicRank(taxId);
                                     String rankLabel = null;
@@ -254,7 +254,7 @@ public class RMA2Info {
                                         rankLabel = "-";
                                     outs.write(rankLabel.charAt(0) + "\t");
                                 }
-                                outs.write(className + "\t" + taxId2count.get(taxId) + "\n");
+                                outs.write(classLabel + "\t" + taxId2count.get(taxId) + "\n");
                             }
                         }
                     }

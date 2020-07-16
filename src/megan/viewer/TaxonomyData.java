@@ -208,7 +208,7 @@ public class TaxonomyData {
      */
     public static String getPath(int taxId, boolean majorRanksOnly) {
 
-        final String expectedPath = "DPCOFGS";
+        final String expectedPath = "DKPCOFGS";
         int expectedIndex = 0;
 
         final Node v = taxonomyClassification.getFullTree().getANode(taxId);
@@ -236,9 +236,11 @@ public class TaxonomyData {
                         final char key = Character.toUpperCase(letters.charAt(0));
                         while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {
                             char missing = expectedPath.charAt(expectedIndex);
-                            if (buf.length() > 0)
-                                buf.append(" ");
-                            buf.append("[").append(missing == 'D' ? "SK" : missing).append("] unknown;");
+                            if(missing!='K') {
+                                if (buf.length() > 0)
+                                    buf.append(" ");
+                                buf.append("[").append(missing == 'D' ? "SK" : missing).append("] unknown;");
+                            }
                             expectedIndex++;
                         }
                         expectedIndex++;
@@ -283,7 +285,7 @@ public class TaxonomyData {
     public static void setDisabledInternalTaxa(Set<Integer> internal) {
         final Node root = taxonomyClassification.getFullTree().getRoot();
         if (root != null)
-            setDisabledInternalTaxaRec(root, internal, internal.contains(root.getInfo()));
+            setDisabledInternalTaxaRec(root, internal, internal.contains((Integer)root.getInfo()));
     }
 
     /**

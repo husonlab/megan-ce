@@ -80,7 +80,7 @@ public class DAA2Info {
 
         options.comment("Input and Output");
         final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file or '-' for stdout (.gz ok)", "-");
+        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
@@ -117,9 +117,7 @@ public class DAA2Info {
             doc.loadMeganFile();
         }
 
-        try (Writer outs = (outputFile.equals("-") ? new BufferedWriter(new OutputStreamWriter(System.out)) :
-                outputFile.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outputFile))) :
-                        new FileWriter(outputFile))) {
+        try (Writer outs = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
             if (listGeneralInfo || listMoreStuff) {
                 final DAAHeader daaHeader = new DAAHeader(daaFile, true);
                 outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));

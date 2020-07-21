@@ -45,7 +45,7 @@ import megan.chart.ChartColorManager;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
-import megan.fx.FXSwingUtilities;
+import jloda.fx.util.FXSwingUtilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;

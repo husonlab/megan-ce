@@ -16,6 +16,7 @@ module megan {
     requires commons.math3;
     requires contrasts;
     requires colt;
+    requires java.desktop;
 
     exports megan.accessiondb;
     exports megan.algorithms;

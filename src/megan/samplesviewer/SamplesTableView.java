@@ -40,7 +40,7 @@ import jloda.util.Triplet;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.fx.FXSwingUtilities;
+import jloda.fx.util.FXSwingUtilities;
 import megan.fx.PopupMenuFX;
 import megan.util.GraphicsUtilities;
 

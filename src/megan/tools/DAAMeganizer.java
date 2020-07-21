@@ -80,7 +80,6 @@ public class DAAMeganizer {
      */
     private void run(String[] args) throws UsageException, IOException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
-        
 
         final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
         options.setVersion(ProgramProperties.getProgramVersion());

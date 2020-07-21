@@ -83,7 +83,7 @@ public class BLAST2RMA6 {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes MEGAN RMA files from  BLAST (or similar) files");

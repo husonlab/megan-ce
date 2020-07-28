@@ -239,16 +239,13 @@ public class TaxonomyData {
                             if(missing!='K') {
                                 if (buf.length() > 0)
                                     buf.append(" ");
-                                buf.append("[").append(missing == 'D' ? "SK" : missing).append("] unknown;");
+                                buf.append("[").append(missing == 'D' ? "D" : missing).append("] unknown;");
                             }
                             expectedIndex++;
                         }
                         expectedIndex++;
 
-                        if (letters.equals("Domain"))
-                            letters = "SK";
-                        else
-                            letters = letters.substring(0, 1);
+                        letters = letters.substring(0, 1);
 
                         if (buf.length() > 0)
                             buf.append(" ");

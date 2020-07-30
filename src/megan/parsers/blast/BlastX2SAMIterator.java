@@ -206,7 +206,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                                 hasAnotherAlignmentAgainstReference = true; //  also report other matches to same reference
                                 break;
                             } else
-                                pushBackLine(getNextLineStartsWith(NEW_MATCH)); // skip other matches of query to same reference
+                                pushBackLine(getNextLineStartsWith(NEW_QUERY,NEW_MATCH)); // skip other matches to same query
                         } else if (line.startsWith(QUERY)) { // match continues...
                             queryLineTokens = line.split("\\s+");
                             queryBuf.append(queryLineTokens[2]);

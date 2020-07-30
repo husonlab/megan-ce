@@ -322,8 +322,8 @@ public class RMA6FromBlastCreator {
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
 
-        System.err.println(String.format("Total reads:  %,16d", totalNumberOfReads));
-        System.err.println(String.format("Alignments:    %,15d", totalNumberOfMatches));
+        System.err.printf("Total reads:  %,16d%n", totalNumberOfReads);
+        System.err.printf("Alignments:    %,15d%n", totalNumberOfMatches);
 
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
@@ -356,7 +356,7 @@ public class RMA6FromBlastCreator {
                     }
                     progress.setProgress(it.getProgress());
                 }
-                System.err.println(String.format("Number of pairs:%,14d", count));
+                System.err.printf("Number of pairs:%,14d%n", count);
             }
         }
 

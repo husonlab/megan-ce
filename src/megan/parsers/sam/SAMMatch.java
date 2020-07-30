@@ -965,10 +965,17 @@ public class SAMMatch implements megan.rma3.IMatch {
                         gappedReferenceBuffer.append(queryChar);
                         posQuery++;
                         break;
+                    case FF:
+                        gappedQueryBuffer.append("/");
+                        gappedReferenceBuffer.append("-");
+                        break;
+                    case FR:
+                        gappedQueryBuffer.append("\\");
+                        gappedReferenceBuffer.append("-");
+                        break;
                     case X:
                         gappedQueryBuffer.append(queryChar);
                         gappedReferenceBuffer.append("?");
-                        posQuery++;
                         break;
                 }
             }

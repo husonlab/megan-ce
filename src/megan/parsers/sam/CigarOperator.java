@@ -58,18 +58,16 @@ public enum CigarOperator {
     /**
      * Mismatches the reference.
      */
-    X(true, true, 'X');
-
-    // Representation of CigarOperator in BAM file
-    private static final byte OP_M = 0;
-    private static final byte OP_I = 1;
-    private static final byte OP_D = 2;
-    private static final byte OP_N = 3;
-    private static final byte OP_S = 4;
-    private static final byte OP_H = 5;
-    private static final byte OP_P = 6;
-    private static final byte OP_EQ = 7;
-    private static final byte OP_X = 8;
+    X(true, true, 'X'),
+    /**
+     * reverse frame shift
+     */
+    FF(true,false,'/'),
+    /**
+     * forward frame shift
+     */
+    FR(false,true,'\\')
+    ;
 
     private final boolean consumesReadBases;
     private final boolean consumesReferenceBases;
@@ -133,66 +131,12 @@ public enum CigarOperator {
                 return EQ;
             case 'X':
                 return X;
+            case '/':
+                return FF;
+            case '\\':
+                return FR;
             default:
-                throw new IllegalArgumentException("Unrecognized CigarOperator: " + b);
-        }
-    }
-
-    /**
-     * @param i CIGAR operator in binary form as appears in a BAMRecord.
-     * @return CigarOperator enum value corresponding to the given int value.
-     */
-    public static CigarOperator binaryToEnum(final int i) {
-        switch (i) {
-            case OP_M:
-                return M;
-            case OP_I:
-                return I;
-            case OP_D:
-                return D;
-            case OP_N:
-                return N;
-            case OP_S:
-                return S;
-            case OP_H:
-                return H;
-            case OP_P:
-                return P;
-            case OP_EQ:
-                return EQ;
-            case OP_X:
-                return X;
-            default:
-                throw new IllegalArgumentException("Unrecognized CigarOperator: " + i);
-        }
-    }
-
-    /**
-     * @param e CigarOperator enum value.
-     * @return CIGAR operator corresponding to the enum value in binary form as appears in a BAMRecord.
-     */
-    public static int enumToBinary(final CigarOperator e) {
-        switch (e) {
-            case M:
-                return OP_M;
-            case I:
-                return OP_I;
-            case D:
-                return OP_D;
-            case N:
-                return OP_N;
-            case S:
-                return OP_S;
-            case H:
-                return OP_H;
-            case P:
-                return OP_P;
-            case EQ:
-                return OP_EQ;
-            case X:
-                return OP_X;
-            default:
-                throw new IllegalArgumentException("Unrecognized CigarOperator: " + e);
+                throw new IllegalArgumentException("Unrecognized CigarOperator: " + (char)b);
         }
     }
 

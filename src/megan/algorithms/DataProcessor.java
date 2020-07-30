@@ -64,7 +64,7 @@ public class DataProcessor {
             if (doc.isUseContaminantFilter() && doc.getDataTable().hasContaminants()) {
                 contaminantManager = new ContaminantManager();
                 contaminantManager.parseTaxonIdsString(doc.getDataTable().getContaminants());
-                System.err.println(String.format("Using contaminants profile: %,d input, %,d total", contaminantManager.inputSize(), contaminantManager.size()));
+                System.err.printf("Using contaminants profile: %,d input, %,d total%n", contaminantManager.inputSize(), contaminantManager.size());
             } else
                 contaminantManager = null;
 
@@ -97,7 +97,7 @@ public class DataProcessor {
                 intervals = null;
 
             if (minPercentReadToCover > 0)
-                System.err.println(String.format("Minimum percentage of read to be covered: %.1f%%", minPercentReadToCover));
+                System.err.printf("Minimum percentage of read to be covered: %.1f%%%n", minPercentReadToCover);
 
             final boolean usingLongReadAlgorithm = (doc.getLcaAlgorithm() == Document.LCAAlgorithm.longReads);
 

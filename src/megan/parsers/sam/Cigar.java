@@ -237,7 +237,7 @@ public class Cigar {
 
         final Cigar cigar = (Cigar) o;
 
-        return !!cigarElements.equals(cigar.cigarElements);
+        return cigarElements.equals(cigar.cigarElements);
 
     }
 

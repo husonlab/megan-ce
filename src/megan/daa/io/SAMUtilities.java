@@ -98,7 +98,6 @@ public class SAMUtilities {
         buffer.write((byte) '\n');
     }
 
-
     /**
      * compute the aligned query string, cigar and MD string
      *

@@ -55,7 +55,8 @@ import java.util.*;
  */
 public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
+        return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>]\n" +
+                "\t[topPercent=<number>] [minSupportPercent=<num>] [minSupport=<num>]\n" +
                 "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
                 " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +

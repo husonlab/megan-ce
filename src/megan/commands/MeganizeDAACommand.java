@@ -57,7 +57,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
      */
     public String getSyntax() {
         return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<num>]  [minPercentReadToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>]\n"+
+                "\t[minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
                 "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
                 "\t[contaminantsFile=<filename>] [description=<text>];";
     }
@@ -100,6 +101,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("topPercent=");
             topPercent = (float) np.getDouble(0, 100);
         }
+
         float minSupportPercent = Document.DEFAULT_MINSUPPORT_PERCENT;
         if (np.peekMatchIgnoreCase("minSupportPercent")) {
             np.matchIgnoreCase("minSupportPercent=");
@@ -110,7 +112,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("minSupport")) {
             np.matchIgnoreCase("minSupport=");
             minSupport = np.getInt(0, Integer.MAX_VALUE);
-            if (minSupport > 0)
+            if (minSupport > 1)
                 minSupportPercent = 0;
         }
 

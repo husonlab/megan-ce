@@ -48,7 +48,7 @@ import java.util.ArrayList;
  */
 public class RecomputeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "recompute [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>]\n" +
+        return "recompute [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>] [minSupportPercent=<number>] [minSupport=<number>]\n" +
                 "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
                 " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
@@ -58,15 +58,7 @@ public class RecomputeCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("recompute");
 
-        if (np.peekMatchIgnoreCase("minSupportPercent")) {
-            np.matchIgnoreCase("minSupportPercent=");
-            getDoc().setMinSupportPercent((float) np.getDouble(0, 100));
-        }
-        if (np.peekMatchIgnoreCase("minSupport")) {
-            np.matchIgnoreCase("minSupport=");
-            getDoc().setMinSupport(np.getInt(1, Integer.MAX_VALUE));
-        }
-        if (np.peekMatchIgnoreCase("minScore")) {
+         if (np.peekMatchIgnoreCase("minScore")) {
             np.matchIgnoreCase("minScore=");
             getDoc().setMinScore((float) np.getDouble(0, Float.MAX_VALUE));
         }
@@ -81,6 +73,14 @@ public class RecomputeCommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("topPercent")) {
             np.matchIgnoreCase("topPercent=");
             getDoc().setTopPercent((float) np.getDouble(0, Float.MAX_VALUE));
+        }
+        if (np.peekMatchIgnoreCase("minSupportPercent")) {
+            np.matchIgnoreCase("minSupportPercent=");
+            getDoc().setMinSupportPercent((float) np.getDouble(0, 100));
+        }
+        if (np.peekMatchIgnoreCase("minSupport")) {
+            np.matchIgnoreCase("minSupport=");
+            getDoc().setMinSupport(np.getInt(1, Integer.MAX_VALUE));
         }
         if (np.peekMatchIgnoreCase("weightedLCA")) {
             np.matchIgnoreCase("weightedLCA=");
@@ -155,7 +155,7 @@ public class RecomputeCommand extends CommandBase implements ICommand {
 
         final InspectorWindow inspectorWindow = (InspectorWindow) getDir().getViewerByClass(InspectorWindow.class);
         if (inspectorWindow != null && inspectorWindow.getDataTree().getRowCount() > 1) {
-            SwingUtilities.invokeLater(() -> inspectorWindow.clear());
+            SwingUtilities.invokeLater(inspectorWindow::clear);
         }
 
         final ArrayList<LRInspectorViewer> toClose = new ArrayList<>();

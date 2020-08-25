@@ -116,7 +116,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * get the index (column) for a classification. In the methods below, we will reference classifications by their index
      *
      * @param classificationName name of the classification you want to look for
-     * @return the index in the database for a given classificationName, 1-baseed
+     * @return the index in the database for a given classificationName, 1-based
      */
     public int getClassificationIndex(String classificationName) throws SQLException {
         final String query = "SELECT * FROM mappings LIMIT 1;";

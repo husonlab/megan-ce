@@ -92,43 +92,31 @@ public class ReanalyzeDialog extends ImportBlastDialog {
                     buf.append(", ");
                 buf.append("'").append(name).append("'");
             }
-
-            buf.append(" minSupportPercent=").append(getMinSupportPercent());
-            buf.append(" minSupport=").append(getMinSupport());
-
-            buf.append(" minScore=").append(getMinScore());
+             buf.append(" minScore=").append(getMinScore());
             buf.append(" maxExpected=").append(getMaxExpected());
             buf.append(" minPercentIdentity=").append(getMinPercentIdentity());
             buf.append(" topPercent=").append(getTopPercent());
-
+            if(getMinSupportPercent()>0)
+                buf.append(" minSupportPercent=").append(getMinSupportPercent());
+            else
+                buf.append(" minSupport=").append(getMinSupport());
             buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
-
             if (getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted) || getLcaAlgorithm().equals(Document.LCAAlgorithm.longReads))
                 buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
-
             if (getMinPercentReadToCover() > 0)
                 buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
             if (getMinPercentReferenceToCover() > 0)
                 buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
-
             buf.append(" minComplexity=").append(getMinComplexity());
-
             buf.append(" longReads=").append(isLongReads());
-
             buf.append(" pairedReads=").append(isUsePairedReads());
-
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
-
             if(isUseContaminantsFilter())
                 buf.append(" useContaminantFilter=").append(isUseContaminantsFilter());
-
             if(getContaminantsFileName()!=null && getContaminantsFileName().length()>0)
                 buf.append(" loadContaminantFile=").append(getContaminantsFileName());
-
             buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
-
             buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
-
             buf.append(";");
 
             setResult(buf.toString());
@@ -157,6 +145,5 @@ public class ReanalyzeDialog extends ImportBlastDialog {
     public boolean isAppliable() {
         return getBlastFileName().trim().length() > 0 && (new File(Basic.getFirstLine(getBlastFileName()).trim())).exists();
     }
-
 }
 

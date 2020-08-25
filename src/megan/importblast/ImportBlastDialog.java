@@ -835,8 +835,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" maxExpected=").append(getMaxExpected());
         buf.append(" minPercentIdentity=").append(getMinPercentIdentity());
         buf.append(" topPercent=").append(getTopPercent());
-        buf.append(" minSupportPercent=").append(getMinSupportPercent());
-        buf.append(" minSupport=").append(getMinSupport());
+        if(getMinSupportPercent()>0)
+            buf.append(" minSupportPercent=").append(getMinSupportPercent());
+        else
+            buf.append(" minSupport=").append(getMinSupport());
         buf.append(" lcaAlgorithm=").append(getLcaAlgorithm().toString());
         if (getLcaAlgorithm() == Document.LCAAlgorithm.weighted || getLcaAlgorithm() == Document.LCAAlgorithm.longReads)
             buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
@@ -844,9 +846,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
         buf.append(" minComplexity=").append(getMinComplexity());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
-
         buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
-
         buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
 
         if (isLongReads())

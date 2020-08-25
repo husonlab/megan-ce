@@ -223,7 +223,7 @@ public class Document {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void loadMeganFile() throws IOException, CanceledException {
+    public void loadMeganFile() throws IOException {
         clearReads();
         getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
         if (getMeganFile().isMeganSummaryFile()) {

@@ -169,7 +169,7 @@ public class RMA6FileCreator extends RMA6File {
                 }
                 getFooterSectionRMA6().getAvailableClassification2Position().put(cName, readerWriter.getPosition());
                 classification.write(readerWriter, id2locations);
-                System.err.println(String.format("Class. %-13s%,10d", cName + ":", id2locations.size()));
+                System.err.printf("Class. %-13s%,10d%n", cName + ":", id2locations.size());
             }
         }
         getFooterSectionRMA6().setEndClassificationsSection(readerWriter.getPosition());

@@ -984,8 +984,7 @@ public class SampleAttributeTable {
      */
     public Collection<String> getNumericalAttributes() {
         final Map<String, float[]> attributes = getNumericalAttributes(getUnhiddenAttributes());
-        final SortedSet<String> result = new TreeSet<>(attributes.keySet());
-        return result;
+        return new TreeSet<>(attributes.keySet());
     }
 
     /**

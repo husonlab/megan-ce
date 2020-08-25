@@ -45,7 +45,7 @@ public class ExtractToNewDocument {
      * @param srcClassIds
      * @param tarRMA6FileName
      */
-    public static void apply(Document srcDoc, String srcClassification, Collection<Integer> srcClassIds, String tarRMA6FileName, ProgressListener progress, Single<Long> totalReads) throws IOException, CanceledException {
+    public static void apply(Document srcDoc, String srcClassification, Collection<Integer> srcClassIds, String tarRMA6FileName, ProgressListener progress, Single<Long> totalReads) throws IOException {
 
         final long startTime = System.currentTimeMillis();
 

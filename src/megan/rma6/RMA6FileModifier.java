@@ -74,7 +74,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
             }
             footerSectionRMA6.getAvailableClassification2Position().put(cName, io.getPosition());
             classification.write(io, id2locations);
-            System.err.println(String.format("Numb. %4s classes: %,10d", Basic.abbreviate(cName, 4), id2locations.size()));
+            System.err.printf("Numb. %4s classes: %,10d%n", Basic.abbreviate(cName, 4), id2locations.size());
         }
 
         footerSectionRMA6.setEndClassificationsSection(io.getPosition());

@@ -141,8 +141,7 @@ public class BIOM1Importer {
      * @return entry
      */
     private static Integer[] getOrCreate(Map<Integer, Integer[]> map, Integer id, int size) {
-        Integer[] result = map.computeIfAbsent(id, k -> newZeroedIntegerArray(size));
-        return result;
+        return map.computeIfAbsent(id, k -> newZeroedIntegerArray(size));
     }
 
     /**

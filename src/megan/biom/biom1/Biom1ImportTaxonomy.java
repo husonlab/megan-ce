@@ -102,7 +102,6 @@ class Biom1ImportTaxonomy {
                 final int[] array = createIntArray(obj);
                 if (array == null)
                     continue;
-                ;
 
                 for (int col = 0; col < array.length; col++) {
                     int value = array[col];

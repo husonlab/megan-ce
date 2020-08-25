@@ -81,7 +81,7 @@ public class ReadExtractorTool {
 
         options.comment("Input and Output");
         final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "input", "Input DAA and/or RMA file(s)", new String[0])));
-        final ArrayList<String> outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %t for class name and %i for class id. (Use - for stdout, directory ok, .gz ok)", new String[]{"-"})));
+        final ArrayList<String> outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %t for class name and %i for class id. (Directory, stdout, .gz ok)", new String[]{"stdout"})));
 
         options.comment("Commands");
         final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
@@ -98,26 +98,29 @@ public class ReadExtractorTool {
             throw new UsageException("Must specific either option --classification or --all");
         }
 
-        final boolean useStdout = (outputFiles.size() == 1 && outputFiles.get(0).equals("-"));
-
-        if (outputFiles.size() == 1 && Basic.isDirectory(outputFiles.get(0))) {
-            final String directory = outputFiles.get(0);
+        if(outputFiles.size() == 1 && outputFiles.get(0).equals("stdout")) {
             outputFiles.clear();
-            for (String name : inputFiles) {
-                if (all)
-                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
-                else
-                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
-            }
-        } else if (inputFiles.size() != outputFiles.size()) {
-            throw new UsageException("Number of input and output files must be equal, or output must be '-' or a directory");
+            for(int i=0;i<inputFiles.size();i++)
+                outputFiles.add("stdout");
         }
+        else if (outputFiles.size() == 1 && Basic.isDirectory(outputFiles.get(0))) {
+                final String directory = outputFiles.get(0);
+                outputFiles.clear();
+                for (String name : inputFiles) {
+                    if (all)
+                        outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+                    else
+                        outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+                }
+            } else if (inputFiles.size() != outputFiles.size()) {
+                throw new UsageException("Number of input and output files must be equal, or output must be 'stdout' or a directory");
+            }
 
         int totalReads = 0;
 
         for (int i = 0; i < inputFiles.size(); i++) {
             final String inputFile = inputFiles.get(i);
-            final String outputFile = (useStdout ? "-" : outputFiles.get(i));
+            final String outputFile=outputFiles.get(i);
 
             try {
                 if (inputFile.toLowerCase().endsWith("daa") && !DAAParser.isMeganizedDAAFile(inputFile, true)) {
@@ -132,7 +135,7 @@ public class ReadExtractorTool {
                     throw ex;
             }
         }
-        System.err.println(String.format("Reads extracted: %,d", totalReads));
+        System.err.printf("Reads extracted: %,d%n", totalReads);
     }
 
     /**

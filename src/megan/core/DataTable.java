@@ -24,6 +24,7 @@ import jloda.util.BlastMode;
 import jloda.util.ProgramProperties;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -337,7 +338,7 @@ public class DataTable {
         StringWriter w = new StringWriter();
         w.write(MEGAN4_SUMMARY_TAG + "\n");
         writeHeader(w);
-        return w.toString().getBytes("UTF-8");
+        return w.toString().getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -1541,8 +1542,7 @@ public class DataTable {
     }
 
     public Set<String> getDisabledSamples() {
-        Set<String> result = new HashSet<>(disabledSamples);
-        return result;
+        return new HashSet<>(disabledSamples);
     }
 
     public int getNumberOfSamples() {

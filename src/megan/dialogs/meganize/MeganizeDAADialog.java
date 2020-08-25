@@ -119,7 +119,10 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 buf.append(" pairSuffixLength=").append(pattern1.length());
             }
 
-            if (getShortDescription().length() > 0)
+            if (isUseContaminantsFilter() && Basic.notBlank(getContaminantsFileName()))
+                buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
+
+            if (Basic.notBlank(getShortDescription()))
                 buf.append(" description='").append(getShortDescription()).append("'");
 
             buf.append(";");

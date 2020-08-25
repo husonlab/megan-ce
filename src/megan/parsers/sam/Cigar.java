@@ -253,4 +253,12 @@ public class Cigar {
     public void clear() {
         cigarElements.clear();
     }
+
+    public boolean hasFrameShift () {
+        for(CigarElement element:cigarElements) {
+            if(element.getOperator()==CigarOperator.FR || element.getOperator()==CigarOperator.FF)
+                return true;
+        }
+        return false;
+    }
 }

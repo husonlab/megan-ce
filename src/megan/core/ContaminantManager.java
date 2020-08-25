@@ -24,13 +24,17 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.parse.NexusStreamParser;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
+
+import static java.io.StreamTokenizer.TT_EOF;
 
 /**
  * represents taxa known to be contaminants of a sample
@@ -52,18 +56,38 @@ public class ContaminantManager {
 
         try (FileLineIterator it = new FileLineIterator(file)) {
             while (it.hasNext()) {
-                final String aLine = it.next();
-                final int taxonId;
-                if (Basic.isInteger(aLine))
-                    taxonId = Basic.parseInt(aLine);
-                else
-                    taxonId = TaxonomyData.getName2IdMap().get(aLine);
-                if (taxonId > 0)
-                    contaminants.add(taxonId);
-            }
+                final String aLine = it.next().trim();
+                if(aLine.length()>0) {
+                    if(Character.isLetter(aLine.charAt(0))) { // is a single taxon name
+                        final int taxonId = TaxonomyData.getName2IdMap().get(aLine);
+                        if(taxonId!=0)
+                            contaminants.add(taxonId);
+                        else
+                        System.err.println("Failed to identify taxon for: '"+aLine+"'");
+                    } else {
+                        try(NexusStreamParser np=new NexusStreamParser(new StringReader(aLine))) {
+                            while((np.peekNextToken())!=TT_EOF) {
+                                final String token=np.getWordRespectCase();
+                                final int taxonId;
+                                if (Basic.isInteger(token))
+                                    taxonId = Basic.parseInt(token);
+                                else
+                                    taxonId = TaxonomyData.getName2IdMap().get(token);
+                                if (taxonId > 0)
+                                    contaminants.add(taxonId);
+                                else
+                                    System.err.println("Failed to identify taxon for: '"+token+"'");
+
+                            }
+                        }
+                    }
+                }
+             }
         }
-        if (contaminants.size() > 0)
-            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains(TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+        if (contaminants.size() > 0) {
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+            System.err.printf("Contaminants: %,d input, %,d total%n",contaminants.size(),contaminantsAndDescendants.size());
+        }
     }
 
     /**
@@ -75,7 +99,7 @@ public class ContaminantManager {
      * @param allNodes
      */
     private void setAllDescendentsRec(Node v, boolean mustAddToAll, Set<Integer> internalNodes, Set<Integer> allNodes) {
-        if (!mustAddToAll && internalNodes.contains(v.getInfo()))
+        if (!mustAddToAll && internalNodes.contains((Integer)v.getInfo()))
             mustAddToAll = true;
 
         if (mustAddToAll)
@@ -111,7 +135,7 @@ public class ContaminantManager {
             }
         }
         if (contaminants.size() > 0)
-            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains(TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer)TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**
@@ -154,6 +178,6 @@ public class ContaminantManager {
      * @return iterable
      */
     public Iterable<Integer> getContaminants() {
-        return () -> contaminants.iterator();
+        return contaminants;
     }
 }

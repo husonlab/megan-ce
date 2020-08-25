@@ -135,7 +135,7 @@ public class DAAMeganizer {
         options.comment("Classification support:");
 
         final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
-        final Set<String> selectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
+        final Set<String> dbSelectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
 
         options.comment("Deprecated classification support:");
 
@@ -202,7 +202,7 @@ public class DAAMeganizer {
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if ((selectedClassifications.size() == 0 || selectedClassifications.contains(cName))
+            if ((dbSelectedClassifications.size() == 0 || dbSelectedClassifications.contains(cName))
                     && (mapDBClassifications.contains(cName) || Basic.notBlank(class2AccessionFile.get(cName)) || Basic.notBlank(class2SynonymsFile.get(cName))))
                 cNames.add(cName);
         }

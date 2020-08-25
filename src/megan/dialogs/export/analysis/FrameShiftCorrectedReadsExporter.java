@@ -59,7 +59,8 @@ public class FrameShiftCorrectedReadsExporter {
             progress.setTasks("Export", "Writing all corrected reads");
             final String fName = fileName.replaceAll("%t", "all").replaceAll("%i", "all");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
+                 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
                 progress.setMaximum(it.getMaximumProgress());
                 progress.setProgress(0);
                 while (it.hasNext()) {
@@ -95,7 +96,7 @@ public class FrameShiftCorrectedReadsExporter {
             final Classification classification;
             BufferedWriter w;
             if (useOneOutputFile) {
-                w = new BufferedWriter(fileName.endsWith(".gz") ? new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName))) : new FileWriter(fileName));
+                w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
                 classification = null;
             } else {
                 w = null;
@@ -170,7 +171,7 @@ public class FrameShiftCorrectedReadsExporter {
      * @return number of reads written
      * @throws IOException
      */
-    private static void correctAndWrite(ProgressListener progress, IReadBlock readBlock, Writer w) throws IOException, CanceledException {
+    private static void correctAndWrite(ProgressListener progress, IReadBlock readBlock, Writer w) throws IOException {
         final Pair<String, String> headerAndSequence = correctFrameShiftsInSequence(progress, readBlock);
         if (headerAndSequence != null) {
             w.write(headerAndSequence.getFirst());

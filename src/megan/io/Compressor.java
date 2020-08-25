@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -81,14 +82,7 @@ public class Compressor {
      */
     private int deflateString2ByteArray(String inputString, byte[] bytes) {
         byte[] input;
-        try {
-            input = inputString.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-//            Basic.caught(e);
-            input = new byte[inputString.length()];
-            for (int i = 0; i < bytes.length; i++)
-                input[i] = (byte) inputString.charAt(i);
-        }
+        input = inputString.getBytes(StandardCharsets.UTF_8);
         return deflateString2ByteArray(input, 0, input.length, bytes);
     }
 
@@ -134,15 +128,7 @@ public class Compressor {
 
         if (numberOfBytes < 0) // negative number means uncompressed!
         {
-            try {
-                return new String(bytes, 0, -numberOfBytes, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-//                Basic.caught(e);
-                StringBuilder buf = new StringBuilder();
-                for (int i = 0; i < -numberOfBytes; i++)
-                    buf.append((char) bytes[i]);
-                return buf.toString();
-            }
+            return new String(bytes, 0, -numberOfBytes, StandardCharsets.UTF_8);
         }
         inflater.setInput(bytes, 0, numberOfBytes);
         if (buffer.length < 100 * bytes.length)  // try to make sure the result buffer is long enough
@@ -150,16 +136,7 @@ public class Compressor {
         int resultLength = inflater.inflate(buffer);
 
         String outputString;
-        try {
-            outputString = new String(buffer, 0, resultLength, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-//            Basic.caught(e);
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < resultLength; i++)
-                buf.append((char) buffer[i]);
-            outputString = buf.toString();
-
-        }
+        outputString = new String(buffer, 0, resultLength, StandardCharsets.UTF_8);
         inflater.reset();
         return outputString;
     }

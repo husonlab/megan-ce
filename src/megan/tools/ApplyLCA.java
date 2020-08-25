@@ -69,14 +69,14 @@ public class ApplyLCA {
         options.setAuthors("Daniel H. Huson");
 
         final String inputFile = options.getOptionMandatory("-i", "input", "Input  file (stdin ok)", "");
-        final String outputFile = options.getOption("-o", "output", "Output file (stdout ok)", "stdout");
+        final String outputFile = options.getOption("-o", "output", "Output file (stdout, .gz ok)", "stdout");
         String separator = options.getOption("-s", "Separator", "Separator character (or detect)", "detect");
         final boolean firstLineIsHeader = options.getOption("-H", "hasHeaderLine", "Has header line", true);
         options.done();
 
         final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy,false,0);
 
-        final Writer w = new BufferedWriter(outputFile.equalsIgnoreCase("stdout") ? new OutputStreamWriter(System.out) : new FileWriter(outputFile));
+        final Writer w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)));
         try (BufferedReader r = new BufferedReader(inputFile.equals("stdin") ? new InputStreamReader(System.in) : new FileReader(inputFile))) {
             String line;
             boolean first = true;

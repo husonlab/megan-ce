@@ -96,7 +96,7 @@ public class ListTaxonNamesCommand extends CommandBase implements ICommand {
      * @return description
      */
     public String getDescription() {
-        return "Lists the names of taxa";
+        return "File provides list of contaminant taxa (ids or names)";
     }
 
     /**

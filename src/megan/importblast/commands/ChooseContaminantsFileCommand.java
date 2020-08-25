@@ -68,7 +68,7 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
             File lastOpenFile = ProgramProperties.getFile(MeganProperties.CONTAMINANT_FILE);
 
             getDir().notifyLockInput();
-            File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
+            final File file = ChooseFileDialog.chooseFileToOpen(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), ev, "Open Contaminants File");
             getDir().notifyUnlockInput();
 
             if (file != null && file.exists() && file.canRead()) {

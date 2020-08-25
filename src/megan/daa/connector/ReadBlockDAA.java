@@ -119,7 +119,6 @@ public class ReadBlockDAA implements IReadBlock {
 
     public void setMateType(byte mateType) {
         System.err.println("Not implemented");
-        ;
     }
 
     /**

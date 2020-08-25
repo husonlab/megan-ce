@@ -43,7 +43,7 @@ public class DiversityIndex {
      * @param progressListener
      * @return index in bits
      */
-    public static String computeShannonWeaver(ViewerBase viewer, ProgressListener progressListener) throws IOException, CanceledException {
+    public static String computeShannonWeaver(ViewerBase viewer, ProgressListener progressListener) throws IOException {
         if (viewer instanceof ClassificationViewer)
             return toString(viewer.getDocument().getSampleNamesAsArray(), computeShannonWeaver((ClassificationViewer) viewer, progressListener));
         else
@@ -56,7 +56,7 @@ public class DiversityIndex {
      * @param progressListener
      * @return index in bits
      */
-    private static double[] computeShannonWeaver(ClassificationViewer viewer, ProgressListener progressListener) throws IOException, CanceledException {
+    private static double[] computeShannonWeaver(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
 
         progressListener.setMaximum(2 * viewer.getSelectedNodes().size());
         progressListener.setProgress(0);
@@ -95,7 +95,7 @@ public class DiversityIndex {
      * @param progressListener
      * @return index in bits
      */
-    public static String computeSimpsonReciprocal(ViewerBase viewer, ProgressListener progressListener) throws IOException, CanceledException {
+    public static String computeSimpsonReciprocal(ViewerBase viewer, ProgressListener progressListener) throws IOException {
         if (viewer instanceof ClassificationViewer)
             return toString(viewer.getDocument().getSampleNamesAsArray(), computeSimpsonReciprocal((ClassificationViewer) viewer, progressListener));
         else
@@ -108,7 +108,7 @@ public class DiversityIndex {
      * @param progressListener
      * @return index in bits
      */
-    private static double[] computeSimpsonReciprocal(ClassificationViewer viewer, ProgressListener progressListener) throws IOException, CanceledException {
+    private static double[] computeSimpsonReciprocal(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
 
         progressListener.setMaximum(2 * viewer.getSelectedNodes().size());
         progressListener.setProgress(0);

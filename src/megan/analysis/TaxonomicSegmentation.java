@@ -161,8 +161,8 @@ public class TaxonomicSegmentation {
                         }
 
                         if (verbose)
-                            System.err.println(String.format("Traceback %d (%s) %.1f from %d (%s) %.1f", tax, TaxonomyData.getName2IdMap().get(tax),
-                                    maxScore, maxScoreTax, TaxonomyData.getName2IdMap().get(maxScoreTax), scoreMatrix[col - 1][tax2row.get(maxScoreTax)]));
+                            System.err.printf("Traceback %d (%s) %.1f from %d (%s) %.1f%n", tax, TaxonomyData.getName2IdMap().get(tax),
+                                    maxScore, maxScoreTax, TaxonomyData.getName2IdMap().get(maxScoreTax), scoreMatrix[col - 1][tax2row.get(maxScoreTax)]);
 
                         scoreMatrix[col][row] = maxScore;
                         traceBackMatrix[col][row] = maxScoreTax;
@@ -180,7 +180,7 @@ public class TaxonomicSegmentation {
         if (verbose) {
             System.err.println("Best scores and taxa:");
             for (Pair<Float, Integer> pair : bestScores) {
-                System.err.println(String.format("%d (%s): %.1f", pair.getSecond(), TaxonomyData.getName2IdMap().get(pair.getSecond()), pair.getFirst()));
+                System.err.printf("%d (%s): %.1f%n", pair.getSecond(), TaxonomyData.getName2IdMap().get(pair.getSecond()), pair.getFirst());
             }
         }
 

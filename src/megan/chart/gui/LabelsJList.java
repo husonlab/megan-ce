@@ -283,8 +283,7 @@ public class LabelsJList extends JList<String> {
      * @return disabled labels
      */
     public LinkedList<String> getDisabledLabels() {
-        final LinkedList<String> result = new LinkedList<>(disabledLabels);
-        return result;
+        return new LinkedList<>(disabledLabels);
     }
 
     /**
@@ -331,8 +330,7 @@ public class LabelsJList extends JList<String> {
                     if (clearOldOrder)
                         ((DefaultListModel) getModel()).removeAllElements();
 
-                    final Set<String> labelsSet = new HashSet<>();
-                    labelsSet.addAll(labels);
+                    final Set<String> labelsSet = new HashSet<>(labels);
 
                     final Set<String> toDelete = new HashSet<>();
                     for (String label : disabledLabels) {
@@ -351,8 +349,7 @@ public class LabelsJList extends JList<String> {
                     for (String label : toKeep) {
                         ((DefaultListModel<String>) getModel()).addElement(label);
                     }
-                    final Set<String> seen = new HashSet<>();
-                    seen.addAll(toKeep);
+                    final Set<String> seen = new HashSet<>(toKeep);
                     for (String label : labels) {
                         if (!seen.contains(label))
                             ((DefaultListModel<String>) getModel()).addElement(label);

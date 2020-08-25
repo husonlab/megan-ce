@@ -48,7 +48,7 @@ public class Biom1ExportFViewer {
      * @param progressListener
      * @return lines written
      */
-    public static int apply(Director dir, String cName, File file, ProgressListener progressListener) throws IOException, CanceledException {
+    public static int apply(Director dir, String cName, File file, ProgressListener progressListener) throws IOException {
         Biom1Data biom1Data = new Biom1Data(file.getPath());
 
         biom1Data.setType(Biom1Data.AcceptableTypes.Function_table.toString());

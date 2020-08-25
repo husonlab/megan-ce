@@ -62,7 +62,8 @@ public class ReadsExtractor {
                                     final String outDirectory, String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
         progress.setSubtask("Extracting by " + classificationName);
 
-        fileName = new File(outDirectory, fileName).getPath();
+        if(outDirectory.length()>0)
+            fileName =new File(outDirectory, fileName).getPath();
 
         final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
@@ -77,7 +78,7 @@ public class ReadsExtractor {
         BufferedWriter w;
         if (useOneOutputFile) {
             w=new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-
+            System.err.println("Writing to: "+fileName);
         } else {
             w = null;
         }

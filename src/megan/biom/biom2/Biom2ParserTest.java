@@ -171,8 +171,8 @@ public class Biom2ParserTest {
             }
         }
 
-        System.err.println(String.format("Lines imported:%,10d", countLinesImported));
-        System.err.println(String.format("Lines skipped: %,10d", countLinesSkipped));
+        System.err.printf("Lines imported:%,10d%n", countLinesImported);
+        System.err.printf("Lines skipped: %,10d%n", countLinesSkipped);
 
         dumpWriter.close();
 

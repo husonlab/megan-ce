@@ -22,6 +22,7 @@ package megan.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.DataFormatException;
 
 /**
@@ -206,7 +207,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
                 writeInt(-bytes.length);
                 io.write(bytes, 0, bytes.length);
             } else {
-                byte[] bytes = str.getBytes("UTF-8");
+                byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
                 writeInt(bytes.length);
                 io.write(bytes, 0, bytes.length);
             }

@@ -51,7 +51,7 @@ class DAAReferencesAnnotator {
      *
      * @throws IOException
      */
-    public static void apply(String daaFile, boolean doTaxonomy, Collection<String> cNames0, final ProgressListener progress) throws IOException, CanceledException {
+    public static void apply(String daaFile, boolean doTaxonomy, Collection<String> cNames0, final ProgressListener progress) throws IOException {
         DAAModifier.removeAllMEGANData(daaFile);
 
         final DAAHeader header = new DAAHeader(daaFile);

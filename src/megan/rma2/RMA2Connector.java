@@ -179,7 +179,7 @@ public class RMA2Connector implements IConnector {
      * @param updateItemList list of rescan items
      * @throws java.io.IOException
      */
-    public void updateClassifications(String[] names, List<UpdateItem> updateItemList, ProgressListener progressListener) throws IOException, CanceledException {
+    public void updateClassifications(String[] names, List<UpdateItem> updateItemList, ProgressListener progressListener) throws IOException {
         UpdateItemList updateItems = (UpdateItemList) updateItemList;
 
         final int numClassifications = names.length;

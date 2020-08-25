@@ -24,6 +24,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * class for writing output
@@ -144,7 +145,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
                 outs.write(bytes, 0, bytes.length);
                 position += bytes.length;
             } else {
-                byte[] bytes = str.getBytes("UTF-8");
+                byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
                 writeInt(bytes.length);
                 outs.write(bytes, 0, bytes.length);
                 position += bytes.length;

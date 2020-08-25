@@ -53,7 +53,7 @@ public class Biom1ExportTaxonomy {
      * @param progressListener
      * @return lines written
      */
-    public static int apply(Director dir, File file, boolean officialRanksOnly, ProgressListener progressListener) throws IOException, CanceledException {
+    public static int apply(Director dir, File file, boolean officialRanksOnly, ProgressListener progressListener) throws IOException {
         final Biom1Data biom1Data = new Biom1Data(file.getPath());
 
         biom1Data.setType(Biom1Data.AcceptableTypes.Taxon_table.toString());

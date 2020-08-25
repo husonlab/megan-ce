@@ -861,11 +861,10 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             buf.append(" pairSuffixLength=").append(pattern1.length());
         }
 
-        if (isUseContaminantsFilter() && getContaminantsFileName() != null) {
+        if (isUseContaminantsFilter() && Basic.notBlank(getContaminantsFileName()))
             buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
-        }
 
-        if (getShortDescription().length() > 0)
+        if (Basic.notBlank(getShortDescription()))
             buf.append(" description='").append(getShortDescription()).append("'");
 
         buf.append(";");

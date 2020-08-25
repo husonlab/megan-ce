@@ -45,7 +45,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     private final String cName;
 
     private final boolean useIdentityFilter;
-    private float proportionToCover;
+    private final float proportionToCover;
 
     private final ClassificationFullTree fullTree;
     private final IdMapper idMapper;

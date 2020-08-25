@@ -24,6 +24,7 @@ import megan.io.InputReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -122,7 +123,7 @@ public class TextStorageReader {
         if (locationManager.getTextStoragePolicy() == TextStoragePolicy.Reference) {
             byte[] bytes = new byte[location.getSize()];
             raf.read(bytes, 0, bytes.length);
-            return new String(bytes, 0, bytes.length, "UTF-8");
+            return new String(bytes, 0, bytes.length, StandardCharsets.UTF_8);
         } else // must be dump file or on-board dump file
         {
             raf.seek(location.getPosition());

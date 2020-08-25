@@ -87,8 +87,8 @@ public class ReferencesAnnotator {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and output");
-        final String inputFile = options.getOptionMandatory("-i", "in", "Input references file (gzipped ok)", "");
-        String outputFile = options.getOptionMandatory("-o", "out", "Output file", "");
+        final String inputFile = options.getOptionMandatory("-i", "in", "Input references file (stdin, .gz ok)", "");
+        String outputFile = options.getOptionMandatory("-o", "out", "Output file (stdout, .gz ok)", "");
 
         options.comment("Classification support:");
 

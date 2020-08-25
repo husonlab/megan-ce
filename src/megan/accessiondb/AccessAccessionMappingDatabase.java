@@ -116,9 +116,9 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * get the index (column) for a classification. In the methods below, we will reference classifications by their index
      *
      * @param classificationName name of the classification you want to look for
-     * @return the index in the database for a given classificationName
+     * @return the index in the database for a given classificationName, 1-baseed
      */
-    private int getClassificationIndex(String classificationName) throws SQLException {
+    public int getClassificationIndex(String classificationName) throws SQLException {
         final String query = "SELECT * FROM mappings LIMIT 1;";
 
         final ResultSetMetaData metaData = getMetaData(query);
@@ -172,7 +172,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @param classificationName
      * @return info string provided when inserting the reference database or "" if no such string was given
      */
-    private String getInfo(String classificationName) throws SQLException {
+    public String getInfo(String classificationName) throws SQLException {
         try {
             final String infoString = executeQueryString("SELECT info_string FROM info WHERE id = '" + classificationName + "';", 1).get(0);
             return String.format("%s, size: %,d", infoString, getSize(classificationName));
@@ -291,7 +291,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
      *
      * @return a Collection<String> containing all classification names used in the database
      */
-    private Collection<String> getClassificationNames() throws SQLException {
+    public Collection<String> getClassificationNames() throws SQLException {
         return executeQueryString("SELECT id FROM info WHERE id != 'general' AND id !='edition' ;", 1);
     }
 
@@ -320,7 +320,6 @@ public class AccessAccessionMappingDatabase implements Closeable {
         }
         return result;
     }
-
 
     public static Collection<String> getContainedClassificationsIfDBExists(String fileName) {
         if (Basic.fileExistsAndIsNonEmpty(fileName)) {

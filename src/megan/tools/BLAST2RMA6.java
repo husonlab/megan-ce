@@ -92,10 +92,10 @@ public class BLAST2RMA6 {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
-        final String[] blastFiles = options.getOptionMandatory("-i", "in", "Input BLAST file[s] (gzipped ok)", new String[0]);
+        final String[] blastFiles = options.getOptionMandatory("-i", "in", "Input BLAST file[s] (.gz ok)", new String[0]);
         final BlastFileFormat blastFormat = BlastFileFormat.valueOfIgnoreCase(options.getOptionMandatory("-f", "format", "Input file format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString()));
         final BlastMode blastMode = BlastMode.valueOfIgnoreCase(options.getOption("-bm", "blastMode", "Blast mode", BlastMode.values(), BlastMode.Unknown.toString()));
-        String[] readsFiles = options.getOption("-r", "reads", "Reads file(s) (fasta or fastq, gzipped ok)", new String[0]);
+        String[] readsFiles = options.getOption("-r", "reads", "Reads file(s) (fasta or fastq, .gz ok)", new String[0]);
         final String[] metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in RMA6 files", new String[0]);
 
         options.comment("Output");

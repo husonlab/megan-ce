@@ -35,7 +35,7 @@ import java.util.*;
  * Daniel Huson, 5.2017
  */
 public class ConnectorCombiner implements IConnector {
-    private IConnector[] connectors;
+    private final IConnector[] connectors;
 
     /**
      * constructor
@@ -188,7 +188,7 @@ public class ConnectorCombiner implements IConnector {
     }
 
     @Override
-    public void updateClassifications(String[] classificationNames, List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException, CanceledException {
+    public void updateClassifications(String[] classificationNames, List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException {
         throw new IOException("Can't updateClassifications() for combined document");
     }
 

@@ -70,7 +70,7 @@ public class Meganize {
         DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
 
         if (ProgramProperties.get("enable-database-lookup", false))
-            System.err.println(String.format("(Reference annotation of file %s took %.1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
+            System.err.printf("(Reference annotation of file %s took %.1f sec)%n", daaFile, (System.currentTimeMillis() - start) / 1000.0);
 
         final Document doc = new Document();
         doc.setOpenDAAFileOnlyIfMeganized(false);
@@ -96,7 +96,7 @@ public class Meganize {
         if (contaminantsFile.length() > 0) {
             ContaminantManager contaminantManager = new ContaminantManager();
             contaminantManager.read(contaminantsFile);
-            System.err.println(String.format("Contaminants profile: %,d input, %,d total", contaminantManager.inputSize(), contaminantManager.size()));
+            System.err.printf("Contaminants profile: %,d input, %,d total%n", contaminantManager.inputSize(), contaminantManager.size());
             doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
             doc.setUseContaminantFilter(contaminantManager.size() > 0);
         }
@@ -130,6 +130,6 @@ public class Meganize {
         header.save();
 
         if (ProgramProperties.get("enable-database-lookup", false))
-            System.err.println(String.format("(Meganization of file %s took %.1f sec)", daaFile, (System.currentTimeMillis() - start) / 1000.0));
+            System.err.printf("(Meganization of file %s took %.1f sec)%n", daaFile, (System.currentTimeMillis() - start) / 1000.0);
     }
 }

@@ -19,16 +19,14 @@
  */
 package megan.dialogs.export;
 
+import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Collection;
 
 /**
@@ -49,7 +47,8 @@ public class ReadsExporter {
         try {
             progressListener.setTasks("Export", "Writing all reads");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName)); IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false)) {
+            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
+                 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false)) {
                 progressListener.setMaximum(it.getMaximumProgress());
                 progressListener.setProgress(0);
                 while (it.hasNext()) {
@@ -80,7 +79,7 @@ public class ReadsExporter {
         try {
             progressListener.setTasks("Export", "Writing selected reads");
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
+            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)))) {
                 int maxProgress = 100000 * classIds.size();
                 int currentProgress;
                 progressListener.setMaximum(maxProgress);

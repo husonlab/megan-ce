@@ -85,7 +85,7 @@ public class RMA2Info {
 
         options.comment("Input and Output");
         final String daaFile = options.getOptionMandatory("-i", "in", "Input RMA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdou");
+        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
         options.comment("Commands");
         final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);

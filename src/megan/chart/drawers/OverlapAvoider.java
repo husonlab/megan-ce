@@ -52,12 +52,7 @@ public class OverlapAvoider<T> {
                 return -1;
             else if (d1 > d2)
                 return 1;
-            else if (id1 < id2)
-                return -1;
-            else if (id1 > id2)
-                return 1;
-            else
-                return 0;
+            else return id1.compareTo(id2);
         });
         sortedByMaxX = new TreeSet<>((id1, id2) -> {
             Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxX() : data.get(id1).getFirst().getMinX());
@@ -66,12 +61,7 @@ public class OverlapAvoider<T> {
                 return -1;
             else if (d1 > d2)
                 return 1;
-            else if (id1 < id2)
-                return -1;
-            else if (id1 > id2)
-                return 1;
-            else
-                return 0;
+            else return id1.compareTo(id2);
         });
         sortedByMinY = new TreeSet<>((id1, id2) -> {
             Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinY() : data.get(id1).getFirst().getMaxY());
@@ -80,26 +70,16 @@ public class OverlapAvoider<T> {
                 return -1;
             else if (d1 > d2)
                 return 1;
-            else if (id1 < id2)
-                return -1;
-            else if (id1 > id2)
-                return 1;
-            else
-                return 0;
+            else return id1.compareTo(id2);
         });
         sortedByMaxY = new TreeSet<>((id1, id2) -> {
-            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxY() : data.get(id1).getFirst().getMinY());
-            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxY() : data.get(id2).getFirst().getMinY());
+            double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxY() : data.get(id1).getFirst().getMinY());
+            double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxY() : data.get(id2).getFirst().getMinY());
             if (d1 < d2)
                 return -1;
             else if (d1 > d2)
                 return 1;
-            else if (id1 < id2)
-                return -1;
-            else if (id1 > id2)
-                return 1;
-            else
-                return 0;
+            else return id1.compareTo(id2);
         });
     }
 

@@ -151,7 +151,7 @@ public interface IConnector {
      * @param updateItems         list of rescan items
      * @throws IOException
      */
-    void updateClassifications(final String[] classificationNames, final List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException, CanceledException;
+    void updateClassifications(final String[] classificationNames, final List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException;
 
     /**
      * get all reads that match the given expression

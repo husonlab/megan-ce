@@ -267,9 +267,15 @@ public class DataProcessor {
                                         classIds[c] = assignmentAlgorithm[c].computeId(activeMatchesForTaxa, readBlock);
                                     }
                                 }
+                                if (c == ncbiTaxonomyId) {
+                                    if(contaminantManager!=null && ((doc.isLongReads() && contaminantManager.isContaminantLongRead(classIds[c]))
+                                            || (!doc.isLongReads() && contaminantManager.isContaminantShortRead(readBlock,activeMatchesForTaxa))))
+                                        classIds[c]=IdMapper.CONTAMINANTS_ID;
+                                }
                             }
-                            if (c == ncbiTaxonomyId)
+                            if (c == ncbiTaxonomyId) {
                                 taxId = classIds[c];
+                            }
                         }
                     }
 
@@ -327,9 +333,7 @@ public class DataProcessor {
             if (progress.isUserCancelled())
                 throw new CanceledException();
 
-            if (progress instanceof ProgressPercentage) {
-                ((ProgressPercentage) progress).reportTaskCompleted();
-            }
+            progress.reportTaskCompleted();
 
             System.err.println(String.format("Total reads:  %,15d", numberOfReadsFound));
             if (totalWeight > numberOfReadsFound)

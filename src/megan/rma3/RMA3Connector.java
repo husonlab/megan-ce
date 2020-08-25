@@ -96,7 +96,7 @@ public class RMA3Connector implements IConnector {
     public String[] getAllClassificationNames() throws IOException {
         try (RMA3File rma3File = new RMA3File(fileName, RMA3File.READ_ONLY)) {
             List<String> names = rma3File.getClassificationsFooter().getAllNames();
-            return names.toArray(new String[names.size()]);
+            return names.toArray(new String[0]);
         }
     }
 

@@ -1,8 +1,8 @@
-# megan-ce
+# megan-ce [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/megan/README.html)
 MEGAN Community Edition - Interactive exploration and analysis of large-scale microbiome sequencing data
 
-Daniel H. Huson, Sina Beier, Isabell Flade, Anna Gorska, Mohamed El-Hadidi, Suparna Mitra, Hans-Joachim Ruscheweyh and Rewati Tappu.
-To appear in PLoS Computational Biology, 2016
+[Daniel H. Huson, Sina Beier, Isabell Flade, Anna Gorska, Mohamed El-Hadidi, Suparna Mitra, Hans-Joachim Ruscheweyh and Rewati Tappu.
+PLoS Computational Biology, 2016](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004957)
 
 Download installers for MEGAN Community Edition here: http://www-ab.informatik.uni-tuebingen.de/software/megan6
 

@@ -83,7 +83,7 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
         try {
             final MainViewer viewer = (MainViewer) getViewer();
             final Document doc = viewer.getDocument();
-            final int count = SegmentationOfReadsExporter.export(doc.getProgressListener(), viewer.getClassification().getName(), viewer.getSelectedIds(), rank, doc.getConnector(), fileName, taxonomicSegmentation);
+            final int count = SegmentationOfReadsExporter.export(doc.getProgressListener(), viewer.getClassification().getName(), viewer.getSelectedNodeIds(), rank, doc.getConnector(), fileName, taxonomicSegmentation);
 
             NotificationsInSwing.showInformation("Exported segmentation of reads: " + count);
 

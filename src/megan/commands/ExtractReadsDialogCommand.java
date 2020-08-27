@@ -76,7 +76,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("ids=");
             if (np.peekMatchIgnoreCase("selected")) {
                 np.matchIgnoreCase("selected");
-                ids.addAll(viewer.getSelectedIds());
+                ids.addAll(viewer.getSelectedNodeIds());
             } else {
                 while (!np.peekMatchAnyTokenIgnoreCase("names allBelow ;"))
                     ids.add(np.getInt());

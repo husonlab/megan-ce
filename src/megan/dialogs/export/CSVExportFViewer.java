@@ -235,7 +235,7 @@ public class CSVExportFViewer {
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
-                java.util.Collection<Integer> classIds = cViewer.getSelectedIds();
+                java.util.Collection<Integer> classIds = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask(shortName + " to read names");
                 progressListener.setMaximum(classIds.size());
                 progressListener.setProgress(0);
@@ -298,7 +298,7 @@ public class CSVExportFViewer {
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
-                java.util.Collection<Integer> classIds = cViewer.getSelectedIds();
+                java.util.Collection<Integer> classIds = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask(shortName + " to normalized counts");
                 progressListener.setMaximum(classIds.size());
                 progressListener.setProgress(0);
@@ -362,7 +362,7 @@ public class CSVExportFViewer {
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
-                java.util.Collection<Integer> ids = cViewer.getSelectedIds();
+                java.util.Collection<Integer> ids = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask("Read names to " + shortName);
                 progressListener.setMaximum(ids.size());
                 progressListener.setProgress(0);
@@ -418,7 +418,7 @@ public class CSVExportFViewer {
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
-                java.util.Collection<Integer> ids = cViewer.getSelectedIds();
+                java.util.Collection<Integer> ids = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask(shortName + " to read names");
                 progressListener.setMaximum(ids.size());
                 progressListener.setProgress(0);

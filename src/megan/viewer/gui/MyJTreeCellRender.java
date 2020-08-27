@@ -81,7 +81,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
                 label.setText(name);
             }
 
-            selected = classificationViewer.getSelectedNodeIds().contains(v.getInfo());
+            selected = classificationViewer.getSelectedNodeIds().contains((Integer)v.getId());
 
             if (selected) {
                 label.setBackground(ProgramProperties.SELECTION_COLOR);

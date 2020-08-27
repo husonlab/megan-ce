@@ -57,7 +57,7 @@ class CSVExportHeaders {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final Document doc = viewer.getDir().getDocument();
                 final IConnector connector = doc.getConnector();
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
                 progressListener.setSubtask("Read ids to reference sequence headers");
                 progressListener.setMaximum(taxonIds.size());

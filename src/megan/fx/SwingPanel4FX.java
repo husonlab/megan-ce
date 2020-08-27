@@ -75,8 +75,8 @@ public class SwingPanel4FX<C> {
     private void initSwingLater() {
         // System.err.println("initSwingLater");
 
-        jFXPanel = new JFXPanel();
         try {
+            jFXPanel = new JFXPanel();
             Platform.runLater(this::initFxLater);
         }
         catch(Exception ex) {
@@ -88,7 +88,7 @@ public class SwingPanel4FX<C> {
      * initialize JavaFX
      */
     private void initFxLater() {
-        //System.err.println("initFxLater");
+        // System.err.println("initFxLater");
 
         lock.lock();
         try {

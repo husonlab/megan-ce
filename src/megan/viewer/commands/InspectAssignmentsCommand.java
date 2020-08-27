@@ -56,7 +56,7 @@ public class InspectAssignmentsCommand extends CommandBase implements ICommand {
             inspectorWindow = (InspectorWindow) dir.addViewer(new InspectorWindow(dir));
 
         final LinkedList<Triplet<String, Float, Collection<Integer>>> name2Size2Ids = new LinkedList<>();
-        for (Integer id : classificationViewer.getSelectedIds()) {
+        for (Integer id : classificationViewer.getSelectedNodeIds()) {
             String name = classificationViewer.getClassification().getName2IdMap().get(id);
             Node v = classificationViewer.getANode(id);
             if (v.getOutDegree() > 0) { // internal node

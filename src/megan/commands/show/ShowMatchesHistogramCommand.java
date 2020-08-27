@@ -79,7 +79,7 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        int taxId = ((MainViewer) getViewer()).getSelectedIds().iterator().next();
+        int taxId = ((MainViewer) getViewer()).getSelectedNodeIds().iterator().next();
         String command = "show histogram taxonId=" + taxId + ";";
         execute(command);
     }
@@ -170,6 +170,6 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return ((MainViewer) getViewer()).getSelectedIds().size() == 1;
+        return ((MainViewer) getViewer()).getSelectedNodeIds().size() == 1;
     }
 }

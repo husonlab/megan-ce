@@ -115,8 +115,14 @@ public class Reanalyzer {
 
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover (-1: no change)", -1f);
 
-        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
-                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
+        final String readAssignmentModeDefaultValue;
+        if(options.isDoHelp()) {
+            readAssignmentModeDefaultValue=(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString()+" in long read mode, "+ Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()+" else");
+        } else if(longReads)
+            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
+        else
+            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
+        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode", readAssignmentModeDefaultValue));
         final boolean readAssignmentModeSet=options.optionWasExplicitlySet();
 
         final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");

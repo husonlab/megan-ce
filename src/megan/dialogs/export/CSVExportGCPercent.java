@@ -60,7 +60,7 @@ class CSVExportGCPercent {
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDocument().getConnector();
-            final Collection<Integer> ids = viewer.getSelectedIds();
+            final Collection<Integer> ids = viewer.getSelectedNodeIds();
 
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(Classification.Taxonomy);
 

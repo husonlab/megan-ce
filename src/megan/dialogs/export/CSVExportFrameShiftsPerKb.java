@@ -55,7 +55,7 @@ class CSVExportFrameShiftsPerKb {
         System.err.println("Writing file: " + file);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDocument().getConnector();
-            final Collection<Integer> ids = viewer.getSelectedIds();
+            final Collection<Integer> ids = viewer.getSelectedNodeIds();
 
             progress.setSubtask("Reads to FrameShifts per Kb");
             progress.setMaximum(1000 * ids.size());

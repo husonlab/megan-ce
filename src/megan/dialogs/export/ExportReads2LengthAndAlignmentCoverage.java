@@ -58,7 +58,7 @@ public class ExportReads2LengthAndAlignmentCoverage {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 w.write(getHeader());
                 IConnector connector = cViewer.getDocument().getConnector();
-                java.util.Collection<Integer> ids = cViewer.getSelectedIds();
+                java.util.Collection<Integer> ids = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask("Reads to length and coverage");
                 progressListener.setMaximum(ids.size());
                 progressListener.setProgress(0);

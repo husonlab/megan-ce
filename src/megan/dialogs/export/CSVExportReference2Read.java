@@ -58,7 +58,7 @@ class CSVExportReference2Read {
             Document doc = viewer.getDir().getDocument();
             IConnector connector = doc.getConnector();
             IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-            java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Mapping reads to references");
 

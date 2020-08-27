@@ -1,5 +1,5 @@
 /*
- *  DecontamDialogController.java Copyright (C) 2020. Daniel H. Huson GPL
+ *  SetupControlBindings.java Copyright (C) 2020. Daniel H. Huson GPL
  *
  *   (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -18,7 +18,26 @@
  *
  */
 
-package megan.analysis.decontam;
+package megan.fx.dialogs.decontam;
 
-public class DecontamDialogController {
+import jloda.swing.util.ToolBar;
+
+import javax.swing.*;
+
+public class ControlBindings {
+    public static void setup(final DecontamDialogController controller,final DecontamDialog viewer, ToolBar toolBar) {
+        controller.getCloseButton().setOnAction(e->{
+            viewer.getDir().execute("close;",viewer.getCommandManager());
+        });
+    }
+
+    /**
+     * update the scene
+     *
+     * @param viewer
+     */
+    public static void updateScene(final DecontamDialogController controller,DecontamDialog viewer) {
+
+
+    }
 }

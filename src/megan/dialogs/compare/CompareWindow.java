@@ -59,7 +59,7 @@ public class CompareWindow extends JDialog {
     /**
      * setup and display the compare dialog
      */
-    public CompareWindow(JFrame parent, final Director dir, Collection<String> files) throws CanceledException {
+    public CompareWindow(JFrame parent, final Director dir, Collection<String> files){
         super(parent);
 
         mode = Comparer.COMPARISON_MODE.valueOfIgnoreCase(ProgramProperties.get("CompareWindowMode", Comparer.COMPARISON_MODE.RELATIVE.toString()));

@@ -377,13 +377,8 @@ public class DataTable {
                     float[] counts = class2counts.get(classId);
                     if (counts != null) {
                         w.write(classification + "\t" + classId);
-                        int last = Math.min(counts.length, getNumberOfSamples()) - 1;
-                        while (last > 0 && counts[last] == 0)
-                            last--;
-
-                        for (int i = 0; i <= last; i++) {
-                            if (i < counts.length)
-                                w.write("\t" + counts[i]);
+                         for (int i = 0; i < getNumberOfSamples(); i++) {
+                             w.write("\t" + (i<counts.length?counts[i]:0));
                         }
                         w.write("\n");
                     }

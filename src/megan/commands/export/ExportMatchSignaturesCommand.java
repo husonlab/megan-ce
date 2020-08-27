@@ -60,7 +60,7 @@ public class ExportMatchSignaturesCommand extends CommandBase implements IComman
     }
 
     public boolean isApplicable() {
-        return getDoc().getMeganFile().hasDataConnector() && getDir().getMainViewer().getSelectedIds().size() == 1;
+        return getDoc().getMeganFile().hasDataConnector() && getDir().getMainViewer().getSelectedNodeIds().size() == 1;
     }
 
     public boolean isCritical() {
@@ -75,7 +75,7 @@ public class ExportMatchSignaturesCommand extends CommandBase implements IComman
         Director dir = getDir();
         if (!isApplicable())
             return;
-        int taxon = getDir().getMainViewer().getSelectedIds().iterator().next();
+        int taxon = getDir().getMainViewer().getSelectedNodeIds().iterator().next();
 
         String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
         File lastOpenFile = new File(name);

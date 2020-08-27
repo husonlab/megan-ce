@@ -103,7 +103,7 @@ public class ApplyCommand extends CommandBase implements ICommand {
             boolean ok = false;
             ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(viewer.getMode());
             if (classificationViewer != null) {
-                Collection<Integer> selected = classificationViewer.getSelectedIds();
+                Collection<Integer> selected = classificationViewer.getSelectedNodeIds();
                 if (selected != null && selected.size() > 0) {
                     buf.append(Basic.toString(selected, " "));
                     ok = true;

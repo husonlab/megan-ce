@@ -82,11 +82,11 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
         final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
         String message = "";
-        if (viewer.getSelectedIds().size() > 0) {
+        if (viewer.getSelectedNodeIds().size() > 0) {
             final ReadAssembler readAssembler = new ReadAssembler(true);
 
-            try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true)) {
-                final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedIds(), ", ");
+            try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true)) {
+                final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedNodeIds(), ", ");
                 final List<ReadData> readData = ReadDataCollector.apply(it, doc.getProgressListener());
                 readAssembler.computeOverlapGraph(label, minOverlap, readData, doc.getProgressListener());
 

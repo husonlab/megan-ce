@@ -41,7 +41,7 @@
   ~
   -->
 
-<AnchorPane prefHeight="430.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="megan.analysis.decontam.DecontamDialogController">
+<AnchorPane prefHeight="430.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="megan.fx.dialogs.decontam.DecontamDialogController">
    <children>
       <TextField editable="false" focusTraversable="false" prefColumnCount="35" style="-fx-background-color: transparent;" text="Cite:  Davis et al (2018), https://doi.org/10.1186/s40168-018-0605-2" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="0.0">
          <font>
@@ -348,6 +348,28 @@
                                              </tooltip>
                                           </TextField>
                                           <Button fx:id="outputFileBrowseButton" mnemonicParsing="false" text="Browse">
+                                             <HBox.margin>
+                                                <Insets left="5.0" right="5.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="50.0" prefHeight="36.0">
+                                       <children>
+                                          <CheckBox fx:id="saveReportCheckBox" mnemonicParsing="false" text="Save report to file:">
+                                             <tooltip>
+                                                <Tooltip text="Save report to file" />
+                                             </tooltip>
+                                          </CheckBox>
+                                          <TextField fx:id="reportFileTextField" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="10.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Text file to save report to" />
+                                             </tooltip>
+                                          </TextField>
+                                          <Button fx:id="reportFileBrowseButton" mnemonicParsing="false" text="Browse">
                                              <HBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </HBox.margin>

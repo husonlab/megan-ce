@@ -19,10 +19,7 @@
  */
 package megan.viewer;
 
-import jloda.graph.Edge;
-import jloda.graph.Node;
-import jloda.graph.NodeData;
-import jloda.graph.NodeSet;
+import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.find.SearchManager;
@@ -164,21 +161,23 @@ abstract public class ViewerBase extends PhyloTreeView {
     }
 
     /**
-     * This method returns a list of
-     * currently selected items.
+     * This method returns a list of currently selected nodes.
      *
-     * @return list of items
+     * @return list of nodes
      */
-    public Collection<Integer> getSelectedIds() {
-        Set<Integer> seen = new HashSet<>();
-        LinkedList<Integer> result = new LinkedList<>();
-        for (Node v = getSelectedNodes().getFirstElement(); v != null; v = getSelectedNodes().getNextElement(v)) {
-            Integer id = (Integer) v.getInfo();
-            if (!seen.contains(id)) {
-                seen.add(id);
-                result.add(id);
+    public Collection<Integer> getSelectedNodeIds() {
+        final Set<Integer> seen = new HashSet<>();
+        final ArrayList<Integer> result = new ArrayList<>(getSelectedNodes().size());
+        try {
+            for (Node v = getSelectedNodes().getFirstElement(); v != null; v = getSelectedNodes().getNextElement(v)) {
+                final Integer id = (Integer) v.getInfo();
+                if (!seen.contains(id)) {
+                    seen.add(id);
+                    result.add(id);
+                }
             }
         }
+        catch(NotOwnerException ignored) {}
         return result;
     }
 
@@ -697,14 +696,6 @@ abstract public class ViewerBase extends PhyloTreeView {
         if (previousNodeIdsOfInterest != null)
             this.previousNodeIdsOfInterest.addAll(previousNodeIdsOfInterest);
 
-    }
-
-    public Collection<Integer> getSelectedNodeIds() {
-        Set<Integer> set = new HashSet<>();
-        for (Node v = getSelectedNodes().getFirstElement(); v != null; v = getSelectedNodes().getNextElement(v)) {
-            set.add((Integer) v.getInfo());
-        }
-        return set;
     }
 
     abstract public boolean isShowFindToolBar();

@@ -60,7 +60,7 @@ class CSVExportTaxonomy {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDir().getDocument().getConnector();
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to total length");
             progressListener.setMaximum(taxonIds.size());
@@ -168,7 +168,7 @@ class CSVExportTaxonomy {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDir().getDocument().getConnector();
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Read names to taxa");
             progressListener.setMaximum(taxonIds.size());
@@ -222,7 +222,7 @@ class CSVExportTaxonomy {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDir().getDocument().getConnector();
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Read names to matches");
 
@@ -317,7 +317,7 @@ class CSVExportTaxonomy {
         try (final BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDir().getDocument().getConnector();
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to read names");
             progressListener.setMaximum(taxonIds.size());
@@ -368,7 +368,7 @@ class CSVExportTaxonomy {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             final IConnector connector = viewer.getDir().getDocument().getConnector();
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to read Ids");
             progressListener.setMaximum(taxonIds.size());

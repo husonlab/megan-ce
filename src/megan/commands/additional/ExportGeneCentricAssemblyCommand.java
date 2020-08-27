@@ -185,12 +185,12 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                 alignmentAssembler.showOverlapGraph(dir, dir.getDocument().getProgressListener());
         } else {
             final ViewerBase viewer = (ViewerBase) getViewer();
-            if (viewer.getSelectedIds().size() > 0) {
+            if (viewer.getSelectedNodeIds().size() > 0) {
                 final ReadAssembler readAssembler = new ReadAssembler(true);
 
-                final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedIds(), 0, 10, true, true);
+                final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true);
                 try (IReadBlockIterator it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
-                    final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedIds(), ", ");
+                    final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedNodeIds(), ", ");
                     final java.util.List<ReadData> readData = ReadDataCollector.apply(it, progress);
                     readAssembler.computeOverlapGraph(label, minOverlap, readData, progress);
                     int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);

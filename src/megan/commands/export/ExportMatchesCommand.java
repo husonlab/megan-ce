@@ -61,12 +61,12 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
         }
         Set<Integer> classIds = new HashSet<>();
         if (classificationName.equals(Classification.Taxonomy))
-            classIds.addAll(mainViewer.getSelectedIds());
+            classIds.addAll(mainViewer.getSelectedNodeIds());
         else {
             ClassificationViewer viewer = (ClassificationViewer) getDir().getViewerByClassName(classificationName);
             if (viewer != null) {
                 final Classification classification = ClassificationManager.get(classificationName, true);
-                for (Integer id : viewer.getSelectedIds()) {
+                for (Integer id : viewer.getSelectedNodeIds()) {
                     Set<Integer> ids = classification.getFullTree().getAllDescendants(id);
                     classIds.addAll(ids);
                 }

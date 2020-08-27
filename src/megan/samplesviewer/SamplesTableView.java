@@ -595,6 +595,7 @@ public class SamplesTableView {
                     samplesViewer.getDir().executeImmediately("update reinduce=true;" +
                             "select samples name='" + Basic.toString(samples, "' '") + "';", samplesViewer.getCommandManager());
                     selectSamples(samples, true);
+                    doc.getDir().notifyUpdateViewer(IDirector.ALL);
                 } catch (Exception e) {
                     Basic.caught(e);
                 }

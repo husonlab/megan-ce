@@ -139,8 +139,14 @@ public class DAA2RMA6 {
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover",
                 lcaAlgorithm== Document.LCAAlgorithm.longReads? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm== Document.LCAAlgorithm.weighted?Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA:Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
 
-        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode",
-                Document.ReadAssignmentMode.values(), longReads ? Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() : Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()));
+        final String readAssignmentModeDefaultValue;
+        if(options.isDoHelp()) {
+            readAssignmentModeDefaultValue=(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString()+" in long read mode, "+ Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()+" else");
+        } else if(longReads)
+            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
+        else
+            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
+        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode", readAssignmentModeDefaultValue));
 
         final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
 
@@ -196,6 +202,9 @@ public class DAA2RMA6 {
         for (String fileName : metaDataFiles) {
             Basic.checkFileReadableNonEmpty(fileName);
         }
+
+        if(Basic.notBlank(contaminantsFile))
+            Basic.checkFileReadableNonEmpty(contaminantsFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
         if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))

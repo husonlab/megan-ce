@@ -87,10 +87,10 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
             if (np.peekMatchIgnoreCase("selected")) {
                 np.matchIgnoreCase("selected");
                 if (classificationName.equals(Classification.Taxonomy))
-                    ids.addAll(mainViewer.getSelectedIds());
+                    ids.addAll(mainViewer.getSelectedNodeIds());
                 else if (!classificationName.equalsIgnoreCase("readNames")) {
                     final ClassificationViewer viewer = (ClassificationViewer) srcDir.getViewerByClassName(classificationName);
-                    ids.addAll(viewer.getSelectedIds());
+                    ids.addAll(viewer.getSelectedNodeIds());
                 }
             } else {
                 while (!np.peekMatchAnyTokenIgnoreCase("includeCollapsed ;"))

@@ -71,7 +71,7 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
             final ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(data);
             final Set<Integer> classIds = new HashSet<>();
             if (classificationViewer != null)
-                classIds.addAll(classificationViewer.getSelectedIds());
+                classIds.addAll(classificationViewer.getSelectedNodeIds());
 
             if (classIds.size() == 0)
                 count = ReadsExporter.exportAll(doc.getConnector(), outputFile, doc.getProgressListener());

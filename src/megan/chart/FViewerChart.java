@@ -151,7 +151,7 @@ public class FViewerChart extends ChartViewer {
                 chartData.setAllSeries(doc.getSampleNames());
                 String[] sampleNames = doc.getSampleNames().toArray(new String[0]);
 
-                java.util.Collection<Integer> ids = viewer.getSelectedIds();
+                java.util.Collection<Integer> ids = viewer.getSelectedNodeIds();
                 LinkedList<String> classNames = new LinkedList<>();
                 for (Integer id : ids) {
                     String className = viewer.getClassification().getName2IdMap().get(id);

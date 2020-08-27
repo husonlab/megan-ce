@@ -104,8 +104,8 @@ public class TreeTabBase extends JPanel {
                 clusterViewer.setShowFindToolBar(showFindToolBar);
             }
 
-            public java.util.Collection<Integer> getSelectedIds() {
-                return graphView.getSelectedIds();
+            public java.util.Collection<Integer> getSelectedNodeIds() {
+                return graphView.getSelectedNodeIds();
             }
 
             public SearchManager getSearchManager() {

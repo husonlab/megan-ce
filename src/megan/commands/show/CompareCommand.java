@@ -175,9 +175,7 @@ public class CompareCommand extends CommandBase implements ICommand {
         final Director newDir = Director.newProject();
 
         boolean ok = false;
-        final CompareWindow compareWindow;
-        try {
-            compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
+        final CompareWindow compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
 
             if (!compareWindow.isCanceled()) {
                 final String command = compareWindow.getCommand();
@@ -194,9 +192,6 @@ public class CompareCommand extends CommandBase implements ICommand {
                 }
                 ProjectManager.removeProject(newDir);
             }
-        } catch (CanceledException e) {
-            Basic.caught(e); // won't happen because we don't preload files here
-        }
     }
 
     public boolean isApplicable() {

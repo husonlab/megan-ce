@@ -148,6 +148,7 @@ public class IdMapper {
                         Basic.caught(e);
                     }
                 }
+                break;
             }
             case MeganMapDB: {
                 if (accessionMap == null || reload) {

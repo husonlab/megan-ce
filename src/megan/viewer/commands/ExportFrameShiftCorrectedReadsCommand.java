@@ -59,7 +59,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
             if (saveAll)
                 count = FrameShiftCorrectedReadsExporter.exportAll(doc.getConnector(), fileName, doc.getProgressListener());
             else
-                count = FrameShiftCorrectedReadsExporter.export(viewer.getClassification().getName(), viewer.getSelectedIds(), doc.getConnector(), fileName, doc.getProgressListener());
+                count = FrameShiftCorrectedReadsExporter.export(viewer.getClassification().getName(), viewer.getSelectedNodeIds(), doc.getConnector(), fileName, doc.getProgressListener());
 
             NotificationsInSwing.showInformation("Exported corrected reads: " + count);
 

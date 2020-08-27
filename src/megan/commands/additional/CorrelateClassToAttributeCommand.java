@@ -115,7 +115,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
     public void actionPerformed(ActionEvent event) {
         final Collection<String> list = getDoc().getSampleAttributeTable().getNumericalAttributes();
         final ClassificationViewer viewer = (ClassificationViewer) getViewer();
-        final Collection<Integer> ids = viewer.getSelectedIds();
+        final Collection<Integer> ids = viewer.getSelectedNodeIds();
         if (ids.size() > 0 && list.size() > 0) {
             final String[] choices = list.toArray(new String[0]);
             String choice = ProgramProperties.get("CorrelateToAttribute", choices[0]);

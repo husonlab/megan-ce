@@ -58,7 +58,7 @@ class CSVExportRefSeq {
                 final Document doc = viewer.getDir().getDocument();
                 final IConnector connector = doc.getConnector();
                 final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-                final java.util.Collection<Integer> taxonIds = viewer.getSelectedIds();
+                final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
 
                 progressListener.setSubtask("Read ids to Accession ids");
                 progressListener.setMaximum(taxonIds.size());

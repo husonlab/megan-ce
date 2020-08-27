@@ -31,8 +31,9 @@ import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
 import megan.main.Megan6;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * compares multiple samples
@@ -78,24 +79,33 @@ public class ComputeComparison {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output:");
-        final String[] inputFiles = options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files", new String[0]);
+        ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
         final String outputFile = options.getOption("-o", "out", "Output file", "comparison.megan");
 
+        final String metadataFile=options.getOption("-mdf","metaDataFile","Metadata file","");
         options.comment("Options:");
 
         final boolean normalize = options.getOption("-n", "normalize", "Normalize counts", true);
         final boolean ignoreUnassignedReads = options.getOption("-iu", "ignoreUnassignedReads", "Ignore unassigned, no-hit or contaminant reads", false);
-
 
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the desired read-assignment mode", Document.ReadAssignmentMode.readCount.toString()));
         final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, minimum non-zero count is set to 1", false);
 
         options.done();
 
+        if(inputFiles.size()==1 && Basic.isDirectory(inputFiles.get(0))) {
+            final String directory=inputFiles.get(0);
+            inputFiles.clear();
+            inputFiles.addAll(Basic.getAllFilesInDirectory(directory,true,".daa",".rma",".rma6"));
+        }
+
         for (String fileName : inputFiles) {
             if (!Basic.fileExistsAndIsNonEmpty(fileName))
                 throw new IOException("No such file or file empty: " + fileName);
         }
+
+        if(inputFiles.size()==0)
+            throw new UsageException("No input file");
 
         final Director dir = Director.newProject(false);
         final Document doc = dir.getDocument();
@@ -111,6 +121,14 @@ public class ComputeComparison {
                 compareCommand.apply(new NexusStreamParser(new StringReader(command)));
             } catch (Exception ex) {
                 Basic.caught(ex);
+            }
+        }
+
+        if(Basic.notBlank(metadataFile)) {
+            try(BufferedReader r=new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+                System.err.print("Processing Metadata: "+metadataFile);
+                doc.getSampleAttributeTable().read(r,doc.getSampleNames(),true);
+                System.err.println(", attributes: "+doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
             }
         }
 

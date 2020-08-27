@@ -400,7 +400,6 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
         }
     }
 
-
     public SampleAttributeTable getSampleAttributeTable() {
         return dir.getDocument().getSampleAttributeTable();
     }

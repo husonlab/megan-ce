@@ -144,8 +144,8 @@ public class PCoATab extends JPanel implements ITab {
                 PCoATab.this.drawScaleBar(this, gc, rect);
             }
 
-            public java.util.Collection<Integer> getSelectedIds() {
-                return super.getSelectedIds();
+            public java.util.Collection<Integer> getSelectedNodeIds() {
+                return super.getSelectedNodeIds();
             }
 
             public void fitGraphToWindow() {

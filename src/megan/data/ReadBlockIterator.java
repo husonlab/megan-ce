@@ -20,9 +20,9 @@
 package megan.data;
 
 import jloda.util.Basic;
-import jloda.util.ListOfLongs;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * iterator over reads in named classes
@@ -31,9 +31,8 @@ import java.io.IOException;
  */
 public class ReadBlockIterator implements IReadBlockIterator {
     private final IReadBlockGetter readBlockGetter;
-    private final ListOfLongs list;
-
-    private int locationInList = 0;
+    private final Iterator<Long> iterator;
+    private final long numberOfReads;
 
     private int countReads = 0;
 
@@ -42,8 +41,9 @@ public class ReadBlockIterator implements IReadBlockIterator {
      *
      * @param readBlockGetter
      */
-    public ReadBlockIterator(ListOfLongs list, IReadBlockGetter readBlockGetter) throws IOException {
-        this.list = list;
+    public ReadBlockIterator(Iterator<Long> readIdsIterator,long numberOfReads, IReadBlockGetter readBlockGetter) {
+        this.iterator = readIdsIterator;
+        this.numberOfReads =numberOfReads;
         this.readBlockGetter = readBlockGetter;
     }
 
@@ -59,24 +59,24 @@ public class ReadBlockIterator implements IReadBlockIterator {
 
     @Override
     public long getMaximumProgress() {
-        return list.size();
+        return numberOfReads;
     }
 
     @Override
     public long getProgress() {
-        return locationInList;
+        return countReads;
     }
 
     @Override
     public boolean hasNext() {
-        return locationInList < list.size();
+        return iterator.hasNext();
     }
 
     @Override
     public IReadBlock next() {
         countReads++;
         try {
-            return readBlockGetter.getReadBlock(list.get(locationInList++));
+            return readBlockGetter.getReadBlock(iterator.next());
         } catch (IOException e) {
             Basic.caught(e);
             return null;

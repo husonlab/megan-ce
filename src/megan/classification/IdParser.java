@@ -101,7 +101,7 @@ public class IdParser {
             taggedIds.restart(headerString);
             for (String label : taggedIds) {
                 try {
-                    int id = Integer.parseInt(label);
+                    int id = Basic.parseInt(label);
                     if (id != 0) {
                         if (disabledIds.contains(id))
                             disabled.add(id);

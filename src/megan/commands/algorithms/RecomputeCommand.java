@@ -82,7 +82,7 @@ public class RecomputeCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("minSupport=");
             getDoc().setMinSupport(np.getInt(1, Integer.MAX_VALUE));
         }
-        if (np.peekMatchIgnoreCase("weightedLCA")) {
+        if (np.peekMatchIgnoreCase("weightedLCA")) { // legacy
             np.matchIgnoreCase("weightedLCA=");
             getDoc().setLcaAlgorithm(Document.LCAAlgorithm.weighted);
         } else if (np.peekMatchIgnoreCase("lcaAlgorithm")) {

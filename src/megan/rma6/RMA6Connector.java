@@ -86,7 +86,7 @@ public class RMA6Connector implements IConnector {
                     block.readLocations(start, rma6File.getReader(), classId, list);
                 }
             }
-            return new ReadBlockIterator(list, getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
+            return new ReadBlockIterator(list.iterator(),list.size(), getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
         }
     }
 

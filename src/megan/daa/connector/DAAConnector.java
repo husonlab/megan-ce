@@ -103,8 +103,10 @@ public class DAAConnector implements IConnector {
 
     @Override
     public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        final ListOfLongs list = AccessClassificationsDAA.loadQueryLocations(daaHeader, classification, classIds);
-        return new ReadBlockIterator(list, getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
+        ListOfLongs list = AccessClassificationsDAA.loadQueryLocations(daaHeader, classification, classIds);
+        if(list==null)
+            list=new ListOfLongs();
+        return new ReadBlockIterator(list.iterator(),list.size(), getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
     }
 
     @Override

@@ -82,7 +82,7 @@ public class RMA3Connector implements IConnector {
                     block.readLocations(rma3File.getClassificationsFooter(), rma3File.getReader(), classId, list);
                 }
             }
-            return new ReadBlockIterator(list, getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
+            return new ReadBlockIterator(list.iterator(),list.size(), getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
         }
     }
 

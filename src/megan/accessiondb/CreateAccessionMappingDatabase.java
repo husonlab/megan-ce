@@ -56,7 +56,7 @@ public class CreateAccessionMappingDatabase {
         config.setCacheSize(10000);
         config.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
         config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
-        config.setJournalMode(SQLiteConfig.JournalMode.WAL);
+        //config.setJournalMode(SQLiteConfig.JournalMode.WAL);
 
         if (overwrite) {
             // check if file already exists and delete it if that is the case. Opening the DB with sqlite

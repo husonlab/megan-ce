@@ -774,6 +774,8 @@ public class ParametersDialog extends JDialog {
 
     public void setUseContaminantsFilter(boolean state) {
         useContaminantsFilter.setSelected(state);
+        if(state)
+            useContaminantsFilter.setEnabled(true);
     }
 
     public boolean isUseContaminantsFilter() {
@@ -781,18 +783,24 @@ public class ParametersDialog extends JDialog {
     }
 
     public String getParameterString() {
-        return " minSupportPercent=" + getMinSupportPercent() +
-                " minSupport=" + getMinSupport() + " minScore=" + getMinScore() + " maxExpected=" + getMaxExpected()
-                + " minPercentIdentity=" + getMinPercentIdentity() + " topPercent=" + getTopPercent() +
-                " lcaAlgorithm=" + getLcaAlgorithm().toString() + " lcaCoveragePercent=" + getLCACoveragePercent() +
-                " minPercentReadToCover=" + getMinPercentReadToCover() +
-                " minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
-                " minComplexity=" + getMinComplexity() + " longReads=" + isLongReads() +
-                " pairedReads=" + isPairedReads() + " useIdentityFilter=" + isUsePercentIdentity()
-                + (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
-                + (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")
-                + " readAssignmentMode=" + getReadAssignmentMode()
-                + " fNames=" + Basic.toString(activeFNames, " ");
+        return
+                " minScore=" + getMinScore() +
+                        " maxExpected=" + getMaxExpected()+
+                        " minPercentIdentity=" + getMinPercentIdentity() +
+                        " topPercent=" + getTopPercent() +
+                        " minSupportPercent=" + getMinSupportPercent() + " minSupport=" + getMinSupport() +
+                        " lcaAlgorithm=" + getLcaAlgorithm().toString() +
+                        " lcaCoveragePercent=" + getLCACoveragePercent() +
+                        " minPercentReadToCover=" + getMinPercentReadToCover() +
+                        " minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
+                        " minComplexity=" + getMinComplexity() +
+                        " longReads=" + isLongReads() +
+                        " pairedReads=" + isPairedReads() +
+                        " useIdentityFilter=" + isUsePercentIdentity()
+                        + (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
+                        + (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")
+                        + " readAssignmentMode=" + getReadAssignmentMode()
+                        + " fNames=" + Basic.toString(activeFNames, " ");
     }
 
     private boolean isCanceled() {

@@ -25,8 +25,8 @@ import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
-import megan.remote.RemoteServiceBrowser;
-import megan.remote.client.RemoteServiceManager;
+import megan.ms.clientdialog.RemoteServiceBrowser;
+import megan.ms.clientdialog.service.RemoteServiceManager;
 import megan.util.WindowUtilities;
 
 import javax.swing.*;

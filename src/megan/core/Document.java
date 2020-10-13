@@ -35,6 +35,7 @@ import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
+import megan.ms.client.connector.MSConnector;
 import megan.rma3.RMA3File;
 import megan.rma6.RMA6File;
 import megan.viewer.ClassificationViewer;
@@ -225,10 +226,10 @@ public class Document {
      */
     public void loadMeganFile() throws IOException {
         clearReads();
-        getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
-        if (getMeganFile().isMeganSummaryFile()) {
+        //getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
+        if (getMeganFile().isMeganSummaryFile() && !getMeganFile().isMeganServerFile()) {
             loadMeganSummaryFile();
-        } else if (getMeganFile().hasDataConnector()) {
+        } else if (getMeganFile().hasDataConnector() ||  getMeganFile().isMeganServerFile()) {
             reloadFromConnector(null);
         } else
             throw new IOException("File format not (or no longer) supported");
@@ -242,7 +243,11 @@ public class Document {
      * @throws IOException
      */
     private void reloadFromConnector(String parametersOverride) throws IOException {
-        if (getMeganFile().hasDataConnector()) {
+        if(getMeganFile().isMeganServerFile() && getMeganFile().isMeganSummaryFile()) {
+            final MSConnector msConnector=new MSConnector(getMeganFile().getFileName());
+            msConnector.loadMeganSummaryFile(this);
+        }
+        else if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
             SyncArchiveAndDataTable.syncArchive2Summary(getReadAssignmentMode(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
 
@@ -433,14 +438,16 @@ public class Document {
 
     /**
      * load the set megan summary file
-     *
-     * @throws IOException
      */
     public void loadMeganSummaryFile() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())));
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())))) {
+            loadMeganSummary(reader);
+        }
+     }
+
+    public void loadMeganSummary (BufferedReader reader) throws IOException {
         getDataTable().read(reader, false);
         getSampleAttributeTable().read(reader, getSampleNames(), true);
-        reader.close();
         String parameters = getDataTable().getParameters();
         if (parameters != null) {
             parseParameterString(parameters);
@@ -585,14 +592,22 @@ public class Document {
             if (getDataTable().getParameters() == null || getDataTable().getParameters().isEmpty())
                 getDataTable().setParameters(getParameterString());
 
-            byte[] userState = getDataTable().getUserStateAsBytes();
-            byte[] sampleAttributes = getSampleAttributeTable().getBytes();
-
-            Map<String, byte[]> label2data = new HashMap<>();
-            label2data.put(SampleAttributeTable.USER_STATE, userState);
-            label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributes);
-            getMeganFile().getConnector().putAuxiliaryData(label2data);
+            getMeganFile().getConnector().putAuxiliaryData(getAuxiliaryData());
         }
+    }
+
+    public Map<String,byte[]> getAuxiliaryData() throws IOException {
+        byte[] userState = getDataTable().getUserStateAsBytes();
+        byte[] sampleAttributes = getSampleAttributeTable().getBytes();
+
+        final Map<String, byte[]> label2data = new HashMap<>();
+        label2data.put(SampleAttributeTable.USER_STATE, userState);
+        label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributes);
+        return label2data;
+    }
+
+    public List<String> getClassificationNames() {
+        return new ArrayList<>(getDataTable().getClassification2Class2Counts().keySet());
     }
 
     /**

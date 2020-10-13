@@ -22,12 +22,10 @@ package megan.fx.dialogs.decontam;
 
 import jloda.swing.util.ToolBar;
 
-import javax.swing.*;
-
 public class ControlBindings {
-    public static void setup(final DecontamDialogController controller,final DecontamDialog viewer, ToolBar toolBar) {
-        controller.getCloseButton().setOnAction(e->{
-            viewer.getDir().execute("close;",viewer.getCommandManager());
+    public static void setup(final DecontamDialogController controller, final DecontamDialog viewer, ToolBar toolBar) {
+        controller.getCloseButton().setOnAction(e -> {
+            viewer.getDir().execute("close;", viewer.getCommandManager());
         });
     }
 
@@ -36,7 +34,7 @@ public class ControlBindings {
      *
      * @param viewer
      */
-    public static void updateScene(final DecontamDialogController controller,DecontamDialog viewer) {
+    public static void updateScene(final DecontamDialogController controller, DecontamDialog viewer) {
 
 
     }

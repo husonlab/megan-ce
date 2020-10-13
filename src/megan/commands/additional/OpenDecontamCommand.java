@@ -20,35 +20,15 @@
 
 package megan.commands.additional;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.director.IDirector;
-import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.ProgressDialog;
-import jloda.swing.window.NotificationsInSwing;
-import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
-import megan.blastclient.BlastService;
-import megan.blastclient.RemoteBlastClient;
-import megan.blastclient.RemoteBlastDialog;
 import megan.core.Director;
-import megan.core.Document;
 import megan.fx.dialogs.decontam.DecontamDialog;
-import megan.importblast.ImportBlastDialog;
-import megan.util.IReadsProvider;
-import megan.util.MeganFileFilter;
 import megan.util.WindowUtilities;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
 
 /**
  * open the decontam viewer
@@ -81,7 +61,7 @@ public class OpenDecontamCommand extends CommandBase implements ICommand {
     }
 
     public boolean isApplicable() {
-        return ((Director)getDir()).getDocument().getNumberOfReads()>0;
+        return ((Director) getDir()).getDocument().getNumberOfReads() > 0;
     }
 
     @Override

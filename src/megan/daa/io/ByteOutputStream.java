@@ -85,7 +85,7 @@ public final class ByteOutputStream extends OutputStream implements IOutput {
     public byte[] getBytes() {
         return this.buf;
     }
-    
+
     public byte[] getExactLengthCopy() {
         final byte[] bytes = new byte[size()];
         if (bytes.length >= 0)

@@ -32,6 +32,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import jloda.fx.control.table.MyTableView;
+import jloda.fx.util.FXSwingUtilities;
 import jloda.swing.director.IDirector;
 import jloda.util.Basic;
 import jloda.util.Pair;
@@ -40,7 +41,6 @@ import jloda.util.Triplet;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import jloda.fx.util.FXSwingUtilities;
 import megan.fx.PopupMenuFX;
 import megan.util.GraphicsUtilities;
 

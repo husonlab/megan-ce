@@ -34,7 +34,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * provides info on a DAA files

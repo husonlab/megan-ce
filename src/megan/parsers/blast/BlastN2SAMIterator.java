@@ -188,7 +188,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                                 hasAnotherAlignmentAgainstReference = true; //  also report other matches to same reference
                                 break;
                             } else
-                                pushBackLine(getNextLineStartsWith(NEW_QUERY,NEW_MATCH)); // skip other matches to same query
+                                pushBackLine(getNextLineStartsWith(NEW_QUERY, NEW_MATCH)); // skip other matches to same query
                         } else if (line.startsWith(QUERY)) { // match continues...
                             queryLineTokens = line.split("\\s+");
                             queryBuf.append(queryLineTokens[2]);

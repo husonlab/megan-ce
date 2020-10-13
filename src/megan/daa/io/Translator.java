@@ -94,7 +94,7 @@ public class Translator {
     public static final byte[] DNA_ALPHABET = "ACGTN".getBytes();
 
     public static final byte[] AMINO_ACID_ALPHABET = "ARNDCQEGHILKMFPSTWYVBJZX*_/\\".getBytes(); // last two must be: / and then \
-    public static final byte[] AMINO_ACID_ALPHABET_PRE_DIAMOND_132="ARNDCQEGHILKMFPSTWYVBJZX*/\\".getBytes(); // last two must be: / and then \
+    public static final byte[] AMINO_ACID_ALPHABET_PRE_DIAMOND_132 = "ARNDCQEGHILKMFPSTWYVBJZX*/\\".getBytes(); // last two must be: / and then \
 
     /**
      * get reversed-complemented DNA

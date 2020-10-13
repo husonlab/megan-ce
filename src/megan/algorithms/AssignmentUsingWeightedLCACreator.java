@@ -60,11 +60,11 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
     /**
      * constructor
      */
-    public AssignmentUsingWeightedLCACreator(final String cName,final Document doc, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
-        this.cName=cName;
+    public AssignmentUsingWeightedLCACreator(final String cName, final Document doc, final boolean usingIdentityFilter, final float percentToCover) throws IOException, CanceledException {
+        this.cName = cName;
         this.useIdentityFilter = usingIdentityFilter;
 
-        this.taxon2SpeciesMapping = new Taxon2SpeciesMapping(cName,doc.getProgressListener());
+        this.taxon2SpeciesMapping = new Taxon2SpeciesMapping(cName, doc.getProgressListener());
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 

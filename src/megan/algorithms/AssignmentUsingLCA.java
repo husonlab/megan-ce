@@ -73,7 +73,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
      * @param ignoreAncestralTaxa
      */
     public AssignmentUsingLCA(String cName, boolean useIdentityFilter, float percentToCover, boolean ignoreAncestralTaxa) {
-        this.cName=cName;
+        this.cName = cName;
         fullTree = ClassificationManager.get(cName, false).getFullTree();
         idMapper = ClassificationManager.get(cName, true).getIdMapper();
         name2IdMap = ClassificationManager.get(cName, false).getIdMapper().getName2IdMap();

@@ -38,9 +38,9 @@ public class ClassificationManager {
 
     private static final ArrayList<String> defaultClassificationsList = new ArrayList<>();
     private static final ArrayList<String> defaultClassificationsListExcludingNCBITaxonomy = new ArrayList<>();
-    
-    private static final Map<String,String> additionalClassification2TreeFile=new HashMap<>();
-    private static final Map<String,String> additionalClassification2MapFile=new HashMap<>();
+
+    private static final Map<String, String> additionalClassification2TreeFile = new HashMap<>();
+    private static final Map<String, String> additionalClassification2MapFile = new HashMap<>();
 
     private static String meganMapDBFile;
     private static boolean useFastAccessionMappingMode;
@@ -76,19 +76,19 @@ public class ClassificationManager {
                 if (classification == null) {
                     if (load) {
                         final String treeFile;
-                        if(name.equals(Classification.Taxonomy))
-                            treeFile="ncbi.tre";
-                        else if(additionalClassification2TreeFile.containsKey(name.toLowerCase()))
-                            treeFile=additionalClassification2TreeFile.get(name.toLowerCase());
+                        if (name.equals(Classification.Taxonomy))
+                            treeFile = "ncbi.tre";
+                        else if (additionalClassification2TreeFile.containsKey(name.toLowerCase()))
+                            treeFile = additionalClassification2TreeFile.get(name.toLowerCase());
                         else
-                            treeFile=name.toLowerCase()+".tre";
+                            treeFile = name.toLowerCase() + ".tre";
                         final String mapFile;
-                        if(name.equals(Classification.Taxonomy))
-                            mapFile="ncbi.map";
-                        else if(additionalClassification2MapFile.containsKey(name.toLowerCase()))
-                            mapFile=additionalClassification2MapFile.get(name.toLowerCase());
+                        if (name.equals(Classification.Taxonomy))
+                            mapFile = "ncbi.map";
+                        else if (additionalClassification2MapFile.containsKey(name.toLowerCase()))
+                            mapFile = additionalClassification2MapFile.get(name.toLowerCase());
                         else
-                            mapFile=name.toLowerCase()+".map";
+                            mapFile = name.toLowerCase() + ".map";
                         classification = load(name, treeFile, mapFile, new ProgressSilent());
                     } else {
                         classification = new Classification(name);

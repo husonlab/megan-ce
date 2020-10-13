@@ -35,6 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import jloda.fx.control.AMultipleSelectionModel;
+import jloda.fx.util.FXSwingUtilities;
 import jloda.swing.util.BasicSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
@@ -45,7 +46,6 @@ import megan.chart.ChartColorManager;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
-import jloda.fx.util.FXSwingUtilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;

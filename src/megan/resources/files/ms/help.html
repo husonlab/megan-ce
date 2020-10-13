@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<h1 >MeganServer commands</h1>
+
+All commands are prefixed by "megan6server/" (or similar prefix).
+
+<h2>General:</h2>
+<table>
+    <tr>
+        <td>help</td><td> Get this help</td>
+    </tr>
+    <tr>
+        <td> about</td> <td> Get version and general info</td>
+    </tr>
+    <tr>
+        <td> isReadOnly</td> <td> At present, always true</td>
+    </tr>
+</table>
+
+<h2>Files:</h2>
+<table>
+    <tr>
+        <td> list</td> <td> List all datasets,
+        Optional parameters: metadata=<i>bool</i>, readCount=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>getAuxiliary?file=<i>name</i></td> <td> Get auxiliary data for file, optional parameter: binary=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>getNumberOfReads?file=<i>name</i></td> <td> Get number of reads for file</td>
+    </tr>
+    <tr>
+        <td>getNumberOfMatches?file=<i>name</i></td> <td> Get number of matches for file</td>
+    </tr>
+    <tr>
+        <td>getClassificationNames?file=<i>name</i></td> <td> Get list of all classifications for file</td>
+    </tr>
+</table>
+
+<h2>Reads and matches:</h2>
+<table>
+    <tr>
+        <td>getRead?file=<i>name</i>&readId=<i>num</i></td> <td> Get read and optionally all matches for given file and readId  </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td> Optional parameters: header=<i>bool</i>, sequence=<i>bool</i>, matches=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>getReads?file=<i>name</i></td> <td> Get all reads for a given file; returns first page and page-id for next</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td> Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td> getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td> <td> Get all reads for a given file, classification and one or more classes. Returns first page and page-id for next</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td> Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>getNext?pageId=<i>num</i></td> <td> Get the next page of reads</td>
+    </tr>
+</table>
+
+<h2>Classifications:</h2>
+<table>
+    <tr>
+        <td>getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td> <td> Get the classifications block for a named file and classification, optinal parameter: binary=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td> <td> Get the number reads for a given file, classification and classId</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td> optional parameter: sum=<i>bool</i></td>
+    </tr>
+</table>
+
+<h2>Admin:</h2>
+<table>
+    <tr>
+        <td>admin/updateDatasets</td> <td> Update server after files have been added to root directory</td>
+    </tr>
+    <tr>
+        <td>admin/listUsers</td> <td> List all defined users</td>
+    </tr>
+    <tr>
+        <td>admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td> <td> Add a new user</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td> Optional parameter: replace=<i>bool</i></td>
+    </tr>
+    <tr>
+        <td>admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>
+    </tr>
+    <tr>
+        <td>admin/getLog</td> <td> Get log entries</td>
+    </tr>
+    <tr>
+        <td>admin/clearLog</td> <td> Clear log entries</td>
+    </tr>
+
+</table>
+
+</html>
+

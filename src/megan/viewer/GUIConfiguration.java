@@ -22,7 +22,6 @@ package megan.viewer;
 import jloda.swing.window.MenuConfiguration;
 import jloda.util.ProgramProperties;
 import megan.classification.data.ClassificationCommandHelper;
-import megan.main.MeganProperties;
 
 /**
  * configuration for menu and toolbar
@@ -46,7 +45,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Open Recent", ";");
         menuConfig.defineMenu("Export", "Text (CSV) Format...;BIOM1 Format...;STAMP Format...;|;Metadata...;|;Tree...;|;" +
                 "Annotations in GFF Format...;Export Read Lengths and Coverage...;Export Frame-Shift Corrected Reads...;"
-                +"Export Segmentation of Reads...;|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;All Individual Samples...;MEGAN Summary File...;");
+                + "Export Segmentation of Reads...;|;Reads...;Matches...;Alignments...;Overlap Graph...;Gene-Centric Assembly...;|;All Individual Samples...;MEGAN Summary File...;");
         menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Edit Node Label;Edit Edge Label;Description...;|;Format...;|;Find...;Find Again;|;Colors...;|;@Preferences;");
@@ -65,7 +64,7 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Expand/Contract", "Expand Horizontal;Contract Horizontal;Expand Vertical;Contract Vertical;");
 
         menuConfig.defineMenu("Options", "Change LCA Parameters...;Set Number Of Reads...;|;Project Assignments To Rank...;|;List Summary...;List Paths...;|;" +
-                "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;"+ ProgramProperties.getIfEnabled("enable-decontam","Decontam...;|;")+"Open NCBI Web Page...;Inspect...;Inspect Long Reads...;");
+                "Compute Core Biome...;|;Shannon-Weaver Index...;Simpson-Reciprocal Index...;|;" + ProgramProperties.getIfEnabled("enable-decontam", "Decontam...;|;") + "Open NCBI Web Page...;Inspect...;Inspect Long Reads...;");
 
         menuConfig.defineMenu("Tree", "Collapse;Collapse To Top;Collapse All Others;Collapse at Level...;Rank...;|;" +
                 "Uncollapse;Uncollapse Subtree;Uncollapse All;|;Keep Non-Prokaryotes Collapsed;Keep Non-Eukaryotes Collapsed;Keep Non-Viruses Collapsed;|;Show Names;Show IDs;Show Number of Assigned;" +

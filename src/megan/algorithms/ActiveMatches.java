@@ -19,7 +19,6 @@
  */
 package megan.algorithms;
 
-import megan.classification.Classification;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
@@ -48,7 +47,7 @@ public class ActiveMatches {
         // the set of matches that we will consider:
         for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
-            if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(cName,matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
+            if (!matchBlock.isIgnore() && !TaxonomyData.isTaxonDisabled(cName, matchBlock.getTaxonId()) && matchBlock.getBitScore() >= minScore && matchBlock.getExpected() <= maxExpected &&
                     (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= minPercentIdentity)) {
                 if (cName == null || matchBlock.getId(cName) > 0)
                     activeMatchesForClassification.set(i);

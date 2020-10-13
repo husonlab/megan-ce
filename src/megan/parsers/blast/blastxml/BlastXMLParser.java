@@ -219,17 +219,17 @@ public class BlastXMLParser extends DefaultHandler {
                             if (hit.def != null)
                                 buf.append(hit.def);
                             if (hit.id != null) {
-                                if(buf.length()>0)
+                                if (buf.length() > 0)
                                     buf.append(" ");
                                 buf.append(hit.id).append(" ");
                             }
                             if (hit.accession != null) {
-                                if(buf.length()>0)
+                                if (buf.length() > 0)
                                     buf.append(" ");
                                 buf.append("acc|").append(hit.accession);
                             }
 
-                            if(buf.length()>0)
+                            if (buf.length() > 0)
                                 buf.append(" ");
 
                             match.setSamLine(makeSAM(iteration.queryDef, buf.toString().replaceAll("\\s+", " "), hit.len, hsp.bitScore, (float) hsp.eValue,

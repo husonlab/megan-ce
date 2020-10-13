@@ -34,7 +34,6 @@
 		<path id="build.modulepath">
 			<fileset dir="../../jloda/jars"  includes="*.jar"/>
 			<fileset dir="../../megan-ce/jars"  includes="*.jar"/>
-			<fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
 			<fileset dir="${jfxDir}"  includes="*.jar"/>
 			<fileset dir="../antbuild"  includes="jloda.jar"/>
 		</path>
@@ -42,7 +41,6 @@
 		<path id="run.modulepath">
 			<fileset dir="../../jloda/jars"  includes="*.jar"/>
 			<fileset dir="../../megan-ce/jars"  includes="*.jar"/>
-			<fileset dir="../../megan-ce/jars/megan6server"  includes="*.jar"/>
 			<fileset dir="${jfxDir}"  includes="*.jar"/>
 			<fileset dir="../antbuild"  includes="jloda.jar"/>
 			<fileset dir="../antbuild"  includes="megan.jar"/>
@@ -66,7 +64,7 @@
 		<target name="copy_resources" depends="copy_sources">
 			<copy todir="${buildModulesDir}/megan">
 				<fileset dir="../../megan-ce/src"
-					includes="**/*.fxml **/*.png **/*.gif **/*.css **/*.txt **/*.map **/*.info **/*.tre **/*.lvl"/>
+				includes="**/*.html **/*.fxml **/*.png **/*.gif **/*.css **/*.txt **/*.map **/*.info **/*.tre **/*.lvl"/>
 			</copy>
 		</target>
 

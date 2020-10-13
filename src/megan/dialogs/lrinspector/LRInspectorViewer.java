@@ -186,7 +186,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         swingPanel4FX = new SwingPanel4FX<>(this.getClass());
 
         swingPanel4FX.runLaterInSwing(() -> {
-           // System.err.println("SETTING UP");
+            // System.err.println("SETTING UP");
             mainPanel.add(swingPanel4FX.getPanel(), BorderLayout.CENTER); // add panel once initialization complete
             mainPanel.validate();
             Platform.runLater(() -> {
@@ -264,11 +264,10 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     }
 
     public void destroyView() throws CanceledException {
-       // todo: destroy breaks JavaFX
-        if(true) {
+        // todo: destroy breaks JavaFX
+        if (true) {
             getFrame().setVisible(false);
-        }
-        else {
+        } else {
             Platform.runLater(() -> {
                 if (swingPanel4FX != null)
                     swingPanel4FX.getController().getService().cancel();

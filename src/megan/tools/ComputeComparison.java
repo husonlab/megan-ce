@@ -31,7 +31,10 @@ import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
 import megan.main.Megan6;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -82,7 +85,7 @@ public class ComputeComparison {
         ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
         final String outputFile = options.getOption("-o", "out", "Output file", "comparison.megan");
 
-        final String metadataFile=options.getOption("-mdf","metaDataFile","Metadata file","");
+        final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
         options.comment("Options:");
 
         final boolean normalize = options.getOption("-n", "normalize", "Normalize counts", true);
@@ -93,10 +96,10 @@ public class ComputeComparison {
 
         options.done();
 
-        if(inputFiles.size()==1 && Basic.isDirectory(inputFiles.get(0))) {
-            final String directory=inputFiles.get(0);
+        if (inputFiles.size() == 1 && Basic.isDirectory(inputFiles.get(0))) {
+            final String directory = inputFiles.get(0);
             inputFiles.clear();
-            inputFiles.addAll(Basic.getAllFilesInDirectory(directory,true,".daa",".rma",".rma6"));
+            inputFiles.addAll(Basic.getAllFilesInDirectory(directory, true, ".daa", ".rma", ".rma6"));
         }
 
         for (String fileName : inputFiles) {
@@ -104,7 +107,7 @@ public class ComputeComparison {
                 throw new IOException("No such file or file empty: " + fileName);
         }
 
-        if(inputFiles.size()==0)
+        if (inputFiles.size() == 0)
             throw new UsageException("No input file");
 
         final Director dir = Director.newProject(false);
@@ -124,11 +127,11 @@ public class ComputeComparison {
             }
         }
 
-        if(Basic.notBlank(metadataFile)) {
-            try(BufferedReader r=new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
-                System.err.print("Processing Metadata: "+metadataFile);
-                doc.getSampleAttributeTable().read(r,doc.getSampleNames(),true);
-                System.err.println(", attributes: "+doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
+        if (Basic.notBlank(metadataFile)) {
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+                System.err.print("Processing Metadata: " + metadataFile);
+                doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
+                System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
             }
         }
 

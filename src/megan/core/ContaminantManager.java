@@ -57,17 +57,17 @@ public class ContaminantManager {
         try (FileLineIterator it = new FileLineIterator(file)) {
             while (it.hasNext()) {
                 final String aLine = it.next().trim();
-                if(aLine.length()>0) {
-                    if(Character.isLetter(aLine.charAt(0))) { // is a single taxon name
+                if (aLine.length() > 0) {
+                    if (Character.isLetter(aLine.charAt(0))) { // is a single taxon name
                         final int taxonId = TaxonomyData.getName2IdMap().get(aLine);
-                        if(taxonId!=0)
+                        if (taxonId != 0)
                             contaminants.add(taxonId);
                         else
-                        System.err.println("Failed to identify taxon for: '"+aLine+"'");
+                            System.err.println("Failed to identify taxon for: '" + aLine + "'");
                     } else {
-                        try(NexusStreamParser np=new NexusStreamParser(new StringReader(aLine))) {
-                            while((np.peekNextToken())!=TT_EOF) {
-                                final String token=np.getWordRespectCase();
+                        try (NexusStreamParser np = new NexusStreamParser(new StringReader(aLine))) {
+                            while ((np.peekNextToken()) != TT_EOF) {
+                                final String token = np.getWordRespectCase();
                                 final int taxonId;
                                 if (Basic.isInteger(token))
                                     taxonId = Basic.parseInt(token);
@@ -76,17 +76,17 @@ public class ContaminantManager {
                                 if (taxonId > 0)
                                     contaminants.add(taxonId);
                                 else
-                                    System.err.println("Failed to identify taxon for: '"+token+"'");
+                                    System.err.println("Failed to identify taxon for: '" + token + "'");
 
                             }
                         }
                     }
                 }
-             }
+            }
         }
         if (contaminants.size() > 0) {
             setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
-            System.err.printf("Contaminants: %,d input, %,d total%n",contaminants.size(),contaminantsAndDescendants.size());
+            System.err.printf("Contaminants: %,d input, %,d total%n", contaminants.size(), contaminantsAndDescendants.size());
         }
     }
 
@@ -99,7 +99,7 @@ public class ContaminantManager {
      * @param allNodes
      */
     private void setAllDescendentsRec(Node v, boolean mustAddToAll, Set<Integer> internalNodes, Set<Integer> allNodes) {
-        if (!mustAddToAll && internalNodes.contains((Integer)v.getInfo()))
+        if (!mustAddToAll && internalNodes.contains((Integer) v.getInfo()))
             mustAddToAll = true;
 
         if (mustAddToAll)
@@ -135,7 +135,7 @@ public class ContaminantManager {
             }
         }
         if (contaminants.size() > 0)
-            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer)TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
+            setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
 
     /**

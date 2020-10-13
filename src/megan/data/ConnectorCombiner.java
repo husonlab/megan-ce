@@ -21,7 +21,6 @@
 package megan.data;
 
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.Single;
 import megan.core.MeganFile;

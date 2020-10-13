@@ -43,7 +43,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.print.Printable;
 
 public class DecontamDialog extends JFrame implements IDirectableViewer, IViewerWithJComponent, IViewerWithFindToolBar {
     private final Director dir;
@@ -125,8 +124,8 @@ public class DecontamDialog extends JFrame implements IDirectableViewer, IViewer
         swingPanel4FX.runLaterInSwing(() -> {
             mainPanel.add(swingPanel4FX.getPanel(), BorderLayout.CENTER); // add panel once initialization complete
             mainPanel.validate();
-            Platform.runLater(() -> ControlBindings.setup(swingPanel4FX.getController(),DecontamDialog.this, toolBar));
-            Platform.runLater(() -> ControlBindings.updateScene(swingPanel4FX.getController(),DecontamDialog.this));
+            Platform.runLater(() -> ControlBindings.setup(swingPanel4FX.getController(), DecontamDialog.this, toolBar));
+            Platform.runLater(() -> ControlBindings.updateScene(swingPanel4FX.getController(), DecontamDialog.this));
         });
 
     }

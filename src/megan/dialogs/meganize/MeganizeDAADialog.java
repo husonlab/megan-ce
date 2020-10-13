@@ -92,7 +92,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
             buf.append(" maxExpected=").append(getMaxExpected());
             buf.append(" minPercentIdentity=").append(getMinPercentIdentity());
             buf.append(" topPercent=").append(getTopPercent());
-            if(getMinSupportPercent()>0)
+            if (getMinSupportPercent() > 0)
                 buf.append(" minSupportPercent=").append(getMinSupportPercent());
             else
                 buf.append(" minSupport=").append(getMinSupport());

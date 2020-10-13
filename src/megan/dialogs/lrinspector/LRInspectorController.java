@@ -20,7 +20,6 @@
 
 package megan.dialogs.lrinspector;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -148,8 +147,8 @@ public class LRInspectorController {
         tableItemService.setOnSucceeded(event -> {
             headerField.textProperty().unbind();
             headerField.setText(viewer.getClassIdDisplayName() + ": " + computeReadStats());
-           tableView.sort();
-            updateColumnWidths(tableView,layoutCol);
+            tableView.sort();
+            updateColumnWidths(tableView, layoutCol);
             recolor();
             setupSearcher();
             viewer.setUptoDate(true);
@@ -185,10 +184,10 @@ public class LRInspectorController {
             checkMenuItem.selectedProperty().bindBidirectional(col.visibleProperty());
             col.visibleProperty().addListener((observable, oldValue, newValue) -> ProgramProperties.put(col.getText() + "ColVisible", newValue));
             tableMenuButton.getItems().add(checkMenuItem);
-            checkMenuItem.selectedProperty().addListener(c-> updateColumnWidths(tableView,layoutCol));
+            checkMenuItem.selectedProperty().addListener(c -> updateColumnWidths(tableView, layoutCol));
         }
 
-        tableView.widthProperty().addListener(c -> updateColumnWidths(tableView,layoutCol));
+        tableView.widthProperty().addListener(c -> updateColumnWidths(tableView, layoutCol));
 
         layoutCol.setGraphic(createAxis(viewer.maxReadLengthProperty(), layoutCol.widthProperty()));
         layoutCol.setResizable(false);
@@ -300,7 +299,7 @@ public class LRInspectorController {
         });
     }
 
-    private static void updateColumnWidths (TableView<TableItem> tableView, TableColumn layoutCol) {
+    private static void updateColumnWidths(TableView<TableItem> tableView, TableColumn layoutCol) {
         double newLayoutTableColumnWidth = tableView.getWidth() - 20;
         for (TableColumn col : tableView.getColumns()) {
             if (col != layoutCol && col.isVisible())

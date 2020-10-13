@@ -31,7 +31,6 @@ import megan.main.MeganProperties;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,13 +52,13 @@ public class SetUseLCACommand extends CommandBase implements ICommand {
         final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase(";");
 
-        final Set<String> set= new HashSet<>(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])));
-        if(useLCA)
+        final Set<String> set = new HashSet<>(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])));
+        if (useLCA)
             set.add(cName);
         else
             set.remove(cName);
 
-        ProgramProperties.put(MeganProperties.TAXONOMIC_CLASSIFICATIONS,set.toArray(new String[0]));
+        ProgramProperties.put(MeganProperties.TAXONOMIC_CLASSIFICATIONS, set.toArray(new String[0]));
 
         if (getParent() instanceof ImportBlastDialog) {
             final IdMapper mapper = ClassificationManager.get(cName, true).getIdMapper();

@@ -123,7 +123,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
 
                 meganFile.checkFileOkToRead(); // will throw IOException if there is a problem
 
-                if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector()) {
+                if (meganFile.isMeganServerFile() || meganFile.hasDataConnector()) {
                     if (meganFile.isMeganServerFile())
                         meganFile.setReadOnly(true);
                     if (!meganFile.isReadOnly() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId())) {
@@ -180,7 +180,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
                     NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", Basic.getFileNameWithoutPath(fileName), doc.getNumberOfReads()), 5000);
                 } else
-                    System.err.println(String.format("Opened file '%s' with %,d reads", fileName, doc.getNumberOfReads()));
+                    System.err.printf("Opened file '%s' with %,d reads%n", fileName, doc.getNumberOfReads());
                 timeOfLastOpen = System.currentTimeMillis();
                 if (!ProgramProperties.isUseGUI())
                     executeImmediately("update;");

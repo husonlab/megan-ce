@@ -57,7 +57,7 @@ public class ReadAssignmentCalculator {
                 return computeCoveredBases(readBlock, intervals);
             }
             case readMagnitude: {
-                return ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader(),true);
+                return ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader(), true);
             }
         }
     }

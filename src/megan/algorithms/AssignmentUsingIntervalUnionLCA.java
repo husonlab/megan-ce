@@ -22,7 +22,6 @@ package megan.algorithms;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.data.ClassificationFullTree;
@@ -54,8 +53,8 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      */
-    public AssignmentUsingIntervalUnionLCA(final String cName,Document doc) {
-        this.cName=cName;
+    public AssignmentUsingIntervalUnionLCA(final String cName, Document doc) {
+        this.cName = cName;
         this.weightedPercentFactor = Math.min(1f, doc.getLcaCoveragePercent() / 100.0f);
         this.topPercent = doc.getTopPercent();
         this.fullTree = ClassificationManager.get(cName, true).getFullTree();
@@ -108,7 +107,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
         for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {
             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
             int taxonId = matchBlock.getId(cName);
-            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName,taxonId)) {
+            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName, taxonId)) {
                 if (numberOfEvents + 1 >= events.length) { // need enough to add two new events
                     StartStopEvent[] tmp = new StartStopEvent[2 * events.length];
                     System.arraycopy(events, 0, tmp, 0, numberOfEvents);
@@ -144,7 +143,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
                             final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                             final int taxonId = matchBlock.getId(cName); // store the best score for each taxon
 
-                            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName,taxonId)) {
+                            if (taxonId > 0 && !TaxonomyData.isTaxonDisabled(cName, taxonId)) {
                                 Float bestScore = taxon2BestScore.get(taxonId);
                                 if (bestScore == null)
                                     taxon2BestScore.put(taxonId, matchBlock.getBitScore());

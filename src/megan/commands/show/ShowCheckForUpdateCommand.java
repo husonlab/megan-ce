@@ -20,22 +20,13 @@
 package megan.commands.show;
 
 
-import com.install4j.api.launcher.ApplicationLauncher;
-import com.install4j.api.update.ApplicationDisplayMode;
-import com.install4j.api.update.UpdateChecker;
-import com.install4j.api.update.UpdateDescriptor;
-import com.install4j.api.update.UpdateDescriptorEntry;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.swing.util.InfoMessage;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.main.CheckForUpdate;
-import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

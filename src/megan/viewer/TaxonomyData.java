@@ -89,7 +89,7 @@ public class TaxonomyData {
      * @param taxonId
      * @return true, if disabled
      */
-    public static boolean isTaxonDisabled(String cName,Integer taxonId) {
+    public static boolean isTaxonDisabled(String cName, Integer taxonId) {
         return cName.equals(Classification.Taxonomy) && (taxonId == null || (taxonId > 0 && taxonomyClassification.getIdMapper().getDisabledIds().contains(taxonId)));
     }
 
@@ -217,7 +217,7 @@ public class TaxonomyData {
             {
                 Node w = v;
                 while (true) {
-                    if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get((Integer)w.getInfo())))
+                    if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get((Integer) w.getInfo())))
                         path.push(w);
                     if (w.getInDegree() > 0)
                         w = w.getFirstInEdge().getSource();
@@ -231,12 +231,12 @@ public class TaxonomyData {
                 Integer id = (Integer) w.getInfo();
                 if (id != null) {
                     if (majorRanksOnly) {
-                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer)w.getInfo()));
+                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer) w.getInfo()));
 
                         final char key = Character.toUpperCase(letters.charAt(0));
                         while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {
                             char missing = expectedPath.charAt(expectedIndex);
-                            if(missing!='K') {
+                            if (missing != 'K') {
                                 if (buf.length() > 0)
                                     buf.append(" ");
                                 buf.append("[").append(missing == 'D' ? "D" : missing).append("] unknown;");
@@ -282,7 +282,7 @@ public class TaxonomyData {
     public static void setDisabledInternalTaxa(Set<Integer> internal) {
         final Node root = taxonomyClassification.getFullTree().getRoot();
         if (root != null)
-            setDisabledInternalTaxaRec(root, internal, internal.contains((Integer)root.getInfo()));
+            setDisabledInternalTaxaRec(root, internal, internal.contains((Integer) root.getInfo()));
     }
 
     /**
@@ -353,7 +353,7 @@ public class TaxonomyData {
         for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
             Node w = e.getTarget();
             Integer id = (Integer) w.getInfo();
-            if (id != 131567 && id != 2 && id!=2157)// cellular organisms
+            if (id != 131567 && id != 2 && id != 2157)// cellular organisms
                 ids2collapse.add(id);
         }
         ids2collapse.add(2759); // eukaryotes

@@ -33,9 +33,11 @@ import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.viewer.TaxonomyData;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.*;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * extract reads using the IConnector
@@ -62,8 +64,8 @@ public class ReadsExtractor {
                                     final String outDirectory, String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
         progress.setSubtask("Extracting by " + classificationName);
 
-        if(outDirectory.length()>0)
-            fileName =new File(outDirectory, fileName).getPath();
+        if (outDirectory.length() > 0)
+            fileName = new File(outDirectory, fileName).getPath();
 
         final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
@@ -77,8 +79,8 @@ public class ReadsExtractor {
 
         BufferedWriter w;
         if (useOneOutputFile) {
-            w=new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-            System.err.println("Writing to: "+fileName);
+            w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
+            System.err.println("Writing to: " + fileName);
         } else {
             w = null;
         }
@@ -110,7 +112,7 @@ public class ReadsExtractor {
                                     w.close();
                                 final String cName = classId2Name.get(classId);
                                 final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
-                                w=new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fName)));
+                                w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fName)));
                             }
                             first = false;
                         }

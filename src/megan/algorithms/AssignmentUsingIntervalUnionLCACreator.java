@@ -21,7 +21,6 @@
 package megan.algorithms;
 
 import jloda.util.ProgramProperties;
-import megan.classification.Classification;
 import megan.core.Document;
 
 /**
@@ -37,8 +36,8 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      *
      * @param document
      */
-    public AssignmentUsingIntervalUnionLCACreator(String cName,Document document) {
-        this.cName=cName;
+    public AssignmentUsingIntervalUnionLCACreator(String cName, Document document) {
+        this.cName = cName;
         this.document = document;
         if (ProgramProperties.get("use-segment-lca", false))
             System.err.println("Using 'segment-LCA' algorithm for binning: " + cName);
@@ -55,6 +54,6 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
      */
     @Override
     public IAssignmentAlgorithm createAssignmentAlgorithm() {
-        return new AssignmentUsingIntervalUnionLCA(cName,document);
+        return new AssignmentUsingIntervalUnionLCA(cName, document);
     }
 }

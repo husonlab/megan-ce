@@ -21,8 +21,6 @@ package megan.dialogs.reanalyze.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.FileFilter;
-import jloda.swing.util.FileFilterBase;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
@@ -36,7 +34,6 @@ import megan.util.MeganizedDAAFileFilter;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 
 /**
  * choose files to reanalyze

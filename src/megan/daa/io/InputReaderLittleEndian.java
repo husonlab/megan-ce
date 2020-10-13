@@ -75,10 +75,10 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
 
     /**
      * read bytes
-      */
-    public byte[] readBytes (int count) throws IOException {
-        final byte[] bytes=new byte[count];
-        read(bytes,0,count);
+     */
+    public byte[] readBytes(int count) throws IOException {
+        final byte[] bytes = new byte[count];
+        read(bytes, 0, count);
         return bytes;
     }
 
@@ -95,7 +95,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
         return (((int) bytes[0] & 0xFF)) | (((int) bytes[1] & 0xFF) << 8) | (((int) bytes[2] & 0xFF) << 16) | (((int) bytes[3]) << 24);
     }
 
-      /**
+    /**
      * read long, little endian
      *
      * @return long

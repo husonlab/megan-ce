@@ -72,17 +72,16 @@ public class DAAParser {
         switch (header.getAlignMode()) {
             case blastx:
                 sourceAlphabet = Translator.DNA_ALPHABET;
-                if(header.getDiamondBuild()>=132)
+                if (header.getDiamondBuild() >= 132)
                     alignmentAlphabet = Translator.AMINO_ACID_ALPHABET;
                 else
-                    alignmentAlphabet=Translator.AMINO_ACID_ALPHABET_PRE_DIAMOND_132;
+                    alignmentAlphabet = Translator.AMINO_ACID_ALPHABET_PRE_DIAMOND_132;
                 break;
             case blastp:
-                if(header.getDiamondBuild()>=132) {
+                if (header.getDiamondBuild() >= 132) {
                     alignmentAlphabet = Translator.AMINO_ACID_ALPHABET;
                     sourceAlphabet = Translator.AMINO_ACID_ALPHABET;
-                }
-                else {
+                } else {
                     alignmentAlphabet = Translator.AMINO_ACID_ALPHABET_PRE_DIAMOND_132;
                     sourceAlphabet = Translator.AMINO_ACID_ALPHABET_PRE_DIAMOND_132;
                 }

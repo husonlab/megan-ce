@@ -24,19 +24,15 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
-import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.commands.algorithms.ReanalyzeFilesCommand;
 import megan.core.Director;
 import megan.core.Document;
-import megan.main.Megan6;
 import megan.main.MeganProperties;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringReader;
 
 /**
  * Reanalyze DAA and RMA files
@@ -81,7 +77,7 @@ public class Reanalyzer {
 
         options.comment("Parameters");
         final boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
-        final boolean longReadsSet=options.optionWasExplicitlySet();
+        final boolean longReadsSet = options.optionWasExplicitlySet();
 
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score (-1: no change)", -1f);
@@ -93,10 +89,10 @@ public class Reanalyzer {
         {
             final float minSupportPercent0 = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0: off, -1: no change)", -1f);
             final int minSupport0 = options.getOption("-sup", "minSupport", "Min support (0: off, -1; no change)", -1);
-            if (minSupportPercent0 != -1 && minSupport0 ==-1) {
+            if (minSupportPercent0 != -1 && minSupport0 == -1) {
                 minSupportPercent = minSupportPercent0;
                 minSupport = 0;
-            } else if (minSupportPercent0 ==-1 && minSupport0 != -1) {
+            } else if (minSupportPercent0 == -1 && minSupport0 != -1) {
                 minSupportPercent = 0;
                 minSupport = minSupport0;
             } else if (minSupportPercent0 != -1) {
@@ -107,29 +103,29 @@ public class Reanalyzer {
             }
         }
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments (-1: no change)", -1f);
-        final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments (-1: no change)",-1f);
+        final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments (-1: no change)", -1f);
 
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-        final boolean lcaAlgorithmWasSet=options.optionWasExplicitlySet();
+        final boolean lcaAlgorithmWasSet = options.optionWasExplicitlySet();
 
         final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover (-1: no change)", -1f);
 
         final String readAssignmentModeDefaultValue;
-        if(options.isDoHelp()) {
-            readAssignmentModeDefaultValue=(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString()+" in long read mode, "+ Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()+" else");
-        } else if(longReads)
-            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
+        if (options.isDoHelp()) {
+            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString() + " else");
+        } else if (longReads)
+            readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
         else
-            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
+            readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode", readAssignmentModeDefaultValue));
-        final boolean readAssignmentModeSet=options.optionWasExplicitlySet();
+        final boolean readAssignmentModeSet = options.optionWasExplicitlySet();
 
         final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
         final boolean useContaminantFilter = (contaminantsFile.length() > 0);
 
         final boolean pairedReads = options.getOption("-pr", "paired", "Reads are paired", false);
-        final boolean pairedReadsSet=options.optionWasExplicitlySet();
+        final boolean pairedReadsSet = options.optionWasExplicitlySet();
 
         String defaultPreferenceFile;
         if (ProgramProperties.isMacOS())
@@ -148,43 +144,43 @@ public class Reanalyzer {
         if (runClassifications) {
             final StringBuilder buf = new StringBuilder();
             buf.append("reanalyzeFiles file='").append(Basic.toString(inputFiles, "', '")).append("'");
-            if(minSupportPercent!=-1f)
+            if (minSupportPercent != -1f)
                 buf.append(" minSupportPercent = ").append(minSupportPercent);
-            if(minSupport!=-1f)
+            if (minSupport != -1f)
                 buf.append(" minSupport = ").append(minSupport);
-            if(minScore!=-1f)
+            if (minScore != -1f)
                 buf.append(" minScore = ").append(minScore);
-            if(maxExpected!=-1f)
+            if (maxExpected != -1f)
                 buf.append(" maxExpected = ").append(maxExpected);
-            if(minPercentIdentity!=-1f)
+            if (minPercentIdentity != -1f)
                 buf.append(" minPercentIdentity = ").append(minPercentIdentity);
-            if(topPercent!=-1f)
+            if (topPercent != -1f)
                 buf.append(" topPercent = ").append(topPercent);
-            if(lcaAlgorithmWasSet)
-            buf.append(" lcaAlgorithm = ").append(lcaAlgorithm);
-            if(lcaCoveragePercent!=-1f)
+            if (lcaAlgorithmWasSet)
+                buf.append(" lcaAlgorithm = ").append(lcaAlgorithm);
+            if (lcaCoveragePercent != -1f)
                 buf.append(" lcaCoveragePercent = ").append(lcaCoveragePercent);
-            if(minPercentReadToCover!=-1f)
+            if (minPercentReadToCover != -1f)
                 buf.append(" minPercentReadToCover = ").append(minPercentReadToCover);
-            if(minPercentReferenceToCover!=-1f)
+            if (minPercentReferenceToCover != -1f)
                 buf.append(" minPercentReferenceToCover = ").append(minPercentReferenceToCover);
             //" minComplexity = ");minComplexity);
-            if(longReadsSet)
-            buf.append(" longReads = ").append(longReads);
-            if(pairedReadsSet)
+            if (longReadsSet)
+                buf.append(" longReads = ").append(longReads);
+            if (pairedReadsSet)
                 buf.append(" pairedReads = ").append(pairedReads);
             // " useIdentityFilter =");useIdentityFilter);
-            if(useContaminantFilter) {
+            if (useContaminantFilter) {
                 buf.append(" useContaminantFilter = ").append(useContaminantFilter);
                 buf.append(" loadContaminantFile = '").append(contaminantsFile).append("'");
             }
-            if(readAssignmentModeSet)
+            if (readAssignmentModeSet)
                 buf.append(" readAssignmentMode = ").append(readAssignmentMode);
             buf.append(" fNames=*;");
 
-            final Director director= Director.newProject(false,true);
+            final Director director = Director.newProject(false, true);
 
-            director.executeImmediately(buf.toString(),director.getMainViewer().getCommandManager());
+            director.executeImmediately(buf.toString(), director.getMainViewer().getCommandManager());
         }
     }
 }

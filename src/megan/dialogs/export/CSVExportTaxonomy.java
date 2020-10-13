@@ -412,9 +412,9 @@ class CSVExportTaxonomy {
         if (format.startsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId,false));
+            return Basic.getInCleanQuotes(getPath(taxonId, false));
         else if (format.startsWith("taxonPathKPCOFGS"))
-            return getPath(taxonId,true);
+            return getPath(taxonId, true);
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
@@ -435,9 +435,9 @@ class CSVExportTaxonomy {
         if (format.endsWith("taxonName"))
             return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId,false));
+            return Basic.getInCleanQuotes(getPath(taxonId, false));
         else if (format.endsWith("taxonPathKPCOFGS"))
-            return getPath(taxonId,true);
+            return getPath(taxonId, true);
         else if (format.endsWith("taxonPathPercent")) // // PathPercent has been disabled
             return getPathPercent(dir, readBlock);
         else
@@ -450,19 +450,18 @@ class CSVExportTaxonomy {
      * @param taxonId
      * @return
      */
-    private static String getPath(int taxonId,boolean majorRanksWithPrefixes) {
+    private static String getPath(int taxonId, boolean majorRanksWithPrefixes) {
         final List<String> path = new LinkedList<>();
         Node v = TaxonomyData.getTree().getANode(taxonId);
         while (v != null && v.getInfo() != null) {
             taxonId = (Integer) v.getInfo();
-            if(!majorRanksWithPrefixes) {
+            if (!majorRanksWithPrefixes) {
                 String name = TaxonomyData.getName2IdMap().get(taxonId);
                 path.add(name);
-            }
-            else {
-                final int rank=TaxonomyData.getTaxonomicRank(taxonId);
-                if(TaxonomicLevels.isMajorRank(rank)) {
-                    String name = TaxonomicLevels.getOneLetterCodeFromRank(rank)+"__"+TaxonomyData.getName2IdMap().get(taxonId);
+            } else {
+                final int rank = TaxonomyData.getTaxonomicRank(taxonId);
+                if (TaxonomicLevels.isMajorRank(rank)) {
+                    String name = TaxonomicLevels.getOneLetterCodeFromRank(rank) + "__" + TaxonomyData.getName2IdMap().get(taxonId);
                     path.add(name);
                 }
             }

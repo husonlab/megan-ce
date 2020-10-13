@@ -176,8 +176,8 @@ abstract public class ViewerBase extends PhyloTreeView {
                     result.add(id);
                 }
             }
+        } catch (NotOwnerException ignored) {
         }
-        catch(NotOwnerException ignored) {}
         return result;
     }
 

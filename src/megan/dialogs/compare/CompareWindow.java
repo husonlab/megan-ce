@@ -24,7 +24,6 @@ import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ActionJList;
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
@@ -59,7 +58,7 @@ public class CompareWindow extends JDialog {
     /**
      * setup and display the compare dialog
      */
-    public CompareWindow(JFrame parent, final Director dir, Collection<String> files){
+    public CompareWindow(JFrame parent, final Director dir, Collection<String> files) {
         super(parent);
 
         mode = Comparer.COMPARISON_MODE.valueOfIgnoreCase(ProgramProperties.get("CompareWindowMode", Comparer.COMPARISON_MODE.RELATIVE.toString()));

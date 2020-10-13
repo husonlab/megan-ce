@@ -23,12 +23,11 @@ import jloda.util.Pair;
 import megan.daa.connector.DAAConnector;
 import megan.data.ConnectorCombiner;
 import megan.data.IConnector;
-import megan.remote.client.RemoteServiceManager;
+import megan.ms.client.connector.MSConnector;
 import megan.rma2.RMA2Connector;
 import megan.rma2.RMA2File;
 import megan.rma3.RMA3Connector;
 import megan.rma6.RMA6Connector;
-import rusch.megan5client.connector.Megan5ServerConnector;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,11 +44,12 @@ public class MeganFile {
     private final static Map<Pair<String, Long>, Integer> openFiles = new HashMap<>();
     private String fileName = null;
     private Type fileType = Type.UNKNOWN_FILE;
+    private boolean meganServerFile=false;
     private boolean readOnly = false;
 
     private IConnector connector;
 
-    public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE, MEGAN_SERVER_FILE}
+    public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE}
 
     private final ArrayList<String> embeddedSourceFiles = new ArrayList<>();
 
@@ -65,9 +65,9 @@ public class MeganFile {
         this.fileName = fileName;
         this.readOnly = readOnly;
 
-        if (fileName.contains("::")) {
-            fileType = Type.MEGAN_SERVER_FILE;
-        } else if (fileName.toLowerCase().endsWith(".rma1")) {
+        if(fileName.contains("::"))
+            meganServerFile=true;
+         if (fileName.toLowerCase().endsWith(".rma1")) {
             fileType = Type.RMA1_FILE;
         } else if (fileName.toLowerCase().endsWith(".rma2")) {
             fileType = Type.RMA2_FILE;
@@ -90,12 +90,16 @@ public class MeganFile {
         } else if (fileName.toLowerCase().endsWith(".daa")) {
             fileType = Type.DAA_FILE;
         } else if (fileName.toLowerCase().endsWith(".meg") || fileName.toLowerCase().endsWith(".megan")
-                || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
-                || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
+                 || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
+                 || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
             setEmbeddedSourceFiles(determineEmbeddedSourceFiles(fileName));
         } else
             fileType = Type.UNKNOWN_FILE;
+    }
+
+    public boolean isMeganSummaryFile() {
+        return fileType==Type.MEGAN_SUMMARY_FILE;
     }
 
     /**
@@ -118,7 +122,7 @@ public class MeganFile {
      * @return true, if file exists and of correct type
      */
     public void checkFileOkToRead() throws IOException {
-        if (fileType == Type.MEGAN_SERVER_FILE)
+        if (isMeganServerFile())
             return;
 
         File file = new File(fileName);
@@ -126,7 +130,7 @@ public class MeganFile {
             throw new IOException("File not readable: " + fileName);
 
         switch (fileType) {
-            case RMA1_FILE: {
+             case RMA1_FILE: {
                 throw new IOException("RMA version 1 not supported: " + fileName);
             }
             case RMA2_FILE: {
@@ -189,14 +193,9 @@ public class MeganFile {
         this.readOnly = readOnly;
     }
 
-    public boolean isMeganSummaryFile() {
-        return fileType == Type.MEGAN_SUMMARY_FILE;
-    }
-
     public boolean isMeganServerFile() {
-        return fileType == Type.MEGAN_SERVER_FILE;
+        return meganServerFile;
     }
-
 
     public boolean isUnsupportedRMA1File() {
         return fileType == Type.RMA1_FILE;
@@ -226,13 +225,12 @@ public class MeganFile {
      */
     public boolean hasDataConnector() {
         try {
-            return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA") || fileType == Type.MEGAN_SERVER_FILE
+            return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA")
                     || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size() > 0 && ConnectorCombiner.canOpenAllConnectors(embeddedSourceFiles)));
         } catch (IOException e) {
             return false;
         }
     }
-
 
     /**
      * get the data connector associated with the file
@@ -252,17 +250,10 @@ public class MeganFile {
      */
     IConnector getConnector(boolean openDAAFileOnlyIfMeganized) throws IOException {
         if (connector == null) {
+            if(isMeganServerFile()) {
+                return new MSConnector(fileName);
+            }
             switch (fileType) {
-                case MEGAN_SERVER_FILE: {
-                    final String serverURL = RemoteServiceManager.getServerURL(fileName);
-                    final String user = RemoteServiceManager.getUser(fileName);
-                    final String password = RemoteServiceManager.getPassword(fileName);
-                    final String filePath = RemoteServiceManager.getFilePath(fileName);
-                    final IConnector connector = new Megan5ServerConnector(serverURL, user, password);
-                    connector.setFile(filePath);
-                    this.connector = connector;
-                    break;
-                }
                 case RMA2_FILE: {
                     connector = new RMA2Connector(fileName);
                     break;

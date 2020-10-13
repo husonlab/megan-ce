@@ -74,7 +74,7 @@ public class ApplyLCA {
         final boolean firstLineIsHeader = options.getOption("-H", "hasHeaderLine", "Has header line", true);
         options.done();
 
-        final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy,false,0);
+        final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy, false, 0);
 
         final Writer w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)));
         try (BufferedReader r = new BufferedReader(inputFile.equals("stdin") ? new InputStreamReader(System.in) : new FileReader(inputFile))) {

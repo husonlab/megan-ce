@@ -25,14 +25,10 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
-import megan.dialogs.meganize.MeganizeDAADialog;
 import megan.dialogs.reanalyze.ReanalyzeDialog;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * meganize DAA files command
@@ -136,6 +132,6 @@ public class ShowReanalyzeDialogCommand extends CommandBase implements ICommand 
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        return ((Director)getDir()).getDocument().neverOpenedReads;
+        return ((Director) getDir()).getDocument().neverOpenedReads;
     }
 }

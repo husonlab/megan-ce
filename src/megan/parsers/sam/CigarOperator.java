@@ -62,12 +62,11 @@ public enum CigarOperator {
     /**
      * reverse frame shift
      */
-    FF(true,false,'/'),
+    FF(true, false, '/'),
     /**
      * forward frame shift
      */
-    FR(false,true,'\\')
-    ;
+    FR(false, true, '\\');
 
     private final boolean consumesReadBases;
     private final boolean consumesReferenceBases;
@@ -136,7 +135,7 @@ public enum CigarOperator {
             case '\\':
                 return FR;
             default:
-                throw new IllegalArgumentException("Unrecognized CigarOperator: " + (char)b);
+                throw new IllegalArgumentException("Unrecognized CigarOperator: " + (char) b);
         }
     }
 

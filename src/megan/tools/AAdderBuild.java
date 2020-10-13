@@ -113,10 +113,10 @@ public class AAdderBuild {
 
         // setup gene item creator, in particular accession mapping
         final GeneItemCreator creator;
-        if(mapDBFile.length()>0)
-            creator=setupCreator(mapDBFile);
+        if (mapDBFile.length() > 0)
+            creator = setupCreator(mapDBFile);
         else
-            creator=setupCreator(acc2TaxaFile, class2AccessionFile);
+            creator = setupCreator(acc2TaxaFile, class2AccessionFile);
 
         // obtains the gene annotations:
         Map<String, ArrayList<Interval<GeneItem>>> dnaId2list = computeAnnotations(creator, gffFiles);
@@ -149,13 +149,13 @@ public class AAdderBuild {
     }
 
     public static GeneItemCreator setupCreator(String mapDBFile) throws IOException, SQLException {
-        final AccessAccessionMappingDatabase database=new AccessAccessionMappingDatabase(mapDBFile);
-        final ArrayList<String> classificationNames=new ArrayList<>();
-        for(String cName:ClassificationManager.getAllSupportedClassifications()) {
-            if(database.getSize(cName)>0)
+        final AccessAccessionMappingDatabase database = new AccessAccessionMappingDatabase(mapDBFile);
+        final ArrayList<String> classificationNames = new ArrayList<>();
+        for (String cName : ClassificationManager.getAllSupportedClassifications()) {
+            if (database.getSize(cName) > 0)
                 classificationNames.add(cName);
         }
-        return new GeneItemCreator(classificationNames.toArray(new String[0]),database);
+        return new GeneItemCreator(classificationNames.toArray(new String[0]), database);
     }
 
     /**

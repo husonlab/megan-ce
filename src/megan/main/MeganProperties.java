@@ -87,7 +87,7 @@ public class MeganProperties {
     private static final String DEFAULT_MAPPINGFILE = "ncbi.map";
     private static final String DEFAULT_MICROBIALATTRIBUTESFILE = "microbialattributes.map";
 
-    public static final String TAXONOMIC_CLASSIFICATIONS ="AdditionalTaxonomyViewers";
+    public static final String TAXONOMIC_CLASSIFICATIONS = "AdditionalTaxonomyViewers";
 
     /**
      * sets the program properties
@@ -134,7 +134,7 @@ public class MeganProperties {
 
         ProgramProperties.put(MeganProperties.DEFAULT_PROPERTIES, "");
 
-        ProgramProperties.put(TAXONOMIC_CLASSIFICATIONS,new String[]{"Taxonomy","GTDB"});
+        ProgramProperties.put(TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"});
         //ProgramProperties.put(TAXONOMIC_CLASSIFICATIONS,new String[]{});
 
         ReadMagnitudeParser.setEnabled(ProgramProperties.get("allow-read-weights", false));

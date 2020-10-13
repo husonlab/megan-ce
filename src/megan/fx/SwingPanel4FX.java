@@ -42,7 +42,7 @@ public class SwingPanel4FX<C> {
     private C controller;
     private final List<Runnable> toRunLaterInSwing = new ArrayList<>();
 
-    private final ReentrantLock lock=new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     /**
      * constructor
@@ -78,8 +78,7 @@ public class SwingPanel4FX<C> {
         try {
             jFXPanel = new JFXPanel();
             Platform.runLater(this::initFxLater);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             Basic.caught(ex);
         }
     }
@@ -98,10 +97,9 @@ public class SwingPanel4FX<C> {
                     final ExtendedFXMLLoader<C> extendedFXMLLoader = new ExtendedFXMLLoader<>(viewerClass);
                     controller = extendedFXMLLoader.getController();
                     jFXPanel.setScene(new Scene(extendedFXMLLoader.getRoot()));
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Basic.caught(ex);
-                }
-                finally {
+                } finally {
                     initialized.set(true);
                     //System.err.println("running to run later");
                     for (Runnable runnable : toRunLaterInSwing) {
@@ -109,8 +107,7 @@ public class SwingPanel4FX<C> {
                     }
                 }
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -128,8 +125,7 @@ public class SwingPanel4FX<C> {
                 toRunLaterInSwing.add(runnable);
             } else
                 SwingUtilities.invokeLater(runnable);
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }

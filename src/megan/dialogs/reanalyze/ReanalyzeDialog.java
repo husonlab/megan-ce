@@ -92,11 +92,11 @@ public class ReanalyzeDialog extends ImportBlastDialog {
                     buf.append(", ");
                 buf.append("'").append(name).append("'");
             }
-             buf.append(" minScore=").append(getMinScore());
+            buf.append(" minScore=").append(getMinScore());
             buf.append(" maxExpected=").append(getMaxExpected());
             buf.append(" minPercentIdentity=").append(getMinPercentIdentity());
             buf.append(" topPercent=").append(getTopPercent());
-            if(getMinSupportPercent()>0)
+            if (getMinSupportPercent() > 0)
                 buf.append(" minSupportPercent=").append(getMinSupportPercent());
             else
                 buf.append(" minSupport=").append(getMinSupport());
@@ -111,9 +111,9 @@ public class ReanalyzeDialog extends ImportBlastDialog {
             buf.append(" longReads=").append(isLongReads());
             buf.append(" pairedReads=").append(isUsePairedReads());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
-            if(isUseContaminantsFilter())
+            if (isUseContaminantsFilter())
                 buf.append(" useContaminantFilter=").append(isUseContaminantsFilter());
-            if(getContaminantsFileName()!=null && getContaminantsFileName().length()>0)
+            if (getContaminantsFileName() != null && getContaminantsFileName().length() > 0)
                 buf.append(" loadContaminantFile=").append(getContaminantsFileName());
             buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
             buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));

@@ -105,7 +105,7 @@ public class DAAModifier {
                 if (index >= header.getLastDefinedBlockIndex()) {
                     long newSize = header.getLocationOfBlockInFile(index);
                     if (newSize > 0) {
-                        try(RandomAccessFile raf = new RandomAccessFile(header.getFileName(), "rw")) {
+                        try (RandomAccessFile raf = new RandomAccessFile(header.getFileName(), "rw")) {
                             raf.setLength(newSize);
                         }
                     }

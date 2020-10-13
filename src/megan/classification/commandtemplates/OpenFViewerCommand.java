@@ -66,13 +66,12 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
         final ClassificationViewer classificationViewer;
         if (((Director) getDir()).getViewerByClassName(cName) != null) {
             classificationViewer = (ClassificationViewer) ((Director) getDir()).getViewerByClassName(cName);
-            firstOpen=false;
-        }
-        else {
+            firstOpen = false;
+        } else {
             try {
                 classificationViewer = new ClassificationViewer((Director) getDir(), ClassificationManager.get(cName, true), true);
                 getDir().addViewer(classificationViewer);
-                firstOpen=true;
+                firstOpen = true;
             } catch (Exception e) {
                 Basic.caught(e);
                 return;
@@ -85,8 +84,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
             classificationViewer.updateView(Director.ALL);
 
             // aim of this is to prevent windowing opening blank:
-            if(firstOpen)
-            {
+            if (firstOpen) {
                 final Timer timer = new Timer(600, e -> {
                     SwingUtilities.invokeLater(() -> {
                         classificationViewer.getDir().execute("zoom what=fit;", classificationViewer.getCommandManager());
@@ -146,10 +144,10 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     @Override
     public ImageIcon getIcon() {
         final String iconFile = ClassificationManager.getIconFileName(cName);
-             if (ResourceManager.getImage(iconFile) == null && ResourceManager.getIcon(iconFile,false) == null) { // no icon file found, build an icon....
-                ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
-            }
-            return ResourceManager.getIcon(iconFile);
+        if (ResourceManager.getImage(iconFile) == null && ResourceManager.getIcon(iconFile, false) == null) { // no icon file found, build an icon....
+            ResourceManager.getIconMap().put(iconFile, new MyImageIcon(iconFile));
+        }
+        return ResourceManager.getIcon(iconFile);
     }
 
     /**

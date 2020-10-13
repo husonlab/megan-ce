@@ -863,24 +863,22 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             currentSeries = list.toArray(new String[0]);
         }
 
-        if(true)
-        {
-            final Map<String, HashMap<String,Double>> class2series2value = new HashMap<>();
+        if (true) {
+            final Map<String, HashMap<String, Double>> class2series2value = new HashMap<>();
             for (String series : currentSeries) {
                 for (String className : currentClasses) {
                     HashMap<String, Double> series2value = class2series2value.computeIfAbsent(className, k -> new HashMap<>());
                     final double total = getChartData().getTotalForSeries(series);
-                    series2value.put(series,total > 0 ? getChartData().getValueAsDouble(series, className) / total : total);
+                    series2value.put(series, total > 0 ? getChartData().getValueAsDouble(series, className) / total : total);
                 }
             }
             for (String className : currentClasses) {
                 final Statistics statistics = new Statistics(class2series2value.get(className).values());
-                for(String series:currentSeries) {
+                for (String series : currentSeries) {
                     zScores.put(series, className, statistics.getZScore(class2series2value.get(className).get(series)));
                 }
             }
-        }
-        else {
+        } else {
             for (String className : currentClasses) {
                 final Map<String, Double> series2value = new HashMap<>();
                 for (String series : currentSeries) {

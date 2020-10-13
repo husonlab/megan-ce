@@ -8,8 +8,6 @@ module megan {
     requires transitive jdk.httpserver;
 
     requires Jama;
-    requires commons.codec;
-    requires spring.web;
     requires sis.jhdf5.batteries.included;
     requires sqlite.jdbc;
     requires gson;
@@ -17,6 +15,7 @@ module megan {
     requires contrasts;
     requires colt;
     requires java.desktop;
+    requires java.net.http;
 
     exports megan.accessiondb;
     exports megan.algorithms;
@@ -64,7 +63,6 @@ module megan {
     exports megan.commands.load;
     exports megan.commands.mapping;
     exports megan.commands.preferences;
-    exports megan.commands.remote;
     exports megan.commands.select;
     exports megan.commands.show;
     exports megan.commands.zoom;
@@ -109,9 +107,6 @@ module megan {
     exports megan.parsers.blast.blastxml;
     exports megan.parsers.maf;
     exports megan.parsers.sam;
-    exports megan.remote;
-    exports megan.remote.client;
-    exports megan.remote.commands;
     exports megan.rma2;
     exports megan.rma3;
     exports megan.rma6;
@@ -130,9 +125,6 @@ module megan {
     exports megan.viewer.commands;
     exports megan.viewer.commands.collapse;
     exports megan.viewer.gui;
-    exports rusch.megan5client;
-    exports rusch.megan5client.Tests;
-    exports rusch.megan5client.connector;
     exports megan.xtra;
 
     opens megan.resources;
@@ -140,6 +132,8 @@ module megan {
     opens megan.resources.icons;
     opens megan.resources.images;
     opens megan.resources.files;
+    opens megan.resources.files.ms;
+
     opens megan.biom.biom1;
     opens megan.biom.biom2;
     opens megan.fx.dialogs.decontam;
@@ -147,4 +141,12 @@ module megan {
     opens megan.dialogs.lrinspector;
     opens megan.dialogs.reads;
     exports megan.resources;
+
+    exports megan.ms;
+    exports megan.ms.client;
+    exports megan.ms.client.connector;
+    exports megan.ms.clientdialog;
+    exports megan.ms.clientdialog.commands;
+    opens megan.ms.clientdialog.commands;
+    exports megan.ms.server;
 }

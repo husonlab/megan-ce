@@ -116,10 +116,10 @@ public class DataProcessor {
                             break;
                         case weighted:
                             // we are assuming that taxonomy classification is The taxonomy classification
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(cNames[c],doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(cNames[c], doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
                             break;
                         case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(cNames[c],doc);
+                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(cNames[c], doc);
                             break;
                     }
                 } else if (usingLongReadAlgorithm)
@@ -228,7 +228,7 @@ public class DataProcessor {
 
                     int taxId = 0;
 
-                    if(!hasLowComplexity) {
+                    if (!hasLowComplexity) {
                         for (int c = 0; c < numberOfClassifications; c++) {
                             classIds[c] = 0;
                             if (useLCAForClassification[c]) {
@@ -268,9 +268,9 @@ public class DataProcessor {
                                     }
                                 }
                                 if (c == ncbiTaxonomyId) {
-                                    if(contaminantManager!=null && ((doc.isLongReads() && contaminantManager.isContaminantLongRead(classIds[c]))
-                                            || (!doc.isLongReads() && contaminantManager.isContaminantShortRead(readBlock,activeMatchesForTaxa))))
-                                        classIds[c]=IdMapper.CONTAMINANTS_ID;
+                                    if (contaminantManager != null && ((doc.isLongReads() && contaminantManager.isContaminantLongRead(classIds[c]))
+                                            || (!doc.isLongReads() && contaminantManager.isContaminantShortRead(readBlock, activeMatchesForTaxa))))
+                                        classIds[c] = IdMapper.CONTAMINANTS_ID;
                                 }
                             }
                             if (c == ncbiTaxonomyId) {
@@ -287,7 +287,7 @@ public class DataProcessor {
                         } else if (hasLowComplexity) {
                             id = IdMapper.LOW_COMPLEXITY_ID;
                         } else if (useLCAForClassification[c]) {
-                            id =classIds[c];
+                            id = classIds[c];
                         } else {
                             final BitSet activeMatchesForFunction = new BitSet(); // pre filter matches for taxon identification
                             ActiveMatches.compute(doc.getMinScore(), topPercentForActiveMatchFiltering, doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, cNames[c], activeMatchesForFunction);
@@ -371,7 +371,7 @@ public class DataProcessor {
             for (int c = 0; c < numberOfClassifications; c++) {
                 final String cName = cNames[c];
                 // todo: need to remove assignments to disabled ids when not using the LCA algorithm
-                if (useLCAForClassification[c] && countAssigned[c]>0 && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
+                if (useLCAForClassification[c] && countAssigned[c] > 0 && (doc.getMinSupport() > 0 || ClassificationManager.get(cName, false).getIdMapper().getDisabledIds().size() > 0)) {
                     progress.setTasks("Binning reads", "Applying min-support & disabled filter to " + cName + "...");
                     final MinSupportFilter minSupportFilter = new MinSupportFilter(cName, updateList.getClassIdToWeightMap(c), doc.getMinSupport(), progress);
                     final Map<Integer, Integer> changes = minSupportFilter.apply();

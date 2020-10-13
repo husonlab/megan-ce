@@ -39,12 +39,12 @@ public class Taxon2SpeciesMapping {
 
     private final IntIntMap taxId2SpeciesId;
 
-   public Taxon2SpeciesMapping(final String cName,final ProgressListener progress) throws CanceledException {
+    public Taxon2SpeciesMapping(final String cName, final ProgressListener progress) throws CanceledException {
         ClassificationFullTree fullTree = ClassificationManager.get(cName, true).getFullTree();
         final Name2IdMap name2IdMap = ClassificationManager.get(cName, true).getName2IdMap();
         taxId2SpeciesId = new IntIntMap(fullTree.getNumberOfNodes(), 0.999f);
 
-        progress.setSubtask("Computing taxon-to-species map for '"+cName+"'");
+        progress.setSubtask("Computing taxon-to-species map for '" + cName + "'");
         progress.setMaximum(fullTree.getNumberOfNodes());
         progress.setProgress(0);
         computeTax2SpeciesMapRec(fullTree.getRoot(), 0, taxId2SpeciesId, name2IdMap, progress);

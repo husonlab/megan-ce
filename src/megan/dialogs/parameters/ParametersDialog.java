@@ -364,11 +364,11 @@ public class ParametersDialog extends JDialog {
                 if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     ProgramProperties.put("SelectedLCAAlgorithm", getLcaAlgorithm().toString());
                     if (getLcaAlgorithm().equals(Document.LCAAlgorithm.naive))
-                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS);
+                        lcaCoveragePercent.setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS);
                     else if (getLcaAlgorithm().equals(Document.LCAAlgorithm.weighted))
-                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA);
+                        lcaCoveragePercent.setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA);
                     else
-                        lcaCoveragePercent.setText(""+Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS);
+                        lcaCoveragePercent.setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS);
                 }
                 if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
@@ -774,7 +774,7 @@ public class ParametersDialog extends JDialog {
 
     public void setUseContaminantsFilter(boolean state) {
         useContaminantsFilter.setSelected(state);
-        if(state)
+        if (state)
             useContaminantsFilter.setEnabled(true);
     }
 
@@ -785,7 +785,7 @@ public class ParametersDialog extends JDialog {
     public String getParameterString() {
         return
                 " minScore=" + getMinScore() +
-                        " maxExpected=" + getMaxExpected()+
+                        " maxExpected=" + getMaxExpected() +
                         " minPercentIdentity=" + getMinPercentIdentity() +
                         " topPercent=" + getTopPercent() +
                         " minSupportPercent=" + getMinSupportPercent() + " minSupport=" + getMinSupport() +

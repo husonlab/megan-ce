@@ -858,7 +858,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         {
             return new String[]{"No alignment", "mapQ=0 (not uniquely mapped)", ""};
         }
-        if(getCigar().hasFrameShift()) {
+        if (getCigar().hasFrameShift()) {
             return new String[]{"No alignment", "Contains frame-shift, not supported", ""};
         }
 

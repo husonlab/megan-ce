@@ -142,7 +142,7 @@ public class Comparer {
                         if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
                             calculateNewSampleSize = numberOfReads;
                     }
-                    System.err.println(String.format("Normalizing to: %,.0f reads per sample",calculateNewSampleSize));
+                    System.err.println(String.format("Normalizing to: %,.0f reads per sample", calculateNewSampleSize));
                 }
                 newSampleSize = calculateNewSampleSize;
             }
@@ -224,7 +224,7 @@ public class Comparer {
                                     }
                                 }
 
-                                final double factor = numberOfReads > 0 ? newSampleSize/numberOfReads : 1.0;
+                                final double factor = numberOfReads > 0 ? newSampleSize / numberOfReads : 1.0;
 
                                 for (Integer classId : class2countsSrc.keySet()) {
                                     // todo: here we assume that the nohits id is the same for all classifications...
@@ -244,7 +244,7 @@ public class Comparer {
                                         if (count == 0)
                                             countsTarget[pos] = 0;
                                         else if (useRelative) {
-                                            countsTarget[pos] = (float)(count * factor);
+                                            countsTarget[pos] = (float) (count * factor);
                                             if (countsTarget[pos] == 0 && isKeep1())
                                                 countsTarget[pos] = 1;
                                         } else

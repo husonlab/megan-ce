@@ -171,19 +171,19 @@ public class TaxonPathAssignment {
                 if (useOfficialRanksOnly) {
                     while (expectedIndex < expectedPath.length() && letter != expectedPath.charAt(expectedIndex)) {
                         buf.append(String.format("%c__unknown", expectedPath.charAt(expectedIndex)));
-                        if(showPercent)
-                            buf.append(String.format("; %d;",  (int) (float) pair.getSecond()));
+                        if (showPercent)
+                            buf.append(String.format("; %d;", (int) (float) pair.getSecond()));
                         expectedIndex++;
                     }
                     expectedIndex++;
                 }
 
                 buf.append(String.format("%c__%s", letter, taxonName));
-                if(showPercent)
-                    buf.append(String.format("; %d;",  (int) (float) pair.getSecond()));
+                if (showPercent)
+                    buf.append(String.format("; %d;", (int) (float) pair.getSecond()));
             } else {
                 buf.append(" ").append(taxonName).append("; ");
-                if(showPercent)
+                if (showPercent)
                     buf.append((int) (float) pair.getSecond()).append(";");
             }
         }

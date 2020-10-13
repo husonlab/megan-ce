@@ -49,7 +49,7 @@ public class GeneItemCreator {
     public GeneItemCreator(String[] cNames, IdMapper[] idMappers) {
         this.cNames = cNames.clone();
         this.idMappers = idMappers;
-        this.database=null;
+        this.database = null;
 
         rank = new HashMap<>();
         for (int i = 0; i < this.cNames.length; i++) {
@@ -66,9 +66,9 @@ public class GeneItemCreator {
      *
      * @param cNames
      */
-    public GeneItemCreator(String[] cNames,AccessAccessionMappingDatabase database) {
+    public GeneItemCreator(String[] cNames, AccessAccessionMappingDatabase database) {
         this.cNames = cNames.clone();
-        this.database=database;
+        this.database = database;
 
         this.idMappers = null;
 
@@ -110,12 +110,13 @@ public class GeneItemCreator {
      * @throws IOException
      */
     public void map(String accession, int[] ids) throws IOException, SQLException {
-        if(idMappers!=null)
-        for (int i = 0; i < idMappers.length; i++) {
-            ids[i] = idMappers[i].getAccessionMap().get(accession);
-        } else {
-            for(int i=0;i<cNames.length;i++) {
-                ids[i]=database.getValue(cNames[i],accession);
+        if (idMappers != null)
+            for (int i = 0; i < idMappers.length; i++) {
+                ids[i] = idMappers[i].getAccessionMap().get(accession);
+            }
+        else {
+            for (int i = 0; i < cNames.length; i++) {
+                ids[i] = database.getValue(cNames[i], accession);
             }
         }
     }

@@ -78,7 +78,7 @@ public class IdMapper {
         this.fullTree = fullTree;
         this.name2IdMap = name2IdMap;
 
-        algorithm = (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])).contains(name) ?IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
+        algorithm = (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(name) ? IdParser.Algorithm.LCA : IdParser.Algorithm.First_Hit);
     }
 
     /**
@@ -259,7 +259,7 @@ public class IdMapper {
     }
 
     public String[] getIdTags() {
-       if (ProgramProperties.get(cName + "ParseIds", false)) {
+        if (ProgramProperties.get(cName + "ParseIds", false)) {
             return ProgramProperties.get(cName + "Tags", createTags(cName)); // user can override tags using program property
         } else
             return new String[0];

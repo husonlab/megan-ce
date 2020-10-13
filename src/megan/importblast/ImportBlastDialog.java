@@ -243,8 +243,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         tabbedPane.addTab("LCA Params", new LCAParametersPanel(this));
     }
 
-    protected void addViewTab(String title,JPanel jpanel) {
-        tabbedPane.addTab(title,jpanel);
+    protected void addViewTab(String title, JPanel jpanel) {
+        tabbedPane.addTab(title, jpanel);
     }
 
     /**
@@ -835,7 +835,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" maxExpected=").append(getMaxExpected());
         buf.append(" minPercentIdentity=").append(getMinPercentIdentity());
         buf.append(" topPercent=").append(getTopPercent());
-        if(getMinSupportPercent()>0)
+        if (getMinSupportPercent() > 0)
             buf.append(" minSupportPercent=").append(getMinSupportPercent());
         else
             buf.append(" minSupport=").append(getMinSupport());

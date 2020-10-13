@@ -38,7 +38,6 @@ import megan.util.DAAFileFilter;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -128,12 +127,12 @@ public class DAAMeganizer {
                 lcaAlgorithm == Document.LCAAlgorithm.longReads ? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm == Document.LCAAlgorithm.weighted ? Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA : Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
 
         final String readAssignmentModeDefaultValue;
-        if(options.isDoHelp()) {
-            readAssignmentModeDefaultValue=(Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString()+" in long read mode, "+ Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString()+" else");
-        } else if(longReads)
-            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
+        if (options.isDoHelp()) {
+            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString() + " else");
+        } else if (longReads)
+            readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
         else
-            readAssignmentModeDefaultValue=Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
+            readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode", readAssignmentModeDefaultValue));
 
         final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
@@ -150,7 +149,7 @@ public class DAAMeganizer {
         final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
         final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
         {
-            final String tags = options.getOption("-t4t" , "tags4taxonomy" , "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
+            final String tags = options.getOption("-t4t", "tags4taxonomy", "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
             ProgramProperties.preset("TaxonomyTags", tags);
             ProgramProperties.preset("TaxonomyParseIds", tags.equals(""));
         }
@@ -195,11 +194,11 @@ public class DAAMeganizer {
         if (metaDataFiles.length > 1 && metaDataFiles.length != daaFiles.length) {
             throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
         }
-        
-        if(Basic.notBlank(mapDBFile))
+
+        if (Basic.notBlank(mapDBFile))
             Basic.checkFileReadableNonEmpty(mapDBFile);
 
-        if(Basic.notBlank(contaminantsFile))
+        if (Basic.notBlank(contaminantsFile))
             Basic.checkFileReadableNonEmpty(contaminantsFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);

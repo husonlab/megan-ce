@@ -19,35 +19,24 @@
  */
 package megan.commands.algorithms;
 
-import jloda.fx.util.ProgramExecutorService;
-import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICommand;
-import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressPercentage;
 import jloda.util.parse.NexusStreamParser;
-import jloda.util.parse.NexusStreamTokenizer;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
-import megan.core.ContaminantManager;
 import megan.core.Director;
 import megan.core.Document;
-import megan.dialogs.lrinspector.LRInspectorViewer;
-import megan.inspector.InspectorWindow;
-import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * reanalyze a set of files
@@ -57,7 +46,7 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>]\n" +
                 "\t[topPercent=<number>] [minSupportPercent=<num>] [minSupport=<num>]\n" +
-                "\t[lcaAlgorithm={"+Basic.toString(Document.LCAAlgorithm.values(),"|")+"}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
+                "\t[lcaAlgorithm={" + Basic.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
                 " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
                 "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
                 "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "|*}];";
@@ -74,43 +63,42 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
             files.add(np.getWordFileNamePunctuation());
         }
 
-        final ProgressListener progress= (getDoc()!=null?getDoc().getProgressListener():new ProgressPercentage());
+        final ProgressListener progress = (getDoc() != null ? getDoc().getProgressListener() : new ProgressPercentage());
 
         progress.setMaximum(files.size());
         progress.setProgress(0);
 
-        final List<String> tokens=np.getTokensRespectCase(null,";");
-        final String fNames=np.findIgnoreCase(tokens,"fName=",null,"*");
-        final boolean allFNames=(fNames.equals("*"));
+        final List<String> tokens = np.getTokensRespectCase(null, ";");
+        final String fNames = np.findIgnoreCase(tokens, "fName=", null, "*");
+        final boolean allFNames = (fNames.equals("*"));
 
-        final String recomputeParameters=Basic.toString(tokens," ").replaceAll("fNames\\s*=.*","");
+        final String recomputeParameters = Basic.toString(tokens, " ").replaceAll("fNames\\s*=.*", "");
 
-        for(String file:files) {
-            progress.setTasks("Reanalyzing",file);
+        for (String file : files) {
+            progress.setTasks("Reanalyzing", file);
             {
                 final Director openDir = findOpenDirector(file);
                 if (openDir != null) {
-                    NotificationsInSwing.showWarning("File '"+file+"' is currently open, cannot reanalyze open files");
+                    NotificationsInSwing.showWarning("File '" + file + "' is currently open, cannot reanalyze open files");
                     continue;
                 }
             }
             NotificationsInSwing.showInformation("Reanalyzing file: " + file);
 
-            final Director dir=Director.newProject(false,true);
+            final Director dir = Director.newProject(false, true);
 
             try {
                 final Document doc = dir.getDocument();
                 doc.setOpenDAAFileOnlyIfMeganized(false);
                 doc.getMeganFile().setFileFromExistingFile(file, false);
 
-                final String fNamesToUse = (allFNames? Basic.toString(Basic.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy")," "):fNames).trim();
+                final String fNamesToUse = (allFNames ? Basic.toString(Basic.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy"), " ") : fNames).trim();
 
-                final String recomputeCommand = "recompute " + recomputeParameters +(fNamesToUse.length()>0? " fNames = " + fNamesToUse:"") + ";";
+                final String recomputeCommand = "recompute " + recomputeParameters + (fNamesToUse.length() > 0 ? " fNames = " + fNamesToUse : "") + ";";
 
                 dir.getDocument().setProgressListener(getDoc().getProgressListener());
                 dir.executeImmediately(recomputeCommand, dir.getMainViewer().getCommandManager());
-            }
-            finally {
+            } finally {
                 dir.close();
             }
             progress.incrementProgress();

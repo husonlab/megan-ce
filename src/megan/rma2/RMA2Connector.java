@@ -19,7 +19,6 @@
  */
 package megan.rma2;
 
-import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.Single;
 import megan.data.*;

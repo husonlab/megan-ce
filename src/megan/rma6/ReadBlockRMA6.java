@@ -337,7 +337,7 @@ public class ReadBlockRMA6 implements IReadBlock {
                     if (samMatch.getRefName() != null) {
                         final MatchBlockRMA6 matchBlock = (MatchBlockRMA6) matchBlocks[i];
                         matchBlock.setFromSAM(samMatch);
-                        if ((minScore==0 || matchBlock.getBitScore() >= minScore) && matchBlock.getExpected() <= maxExpected)
+                        if ((minScore == 0 || matchBlock.getBitScore() >= minScore) && matchBlock.getExpected() <= maxExpected)
                             copies[matchCount++] = matchBlock; // this match is ok, keep it
                     }
                 } catch (IOException ex) {

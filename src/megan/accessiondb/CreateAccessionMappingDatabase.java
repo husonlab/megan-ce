@@ -80,15 +80,15 @@ public class CreateAccessionMappingDatabase {
             execute("CREATE TABLE info(id TEXT PRIMARY KEY, info_string TEXT, size NUMERIC );");
         }
 
-        if(info!=null) {
-            if(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).size()==0)
+        if (info != null) {
+            if (executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).size() == 0)
                 execute("INSERT INTO info VALUES ('general', '" + info + "', NULL);");
             else
                 execute("UPDATE info SET info_string='" + info + "' WHERE id='general';");
         }
     }
 
-     /**
+    /**
      * inserts a new classifier into the database (separate table). Merging is done in mergeTables()
      *
      * @param classificationName name of the classifier used in the db
@@ -320,17 +320,17 @@ public class CreateAccessionMappingDatabase {
     }
 
     public Connection createConnection() throws SQLException {
-        return  config.createConnection("jdbc:sqlite:" + this.databaseFile);
+        return config.createConnection("jdbc:sqlite:" + this.databaseFile);
     }
 
-     /**
+    /**
      * executes a list of commands
      *
      * @param commands String[] of complete queries
      * @throws SQLException if something goes wrong with the database
      */
     public void execute(String... commands) throws SQLException {
-        try(Connection connection=createConnection()) {
+        try (Connection connection = createConnection()) {
             execute(connection, commands);
         }
     }
@@ -338,9 +338,9 @@ public class CreateAccessionMappingDatabase {
     /**
      * executes a list of commands
      */
-    public static void execute(Connection connection,String... commands) throws SQLException {
-        if(false)
-            System.err.println("execute:\n"+Basic.toString(commands,"\n"));
+    public static void execute(Connection connection, String... commands) throws SQLException {
+        if (false)
+            System.err.println("execute:\n" + Basic.toString(commands, "\n"));
         final Statement statement = connection.createStatement();
         {
             for (String q : commands) {
@@ -352,17 +352,17 @@ public class CreateAccessionMappingDatabase {
     /**
      * generic method for executing queries with results of type String
      */
-    public  ArrayList<String> executeQueryString(String query, int index) throws SQLException {
-        try(Connection connection=createConnection()) {
-            return executeQueryString(connection,query,index);
+    public ArrayList<String> executeQueryString(String query, int index) throws SQLException {
+        try (Connection connection = createConnection()) {
+            return executeQueryString(connection, query, index);
         }
-        }
+    }
 
 
-        /**
-         * generic method for executing queries with results of type String
-         */
-    public static ArrayList<String> executeQueryString(Connection connection,String query, int index) throws SQLException {
+    /**
+     * generic method for executing queries with results of type String
+     */
+    public static ArrayList<String> executeQueryString(Connection connection, String query, int index) throws SQLException {
         final ResultSet rs = connection.createStatement().executeQuery(query);
         final ArrayList<String> result = new ArrayList<>();
         while (rs.next()) {

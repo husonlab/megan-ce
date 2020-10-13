@@ -62,7 +62,6 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-
         String result = JOptionPane.showInputDialog((getViewer() != null ? getViewer().getFrame() : null), "Paste MeganServer file URL:");
 
         if (result != null) {

@@ -177,21 +177,21 @@ public class CompareCommand extends CommandBase implements ICommand {
         boolean ok = false;
         final CompareWindow compareWindow = new CompareWindow(newDir.getMainViewer().getFrame(), newDir, null);
 
-            if (!compareWindow.isCanceled()) {
-                final String command = compareWindow.getCommand();
-                if (command != null) {
-                    newDir.execute(command, newDir.getCommandManager());
-                    ok = true;
-                }
+        if (!compareWindow.isCanceled()) {
+            final String command = compareWindow.getCommand();
+            if (command != null) {
+                newDir.execute(command, newDir.getCommandManager());
+                ok = true;
             }
-            if (!ok) {
-                try {
-                    newDir.close();
-                } catch (CanceledException e) {
-                    e.printStackTrace();
-                }
-                ProjectManager.removeProject(newDir);
+        }
+        if (!ok) {
+            try {
+                newDir.close();
+            } catch (CanceledException e) {
+                e.printStackTrace();
             }
+            ProjectManager.removeProject(newDir);
+        }
     }
 
     public boolean isApplicable() {

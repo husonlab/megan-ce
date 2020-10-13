@@ -41,9 +41,9 @@ public class ReadBlockIterator implements IReadBlockIterator {
      *
      * @param readBlockGetter
      */
-    public ReadBlockIterator(Iterator<Long> readIdsIterator,long numberOfReads, IReadBlockGetter readBlockGetter) {
+    public ReadBlockIterator(Iterator<Long> readIdsIterator, long numberOfReads, IReadBlockGetter readBlockGetter) {
         this.iterator = readIdsIterator;
-        this.numberOfReads =numberOfReads;
+        this.numberOfReads = numberOfReads;
         this.readBlockGetter = readBlockGetter;
     }
 

@@ -23,7 +23,6 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
-import megan.classification.Classification;
 import megan.main.MeganProperties;
 
 import javax.swing.*;
@@ -42,7 +41,7 @@ public class SetUseLCA4ViewerCommand extends CommandBase implements ICheckBoxCom
     }
 
     public boolean isSelected() {
-        return Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS,new String[0])).contains(cName);
+        return Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(cName);
     }
 
     /**

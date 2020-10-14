@@ -23,7 +23,7 @@ import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.core.DataTable;
-import megan.core.MeganFile;
+import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.core.SyncArchiveAndDataTable;
 import megan.data.IConnector;
@@ -51,8 +51,6 @@ public class LocalService implements IRemoteService {
 
     /**
      * constructor
-     *
-     * @path path to root directory
      */
     public LocalService(String rootDirectory, String... fileExtensions) throws IOException {
         fullServerDirectory = "Local::" + rootDirectory;
@@ -95,8 +93,6 @@ public class LocalService implements IRemoteService {
 
     /**
      * set the root directory. All files must be below this directory
-     *
-     * @param rootDirectory
      */
     private void setRootDirectory(File rootDirectory) throws IOException {
         if (rootDirectory != null) {
@@ -115,7 +111,7 @@ public class LocalService implements IRemoteService {
     /**
      * rescan root directory and rescan contents
      */
-    public void rescan(ProgressListener progress) throws IOException, CanceledException {
+    public void rescan(ProgressListener progress) {
         progress.setSubtask("Scanning...");
         lock.lock();
         try {
@@ -123,20 +119,28 @@ public class LocalService implements IRemoteService {
             final Collection<File> files = Basic.getAllFilesInDirectory(rootDirectory, true, fileExtensions);
             for (File file : files) {
                 try {
-                    File relative = Basic.getRelativeFile(file, rootDirectory);
-                    this.files.add(relative.getPath());
-                    MeganFile meganFile = new MeganFile();
-                    meganFile.setFileFromExistingFile(file.getPath(), true);
-                    if (meganFile.hasDataConnector()) {
-                        IConnector connector = meganFile.getConnector();
-                        DataTable dataTable = new DataTable();
-                        SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                        SyncArchiveAndDataTable.syncArchive2Summary(null, meganFile.getFileName(), connector, dataTable, sampleAttributeTable);
+                    final File relative = Basic.getRelativeFile(file, rootDirectory);
+                    final Document doc = new Document();
 
+                    doc.getMeganFile().setFileFromExistingFile(file.getPath(), true);
+                    if (doc.getMeganFile().hasDataConnector()) {
+                        final IConnector connector = doc.getMeganFile().getConnector();
+
+                        final DataTable dataTable = new DataTable();
+                        SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
+                        SyncArchiveAndDataTable.syncArchive2Summary(null, doc.getMeganFile().getFileName(), connector, dataTable, sampleAttributeTable);
+                        this.files.add(relative.getPath());
                         fileName2Description.put(relative.getPath(), String.format("reads: %,d, matches: %,d", connector.getNumberOfReads(), connector.getNumberOfMatches()));
+
+                    } else if (doc.getMeganFile().isMeganSummaryFile()) {
+                        this.files.add(relative.getPath());
+                        fileName2Description.put(relative.getPath(), String.format("reads: %,d", doc.getNumberOfReads()));
                     }
                     progress.checkForCancel();
-                } catch (IOException ignored) {
+                } catch(CanceledException ex) {
+                    break;
+                }
+                    catch (IOException ignored) {
                 }
             }
         } finally {
@@ -145,20 +149,7 @@ public class LocalService implements IRemoteService {
     }
 
     /**
-     * get a short name for the server
-     *
-     * @return short name
-     */
-    @Override
-    public String getShortName() {
-        return getServerURL();
-    }
-
-    /**
      * get the full absolute file path
-     *
-     * @param localFileName
-     * @return full file path
      */
     private String getAbsoluteFilePath(String localFileName) {
         return rootDirectory + File.separator + localFileName;
@@ -166,9 +157,6 @@ public class LocalService implements IRemoteService {
 
     /**
      * gets the server and file name
-     *
-     * @param file
-     * @return server and file
      */
     @Override
     public String getServerAndFileName(String file) {
@@ -182,9 +170,6 @@ public class LocalService implements IRemoteService {
 
     /**
      * get the description associated with a given file name
-     *
-     * @param fileName
-     * @return description
      */
     public String getDescription(String fileName) {
         return fileName2Description.get(fileName);

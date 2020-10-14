@@ -68,7 +68,7 @@ public class ServicePanel extends JPanel {
         this.remoteServiceBrowser = remoteServiceBrowser;
         this.service = service;
 
-        setBorder(BorderFactory.createTitledBorder("Remote Server: " + service.getShortName()));
+        setBorder(BorderFactory.createTitledBorder("Location: " + service.getServerURL()));
         setLayout(new BorderLayout());
 
         leaf2file = new HashMap<>();
@@ -160,7 +160,7 @@ public class ServicePanel extends JPanel {
         leaf2file.clear();
 
         Map<String, DefaultMutableTreeNode> path2node = new HashMap<>();
-        final DefaultMutableTreeNode root = new DefaultMutableTreeNode(service.getShortName(), true);
+        final DefaultMutableTreeNode root = new DefaultMutableTreeNode(service.getServerURL(), true);
         treeModel.setRoot(root);
         SortedSet<String> sortedSet = new TreeSet<>(service.getAvailableFiles());
         for (String fileName : sortedSet) {
@@ -202,7 +202,7 @@ public class ServicePanel extends JPanel {
             if (openFiles.contains(fileName)) {
                 buf.append("toFront file='").append(fileName).append("';");
             } else {
-                buf.append("open file='").append(fileName).append("' readOnly=true;");
+                buf.append("open file='").append(fileName).append("';");
                 count++;
             }
         }

@@ -36,7 +36,6 @@ import java.util.Map;
  */
 public class RemoteService implements IRemoteService {
     private final String serverURL; // server URL, e.g. http://localhost:8080 or http://localhost:8080/Megan5Server
-    private final String shortName; // local file prefix, e.g. localhost:8080:: localhost:8080/Megan5Server
     private final ClientMS clientMS;
     private final List<String> files;
 
@@ -47,14 +46,13 @@ public class RemoteService implements IRemoteService {
      *
      * @path path to root directory
      */
-    public RemoteService(String serverURL, String user, String password) throws IOException {
-        serverURL = serverURL.replace("http://", "").replaceAll("/$", "");
+    public RemoteService(String serverURL, String user, String passwordMD5) throws IOException {
+        serverURL = serverURL.replaceAll("/$", "");
         if (!serverURL.contains(("/")))
             serverURL += "/megan6server";
-        this.shortName = serverURL;
-        this.serverURL = "http://" + serverURL;
+        this.serverURL = serverURL;
 
-        clientMS = new ClientMS(this.serverURL, null, 0, user, password, 100);
+        clientMS = new ClientMS(this.serverURL, null, 0, user, passwordMD5, 100);
 
         final String remoteVersion=clientMS.getAsString("version");
         if(!remoteVersion.startsWith("MeganServer"))
@@ -75,18 +73,9 @@ public class RemoteService implements IRemoteService {
                 description= Basic.getFileNameWithoutPath(file);
             fileName2Description.put(file, description);
         }
-        System.err.println("Server: http://" + serverURL + ", number of available files: " + getAvailableFiles().size());
+        System.err.println("Server: " + serverURL + ", number of available files: " + getAvailableFiles().size());
     }
 
-    /**
-     * get a short name for the server
-     *
-     * @return short name
-     */
-    @Override
-    public String getShortName() {
-        return shortName;
-    }
 
     /**
      * is this node available?
@@ -126,7 +115,7 @@ public class RemoteService implements IRemoteService {
      */
     @Override
     public String getServerAndFileName(String file) {
-        return shortName + "::" + file;
+        return serverURL + "::" + file;
     }
 
     /**

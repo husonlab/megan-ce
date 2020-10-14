@@ -23,7 +23,6 @@ import jloda.util.Basic;
 import jloda.util.ProgressListener;
 import jloda.util.Single;
 import megan.core.Document;
-import megan.core.SampleAttributeTable;
 import megan.data.*;
 import megan.ms.Utilities;
 import megan.ms.client.ClientMS;
@@ -44,12 +43,15 @@ public class MSConnector implements IConnector {
     private String fileName;
 
     public MSConnector(String serverFileName) {
-        final String serverURL = RemoteServiceManager.getServerURL(serverFileName);
-        final String user = RemoteServiceManager.getUser(serverFileName);
-        final String passwordMD5 = RemoteServiceManager.getPassword(serverFileName);
-        final String filePath = RemoteServiceManager.getFilePath(serverFileName);
-        client = new ClientMS(serverURL, null, 0, user, passwordMD5, 100);
-        setFile(filePath);
+        RemoteServiceManager.ensureCredentialsHaveBeenLoadedFromProperties();
+        final String[] parts=serverFileName.split("::");
+
+            final String serverURL =parts[0];
+            final String user=RemoteServiceManager.getUser(serverURL);
+            final String passwordMD5=RemoteServiceManager.getPasswordMD5(serverURL);
+            final String filePath=parts[1];
+            client = new ClientMS(serverURL, null, 0, user, passwordMD5, 100);
+            setFile(filePath);
     }
 
     @Override

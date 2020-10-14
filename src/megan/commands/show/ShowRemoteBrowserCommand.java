@@ -28,6 +28,8 @@ import megan.core.Document;
 import megan.ms.clientdialog.RemoteServiceBrowser;
 import megan.ms.clientdialog.service.RemoteServiceManager;
 import megan.util.WindowUtilities;
+import megan.viewer.ClassificationViewer;
+import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,12 +47,9 @@ public class ShowRemoteBrowserCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
         if (remoteServiceBrowser == null) {
-            RemoteServiceManager.setupDefaultService();
-            Document doc = new Document();
-            Director dir = new Director(doc);
-            doc.setDir(dir);
-
-            remoteServiceBrowser = (RemoteServiceBrowser) dir.addViewer(new RemoteServiceBrowser(getViewer().getFrame()));
+            RemoteServiceManager.ensureCredentialsHaveBeenLoadedFromProperties();
+            RemoteServiceManager.ensureDefaultService();
+            remoteServiceBrowser = new RemoteServiceBrowser(MainViewer.getLastActiveFrame());
         }
         WindowUtilities.toFront(remoteServiceBrowser.getFrame());
 

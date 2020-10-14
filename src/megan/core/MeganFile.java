@@ -19,6 +19,7 @@
  */
 package megan.core;
 
+import jloda.util.Basic;
 import jloda.util.Pair;
 import megan.daa.connector.DAAConnector;
 import megan.data.ConnectorCombiner;
@@ -297,13 +298,8 @@ public class MeganFile {
     public String getName() {
         if (fileName == null)
             return "Untitled";
-
-        int p = fileName.lastIndexOf(isMeganServerFile() ? '/' : File.separatorChar);
-
-        if (p >= 0 && p < fileName.length() - 1)
-            return fileName.substring(p + 1);
         else
-            return fileName;
+            return Basic.getFileNameWithoutPath(fileName);
     }
 
     /**

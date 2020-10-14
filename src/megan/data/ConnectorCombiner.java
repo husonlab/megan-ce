@@ -177,10 +177,12 @@ public class ConnectorCombiner implements IConnector {
     public IClassificationBlock getClassificationBlock(String classificationName) throws IOException {
         final ClassificationBlockRMA6 result = new ClassificationBlockRMA6(classificationName);
         for (IConnector connector : connectors) {
-            IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
-            for (int key : classificationBlock.getKeySet()) {
-                result.setSum(key, result.getSum(key) + classificationBlock.getSum(key));
-                result.setWeightedSum(key, result.getWeightedSum(key) + classificationBlock.getWeightedSum(key));
+            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
+            if(classificationBlock!=null) {
+                for (int key : classificationBlock.getKeySet()) {
+                    result.setSum(key, result.getSum(key) + classificationBlock.getSum(key));
+                    result.setWeightedSum(key, result.getWeightedSum(key) + classificationBlock.getWeightedSum(key));
+                }
             }
         }
         return result;
@@ -231,7 +233,7 @@ public class ConnectorCombiner implements IConnector {
     @Override
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
         System.err.println("Can't getAuxiliaryData() for combined document");
-        return null;
+        return new HashMap<>();
     }
 
 }

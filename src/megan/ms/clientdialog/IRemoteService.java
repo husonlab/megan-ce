@@ -36,14 +36,6 @@ public interface IRemoteService {
     String getServerURL();
 
     /**
-     * get short server name, e.g. megan.de:files
-     *
-     * @return short name
-     */
-    String getShortName();
-
-
-    /**
      * is service available
      *
      * @return

@@ -54,9 +54,9 @@ public class DAAConnector implements IConnector {
      * @throws IOException
      */
     public DAAConnector(String fileName) throws IOException {
-        if (openDAAFileOnlyIfMeganized && !DAAParser.isMeganizedDAAFile(fileName, true))
-            throw new IOException("DAA file has not been meganized: " + fileName);
         setFile(fileName);
+        if (openDAAFileOnlyIfMeganized && !isMeganized())
+            throw new IOException("DAA file has not been meganized: " + fileName);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public boolean isReadOnly() throws IOException {
+    public boolean isReadOnly() {
         return fileName != null && ((new File(fileName)).canWrite());
     }
 
@@ -83,15 +83,7 @@ public class DAAConnector implements IConnector {
 
     /**
      * get an all reads iterator
-     *
-     * @param minScore
-     * @param maxExpected
-     * @param wantReadSequence
-     * @param wantMatches
-     * @param reuseReadBlockObject - reads presented by iterator all use the same read block object - set to false for efficient when possible
-     * @return
-     * @throws IOException
-     */
+      */
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches, boolean reuseReadBlockObject) throws IOException {
         return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, reuseReadBlockObject, longReads));
     }
@@ -120,7 +112,7 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public String[] getAllClassificationNames() throws IOException {
+    public String[] getAllClassificationNames()  {
         return daaHeader.getRefAnnotationNames();
     }
 
@@ -194,8 +186,8 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public int getNumberOfMatches() throws IOException {
-        return 100; // todo: fix
+    public int getNumberOfMatches()  {
+         return 0; // todo: fix
         /*
         DAAHeader daaHeader=new DAAHeader(fileName);
         daaHeader.load();
@@ -205,7 +197,7 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public void setNumberOfReads(int numberOfReads) throws IOException {
+    public void setNumberOfReads(int numberOfReads) {
         // todo: allow user to change number of reads
         //System.err.println("Not implemented");
     }
@@ -264,5 +256,13 @@ public class DAAConnector implements IConnector {
 
     public void setLongReads(boolean longReads) {
         this.longReads = longReads;
+    }
+
+    public boolean isMeganized() {
+        try {
+            return DAAParser.isMeganizedDAAFile(fileName, true);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -50,8 +50,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import static megan.ms.clientdialog.service.RemoteServiceManager.LOCAL;
-
 /**
  * Remote services browser
  * <p/>
@@ -145,7 +143,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         RemoteServiceManager.ensureCredentialsHaveBeenLoadedFromProperties();
 
         final JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createTitledBorder("Open Remote Server"));
+        panel.setBorder(BorderFactory.createTitledBorder("Open Server"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(new JLabel(" "));
 
@@ -155,45 +153,36 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
         final ItemListener itemListener = e -> {
             final String selected = e.getItem().toString();
-            final String shortServerName;
-            if (selected.startsWith(LOCAL))
-                shortServerName = selected;
-            else
-                shortServerName = selected.replace("http://", "").replaceAll("/$", "") + "::";
-            final String user = RemoteServiceManager.getUser(shortServerName);
+            final String user = RemoteServiceManager.getUser(selected);
             userTextField.setText(user != null ? user : "");
-            final String password = RemoteServiceManager.getPassword(shortServerName);
+            final String password = RemoteServiceManager.getPasswordMD5(selected);
             passwordTextField.setText(password != null ? password : "");
             setPasswordMD5(password != null);
         };
         urlComboBox.addItemListener(itemListener);
-        urlComboBox.addItemsFromString(ProgramProperties.get("MeganServers", ""), "%%%");
-        for (int i = 0; i < urlComboBox.getItemCount(); i++) {
-            if (urlComboBox.getItemAt(i).contains("megan-db.org")) { // remove old default
-                urlComboBox.removeItemAt(i);
-                break;
-            }
-        }
+        urlComboBox.addItems(RemoteServiceManager.getServers());
         urlComboBox.setMaximumSize(new Dimension(2000, 25));
-        urlComboBox.setPreferredSize(new Dimension(400, 25));
+        urlComboBox.setPreferredSize(new Dimension(367, 25));
         urlComboBox.setToolTipText("MEGAN server URL");
 
         JPanel aRow = new JPanel();
         aRow.setLayout(new BoxLayout(aRow, BoxLayout.X_AXIS));
         aRow.add(Box.createHorizontalGlue());
-        aRow.add(new JLabel("Server:"));
+        aRow.add(new JLabel("Server: "));
         aRow.add(urlComboBox);
         panel.add(aRow);
+        panel.add(Box.createVerticalStrut(4));
 
         userTextField.setMaximumSize(new Dimension(2000, 25));
         userTextField.setPreferredSize(new Dimension(400, 20));
-        userTextField.setToolTipText("User id required by server. Note that this is currently transmitted unencrypted.");
+        userTextField.setToolTipText("User id required by server.");
         JPanel bRow = new JPanel();
         bRow.setLayout(new BoxLayout(bRow, BoxLayout.X_AXIS));
         bRow.add(Box.createHorizontalGlue());
         bRow.add(new JLabel("User:"));
         bRow.add(userTextField);
         panel.add(bRow);
+        panel.add(Box.createVerticalStrut(4));
 
         passwordTextField.setMaximumSize(new Dimension(2000, 25));
         passwordTextField.setPreferredSize(new Dimension(400, 20));
@@ -358,7 +347,6 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
      */
     public void destroyView() throws CanceledException {
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
-        ProgramProperties.put("MeganServers", urlComboBox.getItemsAsString(20, "%%%"));
         dir.removeViewer(this);
         searchManager.getFindDialogAsToolBar().close();
         if (!ProgramProperties.get("SaveRemoteCredentials", false))
@@ -389,10 +377,10 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
      */
     public void addService(final IRemoteService service) {
         final ServicePanel servicePanel = new ServicePanel(service, this);
-        servicePanel.setToolTipText(service.getShortName());
+        servicePanel.setToolTipText(service.getServerURL());
 
         tabbedPane.add(servicePanel, 0);
-        tabbedPane.setTitleAt(0, abbreviateName(service.getShortName()));
+        tabbedPane.setTitleAt(0, abbreviateName(service.getServerURL()));
         tabbedPane.setSelectedIndex(0);
     }
 
@@ -403,7 +391,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
      * @return name of length <=18
      */
     private String abbreviateName(String name) {
-        name = name.replace("http://", "").replace(":8080", "").replaceAll("/MeganServer$", "");
+        name = name.replace("http://", "").replace(":8080", "").replaceAll("/megan6server$", "");
         if (name.length() <= 18)
             return name;
         return "..." + name.substring(name.length() - 15);
@@ -482,7 +470,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
                     final String shortServerName = e.getDocument().getText(0, e.getDocument().getLength()).replace("http://", "").replaceAll("/$", "") + "::";
                     final String user = RemoteServiceManager.getUser(shortServerName);
                     userTextField.setText(user != null ? user : "");
-                    final String password = RemoteServiceManager.getPassword(shortServerName);
+                    final String password = RemoteServiceManager.getPasswordMD5(shortServerName);
                     passwordTextField.setText(password != null ? password : "");
                 } catch (BadLocationException ignored) {
                 }
@@ -496,7 +484,6 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
      */
     public void saveConfig() {
         urlComboBox.getCurrentText(true);
-        ProgramProperties.put("MeganServers", urlComboBox.getItemsAsString(20, "%%%"));
     }
 
     /**

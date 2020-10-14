@@ -30,12 +30,12 @@ import java.util.*;
 /**
  * remote service manager
  * <p/>
- * Created by huson on 10/3/14.
+ * Daniel Huson, 2014, 10.2020
  */
 public class RemoteServiceManager {
     public static final String LOCAL = "Local::";
 
-    private static final String DEFAULT_MEGAN_SERVER = "maira.informatik.uni-tuebingen.de:8001/megan6server";
+    private static final String DEFAULT_MEGAN_SERVER = "http://maira.informatik.uni-tuebingen.de:8001/megan6server";
 
     private static final Map<String, IRemoteService> url2node = new HashMap<>();
 
@@ -52,14 +52,14 @@ public class RemoteServiceManager {
     public static IRemoteService createService(String remoteURL, String user, String password) throws IOException {
         final IRemoteService clientNode;
         if (remoteURL.startsWith(LOCAL)) {
-            clientNode = new LocalService(remoteURL.replaceAll(LOCAL, ""), ".rma", ".rma6", ".daa");
+            clientNode = new LocalService(remoteURL.replaceAll(LOCAL, ""), ".rma", ".rma6", ".daa",".megan","megan.gz");
         } else
             clientNode = new RemoteService(remoteURL, user, password);
-        if (url2node.containsKey(clientNode.getShortName()))
-            System.err.println("Warning: node already exists: " + clientNode.getShortName());
-        url2node.put(clientNode.getShortName(), clientNode);
+        if (url2node.containsKey(clientNode.getServerURL()))
+            System.err.println("Warning: node already exists: " + clientNode.getServerURL());
+        url2node.put(clientNode.getServerURL(), clientNode);
         if (ProgramProperties.get("SaveRemoteCredentials", true))
-            saveCredentials(clientNode.getShortName(), user, password);
+            saveCredentials(clientNode.getServerURL(), user, password);
         return clientNode;
     }
 
@@ -93,41 +93,28 @@ public class RemoteServiceManager {
     }
 
     /**
-     * get the short server name associated with this local file name
-     *
-     * @param localFileName
-     * @return short name
-     */
-    private static String getServerShortName(String localFileName) {
-        int pos = localFileName.indexOf(("::"));
-        if (pos > 0)
-            return localFileName.substring(0, pos);
-        else
-            return localFileName;
-    }
-
-    /**
      * get the server URL
      *
-     * @param localFileName
      * @return full file URL as required by connector
      */
-    public static String getServerURL(String localFileName) {
-        ensureCredentialsHaveBeenLoadedFromProperties();
-        String shortName = getServerShortName(localFileName);
-        return "http://" + shortName;
+    public static String getServerURL(String serverFileName) {
+        int pos = serverFileName.indexOf(("::"));
+        if (pos > 0)
+            return serverFileName.substring(0, pos);
+        else
+            return serverFileName;
     }
 
     /**
      * get the remote file path
      *
-     * @param localFileName
+     * @param serverFileName
      * @return remote file path
      */
-    public static String getFilePath(String localFileName) {
-        if (isRemoteFile(localFileName)) {
-            int pos = localFileName.indexOf("::");
-            return localFileName.substring(pos + "::".length());
+    public static String getFilePath(String serverFileName) {
+        if (isRemoteFile(serverFileName)) {
+            int pos = serverFileName.indexOf("::");
+            return serverFileName.substring(pos + "::".length());
         } else
             return null;
     }
@@ -135,68 +122,60 @@ public class RemoteServiceManager {
     /**
      * get the remote user
      *
-     * @param localFileName
+     * @param serviceName
      * @return remote user
      */
-    public static String getUser(String localFileName) {
-        localFileName = localFileName.replaceAll("/\\w+$", "");
-
-        if (isRemoteFile(localFileName)) {
-            final Pair<String, String> credentials = getCredentials(getServerShortName(localFileName));
+    public static String getUser(String serviceName) {
+            final Pair<String, String> credentials = getCredentials(serviceName);
             if (credentials != null)
                 return credentials.get1();
-        }
-        return null;
+        else
+            return null;
     }
 
     /**
      * get remote password
      *
-     * @param localFileName
+     * @param serviceName
      * @return password
      */
-    public static String getPassword(String localFileName) {
-        localFileName = localFileName.replaceAll("/\\w+$", "");
-
-        if (isRemoteFile(localFileName)) {
-            final Pair<String, String> credentials = getCredentials(getServerShortName(localFileName));
+    public static String getPasswordMD5(String serviceName) {
+            final Pair<String, String> credentials = getCredentials(serviceName);
             if (credentials != null)
                 return credentials.get2();
-        }
-        return null;
+            else
+            return null;
     }
 
     /**
      * does this file name have the syntax of a remote file?
      *
-     * @param localFileName
+     * @param fileName
      * @return true, if local name of a remote file
      */
-    private static boolean isRemoteFile(String localFileName) {
-        return !localFileName.startsWith(LOCAL) && localFileName.contains("::");
+    private static boolean isRemoteFile(String fileName) {
+        return !fileName.startsWith(LOCAL) && fileName.contains("::");
     }
 
     /**
      * get credentials for given server, if known
      *
-     * @param server
+     * @param serviceName
      * @return credentials
      */
-    public static Pair<String, String> getCredentials(String server) {
-        server = server.replaceAll("/\\w+$", "");
-        return server2Credentials.get(server);
+    public static Pair<String, String> getCredentials(String serviceName) {
+        return server2Credentials.get(serviceName);
     }
 
     /**
      * save credentials for given server
      *
-     * @param server
+     * @param serviceName
      * @param user
-     * @param password
+     * @param passwordMD5
      */
-    public static void saveCredentials(String server, String user, String password) {
-        server = server.replaceAll("/\\w+$", "");
-        server2Credentials.put(server, new Pair<>(user, password));
+    public static void saveCredentials(String serviceName, String user, String passwordMD5) {
+        server2Credentials.put(serviceName, new Pair<>(user, passwordMD5));
         saveCredentialsToProperties();
     }
 
@@ -220,7 +199,10 @@ public class RemoteServiceManager {
      * save all credentials to properties
      */
     private static void saveCredentialsToProperties() {
-        List<String> list = new LinkedList<>();
+        final List<String> list = new LinkedList<>();
+
+        // remove old default server:
+        server2Credentials.remove("meganserver2.informatik.uni-tuebingen.de/Public");
 
         for (String server : server2Credentials.keySet()) {
             Pair<String, String> pair = server2Credentials.get(server);
@@ -243,21 +225,9 @@ public class RemoteServiceManager {
         return server2Credentials.keySet();
     }
 
-    public static void setupDefaultService() {
-        final String remoteServices = ProgramProperties.get("MeganServers", "");
-        if (!remoteServices.contains(DEFAULT_MEGAN_SERVER)) {
-            final String user = "guest";
-            final String passwordMD5 = Basic.computeMD5("guest");
-
-            if (remoteServices.length() == 0)
-                ProgramProperties.put("MeganServers", DEFAULT_MEGAN_SERVER);
-            else
-                ProgramProperties.put("MeganServers", remoteServices + "%%%" + DEFAULT_MEGAN_SERVER);
-
-            final List<String> credentials = new LinkedList<>(Arrays.asList(ProgramProperties.get("MeganServers", new String[0])));
-            credentials.add(DEFAULT_MEGAN_SERVER + "::" + user + "::" + passwordMD5);
-            saveCredentials(DEFAULT_MEGAN_SERVER, user, passwordMD5);
-            ProgramProperties.put("MeganServers", credentials.toArray(new String[0]));
-        }
+    public static void ensureDefaultService() {
+        final String user = "guest";
+        final String passwordMD5 = Basic.computeMD5("guest");
+        saveCredentials(DEFAULT_MEGAN_SERVER, user, passwordMD5);
     }
 }

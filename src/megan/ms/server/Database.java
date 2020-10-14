@@ -97,14 +97,16 @@ public class Database {
                             }
                         }
                     }
-                    else if(meganFile.isDAAFile()) {
+                    else if(meganFile.hasDataConnector()) {
                         final IConnector connector = meganFile.getConnector();
                         final long numberOfReads = connector.getNumberOfReads();
-                        final long numberOfMatches = connector.getNumberOfMatches();
-                        final int fileId = fileName2Id.size() + 1;
-                        final String relativePath = Basic.getRelativeFile(file, rootDirectory).getPath();
-                        fileName2Id.put(relativePath, fileId);
-                        id2record.put(fileId, new Record(fileId, file, Arrays.asList(connector.getAllClassificationNames()), connector.getAuxiliaryData(), numberOfReads, numberOfMatches));
+                        if (numberOfReads > 0) {
+                            final long numberOfMatches = connector.getNumberOfMatches();
+                            final int fileId = fileName2Id.size() + 1;
+                            final String relativePath = Basic.getRelativeFile(file, rootDirectory).getPath();
+                            fileName2Id.put(relativePath, fileId);
+                            id2record.put(fileId, new Record(fileId, file, Arrays.asList(connector.getAllClassificationNames()), connector.getAuxiliaryData(), numberOfReads, numberOfMatches));
+                        }
                     }
                     progress.incrementProgress();
                 } catch (IOException ignored) {

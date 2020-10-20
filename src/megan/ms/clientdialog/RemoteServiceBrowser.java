@@ -37,7 +37,6 @@ import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
 import megan.main.MeganProperties;
-import megan.ms.clientdialog.commands.OpenLocalCommand;
 import megan.ms.clientdialog.commands.OpenRemoteServerCommand;
 import megan.ms.clientdialog.service.RemoteServiceManager;
 
@@ -82,6 +81,10 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
     private final StatusBar statusBar;
 
+    public static String[] commandSources={"megan.commands", "megan.ms.clientdialog.commands"};
+
+    public static String[] additionalItems={};
+
     /**
      * constructor
      */
@@ -90,7 +93,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         dir.getDocument().setDirty(true); // prevent opening in this document
         dir.addViewer(this);
 
-        commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.ms.clientdialog.commands"}, !ProgramProperties.isUseGUI());
+        commandManager = new CommandManager(dir, this, commandSources, !ProgramProperties.isUseGUI());
 
         setTitle();
 
@@ -212,12 +215,16 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         outside.add(panel, BorderLayout.NORTH);
         outside.add(Box.createVerticalGlue());
 
+        for(var item:additionalItems)
         {
-            final JPanel aLine = new JPanel();
-            aLine.setLayout(new BoxLayout(aLine, BoxLayout.LINE_AXIS));
-            aLine.add(commandManager.getButton(OpenLocalCommand.NAME));
-            aLine.add(Box.createHorizontalGlue());
-            outside.add(aLine);
+             final AbstractButton button=commandManager.getButton(item);
+             if(button!=null) {
+                 final JPanel aLine = new JPanel();
+                 aLine.setLayout(new BoxLayout(aLine, BoxLayout.LINE_AXIS));
+                 aLine.add(button);
+                 aLine.add(Box.createHorizontalGlue());
+                 outside.add(aLine);
+             }
         }
 
         {

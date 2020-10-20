@@ -36,11 +36,11 @@ class GUIConfiguration {
         MenuConfiguration menuConfig = new MenuConfiguration();
         menuConfig.defineMenuBar("File;Edit;Options;Layout;Window;Help;");
 
-        menuConfig.defineMenu("File", "New...;|;Open Selected Files;@Open Recent;|;Open From URL...;|;Compare...;|;Compare Selected Files;|;Import From BLAST...;@Import;Meganize DAA File...;|;Close;|;Quit;");
+        menuConfig.defineMenu("File", "New...;|;Open Selected Files;@Open Recent;|;Open From URL...;|;Compare Selected Files;|;Import From BLAST...;@Import;Meganize DAA File...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Paste;|;Select All;Select None;|;Find...;Find Again;");
-        menuConfig.defineMenu("Options", "Open Server...;Close Remote Server...;|;Open Local...;");
+        menuConfig.defineMenu("Options", "Open Server...;Close Remote Server...;");
         menuConfig.defineMenu("Layout", "Expand Remote Browser Nodes;Collapse Remote Browser Nodes;");
 
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;");

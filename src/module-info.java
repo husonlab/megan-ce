@@ -149,4 +149,5 @@ module megan {
     exports megan.ms.clientdialog.commands;
     opens megan.ms.clientdialog.commands;
     exports megan.ms.server;
+    exports megan.ms.clientdialog.service;
 }

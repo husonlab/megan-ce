@@ -42,7 +42,7 @@ public class HttpServerMS {
         httpServer.createContext(prefix + "/help", new HttpHandlerMS(RequestHandler.getHelp())); // .setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/version", new HttpHandlerMS(RequestHandler.getVersion())).setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/about", new HttpHandlerMS(RequestHandler.getAbout(this))).setAuthenticator(authenticator);
-        httpServer.createContext(prefix + "/isReadOnly", new HttpHandlerMS((c, p) -> "true".getBytes())).setAuthenticator(authenticator);
+        httpServer.createContext(prefix + "/isReadOnly", new HttpHandlerMS((RequestHandler)(c, p) -> "true".getBytes())).setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/list", new HttpHandlerMS(RequestHandler.getListDatasets(database))).setAuthenticator(authenticator);
 
         // file info:
@@ -62,6 +62,9 @@ public class HttpServerMS {
         // access classifications
         httpServer.createContext(prefix + "/getClassificationBlock", new HttpHandlerMS(RequestHandler.getClassificationBlock(database))).setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/getClassSize", new HttpHandlerMS(RequestHandler.getClassSize(database))).setAuthenticator(authenticator);
+
+        // download a file
+        httpServer.createContext(prefix + "/download", RequestHandlerAdditional.getDownloadPageHandler(database)).setAuthenticator(authenticator);
 
         // admin commands:
         httpServer.createContext(prefix + "/admin/listUsers", new HttpHandlerMS(RequestHandlerAdmin.listUsers(userManager))).setAuthenticator(adminAuthenicator);
@@ -102,6 +105,14 @@ public class HttpServerMS {
 
     public InetSocketAddress getSocketAddress() {
         return httpServer.getAddress();
+    }
+
+    public HttpServer getHttpServer() {
+        return httpServer;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     public String getAbout() {

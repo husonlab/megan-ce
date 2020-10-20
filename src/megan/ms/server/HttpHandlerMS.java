@@ -34,11 +34,12 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class HttpHandlerMS implements HttpHandler {
     private final RequestHandler requestHandler;
-    private static final AtomicLong numberOfRequests=new AtomicLong(0L);
+    private static final AtomicLong numberOfRequests = new AtomicLong(0L);
 
     public HttpHandlerMS() {
         this(RequestHandler.getDefault());
     }
+
 
     public HttpHandlerMS(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
@@ -54,7 +55,7 @@ public class HttpHandlerMS implements HttpHandler {
                 parameters = handlePostRequest(httpExchange);
             } else
                 parameters = null;
-            handleResponse(httpExchange, parameters);
+            respond(httpExchange, parameters);
             numberOfRequests.incrementAndGet();
         } catch (Exception ex) {
             Basic.caught(ex);
@@ -79,13 +80,15 @@ public class HttpHandlerMS implements HttpHandler {
         return null;
     }
 
-    private void handleResponse(HttpExchange httpExchange, String[] parameters) throws IOException {
-        try (OutputStream outputStream = httpExchange.getResponseBody()) {
+
+    public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
+
             final byte[] bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
-            httpExchange.sendResponseHeaders(200, bytes.length);
-            outputStream.write(bytes);
-            outputStream.flush();
-        }
+            try (OutputStream outputStream = httpExchange.getResponseBody()) {
+                httpExchange.sendResponseHeaders(200, bytes.length);
+                outputStream.write(bytes);
+                outputStream.flush();
+            }
     }
 
     public static AtomicLong getNumberOfRequests() {

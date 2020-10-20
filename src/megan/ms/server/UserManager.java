@@ -141,15 +141,15 @@ public class UserManager {
         return (!adminOnly || admins.contains(name)) && user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name));
     }
 
-    MyAuthenticator getAuthenticator() {
+    public MyAuthenticator getAuthenticator() {
         return authenticator;
     }
 
-    MyAuthenticator getAdminAuthenticator() {
+    public MyAuthenticator getAdminAuthenticator() {
         return adminAuthenticator;
     }
 
-    class MyAuthenticator extends BasicAuthenticator {
+    public class MyAuthenticator extends BasicAuthenticator {
         private final boolean adminOnly;
 
         MyAuthenticator(boolean adminOnly) {

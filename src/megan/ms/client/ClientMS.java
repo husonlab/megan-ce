@@ -68,12 +68,7 @@ public class ClientMS {
 
     public List<String> getFiles() throws IOException {
         try {
-            final URI uri = URI.create(serverAndPrefix + ("/list"));
-            final HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .timeout(Duration.ofSeconds(timeoutSeconds))
-                    .header("Content-Type", "application/text")
-                    .build();
+             final HttpRequest request = setupRequest("/list",false);
             HttpResponse<Stream<String>> response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
             final List<String> list = response.body().collect(Collectors.toList());
             if (list.size() > 0 && list.get(0).startsWith(Utilities.SERVER_ERROR)) {
@@ -91,12 +86,7 @@ public class ClientMS {
      */
     public String getAsString(String command) throws IOException {
         try {
-            final URI uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
-            final HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .timeout(Duration.ofSeconds(timeoutSeconds))
-                    .header("Content-Type", "application/text")
-                    .build();
+            final HttpRequest request = setupRequest(command,false);
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             final String result = response.body();
             if (result.startsWith(Utilities.SERVER_ERROR)) {
@@ -111,12 +101,7 @@ public class ClientMS {
 
     public byte[] getAsBytes(String command) throws IOException {
         try {
-            final URI uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
-            final HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .timeout(Duration.ofSeconds(timeoutSeconds))
-                    .header("Content-Type", "application/octet-stream")
-                    .build();
+            final HttpRequest request = setupRequest(command,true);
             final HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
             final byte[] result = response.body();
             if (Basic.startsWith(result, Utilities.SERVER_ERROR)) {
@@ -127,6 +112,19 @@ public class ClientMS {
         } catch (InterruptedException e) {
             throw new IOException(e);
         }
+    }
+
+    public HttpRequest setupRequest (String command,boolean binary) {
+            final URI uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
+        return HttpRequest.newBuilder()
+                .uri(uri)
+                .timeout(Duration.ofSeconds(timeoutSeconds))
+                .header("Content-Type", binary?"application/octet-stream":"application/text")
+                .build();
+        }
+
+    public HttpClient getHttpClient() {
+        return httpClient;
     }
 
     /**

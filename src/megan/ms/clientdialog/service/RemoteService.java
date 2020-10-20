@@ -39,6 +39,8 @@ public class RemoteService implements IRemoteService {
     private final ClientMS clientMS;
     private final List<String> files;
 
+    private String about;
+
     private final Map<String, String> fileName2Description = new HashMap<>();
 
     /**
@@ -59,6 +61,8 @@ public class RemoteService implements IRemoteService {
             throw new IOException("Failed to confirm MeganServer at remote site");
         if(!remoteVersion.equals(MeganServer.Version))
             throw new IOException("Incompatible version numbers: client="+MeganServer.Version+" server="+remoteVersion);
+
+        about=clientMS.getAsString("about");
 
         files = clientMS.getFiles();
         for (String file : files) {
@@ -141,4 +145,14 @@ public class RemoteService implements IRemoteService {
     public String getDescription(String fileName) {
         return fileName2Description.get(fileName);
     }
+
+    public ClientMS getClientMS() {
+        return clientMS;
+    }
+
+    public String getAbout() {
+        return about;
+    }
 }
+
+

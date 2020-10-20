@@ -28,8 +28,7 @@ import jloda.util.ProgramProperties;
 import megan.main.Megan6;
 
 import java.io.File;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 /**
  * Megan Server program
@@ -37,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class MeganServer {
     public static String Version = "MeganServer0.1";
-    private final Lock mainThreadLock = new ReentrantLock();
+    private static Consumer<HttpServerMS> additionalSetup;
 
     /**
      * * main
@@ -100,6 +99,9 @@ public class MeganServer {
 
         final HttpServerMS server = new HttpServerMS(port, commandPrefix, userManager, database, backlog, pageTimeout);
 
+        if(getAdditionalSetup()!=null)
+            getAdditionalSetup().accept(server);
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.err.println("Stopping http server...");
             server.stop();
@@ -119,5 +121,13 @@ public class MeganServer {
         server.getDatabase().rebuild();
 
         Thread.sleep(Long.MAX_VALUE);
+    }
+
+    public static Consumer<HttpServerMS> getAdditionalSetup() {
+        return additionalSetup;
+    }
+
+    public static void setAdditionalSetup(Consumer<HttpServerMS> additionalSetup) {
+        MeganServer.additionalSetup = additionalSetup;
     }
 }

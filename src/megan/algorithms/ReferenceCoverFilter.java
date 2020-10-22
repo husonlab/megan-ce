@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -85,7 +86,7 @@ public class ReferenceCoverFilter {
             if (numberOfThreads == 0)
                 return; // no reads
 
-            final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
+            final ExecutorService service = Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
             try {
                 final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
                 final IReadBlock sentinel = new ReadBlockDAA();

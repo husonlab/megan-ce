@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * builds contigs from paths and data
@@ -67,8 +68,7 @@ public class ContigBuilder {
             return;
         }
 
-        final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
-        final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
+        final ExecutorService service = Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         final CountDownLatch countDownLatch = new CountDownLatch(paths.length);
 
         for (final Node[] path : paths) {

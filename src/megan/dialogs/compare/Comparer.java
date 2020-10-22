@@ -36,6 +36,7 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * comparison of multiple datasets
@@ -161,7 +162,7 @@ public class Comparer {
 
             final int numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), dirs.size());
             final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
-            final ExecutorService service = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
+            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
 
             final long[] assignedCountPerThread = new long[numberOfThreads];
 

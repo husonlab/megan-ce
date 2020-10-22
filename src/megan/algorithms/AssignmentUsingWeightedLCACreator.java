@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Sets up the weighted-LCA algorithm
@@ -87,7 +88,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
             ref2weight = new HashMap<>(10000000);
 
         final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
-        final ExecutorService executorService = ProgramExecutorService.createServiceForParallelAlgorithm(numberOfThreads);
+        final ExecutorService executorService = Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 
         final long[] totalMatches = new long[numberOfThreads];

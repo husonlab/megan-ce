@@ -60,7 +60,6 @@ public interface RequestHandler {
     }
 
 
-
     static RequestHandler getHelp() {
         return (c, p) -> {
             try {
@@ -82,7 +81,7 @@ public interface RequestHandler {
             try {
                 checkKnownParameters(p);
                 return MeganServer.Version.getBytes();
-             } catch (IOException ex) {
+            } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
         };
@@ -409,7 +408,7 @@ public interface RequestHandler {
     }
 
     static byte[] reportError(String content, String[] parameters, String message) {
-        final String error=(Utilities.SERVER_ERROR + content + "?" + Basic.toString(parameters, "&") + ": " + message);
+        final String error = (Utilities.SERVER_ERROR + content + "?" + Basic.toString(parameters, "&") + ": " + message);
         System.err.println(error);
         return error.getBytes();
     }

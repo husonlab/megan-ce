@@ -19,6 +19,7 @@
  */
 package megan.viewer;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.swing.graphview.*;
@@ -31,16 +32,12 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 /**
  * Listener for all GraphView events
  */
 public class MyGraphViewListener implements IGraphViewListener {
-    private final static ExecutorService service = Executors.newFixedThreadPool(1);
-
     private boolean inWait = false;
 
     final static boolean hasLabelXORBug = true;
@@ -183,7 +180,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                 viewer.setCursor(Cursors.getClosedHand());
 
                 if (!inWait) {
-                    service.execute(new Runnable() {
+                    ProgramExecutorService.getInstance().execute(new Runnable() {
                         public void run() {
                             try {
                                 inWait = true;

@@ -78,7 +78,7 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
                 try {
                     while (!canceled.get()) {
                         progress.setProgress(it.getProgress());
-                        Thread.sleep(100);
+                        Thread.sleep(500);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

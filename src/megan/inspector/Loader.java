@@ -19,6 +19,7 @@
  */
 package megan.inspector;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
@@ -27,8 +28,6 @@ import megan.core.Director;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -37,7 +36,6 @@ import java.util.concurrent.Future;
  */
 public class Loader {
     private final InspectorWindow inspectorWindow;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private Future future;
 
     private final Queue<LoaderTask> tasks = new LinkedList<>();
@@ -67,7 +65,7 @@ public class Loader {
     private void processQueue() {
         final Director dir = inspectorWindow.dir;
         if (!dir.isLocked() && (future == null || future.isDone())) {
-            future = executorService.submit(() -> {
+            future = ProgramExecutorService.getInstance().submit(() -> {
                 ProgressDialog progressDialog = new ProgressDialog("", "", inspectorWindow.getFrame());
                 dir.getDocument().setProgressListener(progressDialog);
                 try {

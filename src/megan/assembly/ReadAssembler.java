@@ -181,7 +181,7 @@ public class ReadAssembler {
      */
     public void reportContigStats() {
         if (contigs.size() == 0) {
-            System.err.println(String.format("Contigs:%,9d", 0));
+            System.err.printf("Contigs:%,9d%n", 0);
         } else {
             final int[] sizes = new int[contigs.size()];
             int pos = 0;
@@ -189,10 +189,10 @@ public class ReadAssembler {
                 sizes[pos++] = pair.getSecond().length();
             }
             Arrays.sort(sizes);
-            System.err.println(String.format("Contigs:%,9d", sizes.length));
-            System.err.println(String.format("Min len:%,9d", sizes[0]));
-            System.err.println(String.format("Med len:%,9d", sizes[sizes.length / 2]));
-            System.err.println(String.format("Max len:%,9d", sizes[sizes.length - 1]));
+            System.err.printf("Contigs:%,9d%n", sizes.length);
+            System.err.printf("Min len:%,9d%n", sizes[0]);
+            System.err.printf("Med len:%,9d%n", sizes[sizes.length / 2]);
+            System.err.printf("Max len:%,9d%n", sizes[sizes.length - 1]);
         }
     }
 
@@ -226,8 +226,6 @@ public class ReadAssembler {
         // main parallel computation:
         if (sortedContigs.size() > 0) {
             final int numberOfThreads = (Math.min(sortedContigs.size(), Math.min(Runtime.getRuntime().availableProcessors() - 1, maxNumberOfThreads)));
-            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
             final Single<Boolean> notCanceled = new Single<>(true);
 
             progress.setMaximum(sortedContigs.size() / numberOfThreads);
@@ -240,76 +238,80 @@ public class ReadAssembler {
                 contig2Node.put(i, v);
             }
 
-            for (int t = 0; t < numberOfThreads; t++) {
-                final int threadNumber = t;
-                service.submit(() -> {
-                            try {
-                                final SimpleAligner4DNA simpleAlignerDNA = new SimpleAligner4DNA();
-                                simpleAlignerDNA.setMinPercentIdentity(minPercentIdentityToMergeContigs);
-                                final Single<Integer> overlap = new Single<>(0);
+            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+            try {
+                for (int t = 0; t < numberOfThreads; t++) {
+                    final int threadNumber = t;
+                    service.submit(() -> {
+                                try {
+                                    final SimpleAligner4DNA simpleAlignerDNA = new SimpleAligner4DNA();
+                                    simpleAlignerDNA.setMinPercentIdentity(minPercentIdentityToMergeContigs);
+                                    final Single<Integer> overlap = new Single<>(0);
 
-                                for (int i = threadNumber; i < sortedContigs.size(); i += numberOfThreads) {
-                                    final String iContig = sortedContigs.get(i).getSecond();
-                                    final byte[] iBytes = iContig.getBytes();
-                                    for (int j = 0; j < i; j++) {
-                                        final byte[] jBytes = sortedContigs.get(j).getSecond().getBytes();
+                                    for (int i = threadNumber; i < sortedContigs.size(); i += numberOfThreads) {
+                                        final String iContig = sortedContigs.get(i).getSecond();
+                                        final byte[] iBytes = iContig.getBytes();
+                                        for (int j = 0; j < i; j++) {
+                                            final byte[] jBytes = sortedContigs.get(j).getSecond().getBytes();
 
-                                        if (iBytes.length > jBytes.length)
-                                            throw new RuntimeException("Internal error: contig i is longer than contig j");
+                                            if (iBytes.length > jBytes.length)
+                                                throw new RuntimeException("Internal error: contig i is longer than contig j");
 
-                                        final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytes, jBytes, overlap);
+                                            final SimpleAligner4DNA.OverlapType overlapType = simpleAlignerDNA.getOverlap(iBytes, jBytes, overlap);
 
-                                        // if contained or nearly contained, remove
-                                        if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef) {
-                                            synchronized (contigId2ContainedContigs) {
-                                                List<Integer> contained = contigId2ContainedContigs[j];
-                                                if (contained == null) {
-                                                    contained = new ArrayList<>();
-                                                    contigId2ContainedContigs[j] = contained;
+                                            // if contained or nearly contained, remove
+                                            if (overlapType == SimpleAligner4DNA.OverlapType.QueryContainedInRef) {
+                                                synchronized (contigId2ContainedContigs) {
+                                                    List<Integer> contained = contigId2ContainedContigs[j];
+                                                    if (contained == null) {
+                                                        contained = new ArrayList<>();
+                                                        contigId2ContainedContigs[j] = contained;
+                                                    }
+                                                    contained.add(i);
+                                                    containedContigs.set(i);
                                                 }
-                                                contained.add(i);
-                                                containedContigs.set(i);
-                                            }
-                                        } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() >= minOverlap) {
-                                            final Node v = contig2Node.get(i);
-                                            final Node w = contig2Node.get(j);
-                                            synchronized (overlapGraph) {
-                                                overlapGraph.newEdge(v, w, overlap.get());
-                                            }
-                                        } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() >= minOverlap) {
-                                            final Node v = contig2Node.get(i);
-                                            final Node w = contig2Node.get(j);
-                                            synchronized (overlapGraph) {
-                                                overlapGraph.newEdge(w, v, overlap.get());
+                                            } else if (overlapType == SimpleAligner4DNA.OverlapType.QuerySuffix2RefPrefix && overlap.get() >= minOverlap) {
+                                                final Node v = contig2Node.get(i);
+                                                final Node w = contig2Node.get(j);
+                                                synchronized (overlapGraph) {
+                                                    overlapGraph.newEdge(v, w, overlap.get());
+                                                }
+                                            } else if (overlapType == SimpleAligner4DNA.OverlapType.QueryPrefix2RefSuffix && overlap.get() >= minOverlap) {
+                                                final Node v = contig2Node.get(i);
+                                                final Node w = contig2Node.get(j);
+                                                synchronized (overlapGraph) {
+                                                    overlapGraph.newEdge(w, v, overlap.get());
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                if (threadNumber == 0)
-                                    progress.incrementProgress();
-                            } catch (CanceledException e) {
-                                notCanceled.set(false);
-                                while (countDownLatch.getCount() > 0)
+                                    if (threadNumber == 0)
+                                        progress.incrementProgress();
+                                } catch (CanceledException e) {
+                                    notCanceled.set(false);
+                                    while (countDownLatch.getCount() > 0)
+                                        countDownLatch.countDown();
+                                } catch (Exception e) {
+                                    Basic.caught(e);
+                                } finally {
                                     countDownLatch.countDown();
-                            } catch (Exception e) {
-                                Basic.caught(e);
-                            } finally {
-                                countDownLatch.countDown();
+                                }
                             }
-                        }
-                );
-            }
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                Basic.caught(e);
+                    );
+                }
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    Basic.caught(e);
+                }
             } finally {
                 service.shutdownNow();
             }
         }
 
         if (verbose)
-            System.err.println(String.format("Contained contigs:%6d", containedContigs.cardinality()));
+            System.err.printf("Contained contigs:%6d%n", containedContigs.cardinality());
         if (containedContigs.cardinality() > 0) // delete all contained contigs from graph
         {
             for (Node v : overlapGraph.nodes()) {

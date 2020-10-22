@@ -52,7 +52,7 @@ public class RemoteServiceManager {
     public static IRemoteService createService(String remoteURL, String user, String password) throws IOException {
         final IRemoteService clientNode;
         if (remoteURL.startsWith(LOCAL)) {
-            clientNode = new LocalService(remoteURL.replaceAll(LOCAL, ""), ".rma", ".rma6", ".daa",".megan","megan.gz");
+            clientNode = new LocalService(remoteURL.replaceAll(LOCAL, ""), ".rma", ".rma6", ".daa", ".megan", "megan.gz");
         } else
             clientNode = new RemoteService(remoteURL, user, password);
         if (url2node.containsKey(clientNode.getServerURL()))
@@ -126,9 +126,9 @@ public class RemoteServiceManager {
      * @return remote user
      */
     public static String getUser(String serviceName) {
-            final Pair<String, String> credentials = getCredentials(serviceName);
-            if (credentials != null)
-                return credentials.get1();
+        final Pair<String, String> credentials = getCredentials(serviceName);
+        if (credentials != null)
+            return credentials.get1();
         else
             return null;
     }
@@ -140,10 +140,10 @@ public class RemoteServiceManager {
      * @return password
      */
     public static String getPasswordMD5(String serviceName) {
-            final Pair<String, String> credentials = getCredentials(serviceName);
-            if (credentials != null)
-                return credentials.get2();
-            else
+        final Pair<String, String> credentials = getCredentials(serviceName);
+        if (credentials != null)
+            return credentials.get2();
+        else
             return null;
     }
 

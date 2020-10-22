@@ -1,6 +1,7 @@
 package megan.ms.server;
 
 import com.sun.net.httpserver.HttpServer;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.util.ProgramProperties;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class HttpServerMS {
 
     public HttpServerMS(int port, String prefix, UserManager userManager, Database database, int backlog, int pageTimeout) throws IOException {
         this.commandPrefix = prefix;
-        this.userManager=userManager;
+        this.userManager = userManager;
         this.database = database;
 
         if (prefix.length() > 0 && !prefix.startsWith("/"))
@@ -42,7 +43,7 @@ public class HttpServerMS {
         httpServer.createContext(prefix + "/help", new HttpHandlerMS(RequestHandler.getHelp())); // .setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/version", new HttpHandlerMS(RequestHandler.getVersion())).setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/about", new HttpHandlerMS(RequestHandler.getAbout(this))).setAuthenticator(authenticator);
-        httpServer.createContext(prefix + "/isReadOnly", new HttpHandlerMS((RequestHandler)(c, p) -> "true".getBytes())).setAuthenticator(authenticator);
+        httpServer.createContext(prefix + "/isReadOnly", new HttpHandlerMS((RequestHandler) (c, p) -> "true".getBytes())).setAuthenticator(authenticator);
         httpServer.createContext(prefix + "/list", new HttpHandlerMS(RequestHandler.getListDatasets(database))).setAuthenticator(authenticator);
 
         // file info:
@@ -74,7 +75,7 @@ public class HttpServerMS {
         httpServer.createContext(prefix + "/admin/getLog", new HttpHandlerMS(RequestHandlerAdmin.getLog())).setAuthenticator(adminAuthenicator);
         httpServer.createContext(prefix + "/admin/clearLog", new HttpHandlerMS(RequestHandlerAdmin.clearLog())).setAuthenticator(adminAuthenicator);
 
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         httpServer.setExecutor(threadPoolExecutor);
     }
 
@@ -126,9 +127,10 @@ public class HttpServerMS {
                 + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
                 + "Server started: " + (new Date(getStarted())) + "\n";
 
-        if (database.getLastRebuild() > 0 )
+        if (database.getLastRebuild() > 0)
             about += "Latest rebuild: " + new Date(database.getLastRebuild()) + "\n";
 
         about += "Help: http://" + getAddress().getHostAddress() + ":8001" + getCommandPrefix() + "/help\n";
         return about;
-    }}
+    }
+}

@@ -56,25 +56,25 @@ public class RemoteService implements IRemoteService {
 
         clientMS = new ClientMS(this.serverURL, null, 0, user, passwordMD5, 100);
 
-        final String remoteVersion=clientMS.getAsString("version");
-        if(!remoteVersion.startsWith("MeganServer"))
+        final String remoteVersion = clientMS.getAsString("version");
+        if (!remoteVersion.startsWith("MeganServer"))
             throw new IOException("Failed to confirm MeganServer at remote site");
-        if(!remoteVersion.equals(MeganServer.Version))
-            throw new IOException("Incompatible version numbers: client="+MeganServer.Version+" server="+remoteVersion);
+        if (!remoteVersion.equals(MeganServer.Version))
+            throw new IOException("Incompatible version numbers: client=" + MeganServer.Version + " server=" + remoteVersion);
 
-        about=clientMS.getAsString("about");
+        about = clientMS.getAsString("about");
 
         files = clientMS.getFiles();
         for (String file : files) {
             final String description;
-            int reads=clientMS.getAsInt("getNumberOfReads?file=" + file);
-            int matches=clientMS.getAsInt("getNumberOfMatches?file=" + file);
-            if(reads>0 && matches>0)
-                 description = String.format("Reads: %,d, matches: %,d", reads,matches);
-            else if(reads>0)
-                    description = String.format("Reads: %,d", reads);
+            int reads = clientMS.getAsInt("getNumberOfReads?file=" + file);
+            int matches = clientMS.getAsInt("getNumberOfMatches?file=" + file);
+            if (reads > 0 && matches > 0)
+                description = String.format("Reads: %,d, matches: %,d", reads, matches);
+            else if (reads > 0)
+                description = String.format("Reads: %,d", reads);
             else
-                description= Basic.getFileNameWithoutPath(file);
+                description = Basic.getFileNameWithoutPath(file);
             fileName2Description.put(file, description);
         }
         System.err.println("Server: " + serverURL + ", number of available files: " + getAvailableFiles().size());

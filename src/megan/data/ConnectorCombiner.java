@@ -178,7 +178,7 @@ public class ConnectorCombiner implements IConnector {
         final ClassificationBlockRMA6 result = new ClassificationBlockRMA6(classificationName);
         for (IConnector connector : connectors) {
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
-            if(classificationBlock!=null) {
+            if (classificationBlock != null) {
                 for (int key : classificationBlock.getKeySet()) {
                     result.setSum(key, result.getSum(key) + classificationBlock.getSum(key));
                     result.setWeightedSum(key, result.getWeightedSum(key) + classificationBlock.getWeightedSum(key));

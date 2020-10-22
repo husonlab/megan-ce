@@ -83,7 +83,7 @@ public class DAAConnector implements IConnector {
 
     /**
      * get an all reads iterator
-      */
+     */
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches, boolean reuseReadBlockObject) throws IOException {
         return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, reuseReadBlockObject, longReads));
     }
@@ -112,7 +112,7 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public String[] getAllClassificationNames()  {
+    public String[] getAllClassificationNames() {
         return daaHeader.getRefAnnotationNames();
     }
 
@@ -186,8 +186,8 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
-    public int getNumberOfMatches()  {
-         return 0; // todo: fix
+    public int getNumberOfMatches() {
+        return 0; // todo: fix
         /*
         DAAHeader daaHeader=new DAAHeader(fileName);
         daaHeader.load();

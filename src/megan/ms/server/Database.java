@@ -41,7 +41,7 @@ public class Database {
     private final String[] fileExtensions;
     private final Map<String, Integer> fileName2Id = new TreeMap<>();
     private final Map<Integer, Record> id2Record = new HashMap<>();
-    private long lastRebuild=0;
+    private long lastRebuild = 0;
 
     /**
      * constructor
@@ -80,24 +80,23 @@ public class Database {
                 try {
                     final MeganFile meganFile = new MeganFile();
                     meganFile.setFileFromExistingFile(file.getPath(), true);
-                    if(meganFile.isMeganSummaryFile()) {
-                        final Document document=new Document();
-                        try(BufferedReader r=new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+                    if (meganFile.isMeganSummaryFile()) {
+                        final Document document = new Document();
+                        try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
                             document.loadMeganSummary(r);
-                            final long numberOfReads=document.getNumberOfReads();
+                            final long numberOfReads = document.getNumberOfReads();
                             final int fileId = fileName2Id.size() + 1;
                             final String relativePath = Basic.getRelativeFile(file, rootDirectory).getPath();
                             fileName2Id.put(relativePath, fileId);
-                            try(StringWriter w=new StringWriter()) {
+                            try (StringWriter w = new StringWriter()) {
                                 document.getDataTable().write(w);
-                                document.getSampleAttributeTable().write(w,false,true);
+                                document.getSampleAttributeTable().write(w, false, true);
                                 final Map<String, byte[]> data = new HashMap<>();
-                                data.put("FILE_CONTENT",w.toString().getBytes());
-                                id2record.put(fileId, new Record(fileId, file, document.getClassificationNames(),data,  numberOfReads, 0));
+                                data.put("FILE_CONTENT", w.toString().getBytes());
+                                id2record.put(fileId, new Record(fileId, file, document.getClassificationNames(), data, numberOfReads, 0));
                             }
                         }
-                    }
-                    else if(meganFile.hasDataConnector()) {
+                    } else if (meganFile.hasDataConnector()) {
                         final IConnector connector = meganFile.getConnector();
                         final long numberOfReads = connector.getNumberOfReads();
                         if (numberOfReads > 0) {
@@ -115,8 +114,8 @@ public class Database {
         }
         this.fileName2Id.putAll(fileName2Id);
         this.id2Record.putAll(id2record);
-        System.err.printf("Files: %,d%n",id2record.size());
-        lastRebuild=System.currentTimeMillis();
+        System.err.printf("Files: %,d%n", id2record.size());
+        lastRebuild = System.currentTimeMillis();
         return "Rebuild completed at " + (new Date(getLastRebuild()));
     }
 
@@ -169,19 +168,19 @@ public class Database {
     }
 
     public IClassificationBlock getClassificationBlock(String fileName, String classification) throws IOException {
-        final Document document=new Document();
+        final Document document = new Document();
         final File file = getRecord(fileName).getFile();
-        document.getMeganFile().setFileFromExistingFile(file.getPath(),true);
-        if(document.getMeganFile().hasDataConnector()) {
+        document.getMeganFile().setFileFromExistingFile(file.getPath(), true);
+        if (document.getMeganFile().hasDataConnector()) {
             final IConnector connector = document.getMeganFile().getConnector();
             return connector.getClassificationBlock(classification);
         } else {
             document.loadMeganFile();
-            final  ClassificationBlockDAA classificationBlock=new ClassificationBlockDAA(classification);
-            if(document.getClassificationNames().contains(classification)) {
-                final Map<Integer,float[]> class2count=document.getDataTable().getClass2Counts(classification);
-                for(var classId:class2count.keySet()) {
-                    classificationBlock.setSum(classId,Math.round(Basic.getSum(class2count.get(classId))));
+            final ClassificationBlockDAA classificationBlock = new ClassificationBlockDAA(classification);
+            if (document.getClassificationNames().contains(classification)) {
+                final Map<Integer, float[]> class2count = document.getDataTable().getClass2Counts(classification);
+                for (var classId : class2count.keySet()) {
+                    classificationBlock.setSum(classId, Math.round(Basic.getSum(class2count.get(classId))));
                 }
             }
             return classificationBlock;

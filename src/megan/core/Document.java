@@ -229,7 +229,7 @@ public class Document {
         //getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
         if (getMeganFile().isMeganSummaryFile() && !getMeganFile().isMeganServerFile()) {
             loadMeganSummaryFile();
-        } else if (getMeganFile().hasDataConnector() ||  getMeganFile().isMeganServerFile()) {
+        } else if (getMeganFile().hasDataConnector() || getMeganFile().isMeganServerFile()) {
             reloadFromConnector(null);
         } else
             throw new IOException("File format not (or no longer) supported");
@@ -243,11 +243,10 @@ public class Document {
      * @throws IOException
      */
     private void reloadFromConnector(String parametersOverride) throws IOException {
-        if(getMeganFile().isMeganServerFile() && getMeganFile().isMeganSummaryFile()) {
-            final MSConnector msConnector=new MSConnector(getMeganFile().getFileName());
+        if (getMeganFile().isMeganServerFile() && getMeganFile().isMeganSummaryFile()) {
+            final MSConnector msConnector = new MSConnector(getMeganFile().getFileName());
             msConnector.loadMeganSummaryFile(this);
-        }
-        else if (getMeganFile().hasDataConnector()) {
+        } else if (getMeganFile().hasDataConnector()) {
             final IConnector connector = getConnector();
             SyncArchiveAndDataTable.syncArchive2Summary(getReadAssignmentMode(), getMeganFile().getFileName(), connector, getDataTable(), getSampleAttributeTable());
 
@@ -440,12 +439,12 @@ public class Document {
      * load the set megan summary file
      */
     public void loadMeganSummaryFile() throws IOException {
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())))) {
             loadMeganSummary(reader);
         }
-     }
+    }
 
-    public void loadMeganSummary (BufferedReader reader) throws IOException {
+    public void loadMeganSummary(BufferedReader reader) throws IOException {
         getDataTable().read(reader, false);
         getSampleAttributeTable().read(reader, getSampleNames(), true);
         String parameters = getDataTable().getParameters();
@@ -596,7 +595,7 @@ public class Document {
         }
     }
 
-    public Map<String,byte[]> getAuxiliaryData() throws IOException {
+    public Map<String, byte[]> getAuxiliaryData() throws IOException {
         byte[] userState = getDataTable().getUserStateAsBytes();
         byte[] sampleAttributes = getSampleAttributeTable().getBytes();
 

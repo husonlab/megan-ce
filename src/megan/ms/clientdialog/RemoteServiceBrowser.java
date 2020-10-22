@@ -81,9 +81,9 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
     private final StatusBar statusBar;
 
-    public static String[] commandSources={"megan.commands", "megan.ms.clientdialog.commands"};
+    public static String[] commandSources = {"megan.commands", "megan.ms.clientdialog.commands"};
 
-    public static String[] additionalItems={};
+    public static String[] additionalItems = {};
 
     /**
      * constructor
@@ -215,16 +215,15 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         outside.add(panel, BorderLayout.NORTH);
         outside.add(Box.createVerticalGlue());
 
-        for(var item:additionalItems)
-        {
-             final AbstractButton button=commandManager.getButton(item);
-             if(button!=null) {
-                 final JPanel aLine = new JPanel();
-                 aLine.setLayout(new BoxLayout(aLine, BoxLayout.LINE_AXIS));
-                 aLine.add(button);
-                 aLine.add(Box.createHorizontalGlue());
-                 outside.add(aLine);
-             }
+        for (var item : additionalItems) {
+            final AbstractButton button = commandManager.getButton(item);
+            if (button != null) {
+                final JPanel aLine = new JPanel();
+                aLine.setLayout(new BoxLayout(aLine, BoxLayout.LINE_AXIS));
+                aLine.add(button);
+                aLine.add(Box.createHorizontalGlue());
+                outside.add(aLine);
+            }
         }
 
         {

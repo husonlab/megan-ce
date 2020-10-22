@@ -91,7 +91,6 @@ public class AlignmentPanel extends BasePanel {
      * call this when window is destroyed to release tooltip thread
      */
     public void close() {
-        toolTipHelper.shutdownNow();
     }
 
     public Alignment getAlignment() {

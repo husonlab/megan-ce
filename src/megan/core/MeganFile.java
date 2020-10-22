@@ -45,7 +45,7 @@ public class MeganFile {
     private final static Map<Pair<String, Long>, Integer> openFiles = new HashMap<>();
     private String fileName = null;
     private Type fileType = Type.UNKNOWN_FILE;
-    private boolean meganServerFile=false;
+    private boolean meganServerFile = false;
     private boolean readOnly = false;
 
     private IConnector connector;
@@ -66,9 +66,9 @@ public class MeganFile {
         this.fileName = fileName;
         this.readOnly = readOnly;
 
-        if(fileName.contains("::"))
-            meganServerFile=true;
-         if (fileName.toLowerCase().endsWith(".rma1")) {
+        if (fileName.contains("::"))
+            meganServerFile = true;
+        if (fileName.toLowerCase().endsWith(".rma1")) {
             fileType = Type.RMA1_FILE;
         } else if (fileName.toLowerCase().endsWith(".rma2")) {
             fileType = Type.RMA2_FILE;
@@ -91,8 +91,8 @@ public class MeganFile {
         } else if (fileName.toLowerCase().endsWith(".daa")) {
             fileType = Type.DAA_FILE;
         } else if (fileName.toLowerCase().endsWith(".meg") || fileName.toLowerCase().endsWith(".megan")
-                 || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
-                 || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
+                || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
+                || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
             setEmbeddedSourceFiles(determineEmbeddedSourceFiles(fileName));
         } else
@@ -100,7 +100,7 @@ public class MeganFile {
     }
 
     public boolean isMeganSummaryFile() {
-        return fileType==Type.MEGAN_SUMMARY_FILE;
+        return fileType == Type.MEGAN_SUMMARY_FILE;
     }
 
     /**
@@ -131,7 +131,7 @@ public class MeganFile {
             throw new IOException("File not readable: " + fileName);
 
         switch (fileType) {
-             case RMA1_FILE: {
+            case RMA1_FILE: {
                 throw new IOException("RMA version 1 not supported: " + fileName);
             }
             case RMA2_FILE: {
@@ -251,7 +251,7 @@ public class MeganFile {
      */
     IConnector getConnector(boolean openDAAFileOnlyIfMeganized) throws IOException {
         if (connector == null) {
-            if(isMeganServerFile()) {
+            if (isMeganServerFile()) {
                 return new MSConnector(fileName);
             }
             switch (fileType) {

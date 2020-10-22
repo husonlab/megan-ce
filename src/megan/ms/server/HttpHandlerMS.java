@@ -83,12 +83,12 @@ public class HttpHandlerMS implements HttpHandler {
 
     public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
 
-            final byte[] bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
-            try (OutputStream outputStream = httpExchange.getResponseBody()) {
-                httpExchange.sendResponseHeaders(200, bytes.length);
-                outputStream.write(bytes);
-                outputStream.flush();
-            }
+        final byte[] bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
+        try (OutputStream outputStream = httpExchange.getResponseBody()) {
+            httpExchange.sendResponseHeaders(200, bytes.length);
+            outputStream.write(bytes);
+            outputStream.flush();
+        }
     }
 
     public static AtomicLong getNumberOfRequests() {

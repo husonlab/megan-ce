@@ -28,7 +28,9 @@ import megan.ms.Utilities;
 import megan.ms.client.ClientMS;
 import megan.ms.clientdialog.service.RemoteServiceManager;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -44,14 +46,14 @@ public class MSConnector implements IConnector {
 
     public MSConnector(String serverFileName) {
         RemoteServiceManager.ensureCredentialsHaveBeenLoadedFromProperties();
-        final String[] parts=serverFileName.split("::");
+        final String[] parts = serverFileName.split("::");
 
-            final String serverURL =parts[0];
-            final String user=RemoteServiceManager.getUser(serverURL);
-            final String passwordMD5=RemoteServiceManager.getPasswordMD5(serverURL);
-            final String filePath=parts[1];
-            client = new ClientMS(serverURL, null, 0, user, passwordMD5, 100);
-            setFile(filePath);
+        final String serverURL = parts[0];
+        final String user = RemoteServiceManager.getUser(serverURL);
+        final String passwordMD5 = RemoteServiceManager.getPasswordMD5(serverURL);
+        final String filePath = parts[1];
+        client = new ClientMS(serverURL, null, 0, user, passwordMD5, 100);
+        setFile(filePath);
     }
 
     @Override
@@ -148,7 +150,7 @@ public class MSConnector implements IConnector {
      * load the set megan summary file
      */
     public void loadMeganSummaryFile(Document document) throws IOException {
-        final String fileContent=Basic.toString(getAuxiliaryData().get("FILE_CONTENT"));
+        final String fileContent = Basic.toString(getAuxiliaryData().get("FILE_CONTENT"));
         document.loadMeganSummary(new BufferedReader(new StringReader(fileContent)));
-     }
+    }
 }

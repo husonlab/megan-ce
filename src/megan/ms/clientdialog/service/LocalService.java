@@ -137,10 +137,9 @@ public class LocalService implements IRemoteService {
                         fileName2Description.put(relative.getPath(), String.format("reads: %,d", doc.getNumberOfReads()));
                     }
                     progress.checkForCancel();
-                } catch(CanceledException ex) {
+                } catch (CanceledException ex) {
                     break;
-                }
-                    catch (IOException ignored) {
+                } catch (IOException ignored) {
                 }
             }
         } finally {

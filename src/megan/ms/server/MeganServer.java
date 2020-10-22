@@ -69,7 +69,7 @@ public class MeganServer {
         options.comment("Input");
         final String inputDirectory = options.getOptionMandatory("-i", "inputDir", "Input directory", "");
         final boolean recursive = options.getOption("-r", "recurse", "Recursively visit all input subdirectories", true);
-        final String[] inputFileExtensions = options.getOption("-e", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6",".megan",".megan.gz"});
+        final String[] inputFileExtensions = options.getOption("-e", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6", ".megan", ".megan.gz"});
 
         options.comment("Server");
         final int port = options.getOption("-p", "port", "Server port", 8001);
@@ -81,6 +81,8 @@ public class MeganServer {
         final String usersFile = options.getOption("-u", "usersFile", "File containing list of users", System.getProperty("user.home") + File.separator + ".MeganServerUsers.def");
         final int backlog = options.getOption("-mb", "maxBacklog", "Maximum number of requests in backlog", 100);
         final int pageTimeout = options.getOption("-pt", "pageTimeout", "Number of seconds to keep unused pages alive", 10000);
+        Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
+
         options.done();
 
         final UserManager userManager = new UserManager(usersFile);
@@ -99,7 +101,7 @@ public class MeganServer {
 
         final HttpServerMS server = new HttpServerMS(port, commandPrefix, userManager, database, backlog, pageTimeout);
 
-        if(getAdditionalSetup()!=null)
+        if (getAdditionalSetup() != null)
             getAdditionalSetup().accept(server);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

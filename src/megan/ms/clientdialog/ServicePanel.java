@@ -59,7 +59,7 @@ public class ServicePanel extends JPanel {
     private final JMenuItem expandMenuItem;
     private final JMenuItem collapseMenuItem;
 
-    public static String[] serviceButtonNames={CompareSelectedFilesCommand.ALTNAME};
+    public static String[] serviceButtonNames = {CompareSelectedFilesCommand.ALTNAME};
 
     /**
      * constructor
@@ -96,9 +96,9 @@ public class ServicePanel extends JPanel {
         JPanel bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
         bottom.add(Box.createHorizontalGlue());
-        for(var name:serviceButtonNames){
-            final AbstractButton button=remoteServiceBrowser.getCommandManager().getButton(name);
-            if(button!=null)
+        for (var name : serviceButtonNames) {
+            final AbstractButton button = remoteServiceBrowser.getCommandManager().getButton(name);
+            if (button != null)
                 bottom.add(button);
         }
         bottom.add(Box.createHorizontalStrut(20));
@@ -381,7 +381,6 @@ public class ServicePanel extends JPanel {
             return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         }
     }
-
 
 
 }

@@ -19,6 +19,7 @@
  */
 package megan.core;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.*;
 import jloda.swing.message.MessageWindow;
@@ -37,8 +38,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -53,7 +52,6 @@ public class Director implements IDirectableViewer, IDirector {
     private boolean docInUpdate = false;
     private final List<IDirectableViewer> viewers = new LinkedList<>();
     private final List<IDirectorListener> directorListeners = new LinkedList<>();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private Future future;
 
     private boolean internalDocument = false; // will this remain hidden
@@ -329,7 +327,7 @@ public class Director implements IDirectableViewer, IDirector {
                 System.err.println("Warning: execute(" + command + "): concurrent execution");
             notifyLockInput();
 
-            future = executorService.submit(() -> {
+            future = ProgramExecutorService.getInstance().submit(() -> {
                 docInUpdate = true;
                 // final ProgressListener progressDialog=new ProgressPercentage();
                 final ProgressListener progressDialog = ProgramProperties.isUseGUI() ? new ProgressDialog("", "", parent) : new ProgressPercentage();
@@ -608,7 +606,7 @@ public class Director implements IDirectableViewer, IDirector {
         };
 
         if (ProgramProperties.isUseGUI())
-            future = executorService.submit(runnable);
+            future = ProgramExecutorService.getInstance().submit(runnable);
         else
             runnable.run();
     }

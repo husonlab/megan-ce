@@ -414,7 +414,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
      */
     private void embedGraph() {
         final FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(graph, null);
-        final NodeArray<APoint2D> coordinates = new NodeArray<>(graph);
+        final NodeArray<APoint2D<?>> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         boolean first = true;
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {

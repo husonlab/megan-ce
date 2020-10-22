@@ -214,7 +214,7 @@ public class OverlapGraphViewer {
 
         // compute simple layout:
         final FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(overlapGraph, null);
-        NodeArray<APoint2D> coordinates = new NodeArray<>(overlapGraph);
+        NodeArray<APoint2D<?>> coordinates = new NodeArray<>(overlapGraph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
             graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());

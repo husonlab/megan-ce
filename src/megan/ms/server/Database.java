@@ -119,20 +119,20 @@ public class Database {
         return "Rebuild completed at " + (new Date(getLastRebuild()));
     }
 
-    public Record getRecord(String fileNameOrUid) {
+    public Record getRecord(String fileName) {
         final Integer fileId;
-        if (Basic.isInteger(fileNameOrUid))
-            fileId = Basic.parseInt(fileNameOrUid);
+        if (Basic.isInteger(fileName))
+            fileId = Basic.parseInt(fileName);
         else
-            fileId = fileName2Id.get(fileNameOrUid);
+            fileId = fileName2Id.get(fileName);
         if (fileId != null)
             return id2Record.get(fileId);
         else
             return null;
     }
 
-    public String getMetadata(String fileNameOrUid) {
-        final Record record = getRecord(fileNameOrUid);
+    public String getMetadata(String fileName) {
+        final Record record = getRecord(fileName);
         if (record != null && record.getAuxiliaryData() != null && record.getAuxiliaryData().containsKey(SampleAttributeTable.SAMPLE_ATTRIBUTES)) {
             return Basic.toString(record.getAuxiliaryData().get(SampleAttributeTable.SAMPLE_ATTRIBUTES));
         } else
@@ -163,8 +163,8 @@ public class Database {
         return id2Record;
     }
 
-    public List<String> getClassifications(String fileNameOrUid) {
-        return getRecord(fileNameOrUid).getClassifications();
+    public List<String> getClassifications(String fileName) {
+        return getRecord(fileName).getClassifications();
     }
 
     public IClassificationBlock getClassificationBlock(String fileName, String classification) throws IOException {

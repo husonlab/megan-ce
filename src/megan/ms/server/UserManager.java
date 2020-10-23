@@ -34,12 +34,14 @@ import java.util.stream.StreamSupport;
  * Daniel Huson, 10.2020
  */
 public class UserManager {
+    public static final String ADMIN="admin";
+
     private final String fileName;
     private final Map<String, String> user2passwordMD5 = new TreeMap<>();
-    private final Set<String> admins = new TreeSet<>();
+    private final Map<String,Set<String>> user2roles =new TreeMap<>();
 
-    private final MyAuthenticator authenticator = new MyAuthenticator(false);
-    private final MyAuthenticator adminAuthenticator = new MyAuthenticator(true);
+    private final MyAuthenticator authenticator = createAuthenticator(null);
+    private final MyAuthenticator adminAuthenticator = createAuthenticator(ADMIN);
 
     public UserManager(String fileName) throws IOException {
         this.fileName = fileName;
@@ -47,7 +49,7 @@ public class UserManager {
     }
 
     public List<String> listAllUsers() {
-        return user2passwordMD5.keySet().stream().map(name -> admins.contains(name) ? name + " (admin)" : name).collect(Collectors.toList());
+        return user2passwordMD5.keySet().stream().map(user -> user+" "+ Basic.toString(user2roles.get(user),",")).collect(Collectors.toList());
     }
 
     public void readFile() throws IOException {
@@ -58,8 +60,10 @@ public class UserManager {
                         .filter(tokens -> tokens.length >= 2 && tokens[0].length() > 0 && tokens[1].length() > 0)
                         .forEach(tokens -> {
                             user2passwordMD5.put(tokens[0], tokens[1]);
-                            if (tokens.length == 3 && tokens[2].equals("admin"))
-                                admins.add(tokens[0]);
+                            final Set<String> roles=new TreeSet<>();
+                            user2roles.put(tokens[0],roles);
+                            if (tokens.length == 3 && tokens[2].length()>0)
+                                roles.addAll(Arrays.asList(Basic.split(tokens[2],',')));
                         });
             }
         }
@@ -69,20 +73,18 @@ public class UserManager {
         System.err.println("Updating file: " + fileName);
         try (var w = new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName))) {
             w.write("#MeganServer registered users\n");
-            w.write("#Name\tpassword-md5\trole(admin?)\n");
+            w.write("#Name\tpassword-md5\troles\n");
             for (var entry : user2passwordMD5.entrySet())
-                w.write(String.format("%s\t%s\t%s\n", entry.getKey(), entry.getValue(), (admins.contains(entry.getKey()) ? "admin" : "")));
+                w.write(String.format("%s\t%s\t%s\n", entry.getKey(), entry.getValue(), Basic.toString(user2roles.get(entry.getKey()),",")));
         }
     }
 
-    public void addUser(String name, String password, boolean admin, boolean allowReplace) throws IOException {
+
+    public void addUser(String name, String password, boolean allowReplace, String... roles) throws IOException {
         if (!allowReplace && user2passwordMD5.containsKey(name))
             throw new IOException("User exists: " + name);
         user2passwordMD5.put(name, Basic.computeMD5(password));
-        if (admin)
-            admins.add(name);
-        else
-            admins.remove(name);
+        user2roles.put(name,new TreeSet<>(Arrays.asList(roles)));
         writeFile();
     }
 
@@ -90,8 +92,21 @@ public class UserManager {
         if (!user2passwordMD5.containsKey(name))
             throw new IOException("No such user: " + name);
         user2passwordMD5.remove(name);
-        admins.remove(name);
         writeFile();
+    }
+
+    public void addRoles(String user, String... roles) throws IOException {
+        if(roles.length>0) {
+            user2roles.get(user).addAll(Arrays.asList(roles));
+            writeFile();
+        }
+    }
+
+    public void removeRoles(String user,  String... roles) throws IOException {
+        if(roles.length>0) {
+            user2roles.get(user).removeAll(Arrays.asList(roles));
+            writeFile();
+        }
     }
 
     public boolean userExists(String name) {
@@ -103,7 +118,11 @@ public class UserManager {
     }
 
     public boolean hasAdmin() {
-        return admins.size() > 0;
+        for(var roles:user2roles.values()) {
+            if (roles.contains(ADMIN))
+                return true;
+        }
+        return false;
     }
 
     public void askForAdminPassword() throws IOException {
@@ -134,11 +153,11 @@ public class UserManager {
         }
         if (password == null || password.length() == 0)
             throw new IOException("Failed to input admin password");
-        addUser("admin", password, true, true);
+        addUser(ADMIN, password, true, UserManager.ADMIN);
     }
 
-    public boolean checkCredentials(boolean adminOnly, String name, String passwordMD5) {
-        return (!adminOnly || admins.contains(name)) && user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name));
+    public boolean checkCredentials(String role, String name, String passwordMD5) {
+        return user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name)) && (role==null || role.equals("admin") || user2roles.get(name).contains(role));
     }
 
     public MyAuthenticator getAuthenticator() {
@@ -149,17 +168,21 @@ public class UserManager {
         return adminAuthenticator;
     }
 
-    public class MyAuthenticator extends BasicAuthenticator {
-        private final boolean adminOnly;
+    public MyAuthenticator createAuthenticator(String role) {
+        return new MyAuthenticator(role);
+    }
 
-        MyAuthenticator(boolean adminOnly) {
+    public class MyAuthenticator extends BasicAuthenticator {
+        private final String role;
+
+        MyAuthenticator(String role) {
             super("get");
-            this.adminOnly = adminOnly;
+            this.role=role;
         }
 
         @Override
         public boolean checkCredentials(String username, String password) {
-            return UserManager.this.checkCredentials(adminOnly, username, password) || UserManager.this.checkCredentials(adminOnly, username, Basic.computeMD5(password));
+            return UserManager.this.checkCredentials(role, username, password) || UserManager.this.checkCredentials(role, username, Basic.computeMD5(password));
         }
     }
 }

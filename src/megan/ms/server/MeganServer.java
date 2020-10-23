@@ -28,7 +28,6 @@ import jloda.util.ProgramProperties;
 import megan.main.Megan6;
 
 import java.io.File;
-import java.util.function.Consumer;
 
 /**
  * Megan Server program
@@ -36,7 +35,6 @@ import java.util.function.Consumer;
  */
 public class MeganServer {
     public static String Version = "MeganServer0.1";
-    private static Consumer<HttpServerMS> additionalSetup;
 
     /**
      * * main
@@ -68,17 +66,23 @@ public class MeganServer {
 
         options.comment("Input");
         final String inputDirectory = options.getOptionMandatory("-i", "inputDir", "Input directory", "");
+        final String path = options.getOption("-cp", "commandPrefix", "Command path prefix", "megan6server");
         final boolean recursive = options.getOption("-r", "recurse", "Recursively visit all input subdirectories", true);
         final String[] inputFileExtensions = options.getOption("-e", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6", ".megan", ".megan.gz"});
 
         options.comment("Server");
         final int port = options.getOption("-p", "port", "Server port", 8001);
-        String commandPrefix = options.getOption("-cp", "commandPrefix", "Command prefix", "megan6server");
 
         final boolean allowGuestLogin = options.getOption("-g", "allowGuest", "Allow guest login (name: guest, pwd: guest)", false);
 
         options.comment(ArgsOptions.OTHER);
-        final String usersFile = options.getOption("-u", "usersFile", "File containing list of users", System.getProperty("user.home") + File.separator + ".MeganServerUsers.def");
+        String defaultPreferenceFile;
+        if (ProgramProperties.isMacOS())
+            defaultPreferenceFile = System.getProperty("user.home") + "/Library/Preferences/MeganServerUsers.def";
+        else
+            defaultPreferenceFile = System.getProperty("user.home") + File.separator + ".MeganServerUsers.def";
+
+        final String usersFile = options.getOption("-u", "usersFile", "File containing list of users", defaultPreferenceFile);
         final int backlog = options.getOption("-mb", "maxBacklog", "Maximum number of requests in backlog", 100);
         final int pageTimeout = options.getOption("-pt", "pageTimeout", "Number of seconds to keep unused pages alive", 10000);
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
@@ -90,19 +94,13 @@ public class MeganServer {
             userManager.askForAdminPassword();
 
         if (allowGuestLogin) {
-            userManager.addUser("guest", "guest", false, true);
+            userManager.addUser("guest", "guest", true);
             System.err.println("Guests can login with name: guest and pwd: guest");
         }
 
-        if (commandPrefix.length() > 0 && !commandPrefix.startsWith("/"))
-            commandPrefix = "/" + commandPrefix;
-
+        final HttpServerMS server = new HttpServerMS(path, port,userManager, backlog, pageTimeout);
         final Database database = new Database(new File(inputDirectory), inputFileExtensions, recursive);
-
-        final HttpServerMS server = new HttpServerMS(port, commandPrefix, userManager, database, backlog, pageTimeout);
-
-        if (getAdditionalSetup() != null)
-            getAdditionalSetup().accept(server);
+        server.addDatabase(path,database,null);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.err.println("Stopping http server...");
@@ -116,20 +114,12 @@ public class MeganServer {
         System.err.println(server.getAbout());
 
         System.err.println("Server address:");
-        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + commandPrefix);
-        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() + commandPrefix);
+        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + path);
+        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() + path);
         System.err.println();
 
-        server.getDatabase().rebuild();
+        server.rebuildDatabases();
 
         Thread.sleep(Long.MAX_VALUE);
-    }
-
-    public static Consumer<HttpServerMS> getAdditionalSetup() {
-        return additionalSetup;
-    }
-
-    public static void setAdditionalSetup(Consumer<HttpServerMS> additionalSetup) {
-        MeganServer.additionalSetup = additionalSetup;
     }
 }

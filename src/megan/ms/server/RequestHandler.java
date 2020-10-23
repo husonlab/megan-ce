@@ -29,9 +29,7 @@ import megan.ms.client.connector.ReadBlockMS;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +50,7 @@ public interface RequestHandler {
                 "</html>\n").getBytes();
     }
 
-    static RequestHandler getAbout(HttpServerMS server) {
+    static RequestHandler getAbout(Database database, HttpServerMS server) {
         return (c, p) -> {
             checkKnownParameters(p);
             return server.getAbout().getBytes();
@@ -87,7 +85,7 @@ public interface RequestHandler {
         };
     }
 
-    static RequestHandler getListDatasets(Database database) {
+    static RequestHandler getListDataset(Database database) {
         return (c, p) -> {
             try {
                 checkKnownParameters(p, "metadata", "readCount");
@@ -95,7 +93,7 @@ public interface RequestHandler {
                 final boolean includeMetadata = Parameters.getValue(p, "metadata", false);
                 final boolean readCount = Parameters.getValue(p, "readCount", false);
 
-                final ArrayList<String> list = new ArrayList<>();
+                final var list = new ArrayList<>();
                 for (String fileName : database.getFileNames()) {
                     final StringBuilder buf = new StringBuilder();
                     buf.append(fileName);

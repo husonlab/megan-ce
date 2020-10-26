@@ -25,6 +25,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.PeakMemoryUsageMonitor;
 import jloda.util.ProgramProperties;
+import jloda.util.UsageException;
 import megan.main.Megan6;
 
 import java.io.File;
@@ -65,12 +66,13 @@ public class MeganServer {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");
-        final String inputDirectory = options.getOptionMandatory("-i", "inputDir", "Input directory", "");
-        final String path = options.getOption("-cp", "commandPrefix", "Command path prefix", "megan6server");
+        final String inputDirectory = options.getOptionMandatory("-i", "input", "Input directory", "");
         final boolean recursive = options.getOption("-r", "recurse", "Recursively visit all input subdirectories", true);
-        final String[] inputFileExtensions = options.getOption("-e", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6", ".megan", ".megan.gz"});
+        final String[] inputFileExtensions = options.getOption("-x", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6", ".megan", ".megan.gz"});
 
         options.comment("Server");
+        final String endpointName = options.getOption("-e", "endpoint", "Endpoint name", "megan6server");
+
         final int port = options.getOption("-p", "port", "Server port", 8001);
 
         final boolean allowGuestLogin = options.getOption("-g", "allowGuest", "Allow guest login (name: guest, pwd: guest)", false);
@@ -89,18 +91,21 @@ public class MeganServer {
 
         options.done();
 
+        if(endpointName.length()==0)
+            throw new UsageException("--endpoint: must have positive length");
+
         final UserManager userManager = new UserManager(usersFile);
         if (!userManager.hasAdmin())
             userManager.askForAdminPassword();
 
         if (allowGuestLogin) {
-            userManager.addUser("guest", "guest", true);
-            System.err.println("Guests can login with name: guest and pwd: guest");
+            userManager.addUser("guest", "", true);
+            System.err.println("Guests can login with name: guest and password: guest");
         }
 
-        final HttpServerMS server = new HttpServerMS(path, port,userManager, backlog, pageTimeout);
+        final HttpServerMS server = new HttpServerMS(endpointName, port,userManager, backlog, pageTimeout);
         final Database database = new Database(new File(inputDirectory), inputFileExtensions, recursive);
-        server.addDatabase(path,database,null);
+        server.addDatabase(endpointName,database,null);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.err.println("Stopping http server...");
@@ -114,8 +119,8 @@ public class MeganServer {
         System.err.println(server.getAbout());
 
         System.err.println("Server address:");
-        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + path);
-        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() + path);
+        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + endpointName);
+        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() + endpointName);
         System.err.println();
 
         server.rebuildDatabases();

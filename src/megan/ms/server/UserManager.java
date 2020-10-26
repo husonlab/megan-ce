@@ -156,8 +156,8 @@ public class UserManager {
         addUser(ADMIN, password, true, UserManager.ADMIN);
     }
 
-    public boolean checkCredentials(String role, String name, String passwordMD5) {
-        return user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name)) && (role==null || role.equals("admin") || user2roles.get(name).contains(role));
+    public boolean checkCredentials(String requiredRole, String name, String passwordMD5) {
+        return user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name)) && (requiredRole==null || user2roles.get(name).contains(requiredRole) ||  user2roles.get(name).contains(ADMIN) );
     }
 
     public MyAuthenticator getAuthenticator() {

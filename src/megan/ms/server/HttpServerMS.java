@@ -4,7 +4,6 @@ import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import jloda.fx.util.ProgramExecutorService;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import java.io.IOException;
@@ -21,18 +20,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class HttpServerMS {
     private final InetAddress address;
     private final HttpServer httpServer;
-    private final Map<String,Database> path2database =new HashMap<>();
+    private final Map<String,Database> path2database =new TreeMap<>();
     private final UserManager userManager;
     private final String defaultPath;
     private long started = 0L;
     
     private final ArrayList<HttpContext> contexts=new ArrayList<>();
 
-    public HttpServerMS(String defaultPath,int port,  UserManager userManager,int backlog, int pageTimeout) throws IOException {
-        if(!defaultPath.startsWith("/"))
-            defaultPath="/"+defaultPath;
+    public HttpServerMS(String path,int port,  UserManager userManager,int backlog, int pageTimeout) throws IOException {
+        if(!path.startsWith("/"))
+            path="/"+path;
 
-        this.defaultPath=defaultPath;
+        this.defaultPath =path;
         this.userManager = userManager;
         ReadIteratorPagination.setTimeoutSeconds(pageTimeout);
 
@@ -43,30 +42,30 @@ public class HttpServerMS {
         final var adminAuthenticator = userManager.createAuthenticator(UserManager.ADMIN);
 
         // general info:
-        createContext(defaultPath + "/help", new HttpHandlerMS(RequestHandler.getHelp()),null); // .setAuthenticator(authenticator);
-        createContext(defaultPath + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
+        createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp()),null); // .setAuthenticator(authenticator);
+        createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
 
         // admin commands:
-        createContext(defaultPath + "/admin/listUsers", new HttpHandlerMS(RequestHandlerAdmin.listUsers(userManager)),adminAuthenticator);
-        createContext(defaultPath + "/admin/updateDatasets", new HttpHandlerMS(RequestHandlerAdmin.recompute(path2database.values())),adminAuthenticator);
-        createContext(defaultPath + "/admin/addUser", new HttpHandlerMS(RequestHandlerAdmin.addUser(userManager)),adminAuthenticator);
-        createContext(defaultPath + "/admin/removeUser", new HttpHandlerMS(RequestHandlerAdmin.removeUser(userManager)),adminAuthenticator);
-        createContext(defaultPath + "/admin/addRole", new HttpHandlerMS(RequestHandlerAdmin.addRole(userManager)),adminAuthenticator);
-        createContext(defaultPath + "/admin/removeRole", new HttpHandlerMS(RequestHandlerAdmin.removeRole(userManager)),adminAuthenticator);
-        createContext(defaultPath + "/admin/getLog", new HttpHandlerMS(RequestHandlerAdmin.getLog()),adminAuthenticator);
-        createContext(defaultPath + "/admin/clearLog", new HttpHandlerMS(RequestHandlerAdmin.clearLog()),adminAuthenticator);
+        createContext(path + "/admin/listUsers", new HttpHandlerMS(RequestHandlerAdmin.listUsers(userManager)),adminAuthenticator);
+        createContext(path + "/admin/updateDatasets", new HttpHandlerMS(RequestHandlerAdmin.recompute(path2database.values())),adminAuthenticator);
+        createContext(path + "/admin/addUser", new HttpHandlerMS(RequestHandlerAdmin.addUser(userManager)),adminAuthenticator);
+        createContext(path + "/admin/removeUser", new HttpHandlerMS(RequestHandlerAdmin.removeUser(userManager)),adminAuthenticator);
+        createContext(path + "/admin/addRole", new HttpHandlerMS(RequestHandlerAdmin.addRole(userManager)),adminAuthenticator);
+        createContext(path + "/admin/removeRole", new HttpHandlerMS(RequestHandlerAdmin.removeRole(userManager)),adminAuthenticator);
+        createContext(path + "/admin/getLog", new HttpHandlerMS(RequestHandlerAdmin.getLog()),adminAuthenticator);
+        createContext(path + "/admin/clearLog", new HttpHandlerMS(RequestHandlerAdmin.clearLog()),adminAuthenticator);
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         httpServer.setExecutor(threadPoolExecutor);
     }
 
-    public void addDatabase(String path,  Database database, String requiredRole)  {
+    public void addDatabase(String path,  Database database, String role)  {
         if(!path.startsWith("/"))
             path="/"+path;
 
         path2database.put(path,database);
 
-        final var authenticator = userManager.createAuthenticator(requiredRole);
+        final var authenticator = userManager.createAuthenticator(role);
 
         // general info:
          createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(database,this)),authenticator);

@@ -76,7 +76,7 @@ public class Database {
         final Map<Integer, Record> id2record = new HashMap<>();
 
         try (ProgressPercentage progress = new ProgressPercentage("Rebuilding database:", files.size())) {
-            files.forEach(file -> {
+            for(var file:files) {
                 try {
                     final MeganFile meganFile = new MeganFile();
                     meganFile.setFileFromExistingFile(file.getPath(), true);
@@ -110,7 +110,7 @@ public class Database {
                     progress.incrementProgress();
                 } catch (IOException ignored) {
                 }
-            });
+            }
         }
         this.fileName2Id.putAll(fileName2Id);
         this.id2Record.putAll(id2record);

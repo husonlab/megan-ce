@@ -261,7 +261,7 @@ public class Document {
             }
 
             if (connector.getNumberOfReads() > 0) {
-                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getReadAssignmentMode(), getMeganFile().getName(), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
+                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getReadAssignmentMode(), Basic.replaceFileSuffix(getMeganFile().getName(),""), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
             }
 
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);

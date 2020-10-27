@@ -371,14 +371,14 @@ public class DataTable {
 
             // write the data:
             for (String classification : classification2class2counts.keySet()) {
-                Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
+                final Map<Integer, float[]> class2counts = classification2class2counts.get(classification);
                 classification = ClassificationType.getShortName(classification);
                 for (Integer classId : class2counts.keySet()) {
                     float[] counts = class2counts.get(classId);
                     if (counts != null) {
                         w.write(classification + "\t" + classId);
                         for (int i = 0; i < getNumberOfSamples(); i++) {
-                            w.write("\t" + (i < counts.length ? counts[i] : 0));
+                            w.write("\t" + (i < counts.length ? Basic.removeTrailingZerosAfterDot(""+counts[i]) : 0));
                         }
                         w.write("\n");
                     }
@@ -407,7 +407,7 @@ public class DataTable {
             w.write(String.format("%s\t%s\n", UIDS, Basic.toString(sampleUIds, "\t")));
         }
         if (sampleSizes.size() > 0) {
-            w.write(String.format("%s\t%s\n", SIZES, Basic.toString(sampleSizes, "\t")));
+            w.write(String.format("%s\t%s\n", SIZES, Basic.removeTrailingZerosAfterDot(Basic.toString(sampleSizes, "\t"))));
         }
 
         if (totalReads != -1)

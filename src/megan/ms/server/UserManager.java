@@ -79,7 +79,6 @@ public class UserManager {
         }
     }
 
-
     public void addUser(String name, String password, boolean allowReplace, String... roles) throws IOException {
         if (!allowReplace && user2passwordMD5.containsKey(name))
             throw new IOException("User exists: " + name);
@@ -92,11 +91,14 @@ public class UserManager {
         if (!user2passwordMD5.containsKey(name))
             throw new IOException("No such user: " + name);
         user2passwordMD5.remove(name);
+        user2roles.remove(name);
         writeFile();
     }
 
     public void addRoles(String user, String... roles) throws IOException {
         if(roles.length>0) {
+            if(!user2roles.containsKey(user))
+                throw new IOException("No such user: " + user);
             user2roles.get(user).addAll(Arrays.asList(roles));
             writeFile();
         }
@@ -104,6 +106,8 @@ public class UserManager {
 
     public void removeRoles(String user,  String... roles) throws IOException {
         if(roles.length>0) {
+            if(!user2roles.containsKey(user))
+                throw new IOException("No such user: " + user);
             user2roles.get(user).removeAll(Arrays.asList(roles));
             writeFile();
         }
@@ -156,8 +160,13 @@ public class UserManager {
         addUser(ADMIN, password, true, UserManager.ADMIN);
     }
 
-    public boolean checkCredentials(String requiredRole, String name, String passwordMD5) {
-        return user2passwordMD5.containsKey(name) && passwordMD5.equals(user2passwordMD5.get(name)) && (requiredRole==null || user2roles.get(name).contains(requiredRole) ||  user2roles.get(name).contains(ADMIN) );
+    public boolean checkCredentials(String requiredRole, String user, String passwordMD5) {
+        boolean result= user2passwordMD5.containsKey(user) && passwordMD5.equals(user2passwordMD5.get(user)) && (requiredRole==null || user2roles.get(user).contains(requiredRole) ||  user2roles.get(user).contains(ADMIN) );
+        if(!result && requiredRole!=null && requiredRole.contains("/") && requiredRole.replaceAll(".*/","").length()>0) {
+            return checkCredentials(requiredRole.replaceAll(".*/",""),user,passwordMD5);
+        }
+        else
+            return result;
     }
 
     public MyAuthenticator getAuthenticator() {

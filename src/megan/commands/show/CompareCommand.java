@@ -121,14 +121,12 @@ public class CompareCommand extends CommandBase implements ICommand {
                 for (String fileName : files) {
                     progress.setTasks("Comparison", "Loading files");
                     final Director newDir = Director.newProject(false, true);
-                    if (newDir != null) {
-                        newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
-                        if (newDir.getDocument().getNumberOfReads() == 0) {
-                            throw new IOException("No reads found in file: '" + fileName + "'");
-                        }
-                        comparer.addDirector(newDir);
-                        toDelete.add(newDir);
+                    newDir.executeImmediately("open file='" + fileName + "' readOnly=true;update;", newDir.getMainViewer().getCommandManager());
+                    if (newDir.getDocument().getNumberOfReads() == 0) {
+                        throw new IOException("No reads found in file: '" + fileName + "'");
                     }
+                    comparer.addDirector(newDir);
+                    toDelete.add(newDir);
                     progress.incrementProgress();
                 }
             }

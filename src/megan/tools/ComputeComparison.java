@@ -41,7 +41,9 @@ import java.util.Arrays;
 /**
  * compares multiple samples
  * Daniel Huson, 8.2018
+ * @deprecated use CompareFiles.java instead
  */
+@Deprecated
 public class ComputeComparison {
     /**
      * ComputeComparison

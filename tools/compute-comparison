@@ -36,4 +36,4 @@ modulepath="$jars_dir:$jars2_dir"
 
 java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
 
-$java $java_flags --module-path=$modulepath --add-modules=megan megan.tools.ComputeComparison $options
+$java $java_flags --module-path=$modulepath --add-modules=megan megan.tools.CompareFiles $options

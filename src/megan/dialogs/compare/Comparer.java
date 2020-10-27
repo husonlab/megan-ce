@@ -143,7 +143,7 @@ public class Comparer {
                         if (calculateNewSampleSize == 0 || numberOfReads < calculateNewSampleSize)
                             calculateNewSampleSize = numberOfReads;
                     }
-                    System.err.println(String.format("Normalizing to: %,.0f reads per sample", calculateNewSampleSize));
+                    System.err.printf("Normalizing to: %,.0f reads per sample%n", calculateNewSampleSize);
                 }
                 newSampleSize = calculateNewSampleSize;
             }

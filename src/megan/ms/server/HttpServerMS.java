@@ -4,6 +4,7 @@ import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import jloda.fx.util.ProgramExecutorService;
+import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import java.io.IOException;
@@ -107,6 +108,11 @@ public class HttpServerMS {
     }
 
     public void rebuildDatabases() {
+        try {
+            userManager.readFile();
+        } catch (IOException e) {
+            Basic.caught(e);
+        }
         for(var database:path2database.values())
             database.rebuild();
     }

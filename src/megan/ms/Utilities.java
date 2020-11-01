@@ -20,6 +20,8 @@
 
 package megan.ms;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import jloda.util.Basic;
 import megan.daa.connector.ClassificationBlockDAA;
 import megan.daa.io.ByteInputStream;
 import megan.daa.io.ByteOutputStream;
@@ -28,6 +30,7 @@ import megan.daa.io.OutputWriterLittleEndian;
 import megan.data.IClassificationBlock;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,6 +39,8 @@ import java.util.TreeMap;
  * Daniel Huson, 8.2020
  */
 public class Utilities {
+    private static final byte[] SALT="7DFjUnE9p2uDeDu0".getBytes();
+
     public static final String SERVER_ERROR = "401 Error:";
 
     /**
@@ -116,5 +121,13 @@ public class Utilities {
 
     public static byte[] getBytesLittleEndian(long a) {
         return new byte[]{(byte) a, (byte) (a >> 8), (byte) (a >> 16), (byte) (a >> 24), (byte) (a >> 32), (byte) (a >> 40), (byte) (a >> 48), (byte) (a >> 56)};
+    }
+
+    public static  String computeBCryptHash(byte[] password) {
+        return Basic.toString(BCrypt.withDefaults().hash(6, SALT, password));
+    }
+
+    public static boolean verify (char[] password,String bcryptHash) {
+        return BCrypt.verifyer().verify(password,bcryptHash).verified;
     }
 }

@@ -99,7 +99,7 @@ public class MeganServer {
             userManager.askForAdminPassword();
 
         if (allowGuestLogin) {
-            userManager.addUser("guest", "", true);
+            userManager.addUser("guest", "guest", true);
             System.err.println("Guests can login with name: guest and password: guest");
         }
 

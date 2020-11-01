@@ -318,9 +318,9 @@ public class Comparer {
             }
 
             if (useRelative) {
-                System.err.println(String.format("Total assigned: %,12d normalized", totalAssigned));
+                System.err.printf("Total assigned: %,12d normalized%n", totalAssigned);
             } else {
-                System.err.println(String.format("Total assigned: %,12d", totalAssigned));
+                System.err.printf("Total assigned: %,12d%n", totalAssigned);
             }
 
             result.setTotalReads((int) Basic.getSum(originalNumberOfReads));

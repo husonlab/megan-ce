@@ -50,9 +50,9 @@ public class MSConnector implements IConnector {
 
         final String serverURL = parts[0];
         final String user = RemoteServiceManager.getUser(serverURL);
-        final String passwordMD5 = RemoteServiceManager.getPasswordMD5(serverURL);
+        final String passwordHash = RemoteServiceManager.getPasswordHash(serverURL);
         final String filePath = parts[1];
-        client = new ClientMS(serverURL, null, 0, user, passwordMD5, 100);
+        client = new ClientMS(serverURL, null, 0, user, passwordHash, 100);
         setFile(filePath);
     }
 

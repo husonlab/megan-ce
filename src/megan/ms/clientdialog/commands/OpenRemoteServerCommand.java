@@ -102,14 +102,14 @@ public class OpenRemoteServerCommand extends CommandBase implements ICommand {
         if (remoteServiceBrowser != null) {
             String url = remoteServiceBrowser.getURL();
             String user = remoteServiceBrowser.getUser();
-            String passwordMD5 = remoteServiceBrowser.getPasswordMD5();
+            String passwordHash = remoteServiceBrowser.getPasswordHash();
 
             String command = "openServer url='" + url + "'";
             if (user.length() > 0)
                 command += " user='" + user + "'";
-            if (passwordMD5.length() > 0) {
+            if (passwordHash.length() > 0) {
                 synchronized (syncObject) {
-                    OpenRemoteServerCommand.hiddenPassword = passwordMD5;
+                    OpenRemoteServerCommand.hiddenPassword = passwordHash;
                 }
                 command += " password='" + HIDDEN_PASSWORD + "'";
             }

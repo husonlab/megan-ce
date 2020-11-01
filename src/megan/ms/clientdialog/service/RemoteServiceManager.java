@@ -19,9 +19,9 @@
  */
 package megan.ms.clientdialog.service;
 
-import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import megan.ms.Utilities;
 import megan.ms.clientdialog.IRemoteService;
 
 import java.io.IOException;
@@ -139,7 +139,7 @@ public class RemoteServiceManager {
      * @param serviceName
      * @return password
      */
-    public static String getPasswordMD5(String serviceName) {
+    public static String getPasswordHash(String serviceName) {
         final Pair<String, String> credentials = getCredentials(serviceName);
         if (credentials != null)
             return credentials.get2();
@@ -172,10 +172,10 @@ public class RemoteServiceManager {
      *
      * @param serviceName
      * @param user
-     * @param passwordMD5
+     * @param passwordHash
      */
-    public static void saveCredentials(String serviceName, String user, String passwordMD5) {
-        server2Credentials.put(serviceName, new Pair<>(user, passwordMD5));
+    public static void saveCredentials(String serviceName, String user, String passwordHash) {
+        server2Credentials.put(serviceName, new Pair<>(user, passwordHash));
         saveCredentialsToProperties();
     }
 
@@ -227,7 +227,7 @@ public class RemoteServiceManager {
 
     public static void ensureDefaultService() {
         final String user = "guest";
-        final String passwordMD5 = Basic.computeMD5("guest");
-        saveCredentials(DEFAULT_MEGAN_SERVER, user, passwordMD5);
+        final String passwordHash = Utilities.computeBCryptHash("guest".getBytes());
+        saveCredentials(DEFAULT_MEGAN_SERVER, user, passwordHash);
     }
 }

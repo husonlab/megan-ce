@@ -23,6 +23,7 @@ package megan.ms.server;
 import com.sun.net.httpserver.BasicAuthenticator;
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import megan.ms.Utilities;
 
 import java.io.*;
 import java.util.*;
@@ -37,7 +38,7 @@ public class UserManager {
     public static final String ADMIN="admin";
 
     private final String fileName;
-    private final Map<String, String> user2passwordMD5 = new TreeMap<>();
+    private final Map<String, String> user2passwordHash = new TreeMap<>();
     private final Map<String,Set<String>> user2roles =new TreeMap<>();
 
     private final MyAuthenticator authenticator = createAuthenticator(null);
@@ -49,23 +50,28 @@ public class UserManager {
     }
 
     public List<String> listAllUsers() {
-        return user2passwordMD5.keySet().stream().map(user -> user+" "+ Basic.toString(user2roles.get(user),",")).collect(Collectors.toList());
+        return user2passwordHash.keySet().stream().map(user -> user+" "+ Basic.toString(user2roles.get(user),",")).collect(Collectors.toList());
     }
 
     public void readFile() throws IOException {
         if (Basic.fileExistsAndIsNonEmpty(fileName)) {
-            try (var it = new FileLineIterator(fileName)) {
-                StreamSupport.stream(it.lines().spliterator(), false).filter(line -> line.length() > 0 && !line.startsWith("#"))
+            if(true) {
+                if(Basic.getLinesFromFile(fileName).stream().filter(line -> line.startsWith("#")).anyMatch(line->line.contains("password-md5"))) {
+                    throw new IOException("Users file '"+fileName+"' contains md5 hashes, no longer supported, please delete and setup new file");
+                }
+            }
+
+            Basic.getLinesFromFile(fileName).stream().filter(line -> line.length() > 0 && !line.startsWith("#"))
+                        .map(line->line.contains("\t")?line:line.replaceAll("\\s+","\t"))
                         .map(line -> Basic.split(line, '\t'))
                         .filter(tokens -> tokens.length >= 2 && tokens[0].length() > 0 && tokens[1].length() > 0)
                         .forEach(tokens -> {
-                            user2passwordMD5.put(tokens[0], tokens[1]);
+                            user2passwordHash.put(tokens[0], tokens[1]);
                             final Set<String> roles=new TreeSet<>();
                             user2roles.put(tokens[0],roles);
                             if (tokens.length == 3 && tokens[2].length()>0)
                                 roles.addAll(Arrays.asList(Basic.split(tokens[2],',')));
                         });
-            }
         }
     }
 
@@ -73,24 +79,27 @@ public class UserManager {
         System.err.println("Updating file: " + fileName);
         try (var w = new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName))) {
             w.write("#MeganServer registered users\n");
-            w.write("#Name\tpassword-md5\troles\n");
-            for (var entry : user2passwordMD5.entrySet())
+            w.write("#Name\tpassword-hash\troles\n");
+            for (var entry : user2passwordHash.entrySet())
                 w.write(String.format("%s\t%s\t%s\n", entry.getKey(), entry.getValue(), Basic.toString(user2roles.get(entry.getKey()),",")));
         }
     }
 
     public void addUser(String name, String password, boolean allowReplace, String... roles) throws IOException {
-        if (!allowReplace && user2passwordMD5.containsKey(name))
+        if (!allowReplace && user2passwordHash.containsKey(name))
             throw new IOException("User exists: " + name);
-        user2passwordMD5.put(name, Basic.computeMD5(password));
-        user2roles.put(name,new TreeSet<>(Arrays.asList(roles)));
+        user2passwordHash.put(name, Utilities.computeBCryptHash(password.getBytes()));
+        user2roles.put(name,new TreeSet<>());
+        final List<String> nonNullRoles=Arrays.stream(roles).filter(Objects::nonNull).map(String::trim).filter(r->r.length()>0).collect(Collectors.toList());;
+        if(nonNullRoles.size()>0)
+            user2roles.get(name).addAll(nonNullRoles);
         writeFile();
     }
 
     public void removeUser(String name) throws IOException {
-        if (!user2passwordMD5.containsKey(name))
+        if (!user2passwordHash.containsKey(name))
             throw new IOException("No such user: " + name);
-        user2passwordMD5.remove(name);
+        user2passwordHash.remove(name);
         user2roles.remove(name);
         writeFile();
     }
@@ -114,11 +123,11 @@ public class UserManager {
     }
 
     public boolean userExists(String name) {
-        return user2passwordMD5.containsKey(name);
+        return user2passwordHash.containsKey(name);
     }
 
     public int size() {
-        return user2passwordMD5.size();
+        return user2passwordHash.size();
     }
 
     public boolean hasAdmin() {
@@ -160,10 +169,10 @@ public class UserManager {
         addUser(ADMIN, password, true, UserManager.ADMIN);
     }
 
-    public boolean checkCredentials(String requiredRole, String user, String passwordMD5) {
-        boolean result= user2passwordMD5.containsKey(user) && passwordMD5.equals(user2passwordMD5.get(user)) && (requiredRole==null || user2roles.get(user).contains(requiredRole) ||  user2roles.get(user).contains(ADMIN) );
+    public boolean checkCredentials(String requiredRole, String user, String passwordHash) {
+        boolean result= user2passwordHash.containsKey(user) && passwordHash.equals(user2passwordHash.get(user)) && (requiredRole==null || user2roles.get(user).contains(requiredRole) ||  user2roles.get(user).contains(ADMIN) );
         if(!result && requiredRole!=null && requiredRole.contains("/") && requiredRole.replaceAll(".*/","").length()>0) {
-            return checkCredentials(requiredRole.replaceAll(".*/",""),user,passwordMD5);
+            return checkCredentials(requiredRole.replaceAll(".*/",""),user,passwordHash);
         }
         else
             return result;
@@ -191,7 +200,7 @@ public class UserManager {
 
         @Override
         public boolean checkCredentials(String username, String password) {
-            return UserManager.this.checkCredentials(role, username, password) || UserManager.this.checkCredentials(role, username, Basic.computeMD5(password));
+            return UserManager.this.checkCredentials(role, username, password) || UserManager.this.checkCredentials(role, username, Utilities.computeBCryptHash(password.getBytes()));
         }
     }
 }

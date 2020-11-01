@@ -63,7 +63,6 @@ public class CompareFiles {
         }
     }
 
-
     /**
      * run
      *
@@ -81,15 +80,14 @@ public class CompareFiles {
         options.comment("Input and Output:");
         final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
         final String outputFile = options.getOption("-o", "out", "Output file", "comparison.megan");
-
         final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
         options.comment("Options:");
+        final boolean allowSameNames=options.getOption("-s","allowSameNames","All the same sample name to appear multiple times (will add -1, -2 etc)",false);
 
         final boolean normalize = options.getOption("-n", "normalize", "Normalize counts", true);
         final boolean ignoreUnassignedReads = options.getOption("-iu", "ignoreUnassignedReads", "Ignore unassigned, no-hit or contaminant reads", false);
 
-        final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the desired read-assignment mode", Document.ReadAssignmentMode.readCount.toString()));
-        final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, minimum non-zero count is set to 1", false);
+        final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, non-zero counts are mapped to 1 or more", false);
 
         options.done();
 
@@ -107,27 +105,45 @@ public class CompareFiles {
         if (inputFiles.size() == 0)
             throw new UsageException("No input file");
 
-
         final ArrayList<SampleData> samples=new ArrayList<>();
 
         for(var fileName:inputFiles) {
-            var doc=new Document();
+            final var doc=new Document();
             doc.getMeganFile().setFileFromExistingFile(fileName,true);
             doc.loadMeganFile();
 
-            final String[] docSamples=doc.getSampleNamesAsArray();
+            final var docSamples=doc.getSampleNamesAsArray();
             for(var s=0;s<docSamples.length;s++) {
-                final SampleData sample=new SampleData(doc,s);
+                final var sample=new SampleData(doc,s);
                 samples.add(sample);
                 System.err.println(sample);
             }
         }
 
-        System.err.printf("Input files:%12d%n",inputFiles.size());
+        // ensure unique names:
+        {
+            final Set<String> names = new HashSet<>();
+            for (var sample : samples) {
+                if (names.contains(sample.getName())) {
+                    if (allowSameNames) {
+                        final var name=Basic.getUniqueName(sample.getName(), names);
+                        System.err.println("Making sample name unique: "+sample.getName()+" -> "+name);
+                        sample.setName(name);
+                    } else {
+                        throw new IOException("Same sample name occurs more than once (use option -s ?)");
+                    }
+                }
+                names.add(sample.getName());
+            }
+        }
+
+        System.err.printf("Input files:%13d%n",inputFiles.size());
+        System.err.printf("Input samples:%11d%n",samples.size());
+
         //System.err.printf("Input files: %s%n",Basic.toString(inputFiles,", "));
 
-        System.err.printf("Total count:%,12d%n",(long) getTotalCount(samples));
-        System.err.printf("T. assigned:%,12d%n",(long) getTotalAssigned(samples));
+        System.err.printf("Input count:%,13d%n",(long) getTotalCount(samples));
+        System.err.printf("In assigned:%,13d%n",(long) getTotalAssigned(samples));
         System.err.printf("Read assignment mode: %s%n",samples.get(0).getReadAssignmentMode());
 
         if(new HashSet<>(Arrays.asList(getBlastModes(samples))).size()>1)
@@ -142,14 +158,26 @@ public class CompareFiles {
 
         if(min.isEmpty())
             throw new IOException("No reads found");
-        else if(normalize)
-            System.err.printf("Normalizing to %,d reads%n",(long)min.getAsDouble());
+        else if(normalize) {
+            System.err.printf("Normalizing to:%,10d reads per sample%n",(long) min.getAsDouble());
+        }
 
         final int numberOfSamples=samples.size();
 
         final Document doc = new Document();
-        doc.getDataTable().setSamples(getSampleNames(samples), getUids(samples), getCounts(samples), getBlastModes(samples));
-        doc.getDataTable().setTotalReads(Math.round(Basic.getSum(getCounts(samples))));
+        final float[] sizes;
+        if(!normalize) {
+            if(!ignoreUnassignedReads)
+                sizes=getCounts(samples);
+            else
+                sizes=getAssigneds(samples);
+        } else {
+            sizes = new float[numberOfSamples];
+            Arrays.fill(sizes,(float)min.getAsDouble());
+        }
+
+        doc.getDataTable().setSamples(getSampleNames(samples), getUids(samples), sizes, getBlastModes(samples));
+        doc.setNumberReads(Math.round(Basic.getSum(sizes)));
 
         for(var classification: getClassifications(samples)) {
             final Map<Integer,float[]> class2counts=new HashMap<>();
@@ -167,32 +195,24 @@ public class CompareFiles {
                 sample.setFactor(factor);
             }
 
-            for(int c: getClassIds(classification,samples)) {
+            for(int c: getClassIds(classification,samples,ignoreUnassignedReads)) {
                 final float[] newValues=class2counts.computeIfAbsent(c,z->new float[numberOfSamples]);
                 for (int s = 0; s < numberOfSamples; s++) {
-                    SampleData sample = samples.get(s);
+                    final SampleData sample = samples.get(s);
+                    final int which=sample.getWhich();
                     final float[] values = sample.getDoc().getDataTable().getClass2Counts(classification).get(c);
-                    if (values != null)
-                        newValues[s] += sample.getFactor() * values[sample.getWhich()];
+                    if (values != null && which<values.length) {
+                        final float value=values[which];
+                         newValues[s] = (float)sample.getFactor() * value;
+                         if(keepOne && value>0 && newValues[s]==0)
+                             newValues[s]=1;
+                    }
                 }
             }
             doc.getDataTable().setClass2Counts(classification,class2counts);
         }
 
-        if (Basic.notBlank(metadataFile)) {
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
-                System.err.print("Processing Metadata: " + metadataFile);
-                doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
-                System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
-            }
-        }
-
-        doc.setTopPercent(100);
-        doc.setMinScore(0);
-        doc.setMinSupportPercent(0);
-        doc.setMinSupport(1);
-        doc.setMaxExpected(10000);
-        doc.setReadAssignmentMode(samples.get(0).getReadAssignmentMode());
+         doc.setReadAssignmentMode(samples.get(0).getReadAssignmentMode());
 
         String parameters="mode=" +(normalize? Comparer.COMPARISON_MODE.RELATIVE:Comparer.COMPARISON_MODE.ABSOLUTE);
         if (normalize)
@@ -202,9 +222,19 @@ public class CompareFiles {
             parameters += " ignoreUnassigned=true";
         doc.getDataTable().setParameters(parameters);
 
+        System.err.printf("Output count:%,12d%n",doc.getNumberOfReads());
+
+        if (Basic.notBlank(metadataFile)) {
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+                System.err.print("Processing Metadata: " + metadataFile);
+                doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
+                System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
+            }
+        }
+
         System.err.println("Saving to file: " + outputFile);
 
-        try (FileWriter writer = new FileWriter(outputFile)) {
+        try (var writer = new FileWriter(outputFile)) {
             doc.getDataTable().write(writer);
             doc.getSampleAttributeTable().write(writer, false, true);
         }
@@ -215,26 +245,34 @@ public class CompareFiles {
     }
 
     public static float[] getCounts(List<SampleData> samples) {
-        final float[] counts=new float[samples.size()];
+        final var counts=new float[samples.size()];
         for(int s=0;s<samples.size();s++)
             counts[s]=samples.get(s).getCount();
         return counts;
+    }
+
+    public static float[] getAssigneds(List<SampleData> samples) {
+        final var assigneds=new float[samples.size()];
+        for(int s=0;s<samples.size();s++)
+            assigneds[s]=samples.get(s).getAssigned();
+        return assigneds;
     }
 
     public static double getTotalAssigned(Collection<SampleData> samples) {
         return samples.stream().mapToDouble(SampleData::getAssigned).sum();
     }
 
-    public static Set<String> getClassifications (Collection<SampleData> samples) {
-        return samples.stream().map(SampleData::getClassifications).flatMap(Collection::stream).collect(Collectors.toCollection(TreeSet::new));
+    public static List<String> getClassifications (Collection<SampleData> samples) {
+        return samples.stream().map(SampleData::getClassifications).flatMap(Collection::stream).distinct().collect(Collectors.toList());
     }
 
-    public static Set<Integer> getClassIds (String classification, Collection<SampleData> samples) {
-        return samples.parallelStream().map(s->s.getDoc().getDataTable().getClass2Counts(classification)).filter(Objects::nonNull).map(Map::keySet).flatMap(Set::stream).collect(Collectors.toSet());
+    public static Set<Integer> getClassIds (String classification, Collection<SampleData> samples,boolean assignedOnly) {
+        return samples.parallelStream().map(s->s.getDoc().getDataTable().getClass2Counts(classification)).filter(Objects::nonNull).map(Map::keySet).flatMap(Set::stream).
+                filter(id->!assignedOnly || id>0).collect(Collectors.toSet());
     }
 
     public static String[] getSampleNames(Collection<SampleData> samples) {
-        return samples.stream().map(SampleData::getSample).toArray(String[]::new);
+        return samples.stream().map(SampleData::getName).toArray(String[]::new);
     }
 
     public static Long[] getUids (Collection<SampleData> samples) {
@@ -251,7 +289,7 @@ public class CompareFiles {
 
     public static class SampleData {
         private final Document doc;
-        private final String sample;
+        private String name;
         private final long uid;
         private final int which;
         private final float count;
@@ -265,7 +303,7 @@ public class CompareFiles {
         public SampleData(Document doc, int which) {
             this.doc = doc;
             this.which = which;
-            this.sample = doc.getSampleNames().get(which);
+            this.name = doc.getSampleNames().get(which);
             this.uid=doc.getDataTable().getSampleUIds()[which];
 
             final Map<Integer, float[]> class2count = doc.getDataTable().getClass2Counts(ClassificationType.Taxonomy);
@@ -273,10 +311,13 @@ public class CompareFiles {
             float assigned=0;
             float unassigned=0;
             for(var id:class2count.keySet()) {
-                if(id>0)
-                    assigned+=class2count.get(id)[which];
-                else
-                    unassigned+=class2count.get(id)[which];
+                final float[] values=class2count.get(id);
+                if(which<values.length) {
+                    if (id > 0)
+                        assigned += values[which];
+                    else
+                        unassigned += values[which];
+                }
             }
             this.count=assigned+unassigned;
             this.assigned=assigned;
@@ -290,8 +331,12 @@ public class CompareFiles {
             return doc;
         }
 
-        public String getSample() {
-            return sample;
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public long getUid() {
@@ -333,26 +378,26 @@ public class CompareFiles {
         @Override
         public String toString() {
             return String.format("Sample %s [%d in %s]: count=%,d assigned=%,d mode=%s classifications=%s",
-                    sample,which,Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()),(int)count,(int)assigned, readAssignmentMode.toString(),Basic.toString(classifications," "));
+                    name,which,Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()),(int)count,(int)assigned, readAssignmentMode.toString(),Basic.toString(classifications," "));
          }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            SampleData that = (SampleData) o;
+            final var that = (SampleData) o;
             return which == that.which &&
                     Float.compare(that.count, count) == 0 &&
                     Float.compare(that.assigned, assigned) == 0 &&
                     doc.getMeganFile().getFileName().equals(that.doc.getMeganFile().getFileName()) &&
-                    sample.equals(that.sample) &&
+                    name.equals(that.name) &&
                     readAssignmentMode == that.readAssignmentMode &&
                     classifications.equals(that.classifications);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(doc.getMeganFile().getFileName(), sample, which, count, assigned, readAssignmentMode, classifications);
+            return Objects.hash(doc.getMeganFile().getFileName(), name, which, count, assigned, readAssignmentMode, classifications);
         }
     }
 }

@@ -48,13 +48,13 @@ public class RemoteService implements IRemoteService {
      *
      * @path path to root directory
      */
-    public RemoteService(String serverURL, String user, String passwordMD5) throws IOException {
+    public RemoteService(String serverURL, String user, String passwordHash) throws IOException {
         serverURL = serverURL.replaceAll("/$", "");
         if (!serverURL.contains(("/")))
             serverURL += "/megan6server";
         this.serverURL = serverURL;
 
-        clientMS = new ClientMS(this.serverURL, null, 0, user, passwordMD5, 100);
+        clientMS = new ClientMS(this.serverURL, null, 0, user, passwordHash, 100);
 
         final String remoteVersion = clientMS.getAsString("version");
         if (!remoteVersion.startsWith("MeganServer"))

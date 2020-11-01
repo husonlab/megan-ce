@@ -31,12 +31,12 @@ import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
 import megan.main.MeganProperties;
+import megan.ms.Utilities;
 import megan.ms.clientdialog.commands.OpenRemoteServerCommand;
 import megan.ms.clientdialog.service.RemoteServiceManager;
 
@@ -48,6 +48,10 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Remote services browser
@@ -74,7 +78,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     private final JTextField userTextField = new JTextField(30);
 
     private final JPasswordField passwordTextField = new JPasswordField(30);
-    private boolean passwordMD5 = false;
+    private boolean passwordHash = false;
     //private JTextField passwordTextField = new JTextField(30);
 
     private final JCheckBox saveCredentialsCBox = new JCheckBox();
@@ -158,9 +162,9 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
             final String selected = e.getItem().toString();
             final String user = RemoteServiceManager.getUser(selected);
             userTextField.setText(user != null ? user : "");
-            final String password = RemoteServiceManager.getPasswordMD5(selected);
+            final String password = RemoteServiceManager.getPasswordHash(selected);
             passwordTextField.setText(password != null ? password : "");
-            setPasswordMD5(password != null);
+            setPasswordHash(password != null);
         };
         urlComboBox.addItemListener(itemListener);
         urlComboBox.addItems(RemoteServiceManager.getServers());
@@ -192,7 +196,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         passwordTextField.setToolTipText("Password required by server. Note that this is currently transmitted unencrypted.");
         passwordTextField.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
-                setPasswordMD5(false);
+                setPasswordHash(false);
             }
         });
         JPanel cRow = new JPanel();
@@ -434,9 +438,12 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         userTextField.setText(user);
     }
 
-    public String getPasswordMD5() {
-        final String password = new String(passwordTextField.getPassword()).trim();
-        return isPasswordMD5() ? password : Basic.computeMD5(password);
+    public String getPasswordHash() {
+        if(isPasswordHash())
+            return String.valueOf(passwordTextField.getPassword());
+        else {
+            return Utilities.computeBCryptHash(new String(passwordTextField.getPassword()).getBytes());
+        }
     }
 
     /**
@@ -476,7 +483,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
                     final String shortServerName = e.getDocument().getText(0, e.getDocument().getLength()).replace("http://", "").replaceAll("/$", "") + "::";
                     final String user = RemoteServiceManager.getUser(shortServerName);
                     userTextField.setText(user != null ? user : "");
-                    final String password = RemoteServiceManager.getPasswordMD5(shortServerName);
+                    final String password = RemoteServiceManager.getPasswordHash(shortServerName);
                     passwordTextField.setText(password != null ? password : "");
                 } catch (BadLocationException ignored) {
                 }
@@ -552,12 +559,12 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
             return null;
     }
 
-    public boolean isPasswordMD5() {
-        return passwordMD5;
+    public boolean isPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPasswordMD5(boolean passwordMD5) {
-        this.passwordMD5 = passwordMD5;
+    public void setPasswordHash(boolean passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public void clearUser() {

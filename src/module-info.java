@@ -16,6 +16,7 @@ module megan {
     requires colt;
     requires java.desktop;
     requires java.net.http;
+    requires bcyrpt;
 
     exports megan.accessiondb;
     exports megan.algorithms;

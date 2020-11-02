@@ -19,6 +19,7 @@
  */
 package megan.ms.client.connector;
 
+import jloda.util.Basic;
 import megan.daa.io.ByteInputStream;
 import megan.daa.io.ByteOutputStream;
 import megan.daa.io.InputReaderLittleEndian;
@@ -145,7 +146,7 @@ public class MatchBlockMS implements IMatchBlock {
 
     @Override
     public String getTextFirstWord() {
-        return null;
+        return Basic.getFirstWord(getText());
     }
 
     public void setText(String text) {

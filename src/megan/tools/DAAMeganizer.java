@@ -77,7 +77,7 @@ public class DAAMeganizer {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException {
+    private void run(String[] args) throws Exception {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
@@ -89,11 +89,14 @@ public class DAAMeganizer {
         final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file(s). Each is meganized separately", new String[0]);
         final String[] metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in files", new String[0]);
 
-        options.comment("Reads");
-        final boolean pairedReads = options.getOption("-pr", "paired", "Reads are paired", false);
-        final int pairedReadsSuffixLength = options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
-        options.comment("Parameters");
+        // options.comment("Reads");
+        final boolean pairedReads = false; // options.getOption("-pr", "paired", "Reads are paired", false);
+        final int pairedReadsSuffixLength = 0; // options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
+
+        options.comment("Mode");
         boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+
+        options.comment("Parameters");
 
         final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
         final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);

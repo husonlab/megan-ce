@@ -151,7 +151,7 @@ public class HttpServerMS {
     }
 
     public String getAbout() {
-        String about = ProgramProperties.getProgramName() + "\n"
+        String about = MeganServer.Version + "\n"
                 + "Version: " + ProgramProperties.getProgramVersion() + "\n"
                 + "Hostname: " + getAddress().getHostName() + "\n"
                 + "IP address: " + getAddress().getHostAddress() + "\n"

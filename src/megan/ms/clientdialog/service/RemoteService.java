@@ -64,6 +64,8 @@ public class RemoteService implements IRemoteService {
 
         about = clientMS.getAsString("about");
 
+        System.err.println(about);
+
         files = clientMS.getFiles();
         for (String file : files) {
             final String description;

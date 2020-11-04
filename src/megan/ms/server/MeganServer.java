@@ -119,8 +119,8 @@ public class MeganServer {
         System.err.println(server.getAbout());
 
         System.err.println("Server address:");
-        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + endpointName);
-        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() + endpointName);
+        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + "/"+endpointName);
+        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() +"/"+ endpointName);
         System.err.println();
 
         server.rebuildDatabases();

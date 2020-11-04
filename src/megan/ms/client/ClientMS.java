@@ -116,6 +116,8 @@ public class ClientMS {
 
     public HttpRequest setupRequest(String command, boolean binary) {
         final URI uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
+        if(Basic.getDebugMode())
+            System.err.println("Remote request: " +uri);
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .timeout(Duration.ofSeconds(timeoutSeconds))

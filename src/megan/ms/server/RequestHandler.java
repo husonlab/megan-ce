@@ -22,6 +22,7 @@ package megan.ms.server;
 
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import megan.daa.connector.ClassificationBlockDAA;
 import megan.data.IClassificationBlock;
 import megan.data.IReadBlock;
 import megan.ms.Utilities;
@@ -215,7 +216,9 @@ public interface RequestHandler {
                 final String fileName = Parameters.getValue(p, "file");
                 final String classification = Parameters.getValue(p, "classification");
                 final boolean binary = Parameters.getValue(p, "binary", false);
-                final IClassificationBlock classificationBlock = database.getClassificationBlock(fileName, classification);
+                IClassificationBlock classificationBlock = database.getClassificationBlock(fileName, classification);
+                if(classificationBlock==null)
+                    classificationBlock=new ClassificationBlockDAA(classification);
                 if (binary) {
                     return Utilities.writeClassificationBlockToBytes(classificationBlock);
                 } else {

@@ -21,6 +21,7 @@
 package megan.ms.client;
 
 import jloda.util.Basic;
+import jloda.util.Triplet;
 import megan.ms.Utilities;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +78,36 @@ public class ClientMS {
                 throw new IOException(list.get(0));
             } else
                 return list;
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public List<Triplet<String,Long,Long>> getFilesReadCountMatchCount() throws IOException {
+        try {
+            final HttpRequest request = setupRequest("/list?readCount=true&matchCount=true", false);
+            HttpResponse<Stream<String>> response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
+            final List<String> list = response.body().collect(Collectors.toList());
+            if (list.size() > 0 && list.get(0).startsWith(Utilities.SERVER_ERROR)) {
+                System.err.println(list.get(0));
+                throw new IOException(list.get(0));
+            } else {
+                return list.stream().map(line->Basic.split(line,'\t'))
+                        .map(tokens->{
+                            switch(tokens.length) {
+                                case 1:
+                                    return new Triplet<String,Long,Long>(tokens[0],0L,0L);
+                                case 2:
+                                    return new Triplet<String,Long,Long>(tokens[0],Basic.parseLong(tokens[1]),0L);
+                                case 3:
+                                    return new Triplet<String,Long,Long>(tokens[0],Basic.parseLong(tokens[1]),Basic.parseLong(tokens[2]));
+                                default:
+                                    return null;
+
+                            }
+                        }).filter(Objects::nonNull).collect(Collectors.toList());
+            }
+
         } catch (InterruptedException e) {
             throw new IOException(e);
         }

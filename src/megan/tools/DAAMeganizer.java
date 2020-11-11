@@ -40,6 +40,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreDirectoryProgramProperty;
+import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreInMemoryProgramProperty;
+
 /**
  * prepares a DAA file for use with MEGAN
  * Daniel Huson, 8.2015
@@ -172,6 +175,8 @@ public class DAAMeganizer {
 
         options.comment(ArgsOptions.OTHER);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Number of threads", 8));
+        ProgramProperties.put(SQLiteTempStoreInMemoryProgramProperty,options.getOption("-tsm","tempStoreInMemory","Temporary storage in memory for SQLITE",false));
+        ProgramProperties.put(SQLiteTempStoreDirectoryProgramProperty,options.getOption("-tsd","tempStoreDir","Temporary storage directory for SQLITE (if not in-memory)",""));
         options.done();
 
         final String propertiesFile;

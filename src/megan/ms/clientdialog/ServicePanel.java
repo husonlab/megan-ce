@@ -381,8 +381,6 @@ public class ServicePanel extends JPanel {
             return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         }
     }
-
-
 }
 
 

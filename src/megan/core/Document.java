@@ -384,8 +384,7 @@ public class Document {
                                 if (cName.length() > 0) {
                                     if (ClassificationManager.getAllSupportedClassifications().contains(cName))
                                         getActiveViewers().add(cName);
-                                    else
-                                        System.err.println("Unknown classification name: '" + cName + "': ignored");
+                                    // else System.err.println("Unknown classification name: '" + cName + "': ignored");
                                 }
                             }
                             getActiveViewers().add(Classification.Taxonomy);

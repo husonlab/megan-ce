@@ -25,15 +25,17 @@ public class HttpServerMS {
     private final UserManager userManager;
     private final String defaultPath;
     private long started = 0L;
+    private final int readsPerPage;
     
     private final ArrayList<HttpContext> contexts=new ArrayList<>();
 
-    public HttpServerMS(String path,int port,  UserManager userManager,int backlog, int pageTimeout) throws IOException {
+    public HttpServerMS(String path, int port, UserManager userManager, int backlog, int readsPerPage, int pageTimeout) throws IOException {
         if(!path.startsWith("/"))
             path="/"+path;
 
         this.defaultPath =path;
         this.userManager = userManager;
+        this.readsPerPage = readsPerPage;
         ReadIteratorPagination.setTimeoutSeconds(pageTimeout);
 
         address = InetAddress.getLocalHost();
@@ -56,7 +58,7 @@ public class HttpServerMS {
         createContext(path + "/admin/getLog", new HttpHandlerMS(RequestHandlerAdmin.getLog()),adminAuthenticator);
         createContext(path + "/admin/clearLog", new HttpHandlerMS(RequestHandlerAdmin.clearLog()),adminAuthenticator);
 
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
+        final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         httpServer.setExecutor(threadPoolExecutor);
     }
 
@@ -83,8 +85,8 @@ public class HttpServerMS {
 
         // access reads and matches
         createContext(path + "/getRead", new HttpHandlerMS(RequestHandler.getRead(database)),authenticator);
-        createContext(path + "/getReads", new HttpHandlerMS(RequestHandler.getReads(database)),authenticator);
-        createContext(path + "/getReadsForClass", new HttpHandlerMS(RequestHandler.getReadsForMultipleClassIdsIterator(database)),authenticator);
+        createContext(path + "/getReads", new HttpHandlerMS(RequestHandler.getReads(database, getReadsPerPage())),authenticator);
+        createContext(path + "/getReadsForClass", new HttpHandlerMS(RequestHandler.getReadsForMultipleClassIdsIterator(database, getReadsPerPage())),authenticator);
         createContext(path + "/getFindAllReadsIterator", new HttpHandlerMS(),authenticator);
         createContext(path + "/getNext", new HttpHandlerMS(RequestHandler.getNextPage(database)),authenticator);
 
@@ -148,6 +150,10 @@ public class HttpServerMS {
 
     public Map<String,Database> getPath2Database() {
         return path2database;
+    }
+
+    public int getReadsPerPage() {
+        return readsPerPage;
     }
 
     public String getAbout() {

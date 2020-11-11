@@ -21,10 +21,10 @@ All commands are prefixed by "megan6server/" (or similar prefix).
 <table>
     <tr>
         <td> list</td> <td> List all datasets,
-        Optional parameters: metadata=<i>bool</i>, readCount=<i>bool</i></td>
+        optional parameters: readCount=<i>bool</i>, matchCount=<i>bool</i>, metadata=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getAuxiliary?file=<i>name</i></td> <td> Get auxiliary data for file, optional parameter: binary=<i>bool</i></td>
+        <td>getAuxiliary?file=<i>name</i></td> <td> Get auxiliary data for file. Optional parameter: binary=<i>bool</i></td>
     </tr>
     <tr>
         <td>getNumberOfReads?file=<i>name</i></td> <td> Get number of reads for file</td>
@@ -43,25 +43,18 @@ All commands are prefixed by "megan6server/" (or similar prefix).
 <h2>Reads and matches:</h2>
 <table>
     <tr>
-        <td>getRead?file=<i>name</i>&readId=<i>num</i></td> <td> Get read and optionally all matches for given file and readId  </td>
+        <td>getRead?file=<i>name</i>&readId=<i>num</i></td> <td> Get read and optionally all matches for given file and readId.
+        Optional parameters: header=<i>bool</i>, sequence=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
-        <td></td>
-        <td> Optional parameters: header=<i>bool</i>, sequence=<i>bool</i>, matches=<i>bool</i></td>
+        <td>getReads?file=<i>name</i></td>
+        <td> Get all reads for a given file; returns first page and page-id for next.
+        Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getReads?file=<i>name</i></td> <td> Get all reads for a given file; returns first page and page-id for next</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td> Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
-    </tr>
-    <tr>
-        <td> getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td> <td> Get all reads for a given file, classification and one or more classes. Returns first page and page-id for next</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td> Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
+        <td> getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td>
+        <td> Get all reads for a given file,  classification and one or more classes. Returns first page and page-id for next.
+        Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
         <td>getNext?pageId=<i>num</i></td> <td> Get the next page of reads</td>
@@ -71,14 +64,14 @@ All commands are prefixed by "megan6server/" (or similar prefix).
 <h2>Classifications:</h2>
 <table>
     <tr>
-        <td>getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td> <td> Get the classifications block for a named file and classification, optinal parameter: binary=<i>bool</i></td>
+        <td>getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td>
+        <td> Get the classifications block for a named file and classification.
+        Optional parameter: binary=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td> <td> Get the number reads for a given file, classification and classId</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td> optional parameter: sum=<i>bool</i></td>
+        <td>getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td>
+        <td> Get the number reads for a given file, classification and classId.
+        Optional parameter: sum=<i>bool</i></td>
     </tr>
 </table>
 
@@ -91,11 +84,9 @@ All commands are prefixed by "megan6server/" (or similar prefix).
         <td>admin/listUsers</td> <td> List all defined users</td>
     </tr>
     <tr>
-        <td>admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td> <td> Add a new user</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td> Optional parameter: replace=<i>bool</i></td>
+        <td>admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td>
+        <td> Add a new user.
+        Optional parameter: replace=<i>bool</i></td>
     </tr>
     <tr>
         <td>admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>

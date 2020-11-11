@@ -72,15 +72,31 @@ public class Megan6 {
         }
     }
 
+    public static String[] processOpenFileArgs(String[] args) throws Exception {
+        try {
+            if (args.length == 1 && !args[0].startsWith("-")) {// assume this is a single file name or URL
+                String fileName = args[0];
+                if (fileName.startsWith("megan:"))
+                    fileName = Basic.convertPercentEncoding(fileName.substring("megan:".length()));
+                return new String[]{"-f", fileName};
+            }
+        } catch (Exception ex) {
+            Basic.caught(ex);
+        }
+        return args;
+    }
+
     /**
      * parse command line arguments and launch program
      *
      * @throws Exception
      */
     private void parseArguments(String[] args) throws Exception {
+        Basic.startCollectionStdErr();
+        args=processOpenFileArgs(args);
+
         ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
         ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");
-        Basic.startCollectionStdErr();
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
         CommandManager.getGlobalCommands().addAll(ChartCommandHelper.getChartDrawerCommands());
 

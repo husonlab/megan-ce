@@ -40,7 +40,6 @@ public class HttpHandlerMS implements HttpHandler {
         this(RequestHandler.getDefault());
     }
 
-
     public HttpHandlerMS(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
     }
@@ -50,9 +49,9 @@ public class HttpHandlerMS implements HttpHandler {
         try {
             final String[] parameters;
             if ("GET".equals(httpExchange.getRequestMethod())) {
-                parameters = handleGetRequest(httpExchange);
+                parameters = getGETParameters(httpExchange);
             } else if ("POST".equals(httpExchange.getRequestMethod())) {
-                parameters = handlePostRequest(httpExchange);
+                parameters = getPOSTParameters(httpExchange);
             } else
                 parameters = null;
             respond(httpExchange, parameters);
@@ -63,7 +62,7 @@ public class HttpHandlerMS implements HttpHandler {
         }
     }
 
-    private String[] handleGetRequest(HttpExchange httpExchange) {
+    private String[] getGETParameters(HttpExchange httpExchange) {
         final String uri = httpExchange.getRequestURI().toString();
         final int posQuestionMark = uri.indexOf('?');
         if (posQuestionMark > 0 && posQuestionMark < uri.length() - 1) {
@@ -76,10 +75,9 @@ public class HttpHandlerMS implements HttpHandler {
         return new String[0];
     }
 
-    private String[] handlePostRequest(HttpExchange httpExchange) {
-        return null;
+    private String[] getPOSTParameters(HttpExchange httpExchange) throws IOException {
+        return new String[0]; // not implemented
     }
-
 
     public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
 

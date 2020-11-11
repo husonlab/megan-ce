@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
  * Daniel Huson, 8.2020
  */
 public interface RequestHandler {
-    int defaultReadsPerPage = 100;
-
     byte[] handle(String context, String[] parameters) throws IOException;
 
     static RequestHandler getDefault() {
@@ -89,17 +87,23 @@ public interface RequestHandler {
     static RequestHandler getListDataset(Database database) {
         return (c, p) -> {
             try {
-                checkKnownParameters(p, "metadata", "readCount");
+                checkKnownParameters(p, "metadata", "readCount","matchCount");
 
                 final boolean includeMetadata = Parameters.getValue(p, "metadata", false);
                 final boolean readCount = Parameters.getValue(p, "readCount", false);
+                final boolean matchCount = Parameters.getValue(p, "matchCount", false);
 
                 final var list = new ArrayList<>();
                 for (String fileName : database.getFileNames()) {
                     final StringBuilder buf = new StringBuilder();
                     buf.append(fileName);
                     if (readCount)
-                        buf.append(" ").append(database.getRecord(fileName).getNumberOfReads());
+                        buf.append("\t").append(database.getRecord(fileName).getNumberOfReads());
+                    if (matchCount) {
+                        final long matches=database.getRecord(fileName).getNumberOfMatches();
+                        if(matches>0)
+                        buf.append("\t").append(matches);
+                    }
                     if (includeMetadata)
                         buf.append("\n").append(database.getMetadata(fileName));
                     list.add(buf.toString());
@@ -295,7 +299,7 @@ public interface RequestHandler {
         };
     }
 
-    static RequestHandler getReads(Database database) {
+    static RequestHandler getReads(Database database,int defaultReadsPerPage) {
         return (c, p) -> {
             try {
                 checkKnownParameters(p, "pageSize", "file", "readIds", "headers", "sequences", "matches", "binary");
@@ -320,7 +324,7 @@ public interface RequestHandler {
         };
     }
 
-    static RequestHandler getReadsForMultipleClassIdsIterator(Database database) {
+    static RequestHandler getReadsForMultipleClassIdsIterator(Database database,int defaultReadsPerPage) {
         return (c, p) -> {
             try {
                 checkKnownParameters(p, "file", "classification", "classId", "readIds", "headers", "sequences", "matches", "binary", "pageSize");

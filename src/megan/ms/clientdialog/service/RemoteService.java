@@ -20,11 +20,13 @@
 package megan.ms.clientdialog.service;
 
 import jloda.util.Basic;
+import jloda.util.Triplet;
 import megan.ms.client.ClientMS;
 import megan.ms.clientdialog.IRemoteService;
 import megan.ms.server.MeganServer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ import java.util.Map;
 public class RemoteService implements IRemoteService {
     private final String serverURL; // server URL, e.g. http://localhost:8080 or http://localhost:8080/Megan5Server
     private final ClientMS clientMS;
-    private final List<String> files;
+    private final List<String> files=new ArrayList<>();
 
     private String about;
 
@@ -66,11 +68,13 @@ public class RemoteService implements IRemoteService {
 
         System.err.println(about);
 
-        files = clientMS.getFiles();
-        for (String file : files) {
+        final List<Triplet<String,Long,Long>> filesReadCountMatchCount=clientMS.getFilesReadCountMatchCount();
+        for(var triplet:filesReadCountMatchCount) {
+            final String file=triplet.getFirst();
+            files.add(file);
+            final long reads=triplet.getSecond();
+            final long matches=triplet.getThird();
             final String description;
-            int reads = clientMS.getAsInt("getNumberOfReads?file=" + file);
-            int matches = clientMS.getAsInt("getNumberOfMatches?file=" + file);
             if (reads > 0 && matches > 0)
                 description = String.format("Reads: %,d, matches: %,d", reads, matches);
             else if (reads > 0)

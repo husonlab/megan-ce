@@ -20,6 +20,7 @@
 
 package megan.ms.server;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
@@ -85,8 +86,11 @@ public class MeganServer {
             defaultPreferenceFile = System.getProperty("user.home") + File.separator + ".MeganServerUsers.def";
 
         final String usersFile = options.getOption("-u", "usersFile", "File containing list of users", defaultPreferenceFile);
-        final int backlog = options.getOption("-mb", "maxBacklog", "Maximum number of requests in backlog", 100);
-        final int pageTimeout = options.getOption("-pt", "pageTimeout", "Number of seconds to keep unused pages alive", 10000);
+        final int backlog = options.getOption("-bl", "backlog", "Set the socket backlog", 100);
+        final int pageTimeout = options.getOption("-pt", "pageTimeout", "Number of seconds to keep pending pages alive", 10000);
+        final int readsPerPage=options.getOption("-rpp","readsPerPage","Number of reads per page to serve",100);
+
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Number of threads", 8));
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
 
         options.done();
@@ -103,12 +107,13 @@ public class MeganServer {
             System.err.println("Guests can login with name: guest and password: guest");
         }
 
-        final HttpServerMS server = new HttpServerMS(endpointName, port,userManager, backlog, pageTimeout);
+        final HttpServerMS server = new HttpServerMS(endpointName, port,userManager, backlog, readsPerPage,pageTimeout);
         final Database database = new Database(new File(inputDirectory), inputFileExtensions, recursive);
         server.addDatabase(endpointName,database,null);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.err.println("Stopping http server...");
+            System.err.println(server.getAbout());
             server.stop();
             System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
             System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());

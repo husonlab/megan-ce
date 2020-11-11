@@ -22,9 +22,12 @@ package megan.accessiondb;
 
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
+import jloda.util.Single;
 import org.sqlite.SQLiteConfig;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,11 +47,17 @@ import java.util.function.IntUnaryOperator;
  */
 public class AccessAccessionMappingDatabase implements Closeable {
     enum ValueType {TEXT, INT}
+    
+    public static final String SQLiteTempStoreInMemoryProgramProperty="SQLiteTempStoreInMemory";
+    public static final String SQLiteTempStoreDirectoryProgramProperty="SQLiteTempStoreDirectory";
 
     private final Connection connection;
 
     public static IntUnaryOperator accessionFilter = (x) -> (x > -1000 ? x : 0);
     public static Function<String, Boolean> fileFilter = (x) -> !x.endsWith("_UE");
+    
+    private static final Single<Boolean> tempStoreInMemory=new Single<>(false);
+    private static final Single<String> tempStoreDirectory=new Single<>("");
 
     /**
      * constructor, opens and maintains connection to database
@@ -61,12 +70,22 @@ public class AccessAccessionMappingDatabase implements Closeable {
         if (!Basic.fileExistsAndIsNonEmpty(dbFile))
             throw new IOException("File not found or unreadable: " + dbFile);
 
-        // setting database configurations, as suggested by suggested by takrl at
-        // https://stackoverflow.com/questions/784173/what-are-the-performance-characteristics-of-sqlite-with-very-large-database-files
         final SQLiteConfig config = new SQLiteConfig();
         config.setCacheSize(10000);
         config.setReadOnly(true);
 
+        tempStoreInMemory.set(ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty,tempStoreInMemory.get()));
+        tempStoreDirectory.set(ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty,tempStoreDirectory.get()));
+        
+        if(tempStoreInMemory.get()) {
+            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
+        }
+        else if(!tempStoreDirectory.get().isBlank()){
+                final File directory=new File(tempStoreDirectory.get());
+                if(directory.isDirectory() && directory.canWrite()) {
+                    config.setTempStoreDirectory(tempStoreDirectory.get());
+                }
+        }
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
         if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))

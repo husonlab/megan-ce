@@ -56,7 +56,7 @@ public class RemoteServiceManager {
         } else
             clientNode = new RemoteService(remoteURL, user, password);
         if (url2node.containsKey(clientNode.getServerURL()))
-            System.err.println("Warning: node already exists: " + clientNode.getServerURL());
+            System.err.println("Server is already open: " + clientNode.getServerURL());
         url2node.put(clientNode.getServerURL(), clientNode);
         if (ProgramProperties.get("SaveRemoteCredentials", true))
             saveCredentials(clientNode.getServerURL(), user, password);

@@ -22,6 +22,8 @@ package megan.accessiondb;
 
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.ProgramProperties;
+import jloda.util.Single;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -31,6 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+
+import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreDirectoryProgramProperty;
+import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreInMemoryProgramProperty;
 
 /**
  * setup databases for accession lookup
@@ -42,6 +47,9 @@ public class CreateAccessionMappingDatabase {
     protected final ArrayList<String> tables;
 
     protected final SQLiteConfig config;
+
+    private static final Single<Boolean> tempStoreInMemory=new Single<>(false);
+    private static final Single<String> tempStoreDirectory=new Single<>("");
 
     /**
      * creates a new database file at the specified location
@@ -56,6 +64,20 @@ public class CreateAccessionMappingDatabase {
         config.setCacheSize(10000);
         config.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
         config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
+
+        tempStoreInMemory.set(ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty,tempStoreInMemory.get()));
+        tempStoreDirectory.set(ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty,tempStoreDirectory.get()));
+
+        if(tempStoreInMemory.get()) {
+            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
+        }
+        else if(!tempStoreDirectory.get().isBlank()){
+            final File directory=new File(tempStoreDirectory.get());
+            if(directory.isDirectory() && directory.canWrite()) {
+                config.setTempStoreDirectory(tempStoreDirectory.get());
+            }
+        }
+
         //config.setJournalMode(SQLiteConfig.JournalMode.WAL);
 
         if (overwrite) {

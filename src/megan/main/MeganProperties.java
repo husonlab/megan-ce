@@ -96,7 +96,9 @@ public class MeganProperties {
      */
     public static void initializeProperties(String propertiesFile) {
         ProgramProperties.setPropertiesFileName(propertiesFile);
-        ProgramProperties.setProgramIcons(ResourceManager.getIcons("megan16.gif", "megan32.gif", "megan48.gif", "megan64.gif", "megan128.gif"));
+        if(ProgramProperties.isUseGUI()) {
+            ProgramProperties.setProgramIcons(ResourceManager.getIcons("megan16.gif", "megan32.gif", "megan48.gif", "megan64.gif", "megan128.gif"));
+        }
 
         // first set all necessary defaults:
         ProgramProperties.put(MEGANFILE, System.getProperty("user.dir"));

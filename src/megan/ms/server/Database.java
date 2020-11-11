@@ -205,7 +205,7 @@ public class Database {
         return getNextPage(pageId, -1);
     }
 
-    public ReadIteratorPagination.Page getNextPage(long pageId, int pageSize) throws IOException {
+    public ReadIteratorPagination.Page getNextPage(long pageId, int pageSize) {
         return ReadIteratorPagination.getNextPage(pageId, pageSize);
     }
 

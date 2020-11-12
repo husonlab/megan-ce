@@ -108,6 +108,7 @@ public class CompareFiles {
         final ArrayList<SampleData> samples=new ArrayList<>();
 
         for(var fileName:inputFiles) {
+            System.err.println("Processing file: "+fileName);
             final var doc=new Document();
             doc.getMeganFile().setFileFromExistingFile(fileName,true);
             doc.loadMeganFile();
@@ -123,18 +124,22 @@ public class CompareFiles {
         // ensure unique names:
         {
             final Set<String> names = new HashSet<>();
+            int count=0;
             for (var sample : samples) {
                 if (names.contains(sample.getName())) {
                     if (allowSameNames) {
+                        if(count==0)
+                            System.err.println("Renaming samples to make all names unique:");
                         final var name=Basic.getUniqueName(sample.getName(), names);
-                        System.err.println("Making sample name unique: "+sample.getName()+" -> "+name);
+                        System.err.println(sample.getName()+" -> "+name);
                         sample.setName(name);
-                    } else {
-                        throw new IOException("Same sample name occurs more than once (use option -s ?)");
                     }
+                    count++;
                 }
                 names.add(sample.getName());
             }
+            if(count>0 && !allowSameNames)
+                throw new IOException("Same sample name occurs more than once, "+count+" times (use option -s to allow)");
         }
 
         System.err.printf("Input files:%13d%n",inputFiles.size());
@@ -146,8 +151,13 @@ public class CompareFiles {
         System.err.printf("In assigned:%,13d%n",(long) getTotalAssigned(samples));
         System.err.printf("Read assignment mode: %s%n",samples.get(0).getReadAssignmentMode());
 
-        if(new HashSet<>(Arrays.asList(getBlastModes(samples))).size()>1)
-            throw new IOException("Can't compare normalized samples with mixed assignment modes");
+        final Document.ReadAssignmentMode readAssignmentMode;
+        {
+            final var modes = new TreeSet<>(Arrays.asList(getReadAssignmentModes(samples)));
+            if (modes.size() > 1)
+                throw new IOException("Can't compare normalized samples with mixed assignment modes, found: " + Basic.toString(modes, ", "));
+            readAssignmentMode = (modes.size() == 0 ? Document.ReadAssignmentMode.readCount : modes.first());
+        }
 
          final OptionalDouble min;
 
@@ -159,7 +169,7 @@ public class CompareFiles {
         if(min.isEmpty())
             throw new IOException("No reads found");
         else if(normalize) {
-            System.err.printf("Normalizing to:%,10d reads per sample%n",(long) min.getAsDouble());
+            System.err.printf("Normalizing to:%,10d per sample%n",(long) min.getAsDouble());
         }
 
         final int numberOfSamples=samples.size();
@@ -212,12 +222,12 @@ public class CompareFiles {
             doc.getDataTable().setClass2Counts(classification,class2counts);
         }
 
-         doc.setReadAssignmentMode(samples.get(0).getReadAssignmentMode());
+         doc.setReadAssignmentMode(readAssignmentMode);
 
         String parameters="mode=" +(normalize? Comparer.COMPARISON_MODE.RELATIVE:Comparer.COMPARISON_MODE.ABSOLUTE);
         if (normalize)
             parameters += " normalizedTo=" + Basic.removeTrailingZerosAfterDot(""+min.getAsDouble());
-        parameters+=" readAssignmentMode="+samples.get(0).getReadAssignmentMode().toString();
+        parameters+=" readAssignmentMode="+readAssignmentMode.toString();
         if (ignoreUnassignedReads)
             parameters += " ignoreUnassigned=true";
         doc.getDataTable().setParameters(parameters);
@@ -285,7 +295,6 @@ public class CompareFiles {
     public static Document.ReadAssignmentMode[] getReadAssignmentModes(Collection<SampleData> samples) {
         return samples.stream().map(SampleData::getReadAssignmentMode).toArray(Document.ReadAssignmentMode[]::new);
     }
-
 
     public static class SampleData {
         private final Document doc;

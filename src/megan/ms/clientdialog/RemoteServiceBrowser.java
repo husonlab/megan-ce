@@ -101,7 +101,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
         setTitle();
 
-        setSize(500, 400);
+        setSize(700, 400);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setIconImages(ProgramProperties.getProgramIconImages());
 
@@ -165,49 +165,55 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
             final String password = RemoteServiceManager.getPasswordHash(selected);
             passwordTextField.setText(password != null ? password : "");
             setPasswordHash(password != null);
+            commandManager.updateEnableState();
         };
         urlComboBox.addItemListener(itemListener);
         urlComboBox.addItems(RemoteServiceManager.getServers());
-        urlComboBox.setMaximumSize(new Dimension(2000, 25));
-        urlComboBox.setPreferredSize(new Dimension(367, 25));
+         urlComboBox.setMaximumSize(new Dimension(2000, 25));
+        urlComboBox.setPreferredSize(new Dimension(600, 25));
         urlComboBox.setToolTipText("MEGAN server URL");
 
-        JPanel aRow = new JPanel();
+        if(urlComboBox.getItemCount()>0)
+            urlComboBox.setSelectedIndex(0);
+
+        final JPanel aRow = new JPanel();
         aRow.setLayout(new BoxLayout(aRow, BoxLayout.X_AXIS));
-        aRow.add(Box.createHorizontalGlue());
-        aRow.add(new JLabel("Server: "));
+        //aRow.add(Box.createHorizontalGlue());
+        aRow.add(new JLabel("Server:      "));
         aRow.add(urlComboBox);
         panel.add(aRow);
         panel.add(Box.createVerticalStrut(4));
 
         userTextField.setMaximumSize(new Dimension(2000, 25));
-        userTextField.setPreferredSize(new Dimension(400, 20));
+        userTextField.setPreferredSize(new Dimension(600, 20));
         userTextField.setToolTipText("User id required by server.");
-        JPanel bRow = new JPanel();
+
+        final JPanel bRow = new JPanel();
         bRow.setLayout(new BoxLayout(bRow, BoxLayout.X_AXIS));
-        bRow.add(Box.createHorizontalGlue());
-        bRow.add(new JLabel("User:"));
+        bRow.add(new JLabel("User:        "));
         bRow.add(userTextField);
         panel.add(bRow);
         panel.add(Box.createVerticalStrut(4));
 
         passwordTextField.setMaximumSize(new Dimension(2000, 25));
-        passwordTextField.setPreferredSize(new Dimension(400, 20));
-        passwordTextField.setToolTipText("Password required by server. Note that this is currently transmitted unencrypted.");
+        passwordTextField.setPreferredSize(new Dimension(600, 20));
+        passwordTextField.setToolTipText("Password required by server.");
         passwordTextField.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 setPasswordHash(false);
             }
         });
-        JPanel cRow = new JPanel();
+
+        final JPanel cRow = new JPanel();
         cRow.setLayout(new BoxLayout(cRow, BoxLayout.X_AXIS));
-        cRow.add(Box.createHorizontalGlue());
-        cRow.add(new JLabel("Password:"));
+        //cRow.add(Box.createHorizontalGlue());
+        cRow.add(new JLabel("Password: "));
         cRow.add(passwordTextField);
         panel.add(cRow);
 
         panel.add(new JLabel(" "));
-        JPanel dRow = new JPanel();
+
+        final JPanel dRow = new JPanel();
         dRow.setLayout(new BoxLayout(dRow, BoxLayout.X_AXIS));
         dRow.add(Box.createHorizontalGlue());
         dRow.add(commandManager.getButton(OpenRemoteServerCommand.ALT_NAME));

@@ -143,7 +143,7 @@ public class AAdderBuild {
                 if (gffFiles.size() == 0)
                     throw new IOException("No GFF files found in directory: " + file);
                 else
-                    System.err.println(String.format("Found: %,d", gffFiles.size()));
+                    System.err.printf("Found: %,d%n", gffFiles.size());
             }
         }
     }

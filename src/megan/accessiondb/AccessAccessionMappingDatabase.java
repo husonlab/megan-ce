@@ -177,11 +177,11 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @param classificationName
      * @return size for a given classification index or -1 if the classification was not found
      */
-    public int getSize(String classificationName) throws SQLException {
+    public int getSize(String classificationName)  {
         try {
             return executeQueryInt("SELECT size FROM info WHERE id = '" + classificationName + "';", 1).get(0);
-        } catch (IndexOutOfBoundsException e) {
-            throw new SQLException(e);
+        } catch (Exception e) {
+            return 0;
         }
     }
 

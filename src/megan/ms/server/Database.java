@@ -76,6 +76,7 @@ public class Database {
         final Map<Integer, Record> id2record = new HashMap<>();
 
         try (ProgressPercentage progress = new ProgressPercentage("Rebuilding database:", files.size())) {
+            System.err.println(Basic.getDateString("yyyy-MM-dd hh:mm:ss"));
             for(var file:files) {
                 try {
                     final MeganFile meganFile = new MeganFile();

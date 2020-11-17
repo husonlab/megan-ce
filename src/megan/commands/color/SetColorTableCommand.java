@@ -107,13 +107,6 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
 
         final Document doc = ((Director) getDir()).getDocument();
 
-        {
-            // erase colors set by attribute:
-            for (String sample : doc.getSampleNames()) {
-                doc.getSampleAttributeTable().put(sample, SampleAttributeTable.HiddenAttribute.Color, null);
-            }
-        }
-
         if (isHeatMap) {
             doc.getChartColorManager().setHeatMapTable(name);
             ColorTableManager.setDefaultColorTableHeatMap(name);
@@ -121,6 +114,9 @@ public class SetColorTableCommand extends CommandBase implements ICommand {
             doc.getChartColorManager().setColorTable(name);
             ColorTableManager.setDefaultColorTable(name);
         }
+
+        ColorByLabelCommand.updateColors(doc);
+
         doc.setDirty(true);
     }
 

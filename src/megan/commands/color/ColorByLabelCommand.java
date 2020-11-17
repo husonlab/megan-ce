@@ -21,13 +21,17 @@ package megan.commands.color;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.util.ColorTableManager;
+import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
+import megan.chart.ChartColorManager;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand {
     @Override
@@ -48,18 +52,22 @@ public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand
         final boolean oldByPosition = doc.getChartColorManager().isColorByPosition();
 
         doc.getChartColorManager().setColorByPosition(byPosition);
-        // erase colors set by attribute:
-        for (String sample : doc.getSampleNames()) {
-            doc.getSampleAttributeTable().put(sample, SampleAttributeTable.HiddenAttribute.Color, null);
-        }
+       updateColors(doc);
 
-        // this fixes a bug that causes colors to come out wrong when first switching to color by position:
-
-        for (int i = 0; i < doc.getNumberOfSamples(); i++) {
-            doc.getColorsArray()[i] = doc.getChartColorManager().getSampleColor(doc.getSampleNames().get(i));
-        }
         if (oldByPosition != byPosition)
             doc.setDirty(true);
+    }
+
+    public static void updateColors (Document doc) {
+        final boolean byPosition=doc.getChartColorManager().isColorByPosition();
+        final List<String> samples=doc.getSampleNames();
+        final ChartColorManager colorTableManager=doc.getChartColorManager();
+        colorTableManager.clearChangedColors();
+        for (int i = 0; i < doc.getNumberOfSamples(); i++) {
+            doc.getSampleAttributeTable().put(samples.get(i), SampleAttributeTable.HiddenAttribute.Color, null);
+        }
+        if(byPosition)
+            colorTableManager.setSampleColorPositions(samples);
     }
 
     public void actionPerformed(ActionEvent event) {

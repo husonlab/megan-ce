@@ -42,6 +42,7 @@ public class ChartColorManager {
 
     public static ChartColorManager programChartColorManager;
 
+
     private final Map<String, Color> class2color = new HashMap<>(); // cache changes
     private final Map<String, Color> attributeState2color = new HashMap<>(); // cache changes
 
@@ -50,6 +51,8 @@ public class ChartColorManager {
     private boolean colorByPosition;
 
     private ColorGetter seriesOverrideColorGetter = null;
+
+    private final Map<String,Integer> sample2Position=new HashMap<>();
 
     private final Map<String, Integer> class2position = new HashMap<>(); // maps classes to their position in the order of things
     private final Map<String, Integer> attributeState2position = new HashMap<>(); // maps attributes to their position in the order of things
@@ -97,6 +100,13 @@ public class ChartColorManager {
 
         if (color == null)
             color = getAttributeStateColor(SAMPLE_ID, sample);
+
+        if (isColorByPosition()) {
+            Integer position = sample2Position.get(sample);
+            if (position != null) {
+                color=getColorTable().get(position);
+            }
+        }
         if (color == null) {
             if (sample == null || sample.equals("GRAY"))
                 color = Color.GRAY;
@@ -126,13 +136,22 @@ public class ChartColorManager {
 
 
     /**
-     * set the color of a series
+     * set the color for a sample
      *
      * @param sample
      * @param color
      */
     public void setSampleColor(String sample, Color color) {
         setAttributeStateColor(SAMPLE_ID, sample, color);
+    }
+
+    public void setSampleColorPositions(Collection<String> samples) {
+        sample2Position.clear();
+        int pos = 0;
+        for (String name : samples) {
+            if (!sample2Position.containsKey(name))
+                sample2Position.put(name, pos++);
+        }
     }
 
     /**
@@ -187,7 +206,6 @@ public class ChartColorManager {
     public void setClassColor(String className, Color color) {
         class2color.put(className, color);
     }
-
 
     public void setClassColorPositions(Collection<String> classNames) {
         class2position.clear();
@@ -386,11 +404,11 @@ public class ChartColorManager {
     }
 
     public ColorGetter getSeriesColorGetter() {
-        return label -> getSampleColor(label);
+        return this::getSampleColor;
     }
 
     public ColorGetter getClassColorGetter() {
-        return label -> getClassColor(label);
+        return this::getClassColor;
     }
 
     public ColorGetter getAttributeColorGetter() {

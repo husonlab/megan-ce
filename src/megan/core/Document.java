@@ -445,7 +445,11 @@ public class Document {
 
     public void loadMeganSummary(BufferedReader reader) throws IOException {
         getDataTable().read(reader, false);
-        getSampleAttributeTable().read(reader, getSampleNames(), true);
+        final List<String> sampleNames=getSampleNames();
+        getSampleAttributeTable().read(reader, sampleNames, true);
+        final List<String> order=getSampleAttributeTable().getSampleOrder();
+        if(order!=null && order.size()==sampleNames.size() && order.containsAll(sampleNames) &&  !order.equals(sampleNames))
+            getDataTable().reorderSamples(order);
         String parameters = getDataTable().getParameters();
         if (parameters != null) {
             parseParameterString(parameters);
@@ -921,10 +925,11 @@ public class Document {
             return colorsArray[i];
     }
 
-    public Color[] getColorsArray() {
-        if (colorsArray == null || colorsArray.length < getNumberOfSamples())
+    public void setColorByIndex (int i,Color color) {
+        if (colorsArray == null || colorsArray.length < getNumberOfSamples()) {
             colorsArray = new Color[getNumberOfSamples()];
-        return colorsArray;
+        }
+        colorsArray[i]=color;
     }
 
     /**

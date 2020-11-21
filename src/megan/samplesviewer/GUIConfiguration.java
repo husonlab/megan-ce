@@ -51,7 +51,7 @@ class GUIConfiguration {
         menuConfig.defineMenu("Attributes", "List Attribute Summary...;|;New Column...;Delete Column(s)...;|;Use to Color Samples;Use to Shape Samples;Use to Label Samples;Use to Group Samples;|;" +
                 "Expand...;");
 
-        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Compare Relative...;Compare Absolute...;|;Label by Samples;|;Open RMA File...;");
+        menuConfig.defineMenu("Samples", "Rename Sample...;|;Move Up;Move Down;|;Extract Samples...;|;Compute Total Biome...;Compute Core Biome...;Compute Rare Biome...;|;Compare Relative...;Compare Absolute...;Split By Attribute...;|;Label by Samples;|;Open RMA File...;");
 
         menuConfig.defineMenu("Layout", "Squeeze Wide Columns;");
         menuConfig.defineMenu("Window", "Close All Other Windows...;|;Reset Window Location;Set Window Size...;|;Message Window...;|;" +

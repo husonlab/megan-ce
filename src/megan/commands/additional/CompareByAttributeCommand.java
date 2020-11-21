@@ -96,7 +96,6 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
         }
 
         if (tarSample2SrcSamples.size() > 0) {
-
             final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + attribute + ".megan");
 
             final Director newDir = Director.newProject(false);

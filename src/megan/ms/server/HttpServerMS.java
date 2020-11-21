@@ -49,7 +49,7 @@ public class HttpServerMS {
         createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
 
         // admin commands:
-        createContext(path + "/admin/update", new HttpHandlerMS(RequestHandlerAdmin.recompute(path2database.values())),adminAuthenticator);
+        createContext(path + "/admin/update", new HttpHandlerMS(RequestHandlerAdmin.update(path2database.values())),adminAuthenticator);
         createContext(path + "/admin/listUsers", new HttpHandlerMS(RequestHandlerAdmin.listUsers(userManager)),adminAuthenticator);
         createContext(path + "/admin/addUser", new HttpHandlerMS(RequestHandlerAdmin.addUser(userManager)),adminAuthenticator);
         createContext(path + "/admin/removeUser", new HttpHandlerMS(RequestHandlerAdmin.removeUser(userManager)),adminAuthenticator);

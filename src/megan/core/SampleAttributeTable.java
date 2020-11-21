@@ -961,8 +961,10 @@ public class SampleAttributeTable {
                 NotificationsInSwing.showWarning(MainViewer.getLastActiveFrame(), "Loaded metadata, ignored " + countNotFound + " unknown input samples.");
             else {
                 if (knownSamples != null) {
-                    for (String sample : knownSamples)
-                        putSampleLabel(sample, sample);
+                    for (String sample : knownSamples) {
+                        if(getSampleLabel(sample)==null)
+                        putSampleLabel(sample, getSampleLabel(sample));
+                    }
                 }
             }
         }

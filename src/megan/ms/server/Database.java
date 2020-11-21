@@ -117,7 +117,7 @@ public class Database {
         this.id2Record.putAll(id2record);
         System.err.printf("Files: %,d%n", id2record.size());
         lastRebuild = System.currentTimeMillis();
-        return "Rebuild completed at " + (new Date(getLastRebuild()))+"\n";
+        return "Rebuild '"+rootDirectory.getName()+"' completed at " + (new Date(getLastRebuild()))+"\n";
     }
 
     public Record getRecord(String fileName) {

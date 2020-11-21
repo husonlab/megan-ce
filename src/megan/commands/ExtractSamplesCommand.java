@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract samples=<name1 name2 ...>;";
+        return "extract [name=<name>] samples=<name1 name2 ...>;";
     }
 
     /**
@@ -53,15 +53,32 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
      * @throws java.io.IOException
      */
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("extract samples=");
+        np.matchIgnoreCase("extract");
+
+        String fileName=null;
+        if(np.peekMatchIgnoreCase("name"))
+        {
+            np.matchIgnoreCase("name=");
+            fileName=np.getWordFileNamePunctuation();
+        }
 
         final List<String> toExtract = new ArrayList<>();
+
+        np.matchIgnoreCase("samples=");
         while (!np.peekMatchIgnoreCase(";")) {
             String name = np.getWordRespectCase();
             toExtract.add(name);
         }
         np.matchIgnoreCase(";");
 
+        if(fileName==null)
+        {
+            final String sourceFileName = ((Director) getDir()).getDocument().getMeganFile().getFileName();
+            if (toExtract.size() == 1)
+                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
+            else
+                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
+        }
         Director newDir = Director.newProject();
         newDir.getMainViewer().setDoReInduce(true);
         newDir.getMainViewer().setDoReset(true);
@@ -70,13 +87,6 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         if (toExtract.size() > 0) {
             newDir.notifyLockInput();
             try {
-                final String sourceFileName = ((Director) getDir()).getDocument().getMeganFile().getFileName();
-                final String fileName;
-                if (toExtract.size() == 1)
-                    fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
-                else
-                    fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
-
                 newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
                 newDocument.extractSamples(toExtract, ((Director) getDir()).getDocument());
                 newDocument.setNumberReads(newDocument.getDataTable().getTotalReads());

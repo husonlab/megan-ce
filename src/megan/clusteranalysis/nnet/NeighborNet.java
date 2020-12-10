@@ -27,10 +27,9 @@ import megan.clusteranalysis.tree.Taxa;
 import java.util.Objects;
 import java.util.Stack;
 
-
 /**
- * computes a cycle for the given splits using NeighborNet
- * Daniel Huson and Dave Bryant, 9.2007
+ * the neighbor-net algorithm
+ * Dave Bryant and Daniel Huson, 9.2007
  */
 public class NeighborNet {
     private int[] ordering;
@@ -100,16 +99,15 @@ public class NeighborNet {
             taxNode.next.prev = taxNode;
 
         /* Perform the agglomeration step */
-        Stack amalgs = new Stack();
-        int num_nodes = ntax;
-        num_nodes = agglomNodes(progressListener, amalgs, D, netNodes, num_nodes);
-        expandNodes(progressListener, num_nodes, ntax, amalgs, netNodes, ordering);
+        final Stack<NetNode> amalgs = new Stack<>();
+        final int num_nodes = agglomNodes(progressListener, amalgs, D, netNodes, ntax);
+        expandNodes(progressListener, amalgs, netNodes, ordering);
     }
 
     /**
      * Agglomerates the nodes
      */
-    private int agglomNodes(ProgressListener progressListener, Stack amalgs, double[][] D, NetNode netNodes, int num_nodes) throws CanceledException {
+    private int agglomNodes(ProgressListener progressListener, Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) throws CanceledException {
         //System.err.println("agglomNodes");
 
         NetNode p, q, Cx, Cy, x, y;
@@ -356,8 +354,7 @@ public class NeighborNet {
      * @param y2 a node
      * @return the new number of nodes
      */
-    private int agg4way(NetNode x2, NetNode x, NetNode y, NetNode y2,
-                        Stack amalgs, double[][] D, NetNode netNodes, int num_nodes) {
+    private int agg4way(NetNode x2, NetNode x, NetNode y, NetNode y2, Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) {
 /* Replace x2,x,y,y2 by with two vertices... performed using two
        3 way amalgamations */
 
@@ -395,15 +392,11 @@ public class NeighborNet {
 
     /**
      * Expands the net nodes to obtain the ordering, quickly
-     *
-     * @param num_nodes number of nodes
-     * @param ntax      number of taxa
-     * @param amalgs    stack of amalagations
+     *  @param amalgs    stack of amalagations
      * @param netNodes  the net nodes
      * @param ordering  the ordering
      */
-    private void expandNodes(ProgressListener progressListener, int num_nodes, int ntax, Stack amalgs, NetNode netNodes,
-                             int[] ordering) throws CanceledException {
+    private void expandNodes(ProgressListener progressListener, Stack<NetNode> amalgs, NetNode netNodes, int[] ordering) throws CanceledException {
         //System.err.println("expandNodes");
         NetNode x, y, z, u, v, a;
 
@@ -418,7 +411,7 @@ public class NeighborNet {
         while (!amalgs.empty()) {
 /* Find the three elements replacing u and v. Swap u and v around if v comes before u in the
           circular ordering being built up */
-            u = (NetNode) (amalgs.pop());
+            u = (amalgs.pop());
             // System.err.println("POP: u="+u);
             v = u.nbr;
             x = u.ch1;

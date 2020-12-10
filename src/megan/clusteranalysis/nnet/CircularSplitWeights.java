@@ -73,8 +73,7 @@ class CircularSplitWeights {
     }
 
 
-    static public SplitSystem getWeightedSplits(int[] ordering,
-                                                Distances dist, String var, boolean constrained, double cutoff) {
+    static public SplitSystem getWeightedSplits(int[] ordering, Distances dist, String var, boolean constrained, double cutoff) {
         int ntax = dist.getNtax();
         int npairs = (ntax * (ntax - 1)) / 2;
 
@@ -217,7 +216,6 @@ class CircularSplitWeights {
      * @return int[] array of indices
      */
     static private int[] worstIndices(double[] x, double propKept) {
-
 
         if (propKept == 0)
             return null;
@@ -400,7 +398,6 @@ class CircularSplitWeights {
                 return; /* We have arrived at the constrained optimum */
             else
                 active[min_i] = false;
-
         }
     }
 

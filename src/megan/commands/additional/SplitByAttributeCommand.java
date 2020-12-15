@@ -90,7 +90,7 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
                 final String fileName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "-"+tarName+ ".megan");
                   final List<String> samples=tarSample2SrcSamples.get(tarName);
                   if(samples.size()>0)
-                    commands.add(String.format("extract name='%s' samples='%s';",fileName,Basic.toString(samples,"' '")));
+                    commands.add(String.format("extract samples='%s' file='%s';",Basic.toString(samples,"' '"),fileName));
             }
         }
         executeImmediately(Basic.toString(commands,"\n"));

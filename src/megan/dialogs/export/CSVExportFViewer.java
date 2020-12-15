@@ -88,7 +88,7 @@ public class CSVExportFViewer {
                         if (counts.length == names.size()) {
                             w.write(name);
                             for (float a : counts)
-                                w.write(separator + " " + a);
+                                w.write(Basic.removeTrailingZerosAfterDot(separator + " " + a));
                             w.write("\n");
                             totalLines++;
                         } else
@@ -164,7 +164,7 @@ public class CSVExportFViewer {
                                 w.write(name);
                                 for (int i = 0; i < counts.length; i++) {
                                     double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
-                                    w.write(String.format("%c%f", separator, (float) value));
+                                    w.write(Basic.removeTrailingZerosAfterDot(String.format("%c%f", separator, (float) value)));
                                 }
                                 w.write("\n");
                                 totalLines++;
@@ -332,7 +332,7 @@ public class CSVExportFViewer {
                             }
                         }
                         if (hasSome) {
-                            w.write(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length))));
+                            w.write(Basic.removeTrailingZerosAfterDot(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length)))));
                             totalLines++;
                         }
                         progressListener.incrementProgress();

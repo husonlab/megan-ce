@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract [name=<name>] samples=<name1 name2 ...>;";
+        return "extract samples=<name1 name2 ...> [toFile=<name>];";
     }
 
     /**
@@ -55,19 +55,19 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("extract");
 
-        String fileName=null;
-        if(np.peekMatchIgnoreCase("name"))
-        {
-            np.matchIgnoreCase("name=");
-            fileName=np.getWordFileNamePunctuation();
-        }
-
         final List<String> toExtract = new ArrayList<>();
 
         np.matchIgnoreCase("samples=");
-        while (!np.peekMatchIgnoreCase(";")) {
+        while (!np.peekMatchIgnoreCase(";") && !np.peekMatchIgnoreCase("file=")) {
             String name = np.getWordRespectCase();
             toExtract.add(name);
+        }
+
+        String fileName=null;
+        if(np.peekMatchIgnoreCase("file"))
+        {
+            np.matchIgnoreCase("file=");
+            fileName=np.getWordFileNamePunctuation();
         }
         np.matchIgnoreCase(";");
 
@@ -79,10 +79,11 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
             else
                 fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
         }
-        Director newDir = Director.newProject();
+
+        final Director newDir = Director.newProject();
         newDir.getMainViewer().setDoReInduce(true);
         newDir.getMainViewer().setDoReset(true);
-        Document newDocument = newDir.getDocument();
+        final Document newDocument = newDir.getDocument();
 
         if (toExtract.size() > 0) {
             newDir.notifyLockInput();

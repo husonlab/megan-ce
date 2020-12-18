@@ -63,7 +63,7 @@ public class ReadIteratorPagination {
                 newPageId = 0; // no further pages
             return new Page(data, pagingJob.getCNames(), pagingJob.getFormat(), newPageId);
         } else
-            return null;
+            return Page.createEmptyPage();
     }
 
     private static void purgeStale() {
@@ -163,6 +163,10 @@ public class ReadIteratorPagination {
             this.cNames = cNames;
             this.format = format;
             this.nextPage = nextPage;
+        }
+
+        public static Page createEmptyPage() {
+            return new Page(new ArrayList<>(),new String[0],new ReadsOutputFormat(false,false,false,false),-1);
         }
 
         public ArrayList<IReadBlock> getReads() {

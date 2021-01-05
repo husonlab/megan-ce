@@ -31,7 +31,7 @@ import java.awt.geom.Point2D;
 import java.util.*;
 
 /**
- * The equalOverShorterOfBoth angle algorithm for embedding a circular splits graph
+ * The equal angle algorithm for embedding a circular splits graph
  *
  * @author huson
  * Date: 03-Jan-2004

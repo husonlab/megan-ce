@@ -51,7 +51,7 @@ public class NeighborNet {
         else
             return new SplitSystem();
 
-        return CircularSplitWeights.getWeightedSplits(ordering, distances, "ols", true, 0.0001f);
+        return CircularSplitWeights.compute(ordering, distances, true, 0.0001f);
     }
 
     /**
@@ -69,21 +69,21 @@ public class NeighborNet {
      * @return a working matrix of appropriate cardinality
      */
     private static double[][] setupMatrix(Distances dist) {
-        int ntax = dist.getNtax();
-        int max_num_nodes = Math.max(3, 3 * ntax - 5);
-        double[][] D = new double[max_num_nodes][max_num_nodes];
+        final int ntax = dist.getNtax();
+        final int max_num_nodes = Math.max(3, 3 * ntax - 5);
+        final double[][] mat = new double[max_num_nodes][max_num_nodes];
         /* Copy the distance matrix into a larger, scratch distance matrix */
         for (int i = 1; i <= ntax; i++) {
             for (int j = 1; j <= ntax; j++)
-                D[i][j] = dist.get(i, j);
+                mat[i][j] = dist.get(i, j);
         }
-        return D;
+        return mat;
     }
 
     /**
      * Run the neighbor net algorithm
      */
-    private void runNeighborNet(ProgressListener progressListener, int ntax, double[][] D, int[] ordering) throws CanceledException {
+    private void runNeighborNet(ProgressListener progressListener, int ntax, double[][] mat, int[] ordering) throws CanceledException {
         NetNode netNodes = new NetNode();
 
         /* Nodes are stored in a doubly linked list that we set up here */
@@ -99,41 +99,36 @@ public class NeighborNet {
             taxNode.next.prev = taxNode;
 
         /* Perform the agglomeration step */
-        final Stack<NetNode> amalgs = new Stack<>();
-        final int num_nodes = agglomNodes(progressListener, amalgs, D, netNodes, ntax);
-        expandNodes(progressListener, amalgs, netNodes, ordering);
+        final Stack<NetNode> joins =joinNodes(progressListener, mat, netNodes, ntax);
+        expandNodes(progressListener, joins, netNodes, ordering);
     }
 
     /**
      * Agglomerates the nodes
      */
-    private int agglomNodes(ProgressListener progressListener, Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) throws CanceledException {
-        //System.err.println("agglomNodes");
+    private Stack<NetNode> joinNodes (ProgressListener progressListener, double[][] mat, NetNode netNodes, int num_nodes) throws CanceledException {
+        //System.err.println("joinNodes");
 
-        NetNode p, q, Cx, Cy, x, y;
-        double Qpq, best;
+        final Stack<NetNode> joins=new Stack<>();
         int num_active = num_nodes;
         int num_clusters = num_nodes;
-        int m;
-        double Dpq;
 
         while (num_active > 3) {
-
             /* Special case
             If we let this one go then we get a divide by zero when computing Qpq */
             if (num_active == 4 && num_clusters == 2) {
-                p = netNodes.next;
+                final NetNode p = netNodes.next;
+                final NetNode q;
                 if (p.next != p.nbr)
                     q = p.next;
                 else
                     q = p.next.next;
-                if (D[p.id][q.id] + D[p.nbr.id][q.nbr.id] < D[p.id][q.nbr.id] + D[p.nbr.id][q.id]) {
-                    agg3way(p, q, q.nbr, amalgs, D, netNodes, num_nodes);
-                    num_nodes += 2;
+                if (mat[p.id][q.id] + mat[p.nbr.id][q.nbr.id] < mat[p.id][q.nbr.id] + mat[p.nbr.id][q.id]) {
+                    join3way(p, q, q.nbr, joins, mat, netNodes, num_nodes);
                 } else {
-                    agg3way(p, q.nbr, q, amalgs, D, netNodes, num_nodes);
-                    num_nodes += 2;
+                    join3way(p, q.nbr, q, joins, mat, netNodes, num_nodes);
                 }
+                num_nodes += 2;
                 break;
             }
 
@@ -141,27 +136,29 @@ public class NeighborNet {
 
       To Do: 2x speedup by using symmetry*/
 
-            for (p = netNodes.next; p != null; p = p.next)
+            for (NetNode p = netNodes.next; p != null; p = p.next)
                 p.Sx = 0.0;
-            for (p = netNodes.next; p != null; p = p.next) {
-                if (p.nbr == null || p.nbr.id > p.id) {
-                    for (q = p.next; q != null; q = q.next) {
-                        if (q.nbr == null || (q.nbr.id > q.id) && (q.nbr != p)) {
-                            if ((p.nbr == null) && (q.nbr == null))
-                                Dpq = D[p.id][q.id];
-                            else if ((p.nbr != null) && (q.nbr == null))
-                                Dpq = (D[p.id][q.id] + D[p.nbr.id][q.id]) / 2.0;
-                            else if (p.nbr == null)
-                                Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id]) / 2.0;
-                            else
-                                Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id] + D[p.nbr.id][q.id] + D[p.nbr.id][q.nbr.id]) / 4.0;
 
-                            p.Sx += Dpq;
+            for (NetNode p = netNodes.next; p != null; p = p.next) {
+                if (p.nbr == null || p.nbr.id > p.id) {
+                    for (NetNode q = p.next; q != null; q = q.next) {
+                        if (q.nbr == null || (q.nbr.id > q.id) && (q.nbr != p)) {
+                            final double dpq;
+                            if ((p.nbr == null) && (q.nbr == null))
+                                dpq = mat[p.id][q.id];
+                            else if ((p.nbr != null) && (q.nbr == null))
+                                dpq = (mat[p.id][q.id] + mat[p.nbr.id][q.id]) / 2.0;
+                            else if (p.nbr == null)
+                                dpq = (mat[p.id][q.id] + mat[p.id][q.nbr.id]) / 2.0;
+                            else
+                                dpq = (mat[p.id][q.id] + mat[p.id][q.nbr.id] + mat[p.nbr.id][q.id] + mat[p.nbr.id][q.nbr.id]) / 4.0;
+
+                            p.Sx += dpq;
                             if (p.nbr != null)
-                                p.nbr.Sx += Dpq;
-                            q.Sx += Dpq;
+                                p.nbr.Sx += dpq;
+                            q.Sx += dpq;
                             if (q.nbr != null)
-                                q.nbr.Sx += Dpq;
+                                q.nbr.Sx += dpq;
                         }
                     }
                     if (progressListener != null)
@@ -169,26 +166,28 @@ public class NeighborNet {
                 }
             }
 
-            Cx = Cy = null;
+            NetNode Cx=null;
+            NetNode Cy = null;
             /* Now minimize (m-2) D[C_i,C_k] - Sx - Sy */
-            best = 0;
-            for (p = netNodes.next; p != null; p = p.next) {
+            double best = 0;
+            for (NetNode p = netNodes.next; p != null; p = p.next) {
                 if ((p.nbr != null) && (p.nbr.id < p.id)) /* We only evaluate one node per cluster */
                     continue;
-                for (q = netNodes.next; q != p; q = q.next) {
+                for (NetNode q = netNodes.next; q != p; q = q.next) {
                     if ((q.nbr != null) && (q.nbr.id < q.id)) /* We only evaluate one node per cluster */
                         continue;
                     if (q.nbr == p) /* We only evaluate nodes in different clusters */
                         continue;
+                        final double Dpq;
                     if ((p.nbr == null) && (q.nbr == null))
-                        Dpq = D[p.id][q.id];
+                        Dpq = mat[p.id][q.id];
                     else if ((p.nbr != null) && (q.nbr == null))
-                        Dpq = (D[p.id][q.id] + D[p.nbr.id][q.id]) / 2.0;
+                        Dpq = (mat[p.id][q.id] + mat[p.nbr.id][q.id]) / 2.0;
                     else if (p.nbr == null)
-                        Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id]) / 2.0;
+                        Dpq = (mat[p.id][q.id] + mat[p.id][q.nbr.id]) / 2.0;
                     else
-                        Dpq = (D[p.id][q.id] + D[p.id][q.nbr.id] + D[p.nbr.id][q.id] + D[p.nbr.id][q.nbr.id]) / 4.0;
-                    Qpq = ((double) num_clusters - 2.0) * Dpq - p.Sx - q.Sx;
+                        Dpq = (mat[p.id][q.id] + mat[p.id][q.nbr.id] + mat[p.nbr.id][q.id] + mat[p.nbr.id][q.nbr.id]) / 4.0;
+                    final double Qpq = ((double) num_clusters - 2.0) * Dpq - p.Sx - q.Sx;
                     /* Check if this is the best so far */
                     if ((Cx == null || (Qpq < best)) && (p.nbr != q)) {
                         Cx = p;
@@ -199,27 +198,27 @@ public class NeighborNet {
             }
 
             /* Find the node in each cluster */
-            x = Cx;
-            y = Cy;
+            NetNode x = Cx;
+            NetNode y = Cy;
 
             if (Objects.requireNonNull(Cx).nbr != null || Objects.requireNonNull(Cy).nbr != null) {
-                Cx.Rx = ComputeRx(Cx, Cx, Cy, D, netNodes);
+                Cx.Rx = ComputeRx(Cx, Cx, Cy, mat, netNodes);
                 if (Cx.nbr != null)
-                    Cx.nbr.Rx = ComputeRx(Cx.nbr, Cx, Cy, D, netNodes);
-                Objects.requireNonNull(Cy).Rx = ComputeRx(Cy, Cx, Cy, D, netNodes);
+                    Cx.nbr.Rx = ComputeRx(Cx.nbr, Cx, Cy, mat, netNodes);
+                Objects.requireNonNull(Cy).Rx = ComputeRx(Cy, Cx, Cy, mat, netNodes);
                 if (Cy.nbr != null)
-                    Cy.nbr.Rx = ComputeRx(Cy.nbr, Cx, Cy, D, netNodes);
+                    Cy.nbr.Rx = ComputeRx(Cy.nbr, Cx, Cy, mat, netNodes);
             }
 
-            m = num_clusters;
+           int  m = num_clusters;
             if (Cx.nbr != null)
                 m++;
             if (Cy.nbr != null)
                 m++;
 
-            best = ((double) m - 2.0) * D[Cx.id][Cy.id] - Cx.Rx - Cy.Rx;
+            best = ((double) m - 2.0) * mat[Cx.id][Cy.id] - Cx.Rx - Cy.Rx;
             if (Cx.nbr != null) {
-                Qpq = ((double) m - 2.0) * D[Cx.nbr.id][Cy.id] - Cx.nbr.Rx - Cy.Rx;
+                final double Qpq = ((double) m - 2.0) * mat[Cx.nbr.id][Cy.id] - Cx.nbr.Rx - Cy.Rx;
                 if (Qpq < best) {
                     x = Cx.nbr;
                     y = Cy;
@@ -227,7 +226,7 @@ public class NeighborNet {
                 }
             }
             if (Cy.nbr != null) {
-                Qpq = ((double) m - 2.0) * D[Cx.id][Cy.nbr.id] - Cx.Rx - Cy.nbr.Rx;
+                final double Qpq = ((double) m - 2.0) * mat[Cx.id][Cy.nbr.id] - Cx.Rx - Cy.nbr.Rx;
                 if (Qpq < best) {
                     x = Cx;
                     y = Cy.nbr;
@@ -235,7 +234,7 @@ public class NeighborNet {
                 }
             }
             if ((Cx.nbr != null) && (Cy.nbr != null)) {
-                Qpq = ((double) m - 2.0) * D[Cx.nbr.id][Cy.nbr.id] - Cx.nbr.Rx - Cy.nbr.Rx;
+                final double Qpq = ((double) m - 2.0) * mat[Cx.nbr.id][Cy.nbr.id] - Cx.nbr.Rx - Cy.nbr.Rx;
                 if (Qpq < best) {
                     x = Cx.nbr;
                     y = Cy.nbr;
@@ -244,26 +243,26 @@ public class NeighborNet {
 
             /* We perform an agglomeration... one of three types */
             if ((null == Objects.requireNonNull(x).nbr) && (null == Objects.requireNonNull(y).nbr)) {   /* Both vertices are isolated...add edge {x,y} */
-                agg2way(x, y);
+                join2way(x, y);
                 num_clusters--;
             } else if (null == x.nbr) {     /* X is isolated,  Y  is not isolated*/
-                agg3way(x, y, y.nbr, amalgs, D, netNodes, num_nodes);
+                join3way(x, y, y.nbr, joins, mat, netNodes, num_nodes);
                 num_nodes += 2;
                 num_active--;
                 num_clusters--;
             } else if ((null == Objects.requireNonNull(y).nbr) || (num_active == 4)) { /* Y is isolated,  X is not isolated
                                                         OR theres only four active nodes and none are isolated */
-                agg3way(y, x, x.nbr, amalgs, D, netNodes, num_nodes);
+                join3way(y, x, x.nbr, joins, mat, netNodes, num_nodes);
                 num_nodes += 2;
                 num_active--;
                 num_clusters--;
             } else {  /* Both nodes are connected to others and there are more than 4 active nodes */
-                num_nodes = agg4way(x.nbr, x, y, y.nbr, amalgs, D, netNodes, num_nodes);
+                num_nodes = join4way(x.nbr, x, y, y.nbr, joins, mat, netNodes, num_nodes);
                 num_active -= 2;
                 num_clusters--;
             }
         }
-        return num_nodes;
+        return joins;
     }
 
     /**
@@ -272,7 +271,7 @@ public class NeighborNet {
      * @param x one node
      * @param y other node
      */
-    private void agg2way(NetNode x, NetNode y) {
+    private void join2way(NetNode x, NetNode y) {
         x.nbr = y;
         y.nbr = x;
     }
@@ -287,8 +286,7 @@ public class NeighborNet {
      * @param z other node
      * @return one of the new nodes
      */
-    private NetNode agg3way(NetNode x, NetNode y, NetNode z,
-                            Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) {
+    private NetNode join3way(NetNode x, NetNode y, NetNode z, Stack<NetNode> joins, double[][] mat, NetNode netNodes, int num_nodes) {
         /* Agglomerate x,y, and z to give TWO new nodes, u and v */
 /* In terms of the linked list: we replace x and z
        by u and v and remove y from the linked list.
@@ -335,12 +333,12 @@ public class NeighborNet {
         /* Update distance matrix */
 
         for (NetNode p = netNodes.next; p != null; p = p.next) {
-            D[u.id][p.id] = D[p.id][u.id] = (2.0 / 3.0) * D[x.id][p.id] + D[y.id][p.id] / 3.0;
-            D[v.id][p.id] = D[p.id][v.id] = (2.0 / 3.0) * D[z.id][p.id] + D[y.id][p.id] / 3.0;
+            mat[u.id][p.id] = mat[p.id][u.id] = (2.0 / 3.0) * mat[x.id][p.id] + mat[y.id][p.id] / 3.0;
+            mat[v.id][p.id] = mat[p.id][v.id] = (2.0 / 3.0) * mat[z.id][p.id] + mat[y.id][p.id] / 3.0;
         }
-        D[u.id][u.id] = D[v.id][v.id] = 0.0;
+        mat[u.id][u.id] = mat[v.id][v.id] = 0.0;
 
-        amalgs.push(u);
+        joins.push(u);
 
         return u;
     }
@@ -354,15 +352,15 @@ public class NeighborNet {
      * @param y2 a node
      * @return the new number of nodes
      */
-    private int agg4way(NetNode x2, NetNode x, NetNode y, NetNode y2, Stack<NetNode> amalgs, double[][] D, NetNode netNodes, int num_nodes) {
+    private int join4way(NetNode x2, NetNode x, NetNode y, NetNode y2, Stack<NetNode> joins, double[][] mat, NetNode netNodes, int num_nodes) {
 /* Replace x2,x,y,y2 by with two vertices... performed using two
        3 way amalgamations */
 
         NetNode u;
 
-        u = agg3way(x2, x, y, amalgs, D, netNodes, num_nodes); /* Replace x2,x,y by two nodes, equalOverShorterOfBoth to x2_prev.next and y_prev.next. */
+        u = join3way(x2, x, y, joins, mat, netNodes, num_nodes); /* Replace x2,x,y by two nodes, equalOverShorterOfBoth to x2_prev.next and y_prev.next. */
         num_nodes += 2;
-        agg3way(u, u.nbr, y2, amalgs, D, netNodes, num_nodes); /* z = y_prev . next */
+        join3way(u, u.nbr, y2, joins, mat, netNodes, num_nodes); /* z = y_prev . next */
         num_nodes += 2;
         return num_nodes;
     }
@@ -373,47 +371,44 @@ public class NeighborNet {
      * @param z        a node
      * @param Cx       a node
      * @param Cy       a node
-     * @param D        the distances
+     * @param mat        the distances
      * @param netNodes the net nodes
      * @return the Rx value
      */
-    private double ComputeRx(NetNode z, NetNode Cx, NetNode Cy, double[][] D,
-                             NetNode netNodes) {
+    private double ComputeRx(NetNode z, NetNode Cx, NetNode Cy, double[][] mat, NetNode netNodes) {
         double Rx = 0.0;
 
         for (NetNode p = netNodes.next; p != null; p = p.next) {
             if (p == Cx || p == Cx.nbr || p == Cy || p == Cy.nbr || p.nbr == null)
-                Rx += D[z.id][p.id];
+                Rx += mat[z.id][p.id];
             else /* p.nbr != null */
-                Rx += D[z.id][p.id] / 2.0; /* We take the average of the distances */
+                Rx += mat[z.id][p.id] / 2.0; /* We take the average of the distances */
         }
         return Rx;
     }
 
     /**
      * Expands the net nodes to obtain the ordering, quickly
-     *  @param amalgs    stack of amalagations
+     *  @param joins    stack of amalagations
      * @param netNodes  the net nodes
      * @param ordering  the ordering
      */
-    private void expandNodes(ProgressListener progressListener, Stack<NetNode> amalgs, NetNode netNodes, int[] ordering) throws CanceledException {
+    private void expandNodes(ProgressListener progressListener, Stack<NetNode> joins, NetNode netNodes, int[] ordering) throws CanceledException {
         //System.err.println("expandNodes");
-        NetNode x, y, z, u, v, a;
-
         /* Set up the circular order for the first three nodes */
-        x = netNodes.next;
-        y = x.next;
-        z = y.next;
+        NetNode x = netNodes.next;
+        NetNode y = x.next;
+        NetNode z = y.next;
         z.next = x;
         x.prev = z;
 
         /* Now do the rest of the expansions */
-        while (!amalgs.empty()) {
+        while (!joins.empty()) {
 /* Find the three elements replacing u and v. Swap u and v around if v comes before u in the
           circular ordering being built up */
-            u = (amalgs.pop());
+            NetNode u = (joins.pop());
             // System.err.println("POP: u="+u);
-            v = u.nbr;
+            NetNode v = u.nbr;
             x = u.ch1;
             y = u.ch2;
             z = v.ch2;
@@ -446,7 +441,7 @@ public class NeighborNet {
         }
 
         /* extract the ordering */
-        a = x;
+        NetNode a = x;
         int t = 0;
         do {
             // System.err.println("a="+a);

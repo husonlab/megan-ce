@@ -189,7 +189,7 @@ public class Split implements Comparable, Comparator {
      * @param taxon
      * @return split part containing taxon, or null
      */
-    public BitSet getPartContainingTaxon(int taxon) {
+    public BitSet getPartContaining(int taxon) {
         if (A.get(taxon))
             return A;
         else if (B.get(taxon))
@@ -204,7 +204,7 @@ public class Split implements Comparable, Comparator {
      * @param taxon
      * @return split part containing taxon, or null
      */
-    public BitSet getPartNotContainingTaxon(int taxon) {
+    public BitSet getPartNotContaining(int taxon) {
         if (!A.get(taxon))
             return A;
         else if (!B.get(taxon))

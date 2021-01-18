@@ -23,6 +23,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeArray;
 import jloda.phylo.PhyloTree;
+import jloda.util.BitSetUtils;
 import megan.clusteranalysis.tree.Taxa;
 
 import java.util.*;
@@ -34,16 +35,16 @@ import java.util.*;
 public class SplitSystem {
     private int nsplits;
 
-    private final Map index2split;
-    private final Map split2index;
+    private final Map<Integer,Split> index2split;
+    private final Map<Split,Integer> split2index;
 
     /**
      * constructor
      */
     public SplitSystem() {
         nsplits = 0;
-        index2split = new HashMap();
-        split2index = new HashMap();
+        index2split = new HashMap<>();
+        split2index = new HashMap<>();
     }
 
     /**
@@ -54,7 +55,7 @@ public class SplitSystem {
      */
     public SplitSystem(Taxa allTaxa, PhyloTree tree) {
         this();
-        splitsFromTreeRec(tree.getRoot(), tree, allTaxa, allTaxa.getBits(), new NodeArray(tree), this);
+        splitsFromTreeRec(tree.getRoot(), tree, allTaxa, allTaxa.getBits(), new NodeArray<>(tree), this);
     }
 
     /**
@@ -120,7 +121,7 @@ public class SplitSystem {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("Splits (").append(nsplits).append("):\n");
-        for (Iterator it = iterator(); it.hasNext(); ) {
+        for (var it = iterator(); it.hasNext(); ) {
             Split split = (Split) it.next();
             buf.append(split).append("\n");
         }
@@ -137,11 +138,11 @@ public class SplitSystem {
     }
 
     /**
-     * gets an getLetterCodeIterator over all splits
+     * gets an iterator over all splits
      *
      * @return getLetterCodeIterator
      */
-    private Iterator iterator() {
+    private Iterator<Split> iterator() {
         return split2index.keySet().iterator();
     }
 
@@ -158,7 +159,7 @@ public class SplitSystem {
     public static SplitSystem getSplitsFromTree(Taxa allTaxa, BitSet activeTaxa, PhyloTree tree) {
         SplitSystem splits = new SplitSystem();
 
-        splitsFromTreeRec(tree.getRoot(), tree, allTaxa, activeTaxa, new NodeArray(tree), splits);
+        splitsFromTreeRec(tree.getRoot(), tree, allTaxa, activeTaxa, new NodeArray<>(tree), splits);
         return splits;
     }
 
@@ -173,7 +174,7 @@ public class SplitSystem {
      * @return taxa
      */
     private static BitSet splitsFromTreeRec(Node v, PhyloTree tree,
-                                            Taxa allTaxa, BitSet activeTaxa, NodeArray reticulateNode2Taxa, SplitSystem splits) {
+                                            Taxa allTaxa, BitSet activeTaxa, NodeArray<BitSet> reticulateNode2Taxa, SplitSystem splits) {
         BitSet e_taxa = new BitSet();
 
         int taxon = allTaxa.indexOf(tree.getLabel(v));
@@ -197,7 +198,8 @@ public class SplitSystem {
                 else if (v == tree.getRoot() && v.getOutDegree() == 2) // is root split
                 {
                     Split prevSplit = splits.get(split);
-                    prevSplit.setWeight(prevSplit.getWeight() + split.getWeight());
+                    if(prevSplit!=null)
+                        prevSplit.setWeight(prevSplit.getWeight() + split.getWeight());
                 }
             } else
                 reticulateNode2Taxa.put(w, f_taxa);
@@ -216,17 +218,17 @@ public class SplitSystem {
      * @param split
      * @param tree
      */
-    private void processSplit(Node v, NodeArray node2taxa, int outGroupTaxonId, Split split, PhyloTree tree) {
-        BitSet partB = split.getPartNotContainingTaxon(outGroupTaxonId);
+    private void processSplit(Node v, NodeArray<BitSet> node2taxa, int outGroupTaxonId, Split split, PhyloTree tree) {
+        BitSet partB = split.getPartNotContaining(outGroupTaxonId);
         double weight = split.getWeight();
 
         boolean done = false;
 
         while (!done) {
-            List edgesToPush = new LinkedList();
+            var edgesToPush = new LinkedList<Edge>();
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 Node w = f.getTarget();
-                BitSet nodeSet = (BitSet) node2taxa.get(w);
+                BitSet nodeSet = node2taxa.get(w);
                 if (nodeSet.intersects(partB))
                     edgesToPush.add(f);
             }
@@ -264,8 +266,8 @@ public class SplitSystem {
      * @return trivial split, if it exists
      */
     private Split getTrivial(int taxonIndex) {
-        for (Iterator it = iterator(); it.hasNext(); ) {
-            Split split = (Split) it.next();
+        for (var it = iterator(); it.hasNext(); ) {
+            Split split = it.next();
 
             if (split.getA().cardinality() == 1 && split.getA().get(taxonIndex)
                     || split.getB().cardinality() == 1 && split.getB().get(taxonIndex))
@@ -282,8 +284,8 @@ public class SplitSystem {
      */
     public int addAll(SplitSystem splits) {
         int count = 0;
-        for (Iterator it = splits.iterator(); it.hasNext(); ) {
-            Split split = (Split) it.next();
+        for (var it = splits.iterator(); it.hasNext(); ) {
+            Split split =  it.next();
             if (!split2index.containsKey(split)) {
                 addSplit(split);
                 count++;
@@ -297,9 +299,9 @@ public class SplitSystem {
      *
      * @return list of splits
      */
-    public List asList() {
-        List result = new LinkedList();
-        for (Iterator it = iterator(); it.hasNext(); ) {
+    public List<Split> asList() {
+        List<Split> result = new LinkedList<>();
+        for (var it = iterator(); it.hasNext(); ) {
             result.add(it.next());
         }
         return result;
@@ -313,7 +315,7 @@ public class SplitSystem {
     public Split[] asArray() {
         Split[] result = new Split[size()];
         int count = 0;
-        for (Iterator it = iterator(); it.hasNext(); ) {
+        for (var it = iterator(); it.hasNext(); ) {
             result[count++] = (Split) it.next();
         }
         return result;
@@ -327,7 +329,7 @@ public class SplitSystem {
      * @return split
      */
     private Split get(Split split) {
-        Integer index = (Integer) split2index.get(split);
+        Integer index = split2index.get(split);
         if (index != null)
             return getSplit(index);
         else
@@ -362,7 +364,7 @@ public class SplitSystem {
     public boolean isFullSplitSystem(Taxa taxa) {
         BitSet bits = taxa.getBits();
 
-        for (Iterator it = iterator(); it.hasNext(); ) {
+        for (var it = iterator(); it.hasNext(); ) {
             Split split = (Split) it.next();
             if (!split.getTaxa().equals(bits))
                 return false;
@@ -378,7 +380,7 @@ public class SplitSystem {
      */
     public String toStringAsBinarySequences(Taxa taxa) {
         StringBuilder buf = new StringBuilder();
-        for (Iterator it = taxa.iterator(); it.hasNext(); ) {
+        for (var it = taxa.iterator(); it.hasNext(); ) {
             String name = (String) it.next();
             int t = taxa.indexOf(name);
             buf.append("> ").append(name).append("\n");
@@ -421,22 +423,31 @@ public class SplitSystem {
      * @param taxa   taxa are removed from here
      * @return split set with taxa delated
      */
-    public SplitSystem deleteTaxa(List labels, Taxa taxa) {
+    public SplitSystem deleteTaxa(List<String> labels, Taxa taxa) {
         for (Object label1 : labels) {
             String label = (String) label1;
             taxa.remove(label);
         }
         SplitSystem result = new SplitSystem();
 
-        for (Iterator it = iterator(); it.hasNext(); ) {
+        for (var it = iterator(); it.hasNext(); ) {
             Split split = (Split) it.next();
             Split induced = split.getInduced(taxa.getBits());
             if (result.contains(induced)) {
                 Split other = result.get(induced);
+                if(other!=null)
                 other.setWeight(other.getWeight() + induced.getWeight());
             } else if (induced.getSplitSize() > 0) // make sure that is a proper split
                 result.addSplit(induced);
         }
         return result;
+    }
+
+    public void addAllTrivial(Taxa taxa) {
+
+        for(int t:taxa.members()) {
+            if(getTrivial(t)==null)
+                addSplit(new Split(BitSetUtils.asBitSet(t),BitSetUtils.minus(taxa.getBits(),BitSetUtils.asBitSet(t)),0));
+        }
     }
 }

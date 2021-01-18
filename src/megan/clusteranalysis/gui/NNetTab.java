@@ -24,8 +24,8 @@ import jloda.swing.util.GraphViewPopupListener;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressCmdLine;
 import megan.clusteranalysis.ClusterViewer;
-import megan.clusteranalysis.nnet.EqualAngle;
 import megan.clusteranalysis.nnet.NeighborNet;
+import megan.clusteranalysis.nnet.Outline;
 import megan.clusteranalysis.nnet.SplitSystem;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
@@ -73,8 +73,8 @@ public class NNetTab extends TreeTabBase implements ITab {
             final int[] ordering = neighborNet.getOrdering();
 
             getGraphView().setAutoLayoutLabels(true);
-            EqualAngle equalAngle = new EqualAngle();
-            equalAngle.createNetwork(ordering, taxa, splits, getGraphView());
+            final Outline outline = new Outline();
+            outline.createNetwork(ordering, taxa, splits, getGraphView());
             getGraphView().setFixedNodeSize(true);
             getGraphView().resetViews();
             getGraphView().trans.setCoordinateRect(getGraphView().getBBox());

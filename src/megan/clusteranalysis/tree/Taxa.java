@@ -20,12 +20,13 @@
 package megan.clusteranalysis.tree;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * maintains the taxa associated with a tree or network
  * Daniel Huson, 6.2007
  */
-public class Taxa {
+public class Taxa  {
     private final Map<String, Integer> name2index;
     private final Map<Integer, String> index2name;
     private final BitSet bits;
@@ -203,5 +204,22 @@ public class Taxa {
             ntax--;
             bits.set(tt, false);
         }
+    }
+
+    public  Iterable<Integer> members() {
+        return () -> new Iterator<Integer>() {
+            private int t=bits.nextSetBit(0);
+            @Override
+            public boolean hasNext() {
+                return t!=-1;
+            }
+
+            @Override
+            public Integer next() {
+                final int result=t;
+                t= bits.nextSetBit(t+1);
+                return result;
+            }
+        };
     }
 }

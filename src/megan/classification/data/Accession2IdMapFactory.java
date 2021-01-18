@@ -21,7 +21,6 @@
 package megan.classification.data;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
 
@@ -41,7 +40,7 @@ public class Accession2IdMapFactory implements IString2IntegerMapFactory {
      * @return map or null
      */
     @Override
-    public IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException {
+    public IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException {
         if (String2IntegerFileBasedABinMap.isTableFile(fileName))
             return new String2IntegerFileBasedABinMap(fileName);
         else if (String2IntegerFileBasedABinMap.isIncompatibleTableFile(fileName)) {

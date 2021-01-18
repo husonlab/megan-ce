@@ -22,8 +22,8 @@ then
 	options="-h"
 fi	
 
-utils_dir=`dirname "$0"`       # may be relative path
-utils_dir=`cd "$utils_dir" && pwd`    # ensure absolute path
+utils_dir=$(dirname "$0")       # may be relative path
+utils_dir=$(cd "$utils_dir" && pwd)    # ensure absolute path
 bin_dir="$utils_dir/.."
 
 jars_dir="$bin_dir/../jars"
@@ -32,7 +32,7 @@ jars2_dir="$bin_dir/../jars2"
 jre_dir=${installer:sys.preferredJre}
 
 java=$jre_dir/bin/java
-vmOptions=`grep "^-" $bin_dir/../MEGAN.vmoptions`
+vmOptions=$(grep "^-" $bin_dir/../MEGAN.vmoptions)
 modulepath="$jars_dir:$jars2_dir"
 
 java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"

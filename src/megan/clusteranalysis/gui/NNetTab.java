@@ -50,11 +50,11 @@ public class NNetTab extends TreeTabBase implements ITab {
     }
 
     public String getLabel() {
-        return "Neighbor-Net";
+        return "Outline";
     }
 
     public String getMethod() {
-        return "Neighbor-Net";
+        return "Outline";
     }
 
     /**

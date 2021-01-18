@@ -656,10 +656,13 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                         } else
                             nv.setBackgroundColor(null);
 
-                    } else {
+                    }
+                }
+                else
+                    showThisLabel=false;
+                if(!showThisLabel) {
                         nv.setLabelVisible(false);
                         nv.setNodeShape(NodeShape.None);
-                    }
                 }
             }
             for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {

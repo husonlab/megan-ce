@@ -44,7 +44,8 @@ public class NeighborNet {
      * @throws CanceledException
      */
     public SplitSystem apply(ProgressListener progressListener, Taxa taxa, Distances distances) throws CanceledException {
-        progressListener.setTasks("Computing non-hierarchical clustering using", "Neighbor-Net");
+        progressListener.setTasks("Computing clustering", "Neighbor-Net");
+        System.err.println("Bryant and Moulton (2004)");
         ordering = new int[taxa.size() + 1];
         if (taxa.size() > 3)
             runNeighborNet(progressListener, taxa.size(), setupMatrix(distances), ordering);

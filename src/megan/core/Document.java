@@ -231,8 +231,10 @@ public class Document {
             loadMeganSummaryFile();
         } else if (getMeganFile().hasDataConnector() || getMeganFile().isMeganServerFile()) {
             reloadFromConnector(null);
-        } else
-            throw new IOException("File format not (or no longer) supported");
+        } else if (!Basic.fileExistsAndIsNonEmpty(getMeganFile().getFileName()))
+            throw new IOException("File doesn't exist or is empty: " + getMeganFile().getFileName());
+        else
+            throw new IOException("Unknown file error (perhaps invalid file format?)");
 
         lastRecomputeTime = System.currentTimeMillis();
     }

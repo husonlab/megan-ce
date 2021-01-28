@@ -88,7 +88,7 @@ public class ReferencesAnnotator {
 
         options.comment("Input and output");
         final String inputFile = options.getOptionMandatory("-i", "in", "Input references file (stdin, .gz ok)", "");
-        String outputFile = options.getOptionMandatory("-o", "out", "Output file (stdout, .gz ok)", "");
+        String outputFile = options.getOptionMandatory("-o", "out", "Output file (stdout or .gz ok)", "");
 
         options.comment("Classification support:");
 

@@ -19,11 +19,8 @@
  */
 package megan.genes;
 
-import jloda.swing.util.ArgsOptions;
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgressPercentage;
-import jloda.util.UsageException;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.classification.IdMapper;
@@ -31,7 +28,9 @@ import megan.io.InputReader;
 import megan.tools.AAdderBuild;
 import megan.tools.AAdderRun;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * class used to access gene items
@@ -167,30 +166,5 @@ public class GeneItemAccessor {
 
     private int size() {
         return size;
-    }
-
-    /**
-     * dump gene table to standard out
-     */
-    public static void main() throws IOException, UsageException, CanceledException {
-        String[] args = new String[]{"-i", "/Users/huson/data/malt/gff/index/aadd.idx"};
-
-        final ArgsOptions options = new ArgsOptions(args, null, "GeneTableDump", "Dump gene table");
-        final String idxFile = options.getOptionMandatory("i", "idxFile", "Input aadd.idx file", "index/aadd.idx");
-        final String dbFile = options.getOption("d", "dbFile", "Input aadd.dbx file", Basic.replaceFileSuffix(idxFile, ".dbx"));
-        final String outputFile = options.getOption("o", "output", "Output file (or stdout)", "stdout");
-        options.done();
-
-        final GeneItemAccessor geneTableAccess = new GeneItemAccessor(new File(idxFile), new File(dbFile));
-
-        try (Writer w = new BufferedWriter(outputFile.equals("stdout") ? new OutputStreamWriter(System.out) : new FileWriter(outputFile))) {
-            for (int i = 0; i < geneTableAccess.size(); i++) {
-                System.err.println("ref[" + i + "]=" + geneTableAccess.getIndex2ref(i) + ":");
-                final IntervalTree<GeneItem> tree = geneTableAccess.getIntervals(i);
-                if (tree != null) {
-                    System.err.println("Tree[" + idxFile + "]: " + Basic.abbreviateDotDotDot(tree.toString(), 1000));
-                }
-            }
-        }
     }
 }

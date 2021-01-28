@@ -71,7 +71,7 @@ public class SortLastMAFAlignmentsByQuery {
         final String lastMAFFile = options.getOptionMandatory("-i", "input", "Input file in MAF format as produced by Last (.gz ok)", "");
         String readsFile = options.getOption("-r", "readsFile", "File containing all reads, if given, determines output order (.gz ok)", "");
 
-        final String outputFile = options.getOption("-o", "output", "Output file (stdout, .gz ok)", "stdout");
+        final String outputFile = options.getOption("-o", "output", "Output file (stdout or .gz ok)", "stdout");
         options.done();
 
         final HashMap<String, ArrayList<byte[][]>> readName2Alignments = new HashMap<>(1000000);

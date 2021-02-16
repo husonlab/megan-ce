@@ -64,11 +64,17 @@ public class ReadBlockIteratorMS implements IReadBlockIterator {
     private void processBytes(byte[] bytes) throws IOException {
         reads.clear();
         nextIndex = 0;
+
+        String first=null;
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new ByteInputStream(bytes, 0, bytes.length))) {
             final int count = ins.readInt();
             for (int i = 0; i < count; i++) {
                 int size = ins.readInt();
                 reads.add(ReadBlockMS.readFromBytes(classifications, ins.readBytes(size)));
+                if(first==null)
+                    first=reads.get(reads.size()-1).getReadHeader();
+                else if(first.equals(reads.get(reads.size()-1).getReadHeader()))
+                    System.err.println("Got same: "+i);
             }
             nextPageId = ins.readLong();
         }

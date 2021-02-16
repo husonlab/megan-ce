@@ -35,6 +35,7 @@ import java.util.*;
  */
 public class RMA6Connector implements IConnector {
     private String fileName;
+    public static boolean reuseReadBlockInGetter=true;
 
     /**
      * constructor
@@ -93,7 +94,7 @@ public class RMA6Connector implements IConnector {
     @Override
     public IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         final RMA6File rma6File = new RMA6File(fileName, RMA6File.READ_ONLY);
-        return new ReadBlockGetterRMA6(rma6File, wantReadSequence, wantMatches, minScore, maxExpected, false, true);
+        return new ReadBlockGetterRMA6(rma6File, wantReadSequence, wantMatches, minScore, maxExpected, false, reuseReadBlockInGetter);
     }
 
     @Override

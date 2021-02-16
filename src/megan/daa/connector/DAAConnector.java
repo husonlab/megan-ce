@@ -47,6 +47,9 @@ public class DAAConnector implements IConnector {
 
     private boolean longReads = false;
 
+    public static boolean reuseReadBlockInGetter=true;
+
+
     /**
      * constructor
      *
@@ -81,13 +84,6 @@ public class DAAConnector implements IConnector {
         return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, false, longReads));
     }
 
-    /**
-     * get an all reads iterator
-     */
-    public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches, boolean reuseReadBlockObject) throws IOException {
-        return new AllReadsIterator(new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, true, reuseReadBlockObject, longReads));
-    }
-
     @Override
     public IReadBlockIterator getReadsIterator(String classification, int classId, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         return getReadsIteratorForListOfClassIds(classification, Collections.singletonList(classId), minScore, maxExpected, wantReadSequence, wantMatches);
@@ -108,7 +104,7 @@ public class DAAConnector implements IConnector {
 
     @Override
     public IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        return new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, false, true, longReads);
+        return new ReadBlockGetterDAA(daaHeader, wantReadSequence, wantMatches, minScore, maxExpected, false, reuseReadBlockInGetter, longReads);
     }
 
     @Override

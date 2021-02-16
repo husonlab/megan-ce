@@ -32,7 +32,6 @@ import java.util.Map;
  * Daniel Huson, 4.2010
  */
 public interface IConnector {
-
     // classification names used below are defined in ClassificationBlock
 
     /**

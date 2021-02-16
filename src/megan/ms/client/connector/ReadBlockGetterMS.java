@@ -75,7 +75,7 @@ public class ReadBlockGetterMS implements IReadBlockGetter {
         try {
             if (false) // todo: for debugging
             {
-                final String commandTemplate = "getRead?file=%s&readId=%d&binary=false&sequences=%b&matches=%b";
+                final String commandTemplate = "getRead?file=%s&readId=%d&binary=false&sequence=%b&matches=%b";
                 System.err.println(client.getAsString(String.format(commandTemplate, fileName, uid, wantSequences, wantMatches)));
             }
 

@@ -66,8 +66,8 @@ public class MeganFile {
         this.fileName = fileName;
         this.readOnly = readOnly;
 
-        if (fileName.contains("::"))
-            meganServerFile = true;
+        meganServerFile = fileName.contains("::");
+
         if (fileName.toLowerCase().endsWith(".rma1")) {
             fileType = Type.RMA1_FILE;
         } else if (fileName.toLowerCase().endsWith(".rma2")) {
@@ -173,8 +173,10 @@ public class MeganFile {
     }
 
     public void setFileName(String fileName) {
-        if (fileName == null || !fileName.equals(this.fileName))
+        if (fileName == null || !fileName.equals(this.fileName)) {
             connector = null;
+            meganServerFile=false;
+        }
         this.fileName = fileName;
     }
 

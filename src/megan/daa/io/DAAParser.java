@@ -137,10 +137,9 @@ public class DAAParser {
         try {
             DAAParser daaParser = new DAAParser(fileName);
             return daaParser.getBlastMode();
-        } catch (IOException e) {
-            Basic.caught(e);
-            return jloda.util.BlastMode.Unknown;
+        } catch (IOException ignored) {
         }
+        return jloda.util.BlastMode.Unknown;
     }
 
     /**

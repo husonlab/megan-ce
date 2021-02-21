@@ -158,6 +158,12 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                 System.err.println("IGNORED setting: minComplexity=" + minComplexity);
         }
 
+        int minReadLength = 0;
+        if (np.peekMatchIgnoreCase("minReadLength")) {
+            np.matchIgnoreCase("minReadLength=");
+            minReadLength = (int) np.getInt(0,Integer.MAX_VALUE);
+        }
+
         boolean useIdentityFilter = Document.DEFAULT_USE_IDENTITY;
         if (np.peekMatchIgnoreCase("useIdentityFilter")) {
             np.matchIgnoreCase("useIdentityFilter=");
@@ -236,9 +242,9 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
                     throw new IOException("File is currently open, cannot meganize open files");
                 }
 
-                Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected, minPercentIdentity,
-                        topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads,
-                        minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);
+                Meganize.apply(((Director) getDir()).getDocument().getProgressListener(), daaFile, "", cNames, minScore, maxExpected,
+                        minPercentIdentity, topPercent, minSupportPercent, minSupport, pairedReads, pairSuffixLength, minReadLength,lcaAlgorithm,
+                        readAssignmentMode, lcaCoveragePercent, longReads, minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);
 
                 // todo: save the description
 

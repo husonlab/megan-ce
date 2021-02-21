@@ -107,7 +107,7 @@ public class ReanalyzeDialog extends ImportBlastDialog {
                 buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
             if (getMinPercentReferenceToCover() > 0)
                 buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
-            buf.append(" minComplexity=").append(getMinComplexity());
+            buf.append(" minComplexity=").append(getMinReadLength());
             buf.append(" longReads=").append(isLongReads());
             buf.append(" pairedReads=").append(isUsePairedReads());
             buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());

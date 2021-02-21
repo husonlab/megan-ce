@@ -120,6 +120,7 @@ public class SAM2RMA6 {
 
         final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
         final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
+        final int minReadLength=options.getOption("-mrl","minReadLength","Minimum read length",0);
 
         final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
@@ -299,6 +300,7 @@ public class SAM2RMA6 {
             doc.setMinSupport(minSupport);
             doc.setPairedReads(pairedReads);
             doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
+            doc.setMinReadLength(minReadLength);
             doc.setBlastMode(BlastModeUtils.determineBlastModeSAMFile(samFiles[i]));
             doc.setLcaAlgorithm(lcaAlgorithm);
             doc.setLcaCoveragePercent(lcaCoveragePercent);
@@ -309,7 +311,7 @@ public class SAM2RMA6 {
             if (contaminantsFile.length() > 0) {
                 ContaminantManager contaminantManager = new ContaminantManager();
                 contaminantManager.read(contaminantsFile);
-                System.err.println(String.format("Contaminants profile: %,d input, %,d total", contaminantManager.inputSize(), contaminantManager.size()));
+                System.err.printf("Contaminants profile: %,d input, %,d total%n", contaminantManager.inputSize(), contaminantManager.size());
                 doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
                 doc.setUseContaminantFilter(contaminantManager.size() > 0);
             }

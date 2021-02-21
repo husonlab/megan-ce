@@ -68,7 +68,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
 
     private final JTextField lcaCoveragePercentField = new JTextField(8);
-    private final JTextField minComplexityField = new JTextField(8);
+    private final JTextField minReadLengthField = new JTextField(8);
     private final JTextField minPercentReadCoveredField = new JTextField(8);
     private final JTextField minPercentReferenceCoveredField = new JTextField(8);
 
@@ -156,7 +156,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinSupport(Document.DEFAULT_MINSUPPORT);
         setMinPercentReadToCover(Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
         setMinPercentReferenceToCover(Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
-        setMinComplexity(Document.DEFAULT_MINCOMPLEXITY);
+        setMinReadLength(Document.DEFAULT_MIN_READ_LENGTH);
 
         final Document doc = dir.getDocument();
 
@@ -170,7 +170,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinPercentReferenceToCover(doc.getMinPercentReferenceToCover());
-        setMinComplexity(doc.getMinComplexity());
+        setMinReadLength(doc.getMinReadLength());
         setUsePercentIdentityFilter(doc.isUseIdentityFilter());
         setLCACoveragePercent(doc.getLcaCoveragePercent());
         setLcaAlgorithm(doc.getLcaAlgorithm());
@@ -341,18 +341,18 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         minSupportPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
-    public double getMinComplexity() {
-        double value = Document.DEFAULT_MINCOMPLEXITY;
+    public int getMinReadLength() {
+        int value = Document.DEFAULT_MIN_READ_LENGTH;
         try {
-            value = Basic.parseDouble(minComplexityField.getText());
+            value = Basic.parseInt(minReadLengthField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
         return value;
     }
 
-    public void setMinComplexity(double value) {
-        minComplexityField.setText("" + (float) value + (value <= 0 ? " (off)" : ""));
+    public void setMinReadLength(int value) {
+        minReadLengthField.setText(String.valueOf(value));
     }
 
     private String shortDescription = "";
@@ -587,8 +587,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         return minSupportPercentField;
     }
 
-    public JTextField getMinComplexityField() {
-        return minComplexityField;
+    public JTextField getMinReadLengthField() {
+        return minReadLengthField;
     }
 
     public JCheckBox getUseCompressionCBox() {
@@ -844,7 +844,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             buf.append(" lcaCoveragePercent=").append(getLCACoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
-        buf.append(" minComplexity=").append(getMinComplexity());
+        buf.append(" minReadLength=").append(getMinReadLength());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
         buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
         buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));

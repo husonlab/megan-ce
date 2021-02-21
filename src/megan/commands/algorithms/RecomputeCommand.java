@@ -102,6 +102,11 @@ public class RecomputeCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("minComplexity=");
             getDoc().setMinComplexity((float) np.getDouble(-1.0, 1.0));
         }
+        if (np.peekMatchIgnoreCase("minReadLength")) {
+            np.matchIgnoreCase("minReadLength=");
+            getDoc().setMinReadLength(np.getInt(0,Integer.MAX_VALUE));
+        }
+
         if (np.peekMatchIgnoreCase("longReads")) {
             np.matchIgnoreCase("longReads=");
             getDoc().setLongReads(np.getBoolean());

@@ -57,7 +57,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Select", "All Nodes;None;|;From Previous Window;|;All Leaves;All Internal Nodes;Subtree;Leaves Below;Nodes Above;Has Assigned;|;Invert;|;Select By Rank;|;Scroll To Selected;");
 
-        menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Layout Labels;|;Scale Nodes By Assigned;Scale Nodes By Summarized;"
+        menuConfig.defineMenu("Layout", "Show Legend;|;Increase Font Size;Decrease Font Size;|;@Expand/Contract;|;Layout Labels;|;Show Scale Bar;|;Scale Nodes By Assigned;Scale Nodes By Summarized;"
                 + "Set Max Node Height...;|;Zoom To Selection;|;Fully Contract;Fully Expand;|;"
                 + "Draw Circles;Draw Pies;Draw Coxcombs;Draw Bars;Draw Heatmaps;|;Linear Scale;Sqrt Scale;Log Scale;|;Rounded Cladogram;Cladogram;Rounded Phylogram;Phylogram;|;Use Magnifier;|;Draw Leaves Only;");
 

@@ -2,7 +2,7 @@
 -3	Low complexity
 -2	Not assigned
 -1	No hits
-1	SEED
+1	SEED-2021
 2	Carbohydrates
 13	Photosynthesis
 107	Sulfur Metabolism
@@ -17,14 +17,10 @@
 912	Metabolism of Aromatic Compounds
 991	Protein degradation
 1077	Membrane Transport
-1113	Carboxysome
 1388	Respiration
 1669	Miscellaneous
 1905	Universal stress protein family
-1907	Methanogenesis
 2597	Regulation And Cell Signaling
-3873	Pyrrolysine
-4433	Chlorosome
 4927	Hydrogenases
 6426	Exosome
 6517	Nucleoside triphosphate pyrophosphohydrolase MazG
@@ -46,14 +42,12 @@
 11377	tRNA aminoacylation, His
 11396	Vibrioferrin synthesis
 11425	Vanillate and syringate utilization
-11553	Coenzyme F420 hydrogenase
 11554	Chlorophyll Biosynthesis in plants and prokaryotes
 11612	Poly-gamma-glutamate biosynthesis
 11740	Hydroxyaromatic decarboxylase family
 11818	Siderophore Staphylobactin
 11819	DNA repair, UvrABC system
 11884	Molybdopterin cytosine dinucleotide
-11924	H2:CoM-S-S-HTP oxidoreductase
 11951	Hyperosmotic potassium uptake
 11959	Sporulation Cluster III A
 11960	Purine nucleotide synthesis regulator
@@ -64,9 +58,6 @@
 12099	Muconate lactonizing enzyme family
 12122	Malonate decarboxylase
 12153	Pentose phosphate pathway
-12162	Diphtheria toxin
-12164	Photosystem I-type photosynthetic reaction center
-12165	Reductive Dechlorination
 12166	Sugar-phosphate stress regulation
 12225	Bacillibactin Siderophore
 12248	Coenzyme F420 synthesis
@@ -78,7 +69,6 @@
 12445	tRNA aminoacylation, Phe
 12511	DNA repair, bacterial UmuCD system
 12538	Translation elongation factor G family
-12567	Methanophenazine hydrogenase
 12568	Hfl operon
 12645	Siderophore Desferrioxamine E
 12717	Mycobacterial gene cluster associated with resistance against FAS-II antibiotics
@@ -86,7 +76,6 @@
 12803	Amino acid racemase
 12810	Putative TldE-TldD proteolytic complex
 12835	Pyruvate metabolism II: acetyl-CoA, acetogenesis from pyruvate
-12955	Plastidial (cyanobacterial) electron transport system
 13011	Entner-Doudoroff Pathway
 13033	Glycerolipid and Glycerophospholipid Metabolism in Bacteria
 13034	Branched-Chain Amino Acid Biosynthesis
@@ -112,8 +101,6 @@
 13460	Acetoin, butanediol metabolism
 13475	tRNA aminoacylation, Thr
 13480	Stringent Response, (p)ppGpp metabolism
-13537	Energy conserving hydrogenase b, Methanococcales-Methanobacteriales-Methanopyrales
-13577	Toluene 4-monooxygenase (T4MO)
 13612	Pyridoxin(Vitamin B6) Degradation Pathway
 13661	Biotin synthesis & utilization
 13676	Respiratory Complex I
@@ -127,12 +114,10 @@
 13866	Threonine anaerobic catabolism gene cluster
 13934	CytR regulation
 13936	Glutamate dehydrogenases
-13961	Pertussis toxin
 13972	Glycine reductase, sarcosine reductase and betaine reductase
 13985	L-fucose utilization
 13986	Nonmevalonate Branch of Isoprenoid Biosynthesis
 14008	tRNA aminoacylation, Gly
-14034	Coenzyme F420-H2 dehydrogenase (methanophenazine)
 14035	Formaldehyde assimilation: Ribulose monophosphate pathway
 14044	IbrA and IbrB: co-activators of prophage gene expression
 14063	tRNA aminoacylation, Met
@@ -151,20 +136,15 @@
 14470	tRNA aminoacylation, Ser
 14474	DNA processing cluster
 14483	BactLuciferaseComplex
-14546	Teichuronic acid biosynthesis
 14547	Siderophore assembly kit
 14587	Alpha-acetolactate operon
 14589	Carbon monoxide induced hydrogenase
 14592	Fermentations: Mixed acid
-14595	Siderophore Yersiniabactin Biosynthesis
 14617	Phosphonate metabolism
 14680	Lactose utilization
-14696	Bacteriocins in Lactobacilli
 14795	Osmoregulation
-14800	AMP to 3-phosphoglycerate
 14802	Glutathione: Biosynthesis and gamma-glutamyl cycle
 14819	Toxin co-regulated pilus
-14838	Energy-conserving hydrogenase (ferredoxin)
 14848	Selenoprotein O
 14892	Glutathione: Redox cycle
 14895	Autoinducer 2 (AI-2) transport and processing (lsrACDBFGE operon)
@@ -175,19 +155,15 @@
 15029	Inositol catabolism
 15031	Adenosyl nucleosidases
 15067	Ribosomal protein S5p acylation
-15082	Alkane biosynthesis in bacteria
 15087	Mycobacterial FadE proteins Acyl-CoA dehydrogenase
-15221	Heterocyst formation in cyanobacteria
 15232	Siderophore Enterobactin
 15256	Menaquinone biosynthesis from chorismate via 1,4-dihydroxy-6-naphthoate
-15521	Fe(III) respiration - Shewanella type
 15579	Predicted secretion system X
 15604	Bacterial light-harvesting proteins
 15615	Colicin V and Bacteriocin Production Cluster
 15624	tRNA splicing
 15625	Lysine fermentation
 15691	Outer membrane
-15698	Photosystem I
 15750	Trans-translation by stalled ribosomes
 15764	Chlorophyll Degradation
 15778	G-protein-coupled receptor (GPCR) system in Actinobacteria
@@ -199,21 +175,17 @@
 15996	A Hypothetical Protein Related to Proline Metabolism
 15997	DNA repair, bacterial UvrD and related helicases
 16001	Periplasmic disulfide interchange
-16002	Respiratory complex I in plants (plastidial) and cyanobacteria
 16013	Pyruvate:ferredoxin oxidoreductase
 16022	Macromolecular synthesis operon
-16023	Energy conserving hydrogenase, Methanococcales-Methanobacteriales-Methanopyrales
 16084	Histidine Biosynthesis
 16097	Cadmium resistance
 16116	Dissimilatory nitrite reductase
-16117	Archaeal membrane bound hydrogenases
 16122	Pyridoxin (Vitamin B6) Biosynthesis
 16123	Quinone oxidoreductase family
 16136	ESAT-6 proteins secretion system in Mycobacteria (locus ESX-1)
 16214	Sporulation Cluster
 16234	Ribonuclease H
 16235	Biogenesis of cytochrome c oxidases
-16238	Ubiquitin-like archaeal modifier proteins (SAMPs)
 16265	Listeria surface proteins: Internalin-like proteins
 16266	Ribonucleotide reduction
 16267	Biofilm formation in Staphylococcus
@@ -221,7 +193,6 @@
 16326	Osmotic stress cluster
 16329	Metabolite repair
 16372	SecY2-SecA2 Specialized Transport System
-16390	Siderophore [Alcaligin-like]
 16419	Tryptophan synthesis
 16473	Amidase clustered with urea and nitrile hydratase functions
 16534	Mycolic acid synthesis 2
@@ -250,7 +221,6 @@
 17309	ABC transporter of unknown substrate X
 17310	Two cell division clusters relating to chromosome partitioning
 17311	Na(+) H(+) antiporter
-17323	Magnetosome
 17405	Ethylmalonyl-CoA pathway of C2 assimilation
 17409	Spore germination
 17410	Cobalamin synthesis
@@ -261,14 +231,12 @@
 17584	Phd-Doc, YdcE-YdcD toxin-antitoxin (programmed cell death) systems
 17600	Methylthiotransferases
 17639	Biofilm Adhesin Biosynthesis
-17675	tRNA aminoacylation, Pyr
 17689	Adaptation to d-cysteine
 17698	Formate dehydrogenase
 17719	tRNA aminoacylation, Leu
 17729	tRNA nucleotidyltransferase
 17730	Cytolysin and Lipase operon in Vibrio
 17741	Polyamine Metabolism
-17748	Phosphonoalanine utilization
 17851	2-phosphoglycolate salvage
 17875	De Novo Pyrimidine Synthesis
 17876	KDO2-Lipid A biosynthesis
@@ -283,8 +251,6 @@
 18049	Two partner secretion pathway (TPS)
 18078	NAD and NADP cofactor biosynthesis global
 18171	Conjugative transposon, Bacteroidales
-18173	Methanogenesis from methylated compounds
-18189	Bacillus subtilis yydFGHIJ operon
 18233	Copper homeostasis: copper tolerance
 18235	Sporulation gene orphans
 18263	Phosphate Metabolism
@@ -314,7 +280,6 @@
 18911	Ergothioneine biosynthesis
 18913	Mycobacterial cell wall virulence lipid phthiocerol dimycocerosate (PDIM)
 18937	tRNA aminoacylation, Lys
-18982	Type III secretion system
 19042	RecA and RecX
 19043	Threonylcarbamoyladenosine
 19151	Sporulation-associated proteins with broader functions
@@ -326,10 +291,6 @@
 19348	DNA repair, bacterial RecBCD pathway
 19360	F0F1-type ATP synthase
 19367	Multiple Antibiotic Resistance MAR locus
-19374	Tocopherols and tocotrienols (vitamin E) in plants and cyanobacteria
-19389	Agrobacterium opine transport
-19410	Nicotinate catabolism, anaerobic
-19441	Nonribosomal peptide synthetases (NRPS) in Frankia sp. Ccl3
 19463	Mycobacterial FadD proteins (fatty acid CoA- and AMP- ligases)
 19512	DNA repair, bacterial DinG and relatives
 19513	Exosporium
@@ -345,15 +306,12 @@
 19680	NiFe hydrogenase maturation
 19682	Ribosome activity modulation
 19683	Calvin-Benson cycle
-19743	An Arabinose Sensor
 19897	Photosystem II-type photosynthetic reaction center
 19898	RuvABC plus a hypothetical
 19905	Anaerobic Oxidative Degradation of L-Ornithine
 19943	Glutathionylspermidine and Trypanothione
-19963	Cytochrome b6-f complex in plants (plastidial) and cyanobacteria
 19982	Biogenesis of cbb3-type cytochrome c oxidases
 20075	tRNA aminoacylation, Tyr
-20080	Iron Scavenging cluster in Thermus
 20172	Glycolysis and Gluconeogenesis, including Archaeal enzymes
 20206	Modification of eukaryotic initiation factor 5A
 20234	Inclusion membrane proteins supporting intracellular life styles in Chlamydiales
@@ -372,12 +330,10 @@
 20784	Nitrogen fixation
 20802	Urease subunits
 20805	High affinity phosphate transporter and control of PHO regulon
-20823	Particulate methane monooxygenase (pMMO)
 20830	Alkane synthesis in bacteria 2
 20832	Tagatose utilization
 20855	Glutamine synthetases
 20858	Dipicolinate Synthesis
-20861	Coenzyme B synthesis
 20866	One-carbon metabolism by tetrahydropterines
 20873	Control of cell elongation - division cycle in Bacilli
 20907	Betaine lipids in bactera
@@ -394,9 +350,7 @@
 21149	Galactosamine Substituent of Arabinogalactan in Mycobacteria
 21150	Glutaconate CoA-transferase or 3-oxoadipate CoA-transferase Subunits
 21156	Heme and heme d1 biosynthesis from siroheme
-21190	Respiratory Systems - Shewanella (updated)
 21192	Metabolite damage and its repair or mitigation
-21209	Violacein biosynthesis
 21216	tRNA aminoacylation, Pro
 22889	Metabolism
 22890	Branched-chain amino acids
@@ -923,56 +877,103 @@
 23411	PE multigene family in Mycobacterium tuberculosis complex (MTBC)
 23412	ESAT-6 proteins secretion system in Mycobacteria (locus ESX-2)
 23413	Thiocyanate hydrolase
-23414	Mycosporine synthesis cluster
-23415	DevBCA efflux pump transporter (of ABC type) cyanobacterial
-23416	Transcription factors, cyanobacterial RpoD-like sigma factors
-23417	Carotenogenesis related cluster
-23418	Possible heterocyst differentiation related cluster
-23419	CMP-pseudaminic acid synthesis
-23420	Ribonuclease P, archaeal and eukaryal
-23421	Sulfoquinovose biosynthesis cluster
-23422	D-galacturonate utilization, oxidative pathway
-23423	3-amino-5-hydroxybenzoic Acid Synthesis
-23424	Sigma54-dependent transcription related gene cluster 2
-23425	Mannosylglucosylglycerate synthesis
-23426	Ribosome LSU, eukaryotic and archaeal
-23427	Zwittermicin A resistance
-23428	Methanofuran biosynthesis
-23429	Coenzyme B
-23430	Heterocyst development
-23431	Plasmid related functions
-23432	RSF1010 like IncQ broad-host-range plasmids
-23433	Mu-like phage
-23434	Lasso peptide maturation cluster
-23435	Methylglyoxal resistance in Bacillus subtilis
-23436	Mebrane bound hydrogenases
-23437	Pentalenolactone Biosynthesis and Resistance
-23438	Metabolism of polyketides
-23439	Phr peptides - Rap phosphatases signaling
-23440	Chlorophyll a synthase and phytol kinase cluster
-23441	Protein glycosylation in Prokaryotes
-23442	N,N'-diacetylbacillosamine
-23443	Membrane bound hydrogenase Mbh
-23444	5-nitroimidazole antibiotic resistance
-23445	Anaerobic respiratory complex QmoABC
-23446	Desulfovibrio high-molecular-weight cytochrome cluster
-23447	Tmc complex
-23448	NADP-reducing [FeFe]-hydrogenase
-23449	Bacillus cannibalism system
-23450	D-arabinose utilization
-23451	M. tuberculosis complex-specific locus aprABC, adaptation to phagosome
-23452	Agrocinopine utilization
-23453	Fatty acid metabolism cluster
-23454	Phosphoethanolamine transferases
-23455	Benzoyl-CoA pathway of anaerobic aromatic metabolism
-23456	Predicted secretion system W clustering with cell division proteins
-23457	DNA repair and recombination, eukaryotic
-23458	Magnetotaxis
-23459	Eucaryal transcription elongation complex
-23460	Perchlorate reduction
-23461	Dimethylsulfide dehydrogenase
-23462	Anaerobic toluene and ethylbenzene degradation
-23463	superclass
-23464	class
-23465	subclass
-23466	subsystem_name
+23414	Protein glycosylation in Prokaryotes
+23415	N,N'-diacetylbacillosamine
+23416	Mu-like phage
+23417	Photosystem I
+23418	Carotenogenesis related cluster
+23419	DevBCA efflux pump transporter (of ABC type) cyanobacterial
+23420	Mycosporine synthesis cluster
+23421	Plastidial (cyanobacterial) electron transport system
+23422	Respiratory complex I in plants (plastidial) and cyanobacteria
+23423	Tocopherols and tocotrienols (vitamin E) in plants and cyanobacteria
+23424	Possible heterocyst differentiation related cluster
+23425	Alkane biosynthesis in bacteria
+23426	Cytochrome b6-f complex in plants (plastidial) and cyanobacteria
+23427	Mannosylglucosylglycerate synthesis
+23428	Sigma54-dependent transcription related gene cluster 2
+23429	Carboxysome
+23430	Bacillus cannibalism system
+23431	Bacillus subtilis yydFGHIJ operon
+23432	Phr peptides - Rap phosphatases signaling
+23433	Methylglyoxal resistance in Bacillus subtilis
+23434	Teichuronic acid biosynthesis
+23435	Ribonuclease P, archaeal and eukaryal
+23436	Sulfoquinovose biosynthesis cluster
+23437	D-galacturonate utilization, oxidative pathway
+23438	M. tuberculosis complex-specific locus aprABC, adaptation to phagosome
+23439	Agrobacterium opine transport
+23440	Toluene 4-monooxygenase (T4MO)
+23441	Particulate methane monooxygenase (pMMO)
+23442	Chlorophyll a synthase and phytol kinase cluster
+23443	Photosystem I-type photosynthetic reaction center
+23444	Methanofuran biosynthesis
+23445	Methanogenesis
+23446	Methanogenesis from methylated compounds
+23447	Coenzyme B
+23448	Coenzyme B synthesis
+23449	CMP-pseudaminic acid synthesis
+23450	Plasmid related functions
+23451	RSF1010 like IncQ broad-host-range plasmids
+23452	Anaerobic respiratory complex QmoABC
+23453	3-amino-5-hydroxybenzoic Acid Synthesis
+23454	Energy-conserving hydrogenase (ferredoxin)
+23455	Ribosome LSU, eukaryotic and archaeal
+23456	Tmc complex
+23457	Fe(III) respiration - Shewanella type
+23458	Pertussis toxin
+23459	Phosphonoalanine utilization
+23460	Siderophore Yersiniabactin Biosynthesis
+23461	Zwittermicin A resistance
+23462	An Arabinose Sensor
+23463	Transcription factors, cyanobacterial RpoD-like sigma factors
+23464	Violacein biosynthesis
+23465	AMP to 3-phosphoglycerate
+23466	Fatty acid metabolism cluster
+23467	Siderophore [Alcaligin-like]
+23468	Ubiquitin-like archaeal modifier proteins (SAMPs)
+23469	Diphtheria toxin
+23470	Lasso peptide maturation cluster
+23471	Coenzyme F420 hydrogenase
+23472	Pyrrolysine
+23473	tRNA aminoacylation, Pyr
+23474	5-nitroimidazole antibiotic resistance
+23475	Pentalenolactone Biosynthesis and Resistance
+23476	D-arabinose utilization
+23477	Coenzyme F420-H2 dehydrogenase (methanophenazine)
+23478	Methanophenazine hydrogenase
+23479	NADP-reducing [FeFe]-hydrogenase
+23480	Respiratory Systems - Shewanella (updated)
+23481	Heterocyst development
+23482	Heterocyst formation in cyanobacteria
+23483	Benzoyl-CoA pathway of anaerobic aromatic metabolism
+23484	H2:CoM-S-S-HTP oxidoreductase
+23485	Nicotinate catabolism, anaerobic
+23486	Quorum sensing regulation in Pseudomonas
+23487	Social motility and nonflagellar swimming in bacteria
+23488	Rhamnolipids in Pseudomonas
+23489	Type III secretion system
+23490	Predicted secretion system W clustering with cell division proteins
+23491	Membrane bound hydrogenase Mbh
+23492	Phosphoethanolamine transferases
+23493	Reductive Dechlorination
+23494	Agrocinopine utilization
+23495	Metabolism of polyketides
+23496	Nonribosomal peptide synthetases (NRPS) in Frankia sp. Ccl3
+23497	Chlorosome
+23498	Desulfovibrio high-molecular-weight cytochrome cluster
+23499	Iron Scavenging cluster in Thermus
+23500	Bacteriocins in Lactobacilli
+23501	DNA repair and recombination, eukaryotic
+23502	Archaeal membrane bound hydrogenases
+23503	Energy conserving hydrogenase b, Methanococcales-Methanobacteriales-Methanopyrales
+23504	Mebrane bound hydrogenases
+23505	Energy conserving hydrogenase, Methanococcales-Methanobacteriales-Methanopyrales
+23506	Methylenomycin synthesis
+23507	Magnetotaxis
+23508	Magnetosome
+23509	Eucaryal transcription elongation complex
+23510	Dimethylsulfide dehydrogenase
+23511	Perchlorate reduction
+23512	Anaerobic toluene and ethylbenzene degradation
+23513	Ri

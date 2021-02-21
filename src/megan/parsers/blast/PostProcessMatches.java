@@ -20,11 +20,13 @@
 
 package megan.parsers.blast;
 
+import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -112,9 +114,12 @@ public class PostProcessMatches {
             return 0;
         } else { // short reads
             for (Match match : matches) {
-                byte[] bytes = match.samLine.getBytes();
-                if (matchesTextLength + bytes.length + 1 >= matchesText.length) {
-                    byte[] tmp = new byte[2 * (matchesTextLength + bytes.length + 1)];
+                final byte[] bytes = match.samLine.getBytes();
+                final long newLength=matchesTextLength + bytes.length + 1L;
+                if (newLength >= matchesText.length) {
+                     if (newLength>Basic.MAX_ARRAY_SIZE)
+                         throw new RuntimeException("Data record size exceeds max array size: "+newLength);
+                     final byte[] tmp = new byte[(int)(Math.min(Basic.MAX_ARRAY_SIZE,2L * newLength))];
                     System.arraycopy(matchesText, 0, tmp, 0, matchesTextLength);
                     matchesText = tmp;
                 }

@@ -49,13 +49,11 @@ public class NodeDrawer implements INodeDrawer {
     }
 
     public enum Style {
-        Square,
         Circle,
         PieChart,
         BarChart,
         HeatMap,
-        CoxComb,
-        Default
+        CoxComb
     }
 
     public enum ScaleBy {
@@ -274,8 +272,8 @@ public class NodeDrawer implements INodeDrawer {
             }
 
             Point apt = viewer.trans.w2d(nv.getLocation());
-            apt.x -= (scaledWidth >> 1);
-            apt.y -= (scaledHeight >> 1);
+            apt.x -= (scaledWidth / 2);
+            apt.y -= (scaledHeight / 2);
 
             gc.setColor(ProgramProperties.SELECTION_COLOR);
             Shape shape = new Rectangle(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
@@ -411,15 +409,15 @@ public class NodeDrawer implements INodeDrawer {
             int width = nv.getWidth();
             int height = nv.getHeight();
             Point apt = viewer.trans.w2d(location);
-            apt.x -= (width >> 1);
-            apt.y -= (height >> 1);
+            apt.x -= (width /2);
+            apt.y -= (height/2);
 
             if (data.getUpPValue() >= 0) {
                 gc.setColor(pvalueColor);
                 Stroke oldStroke = gc.getStroke();
                 int leftWidth = getWidthForPValue(data.getUpPValue());
                 gc.setStroke(new BasicStroke(leftWidth));
-                gc.drawArc(apt.x - (leftWidth >> 1) - 1, apt.y - (leftWidth >> 1) - 1, width + leftWidth + 1, height + leftWidth + 1, 90, 180);
+                gc.drawArc(apt.x - (leftWidth /2) - 1, apt.y - (leftWidth / 2) - 1, width + leftWidth + 1, height + leftWidth + 1, 90, 180);
                 gc.setStroke(oldStroke);
             }
             if (data.getDownPValue() >= 0) {
@@ -427,7 +425,7 @@ public class NodeDrawer implements INodeDrawer {
                 Stroke oldStroke = gc.getStroke();
                 int rightWidth = getWidthForPValue(data.getDownPValue());
                 gc.setStroke(new BasicStroke(rightWidth));
-                gc.drawArc(apt.x - (rightWidth >> 1) - 1, apt.y - (rightWidth >> 1) - 1, width + rightWidth + 1, height + rightWidth + 1, 270, 180);
+                gc.drawArc(apt.x - (rightWidth / 2) - 1, apt.y - (rightWidth / 2) - 1, width + rightWidth + 1, height + rightWidth + 1, 270, 180);
                 gc.setStroke(oldStroke);
             }
         }
@@ -508,8 +506,8 @@ public class NodeDrawer implements INodeDrawer {
 
         int width = nv.getWidth();
         int height = nv.getHeight();
-        apt.x -= (width >> 1);
-        apt.y -= (height >> 1);
+        apt.x -= (width / 2);
+        apt.y -= (height / 2);
         nv.setNodeShape(NodeShape.Oval);
 
         if (data.getUpPValue() >= 0) {
@@ -517,7 +515,7 @@ public class NodeDrawer implements INodeDrawer {
             Stroke oldStroke = gc.getStroke();
             int leftWidth = getWidthForPValue(data.getUpPValue());
             gc.setStroke(new BasicStroke(leftWidth));
-            gc.drawArc(apt.x - (leftWidth >> 1) - 1, apt.y - (leftWidth >> 1) - 1, width + leftWidth + 1, height + leftWidth + 1, 90, 180);
+            gc.drawArc(apt.x - (leftWidth / 2) - 1, apt.y - (leftWidth / 2) - 1, width + leftWidth + 1, height + leftWidth + 1, 90, 180);
             gc.setStroke(oldStroke);
         }
         if (data.getDownPValue() >= 0) {
@@ -525,7 +523,7 @@ public class NodeDrawer implements INodeDrawer {
             Stroke oldStroke = gc.getStroke();
             int rightWidth = getWidthForPValue(data.getDownPValue());
             gc.setStroke(new BasicStroke(rightWidth));
-            gc.drawArc(apt.x - (rightWidth >> 1) - 1, apt.y - (rightWidth >> 1) - 1, width + rightWidth + 1, height + rightWidth + 1, 270, 180);
+            gc.drawArc(apt.x - (rightWidth / 2) - 1, apt.y - (rightWidth / 2) - 1, width + rightWidth + 1, height + rightWidth + 1, 270, 180);
             gc.setStroke(oldStroke);
         }
 
@@ -612,7 +610,7 @@ public class NodeDrawer implements INodeDrawer {
             nv.setHeight(1);
         }
 
-        apt.x -= nv.getWidth() >> 1; // offset
+        apt.x -= nv.getWidth() / 2; // offset
         apt.y -= box.getHeight() / 2 - 1;
 
         if (data.getUpPValue() >= 0) {
@@ -715,7 +713,7 @@ public class NodeDrawer implements INodeDrawer {
             nv.setHeight(1);
         }
 
-        apt.x -= nv.getWidth() >> 1; // offset
+        apt.x -= nv.getWidth() / 2; // offset
         apt.y -= box.getHeight() / 2;
 
         if (data.getUpPValue() >= 0) {

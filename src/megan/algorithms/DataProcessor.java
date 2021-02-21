@@ -141,6 +141,7 @@ public class DataProcessor {
             double totalWeight = 0;
             long numberOfMatches = 0;
             long numberOfReadsWithLowComplexity = 0;
+            long numberOfReadsTooShort=0;
             long numberOfReadsWithHits = 0;
             long numberAssignedViaMatePair = 0;
 
@@ -221,6 +222,11 @@ public class DataProcessor {
                     totalWeight += readBlock.getReadWeight();
                     numberOfMatches += readBlock.getNumberOfMatches();
 
+                    final boolean tooShort=readBlock.getReadLength()>0 && readBlock.getReadLength()<doc.getMinReadLength();
+
+                    if(tooShort)
+                        numberOfReadsTooShort+=readBlock.getReadWeight();
+
                     final boolean hasLowComplexity = readBlock.getComplexity() > 0 && readBlock.getComplexity() + 0.01 < doc.getMinComplexity();
 
                     if (hasLowComplexity)
@@ -228,7 +234,7 @@ public class DataProcessor {
 
                     int taxId = 0;
 
-                    if (!hasLowComplexity) {
+                    if (!tooShort && !hasLowComplexity) {
                         for (int c = 0; c < numberOfClassifications; c++) {
                             classIds[c] = 0;
                             if (useLCAForClassification[c]) {
@@ -277,7 +283,7 @@ public class DataProcessor {
                                 taxId = classIds[c];
                             }
                         }
-                    }
+                    } // end !lowComplexity
 
                     for (int c = 0; c < numberOfClassifications; c++) {
                         int id;
@@ -286,6 +292,9 @@ public class DataProcessor {
                             id = IdMapper.CONTAMINANTS_ID;
                         } else if (hasLowComplexity) {
                             id = IdMapper.LOW_COMPLEXITY_ID;
+                        }
+                        else if (tooShort) {
+                                id = IdMapper.UNASSIGNED_ID;
                         } else if (useLCAForClassification[c]) {
                             id = classIds[c];
                         } else {
@@ -335,25 +344,28 @@ public class DataProcessor {
 
             progress.reportTaskCompleted();
 
-            System.err.println(String.format("Total reads:  %,15d", numberOfReadsFound));
+            System.err.printf("Total reads:  %,15d%n", numberOfReadsFound);
             if (totalWeight > numberOfReadsFound)
-                System.err.println(String.format("Total weight: %,15d", (long) totalWeight));
+                System.err.printf("Total weight: %,15d%n", (long) totalWeight);
 
             if (numberOfReadsWithLowComplexity > 0)
-                System.err.println(String.format("Low complexity:%,15d", numberOfReadsWithLowComplexity));
-            if (numberOfReadsFailedCoveredThreshold > 0)
-                System.err.println(String.format("Low covered:   %,15d", numberOfReadsFailedCoveredThreshold));
+                System.err.printf("Low complexity:%,15d%n", numberOfReadsWithLowComplexity);
+            if (numberOfReadsTooShort > 0)
+                System.err.printf("Reads too short:%,15d%n", numberOfReadsTooShort);
 
-            System.err.println(String.format("With hits:     %,15d ", numberOfReadsWithHits));
-            System.err.println(String.format("Alignments:    %,15d", numberOfMatches));
+            if (numberOfReadsFailedCoveredThreshold > 0)
+                System.err.printf("Low covered:   %,15d%n", numberOfReadsFailedCoveredThreshold);
+
+            System.err.printf("With hits:     %,15d %n", numberOfReadsWithHits);
+            System.err.printf("Alignments:    %,15d%n", numberOfMatches);
 
             for (int c = 0; c < numberOfClassifications; c++) {
-                System.err.println(String.format("%-19s%,11d", "Assig. " + cNames[c] + ":", countAssigned[c]));
+                System.err.printf("%-19s%,11d%n", "Assig. " + cNames[c] + ":", countAssigned[c]);
             }
 
             // if used mate pairs, report here:
             if (numberAssignedViaMatePair > 0) {
-                System.err.println(String.format("Tax. ass. by mate:%,12d", numberAssignedViaMatePair));
+                System.err.printf("Tax. ass. by mate:%,12d%n", numberAssignedViaMatePair);
             }
 
             progress.setCancelable(false); // can't cancel beyond here because file could be left in undefined state
@@ -379,7 +391,7 @@ public class DataProcessor {
                     for (Integer srcId : changes.keySet()) {
                         updateList.appendClass(c, srcId, changes.get(srcId));
                     }
-                    System.err.println(String.format("Min-supp. changes:%,12d", changes.size()));
+                    System.err.printf("Min-supp. changes:%,12d%n", changes.size());
                 }
             }
 
@@ -403,7 +415,7 @@ public class DataProcessor {
 
             // report classification sizes:
             for (String cName : cNames) {
-                System.err.println(String.format("Class. %-13s%,10d", cName + ":", connector.getClassificationSize(cName)));
+                System.err.printf("Class. %-13s%,10d%n", cName + ":", connector.getClassificationSize(cName));
             }
 
             return (int) doc.getDataTable().getTotalReads();

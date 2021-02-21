@@ -22,7 +22,6 @@ package megan.importblast;
 import jloda.swing.commands.CommandManager;
 import jloda.util.ProgramProperties;
 import megan.core.Document;
-import megan.importblast.commands.SetUseComplexityFilterCommand;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
 
 import javax.swing.*;
@@ -77,19 +76,9 @@ public class LCAParametersPanel extends JPanel {
         centerPanel.add(dialog.getMinSupportField());
         dialog.getMinSupportField().setToolTipText("Minimum number of reads that a taxon must obtain");
 
-        {
-            centerPanel.add(new JLabel(" "));
-            centerPanel.add(new JLabel(" "));
-
-            final AbstractButton button = commandManager.getButton(SetUseComplexityFilterCommand.NAME);
-            button.setText(button.getText() + ":");
-            centerPanel.add(button);
-            centerPanel.add(dialog.getMinComplexityField());
-            dialog.getMinComplexityField().setToolTipText("Minimum complexity for a read to be considered non-repetitive\nComputed as compression ratio between 0 and 1");
-
-            centerPanel.add(new JLabel(" "));
-            centerPanel.add(new JLabel(" "));
-        }
+        centerPanel.add(new JLabel("Min Read Length:"));
+        centerPanel.add(dialog.getMinReadLengthField());
+        dialog.getMinReadLengthField().setToolTipText("Minimum read length");
 
         {
             centerPanel.add(new JLabel("LCA Algorithm:"));

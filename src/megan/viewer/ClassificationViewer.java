@@ -40,6 +40,7 @@ import megan.core.Document;
 import megan.dialogs.compare.Comparer;
 import megan.dialogs.input.InputDialog;
 import megan.main.MeganProperties;
+import megan.util.DrawScaleBox;
 import megan.viewer.gui.NodeDrawer;
 import megan.viewer.gui.ViewerJTable;
 import megan.viewer.gui.ViewerJTree;
@@ -101,6 +102,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
     Classification classification;
 
     private boolean useReadWeights = false;
+
+    private boolean showScaleBox =ProgramProperties.get("ShowScaleBox",true);
 
     /**
      * Classification viewer
@@ -986,7 +989,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      */
     public void paint(Graphics gc0) {
         drawOnScreen = (!ExportManager.inWriteToFileOrGetData() && !inPrint);
-        Graphics2D gc = (Graphics2D) gc0;
+        final Graphics2D gc = (Graphics2D) gc0;
+
         nodeDrawer.setup(this, gc);
         setBackground(canvasColor);
 
@@ -1005,6 +1009,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
         if (!inPrint)
             gc.fill(totalRect);
+
+        if(isShowScaleBox()) {
+            DrawScaleBox.draw(gc,5,5,getDocument(),nodeDrawer);
+        }
+
 
         gc.setColor(Color.BLACK);
         gc.setFont(getFont());
@@ -1742,6 +1751,14 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 setSelected(v, true);
             }
         }
+    }
+
+    public boolean isShowScaleBox() {
+        return showScaleBox;
+    }
+
+    public void setShowScaleBox(boolean showScaleBox) {
+        this.showScaleBox = showScaleBox;
     }
 }
 

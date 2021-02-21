@@ -71,7 +71,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
      *
      * @return number of matches
      */
-    public int next() {
+    public int next()  {
         if (!hasNextLine())
             return -1;
 

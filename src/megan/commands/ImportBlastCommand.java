@@ -195,6 +195,11 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
                 doc.setMinComplexity((float) np.getDouble(-1.0, 1.0));
             }
 
+            if (np.peekMatchIgnoreCase("minReadLength")) {
+                np.matchIgnoreCase("minReadLength=");
+                doc.setMinReadLength(np.getInt(0,Integer.MAX_VALUE));
+            }
+
             if (np.peekMatchIgnoreCase("useIdentityFilter")) {
                 np.matchIgnoreCase("useIdentityFilter=");
                 getDoc().setUseIdentityFilter(np.getBoolean());

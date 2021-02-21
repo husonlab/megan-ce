@@ -27,7 +27,9 @@ import jloda.util.Basic;
 import jloda.util.PeakMemoryUsageMonitor;
 import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
+import megan.daa.connector.DAAConnector;
 import megan.main.Megan6;
+import megan.rma6.RMA6Connector;
 
 import java.io.File;
 
@@ -61,6 +63,10 @@ public class MeganServer {
      * run
      */
     private void run(String[] args) throws Exception {
+        // we keep references to read blocks, so must not reuse readblocks:
+        RMA6Connector.reuseReadBlockInGetter=false;
+        DAAConnector.reuseReadBlockInGetter=false;
+
         final ArgsOptions options = new ArgsOptions(args, this, "Serves MEGAN files over the web via HTTP");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");

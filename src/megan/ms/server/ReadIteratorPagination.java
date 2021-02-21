@@ -42,10 +42,6 @@ public class ReadIteratorPagination {
     private final static Map<Long, PagingJob> pageId2Job = new TreeMap<>();
 
     public static Long createPagination(IReadBlockIterator iterator, String[] cNames, ReadsOutputFormat format, int pageSize) {
-        // we keep references to read blocks, so must not reuse readblocks:
-        RMA6Connector.reuseReadBlockInGetter=false;
-        DAAConnector.reuseReadBlockInGetter=false;
-
         final long pageId = mostRecentPageId.addAndGet(1);
         final PagingJob pagingJob = new PagingJob(pageId, cNames, format, iterator, pageSize);
         synchronized (pageId2Job) {

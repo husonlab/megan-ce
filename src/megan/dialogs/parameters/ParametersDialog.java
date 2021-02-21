@@ -61,7 +61,7 @@ public class ParametersDialog extends JDialog {
     private final JTextField minSupportField = new JTextField(8);
     private final JTextField minSupportPercentField = new JTextField(8);
     private final JTextField minPercentIdentityField = new JTextField(8);
-    private final JTextField minComplexityField = new JTextField(8);
+    private final JTextField minReadLengthField = new JTextField(8);
     private final JTextField lcaCoveragePercent = new JTextField(8);
 
     private final JTextField minPercentReadToCoverField = new JTextField(8);
@@ -129,7 +129,7 @@ public class ParametersDialog extends JDialog {
 
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinPercentReferenceToCover(doc.getMinPercentReferenceToCover());
-        setMinComplexity(doc.getMinComplexity());
+        setMinReadLength(doc.getMinReadLength());
         setLongReads(doc.isLongReads());
         setPairedReads(doc.isPairedReads());
         setUsePercentIdentity(doc.isUseIdentityFilter());
@@ -164,8 +164,8 @@ public class ParametersDialog extends JDialog {
 
         setReadAssignmentMode(doc.getReadAssignmentMode());
 
-        if (doc.getMinComplexity() < 0)
-            minComplexityField.setEnabled(false);
+        if (doc.getMinReadLength() < 0)
+            minReadLengthField.setEnabled(false);
     }
 
     /**
@@ -336,10 +336,10 @@ public class ParametersDialog extends JDialog {
             aPanel.add(new JLabel(" "));
             aPanel.add(new JLabel(" "));
 
-            aPanel.add(new JLabel("Min Complexity:"));
-            aPanel.add(minComplexityField);
-            minComplexityField.setToolTipText("Minimum complexity for a read to be considered non-repetitive");
-            minComplexityField.getDocument().addDocumentListener(new DocumentListener() {
+            aPanel.add(new JLabel("Min Read Length:"));
+            aPanel.add(minReadLengthField);
+            minReadLengthField.setToolTipText("Minimum read length");
+            minReadLengthField.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent event) {
                     commandManager.updateEnableState();
                 }
@@ -618,10 +618,10 @@ public class ParametersDialog extends JDialog {
         return value;
     }
 
-    private double getMinComplexity() {
-        double value = Document.DEFAULT_MINCOMPLEXITY;
+    private int getMinReadLength() {
+        int value = Document.DEFAULT_MIN_READ_LENGTH;
         try {
-            value = Double.parseDouble(minComplexityField.getText());
+            value = Integer.parseInt(minReadLengthField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -678,8 +678,8 @@ public class ParametersDialog extends JDialog {
         minSupportPercentField.setText("" + Math.max(0f, value) + (value <= 0 ? " (off)" : ""));
     }
 
-    private void setMinComplexity(double value) {
-        minComplexityField.setText("" + (float) value);
+    private void setMinReadLength(int value) {
+        minReadLengthField.setText(String.valueOf(value));
     }
 
     private void setMinPercentReadToCover(double value) {
@@ -793,7 +793,7 @@ public class ParametersDialog extends JDialog {
                         " lcaCoveragePercent=" + getLCACoveragePercent() +
                         " minPercentReadToCover=" + getMinPercentReadToCover() +
                         " minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
-                        " minComplexity=" + getMinComplexity() +
+                        " minReadLength=" + getMinReadLength() +
                         " longReads=" + isLongReads() +
                         " pairedReads=" + isPairedReads() +
                         " useIdentityFilter=" + isUsePercentIdentity()

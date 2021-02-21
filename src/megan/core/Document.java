@@ -105,6 +105,8 @@ public class Document {
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_SHORT_READS = LCAAlgorithm.naive;
     public static final LCAAlgorithm DEFAULT_LCA_ALGORITHM_LONG_READS = LCAAlgorithm.longReads;
 
+    public final static int DEFAULT_MIN_READ_LENGTH=0;
+
     public final static float DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS = 100;
     public final static float DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA = 80;
     public final static float DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS = 51;
@@ -133,9 +135,10 @@ public class Document {
 
     private float minComplexity = DEFAULT_MINCOMPLEXITY;
 
+    private int minReadLength= DEFAULT_MIN_READ_LENGTH;
+
     private float minPercentReadToCover = DEFAULT_MIN_PERCENT_READ_TO_COVER;
     private float minPercentReferenceToCover = DEFAULT_MIN_PERCENT_READ_TO_COVER;
-
 
     private boolean useIdentityFilter = DEFAULT_USE_IDENTITY;
 
@@ -331,8 +334,9 @@ public class Document {
 
                 setMinPercentReferenceToCover(np.findIgnoreCase(tokens, "minPercentReferenceToCover=", getMinPercentReferenceToCover()));
 
-
                 setMinComplexity(np.findIgnoreCase(tokens, "minComplexity=", getMinComplexity()));
+
+                setMinReadLength(Math.round(np.findIgnoreCase(tokens,"minReadLength=",getMinReadLength())));
 
                 if (np.findIgnoreCase(tokens, "longReads=true", true, false))
                     setLongReads(true);
@@ -417,7 +421,10 @@ public class Document {
             buf.append(" lcaCoveragePercent=").append(getLcaCoveragePercent());
         buf.append(" minPercentReadToCover=").append(getMinPercentReadToCover());
         buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
-        buf.append(" minComplexity=").append(getMinComplexity());
+        if(getMinComplexity()>0)
+            buf.append(" minComplexity=").append(getMinComplexity());
+        if(getMinReadLength()>0)
+            buf.append(" minReadLength=").append(getMinReadLength());
         buf.append(" longReads=").append(isLongReads());
         buf.append(" pairedReads=").append(isPairedReads());
         buf.append(" identityFilter=").append(isUseIdentityFilter());
@@ -667,6 +674,14 @@ public class Document {
      */
     public void setMinComplexity(float minComplexity) {
         this.minComplexity = minComplexity;
+    }
+
+    public int getMinReadLength() {
+        return minReadLength;
+    }
+
+    public void setMinReadLength(int minReadLength) {
+        this.minReadLength = minReadLength;
     }
 
     public float getMinPercentReadToCover() {

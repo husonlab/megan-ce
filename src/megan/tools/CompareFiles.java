@@ -187,6 +187,14 @@ public class CompareFiles {
         }
 
         doc.getDataTable().setSamples(getSampleNames(samples), getUids(samples), sizes, getBlastModes(samples));
+        {
+            final Map<String,Object> sample2source=new HashMap<>();
+            for(SampleData sample:samples) {
+                sample2source.put(sample.getName(),sample.getDoc().getMeganFile().getFileName());
+            }
+            doc.getSampleAttributeTable().addAttribute("@Source",sample2source,false,true);
+        }
+
         doc.setNumberReads(Math.round(Basic.getSum(sizes)));
 
         for(var classification: getClassifications(samples)) {

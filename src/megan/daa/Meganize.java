@@ -61,8 +61,11 @@ public class Meganize {
      * @throws IOException
      * @throws CanceledException
      */
-    public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile, final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
-                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent, boolean longReads, float minPercentReadToCover, float minPercentReferenceToCover, String contaminantsFile) throws IOException, CanceledException {
+    public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile,
+                             final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
+                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, int minReadLength,
+                             Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent,
+                             boolean longReads, float minPercentReadToCover, float minPercentReferenceToCover, String contaminantsFile) throws IOException, CanceledException {
 
         progress.setTasks("Meganizing", "init");
         final long start = System.currentTimeMillis();
@@ -85,6 +88,7 @@ public class Meganize {
         doc.setMinSupport(minSupport);
         doc.setPairedReads(pairedReads);
         doc.setPairedReadSuffixLength(pairedReadsSuffixLength);
+        doc.setMinReadLength(minReadLength);
         doc.setBlastMode(DAAParser.getBlastMode(daaFile));
         doc.setLcaAlgorithm(lcaAlgorithm);
         doc.setLcaCoveragePercent(lcaCoveragePercent);

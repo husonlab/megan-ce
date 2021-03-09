@@ -144,10 +144,10 @@ public class AlignmentSorter {
             Node v = e.getSource();
             Node w = e.getTarget();
 
-            if (otherEndOfChain.get(v) != w && getNumberOfAdjacentSelected(v, selectedEdges) < 2 && getNumberOfAdjacentSelected(w, selectedEdges) < 2) {
+            if (otherEndOfChain.getValue(v) != w && getNumberOfAdjacentSelected(v, selectedEdges) < 2 && getNumberOfAdjacentSelected(w, selectedEdges) < 2) {
                 selectedEdges.add(e);
-                Node ov = otherEndOfChain.get(v);
-                Node ow = otherEndOfChain.get(w);
+                Node ov = otherEndOfChain.getValue(v);
+                Node ow = otherEndOfChain.getValue(w);
                 otherEndOfChain.put(ov, ow);
                 otherEndOfChain.put(ow, ov);
             }

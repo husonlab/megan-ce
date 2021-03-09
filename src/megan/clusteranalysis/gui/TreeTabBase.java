@@ -29,6 +29,7 @@ import jloda.swing.find.SearchManager;
 import jloda.swing.graphview.NodeActionAdapter;
 import jloda.swing.graphview.NodeView;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import megan.clusteranalysis.ClusterViewer;
 import megan.viewer.ViewerBase;
 
@@ -59,6 +60,16 @@ public class TreeTabBase extends JPanel {
         this.clusterViewer = clusterViewer;
 
         graphView = new ViewerBase(clusterViewer.getDir(), new PhyloTree(), false) {
+            private boolean showScaleBox = ProgramProperties.get("ShowScaleBox", true);
+
+            public void setShowScaleBox(boolean showScaleBox) {
+                this.showScaleBox = showScaleBox;
+            }
+
+            public boolean isShowScaleBox() {
+                return showScaleBox;
+            }
+
             public JFrame getFrame() {
                 return null;
             }

@@ -279,7 +279,7 @@ public class NJ {
                     b = setAnglesRec(tree, a, tree.getOpposite(root, e), e, leaves, angle, rand);
 
                     // point towards the segment of the unit circle a...b:
-                    angle.set(e, Math.PI * (a + 1 + b) / leaves.size());
+                    angle.put(e, Math.PI * (a + 1 + b) / leaves.size());
                     a = b;
                 }
             }

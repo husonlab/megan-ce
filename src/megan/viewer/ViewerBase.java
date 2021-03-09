@@ -101,6 +101,7 @@ abstract public class ViewerBase extends PhyloTreeView {
         nodeDrawer = new NodeDrawer(dir.getDocument(), this);
 
         mainPanel = new JPanel();
+
         mainPanel.setLayout(new BorderLayout());
         legendPanel = new LegendPanel(this);
         legendPanel.setStyle(nodeDrawer.getStyle());

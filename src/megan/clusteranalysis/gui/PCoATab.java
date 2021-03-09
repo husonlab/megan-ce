@@ -124,6 +124,16 @@ public class PCoATab extends JPanel implements ITab {
     public PCoATab(final ClusterViewer parent) {
         this.clusterViewer = parent;
         graphView = new ViewerBase(parent.getDir(), new PhyloTree(), false) {
+            private boolean showScaleBox = ProgramProperties.get("ShowScaleBox", true);
+
+            public void setShowScaleBox(boolean showScaleBox) {
+                this.showScaleBox = showScaleBox;
+            }
+
+            public boolean isShowScaleBox() {
+                return showScaleBox;
+            }
+
             public JFrame getFrame() {
                 return null;
             }
@@ -965,7 +975,7 @@ public class PCoATab extends JPanel implements ITab {
 
             for (Iterator<Node> it = graph.nodeIteratorIncludingHidden(); it.hasNext(); ) {
                 final Node v = it.next();
-                Vector3D vector = node2vector.get(v);
+                Vector3D vector = node2vector.getValue(v);
                 if (vector != null) {
                     Vector3D newVector = new Vector3D(vector);
                     newVector.transform(transformation3D);
@@ -1273,7 +1283,7 @@ public class PCoATab extends JPanel implements ITab {
     }
 
     public Point3D getPoint3D(Node v) {
-        return node2point3D.get(v);
+        return node2point3D.getValue(v);
     }
 
     public Pair<String, double[]>[] getBiplot() {

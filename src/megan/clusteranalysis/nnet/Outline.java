@@ -121,7 +121,7 @@ public class Outline {
                 view.setLocation(v,new java.awt.geom.Point2D.Double(location.getX(),location.getY()));
             } else {
                 v = splits2node.get(currentSplits);
-                location = node2point.get(v);
+                location = node2point.getValue(v);
             }
             // System.err.println("Node: " + v.getId());
 
@@ -162,7 +162,7 @@ public class Outline {
         if (false) {
             for (Node v : graph.nodes()) {
                 // if (graph.getLabel(v) != null)
-                System.err.println("Node " + v.getId() + " " + graph.getLabel(v) + " point: " + node2point.get(v));
+                System.err.println("Node " + v.getId() + " " + graph.getLabel(v) + " point: " + node2point.getValue(v));
             }
             for (Edge e : graph.edges()) {
                 System.err.println("Edge " + e.getSource().getId() + " - " + e.getTarget().getId() + " split: " + graph.getSplit(e));

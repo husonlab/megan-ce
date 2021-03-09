@@ -72,7 +72,7 @@ public class PathExtractor {
                 progress.incrementProgress();
             }
             for (Edge e = this.overlapGraph.getFirstEdge(); e != null; e = this.overlapGraph.getNextEdge(e)) {
-                final Edge f = overlapGraphWorkingCopy.newEdge(old2newNode.get(e.getSource()), old2newNode.get(e.getTarget()), e.getInfo());
+                final Edge f = overlapGraphWorkingCopy.newEdge(old2newNode.getValue(e.getSource()), old2newNode.getValue(e.getTarget()), e.getInfo());
                 new2oldEdge.put(f, e);
                 progress.incrementProgress();
             }
@@ -116,7 +116,7 @@ public class PathExtractor {
 
             final List<Node> path = new ArrayList<>(); // new path
 
-            path.add(new2oldNode.get(bestEdge.getSource()));
+            path.add(new2oldNode.getValue(bestEdge.getSource()));
 
             int weight = edgeWeights.getValue(bestEdge);
 
@@ -133,7 +133,7 @@ public class PathExtractor {
                 }
                 if (w == null)
                     throw new RuntimeException("w==null");
-                path.add(new2oldNode.get(w));
+                path.add(new2oldNode.getValue(w));
                 toDelete.add(v);
                 v = w;
             }
@@ -170,7 +170,7 @@ public class PathExtractor {
             if (readId2ContainedReads != null && readId < readId2ContainedReads.length && readId2ContainedReads[readId] != null && readId2ContainedReads[readId].size() > 0)
                 pathsList.add(new Node[]{v});
             else
-                singletonList.add(new2oldNode.get(v));
+                singletonList.add(new2oldNode.getValue(v));
         }
         paths = pathsList.toArray(new Node[pathsList.size()][]);
         singletons = singletonList.toArray(new Node[0]);

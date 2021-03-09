@@ -20,9 +20,9 @@
 
 package megan.assembly;
 
-import jloda.graph.DirectedCycleDetector;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
+import jloda.graphs.algorithms.DirectedCycleDetector;
 
 import java.util.Collection;
 

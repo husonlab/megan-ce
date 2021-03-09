@@ -20,6 +20,7 @@
 package megan.chart.drawers;
 
 import jloda.graph.*;
+import jloda.graphs.algorithms.FruchtermanReingoldLayout;
 import jloda.swing.util.BasicSwing;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
@@ -117,12 +118,12 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             Point2D pw = ((NodeData) w.getData()).getLocation();
             try {
                 line.setLine(factorX * pv.getX() + dx, factorY * pv.getY() + dy, factorX * pw.getX() + dx, factorY * pw.getY() + dy);
-                gc.setColor(edgeValue.get(e) > 0 ? PositiveColor : NegativeColor);
+                gc.setColor(edgeValue.getValue(e) > 0 ? PositiveColor : NegativeColor);
                 gc.draw(line);
                 if (isShowValues()) {
                     gc.setColor(Color.DARK_GRAY);
                     gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
-                    gc.drawString(Basic.removeTrailingZerosAfterDot(String.format("%.4f", edgeValue.get(e))), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
+                    gc.drawString(Basic.removeTrailingZerosAfterDot(String.format("%.4f", edgeValue.getValue(e))), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
                 }
             } catch (Exception ex) {
                 Basic.caught(ex);
@@ -419,12 +420,12 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
         boolean first = true;
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
             NodeData nodeData = (NodeData) v.getData();
-            nodeData.setLocation(coordinates.get(v).getX(), coordinates.get(v).getY());
+            nodeData.setLocation(coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
             if (first) {
-                boundingBox.setRect(coordinates.get(v).getX(), coordinates.get(v).getY(), 1, 1);
+                boundingBox.setRect(coordinates.getValue(v).getX(), coordinates.getValue(v).getY(), 1, 1);
                 first = false;
             } else
-                boundingBox.add(coordinates.get(v).getX(), coordinates.get(v).getY());
+                boundingBox.add(coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
         }
         boundingBox.setRect(boundingBox.getX() - maxRadius, boundingBox.getY() - maxRadius, boundingBox.getWidth() + 2 * maxRadius,
                 boundingBox.getHeight() + 2 * maxRadius);

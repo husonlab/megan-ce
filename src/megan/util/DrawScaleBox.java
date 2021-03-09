@@ -31,15 +31,24 @@ import java.util.function.Function;
  * Daniel Huson, 2.2021
  */
 public class DrawScaleBox {
-    private static final int width=50;
-    private static final int height=20;
+    private static final int width = 50;
+    private static final int height = 20;
 
-    public static void draw (Graphics g,int x,int y,Document doc,NodeDrawer nodeDrawer) {
-        draw(g,x,y,doc,nodeDrawer.getStyle(),nodeDrawer.getScalingType(),(int)Math.round(nodeDrawer.getMaxTotalCount()),nodeDrawer.getMaxNodeHeight());
+    /**
+     * draw the scale box
+     *
+     * @param g          graphics
+     * @param x          left
+     * @param y          top
+     * @param doc        document
+     * @param nodeDrawer node drawer
+     */
+    public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer nodeDrawer) {
+        draw(g, x, y, doc, nodeDrawer.getStyle(), nodeDrawer.getScalingType(), (int) Math.round(nodeDrawer.getMaxTotalCount()), nodeDrawer.getMaxNodeHeight());
     }
-    
+
     public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer.Style style, NodeDrawer.ScalingType scalingType, int maxCount, int maxNodeSize) {
-        if(maxCount>1) {
+        if (maxCount > 1) {
             try {
                 ((Graphics2D) g).setStroke(new BasicStroke(1));
                 g.setColor(Color.GRAY);
@@ -148,35 +157,36 @@ public class DrawScaleBox {
             g.drawString(String.format("%,d", maxCount), x + width + 2, y + 9);
         }
 
-    private static void drawCircleScaleBox (Graphics g, int x, int y, NodeDrawer.ScalingType scalingType, int maxCount,int maxNodeSize) {
+    private static void drawCircleScaleBox (Graphics g, int x, int y, NodeDrawer.ScalingType scalingType, int maxCount, int maxNodeSize) {
         final Function<Float, Integer> map;
+        final int[] percent;
         switch (scalingType) {
             case LOG:
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.log(count)) / Math.log(maxCount)));
+                percent=new int[]{0,1,5,25,100};
                 break;
             case SQRT:
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.sqrt(count)) / Math.sqrt(maxCount)));
+                percent=new int[]{0,25,50,75,100};
                 break;
             default:
             case LINEAR:
                 map = count -> (count == 0 || maxCount == 0 ? 0 : Math.round(count * maxNodeSize / (float) maxCount));
+                percent=new int[]{0,25,50,75,100};
                 break;
         }
 
-        for(int i=1;i<=4;i++) {
-            final int radius=map.apply(i*0.25f*maxCount);
-            g.drawOval(Math.round(x+maxNodeSize+2-radius),Math.round(y+2*maxNodeSize-2*radius),2*radius,2*radius);
+        for (int i = 1; i <= 4; i++) {
+            final int radius = map.apply((percent[i] / 100.0f) * maxCount);
+            g.drawOval(Math.round(x + maxNodeSize + 2 - radius), Math.round(y + 2 * maxNodeSize - 2 * radius), 2 * radius, 2 * radius);
 
             g.setFont(Font.decode("Arial-12"));
-            g.drawString(String.format("%,d", maxCount), x+2*maxNodeSize+2, y + 9);
+            g.drawString(String.format("%,d", maxCount), x + 2 * maxNodeSize + 2, y + 9);
 
             g.setFont(Font.decode("Arial-8"));
-            g.drawString("75%", x+2*maxNodeSize+4, y + 20);
-            g.drawString("50%", x+2*maxNodeSize+4, y + 29);
-            g.drawString("25%", x+2*maxNodeSize+4, y + 38);
-
-
-
+            g.drawString(String.format("%d%%", percent[3]), x + 2 * maxNodeSize + 4, y + 20);
+            g.drawString(String.format("%d%%", percent[2]), x + 2 * maxNodeSize + (percent[2] >= 10 ? 4 : 7), y + 29);
+            g.drawString(String.format("%d%%", percent[1]), x + 2 * maxNodeSize+(percent[1]>=10?4:7), y + 38);
         }
     }
 

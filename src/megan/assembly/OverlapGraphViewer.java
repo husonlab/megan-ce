@@ -20,7 +20,7 @@
 package megan.assembly;
 
 import jloda.graph.*;
-import jloda.graphs.algorithms.FruchtermanReingoldLayout;
+import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.graphview.EdgeActionAdapter;

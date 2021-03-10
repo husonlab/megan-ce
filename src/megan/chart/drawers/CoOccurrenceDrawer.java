@@ -20,7 +20,7 @@
 package megan.chart.drawers;
 
 import jloda.graph.*;
-import jloda.graphs.algorithms.FruchtermanReingoldLayout;
+import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.swing.util.BasicSwing;
 import jloda.util.APoint2D;
 import jloda.util.Basic;

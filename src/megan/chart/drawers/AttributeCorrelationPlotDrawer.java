@@ -29,6 +29,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -481,7 +482,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
             mustUpdate = true;
         }
 
-        if (scalingType != ChartViewer.ScalingType.LINEAR)
+        if (scalingType != ScalingType.LINEAR)
             return mustUpdate;
 
         if (previousTranspose != isTranspose()) {

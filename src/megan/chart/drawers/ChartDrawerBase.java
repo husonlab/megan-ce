@@ -31,6 +31,7 @@ import megan.chart.gui.ChartSelection;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.Label2LabelMapper;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,9 +71,9 @@ public class ChartDrawerBase extends JPanel {
 
     String chartTitle = "Chart";
 
-    ChartViewer.ScalingType scalingType = ChartViewer.ScalingType.LINEAR;
-    private final EnumSet<ChartViewer.ScalingType> supportedScalingTypes = EnumSet.of(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.LOG,
-            ChartViewer.ScalingType.PERCENT, ChartViewer.ScalingType.SQRT);
+    ScalingType scalingType = ScalingType.LINEAR;
+    private final EnumSet<ScalingType> supportedScalingTypes = EnumSet.of(ScalingType.LINEAR, ScalingType.LOG,
+            ScalingType.PERCENT, ScalingType.SQRT);
 
     final static Stroke NORMAL_STROKE = new BasicStroke(1);
     final static Stroke HEAVY_STROKE = new BasicStroke(2);
@@ -263,24 +264,24 @@ public class ChartDrawerBase extends JPanel {
         ChartDrawerBase.this.transpose = transpose;
     }
 
-    public ChartViewer.ScalingType getScalingType() {
+    public ScalingType getScalingType() {
         return scalingType;
     }
 
-    public void setScalingType(ChartViewer.ScalingType scalingType) {
+    public void setScalingType(ScalingType scalingType) {
         ChartDrawerBase.this.scalingType = scalingType;
     }
 
-    public boolean isSupportedScalingType(ChartViewer.ScalingType scalingType) {
+    public boolean isSupportedScalingType(ScalingType scalingType) {
         return supportedScalingTypes.contains(scalingType);
     }
 
-    public void setSupportedScalingTypes(ChartViewer.ScalingType... scalingType) {
+    public void setSupportedScalingTypes(ScalingType... scalingType) {
         supportedScalingTypes.clear();
         supportedScalingTypes.addAll(Arrays.asList(scalingType));
     }
 
-    public EnumSet<ChartViewer.ScalingType> getSupportedScalingTypes() {
+    public EnumSet<ScalingType> getSupportedScalingTypes() {
         return supportedScalingTypes;
     }
 
@@ -623,8 +624,8 @@ public class ChartDrawerBase extends JPanel {
     }
 
 
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return ChartViewer.ScalingType.LINEAR;
+    public ScalingType getScalingTypePreference() {
+        return ScalingType.LINEAR;
     }
 
 

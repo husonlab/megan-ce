@@ -26,6 +26,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -57,11 +58,11 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
         int y1 = topMargin;
 
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             topY = 101;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             topY = Math.sqrt(getMaxValue());
         } else
             topY = 1.1 * getMaxValue();
@@ -107,17 +108,17 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
             int c = 0;
             for (String className : getChartData().getClassNames()) {
                 double value;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                     if (total == 0)
                         value = 0;
                     else
                         value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                } else if (scalingType == ScalingType.LOG) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 0)
                         value = Math.log10(value);
-                } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                } else if (scalingType == ScalingType.SQRT) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 0)
                         value = Math.sqrt(value);
@@ -199,13 +200,13 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
 
         final double topY;
         final double[] percentFactor;
-        if (scalingType == ChartViewer.ScalingType.PERCENT) {
+        if (scalingType == ScalingType.PERCENT) {
             percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), series);
             topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), series, percentFactor);
-        } else if (scalingType == ChartViewer.ScalingType.LOG) {
+        } else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
             percentFactor = null;
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             topY = Math.sqrt(getMaxValue());
             percentFactor = null;
         } else {

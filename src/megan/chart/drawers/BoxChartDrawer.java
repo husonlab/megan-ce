@@ -28,6 +28,7 @@ import megan.chart.data.WhiskerData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
 import megan.core.Document;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -127,11 +128,11 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         int y1 = topMargin;
 
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             topY = 101;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             topY = Math.sqrt(getMaxValue());
         } else
             topY = 1.1 * getMaxValue();
@@ -348,11 +349,11 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
         int y1 = topMargin;
 
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             topY = 101;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             topY = Math.sqrt(getMaxValue());
         } else
             topY = 1.1 * getMaxValue();

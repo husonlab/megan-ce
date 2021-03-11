@@ -34,6 +34,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.dialogs.input.InputDialog;
 import megan.main.MeganProperties;
+import megan.util.ScalingType;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 

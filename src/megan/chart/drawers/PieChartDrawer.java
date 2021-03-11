@@ -26,6 +26,7 @@ import megan.chart.IMultiChartDrawable;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +48,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
      * constructor
      */
     public PieChartDrawer() {
-        setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.PERCENT);
+        setSupportedScalingTypes(ScalingType.LINEAR, ScalingType.PERCENT);
     }
 
     /**

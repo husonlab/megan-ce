@@ -28,6 +28,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -46,7 +47,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
      */
     public StackedLineChartDrawer() {
         transposedHeightsAdditive = true;
-        setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.PERCENT);
+        setSupportedScalingTypes(ScalingType.LINEAR, ScalingType.PERCENT);
     }
 
     /**
@@ -123,13 +124,13 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
             int c = 0;
             for (String className : getChartData().getClassNames()) {
                 double value;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                     if (total == 0)
                         value = 0;
                     else
                         value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                } else if (scalingType == ScalingType.LOG) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value >= 1) {
                         value = Math.log10(value + currentValueForLog);
@@ -137,7 +138,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                             value -= Math.log10(currentValueForLog);
                     }
                     currentValueForLog += getChartData().getValueAsDouble(series, className);
-                } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                } else if (scalingType == ScalingType.SQRT) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value >= 1) {
                         value = Math.sqrt(value + currentValueForLog);

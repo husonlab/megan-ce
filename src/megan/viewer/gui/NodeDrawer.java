@@ -29,6 +29,7 @@ import jloda.util.ProgramProperties;
 import jloda.util.Statistics;
 import megan.core.Document;
 import megan.main.MeganProperties;
+import megan.util.ScalingType;
 import megan.viewer.MainViewer;
 
 import java.awt.*;
@@ -43,10 +44,6 @@ import java.awt.geom.Rectangle2D;
 public class NodeDrawer implements INodeDrawer {
     static public Color pvalueColor = ProgramProperties.get(MeganProperties.PVALUE_COLOR, Color.CYAN);
     private static final Font selectionFont = ProgramProperties.get("selectionFont", Font.decode("Helvetica-PLAIN-11"));
-
-    public enum ScalingType {
-        LOG, SQRT, LINEAR
-    }
 
     public enum Style {
         Circle,

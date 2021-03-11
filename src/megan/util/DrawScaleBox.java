@@ -31,23 +31,21 @@ import java.util.function.Function;
  * Daniel Huson, 2.2021
  */
 public class DrawScaleBox {
+
     private static final int width = 50;
     private static final int height = 20;
 
     /**
      * draw the scale box
-     *
-     * @param g          graphics
-     * @param x          left
-     * @param y          top
-     * @param doc        document
-     * @param nodeDrawer node drawer
      */
     public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer nodeDrawer) {
-        draw(g, x, y, doc, nodeDrawer.getStyle(), nodeDrawer.getScalingType(), (int) Math.round(nodeDrawer.getMaxTotalCount()), nodeDrawer.getMaxNodeHeight());
+        draw(g, x, y, doc,
+                nodeDrawer.getStyle(), nodeDrawer.getScalingType(), (int) Math.round(nodeDrawer.getMaxTotalCount()), nodeDrawer.getMaxNodeHeight());
     }
 
-    public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer.Style style, NodeDrawer.ScalingType scalingType, int maxCount, int maxNodeSize) {
+    public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer.Style style, ScalingType scalingType, int maxCount, int maxNodeSize) {
+        var colorGradient = (doc != null ? new ColorGradient(doc.getChartColorManager().getHeatMapTable(), maxCount) : null);
+
         if (maxCount > 1) {
             try {
                 ((Graphics2D) g).setStroke(new BasicStroke(1));
@@ -59,7 +57,7 @@ public class DrawScaleBox {
                 final int x1 = x + 40;
 
                 if (style == NodeDrawer.Style.HeatMap) {
-                    drawHeatMapScale(g, x1, y, doc, scalingType, maxCount);
+                    drawHeatMapScale(g, x1, y, colorGradient, scalingType, maxCount);
                     drawBox(g, x1, y, maxCount);
                 } // end heatmap
                 else if (style == NodeDrawer.Style.BarChart) {
@@ -76,10 +74,8 @@ public class DrawScaleBox {
             }
         }
     }
-    
-    private static void drawHeatMapScale (Graphics g, int x, int y, Document doc, NodeDrawer.ScalingType scalingType, int maxCount) {
-        final ColorGradient colorGradient = new ColorGradient(doc.getChartColorManager().getHeatMapTable(), maxCount);
 
+    private static void drawHeatMapScale(Graphics g, int x, int y, ColorGradient colorGradient, ScalingType scalingType, int maxCount) {
         for (int i = 0; i < width; i++) {
             final int value = Math.round((i * maxCount) / (float) width);
             final Color color;
@@ -100,7 +96,7 @@ public class DrawScaleBox {
         }
     }
 
-    private static void drawBarChartScaleBox (Graphics g, int x, int y, NodeDrawer.ScalingType scalingType, int maxCount)             {
+    private static void drawBarChartScaleBox(Graphics g, int x, int y, ScalingType scalingType, int maxCount) {
         final Function<Float, Integer> map;
         final int nValues;
         switch (scalingType) {
@@ -157,17 +153,17 @@ public class DrawScaleBox {
             g.drawString(String.format("%,d", maxCount), x + width + 2, y + 9);
         }
 
-    private static void drawCircleScaleBox (Graphics g, int x, int y, NodeDrawer.ScalingType scalingType, int maxCount, int maxNodeSize) {
+    private static void drawCircleScaleBox(Graphics g, int x, int y, ScalingType scalingType, int maxCount, int maxNodeSize) {
         final Function<Float, Integer> map;
         final int[] percent;
         switch (scalingType) {
             case LOG:
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.log(count)) / Math.log(maxCount)));
-                percent=new int[]{0,1,5,25,100};
+                percent = new int[]{0, 1, 5, 25, 100};
                 break;
             case SQRT:
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.sqrt(count)) / Math.sqrt(maxCount)));
-                percent=new int[]{0,25,50,75,100};
+                percent = new int[]{0, 25, 50, 75, 100};
                 break;
             default:
             case LINEAR:
@@ -189,5 +185,4 @@ public class DrawScaleBox {
             g.drawString(String.format("%d%%", percent[1]), x + 2 * maxNodeSize+(percent[1]>=10?4:7), y + 38);
         }
     }
-
-    }
+}

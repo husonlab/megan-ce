@@ -30,6 +30,7 @@ import megan.chart.data.DefaultChartData;
 import megan.chart.data.IChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +49,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     private int maxFontSize = 128;
     private static final Map<Integer, Font> size2font = new HashMap<>();
     private final Set<String> previousClasses = new HashSet<>();
-    private ChartViewer.ScalingType previousScalingType = null;
+    private ScalingType previousScalingType = null;
     private final RTree<Pair<String, Integer>> rTree;
     private boolean inUpdateCoordinates = false;
     private Future future; // used in recompute
@@ -171,11 +172,11 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         size2font.clear();
 
         double maxValue;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             maxValue = 100;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             maxValue = Math.log10(getChartData().getMaxTotalSeries());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             maxValue = Math.sqrt(getChartData().getMaxTotalSeries());
         } else
             maxValue = getChartData().getMaxTotalSeries();
@@ -202,16 +203,16 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
             double total = pair.getFirst();
             String series = pair.getSecond();
             double value;
-            if (scalingType == ChartViewer.ScalingType.PERCENT) {
+            if (scalingType == ScalingType.PERCENT) {
                 if (total == 0)
                     value = 0;
                 else
                     value = 100 * total / getChartData().getMaxTotalClass();
-            } else if (scalingType == ChartViewer.ScalingType.LOG) {
+            } else if (scalingType == ScalingType.LOG) {
                 value = total;
                 if (value > 0)
                     value = Math.log10(value);
-            } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+            } else if (scalingType == ScalingType.SQRT) {
                 value = total;
                 if (value > 0)
                     value = Math.sqrt(value);
@@ -318,11 +319,11 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         size2font.clear();
 
         double maxValue;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             maxValue = 100;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             maxValue = Math.log10(getChartData().getMaxTotalClass());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             maxValue = Math.sqrt(getChartData().getMaxTotalClass());
         } else
             maxValue = getChartData().getMaxTotalClass();
@@ -350,16 +351,16 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
             double total = pair.getFirst();
             double value;
             String className = pair.getSecond();
-            if (scalingType == ChartViewer.ScalingType.PERCENT) {
+            if (scalingType == ScalingType.PERCENT) {
                 if (total == 0)
                     value = 0;
                 else
                     value = 100 * total / getChartData().getMaxTotalSeries();
-            } else if (scalingType == ChartViewer.ScalingType.LOG) {
+            } else if (scalingType == ScalingType.LOG) {
                 value = total;
                 if (value > 0)
                     value = Math.log10(value);
-            } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+            } else if (scalingType == ScalingType.SQRT) {
                 value = total;
                 if (value > 0)
                     value = Math.sqrt(value);
@@ -594,8 +595,8 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     }
 
     @Override
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return ChartViewer.ScalingType.SQRT;
+    public ScalingType getScalingTypePreference() {
+        return ScalingType.SQRT;
     }
 
     @Override

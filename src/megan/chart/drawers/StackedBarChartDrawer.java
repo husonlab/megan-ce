@@ -26,6 +26,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -43,7 +44,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
      */
     public StackedBarChartDrawer() {
         transposedHeightsAdditive = true;
-        setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR, ChartViewer.ScalingType.PERCENT);
+        setSupportedScalingTypes(ScalingType.LINEAR, ScalingType.PERCENT);
     }
 
     /**
@@ -107,7 +108,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
             double currentHeight = y0;
             for (String className : getChartData().getClassNames()) {
                 double value;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                     if (total == 0)
                         value = 0;
@@ -161,7 +162,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
 
         double topY;
         final double[] percentFactor;
-        if (scalingType == ChartViewer.ScalingType.PERCENT) {
+        if (scalingType == ScalingType.PERCENT) {
             final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
             percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
             topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
@@ -213,7 +214,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
                 String seriesName = series[i];
 
                 double value = getChartData().getValueAsDouble(seriesName, className);
-                if (scalingType == ChartViewer.ScalingType.PERCENT && percentFactor != null) {
+                if (scalingType == ScalingType.PERCENT && percentFactor != null) {
                     value *= percentFactor[i];
                 }
 

@@ -22,6 +22,8 @@ package megan.main;
 import javafx.embed.swing.JFXPanel;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.swing.commands.CommandManager;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.NodeView;
 import jloda.swing.message.MessageWindow;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
@@ -93,7 +95,9 @@ public class Megan6 {
      */
     private void parseArguments(String[] args) throws Exception {
         Basic.startCollectionStdErr();
-        args=processOpenFileArgs(args);
+        args = processOpenFileArgs(args);
+
+        GraphView.defaultNodeView.setShape(NodeView.OVAL_NODE);
 
         ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
         ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");

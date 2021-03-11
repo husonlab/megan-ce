@@ -1010,9 +1010,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             gc.fill(totalRect);
 
         if(isShowScaleBox()) {
-            DrawScaleBox.draw(gc,5,5,getDocument(),nodeDrawer);
+            DrawScaleBox.draw(gc, (int) Math.round(frameRect.getX() + 5), (int) Math.round(frameRect.getY() + 5), getDocument(), nodeDrawer);
         }
-
 
         gc.setColor(Color.BLACK);
         gc.setFont(getFont());

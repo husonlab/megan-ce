@@ -31,6 +31,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,7 +76,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
      * constructor
      */
     public HeatMapDrawer() {
-        getSupportedScalingTypes().add(ChartViewer.ScalingType.ZSCORE);
+        getSupportedScalingTypes().add(ScalingType.ZSCORE);
         seriesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.SERIES, ClusteringTree.SIDE.TOP);
         classesClusteringTree = new ClusteringTree(ClusteringTree.TYPE.CLASSES, ClusteringTree.SIDE.RIGHT);
         previousTranspose = isTranspose();
@@ -117,13 +118,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
+        if (scalingType == ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
             y1 += topTreeSpace;
 
         if (sgc == null)
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
+        if (scalingType == ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
             x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfClasses + 1.0) * numberOfClasses);
             int yStart = y0 + ((y1 - y0) - height) / 2;
@@ -131,7 +132,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             classesClusteringTree.paint(gc, rect);
         }
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
+        if (scalingType == ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfSeries + 1.0) * numberOfSeries);
             int xStart = x0 + ((x1 - x0) - width) / 2;
             final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
@@ -143,13 +144,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         double maxValue = getChartData().getRange().getSecond().doubleValue();
         double inverseMaxValueLog = 0;
-        if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0) {
+        if (scalingType == ScalingType.LOG && maxValue > 0) {
             maxValue = Math.log(maxValue);
             if (maxValue != 0)
                 inverseMaxValueLog = 1 / maxValue;
-        } else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0) {
+        } else if (scalingType == ScalingType.SQRT && maxValue > 0) {
             maxValue = Math.sqrt(maxValue);
-        } else if (scalingType == ChartViewer.ScalingType.PERCENT) {
+        } else if (scalingType == ScalingType.PERCENT) {
             maxValue = 100;
         }
 
@@ -180,7 +181,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 int c = numberOfClasses - 1;
                 for (String className : classNames) {
                     final Color color;
-                    if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                    if (scalingType == ScalingType.PERCENT) {
                         double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                         double value;
                         if (total == 0)
@@ -188,13 +189,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         else
                             value = 100 * getChartData().getValueAsDouble(series, className) / total;
                         color = colorTable.getColor((int) (1000 * value), (int) (1000 * maxValue));
-                    } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                    } else if (scalingType == ScalingType.LOG) {
                         double value = getChartData().getValueAsDouble(series, className);
                         color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
-                    } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                    } else if (scalingType == ScalingType.SQRT) {
                         double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
                         color = colorTable.getColor((int) value, (int) maxValue);
-                    } else if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+                    } else if (scalingType == ScalingType.ZSCORE) {
                         double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className) != null ? zScores.get(series, className) : 0));
                         color = colorTable.getColor((int) (value + zScoreCutoff), (int) (2 * zScoreCutoff));
                     } else {
@@ -225,7 +226,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                     }
                     if (showValues || isSelected) {
                         String aLabel;
-                        if (scalingType == ChartViewer.ScalingType.ZSCORE)
+                        if (scalingType == ScalingType.ZSCORE)
                             aLabel = String.format("%.2f", zScores.get(series, className));
                         else
                             aLabel = "" + (int) getChartData().getValueAsDouble(series, className);
@@ -278,13 +279,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
+        if (scalingType == ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
             y1 += topTreeSpace;
 
         if (sgc == null)
             drawScaleBar(gc, x1, scaleWidth, y1, y0 - y1);
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
+        if (scalingType == ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering()) {
             x1 -= rightTreeSpace;
             int height = (int) Math.round((y0 - y1) / (numberOfSeries + 1.0) * numberOfSeries);
             int yStart = y0 + ((y1 - y0) - height) / 2;
@@ -292,7 +293,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             seriesClusteringTree.paint(gc, rect);
         }
 
-        if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
+        if (scalingType == ScalingType.ZSCORE && viewer.getClassesList().isDoClustering()) {
             int width = (int) ((x1 - x0) / (numberOfClasses + 1.0) * numberOfClasses);
             int xStart = x0 + ((x1 - x0) - width) / 2;
             final Rectangle rect = new Rectangle(xStart, y1 - topTreeSpace, width, topTreeSpace);
@@ -304,13 +305,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
         double maxValue = getChartData().getRange().getSecond().doubleValue();
         double inverseMaxValueLog = 0;
-        if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0) {
+        if (scalingType == ScalingType.LOG && maxValue > 0) {
             maxValue = Math.log(maxValue);
             if (maxValue != 0)
                 inverseMaxValueLog = 1 / maxValue;
-        } else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0) {
+        } else if (scalingType == ScalingType.SQRT && maxValue > 0) {
             maxValue = Math.sqrt(maxValue);
-        } else if (scalingType == ChartViewer.ScalingType.PERCENT)
+        } else if (scalingType == ScalingType.PERCENT)
             maxValue = 100;
 
 
@@ -342,7 +343,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 int c = numberOfSeries - 1;
                 for (String series : seriesNames) {
                     Color color;
-                    if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                    if (scalingType == ScalingType.PERCENT) {
                         double total = getChartData().getTotalForClassIncludingDisabledSeries(className);
                         double value;
                         if (total == 0)
@@ -350,13 +351,13 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         else
                             value = 100 * getChartData().getValueAsDouble(series, className) / total;
                         color = colorTable.getColor((int) value, (int) maxValue);
-                    } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                    } else if (scalingType == ScalingType.LOG) {
                         double value = getChartData().getValueAsDouble(series, className);
                         color = colorTable.getColorLogScale((int) value, inverseMaxValueLog);
-                    } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                    } else if (scalingType == ScalingType.SQRT) {
                         double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
                         color = colorTable.getColor((int) value, (int) maxValue);
-                    } else if (scalingType == ChartViewer.ScalingType.ZSCORE) {
+                    } else if (scalingType == ScalingType.ZSCORE) {
                         double value = Math.max(-zScoreCutoff, Math.min(zScoreCutoff, zScores.get(series, className)));
                         color = colorTable.getColor((int) (value + zScoreCutoff), (int) (2 * zScoreCutoff));
                     } else {
@@ -385,7 +386,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                     }
                     if (showValues || isSelected) {
                         String aLabel;
-                        if (scalingType == ChartViewer.ScalingType.ZSCORE)
+                        if (scalingType == ScalingType.ZSCORE)
                             aLabel = String.format("%.2f", zScores.get(series, className));
                         else
                             aLabel = "" + (int) getChartData().getValueAsDouble(series, className);
@@ -453,7 +454,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         */
 
         if (isTranspose()) {
-            if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
+            if (scalingType == ScalingType.ZSCORE && viewer.getClassesList().isDoClustering())
                 y1 += topTreeSpace;
 
             if (x0 >= x1)
@@ -502,7 +503,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 }
             }
         } else {
-            if (scalingType == ChartViewer.ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
+            if (scalingType == ScalingType.ZSCORE && viewer.getSeriesList().isDoClustering())
                 y1 += topTreeSpace;
 
             final int numberOfClasses = (classNames == null ? 0 : classNames.length);
@@ -741,7 +742,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
             mustUpdate = true;
         }
 
-        if (!mustUpdate && scalingType == ChartViewer.ScalingType.ZSCORE && getChartData().getNumberOfClasses() > 0 &&
+        if (!mustUpdate && scalingType == ScalingType.ZSCORE && getChartData().getNumberOfClasses() > 0 &&
                 getChartData().getNumberOfSeries() > 0 && zScores.size() == 0) {
             mustUpdate = true;
         }
@@ -928,8 +929,8 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         return true;
     }
 
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return ChartViewer.ScalingType.ZSCORE;
+    public ScalingType getScalingTypePreference() {
+        return ScalingType.ZSCORE;
     }
 
     public IPopupMenuModifier getPopupMenuModifier() {
@@ -987,6 +988,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
 
     @Override
     public boolean canCluster(ClusteringTree.TYPE type) {
-        return scalingType == ChartViewer.ScalingType.ZSCORE && (type == null || type == ClusteringTree.TYPE.SERIES || type == ClusteringTree.TYPE.CLASSES);
+        return scalingType == ScalingType.ZSCORE && (type == null || type == ClusteringTree.TYPE.SERIES || type == ClusteringTree.TYPE.CLASSES);
     }
 }

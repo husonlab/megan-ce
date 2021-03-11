@@ -25,6 +25,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -32,20 +33,20 @@ import java.awt.event.ActionEvent;
 public class SetScaleLinearCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
-        return chartViewer.getChartDrawer() != null && chartViewer.getScalingType() == ChartViewer.ScalingType.LINEAR;
+        return chartViewer.getChartDrawer() != null && chartViewer.getScalingType() == ScalingType.LINEAR;
     }
 
     public String getSyntax() {
-        return "set chartScale={" + Basic.toString(ChartViewer.ScalingType.values(), "|") + "};";
+        return "set chartScale={" + Basic.toString(ScalingType.values(), "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set chartScale=");
-        String scale = np.getWordMatchesIgnoringCase(Basic.toString(ChartViewer.ScalingType.values(), " "));
+        String scale = np.getWordMatchesIgnoringCase(Basic.toString(ScalingType.values(), " "));
         np.matchIgnoreCase(";");
 
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        chartViewer.setScalingType(ChartViewer.ScalingType.valueOf(scale.toUpperCase()));
+        chartViewer.setScalingType(ScalingType.valueOf(scale.toUpperCase()));
         chartViewer.repaint();
     }
 
@@ -55,7 +56,7 @@ public class SetScaleLinearCommand extends CommandBase implements ICheckBoxComma
 
     public boolean isApplicable() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
-        return chartViewer.getChartData() != null && chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().isSupportedScalingType(ChartViewer.ScalingType.LINEAR);
+        return chartViewer.getChartData() != null && chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().isSupportedScalingType(ScalingType.LINEAR);
     }
 
     public String getName() {

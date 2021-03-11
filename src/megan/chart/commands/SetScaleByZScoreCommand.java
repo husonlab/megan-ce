@@ -24,6 +24,7 @@ import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,7 @@ import java.awt.event.ActionEvent;
 public class SetScaleByZScoreCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
-        return chartViewer.getChartDrawer() != null && chartViewer.getScalingType() == ChartViewer.ScalingType.ZSCORE;
+        return chartViewer.getChartDrawer() != null && chartViewer.getScalingType() == ScalingType.ZSCORE;
     }
 
     public String getSyntax() {
@@ -47,7 +48,7 @@ public class SetScaleByZScoreCommand extends CommandBase implements ICheckBoxCom
 
     public boolean isApplicable() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
-        return chartViewer.getChartData() != null && chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().isSupportedScalingType(ChartViewer.ScalingType.ZSCORE);
+        return chartViewer.getChartData() != null && chartViewer.getChartDrawer() != null && chartViewer.getChartDrawer().isSupportedScalingType(ScalingType.ZSCORE);
     }
 
     public String getName() {

@@ -25,8 +25,8 @@ import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.IMultiChartDrawable;
 import megan.chart.data.IChartData;
-import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -393,8 +393,8 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     }
 
     @Override
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return baseDrawer != null ? baseDrawer.getScalingTypePreference() : ChartViewer.ScalingType.LINEAR;
+    public ScalingType getScalingTypePreference() {
+        return baseDrawer != null ? baseDrawer.getScalingTypePreference() : ScalingType.LINEAR;
     }
 
     @Override
@@ -413,12 +413,12 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     }
 
     @Override
-    public boolean isSupportedScalingType(ChartViewer.ScalingType scalingType) {
+    public boolean isSupportedScalingType(ScalingType scalingType) {
         return baseDrawer.isSupportedScalingType(scalingType);
     }
 
     @Override
-    public void setScalingType(ChartViewer.ScalingType scalingType) {
+    public void setScalingType(ScalingType scalingType) {
         if (scalingType != getScalingType()) {
             super.setScalingType(scalingType);
             forceUpdate();

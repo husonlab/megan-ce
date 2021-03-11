@@ -25,6 +25,7 @@ import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -67,11 +68,11 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
         double yStep = (y0 - y1) / (0.5 + numberOfClasses);
 
         double maxValue = getChartData().getRange().getSecond().doubleValue();
-        if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0)
+        if (scalingType == ScalingType.LOG && maxValue > 0)
             maxValue = Math.log(maxValue);
-        else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0)
+        else if (scalingType == ScalingType.SQRT && maxValue > 0)
             maxValue = Math.sqrt(maxValue);
-        else if (scalingType == ChartViewer.ScalingType.PERCENT)
+        else if (scalingType == ScalingType.PERCENT)
             maxValue = 100;
 
         int gridWidth = 5;
@@ -109,17 +110,17 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
             int c = 0;
             for (String className : getChartData().getClassNames()) {
                 double value;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                     if (total == 0)
                         value = 0;
                     else
                         value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                } else if (scalingType == ScalingType.LOG) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 1)
                         value = Math.log(value);
-                } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                } else if (scalingType == ScalingType.SQRT) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 0)
                         value = Math.sqrt(value);
@@ -234,11 +235,11 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
         double yStep = (y0 - y1) / (0.5 + numberOfDataSets);
 
         double maxValue = getChartData().getRange().getSecond().doubleValue();
-        if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0)
+        if (scalingType == ScalingType.LOG && maxValue > 0)
             maxValue = Math.log(maxValue);
-        else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0)
+        else if (scalingType == ScalingType.SQRT && maxValue > 0)
             maxValue = Math.sqrt(maxValue);
-        else if (scalingType == ChartViewer.ScalingType.PERCENT)
+        else if (scalingType == ScalingType.PERCENT)
             maxValue = 100;
 
         int gridWidth = 5;
@@ -275,17 +276,17 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
             int d = 0;
             for (String series : getChartData().getSeriesNames()) {
                 double value;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     double total = getChartData().getTotalForClassIncludingDisabledSeries(className);
                     if (total == 0)
                         value = 0;
                     else
                         value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                } else if (scalingType == ScalingType.LOG) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 1)
                         value = Math.log(value);
-                } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                } else if (scalingType == ScalingType.SQRT) {
                     value = getChartData().getValueAsDouble(series, className);
                     if (value > 1)
                         value = Math.sqrt(value);

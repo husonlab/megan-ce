@@ -30,6 +30,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.RedGradient;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -114,12 +115,12 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
 
         double maxValue = getMaxValue();
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT)
+        if (scalingType == ScalingType.PERCENT)
             topY = 101;
-        else if (scalingType == ChartViewer.ScalingType.LOG) {
+        else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(maxValue);
             maxValue = Math.log(maxValue);
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             topY = Math.sqrt(maxValue);
             maxValue = Math.sqrt(maxValue);
 
@@ -211,7 +212,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                     if (isTranspose() && chartData.getNumberOfSeries() == 1) {  // if tranposed and only one dataset, draw colored by count
                         String series = chartData.getSeriesNames().iterator().next();
                         Color color;
-                        if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                        if (scalingType == ScalingType.PERCENT) {
                             double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                             double value;
                             if (total == 0)
@@ -219,11 +220,11 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                             else
                                 value = 100 * getChartData().getValueAsDouble(series, className) / total;
                             color = RedGradient.getColor((int) value, (int) maxValue);
-                        } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                        } else if (scalingType == ScalingType.LOG) {
                             double value = getChartData().getValueAsDouble(series, className);
                             double inverseMaxValueLog = 1 / Math.log(maxValue);
                             color = RedGradient.getColorLogScale((int) value, inverseMaxValueLog);
-                        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                        } else if (scalingType == ScalingType.SQRT) {
                             double value = Math.sqrt(getChartData().getValueAsDouble(series, className));
                             color = RedGradient.getColor((int) value, (int) maxValue);
                         } else {
@@ -253,17 +254,17 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
                         double used = 0;
                         for (String series : chartData.getSeriesNames()) {
                             double value;
-                            if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                            if (scalingType == ScalingType.PERCENT) {
                                 double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
                                 if (total == 0)
                                     value = 0;
                                 else
                                     value = 100 * getChartData().getValueAsDouble(series, className) / total;
-                            } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                            } else if (scalingType == ScalingType.LOG) {
                                 value = getChartData().getValueAsDouble(series, className);
                                 if (value > 0)
                                     value = Math.log10(value);
-                            } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                            } else if (scalingType == ScalingType.SQRT) {
                                 value = getChartData().getValueAsDouble(series, className);
                                 if (value > 0)
                                     value = Math.sqrt(value);
@@ -551,8 +552,8 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     }
 
     @Override
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return ChartViewer.ScalingType.SQRT;
+    public ScalingType getScalingTypePreference() {
+        return ScalingType.SQRT;
     }
 
     @Override

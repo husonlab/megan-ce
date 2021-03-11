@@ -31,6 +31,7 @@ import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
 import megan.util.CallBack;
 import megan.util.PopupChoice;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +92,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
      * constructor
      */
     public CorrelationPlotDrawer() {
-        setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR);
+        setSupportedScalingTypes(ScalingType.LINEAR);
         mode = MODE.valueOfIgnoreCase(ProgramProperties.get("CorrelationPlotMode", MODE.Beans.toString()));
         rightClusteringTree = new ClusteringTree(ClusteringTree.TYPE.CLASSES, ClusteringTree.SIDE.RIGHT);
         topClusteringTree = new ClusteringTree(ClusteringTree.TYPE.CLASSES, ClusteringTree.SIDE.TOP);
@@ -654,7 +655,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
             mustUpdate = true;
         }
 
-        if (scalingType != ChartViewer.ScalingType.LINEAR)
+        if (scalingType != ScalingType.LINEAR)
             return mustUpdate;
 
         if (previousTranspose != isTranspose()) {

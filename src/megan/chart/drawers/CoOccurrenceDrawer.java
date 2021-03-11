@@ -28,6 +28,7 @@ import jloda.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,7 +72,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     public CoOccurrenceDrawer() {
         graph = new Graph();
         edgeValue = new EdgeArray<>(graph);
-        setSupportedScalingTypes(ChartViewer.ScalingType.LINEAR);
+        setSupportedScalingTypes(ScalingType.LINEAR);
     }
 
     /**
@@ -142,11 +143,11 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             Point2D pv = ((NodeData) v.getData()).getLocation();
             Integer prevalence = ((NodeData) v.getData()).getPrevalence();
             double value = 0;
-            if (scalingType == ChartViewer.ScalingType.PERCENT) {
+            if (scalingType == ScalingType.PERCENT) {
                 value = prevalence / maxPrevalence;
-            } else if (scalingType == ChartViewer.ScalingType.LOG) {
+            } else if (scalingType == ScalingType.LOG) {
                 value = Math.log(prevalence + 1) / Math.log(maxPrevalence + 1);
-            } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+            } else if (scalingType == ScalingType.SQRT) {
                 value = Math.sqrt(prevalence) / Math.sqrt(maxPrevalence);
             } else
                 value = prevalence / maxPrevalence;
@@ -165,11 +166,11 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             Point2D pv = ((NodeData) v.getData()).getLocation();
             Integer prevalence = ((NodeData) v.getData()).getPrevalence();
             double value = 0;
-            if (scalingType == ChartViewer.ScalingType.PERCENT) {
+            if (scalingType == ScalingType.PERCENT) {
                 value = prevalence / maxPrevalence;
-            } else if (scalingType == ChartViewer.ScalingType.LOG) {
+            } else if (scalingType == ScalingType.LOG) {
                 value = Math.log(prevalence + 1) / Math.log(maxPrevalence + 1);
-            } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+            } else if (scalingType == ScalingType.SQRT) {
                 value = Math.sqrt(prevalence) / Math.sqrt(maxPrevalence);
             } else
                 value = prevalence / maxPrevalence;
@@ -216,11 +217,11 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 Point2D pv = ((NodeData) v.getData()).getLocation();
                 Integer prevalence = ((NodeData) v.getData()).getPrevalence();
                 double value = 0;
-                if (scalingType == ChartViewer.ScalingType.PERCENT) {
+                if (scalingType == ScalingType.PERCENT) {
                     value = prevalence / maxPrevalence;
-                } else if (scalingType == ChartViewer.ScalingType.LOG) {
+                } else if (scalingType == ScalingType.LOG) {
                     value = Math.log(prevalence + 1) / Math.log(maxPrevalence + 1);
-                } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+                } else if (scalingType == ScalingType.SQRT) {
                     value = Math.sqrt(prevalence) / Math.sqrt(maxPrevalence);
                 } else
                     value = prevalence / maxPrevalence;
@@ -661,8 +662,8 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     }
 
     @Override
-    public ChartViewer.ScalingType getScalingTypePreference() {
-        return ChartViewer.ScalingType.SQRT;
+    public ScalingType getScalingTypePreference() {
+        return ScalingType.SQRT;
     }
 
     @Override

@@ -39,6 +39,7 @@ import megan.chart.data.IPlot2DData;
 import megan.chart.drawers.*;
 import megan.core.Director;
 import megan.main.MeganProperties;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -99,15 +100,13 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     private String chartTitle = "Chart";
     private double classLabelAngle = 0;
     private boolean transpose = false;
-    private ChartViewer.ScalingType scalingType = ChartViewer.ScalingType.LINEAR;
+    private ScalingType scalingType = ScalingType.LINEAR;
     private boolean showXAxis = true;
     private boolean showYAxis = true;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private boolean useRectangleShape = false;
-
-    public enum ScalingType {LINEAR, LOG, SQRT, PERCENT, ZSCORE}
 
     public enum FontKeys {DrawFont, TitleFont, XAxisFont, YAxisFont, LegendFont, ValuesFont}
 

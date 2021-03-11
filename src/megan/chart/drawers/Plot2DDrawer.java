@@ -27,6 +27,7 @@ import megan.chart.IChartDrawer;
 import megan.chart.data.IPlot2DData;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
+import megan.util.ScalingType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -257,7 +258,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
 
         if (getChartData().getCountsLabel() != null) {
             String label = getChartData().getCountsLabel();
-            if (scalingType == ChartViewer.ScalingType.PERCENT)
+            if (scalingType == ScalingType.PERCENT)
                 label += " (%)";
 
             Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
@@ -278,10 +279,10 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     private void drawYAxisTicks(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
-        if (scalingType == ChartViewer.ScalingType.LOG) {
+        if (scalingType == ScalingType.LOG) {
             drawYAxisTicksLog(gc);
             return;
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             drawYAxisTicksSqrt(gc);
             return;
         }
@@ -291,7 +292,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
 
         double botY;
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT) {
+        if (scalingType == ScalingType.PERCENT) {
             botY = 0;
             topY = 100;
         } else {
@@ -488,13 +489,13 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
 
         double botY;
         double topY;
-        if (scalingType == ChartViewer.ScalingType.PERCENT) {
+        if (scalingType == ScalingType.PERCENT) {
             botY = 0;
             topY = 100;
-        } else if (scalingType == ChartViewer.ScalingType.LOG) {
+        } else if (scalingType == ScalingType.LOG) {
             botY = 0;
             topY = computeMaxYAxisValueLogScale(getChartData().getRangeY().getSecond().doubleValue());
-        } else if (scalingType == ChartViewer.ScalingType.SQRT) {
+        } else if (scalingType == ScalingType.SQRT) {
             botY = 0;
             topY = Math.sqrt(getChartData().getRangeY().getSecond().doubleValue());
         } else {
@@ -546,13 +547,13 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
                 double xValue = pair.getFirst().doubleValue();
                 double yValue;
 
-                if (getScalingType() == ChartViewer.ScalingType.PERCENT) {
+                if (getScalingType() == ScalingType.PERCENT) {
                     yValue = (100.0 / maxY) * pair.getSecond().doubleValue();
-                } else if (getScalingType() == ChartViewer.ScalingType.LOG) {
+                } else if (getScalingType() == ScalingType.LOG) {
                     yValue = pair.getSecond().doubleValue();
                     if (yValue > 0)
                         yValue = Math.log10(yValue);
-                } else if (getScalingType() == ChartViewer.ScalingType.SQRT) {
+                } else if (getScalingType() == ScalingType.SQRT) {
                     yValue = pair.getSecond().doubleValue();
                     if (yValue > 0)
                         yValue = Math.sqrt(yValue);

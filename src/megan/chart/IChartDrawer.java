@@ -26,6 +26,7 @@ import megan.chart.data.IData;
 import megan.chart.gui.ChartSelection;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.Label2LabelMapper;
+import megan.util.ScalingType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,11 +62,11 @@ public interface IChartDrawer {
 
     void setTranspose(boolean transpose);
 
-    ChartViewer.ScalingType getScalingType();
+    ScalingType getScalingType();
 
-    void setScalingType(ChartViewer.ScalingType scalingType);
+    void setScalingType(ScalingType scalingType);
 
-    boolean isSupportedScalingType(ChartViewer.ScalingType scalingType);
+    boolean isSupportedScalingType(ScalingType scalingType);
 
     boolean canShowLegend();
 
@@ -133,7 +134,7 @@ public interface IChartDrawer {
 
     JToolBar getBottomToolBar();
 
-    ChartViewer.ScalingType getScalingTypePreference();
+    ScalingType getScalingTypePreference();
 
     boolean getShowXAxisPreference();
 

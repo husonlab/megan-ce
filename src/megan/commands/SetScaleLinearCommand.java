@@ -23,8 +23,8 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.util.ScalingType;
 import megan.viewer.ViewerBase;
-import megan.viewer.gui.NodeDrawer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
 public class SetScaleLinearCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
-        return viewer.getNodeDrawer().getScalingType() == NodeDrawer.ScalingType.LINEAR;
+        return viewer.getNodeDrawer().getScalingType() == ScalingType.LINEAR;
     }
 
     public String getSyntax() {
@@ -44,12 +44,12 @@ public class SetScaleLinearCommand extends CommandBase implements ICheckBoxComma
         String scale = np.getWordMatchesIgnoringCase("linear sqrt log");
         np.matchIgnoreCase(";");
         ViewerBase viewer = (ViewerBase) getViewer();
-        if (scale.equalsIgnoreCase(NodeDrawer.ScalingType.LINEAR.toString()))
-            viewer.getNodeDrawer().setScalingType(NodeDrawer.ScalingType.LINEAR);
-        else if (scale.equalsIgnoreCase(NodeDrawer.ScalingType.LOG.toString()))
-            viewer.getNodeDrawer().setScalingType(NodeDrawer.ScalingType.LOG);
-        else if (scale.equalsIgnoreCase(NodeDrawer.ScalingType.SQRT.toString()))
-            viewer.getNodeDrawer().setScalingType(NodeDrawer.ScalingType.SQRT);
+        if (scale.equalsIgnoreCase(ScalingType.LINEAR.toString()))
+            viewer.getNodeDrawer().setScalingType(ScalingType.LINEAR);
+        else if (scale.equalsIgnoreCase(ScalingType.LOG.toString()))
+            viewer.getNodeDrawer().setScalingType(ScalingType.LOG);
+        else if (scale.equalsIgnoreCase(ScalingType.SQRT.toString()))
+            viewer.getNodeDrawer().setScalingType(ScalingType.SQRT);
         viewer.repaint();
     }
 

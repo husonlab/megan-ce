@@ -23,8 +23,8 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
+import megan.util.ScalingType;
 import megan.viewer.ViewerBase;
-import megan.viewer.gui.NodeDrawer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -32,7 +32,7 @@ import java.awt.event.ActionEvent;
 public class SetScaleByLogCommand extends CommandBase implements ICheckBoxCommand {
     public boolean isSelected() {
         ViewerBase viewer = (ViewerBase) getViewer();
-        return viewer.getNodeDrawer().getScalingType() == NodeDrawer.ScalingType.LOG;
+        return viewer.getNodeDrawer().getScalingType() == ScalingType.LOG;
     }
 
     public String getSyntax() {

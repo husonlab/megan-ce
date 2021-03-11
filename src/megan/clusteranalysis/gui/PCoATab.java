@@ -975,7 +975,7 @@ public class PCoATab extends JPanel implements ITab {
 
             for (Iterator<Node> it = graph.nodeIteratorIncludingHidden(); it.hasNext(); ) {
                 final Node v = it.next();
-                Vector3D vector = node2vector.getValue(v);
+                Vector3D vector = node2vector.get(v);
                 if (vector != null) {
                     Vector3D newVector = new Vector3D(vector);
                     newVector.transform(transformation3D);
@@ -993,7 +993,7 @@ public class PCoATab extends JPanel implements ITab {
             // this will make drawer draw graph from back to front
             List<Node> nodeOrder = new ArrayList<>(pairs.size());
             for (Pair<Double, Node> pair : pairs) {
-                nodeOrder.add(pair.get2());
+                nodeOrder.add(pair.getSecond());
             }
             graph.reorderNodes(nodeOrder);
         } else // 2D
@@ -1283,7 +1283,7 @@ public class PCoATab extends JPanel implements ITab {
     }
 
     public Point3D getPoint3D(Node v) {
-        return node2point3D.getValue(v);
+        return node2point3D.get(v);
     }
 
     public Pair<String, double[]>[] getBiplot() {

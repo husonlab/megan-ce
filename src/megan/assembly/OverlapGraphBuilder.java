@@ -116,7 +116,7 @@ public class OverlapGraphBuilder {
                     Node v = nodes[iMatch.getRead().getId()];
                     if (v == null) {
                         v = nodes[iMatch.getRead().getId()] = overlapGraph.newNode(iMatch.getRead().getId());
-                        node2readName.setValue(v, iMatch.getRead().getName());
+                        node2readName.put(v, iMatch.getRead().getName());
                     }
 
                     for (int j = i + 1; j < matches.length; j++) {
@@ -136,7 +136,7 @@ public class OverlapGraphBuilder {
                             Node w = nodes[jMatch.getRead().getId()];
                             if (w == null) {
                                 w = nodes[jMatch.getRead().getId()] = overlapGraph.newNode(jMatch.getRead().getId());
-                                node2readName.setValue(w, jMatch.getRead().getName());
+                                node2readName.put(w, jMatch.getRead().getName());
                             }
 
                             final Edge e = overlapGraph.getCommonEdge(v, w);

@@ -90,7 +90,7 @@ public class OverlapAvoider<T> {
      * @return true if added, false if overlaps a rectangle already present
      */
     public boolean addIfDoesNotOverlap(Pair<Rectangle2D, T> pair) {
-        if (previousHit != null && pair.get1().intersects(previousHit))
+        if (previousHit != null && pair.getFirst().intersects(previousHit))
             return false;
         if (data.size() == data.capacity())
             data.ensureCapacity(data.size() + 1);
@@ -115,7 +115,7 @@ public class OverlapAvoider<T> {
 
         if (!ok) {
             int id = startingX.nextSetBit(0);
-            previousHit = data.get(id).get1();
+            previousHit = data.get(id).getFirst();
             data.remove(which);
             return false;
         } else {
@@ -124,9 +124,9 @@ public class OverlapAvoider<T> {
             sortedByMaxY.add(which);
             sortedByMinY.add(which);
             if (data.size() == 0)
-                bbox.setRect(pair.get1());
+                bbox.setRect(pair.getFirst());
             else
-                bbox.add(pair.get1());
+                bbox.add(pair.getFirst());
             return true;
         }
     }

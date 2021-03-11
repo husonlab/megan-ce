@@ -83,7 +83,7 @@ public class SortLastMAFAlignmentsByQuery {
             try (IFastAIterator iterator = FastAFileIterator.getFastAOrFastQAsFastAIterator(readsFile); ProgressPercentage progress = new ProgressPercentage("Processing file: " + readsFile)) {
                 progress.setMaximum(iterator.getMaximumProgress());
                 while (iterator.hasNext()) {
-                    readNamesOrder.add(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(iterator.next().get1())));
+                    readNamesOrder.add(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(iterator.next().getFirst())));
                     progress.setProgress(iterator.getProgress());
                 }
             }

@@ -267,7 +267,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @return has hit something
      */
     private boolean getHitsRec(int x, int y, Node v, Edge e0, boolean onlyOne) {
-        Rectangle bbox0 = node2bbox.getValue(v);
+        Rectangle bbox0 = node2bbox.get(v);
         if (bbox0 == null)
             return false;
         Rectangle bbox = new Rectangle(bbox0.x - 100, bbox0.y - 40, bbox0.width + 1000, bbox0.height + 80);
@@ -363,7 +363,7 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @return has hit something
      */
     private boolean getHitsRec(Rectangle rect, Node v, Edge e0) {
-        Rectangle bbox = node2bbox.getValue(v);
+        Rectangle bbox = node2bbox.get(v);
         Rectangle bboxDC = new Rectangle();
         viewer.trans.w2d(bbox, bboxDC);
         int height = bboxDC.height;

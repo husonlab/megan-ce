@@ -99,12 +99,12 @@ class CSVExportAlignedBases {
                                     progress.setProgress((long) (1000.0 * (countsClasses + (double) it.getProgress() / (double) it.getMaximumProgress())));
                                 }
 
-                                final Statistics statistics = new Statistics(Pair.secondValues(pairs));
+                                final Statistics statistics = new Statistics(IteratorUtils.secondValues(pairs));
                                 w.write(String.format("# %s (count=%d, mean=%.1f, stddev=%.1f):\n", TaxonomyData.getName2IdMap().get(classId), statistics.getCount(), statistics.getMean(), statistics.getStdDev()));
                                 for (Pair<String, Integer> pair : pairs) {
                                     w.write(String.format("%s%c%d\n", pair.getFirst(), separator, pair.getSecond()));
                                 }
-                                for (Integer value : Pair.secondValues(pairs))
+                                for (Integer value : IteratorUtils.secondValues(pairs))
                                     values.add(value);
                             }
                         }

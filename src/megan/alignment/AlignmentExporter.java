@@ -270,8 +270,8 @@ public class AlignmentExporter {
             if (minCoverage > 0) {
                 final Pair<Double, Double> gcAndCoverage = ComputeAlignmentProperties.computeCGContentAndCoverage(alignment, verbose ? new ProgressCmdLine() : null);
                 if (verbose)
-                    System.err.print(String.format("%s: %s: coverage=%.2f", className, reference, gcAndCoverage.get2()));
-                if (gcAndCoverage.get2() < minCoverage) {
+                    System.err.print(String.format("%s: %s: coverage=%.2f", className, reference, gcAndCoverage.getSecond()));
+                if (gcAndCoverage.getSecond() < minCoverage) {
                     if (verbose) System.err.println(" (coverage too low, skipped)");
                     continue;
                 } else if (verbose) System.err.println();

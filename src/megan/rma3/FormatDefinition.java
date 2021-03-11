@@ -98,7 +98,7 @@ public class FormatDefinition {
                 first = false;
             else
                 buf.append(" ");
-            buf.append(pair.get1()).append(":").append(pair.get2().toString());
+            buf.append(pair.getFirst()).append(":").append(pair.getSecond().toString());
         }
         return buf.toString();
     }

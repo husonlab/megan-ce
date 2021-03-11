@@ -84,7 +84,7 @@ public class RemoteBlastClient {
             return null;
         final StringBuilder query = new StringBuilder();
         for (Pair<String, String> pair : queries) {
-            query.append(">").append(Basic.swallowLeadingGreaterSign(pair.get1().trim())).append("\n").append(pair.get2().trim()).append("\n");
+            query.append(">").append(Basic.swallowLeadingGreaterSign(pair.getFirst().trim())).append("\n").append(pair.getSecond().trim()).append("\n");
         }
         requestId = null;
         estimatedTime = -1;

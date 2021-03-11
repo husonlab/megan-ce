@@ -303,7 +303,7 @@ public class NJ {
 
                 // translate in the computed direction by the given amount
                 treeView.setLocation(v,
-                        Geometry.translateByAngle(treeView.getLocation(root), angle.get(e),
+                        Geometry.translateByAngle(treeView.getLocation(root), angle.getDouble(e),
                                 tree.getWeight(e)));
                 setCoordsRec(treeView, tree, v, e, angle);
             }

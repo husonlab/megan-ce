@@ -53,7 +53,7 @@ public class DAA2SAMIterator implements ISAMIterator {
     @Override
     public int next() {
         next = daa2QuerySAMIterator.next();
-        return countNewLines(next.get2());
+        return countNewLines(next.getSecond());
     }
 
     /**
@@ -73,12 +73,12 @@ public class DAA2SAMIterator implements ISAMIterator {
      */
     @Override
     public byte[] getMatchesText() {
-        return next.get2();
+        return next.getSecond();
     }
 
     @Override
     public byte[] getQueryText() {
-        return next.get1();
+        return next.getFirst();
     }
 
     /**
@@ -88,7 +88,7 @@ public class DAA2SAMIterator implements ISAMIterator {
      */
     @Override
     public int getMatchesTextLength() {
-        return next.get2().length;
+        return next.getSecond().length;
     }
 
     @Override

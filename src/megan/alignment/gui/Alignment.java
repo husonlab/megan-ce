@@ -402,7 +402,7 @@ public class Alignment {
         StringBuilder buf = new StringBuilder();  // consensus will be put here
 
         // prefix of gaps:
-        final int firstPos = array.length > 0 ? array[0].get1() : getLength();
+        final int firstPos = array.length > 0 ? array[0].getFirst() : getLength();
         buf.append("-".repeat(Math.max(0, firstPos)));
         progress.incrementProgress();
 
@@ -410,21 +410,21 @@ public class Alignment {
 
         for (int i = 0; i < array.length; i++) { // consider each event in turn
             progress.incrementProgress();
-            int pos = array[i].get1();
+            int pos = array[i].getFirst();
             while (true) {
-                int row = array[i].get2();
+                int row = array[i].getSecond();
                 if (activeRows.contains(row)) // if is active, must remove
                     activeRows.remove(row);
                 else
                     activeRows.add(row); // not yet active, add
-                if (i + 1 < array.length && array[i + 1].get1() == pos) {
+                if (i + 1 < array.length && array[i + 1].getFirst() == pos) {
                     i++;
                     progress.incrementProgress();
                 } else
                     break;
             }
 
-            final int nextPos = (i + 1 < array.length ? array[i + 1].get1() : getLength());
+            final int nextPos = (i + 1 < array.length ? array[i + 1].getFirst() : getLength());
 
             boolean debug = false;
             if (debug)
@@ -468,7 +468,7 @@ public class Alignment {
         }
         // suffix of gaps:
         // prefix of gaps:
-        int lastPos = array.length > 0 ? array[array.length - 1].get1() : getLength();
+        int lastPos = array.length > 0 ? array[array.length - 1].getFirst() : getLength();
         // todo: FIXME
         buf.append("-".repeat(lastPos - lastPos));
         progress.incrementProgress();

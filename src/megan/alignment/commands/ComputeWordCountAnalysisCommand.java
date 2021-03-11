@@ -63,7 +63,7 @@ public class ComputeWordCountAnalysisCommand extends CommandBase implements ICom
 
         System.out.println("Depth vs Differences (" + depthVsDifferences.size() + "):");
         for (Pair<Number, Number> pair : depthVsDifferences) {
-            System.out.println(pair.get1() + " " + pair.get2());
+            System.out.println(pair.getFirst() + " " + pair.getSecond());
         }
         System.out.println("done");
     }

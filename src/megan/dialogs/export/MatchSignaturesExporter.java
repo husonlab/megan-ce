@@ -119,10 +119,10 @@ public class MatchSignaturesExporter {
                 // write read to signature:
                 Map<String, List<String>> signature2reads = new TreeMap<>();
                 for (Pair<String, Set<Integer>> pair : readsAndTaxa) {
-                    w.write(pair.get1() + "\t");
+                    w.write(pair.getFirst() + "\t");
                     StringBuilder buf = new StringBuilder();
                     for (Integer taxon : allTaxa) {
-                        if (pair.get2().contains(taxon))
+                        if (pair.getSecond().contains(taxon))
                             buf.append("1");
                         else
                             buf.append("0");
@@ -130,7 +130,7 @@ public class MatchSignaturesExporter {
                     String signature = buf.toString();
                     w.write(signature);
                     List<String> reads = signature2reads.computeIfAbsent(signature, k -> new LinkedList<>());
-                    reads.add(pair.get1());
+                    reads.add(pair.getFirst());
                     w.write("\n");
                 }
 

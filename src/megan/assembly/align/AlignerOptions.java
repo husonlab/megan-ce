@@ -124,9 +124,9 @@ public class AlignerOptions {
     }
 
     public void setLambdaAndK(Pair<Double, Double> lambdaAndK) {
-        System.err.println("BLAST statistics parameters: lambda=" + lambdaAndK.get1() + " k=" + lambdaAndK.get2());
-        lambda = lambdaAndK.get1();
-        lnK = Math.log(lambdaAndK.get2());
+        System.err.println("BLAST statistics parameters: lambda=" + lambdaAndK.getFirst() + " k=" + lambdaAndK.getSecond());
+        lambda = lambdaAndK.getFirst();
+        lnK = Math.log(lambdaAndK.getSecond());
     }
 
     public void setK(double K) {

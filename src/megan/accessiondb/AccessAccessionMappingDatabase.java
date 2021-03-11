@@ -227,7 +227,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
     }
 
     /**
-     * alternative implementation for getValue
+     * alternative implementation for get
      * for an array of string accessions the method queries the database at once for all accessions in that array
      *
      * @param accessions

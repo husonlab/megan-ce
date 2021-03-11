@@ -63,7 +63,7 @@ public class SelectFromPreviousWindowCommand extends CommandBase implements ICom
 
                 NodeSet toSelect = new NodeSet(graph);
                 for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
-                    String label = node2ReadNameMap.getValue(v);
+                    String label = node2ReadNameMap.get(v);
 
                     if (label != null && previousSelection.contains(label))
                         toSelect.add(v);

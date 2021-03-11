@@ -275,7 +275,7 @@ public class PCoA {
         /*
         for (int i = 0; i < nameAndLoadingVector.length; i++) {
             Pair<String, double[]> pair = nameAndLoadingVector[i];
-            System.err.println(pair.get1() + ": "+Math.sqrt(Utilities.getSquaredLength(pair.getSecond())));
+            System.err.println(pair.getFirst() + ": "+Math.sqrt(Utilities.getSquaredLength(pair.getSecond())));
 
         }
         */
@@ -345,7 +345,7 @@ public class PCoA {
         /*
         for (int i = 0; i < nameAndLoadingVector.length; i++) {
             Pair<String, double[]> pair = nameAndLoadingVector[i];
-            System.err.println(pair.get1() + ": "+Math.sqrt(Utilities.getSquaredLength(pair.getSecond())));
+            System.err.println(pair.getFirst() + ": "+Math.sqrt(Utilities.getSquaredLength(pair.getSecond())));
 
         }
         */

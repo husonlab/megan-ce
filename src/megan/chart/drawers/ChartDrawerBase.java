@@ -401,18 +401,18 @@ public class ChartDrawerBase extends JPanel {
 
     public Font getFont(String target) {
         Pair<Font, Color> pair = fonts.get(target);
-        if (pair == null || pair.get1() == null)
+        if (pair == null || pair.getFirst() == null)
             return getFont();
         else
-            return pair.get1();
+            return pair.getFirst();
     }
 
     public Color getFontColor(String target, Color defaultColor) {
         Pair<Font, Color> pair = fonts.get(target);
-        if (pair == null || pair.get2() == null)
+        if (pair == null || pair.getSecond() == null)
             return defaultColor;
         else
-            return pair.get2();
+            return pair.getSecond();
     }
 
     /**

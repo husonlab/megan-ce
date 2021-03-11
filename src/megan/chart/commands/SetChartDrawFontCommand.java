@@ -78,8 +78,8 @@ public class SetChartDrawFontCommand extends CommandBase implements ICommand {
         Color color = ProgramProperties.get(target + "Color", (Color) null);
         Pair<Font, Color> result = ChooseFontDialog.showChooseFontDialog(chartViewer.getFrame(), "Choose drawing font", font, color);
         if (result != null)
-            execute("set chartFont='" + BasicSwing.encode(result.get1())
-                    + "' color=" + (result.get2() != null ? BasicSwing.toString3Int(result.get2()) : "default") + " target='" + target + "';");
+            execute("set chartFont='" + BasicSwing.encode(result.getFirst())
+                    + "' color=" + (result.getSecond() != null ? BasicSwing.toString3Int(result.getSecond()) : "default") + " target='" + target + "';");
     }
 
     public boolean isApplicable() {

@@ -87,7 +87,7 @@ public class Outline {
         view.setLocation(start,new java.awt.geom.Point2D.Double(0,0));
 
         final NodeArray<Point2D> node2point=new NodeArray<>(graph);
-        node2point.setValue(start, new Point2D(location.getX(), location.getY()));
+        node2point.put(start, new Point2D(location.getX(), location.getY()));
 
         final Map<BitSet,Node> splits2node=new HashMap<>();
 
@@ -117,11 +117,11 @@ public class Outline {
             if (mustCreateNode) {
                 v = graph.newNode();
                 splits2node.put(BitSetUtils.copy(currentSplits), v);
-                node2point.setValue(v, new Point2D(location.getX(), location.getY()));
-                view.setLocation(v,new java.awt.geom.Point2D.Double(location.getX(),location.getY()));
+                node2point.put(v, new Point2D(location.getX(), location.getY()));
+                view.setLocation(v, new java.awt.geom.Point2D.Double(location.getX(), location.getY()));
             } else {
                 v = splits2node.get(currentSplits);
-                location = node2point.getValue(v);
+                location = node2point.get(v);
             }
             // System.err.println("Node: " + v.getId());
 
@@ -162,7 +162,7 @@ public class Outline {
         if (false) {
             for (Node v : graph.nodes()) {
                 // if (graph.getLabel(v) != null)
-                System.err.println("Node " + v.getId() + " " + graph.getLabel(v) + " point: " + node2point.getValue(v));
+                System.err.println("Node " + v.getId() + " " + graph.getLabel(v) + " point: " + node2point.get(v));
             }
             for (Edge e : graph.edges()) {
                 System.err.println("Edge " + e.getSource().getId() + " - " + e.getTarget().getId() + " split: " + graph.getSplit(e));

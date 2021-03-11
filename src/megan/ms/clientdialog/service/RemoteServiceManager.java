@@ -128,7 +128,7 @@ public class RemoteServiceManager {
     public static String getUser(String serviceName) {
         final Pair<String, String> credentials = getCredentials(serviceName);
         if (credentials != null)
-            return credentials.get1();
+            return credentials.getFirst();
         else
             return null;
     }
@@ -142,7 +142,7 @@ public class RemoteServiceManager {
     public static String getPasswordHash(String serviceName) {
         final Pair<String, String> credentials = getCredentials(serviceName);
         if (credentials != null)
-            return credentials.get2();
+            return credentials.getSecond();
         else
             return null;
     }

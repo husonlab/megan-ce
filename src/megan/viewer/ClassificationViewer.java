@@ -1104,7 +1104,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param enabled
      */
     private void paintRec(Graphics2D gc, Node v, List<Node> drawableNodeLabels, boolean enabled) {
-        Rectangle bbox = node2BoundingBox.getValue(v);
+        Rectangle bbox = node2BoundingBox.get(v);
         if (bbox == null)
             bbox = new Rectangle();
 

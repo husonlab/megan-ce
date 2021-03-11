@@ -106,8 +106,8 @@ public class TableViewSearcher implements IObjectSearcher {
      * goto the first object
      */
     public boolean gotoFirst() {
-        current.set1(0);
-        current.set2(0);
+        current.setFirst(0);
+        current.setSecond(0);
         return isCurrentSet();
     }
 
@@ -116,10 +116,10 @@ public class TableViewSearcher implements IObjectSearcher {
      */
     public boolean gotoNext() {
         if (isCurrentSet()) {
-            current.set1(current.get1() + 1);
-            if (current.get1() >= table.getRowCount()) {
-                current.set1(0);
-                current.set2(current.get2() + 1);
+            current.setFirst(current.getFirst() + 1);
+            if (current.getFirst() >= table.getRowCount()) {
+                current.setFirst(0);
+                current.setSecond(current.getSecond() + 1);
             }
         } else
             gotoFirst();
@@ -130,8 +130,8 @@ public class TableViewSearcher implements IObjectSearcher {
      * goto the last object
      */
     public boolean gotoLast() {
-        current.set1(table.getRowCount() - 1);
-        current.set2(table.getColCount() - 1);
+        current.setFirst(table.getRowCount() - 1);
+        current.setSecond(table.getColCount() - 1);
 
         return isCurrentSet();
     }
@@ -141,14 +141,14 @@ public class TableViewSearcher implements IObjectSearcher {
      */
     public boolean gotoPrevious() {
         if (isCurrentSet()) {
-            if (current.get2() > 0)
-                current.set2(current.get2() - 1);
-            else if (current.get1() > 0) {
-                current.set1(current.get1() - 1);
-                current.set2(table.getColCount() - 1);
+            if (current.getSecond() > 0)
+                current.setSecond(current.getSecond() - 1);
+            else if (current.getFirst() > 0) {
+                current.setFirst(current.getFirst() - 1);
+                current.setSecond(table.getColCount() - 1);
             } else {
-                current.set1(-1);
-                current.set2(-1);
+                current.setFirst(-1);
+                current.setSecond(-1);
             }
         } else
             gotoLast();
@@ -171,9 +171,9 @@ public class TableViewSearcher implements IObjectSearcher {
      */
     public void setCurrentSelected(boolean select) {
         if (select)
-            toSelect.add(new Pair<>(current.get1(), current.get2()));
+            toSelect.add(new Pair<>(current.getFirst(), current.getSecond()));
         else
-            toDeselect.add(new Pair<>(current.get1(), current.get2()));
+            toDeselect.add(new Pair<>(current.getFirst(), current.getSecond()));
     }
 
     /**
@@ -197,7 +197,7 @@ public class TableViewSearcher implements IObjectSearcher {
     public String getCurrentLabel() {
         try {
             if (isCurrentSet())
-                return table.getValue(current.get1(), current.get2());
+                return table.getValue(current.getFirst(), current.getSecond());
         } catch (Exception ex) {
             Basic.caught(ex);
         }
@@ -244,7 +244,7 @@ public class TableViewSearcher implements IObjectSearcher {
      * @return true, if set
      */
     public boolean isCurrentSet() {
-        return current.get1() >= 0 && current.get1() < table.getRowCount() && current.get2() >= 0 && current.get2() < table.getColCount();
+        return current.getFirst() >= 0 && current.getFirst() < table.getRowCount() && current.getSecond() >= 0 && current.getSecond() < table.getColCount();
     }
 
     /**
@@ -270,11 +270,11 @@ public class TableViewSearcher implements IObjectSearcher {
             }
             table.getSelectionModel().clearSelection();
             for (Pair<Integer, Integer> pair : selection) {
-                final TableColumn<MyTableView.MyTableRow, ?> column = table.getCol(pair.get2());
-                table.getSelectionModel().select(pair.get1(), column);
+                final TableColumn<MyTableView.MyTableRow, ?> column = table.getCol(pair.getSecond());
+                table.getSelectionModel().select(pair.getFirst(), column);
             }
             if (first != null) {
-                table.scrollToRow(first.get1());
+                table.scrollToRow(first.getFirst());
             }
             toSelect.clear();
             toDeselect.clear();

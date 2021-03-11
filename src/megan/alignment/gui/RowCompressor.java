@@ -60,7 +60,7 @@ public class RowCompressor {
 
         // go through reads by start position and place in compressed rows
         for (Pair<Integer, Integer> pair : sortedReads) {
-            int read = pair.get2();
+            int read = pair.getSecond();
             int start = alignment.getLane(read).getFirstNonGapPosition();
             boolean done = false;
             for (int row = 0; !done && row < numberOfCompressedRows; row++) {

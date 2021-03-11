@@ -80,7 +80,7 @@ public class ShapeSamplesByCommand extends CommandBase implements ICommand {
         Map<String, NodeShape> value2shape = new HashMap<>();
         int count = 0;
         for (Pair<Integer, String> pair : pairs) {
-            value2shape.put(pair.get2(), NodeShape.values()[Math.min(++count, NodeShape.values().length - 1)]);
+            value2shape.put(pair.getSecond(), NodeShape.values()[Math.min(++count, NodeShape.values().length - 1)]);
         }
 
         StringBuilder buf = new StringBuilder();

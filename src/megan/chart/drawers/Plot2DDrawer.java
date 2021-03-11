@@ -178,7 +178,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         int y0 = getHeight() - bottomMargin;
 
         double botX = 0;
-        double topX = transpose ? getChartData().getRangeY().get2().doubleValue() : getChartData().getRangeX().get2().doubleValue();
+        double topX = transpose ? getChartData().getRangeY().getSecond().doubleValue() : getChartData().getRangeX().getSecond().doubleValue();
 
         double xFactor;
         if (topX > botX)
@@ -296,7 +296,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             topY = 100;
         } else {
             botY = 0;
-            topY = getChartData().getRangeY().get2().doubleValue();
+            topY = getChartData().getRangeY().getSecond().doubleValue();
         }
 
         double yFactor;
@@ -354,7 +354,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
 
-        double maxValue = getChartData().getRangeY().get2().doubleValue();
+        double maxValue = getChartData().getRangeY().getSecond().doubleValue();
         double yFactor = (y0 - y1) / Math.sqrt(maxValue);
 
         double value = 0;
@@ -408,7 +408,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
 
-        double maxValue = getChartData().getRangeY().get2().doubleValue();
+        double maxValue = getChartData().getRangeY().getSecond().doubleValue();
         double botY = 0;
         double topY = computeMaxYAxisValueLogScale(maxValue);
 
@@ -460,7 +460,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         int y1 = topMargin;
 
         double botX = 0;
-        double topX = transpose ? getChartData().getRangeY().get2().doubleValue() : getChartData().getRangeX().get2().doubleValue();
+        double topX = transpose ? getChartData().getRangeY().getSecond().doubleValue() : getChartData().getRangeX().getSecond().doubleValue();
 
         double factorX;
         if (topX > botX)
@@ -493,13 +493,13 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
             topY = 100;
         } else if (scalingType == ChartViewer.ScalingType.LOG) {
             botY = 0;
-            topY = computeMaxYAxisValueLogScale(getChartData().getRangeY().get2().doubleValue());
+            topY = computeMaxYAxisValueLogScale(getChartData().getRangeY().getSecond().doubleValue());
         } else if (scalingType == ChartViewer.ScalingType.SQRT) {
             botY = 0;
-            topY = Math.sqrt(getChartData().getRangeY().get2().doubleValue());
+            topY = Math.sqrt(getChartData().getRangeY().getSecond().doubleValue());
         } else {
             botY = 0;
-            topY = getChartData().getRangeY().get2().doubleValue();
+            topY = getChartData().getRangeY().getSecond().doubleValue();
         }
 
         double factorY;
@@ -525,8 +525,8 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
         }
         double offsetY = botY - startY;
         Random random = new Random(666);
-        double maxX = getChartData().getRangeX().get2().doubleValue();
-        double maxY = getChartData().getRangeY().get2().doubleValue();
+        double maxX = getChartData().getRangeX().getSecond().doubleValue();
+        double maxY = getChartData().getRangeY().getSecond().doubleValue();
 
         for (String series : getChartData().getSeriesNames()) {
             Point previous = null;
@@ -543,21 +543,21 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
 
             java.util.Collection<Pair<Number, Number>> data = getChartData().getDataForSeries(series);
             for (Pair<Number, Number> pair : data) {
-                double xValue = pair.get1().doubleValue();
+                double xValue = pair.getFirst().doubleValue();
                 double yValue;
 
                 if (getScalingType() == ChartViewer.ScalingType.PERCENT) {
-                    yValue = (100.0 / maxY) * pair.get2().doubleValue();
+                    yValue = (100.0 / maxY) * pair.getSecond().doubleValue();
                 } else if (getScalingType() == ChartViewer.ScalingType.LOG) {
-                    yValue = pair.get2().doubleValue();
+                    yValue = pair.getSecond().doubleValue();
                     if (yValue > 0)
                         yValue = Math.log10(yValue);
                 } else if (getScalingType() == ChartViewer.ScalingType.SQRT) {
-                    yValue = pair.get2().doubleValue();
+                    yValue = pair.getSecond().doubleValue();
                     if (yValue > 0)
                         yValue = Math.sqrt(yValue);
                 } else {
-                    yValue = pair.get2().doubleValue();
+                    yValue = pair.getSecond().doubleValue();
                 }
 
                 int x = (int) Math.round(xValue * factorX + x0 - offsetX);
@@ -594,7 +594,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
                     }
                 }
                 if (showValues || isSelected) {
-                    String label = pair.get1() + "," + pair.get2();
+                    String label = pair.getFirst() + "," + pair.getSecond();
                     valuesList.add(new DrawableValue(label, x + 4, y, isSelected));
                 }
             }

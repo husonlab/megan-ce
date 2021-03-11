@@ -307,7 +307,7 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
                 chartDrawer.getChartData().setEnabledSeries(Collections.singletonList(label));
                 for (String target : fonts.keySet()) {
                     Pair<Font, Color> pair = fonts.get(target);
-                    chartDrawer.setFont(target, pair.get1(), pair.get2());
+                    chartDrawer.setFont(target, pair.getFirst(), pair.getSecond());
                 }
             }
         } else {
@@ -342,7 +342,7 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
                 ((IChartData) chartDrawer.getChartData()).setEnabledClassNames(Collections.singletonList(label));
                 for (String target : fonts.keySet()) {
                     Pair<Font, Color> pair = fonts.get(target);
-                    chartDrawer.setFont(target, pair.get1(), pair.get2());
+                    chartDrawer.setFont(target, pair.getFirst(), pair.getSecond());
                 }
             }
         }

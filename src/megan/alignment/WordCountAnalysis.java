@@ -86,19 +86,19 @@ public class WordCountAnalysis {
                 depthVsDifferences.add(new Pair<>(n, words.size()));
 
                 SortedSet<Pair<Integer, String>> ranker = new TreeSet<>((pair1, pair2) -> {
-                    if (pair1.get1() > pair2.get1())
+                    if (pair1.getFirst() > pair2.getFirst())
                         return -1;
-                    else if (pair1.get1() < pair2.get1())
+                    else if (pair1.getFirst() < pair2.getFirst())
                         return 1;
                     else
-                        return pair1.get2().compareTo(pair2.get2());
+                        return pair1.getSecond().compareTo(pair2.getSecond());
                 });
                 for (Map.Entry<String, Integer> entry : word2count.entrySet()) {
                     ranker.add(new Pair<>(entry.getValue(), entry.getKey()));
                 }
                 int rank = 1;
                 for (Pair<Integer, String> pair : ranker) {
-                    rank2countAndTotal.put(rank, new Pair<>(pair.get1(), n));
+                    rank2countAndTotal.put(rank, new Pair<>(pair.getFirst(), n));
                 }
             }
             if (progressListener != null)
@@ -107,7 +107,7 @@ public class WordCountAnalysis {
         // compute average coverage for each rank:
         for (Map.Entry<Integer, Pair<Integer, Integer>> entry : rank2countAndTotal.entrySet()) {
             Pair<Integer, Integer> pair = entry.getValue();
-            rank2percentage.put(entry.getKey(), (float) ((100.0 * pair.get1()) / pair.get2()));
+            rank2percentage.put(entry.getKey(), (float) ((100.0 * pair.getFirst()) / pair.getSecond()));
         }
     }
 
@@ -127,9 +127,9 @@ public class WordCountAnalysis {
         int maxX = Integer.MIN_VALUE;
         int vMax = 0;
         for (Pair<Number, Number> pair : array) {
-            minX = Math.min(minX, pair.get1().intValue());
-            maxX = Math.max(maxX, pair.get1().intValue());
-            vMax = Math.max(vMax, pair.get2().intValue());
+            minX = Math.min(minX, pair.getFirst().intValue());
+            maxX = Math.max(maxX, pair.getFirst().intValue());
+            vMax = Math.max(vMax, pair.getSecond().intValue());
         }
 
         // sort by increasing first value
@@ -159,16 +159,16 @@ public class WordCountAnalysis {
 
         for (int i = 0; i < array.length; i++) {
             Pair<Number, Number> pair = array[i];
-            array[i] = new Pair<>(pair.get1(), smoothedValues[i]);
-            // pair.set2(smoothedValues[i]);       // uncomment this line to plot the smoothed values
+            array[i] = new Pair<>(pair.getFirst(), smoothedValues[i]);
+            // pair.setSecond(smoothedValues[i]);       // uncomment this line to plot the smoothed values
             vMax = Math.max(vMax, (int) smoothedValues[i]);
         }
 
         int first = 0;
-        while (first < array.length - 1 && array[first + 1].get2().intValue() < vMax / 2)
+        while (first < array.length - 1 && array[first + 1].getSecond().intValue() < vMax / 2)
             first++;
 
-        int kM = array[first].get1().intValue();
+        int kM = array[first].getFirst().intValue();
 
         float stepX = Math.max(0.1f, (maxX - minX) / 100.0f);
 
@@ -200,8 +200,8 @@ public class WordCountAnalysis {
         double n = 0;
         double k = 0;
         for (Pair<Number, Number> pair : values) {
-            n += pair.get1().doubleValue();
-            k += pair.get2().doubleValue();
+            n += pair.getFirst().doubleValue();
+            k += pair.getSecond().doubleValue();
         }
         return new Pair<>((float) (n / values.size()), (float) (k / values.size()));
     }

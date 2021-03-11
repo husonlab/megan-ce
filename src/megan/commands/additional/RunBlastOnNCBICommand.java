@@ -255,7 +255,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
             final IReadsProvider readProvider = ((IReadsProvider) getViewer());
             if (readProvider.isReadsAvailable()) {
                 final Pair<String, String> first = readProvider.getReads(1).iterator().next();
-                final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), readProvider, null, Basic.toCleanName(first.get1()));
+                final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), readProvider, null, Basic.toCleanName(first.getFirst()));
 
                 if (commandString != null) {
                     final Director newDir = Director.newProject();

@@ -64,12 +64,12 @@ public class TopAssignment {
             return String.format(" [1] %s%05d: 100 # %d", classificationLetter, classId, classId2Count.get(classId));
         } else {
             SortedSet<Pair<Integer, Integer>> sorted = new TreeSet<>((idAndCount1, idAndCount2) -> {
-                if (idAndCount1.get2() > idAndCount2.get2())
+                if (idAndCount1.getSecond() > idAndCount2.getSecond())
                     return -1;
-                else if (idAndCount1.get2() < idAndCount2.get2())
+                else if (idAndCount1.getSecond() < idAndCount2.getSecond())
                     return 1;
                 else
-                    return idAndCount1.get1().compareTo(idAndCount2.get1());
+                    return idAndCount1.getFirst().compareTo(idAndCount2.getFirst());
             });
 
             for (Map.Entry<Integer, Integer> entry : classId2Count.entrySet()) {
@@ -84,7 +84,7 @@ public class TopAssignment {
                 StringBuilder buf = new StringBuilder();
                 for (Pair<Integer, Integer> idAndCount : sorted) {
                     countItems++;
-                    buf.append(String.format(" [%d] %s%05d: %.1f", countItems, classificationLetter, idAndCount.getFirst(), (100.0 * idAndCount.get2()) / totalClassMatches));
+                    buf.append(String.format(" [%d] %s%05d: %.1f", countItems, classificationLetter, idAndCount.getFirst(), (100.0 * idAndCount.getSecond()) / totalClassMatches));
                     if (countItems >= top)
                         break;
                 }

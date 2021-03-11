@@ -1115,23 +1115,23 @@ public class SampleAttributeTable {
                 case Integer:
                 case Float:
                     Arrays.sort(array, (p1, p2) -> {
-                        Float a1 = Float.parseFloat(p1.get1().toString());
-                        Float a2 = Float.parseFloat(p2.get1().toString());
+                        Float a1 = Float.parseFloat(p1.getFirst().toString());
+                        Float a2 = Float.parseFloat(p2.getFirst().toString());
                         return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
                     });
                     break;
                 default:
                 case String:
                     Arrays.sort(array, (p1, p2) -> {
-                        String a1 = p1.get1().toString();
-                        String a2 = p2.get1().toString();
+                        String a1 = p1.getFirst().toString();
+                        String a2 = p2.getFirst().toString();
                         return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
                     });
                     break;
             }
             getSampleOrder().clear();
             for (Pair<Object, String> pair : array) {
-                getSampleOrder().add(pair.get2());
+                getSampleOrder().add(pair.getSecond());
             }
             getSampleOrder().addAll(undefined);
         } catch (Exception ex) {

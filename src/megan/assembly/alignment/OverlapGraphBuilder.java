@@ -95,7 +95,7 @@ public class OverlapGraphBuilder {
                     final int iStart = iLane.getFirstNonGapPosition();
                     final int iEnd = iLane.getLastNonGapPosition();
                     for (int jl = il + 1; jl < list.length; jl++) {
-                        final int j = list[jl].get2();
+                        final int j = list[jl].getSecond();
                         final Lane jLane = alignment.getLane(j);
                         final int jStart = jLane.getFirstNonGapPosition();
                         if (jStart > iEnd)
@@ -184,10 +184,10 @@ public class OverlapGraphBuilder {
     private int visitNodesRec(Node v, EdgeArray<Integer> edgeWeight) {
         int maxValue = 0;
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-            if (edgeWeight.getValue(e) == null) {
+            if (edgeWeight.get(e) == null) {
                 edgeWeight.put(e, visitNodesRec(e.getTarget(), edgeWeight) + 1);
             }
-            maxValue = Math.max(maxValue, edgeWeight.getValue(e));
+            maxValue = Math.max(maxValue, edgeWeight.get(e));
         }
         return maxValue;
     }

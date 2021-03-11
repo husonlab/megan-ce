@@ -22,7 +22,7 @@ package megan.chart;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
-import jloda.graph.NodeIntegerArray;
+import jloda.graph.NodeIntArray;
 import jloda.phylo.PhyloTree;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
@@ -166,7 +166,7 @@ public class RarefactionPlot extends ChartViewer {
         Map<String, Collection<Pair<Number, Number>>> name2counts = new HashMap<>();
 
         for (int pid = 0; pid < doc.getNumberOfSamples(); pid++) {
-            NodeIntegerArray numbering = new NodeIntegerArray(tree);
+            NodeIntArray numbering = new NodeIntArray(tree);
 
             int numberOfReads = computeCountRec(pid, tree.getRoot(), viewer, 0, numbering);
             progressListener.incrementProgress();
@@ -174,9 +174,9 @@ public class RarefactionPlot extends ChartViewer {
             Vector<Float> counts = new Vector<>();
             counts.add(0f);
 
-            NodeIntegerArray[] node2count = new NodeIntegerArray[numberOfReplicates];
+            NodeIntArray[] node2count = new NodeIntArray[numberOfReplicates];
             for (int r = 0; r < numberOfReplicates; r++)
-                node2count[r] = new NodeIntegerArray(tree);
+                node2count[r] = new NodeIntArray(tree);
 
             Set<Node> nodes = new HashSet<>();
             int batchSize = numberOfReads / numberOfPoints;
@@ -186,14 +186,14 @@ public class RarefactionPlot extends ChartViewer {
                         int which = rand.nextInt(numberOfReads);
                         Node v = getIdRec(tree.getRoot(), which, numbering);
                         nodes.add(v);
-                        node2count[r].set(v, node2count[r].get(v) + 1);
+                        node2count[r].set(v, node2count[r].getInt(v) + 1);
                     }
                     progressListener.incrementProgress();
                 }
                 int count = 0;
                 for (int r = 0; r < numberOfReplicates; r++) {
                     for (Node v : nodes) {
-                        if (node2count[r].get(v) >= threshold)
+                        if (node2count[r].getInt(v) >= threshold)
                             count++;
                     }
                 }
@@ -219,7 +219,7 @@ public class RarefactionPlot extends ChartViewer {
      * @param numbering
      * @return count for node
      */
-    private static int computeCountRec(int pid, Node v, ClassificationViewer viewer, int top, NodeIntegerArray numbering) {
+    private static int computeCountRec(int pid, Node v, ClassificationViewer viewer, int top, NodeIntArray numbering) {
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             top = computeCountRec(pid, e.getTarget(), viewer, top, numbering);
         }
@@ -241,10 +241,10 @@ public class RarefactionPlot extends ChartViewer {
      * @param counts
      * @return
      */
-    private static Node getIdRec(Node v, int which, NodeIntegerArray counts) {
+    private static Node getIdRec(Node v, int which, NodeIntArray counts) {
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             Node w = e.getTarget();
-            if (which <= counts.get(w)) {
+            if (which <= counts.getInt(w)) {
                 return getIdRec(w, which, counts);
             }
         }

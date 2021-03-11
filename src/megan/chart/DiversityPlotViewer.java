@@ -145,8 +145,8 @@ public class DiversityPlotViewer extends ChartViewer {
             getStatusbar().setText1("Size: " + values.size());
             Pair<Float, Float> averageNandK = WordCountAnalysis.computeAverageNandK(values);
             getStatusbar().setText2(String.format("Average diversity ratio: %.1f/%.1f = %.1f. Distinct genomes: min=%d extrapolation=%d",
-                    averageNandK.get2(), averageNandK.get1(),
-                    averageNandK.get1() > 0 ? averageNandK.get2() / averageNandK.get1() : 0, (int) Math.round(predicted), extrapolatedCount.get()));
+                    averageNandK.getSecond(), averageNandK.getFirst(),
+                    averageNandK.getFirst() > 0 ? averageNandK.getSecond() / averageNandK.getFirst() : 0, (int) Math.round(predicted), extrapolatedCount.get()));
 
             getChartData().setSeriesLabel("Number of sequences (n)");
             getChartData().setCountsLabel("Number of distinct sequences (k)");

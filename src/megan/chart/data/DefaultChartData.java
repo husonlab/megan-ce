@@ -262,10 +262,10 @@ public class DefaultChartData implements IChartData {
             if (range == null)
                 range = new Pair<>(min, max);
             else if (min != null) {
-                if (min.doubleValue() < range.get1().doubleValue())
-                    range.set1(min);
-                if (max.doubleValue() > range.get2().doubleValue())
-                    range.set2(max);
+                if (min.doubleValue() < range.getFirst().doubleValue())
+                    range.setFirst(min);
+                if (max.doubleValue() > range.getSecond().doubleValue())
+                    range.setSecond(max);
             }
             series2size.put(series, total);
             samplesTooltips.put(series, String.format("%s: %.0f", series, series2size.get(series)));
@@ -336,19 +336,19 @@ public class DefaultChartData implements IChartData {
             range = new Pair<>(value, value);
             series2Range.put(series, range);
         } else {
-            if (value.doubleValue() < range.get1().doubleValue())
-                range.set1(value);
-            if (value.doubleValue() > range.get2().doubleValue())
-                range.set2(value);
+            if (value.doubleValue() < range.getFirst().doubleValue())
+                range.setFirst(value);
+            if (value.doubleValue() > range.getSecond().doubleValue())
+                range.setSecond(value);
         }
         Pair<Number, Number> wholeRange = getRange();
         if (wholeRange == null) {
             this.range = new Pair<>(value, value);
         } else {
-            if (value.doubleValue() < wholeRange.get1().doubleValue())
-                wholeRange.set1(value);
-            if (value.doubleValue() > wholeRange.get2().doubleValue())
-                wholeRange.set2(value);
+            if (value.doubleValue() < wholeRange.getFirst().doubleValue())
+                wholeRange.setFirst(value);
+            if (value.doubleValue() > wholeRange.getSecond().doubleValue())
+                wholeRange.setSecond(value);
         }
         Double previous = series2size.get(series);
         series2size.put(series, previous == null ? value.doubleValue() : previous + value.doubleValue());
@@ -450,10 +450,10 @@ public class DefaultChartData implements IChartData {
                     if (range == null) {
                         range = new Pair<>(value, value);
                     } else {
-                        if (value.doubleValue() < range.get1().doubleValue())
-                            range.set1(value);
-                        if (value.doubleValue() > range.get2().doubleValue())
-                            range.set2(value);
+                        if (value.doubleValue() < range.getFirst().doubleValue())
+                            range.setFirst(value);
+                        if (value.doubleValue() > range.getSecond().doubleValue())
+                            range.setSecond(value);
                     }
                 }
                 series2size.put(series, total);
@@ -477,10 +477,10 @@ public class DefaultChartData implements IChartData {
                     if (range == null) {
                         range = new Pair<>(value, value);
                     } else {
-                        if (value.doubleValue() < range.get1().doubleValue())
-                            range.set1(value);
-                        if (value.doubleValue() > range.get2().doubleValue())
-                            range.set2(value);
+                        if (value.doubleValue() < range.getFirst().doubleValue())
+                            range.setFirst(value);
+                        if (value.doubleValue() > range.getSecond().doubleValue())
+                            range.setSecond(value);
                     }
                 }
             }

@@ -91,8 +91,8 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
         Document doc = ((Director) getDir()).getDocument();
         int count = 0;
         for (Pair<String, String> pair : sampleAndSources) {
-            String sampleName = pair.get1();
-            String source = pair.get2();
+            String sampleName = pair.getFirst();
+            String source = pair.getSecond();
             if (Basic.isInteger(source)) { // is a director id
                 Director sourceDir = (Director) ProjectManager.getProject(Basic.parseInt(source));
                 if (sourceDir == null)

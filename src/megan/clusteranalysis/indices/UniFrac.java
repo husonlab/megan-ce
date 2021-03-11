@@ -79,7 +79,7 @@ public class UniFrac {
             if (taxonId > 0 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodesUsed++;
-                final float[] counts = summarized.getValue(v);
+                final float[] counts = summarized.get(v);
 
                 for (int s = 0; s < nTax; s++) {
                     for (int t = s + 1; t < nTax; t++) {
@@ -140,7 +140,7 @@ public class UniFrac {
                 final Node w = e.getTarget();
                 if (inducedNodes.contains(w)) {
                     for (int s = 0; s < nTax; s++)
-                        total[s] += summarized.getValue(w)[s];
+                        total[s] += summarized.get(w)[s];
                 }
             }
         }
@@ -153,7 +153,7 @@ public class UniFrac {
             if (taxonId > 0 && TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(taxonId)))  // only use proper nodes
             {
                 countNodesUsed++;
-                final float[] count = summarized.getValue(v); // total number of reads that "descend" from node v
+                final float[] count = summarized.get(v); // total number of reads that "descend" from node v
                 for (int s = 0; s < nTax; s++) {
                     final double p = (total[s] > 0 ? count[s] / total[s] : 0);
                     for (int t = s + 1; t < nTax; t++) {
@@ -191,7 +191,7 @@ public class UniFrac {
                 if (currentSummarized == null) {
                     currentSummarized = new float[ntax];
                 }
-                final float[] childSummarized = summarized.getValue(e.getTarget());
+                final float[] childSummarized = summarized.get(e.getTarget());
                 for (int s = 0; s < ntax; s++) {
                     currentSummarized[s] += childSummarized[s];
                 }

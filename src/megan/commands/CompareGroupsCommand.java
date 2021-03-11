@@ -74,10 +74,10 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
                     throw new IOException("Name used multiple times: " + name);
                 else
                     nameSet.add(name);
-                group.set1(name);
+                group.setFirst(name);
 
                 final ArrayList<String> samples = new ArrayList<>();
-                group.set2(samples);
+                group.setSecond(samples);
                 if (np.peekMatchIgnoreCase("samples")) {
                     np.matchIgnoreCase("samples=");
                     while (!np.peekMatchAnyTokenIgnoreCase("name comparisonMode ignoreUnassigned;")) {
@@ -94,10 +94,10 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
                         samples.add(sample);
                     }
                 }
-                if (group.get2().size() > 0)
+                if (group.getSecond().size() > 0)
                     groups.add(group);
                 else
-                    System.err.println("Ignored empty group: " + group.get1());
+                    System.err.println("Ignored empty group: " + group.getFirst());
             }
             if (np.peekMatchIgnoreCase("mode")) {
                 np.matchIgnoreCase("mode=");
@@ -126,17 +126,17 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
         {
             for (Pair<String, List<String>> group : groups) {
                 final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
-                int sampleSize = ComputeCoreBiome.apply(doc, group.get2(), false, 0, 0, classification2class2counts, doc.getProgressListener());
+                int sampleSize = ComputeCoreBiome.apply(doc, group.getSecond(), false, 0, 0, classification2class2counts, doc.getProgressListener());
 
                 final Director tmpDir = Director.newProject(false);
                 final Document tmpDocument = tmpDir.getDocument();
                 final MainViewer tmpViewer = tmpDir.getMainViewer();
 
                 if (classification2class2counts.size() > 0) {
-                    tmpDocument.addSample(group.get1(), sampleSize, 0, BlastMode.Unknown, classification2class2counts);
+                    tmpDocument.addSample(group.getFirst(), sampleSize, 0, BlastMode.Unknown, classification2class2counts);
 
                     tmpDocument.setNumberReads(tmpDocument.getDataTable().getTotalReads());
-                    String fileName = group.get1() + ".megan";
+                    String fileName = group.getFirst() + ".megan";
                     tmpDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
                     System.err.println("Number of reads: " + tmpDocument.getNumberOfReads());
                     tmpDocument.processReadHits();
@@ -149,7 +149,7 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
                         tmpDocument.getActiveViewers().add(classificationName);
                     }
 
-                    tmpDocument.getSampleAttributeTable().addTable(doc.getSampleAttributeTable().mergeSamples(group.get2(), tmpDocument.getSampleNames().get(0)), false, true);
+                    tmpDocument.getSampleAttributeTable().addTable(doc.getSampleAttributeTable().mergeSamples(group.getSecond(), tmpDocument.getSampleNames().get(0)), false, true);
 
                     tmpDocument.processReadHits();
                     tmpViewer.setDoReset(true);

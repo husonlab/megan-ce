@@ -136,8 +136,8 @@ public class IntervalTree4Matches {
                 // remove any match that is dominated by an undominated match:
                 final Set<Interval<IMatchBlock>> toRemove = new HashSet<>();
                 for (Pair<Interval<IMatchBlock>, Interval<IMatchBlock>> pair : pairs) {
-                    if (!dominated.contains(pair.get1())) {
-                        toRemove.add(pair.get2()); // first is not dominated and it dominates the second, so remove second
+                    if (!dominated.contains(pair.getFirst())) {
+                        toRemove.add(pair.getSecond()); // first is not dominated and it dominates the second, so remove second
                     }
                 }
                 if (toRemove.size() > 0) {
@@ -225,8 +225,8 @@ public class IntervalTree4Matches {
                 // remove any match that is dominated by an undominated match:
                 final Set<Interval<IMatchBlock>> toRemove = new HashSet<>();
                 for (Pair<Interval<IMatchBlock>, Interval<IMatchBlock>> pair : pairs) {
-                    if (!dominated.contains(pair.get1())) {
-                        toRemove.add(pair.get2()); // first is not dominated and it dominates the second, so remove second
+                    if (!dominated.contains(pair.getFirst())) {
+                        toRemove.add(pair.getSecond()); // first is not dominated and it dominates the second, so remove second
                     }
                 }
                 if (toRemove.size() > 0) {

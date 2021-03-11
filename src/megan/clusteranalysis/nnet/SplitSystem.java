@@ -184,10 +184,10 @@ public class SplitSystem {
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
             Node w = f.getTarget();
             BitSet f_taxa;
-            if (!tree.isSpecial(f) || reticulateNode2Taxa.getValue(w) == null)
+            if (!tree.isSpecial(f) || reticulateNode2Taxa.get(w) == null)
                 f_taxa = splitsFromTreeRec(w, tree, allTaxa, activeTaxa, reticulateNode2Taxa, splits);
             else
-                f_taxa = (BitSet) reticulateNode2Taxa.getValue(w);
+                f_taxa = (BitSet) reticulateNode2Taxa.get(w);
 
             if (!tree.isSpecial(f)) {
                 BitSet complement = (BitSet) activeTaxa.clone();
@@ -228,7 +228,7 @@ public class SplitSystem {
             var edgesToPush = new LinkedList<Edge>();
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 Node w = f.getTarget();
-                BitSet nodeSet = node2taxa.getValue(w);
+                BitSet nodeSet = node2taxa.get(w);
                 if (nodeSet.intersects(partB))
                     edgesToPush.add(f);
             }

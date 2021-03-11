@@ -173,9 +173,9 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         // need to draw in reverse order to get correct ordering of polygons
         list = Basic.reverseList(list);
         for (Triplet<String, String, int[]> pair : list) {
-            String series = pair.get1();
-            String className = pair.get2();
-            int[] coords = pair.get3();
+            String series = pair.getFirst();
+            String className = pair.getSecond();
+            int[] coords = pair.getThird();
             Color color = getChartColors().getClassColor(class2HigherClassMapper.get(className));
             gc.setColor(color);
             int[] xs = new int[]{coords[0], coords[2], coords[2], coords[0]};
@@ -193,14 +193,14 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         Triplet<String, String, int[]> current = null;
         for (Triplet<String, String, int[]> next : list) {
             if (current != null) {
-                String className = current.get2();
-                String series = current.get1();
-                int[] coords = current.get3();
+                String className = current.getSecond();
+                String series = current.getFirst();
+                int[] coords = current.getThird();
                 if (getChartData().getChartSelection().isSelected(null, className)) {
                     gc.setStroke(HEAVY_STROKE);
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     gc.drawLine(coords[0], coords[1], coords[2], coords[3]);
-                    coords = next.get3();
+                    coords = next.getThird();
                     gc.drawLine(coords[0], coords[1], coords[2], coords[3]);
                     gc.setStroke(NORMAL_STROKE);
                 } else if (getChartData().getChartSelection().isSelected(series, null)) {
@@ -213,9 +213,9 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
             current = next;
         }
         if (current != null) {
-            String className = current.get2();
-            String series = current.get1();
-            int[] coords = current.get3();
+            String className = current.getSecond();
+            String series = current.getFirst();
+            int[] coords = current.getThird();
             if (getChartData().getChartSelection().isSelected(null, className)) {
                 gc.setStroke(HEAVY_STROKE);
                 gc.setColor(ProgramProperties.SELECTION_COLOR);
@@ -373,9 +373,9 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         // need to draw in reverse order to get correct ordering of polygons
         list = Basic.reverseList(list);
         for (Triplet<String, String, int[]> triplet : list) {
-            String seriesName = triplet.get1();
-            String className = triplet.get2();
-            int[] coords = triplet.get3();
+            String seriesName = triplet.getFirst();
+            String className = triplet.getSecond();
+            int[] coords = triplet.getThird();
             Color color = getChartColors().getSampleColor(seriesName);
             gc.setColor(color);
             int[] xs = new int[]{coords[0], coords[2], coords[2], coords[0]};
@@ -392,14 +392,14 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         Triplet<String, String, int[]> current = null;
         for (Triplet<String, String, int[]> next : list) {
             if (current != null) {
-                String seriesName = current.get1();
-                String className = current.get2();
-                int[] coords = current.get3();
+                String seriesName = current.getFirst();
+                String className = current.getSecond();
+                int[] coords = current.getThird();
                 if (getChartData().getChartSelection().isSelected(seriesName, null)) {
                     gc.setStroke(HEAVY_STROKE);
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     gc.drawLine(coords[0], coords[1], coords[2], coords[3]);
-                    coords = next.get3();
+                    coords = next.getThird();
                     gc.drawLine(coords[0], coords[1], coords[2], coords[3]);
                     gc.setStroke(NORMAL_STROKE);
                 } else if (getChartData().getChartSelection().isSelected(null, className)) {
@@ -412,9 +412,9 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
             current = next;
         }
         if (current != null) {
-            String seriesName = current.get1();
-            String className = current.get2();
-            int[] coords = current.get3();
+            String seriesName = current.getFirst();
+            String className = current.getSecond();
+            int[] coords = current.getThird();
             if (getChartData().getChartSelection().isSelected(seriesName, null)) {
                 gc.setStroke(HEAVY_STROKE);
                 gc.setColor(ProgramProperties.SELECTION_COLOR);

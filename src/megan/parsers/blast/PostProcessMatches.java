@@ -26,7 +26,6 @@ import jloda.util.ProgramProperties;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -76,7 +75,7 @@ public class PostProcessMatches {
                 matchesText[matchesTextLength++] = '\n';
             }
             matchesTextAndLength.set(matchesText, matchesTextLength);
-            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.get2()));
+            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.getSecond()));
             return matches.size();
         }
 
@@ -128,7 +127,7 @@ public class PostProcessMatches {
                 matchesText[matchesTextLength++] = '\n';
             }
             matchesTextAndLength.set(matchesText, matchesTextLength);
-            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.get2()));
+            //System.err.println("Match: "+ Basic.toString(matchesText,0,matchesTextAndLength.getSecond()));
             return matches.size();
         }
     }

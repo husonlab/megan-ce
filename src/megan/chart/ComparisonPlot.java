@@ -199,16 +199,16 @@ public class ComparisonPlot extends ChartViewer {
         double[] mean = new double[2];
 
         for (Pair<Number, Number> pair : pairs) {
-            mean[0] += pair.get1().doubleValue();
-            mean[1] += pair.get2().doubleValue();
+            mean[0] += pair.getFirst().doubleValue();
+            mean[1] += pair.getSecond().doubleValue();
         }
         mean[0] /= pairs.size();
         mean[1] /= pairs.size();
 
         double[] stddev = new double[2];
         for (Pair<Number, Number> pair : pairs) {
-            stddev[0] += (pair.get1().doubleValue() - mean[0]) * (pair.get1().doubleValue() - mean[0]);
-            stddev[1] += (pair.get2().doubleValue() - mean[1]) * (pair.get2().doubleValue() - mean[1]);
+            stddev[0] += (pair.getFirst().doubleValue() - mean[0]) * (pair.getFirst().doubleValue() - mean[0]);
+            stddev[1] += (pair.getSecond().doubleValue() - mean[1]) * (pair.getSecond().doubleValue() - mean[1]);
         }
         stddev[0] = Math.sqrt(stddev[0] / pairs.size());
         stddev[1] = Math.sqrt(stddev[1] / pairs.size());
@@ -216,7 +216,7 @@ public class ComparisonPlot extends ChartViewer {
 
         double cor = 0;
         for (Pair<Number, Number> pair : pairs) {
-            cor += (pair.get1().doubleValue() - mean[0]) * (pair.get2().doubleValue() - mean[1]) / (stddev[0] * stddev[1]);
+            cor += (pair.getFirst().doubleValue() - mean[0]) * (pair.getSecond().doubleValue() - mean[1]) / (stddev[0] * stddev[1]);
         }
         cor /= pairs.size();
         return cor;

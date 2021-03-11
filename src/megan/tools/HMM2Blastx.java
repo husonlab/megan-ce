@@ -85,9 +85,9 @@ public class HMM2Blastx {
                     final ProgressPercentage progress = new ProgressPercentage("Parsing file: " + readsFile, it.getMaximumProgress());
                     while (it.hasNext()) {
                         Pair<String, String> pair = it.next();
-                        String name = Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.get1()));
+                        String name = Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst()));
                         reads.add(name);
-                        read2length.put(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.get1())), pair.get2().length());
+                        read2length.put(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst())), pair.getSecond().length());
                         progress.setProgress(it.getProgress());
                     }
                     progress.close();
@@ -204,14 +204,14 @@ public class HMM2Blastx {
                             String blastString = makeBlastXAlignment(referenceName, score, expected, queryAligned, midAligned, refAligned, queryStart, queryEnd, refStart, refEnd, frame, read2length.get(queryName));
 
                             SortedSet<Pair<Float, String>> alignments = query2alignments.computeIfAbsent(queryName, k -> new TreeSet<>((o1, o2) -> {
-                                if (o1.get1() > o2.get1())
+                                if (o1.getFirst() > o2.getFirst())
                                     return -1;
-                                else if (o1.get1() < o2.get1())
+                                else if (o1.getFirst() < o2.getFirst())
                                     return 1;
-                                else return o1.get2().compareTo(o2.get2());
+                                else return o1.getSecond().compareTo(o2.getSecond());
                             }));
                             if (alignments.size() == maxMatchesPerRead) {
-                                if (score >= alignments.last().get1()) {
+                                if (score >= alignments.last().getFirst()) {
                                     alignments.add(new Pair<>(score, blastString));
                                     alignments.remove(alignments.last());
                                 }
@@ -254,7 +254,7 @@ public class HMM2Blastx {
                 } else {
                     writer.write("Query= " + queryName + "\n\n");
                     for (Pair<Float, String> pair : alignments) {
-                        writer.write(pair.get2());
+                        writer.write(pair.getSecond());
                         countAlignmentsWritten++;
                     }
                 }

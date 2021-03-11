@@ -141,7 +141,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         double xStep = (x1 - x0) / (double) numberOfSeries;
         double yStep = (y0 - y1) / (double) (numberOfClasses);
 
-        double maxValue = getChartData().getRange().get2().doubleValue();
+        double maxValue = getChartData().getRange().getSecond().doubleValue();
         double inverseMaxValueLog = 0;
         if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0) {
             maxValue = Math.log(maxValue);
@@ -302,7 +302,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         double xStep = (x1 - x0) / (double) numberOfClasses;
         double yStep = (y0 - y1) / (double) numberOfSeries;
 
-        double maxValue = getChartData().getRange().get2().doubleValue();
+        double maxValue = getChartData().getRange().getSecond().doubleValue();
         double inverseMaxValueLog = 0;
         if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0) {
             maxValue = Math.log(maxValue);

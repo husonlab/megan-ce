@@ -79,7 +79,7 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
             alignmentAssembler.computeOverlapGraph(minOverlap, viewer.getAlignment(), dir.getDocument().getProgressListener());
             final Pair<Integer, Integer> nodesAndEdges = alignmentAssembler.writeOverlapGraph(w);
             w.close();
-            NotificationsInSwing.showInformation(viewer.getFrame(), "Wrote " + nodesAndEdges.get1() + " nodes and " + nodesAndEdges.get2() + " edges");
+            NotificationsInSwing.showInformation(viewer.getFrame(), "Wrote " + nodesAndEdges.getFirst() + " nodes and " + nodesAndEdges.getSecond() + " edges");
             if (showGraph)
                 alignmentAssembler.showOverlapGraph(dir, dir.getDocument().getProgressListener());
         } catch (IOException e) {

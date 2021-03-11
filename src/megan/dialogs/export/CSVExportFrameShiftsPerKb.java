@@ -97,12 +97,12 @@ class CSVExportFrameShiftsPerKb {
                                     progress.setProgress((long) (1000.0 * (countsClasses + (double) it.getProgress() / (double) it.getMaximumProgress())));
                                 }
 
-                                final Statistics statistics = new Statistics(Pair.secondValues(pairs));
+                                final Statistics statistics = new Statistics(IteratorUtils.secondValues(pairs));
                                 w.write(String.format("# %s (count=%d, mean=%.1f, stddev=%.1f):\n", TaxonomyData.getName2IdMap().get(classId), statistics.getCount(), statistics.getMean(), statistics.getStdDev()));
                                 for (Pair<String, Float> pair : pairs) {
                                     w.write(String.format("%s%c%.1f\n", pair.getFirst(), separator, pair.getSecond()));
                                 }
-                                for (Float value : Pair.secondValues(pairs))
+                                for (Float value : IteratorUtils.secondValues(pairs))
                                     values.add(value);
                             }
                         }

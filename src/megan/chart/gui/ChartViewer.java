@@ -830,7 +830,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
             for (String target : fonts.keySet()) {
                 Pair<Font, Color> pair = fonts.get(target);
-                chartDrawer.setFont(target, pair.get1(), pair.get2());
+                chartDrawer.setFont(target, pair.getFirst(), pair.getSecond());
             }
             chartDrawer.setShowValues(showValues);
             chartDrawer.setShowInternalLabels(showInternalLabels);
@@ -1070,10 +1070,10 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
 
     public Font getFont(String target) {
         Pair<Font, Color> pair = fonts.get(target);
-        if (pair == null || pair.get1() == null)
+        if (pair == null || pair.getFirst() == null)
             return getFont();
         else
-            return pair.get1();
+            return pair.getFirst();
     }
 
     /**

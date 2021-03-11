@@ -772,7 +772,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
      */
     protected double getMaxValue() {
         try {
-            return getChartData().getRange().get2().doubleValue();
+            return getChartData().getRange().getSecond().doubleValue();
         } catch (NullPointerException ex) {
             return 100;
         }

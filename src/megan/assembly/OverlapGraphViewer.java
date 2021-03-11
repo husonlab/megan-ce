@@ -102,7 +102,7 @@ public class OverlapGraphViewer {
             public void doClick(NodeSet nodes, int clicks) {
                 ProjectManager.getPreviouslySelectedNodeLabels().clear();
                 for (Node v : nodes) {
-                    ProjectManager.getPreviouslySelectedNodeLabels().add(node2ReadNameMap.getValue(v));
+                    ProjectManager.getPreviouslySelectedNodeLabels().add(node2ReadNameMap.get(v));
                 }
 
                 if (clicks >= 2) {
@@ -135,7 +135,7 @@ public class OverlapGraphViewer {
 
             public void doSelect(NodeSet nodes) {
                 for (Node v : nodes) {
-                    graphView.setLabel(v, node2ReadNameMap.getValue(v));
+                    graphView.setLabel(v, node2ReadNameMap.get(v));
                 }
 
                 graphView.selectedEdges.clear();
@@ -218,7 +218,7 @@ public class OverlapGraphViewer {
         NodeArray<APoint2D<?>> coordinates = new NodeArray<>(overlapGraph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
-            graphView.setLocation(v, coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
+            graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());
             graphView.setHeight(v, 5);
             graphView.setWidth(v, 5);
         }

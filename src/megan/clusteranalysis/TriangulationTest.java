@@ -55,11 +55,11 @@ public class TriangulationTest {
 
         int numberOfNonconflictedTriangles = 0;
         for (Triplet<String, String, String> triangle : triangles) {
-            double ab = distances.get(taxa.indexOf(triangle.get1()), taxa.indexOf(triangle.get2()));
-            double ac = distances.get(taxa.indexOf(triangle.get1()), taxa.indexOf(triangle.get3()));
-            double bc = distances.get(taxa.indexOf(triangle.get2()), taxa.indexOf(triangle.get3()));
+            double ab = distances.get(taxa.indexOf(triangle.getFirst()), taxa.indexOf(triangle.getSecond()));
+            double ac = distances.get(taxa.indexOf(triangle.getFirst()), taxa.indexOf(triangle.getThird()));
+            double bc = distances.get(taxa.indexOf(triangle.getSecond()), taxa.indexOf(triangle.getThird()));
             if (ac < ab || bc < ab) {
-                System.err.println("Conflicted triangle a=" + triangle.get1() + ",b=" + triangle.get2() + " vs c=" + triangle.get3() + ", distances: "
+                System.err.println("Conflicted triangle a=" + triangle.getFirst() + ",b=" + triangle.getSecond() + " vs c=" + triangle.getThird() + ", distances: "
                         + String.format("ab=%.4f, ac=%.4f, bc=%.4f", ab, ac, bc));
             } else
                 numberOfNonconflictedTriangles++;

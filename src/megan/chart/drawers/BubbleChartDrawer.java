@@ -75,7 +75,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         double xStep = (x1 - x0) / numberOfSeries;
         double yStep = (y0 - y1) / (0.5 + numberOfClasses);
 
-        double maxValue = getChartData().getRange().get2().doubleValue();
+        double maxValue = getChartData().getRange().getSecond().doubleValue();
         if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0)
             maxValue = Math.log(maxValue);
         else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0)
@@ -196,7 +196,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         double xStep = (x1 - x0) / numberOfClasses;
         double yStep = (y0 - y1) / (0.5 + numberOfSeries);
 
-        double maxValue = getChartData().getRange().get2().doubleValue();
+        double maxValue = getChartData().getRange().getSecond().doubleValue();
         if (scalingType == ChartViewer.ScalingType.LOG && maxValue > 0)
             maxValue = Math.log(maxValue);
         else if (scalingType == ChartViewer.ScalingType.SQRT && maxValue > 0)

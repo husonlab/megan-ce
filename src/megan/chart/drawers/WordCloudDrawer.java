@@ -108,9 +108,9 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
 
         for (Iterator<Pair<Rectangle2D, Pair<String, Integer>>> it = rTree.iterator(); it.hasNext(); ) {
             Pair<Rectangle2D, Pair<String, Integer>> pair = it.next();
-            Rectangle2D rect = pair.get1();
-            String label = pair.get2().get1();
-            Integer fontSize = (int) (factor * pair.get2().get2());
+            Rectangle2D rect = pair.getFirst();
+            String label = pair.getSecond().getFirst();
+            Integer fontSize = (int) (factor * pair.getSecond().getSecond());
             gc.setFont(getFontForSize(fontSize));
             if (fontSize >= 1) {
                 double x = rect.getX();
@@ -187,11 +187,11 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         final Point center = new Point(0, 0);
 
         SortedSet<Pair<Double, String>> sorted = new TreeSet<>((pair1, pair2) -> {
-            if (pair1.get1() > pair2.get1())
+            if (pair1.getFirst() > pair2.getFirst())
                 return -1;
-            if (pair1.get1() < pair2.get1())
+            if (pair1.getFirst() < pair2.getFirst())
                 return 1;
-            return pair1.get2().compareTo(pair2.get2());
+            return pair1.getSecond().compareTo(pair2.getSecond());
         });
         for (String label : getChartData().getSeriesNames()) {
             Double value = getChartData().getTotalForSeries(label);
@@ -264,9 +264,9 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
 
         for (Iterator<Pair<Rectangle2D, Pair<String, Integer>>> it = rTree.iterator(); it.hasNext(); ) {
             Pair<Rectangle2D, Pair<String, Integer>> pair = it.next();
-            Rectangle2D rect = pair.get1();
-            String label = pair.get2().get1();
-            Integer fontSize = (int) (factor * pair.get2().get2());
+            Rectangle2D rect = pair.getFirst();
+            String label = pair.getSecond().getFirst();
+            Integer fontSize = (int) (factor * pair.getSecond().getSecond());
             if (fontSize >= 1) {
                 gc.setFont(getFontForSize(fontSize));
                 Color color = getFontColor(ChartViewer.FontKeys.DrawFont.toString(), null);
@@ -335,11 +335,11 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
         Point center = new Point(0, 0);
 
         SortedSet<Pair<Double, String>> sorted = new TreeSet<>((pair1, pair2) -> {
-            if (pair1.get1() > pair2.get1())
+            if (pair1.getFirst() > pair2.getFirst())
                 return -1;
-            if (pair1.get1() < pair2.get1())
+            if (pair1.getFirst() < pair2.getFirst())
                 return 1;
-            return pair1.get2().compareTo(pair2.get2());
+            return pair1.getSecond().compareTo(pair2.getSecond());
         });
         for (String label : getChartData().getClassNames()) {
             double value = getChartData().getTotalForClass(label);

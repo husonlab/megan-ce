@@ -232,7 +232,7 @@ public class RemoteBlastDialog {
                             int count = 0;
                             try (BufferedWriter w = new BufferedWriter(new FileWriter(readsFile))) {
                                 for (Pair<String, String> pair : pairs) {
-                                    w.write(String.format(">%s\n%s\n", pair.get1(), pair.get2()));
+                                    w.write(String.format(">%s\n%s\n", pair.getFirst(), pair.getSecond()));
                                     if (++count == maxNumberRemoteBlastReads)
                                         break;
                                 }

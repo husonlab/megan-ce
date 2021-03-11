@@ -149,8 +149,8 @@ public class DefaultPlot2DData implements IPlot2DData {
         double maxY = Double.NEGATIVE_INFINITY;
 
         for (Pair<Number, Number> pair : list) {
-            double x = pair.get1().doubleValue();
-            double y = pair.get2().doubleValue();
+            double x = pair.getFirst().doubleValue();
+            double y = pair.getSecond().doubleValue();
             minX = Math.min(x, minX);
             maxX = Math.max(x, maxX);
             minY = Math.min(y, minY);
@@ -159,14 +159,14 @@ public class DefaultPlot2DData implements IPlot2DData {
         series2RangeX.put(series, new Pair<>(minX, maxX));
         series2RangeY.put(series, new Pair<>(minY, maxY));
 
-        if (rangeX.get1().doubleValue() == 0 && rangeX.get2().doubleValue() == 0)
+        if (rangeX.getFirst().doubleValue() == 0 && rangeX.getSecond().doubleValue() == 0)
             rangeX.set(minX, maxX);
         else
-            rangeX.set(Math.min(rangeX.get1().doubleValue(), minX), Math.max(rangeX.get2().doubleValue(), maxX));
-        if (rangeY.get1().doubleValue() == 0 && rangeY.get2().doubleValue() == 0)
+            rangeX.set(Math.min(rangeX.getFirst().doubleValue(), minX), Math.max(rangeX.getSecond().doubleValue(), maxX));
+        if (rangeY.getFirst().doubleValue() == 0 && rangeY.getSecond().doubleValue() == 0)
             rangeY.set(minY, maxY);
         else
-            rangeY.set(Math.min(rangeY.get1().doubleValue(), minY), Math.max(rangeY.get2().doubleValue(), maxY));
+            rangeY.set(Math.min(rangeY.getFirst().doubleValue(), minY), Math.max(rangeY.getSecond().doubleValue(), maxY));
 
         addSeriesName(series);
 
@@ -198,23 +198,23 @@ public class DefaultPlot2DData implements IPlot2DData {
         if (rangeXd == null)
             series2RangeX.put(series, new Pair<>(x, x));
         else
-            rangeXd.set(Math.min(rangeXd.get1().doubleValue(), x.doubleValue()), Math.max(rangeXd.get2().doubleValue(), x.doubleValue()));
+            rangeXd.set(Math.min(rangeXd.getFirst().doubleValue(), x.doubleValue()), Math.max(rangeXd.getSecond().doubleValue(), x.doubleValue()));
 
         Pair<Number, Number> rangeYd = series2RangeY.get(series);
         if (rangeYd == null)
             series2RangeY.put(series, new Pair<>(y, y));
         else
-            rangeYd.set(Math.min(rangeYd.get1().doubleValue(), y.doubleValue()), Math.max(rangeYd.get2().doubleValue(), y.doubleValue()));
+            rangeYd.set(Math.min(rangeYd.getFirst().doubleValue(), y.doubleValue()), Math.max(rangeYd.getSecond().doubleValue(), y.doubleValue()));
 
-        if (rangeX.get1().doubleValue() == 0 && rangeX.get2().doubleValue() == 0)
+        if (rangeX.getFirst().doubleValue() == 0 && rangeX.getSecond().doubleValue() == 0)
             rangeX.set(x, x);
         else
-            rangeX.set(Math.min(rangeX.get1().doubleValue(), x.doubleValue()), Math.max(rangeX.get2().doubleValue(), x.doubleValue()));
-        if (rangeY.get1().doubleValue() == 0 && rangeY.get2().doubleValue() == 0)
+            rangeX.set(Math.min(rangeX.getFirst().doubleValue(), x.doubleValue()), Math.max(rangeX.getSecond().doubleValue(), x.doubleValue()));
+        if (rangeY.getFirst().doubleValue() == 0 && rangeY.getSecond().doubleValue() == 0)
             rangeY.set(y, y);
 
         else
-            rangeY.set(Math.min(rangeY.get1().doubleValue(), y.doubleValue()), Math.max(rangeY.get2().doubleValue(), y.doubleValue()));
+            rangeY.set(Math.min(rangeY.getFirst().doubleValue(), y.doubleValue()), Math.max(rangeY.getSecond().doubleValue(), y.doubleValue()));
     }
 
     public void read(Reader r) throws IOException {
@@ -228,7 +228,7 @@ public class DefaultPlot2DData implements IPlot2DData {
             Collection<Pair<Number, Number>> list = getDataForSeries(series);
             w.write("#Series: " + series + "\n");
             for (Pair<Number, Number> pair : list) {
-                w.write(pair.get1() + "\t" + pair.get2() + "\n");
+                w.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
             }
             w.flush();
         }
@@ -242,14 +242,14 @@ public class DefaultPlot2DData implements IPlot2DData {
         for (String series : seriesNames) {
             Pair<Number, Number> rangeXd = series2RangeX.get(series);
             Pair<Number, Number> rangeYd = series2RangeY.get(series);
-            if (rangeX.get1().doubleValue() == 0 && rangeX.get2().doubleValue() == 0)
-                rangeX.set(rangeXd.get1(), rangeXd.get2());
+            if (rangeX.getFirst().doubleValue() == 0 && rangeX.getSecond().doubleValue() == 0)
+                rangeX.set(rangeXd.getFirst(), rangeXd.getSecond());
             else
-                rangeX.set(Math.min(rangeX.get1().doubleValue(), rangeXd.get1().doubleValue()), Math.max(rangeX.get2().doubleValue(), rangeXd.get2().doubleValue()));
-            if (rangeY.get1().doubleValue() == 0 && rangeY.get2().doubleValue() == 0)
-                rangeY.set(rangeYd.get1(), rangeYd.get2());
+                rangeX.set(Math.min(rangeX.getFirst().doubleValue(), rangeXd.getFirst().doubleValue()), Math.max(rangeX.getSecond().doubleValue(), rangeXd.getSecond().doubleValue()));
+            if (rangeY.getFirst().doubleValue() == 0 && rangeY.getSecond().doubleValue() == 0)
+                rangeY.set(rangeYd.getFirst(), rangeYd.getSecond());
             else
-                rangeY.set(Math.min(rangeY.get1().doubleValue(), rangeYd.get1().doubleValue()), Math.max(rangeY.get2().doubleValue(), rangeYd.get2().doubleValue()));
+                rangeY.set(Math.min(rangeY.getFirst().doubleValue(), rangeYd.getFirst().doubleValue()), Math.max(rangeY.getSecond().doubleValue(), rangeYd.getSecond().doubleValue()));
         }
     }
 

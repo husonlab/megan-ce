@@ -56,11 +56,11 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                 final int direction = (which.equalsIgnoreCase("up") ? -1 : 1);
 
                 final SortedSet<Pair<Number, String>> sorted = new TreeSet<>((pair1, pair2) -> {
-                    if (pair1.get1().doubleValue() > pair2.get1().doubleValue())
+                    if (pair1.getFirst().doubleValue() > pair2.getFirst().doubleValue())
                         return -direction;
-                    if (pair1.get1().doubleValue() < pair2.get1().doubleValue())
+                    if (pair1.getFirst().doubleValue() < pair2.getFirst().doubleValue())
                         return direction;
-                    return pair1.get2().compareTo(pair2.get2());
+                    return pair1.getSecond().compareTo(pair2.getSecond());
                 });
                 if (list == chartViewer.getSeriesList()) {
                     final IData chartData = chartViewer.getChartData();
@@ -69,14 +69,14 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                         if (chartViewer.getChartData() instanceof IChartData)
                             value = ((IChartData) chartData).getTotalForSeries(label);
                         else
-                            value = ((IPlot2DData) chartData).getRangeX().get2();
+                            value = ((IPlot2DData) chartData).getRangeX().getSecond();
                         if (value == null)
                             value = 0;
                         sorted.add(new Pair<>(value, label));
                     }
                     final LinkedList<String> labels = new LinkedList<>();
                     for (Pair<Number, String> pair : sorted) {
-                        labels.add(pair.get2());
+                        labels.add(pair.getSecond());
                     }
                     list.sync(labels, list.getLabel2ToolTips(), true);
                 } else if (chartViewer.getChartData() instanceof IChartData) {
@@ -87,7 +87,7 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                     }
                     final LinkedList<String> labels = new LinkedList<>();
                     for (Pair<Number, String> pair : sorted) {
-                        labels.add(pair.get2());
+                        labels.add(pair.getSecond());
                     }
                     list.sync(labels, list.getLabel2ToolTips(), true);
                 }

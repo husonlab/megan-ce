@@ -275,60 +275,63 @@ public class MyGraphViewListener implements IGraphViewListener {
         viewer.trans.w2d(bbox, bboxDC);
         boolean hit = false;
 
-        Rectangle labelBox = null;
-        final NodeView nv = viewer.getNV(v);
-        if (nv != null && nv.getLabel() != null && nv.getLabel().length() > 0 && nv.getLabelVisible())
-            labelBox = nv.getLabelRect(viewer.trans);
+        try {
+            Rectangle labelBox = null;
+            final NodeView nv = viewer.getNV(v);
+            if (nv != null && nv.getLabel() != null && nv.getLabel().length() > 0 && nv.getLabelVisible())
+                labelBox = nv.getLabelRect(viewer.trans);
 
-        if (bboxDC.contains(x, y) || v.getInDegree() == 0 || v.getOutDegree() == 0
-                || (labelBox != null && labelBox.contains(x, y))) // always check root and leaves
-        {
-            if (viewer.getLocation(v) != null && viewer.getBox(v).contains(x, y)) {
-                hitNodes.add(v);
-                hit = true;
-                if (onlyOne)
-                    return true;
-            }
-            if (viewer.getLabel(v) != null && viewer.getLocation(v) != null && viewer.getLabelVisible(v) && viewer.getLabelRect(v) != null && viewer.getLabelRect(v).contains(x, y)) {
-                hitNodeLabels.add(v);
-                hit = true;
-                if (onlyOne)
-                    return true;
-            }
-            for (Edge f = v.getFirstAdjacentEdge(); !hit && f != null; f = v.getNextAdjacentEdge(f)) {
-                if (f != e0) {
-                    Node w = v.getOpposite(f);
-                    NodeView vv = viewer.getNV(v);
-                    NodeView wv = viewer.getNV(w);
-                    if (vv.getLocation() == null || wv.getLocation() == null)
-                        continue;
-                    Point vp = vv.computeConnectPoint(wv.getLocation(), viewer.trans);
-                    Point wp = wv.computeConnectPoint(vv.getLocation(), viewer.trans);
-
-                    if (tree.findDirectedEdge(v, w) != null)
-                        viewer.adjustBiEdge(Objects.requireNonNull(vp), Objects.requireNonNull(wp)); // adjust for parallel edge
-
-                    if (viewer.getEV(f).hitEdge(vp, wp, viewer.trans, x, y, 3)) {
-                        hitEdges.add(f);
-                        hit = true;
-                        if (onlyOne)
-                            return true;
-                    }
-                    viewer.getEV(f).setLabelReferenceLocation(vp, wp, viewer.trans);
-                    if (viewer.getLabel(f) != null && viewer.getLabel(f).length() > 0 && viewer.getLabelVisible(f) && viewer.getLabelRect(f) != null &&
-                            viewer.getLabelRect(f).contains(x, y)) {
-                        hitEdgeLabels.add(f);
-                        hit = true;
-                        if (onlyOne)
-                            return true;
-                    }
-                    if (!hit)
-                        hit = getHitsRec(x, y, w, f, onlyOne);
-                    if (hit && onlyOne)
+            if (bboxDC.contains(x, y) || v.getInDegree() == 0 || v.getOutDegree() == 0
+                    || (labelBox != null && labelBox.contains(x, y))) // always check root and leaves
+            {
+                if (viewer.getLocation(v) != null && viewer.getBox(v).contains(x, y)) {
+                    hitNodes.add(v);
+                    hit = true;
+                    if (onlyOne)
                         return true;
+                }
+                if (viewer.getLabel(v) != null && viewer.getLocation(v) != null && viewer.getLabelVisible(v) && viewer.getLabelRect(v) != null && viewer.getLabelRect(v).contains(x, y)) {
+                    hitNodeLabels.add(v);
+                    hit = true;
+                    if (onlyOne)
+                        return true;
+                }
+                for (Edge f = v.getFirstAdjacentEdge(); !hit && f != null; f = v.getNextAdjacentEdge(f)) {
+                    if (f != e0) {
+                        Node w = v.getOpposite(f);
+                        NodeView vv = viewer.getNV(v);
+                        NodeView wv = viewer.getNV(w);
+                        if (vv.getLocation() == null || wv.getLocation() == null)
+                            continue;
+                        Point vp = vv.computeConnectPoint(wv.getLocation(), viewer.trans);
+                        Point wp = wv.computeConnectPoint(vv.getLocation(), viewer.trans);
+
+                        if (tree.findDirectedEdge(v, w) != null)
+                            viewer.adjustBiEdge(Objects.requireNonNull(vp), Objects.requireNonNull(wp)); // adjust for parallel edge
+
+                        if (viewer.getEV(f).hitEdge(vp, wp, viewer.trans, x, y, 3)) {
+                            hitEdges.add(f);
+                            hit = true;
+                            if (onlyOne)
+                                return true;
+                        }
+                        viewer.getEV(f).setLabelReferenceLocation(vp, wp, viewer.trans);
+                        if (viewer.getLabel(f) != null && viewer.getLabel(f).length() > 0 && viewer.getLabelVisible(f) && viewer.getLabelRect(f) != null &&
+                                viewer.getLabelRect(f).contains(x, y)) {
+                            hitEdgeLabels.add(f);
+                            hit = true;
+                            if (onlyOne)
+                                return true;
+                        }
+                        if (!hit)
+                            hit = getHitsRec(x, y, w, f, onlyOne);
+                        if (hit && onlyOne)
+                            return true;
+                    }
                 }
             }
         }
+        catch(NotOwnerException ignored){}
         return hit;
     }
 
@@ -363,48 +366,51 @@ public class MyGraphViewListener implements IGraphViewListener {
      * @return has hit something
      */
     private boolean getHitsRec(Rectangle rect, Node v, Edge e0) {
-        Rectangle bbox = node2bbox.get(v);
-        Rectangle bboxDC = new Rectangle();
-        viewer.trans.w2d(bbox, bboxDC);
-        int height = bboxDC.height;
         boolean hit = false;
+        try {
+            Rectangle bbox = node2bbox.get(v);
+            Rectangle bboxDC = new Rectangle();
+            viewer.trans.w2d(bbox, bboxDC);
+            int height = bboxDC.height;
 
-        // grow box slightly to capture labels
-        bboxDC.add(bboxDC.getMinX() - 20, bboxDC.getMinY() - 20);
-        bboxDC.add(bboxDC.getMaxX() + 20, bboxDC.getMaxY() + 20);
+            // grow box slightly to capture labels
+            bboxDC.add(bboxDC.getMinX() - 20, bboxDC.getMinY() - 20);
+            bboxDC.add(bboxDC.getMaxX() + 20, bboxDC.getMaxY() + 20);
 
-        if (bboxDC.intersects(rect) || v.getInDegree() == 0 || v.getOutDegree() == 0) // always check root and leaves
-        {
-            if (viewer.getLocation(v) != null && rect.contains(viewer.getBox(v))) {
-                hitNodes.add(v);
-                hit = true;
-            }
-            if (viewer.getLabel(v) != null && viewer.getLocation(v) != null && viewer.getLabelVisible(v) && viewer.getLabelRect(v) != null
-                    && rect.contains(viewer.getLabelRect(v))) {
-                hitNodeLabels.add(v);
-                hit = true;
-            }
-            if (viewer.getGraph().getDegree(v) > 1 && height / (viewer.getGraph().getDegree(v) - 1) < 2)
-                return hit; // box is too small to see
+            if (bboxDC.intersects(rect) || v.getInDegree() == 0 || v.getOutDegree() == 0) // always check root and leaves
+            {
+                if (viewer.getLocation(v) != null && rect.contains(viewer.getBox(v))) {
+                    hitNodes.add(v);
+                    hit = true;
+                }
+                if (viewer.getLabel(v) != null && viewer.getLocation(v) != null && viewer.getLabelVisible(v) && viewer.getLabelRect(v) != null
+                        && rect.contains(viewer.getLabelRect(v))) {
+                    hitNodeLabels.add(v);
+                    hit = true;
+                }
+                if (viewer.getGraph().getDegree(v) > 1 && height / (viewer.getGraph().getDegree(v) - 1) < 2)
+                    return hit; // box is too small to see
 
-            for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
-                if (f != e0) {
-                    Node w = f.getOpposite(v);
-                    if (viewer.getLocation(v) != null && viewer.getLocation(w) != null &&
-                            rect.contains(viewer.trans.w2d(viewer.getLocation(v)))
-                            && rect.contains(viewer.trans.w2d(viewer.getLocation(w))))
-                        hitEdges.add(f);
+                for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
+                    if (f != e0) {
+                        Node w = f.getOpposite(v);
+                        if (viewer.getLocation(v) != null && viewer.getLocation(w) != null &&
+                                rect.contains(viewer.trans.w2d(viewer.getLocation(v)))
+                                && rect.contains(viewer.trans.w2d(viewer.getLocation(w))))
+                            hitEdges.add(f);
 
-                    if (viewer.getLabel(f) != null && viewer.getLabelVisible(f) && viewer.getLabelRect(f) != null &&
-                            rect.contains(viewer.getLabelRect(f))) {
-                        hitEdgeLabels.add(f);
-                        hit = true;
+                        if (viewer.getLabel(f) != null && viewer.getLabelVisible(f) && viewer.getLabelRect(f) != null &&
+                                rect.contains(viewer.getLabelRect(f))) {
+                            hitEdgeLabels.add(f);
+                            hit = true;
+                        }
+                        if (getHitsRec(rect, w, f))
+                            hit = true;
                     }
-                    if (getHitsRec(rect, w, f))
-                        hit = true;
                 }
             }
         }
+        catch(NotOwnerException ignored){}
         return hit;
     }
 

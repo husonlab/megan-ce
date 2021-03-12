@@ -812,18 +812,16 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             setLocation(v, null);
             getNV(v).setFixedSize(true);
         }
-        taxonLevel = 0; // number of leaves placed
-
 
         if (getDrawerType() == DiagramType.RectangularPhylogram || getDrawerType() == DiagramType.RoundedPhylogram) {
-            embedPhylogramRec(root, null, 0);
+            embedPhylogramRec(root, null, 0,new Counter(0));
             if (getDrawerType() == DiagramType.RoundedPhylogram) {
                 for (Edge e = getTree().getFirstEdge(); e != null; e = getTree().getNextEdge(e))
                     getEV(e).setShape(EdgeView.ROUNDED_EDGE);
             }
         } else //  getDrawerType().equals(DiagramType.RectangularCladogram
         {
-            embedCladogramRec(root, null);
+            embedCladogramRec(root, PhyloTree.getDepth(root),new Counter(0));
             if (getDrawerType() == DiagramType.RoundedCladogram) {
                 for (Edge e = getTree().getFirstEdge(); e != null; e = getTree().getNextEdge(e))
                     getEV(e).setShape(EdgeView.ROUNDED_EDGE);
@@ -851,20 +849,19 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         return nodes;
     }
 
-    private int taxonLevel;
-
     /**
      * recursively does the work
      *
      * @param v
-     * @param e
-     * @return bbounding box of subtree
+     * @param hLevel // 0: leaf, max-value: root
+     * @param leavesPlaced leaves placed
+     * @return bounding box of subtree
      */
-    private Rectangle embedCladogramRec(Node v, Edge e) {
+    private Rectangle embedCladogramRec(Node v,int hLevel,Counter leavesPlaced) {
         Rectangle bbox = null;
 
-        for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-            Rectangle subBox = embedCladogramRec(f.getOpposite(v), f);
+        for(var w:v.children()) {
+            Rectangle subBox = embedCladogramRec(w, hLevel-1,leavesPlaced);
             if (bbox == null)
                 bbox = subBox;
             else
@@ -874,11 +871,11 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         Point location;
         if (bbox == null) // no dependent subtree, make new box
         {
-            location = new Point(0, XSTEP * taxonLevel++);
+            location = new Point(0, YSTEP * (int)leavesPlaced.getAndIncrement());
             bbox = new Rectangle(location.x, location.y, HLEAFBOX, YSTEP);
             setLocation(v, location);
         } else {
-            location = new Point(bbox.x - XSTEP, bbox.y + (bbox.height - YSTEP) / 2);
+            location = new Point(- XSTEP*hLevel, bbox.y + (bbox.height - YSTEP) / 2);
             bbox.add(location);
             setLocation(v, location);
         }
@@ -923,12 +920,12 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
      * @param level
      * @return bbounding box of subtree
      */
-    private Rectangle embedPhylogramRec(Node v, Edge e, int level) {
+    private Rectangle embedPhylogramRec(Node v, Edge e, int level, Counter numberOfLeaves) {
         Rectangle bbox = null;
 
         for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
             if (f != e) {
-                Rectangle subBox = embedPhylogramRec(f.getOpposite(v), f, level + 1);
+                Rectangle subBox = embedPhylogramRec(f.getOpposite(v), f, level + 1,numberOfLeaves);
                 if (bbox == null)
                     bbox = subBox;
                 else
@@ -939,7 +936,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         Point location;
         if (bbox == null) // no dependent subtree, make new box
         {
-            location = new Point(XSTEP * level, YSTEP * taxonLevel++);
+            location = new Point(XSTEP * level, YSTEP * (int)numberOfLeaves.getAndIncrement());
             bbox = new Rectangle(location.x, location.y, HLEAFBOX, YSTEP);
             setLocation(v, location);
         } else {

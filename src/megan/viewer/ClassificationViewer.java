@@ -510,7 +510,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             SyncDataTableAndClassificationViewer.syncFormattingFromViewer2Summary(this, doc.getDataTable());
 
         classification.getFullTree().extractInducedTree(id2NodeData, getCollapsedIds(), tree, id2Nodes);
-        nodeDrawer.setCounts(determineMaxAssigned());
+        nodeDrawer.setCounts(determineMaxCount());
 
         if (tree.getRoot() != null) {
             embedTree(tree.getRoot());
@@ -1149,9 +1149,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         } else // draw the edges in detail
         {
             // use edges back-to-front so that grey edges get drawn first!
-            for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-                Node w = v.getOpposite(f);
-
+            for(var f:v.outEdges()) {
+                var w = v.getOpposite(f);
 
                 Point2D nextToV = getNV(w).getLocation();
                 Point2D nextToW = getNV(v).getLocation();
@@ -1173,6 +1172,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 if (ev.getLineWidth() != ((BasicStroke) gc.getStroke()).getLineWidth()) {
                     gc.setStroke(new BasicStroke(ev.getLineWidth()));
                 }
+
+                //var edgeWidth=(nodeDrawer.getStyle()== NodeDrawer.Style.Circle?NodeView.computeScaledHeight(trans,nv.getWidth()):-1);
 
                 ev.draw(gc, pv, pw, trans, getSelected(f));
 

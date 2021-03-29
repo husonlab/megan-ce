@@ -39,11 +39,12 @@ public class DrawScaleBox {
      * draw the scale box
      */
     public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer nodeDrawer) {
-        draw(g, x, y, doc,
-                nodeDrawer.getStyle(), nodeDrawer.getScalingType(), (int) Math.round(nodeDrawer.getMaxTotalCount()), nodeDrawer.getMaxNodeHeight());
+        if(nodeDrawer.getScaleBy()!= NodeDrawer.ScaleBy.None) {
+            draw(nodeDrawer.getScaleBy().name(),g, x, y, doc, nodeDrawer.getStyle(), nodeDrawer.getScalingType(), (int) Math.round(nodeDrawer.getMaxValue()), nodeDrawer.getMaxNodeHeight());
+        }
     }
 
-    public static void draw(Graphics g, int x, int y, Document doc, NodeDrawer.Style style, ScalingType scalingType, int maxCount, int maxNodeSize) {
+    public static void draw(String label,Graphics g, int x, int y, Document doc, NodeDrawer.Style style, ScalingType scalingType, int maxCount, int maxNodeSize) {
         var colorGradient = (doc != null ? new ColorGradient(doc.getChartColorManager().getHeatMapTable(), maxCount) : null);
 
         if (maxCount > 1) {
@@ -52,9 +53,9 @@ public class DrawScaleBox {
                 g.setColor(Color.GRAY);
                 g.setFont(Font.decode("Arial-12"));
 
-                g.drawString("Scale:", x, y + 15);
+                g.drawString(label+":", x, y + 15);
 
-                final int x1 = x + 40;
+                final int x1 = x + 8*label.length();
 
                 if (style == NodeDrawer.Style.HeatMap) {
                     drawHeatMapScale(g, x1, y, colorGradient, scalingType, maxCount);

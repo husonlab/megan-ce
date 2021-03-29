@@ -48,6 +48,7 @@ public class ColorSamplesByAttributeCommand extends CommandBase implements IChec
             for (String sample : doc.getSampleNames()) {
                 doc.getSampleAttributeTable().putSampleColor(sample, null);
             }
+            execute("set colorBy=position;");
         } else if (getViewer() instanceof SamplesViewer) {
             final SamplesViewer viewer = ((SamplesViewer) getViewer());
             viewer.getFrame().toFront();
@@ -60,7 +61,7 @@ public class ColorSamplesByAttributeCommand extends CommandBase implements IChec
     }
 
     public boolean isApplicable() {
-        return getViewer() instanceof SamplesViewer && ((SamplesViewer) getViewer()).getSamplesTableView().getCountSelectedAttributes() > 0;
+        return getViewer() instanceof SamplesViewer && isSelected();
     }
 
     public static final String ALT_NAME = "Color Samples By Attributes CBOX";

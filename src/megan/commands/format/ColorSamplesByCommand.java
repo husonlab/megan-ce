@@ -80,6 +80,7 @@ public class ColorSamplesByCommand extends CommandBase implements ICommand {
                 doc.getSampleAttributeTable().putSampleColor(sample, color);
             }
         }
+        doc.getChartColorManager().setColorByPosition(false);
         doc.setDirty(true);
     }
 

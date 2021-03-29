@@ -89,7 +89,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         }
 
         if (sgc == null)
-            DrawScaleBox.draw(gc, x1, y1 + 40, null, NodeDrawer.Style.Circle, scalingType == ScalingType.PERCENT ? ScalingType.SQRT : scalingType, (int) Math.round(maxCount), maxRadius);
+            DrawScaleBox.draw("Scale",gc, x1, y1 + 40, null, NodeDrawer.Style.Circle, scalingType == ScalingType.PERCENT ? ScalingType.SQRT : scalingType, (int) Math.round(maxCount), maxRadius);
 
         double factor = (maxValue > 0 ? getMaxRadius() / maxValue : 1);
 
@@ -217,7 +217,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
         }
 
         if (sgc == null)
-            DrawScaleBox.draw(gc, x1, y1 + 40, null, NodeDrawer.Style.Circle, scalingType == ScalingType.PERCENT ? ScalingType.SQRT : scalingType, (int) Math.round(maxCount), maxRadius);
+            DrawScaleBox.draw("Scale",gc, x1, y1 + 40, null, NodeDrawer.Style.Circle, scalingType == ScalingType.PERCENT ? ScalingType.SQRT : scalingType, (int) Math.round(maxCount), maxRadius);
 
         double factor = (maxValue > 0 ? getMaxRadius() / maxValue : 1);
 

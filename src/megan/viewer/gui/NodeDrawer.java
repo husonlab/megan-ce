@@ -177,6 +177,10 @@ public class NodeDrawer implements INodeDrawer {
         return maxTotalCount;
     }
 
+    public double getMaxValue() {
+        return maxValue;
+    }
+
     public int getMaxNodeHeight() {
         return maxNodeHeight;
     }

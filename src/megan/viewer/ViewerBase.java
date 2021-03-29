@@ -133,16 +133,17 @@ abstract public class ViewerBase extends PhyloTreeView {
      *
      * @return max number
      */
-    double[] determineMaxAssigned() {
+    double[] determineMaxCount() {
+        var useSummarized=(getNodeDrawer().getScaleBy()!= NodeDrawer.ScaleBy.Assigned);
         // determine maximum count of reads on any given node:
         double maxSingleCount = 1;
         double maxTotalCount = 1;
-        for (Node v = getTree().getFirstNode(); v != null; v = v.getNext()) {
+        for(var v:getTree().nodes()) {
             NodeData data = (NodeData) v.getData();
             int id = (Integer) v.getInfo();
             if (data != null && (id > 0 || id < -3)) {
-                maxTotalCount = Math.max(maxTotalCount, v.getOutDegree() > 0 ? data.getCountAssigned() : data.getCountSummarized());
-                float[] array = (v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                maxTotalCount = Math.max(maxTotalCount, v.getOutDegree() == 0 || useSummarized ? data.getCountSummarized() : data.getCountAssigned());
+                float[] array = (v.getOutDegree() == 0 || useSummarized? data.getSummarized() : data.getAssigned());
                 for (float a : array)
                     maxSingleCount = Math.max(maxSingleCount, a);
 

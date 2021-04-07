@@ -1,5 +1,5 @@
 /*
- * NeighborNet.java Copyright (C) 2020. Daniel H. Huson
+ * NeighborNet.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -441,7 +441,7 @@ public class NeighborNet {
             x = x.next;
         }
 
-        /* extract the ordering */
+        /* extractSubGraph the ordering */
         NetNode a = x;
         int t = 0;
         do {

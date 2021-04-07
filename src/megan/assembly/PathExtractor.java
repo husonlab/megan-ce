@@ -1,5 +1,5 @@
 /*
- * PathExtractor.java Copyright (C) 2020. Daniel H. Huson
+ * PathExtractor.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -80,7 +80,7 @@ public class PathExtractor {
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
 
-        // extract contigs from graph, deleting their nodes
+        // extractSubGraph contigs from graph, deleting their nodes
         progress.setSubtask("Extracting paths");
         progress.setMaximum(overlapGraphWorkingCopy.getNumberOfNodes());
         progress.setProgress(0);

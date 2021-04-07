@@ -1,5 +1,5 @@
 /*
- * CDS.java Copyright (C) 2020. Daniel H. Huson
+ * CDS.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -88,7 +88,7 @@ public class CDS {
     }
 
     /**
-     * parse GFF files to extract CDS
+     * parse GFF files to extractSubGraph CDS
      *
      * @param inputFiles
      * @return list of CDS items

@@ -1,5 +1,5 @@
 /*
- * ExtractToNewDocumentRMA6.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractToNewDocumentRMA6.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -31,12 +31,12 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * extract a given classification and class-ids to a new document
+ * extractSubGraph a given classification and class-ids to a new document
  * Daniel Huson, 4.2015
  */
 public class ExtractToNewDocumentRMA6 {
     /**
-     * extract all named classes in the given classsification to a new RMA6 file
+     * extractSubGraph all named classes in the given classsification to a new RMA6 file
      *
      * @param sourceRMA6FileName
      * @param sourceClassification
@@ -56,7 +56,7 @@ public class ExtractToNewDocumentRMA6 {
         final boolean pairedReads = sourceRMA6File.getHeaderSectionRMA6().isPairedReads();
         final String[] cNames = sourceRMA6File.getHeaderSectionRMA6().getMatchClassNames();
 
-        // determine the set of all positions to extract:
+        // determine the set of all positions to extractSubGraph:
         final ClassificationBlockRMA6 block = new ClassificationBlockRMA6(sourceClassification);
         long start = sourceRMA6File.getFooterSectionRMA6().getStartClassification(sourceClassification);
         block.read(start, sourceRMA6File.getReader());

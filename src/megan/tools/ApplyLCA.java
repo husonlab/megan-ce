@@ -1,5 +1,5 @@
 /*
- * ApplyLCA.java Copyright (C) 2020. Daniel H. Huson
+ * ApplyLCA.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -65,7 +65,7 @@ public class ApplyLCA {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA to taxon-ids");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String inputFile = options.getOptionMandatory("-i", "input", "Input  file (stdin ok)", "");

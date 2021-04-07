@@ -1,5 +1,5 @@
 /*
- * ExtractSamplesCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractSamplesCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -51,7 +51,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         SamplesViewer viewer = (SamplesViewer) getViewer();
         List<String> samples = viewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
+            execute("extractSubGraph samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 

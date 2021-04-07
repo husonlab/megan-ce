@@ -1,5 +1,5 @@
 /*
- * ReadExtractorTool.java Copyright (C) 2020. Daniel H. Huson
+ * ReadExtractorTool.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -76,7 +76,7 @@ public class ReadExtractorTool {
     private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Extracts reads from a DAA or RMA file by classification");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output");
@@ -86,7 +86,7 @@ public class ReadExtractorTool {
         options.comment("Commands");
         final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
         final String classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
-        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
+        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extractSubGraph reads from (default: extractSubGraph all classes)", new String[0])));
         final boolean all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
 
         options.comment(ArgsOptions.OTHER);
@@ -138,7 +138,7 @@ public class ReadExtractorTool {
     }
 
     /**
-     * extract all reads for each specified classes, or all classes, if none specified
+     * extractSubGraph all reads for each specified classes, or all classes, if none specified
      *
      * @param extractCorrectedReads
      * @param classificationName

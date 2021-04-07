@@ -1,5 +1,5 @@
 /*
- * ExtractToNewDocumentCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractToNewDocumentCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -53,12 +53,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * extract to new document command
+ * extractSubGraph to new document command
  * Daniel Huson, 2.2011, 4.2015
  */
 public class ExtractToNewDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract what=document file=<megan-filename> [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
+        return "extractSubGraph what=document file=<megan-filename> [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
                 "\t[ids=<SELECTED|numbers...>] [includeCollapsed={true|false}];";
     }
 
@@ -67,7 +67,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
         final MainViewer mainViewer = srcDir.getMainViewer();
         final Document srcDoc = srcDir.getDocument();
 
-        np.matchIgnoreCase("extract what=document");
+        np.matchIgnoreCase("extractSubGraph what=document");
 
         np.matchIgnoreCase("file=");
         final String tarFileName = np.getAbsoluteFileName();
@@ -107,7 +107,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
 
 
         if (ids.size() == 0) {
-            NotificationsInSwing.showWarning("Nothing to extract");
+            NotificationsInSwing.showWarning("Nothing to extractSubGraph");
             return;
         }
 
@@ -215,7 +215,7 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
 
         if (file != null) {
             final String data = (getViewer() instanceof ClassificationViewer ? getViewer().getClassName() : ClassificationType.Taxonomy.toString());
-            execute("extract what=document file='" + file.getPath() + "' data=" + data + " ids=selected includeCollapsed=true;");
+            execute("extractSubGraph what=document file='" + file.getPath() + "' data=" + data + " ids=selected includeCollapsed=true;");
         } else
             dir.notifyUnlockInput();
     }

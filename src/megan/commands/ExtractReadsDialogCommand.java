@@ -1,5 +1,5 @@
 /*
- * ExtractReadsDialogCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractReadsDialogCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -41,7 +41,7 @@ import java.util.Set;
 
 public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract what=reads outDir=<directory> outFile=<filename-template> [data={"
+        return "extractSubGraph what=reads outDir=<directory> outFile=<filename-template> [data={"
                 + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}][ids=<SELECTED|numbers...>]\n" +
                 "\t[names=<names...>] [allBelow={false|true}];";
     }
@@ -50,7 +50,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
         final Director dir = getDir();
         final Document doc = dir.getDocument();
 
-        np.matchIgnoreCase("extract what=reads");
+        np.matchIgnoreCase("extractSubGraph what=reads");
         np.matchIgnoreCase("outdir=");
         String outDirectory = np.getWordFileNamePunctuation();
         np.matchIgnoreCase("outfile=");
@@ -119,7 +119,7 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
         }
 
         if (ids.size() == 0) {
-            NotificationsInSwing.showWarning(viewer.getFrame(), "Nothing to extract");
+            NotificationsInSwing.showWarning(viewer.getFrame(), "Nothing to extractSubGraph");
             return;
         }
 

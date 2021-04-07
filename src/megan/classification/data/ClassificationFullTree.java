@@ -1,5 +1,5 @@
 /*
- * ClassificationFullTree.java Copyright (C) 2020. Daniel H. Huson
+ * ClassificationFullTree.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -210,7 +210,7 @@ public class ClassificationFullTree extends PhyloTree {
     }
 
     /**
-     * extract the induced tree
+     * extractSubGraph the induced tree
      *
      * @param id2data
      * @param collapsedIds

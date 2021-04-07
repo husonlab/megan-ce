@@ -1,5 +1,5 @@
 /*
- * ExtractToNewDocument.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractToNewDocument.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -33,12 +33,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * extract a given classification and class-ids to a new document
+ * extractSubGraph a given classification and class-ids to a new document
  * Daniel Huson, 4.2015
  */
 public class ExtractToNewDocument {
     /**
-     * extract all named classes in the given classsification to a new RMA6 file
+     * extractSubGraph all named classes in the given classsification to a new RMA6 file
      *
      * @param srcDoc
      * @param srcClassification
@@ -57,7 +57,7 @@ public class ExtractToNewDocument {
         rma6FileCreator.startAddingQueries();
 
         try { // user might cancel inside this block
-            // determine the set of all positions to extract:
+            // determine the set of all positions to extractSubGraph:
             try (IReadBlockIterator iterator = connector.getReadsIteratorForListOfClassIds(srcClassification, srcClassIds, 0, 10, true, true)) {
                 progress.setTasks("Extracting", "Processing file: " + Basic.getFileNameWithoutPath(srcDoc.getMeganFile().getFileName()));
                 progress.setProgress(0);

@@ -1,5 +1,5 @@
 /*
- * ApplyCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ApplyCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -80,7 +80,7 @@ public class ApplyCommand extends CommandBase implements ICommand {
 
         StringBuilder buf = new StringBuilder();
 
-        buf.append("extract what=reads");
+        buf.append("extractSubGraph what=reads");
         buf.append(" outdir='");
         buf.append(outDirectory.getText()).append("'");
         buf.append(" outfile='");

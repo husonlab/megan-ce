@@ -1,5 +1,5 @@
 /*
- * CompareByAttributeCommand.java Copyright (C) 2020. Daniel H. Huson
+ * CompareByAttributeCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -90,7 +90,7 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
                 final String fileName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "-"+tarName+ ".megan");
                   final List<String> samples=tarSample2SrcSamples.get(tarName);
                   if(samples.size()>0)
-                    commands.add(String.format("extract samples='%s' file='%s';",Basic.toString(samples,"' '"),fileName));
+                    commands.add(String.format("extractSubGraph samples='%s' file='%s';",Basic.toString(samples,"' '"),fileName));
             }
         }
         executeImmediately(Basic.toString(commands,"\n"));

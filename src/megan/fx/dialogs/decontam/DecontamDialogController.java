@@ -1,5 +1,5 @@
 /*
- *  DecontamDialogController.java Copyright (C) 2020. Daniel H. Huson GPL
+ *  DecontamDialogController.java Copyright (C) 2021. Daniel H. Huson GPL
  *
  *   (Some files contain contributions from other authors, who are then mentioned separately.)
  *

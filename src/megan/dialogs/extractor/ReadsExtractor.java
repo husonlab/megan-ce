@@ -1,5 +1,5 @@
 /*
- * ReadsExtractor.java Copyright (C) 2020. Daniel H. Huson
+ * ReadsExtractor.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -40,7 +40,7 @@ import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
- * extract reads using the IConnector
+ * extractSubGraph reads using the IConnector
  * Daniel Huson, 4.2010
  */
 public class ReadsExtractor {
@@ -102,7 +102,7 @@ public class ReadsExtractor {
                     all.addAll(classId2Descendants.get(classId));
 
                 boolean first = true;
-                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extract-reads", false);
+                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extractSubGraph-reads", false);
 
                 try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
                     while (it.hasNext()) {
@@ -149,7 +149,7 @@ public class ReadsExtractor {
     }
 
     /**
-     * extract all reads belonging to a given set of taxon ids
+     * extractSubGraph all reads belonging to a given set of taxon ids
      *
      * @param progressListener
      * @param taxIds
@@ -173,7 +173,7 @@ public class ReadsExtractor {
     }
 
     /**
-     * extract all reads belonging to a given set of  ids
+     * extractSubGraph all reads belonging to a given set of  ids
      *
      * @param progressListener
      * @param classIds

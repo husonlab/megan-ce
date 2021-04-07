@@ -1,5 +1,5 @@
 /*
- * CollapseSelectedNodesCommand.java Copyright (C) 2020. Daniel H. Huson
+ * CollapseSelectedNodesCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *

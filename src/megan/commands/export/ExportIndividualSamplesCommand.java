@@ -1,5 +1,5 @@
 /*
- * ExportIndividualSamplesCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ExportIndividualSamplesCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -42,11 +42,11 @@ import java.util.Collections;
 
 public class ExportIndividualSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract directory=<target-directory> replace={true|false};";
+        return "extractSubGraph directory=<target-directory> replace={true|false};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("extract directory=");
+        np.matchIgnoreCase("extractSubGraph directory=");
         final String directory = np.getWordFileNamePunctuation();
         final boolean replace;
         if (np.peekMatchIgnoreCase("replace")) {
@@ -92,7 +92,7 @@ public class ExportIndividualSamplesCommand extends CommandBase implements IComm
 
             if (file != null) {
                 ProgramProperties.put(MeganProperties.SAVEFILE, file);
-                execute("extract directory='" + file.getParent() + "' replace=true;");
+                execute("extractSubGraph directory='" + file.getParent() + "' replace=true;");
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * GUIConfiguration.java Copyright (C) 2020. Daniel H. Huson
+ * GUIConfiguration.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *  No usage, copying or distribution without explicit permission.

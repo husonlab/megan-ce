@@ -1,5 +1,5 @@
 /*
- * SampleAttributeTable.java Copyright (C) 2020. Daniel H. Huson
+ * SampleAttributeTable.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -119,7 +119,7 @@ public class SampleAttributeTable {
     }
 
     /**
-     * extract a metadata table containing the named samples
+     * extractSubGraph a metadata table containing the named samples
      *
      * @param samples
      * @return the new table

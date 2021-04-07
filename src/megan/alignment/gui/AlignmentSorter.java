@@ -1,5 +1,5 @@
 /*
- * AlignmentSorter.java Copyright (C) 2020. Daniel H. Huson
+ * AlignmentSorter.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -183,7 +183,7 @@ public class AlignmentSorter {
     }
 
     /**
-     * extract chain of nodes
+     * extractSubGraph chain of nodes
      *
      * @param v
      * @param e

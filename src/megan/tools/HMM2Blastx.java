@@ -1,5 +1,5 @@
 /*
- * HMM2Blastx.java Copyright (C) 2020. Daniel H. Huson
+ * HMM2Blastx.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -66,7 +66,7 @@ public class HMM2Blastx {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Converts HMM output to BLASTX");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final String[] inputFiles = options.getOptionMandatory("-i", "input", "HMM  files", new String[0]);

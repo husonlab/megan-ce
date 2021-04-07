@@ -1,5 +1,5 @@
 /*
- * ExtractSamplesCommand.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractSamplesCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -38,12 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * * extract samples command
+ * * extractSubGraph samples command
  * * Daniel Huson, 6.2015
  */
 public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract samples=<name1 name2 ...> [toFile=<name>];";
+        return "extractSubGraph samples=<name1 name2 ...> [toFile=<name>];";
     }
 
     /**
@@ -53,7 +53,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
      * @throws java.io.IOException
      */
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("extract");
+        np.matchIgnoreCase("extractSubGraph");
 
         final List<String> toExtract = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
             if (toExtract.size() == 1)
                 fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
             else
-                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
+                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extractSubGraph.megan")).toString();
         }
 
         final Director newDir = Director.newProject();

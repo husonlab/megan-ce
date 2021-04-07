@@ -1,5 +1,5 @@
 /*
- * DataTable.java Copyright (C) 2020. Daniel H. Huson
+ * DataTable.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -1239,7 +1239,7 @@ public class DataTable {
     }
 
     /**
-     * extract a set of samples to the given target
+     * extractSubGraph a set of samples to the given target
      *
      * @param samples
      * @param target

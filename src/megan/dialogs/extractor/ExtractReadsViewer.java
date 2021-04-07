@@ -1,5 +1,5 @@
 /*
- * ExtractReadsViewer.java Copyright (C) 2020. Daniel H. Huson
+ * ExtractReadsViewer.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -39,7 +39,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * extract reads dialog
+ * extractSubGraph reads dialog
  * Daniel Huson, 6.2007 (infight from Dubai to Christchurch)
  */
 public class ExtractReadsViewer extends JFrame implements IDirectableViewer {

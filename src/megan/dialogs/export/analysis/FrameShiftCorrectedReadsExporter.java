@@ -1,5 +1,5 @@
 /*
- * FrameShiftCorrectedReadsExporter.java Copyright (C) 2020. Daniel H. Huson
+ * FrameShiftCorrectedReadsExporter.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -311,7 +311,7 @@ public class FrameShiftCorrectedReadsExporter {
     }
 
     /**
-     * parses the match text to extract the query alignment string and start and end positions
+     * parses the match text to extractSubGraph the query alignment string and start and end positions
      *
      * @param matchText
      * @return query string, nucleotide start and end positions

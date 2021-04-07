@@ -1,5 +1,5 @@
 /*
- * SplitSystem.java Copyright (C) 2020. Daniel H. Huson
+ * SplitSystem.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -164,7 +164,7 @@ public class SplitSystem {
     }
 
     /**
-     * recursively extract splits from tree. Also works for cluster networks.
+     * recursively extractSubGraph splits from tree. Also works for cluster networks.
      *
      * @param v
      * @param tree

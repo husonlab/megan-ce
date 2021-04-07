@@ -1,5 +1,5 @@
 /*
- * CompareSamplesCommand.java Copyright (C) 2020. Daniel H. Huson
+ * CompareSamplesCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -54,7 +54,7 @@ public class CompareSamplesCommand extends CommandBase implements ICommand {
         TimeSeriesViewer viewer = (TimeSeriesViewer) getViewer();
         Collection<String> samples = viewer.getDataJTable().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
+            execute("extractSubGraph samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 

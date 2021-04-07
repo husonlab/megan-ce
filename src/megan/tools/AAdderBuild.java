@@ -1,5 +1,5 @@
 /*
- * AAdderBuild.java Copyright (C) 2020. Daniel H. Huson
+ * AAdderBuild.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -76,7 +76,7 @@ public class AAdderBuild {
     private void run(String[] args) throws CanceledException, IOException, UsageException, SQLException {
         final ArgsOptions options = new ArgsOptions(args, this, "Build the index for AAdd");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input Output");

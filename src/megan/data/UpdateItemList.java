@@ -1,5 +1,5 @@
 /*
- * UpdateItemList.java Copyright (C) 2020. Daniel H. Huson
+ * UpdateItemList.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -233,7 +233,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * after appending a class to an existing class, sorts all UpdateItems so that they appear in the order in
      * which the reads occur in the file, for a given classId.
-     * This is useful for when we extract all reads for a given classId, as then we go through the file sequentially
+     * This is useful for when we extractSubGraph all reads for a given classId, as then we go through the file sequentially
      *
      * @param classificationId
      * @param classId

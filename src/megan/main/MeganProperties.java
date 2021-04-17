@@ -40,6 +40,8 @@ public class MeganProperties {
     public static final String MEGANFILE = "OpenFile";
     public static final String SAVEFILE = "SaveFile";
     public static final String TAXONOMYFILE = "TaxonomyFile";
+    public static final String ADDITION_CLASSIFICATION_FILES = "AdditionClassifications";
+
     public static final String CONTAMINANT_FILE = "ContaminantFile";
 
     public static final String MICROBIALATTRIBUTESFILE = "MicrobialAttributesFiles";

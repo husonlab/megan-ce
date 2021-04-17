@@ -33,13 +33,14 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 11.2010
  */
 public class UseDefaultTaxonomyFileCommand extends CommandBase implements ICommand {
+    public static final String NAME="Use Default NCBI Taxonomy";
     /**
      * get the name to be used as a menu label
      *
      * @return name
      */
     public String getName() {
-        return "Use Default NCBI Taxonomy";
+        return NAME;
     }
 
     /**

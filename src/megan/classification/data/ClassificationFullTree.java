@@ -152,7 +152,7 @@ public class ClassificationFullTree extends PhyloTree {
         }
 
         LCAAddressing.computeAddresses(this, id2Address, address2Id);
-        System.err.println(String.format("%,9d", getNumberOfNodes()));
+        System.err.printf("%,9d%n", getNumberOfNodes());
     }
 
 

@@ -39,8 +39,8 @@ public class ClassificationManager {
     private static final ArrayList<String> defaultClassificationsList = new ArrayList<>();
     private static final ArrayList<String> defaultClassificationsListExcludingNCBITaxonomy = new ArrayList<>();
 
-    private static final Map<String, String> additionalClassification2TreeFile = new HashMap<>();
-    private static final Map<String, String> additionalClassification2MapFile = new HashMap<>();
+    private static final Map<String, String> additionalClassificationName2TreeFile = new HashMap<>();
+    private static final Map<String, String> additionalClassificationName2MapFile = new HashMap<>();
 
     private static String meganMapDBFile;
     private static boolean useFastAccessionMappingMode;
@@ -78,15 +78,15 @@ public class ClassificationManager {
                         final String treeFile;
                         if (name.equals(Classification.Taxonomy))
                             treeFile = "ncbi.tre";
-                        else if (additionalClassification2TreeFile.containsKey(name.toLowerCase()))
-                            treeFile = additionalClassification2TreeFile.get(name.toLowerCase());
+                        else if (additionalClassificationName2TreeFile.containsKey(name))
+                            treeFile = additionalClassificationName2TreeFile.get(name);
                         else
                             treeFile = name.toLowerCase() + ".tre";
                         final String mapFile;
                         if (name.equals(Classification.Taxonomy))
                             mapFile = "ncbi.map";
-                        else if (additionalClassification2MapFile.containsKey(name.toLowerCase()))
-                            mapFile = additionalClassification2MapFile.get(name.toLowerCase());
+                        else if (additionalClassificationName2MapFile.containsKey(name))
+                            mapFile = additionalClassificationName2MapFile.get(name);
                         else
                             mapFile = name.toLowerCase() + ".map";
                         classification = load(name, treeFile, mapFile, new ProgressSilent());
@@ -209,11 +209,11 @@ public class ClassificationManager {
         ClassificationManager.useFastAccessionMappingMode = useFastAccessionMappingMode;
     }
 
-    public static Map<String, String> getAdditionalClassification2TreeFile() {
-        return additionalClassification2TreeFile;
+    public static Map<String, String> getAdditionalClassificationName2TreeFile() {
+        return additionalClassificationName2TreeFile;
     }
 
-    public static Map<String, String> getAdditionalClassification2MapFile() {
-        return additionalClassification2MapFile;
+    public static Map<String, String> getAdditionalClassificationName2MapFile() {
+        return additionalClassificationName2MapFile;
     }
 }

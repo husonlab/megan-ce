@@ -22,16 +22,11 @@ package megan.commands.additional;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
-import megan.commands.NewCommand;
-import megan.commands.algorithms.ComputeCoreBiome;
-import megan.core.*;
-import megan.dialogs.compare.Comparer;
-import megan.main.MeganProperties;
-import megan.viewer.gui.NodeDrawer;
+import megan.core.Director;
+import megan.core.Document;
+import megan.core.SampleAttributeTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -90,7 +85,7 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
                 final String fileName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "-"+tarName+ ".megan");
                   final List<String> samples=tarSample2SrcSamples.get(tarName);
                   if(samples.size()>0)
-                    commands.add(String.format("extractSubGraph samples='%s' file='%s';",Basic.toString(samples,"' '"),fileName));
+                      commands.add(String.format("extract samples='%s' file='%s';", Basic.toString(samples, "' '"), fileName));
             }
         }
         executeImmediately(Basic.toString(commands,"\n"));

@@ -51,7 +51,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         SamplesViewer viewer = (SamplesViewer) getViewer();
         List<String> samples = viewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extractSubGraph samples='" + Basic.toString(samples, "' '") + "';");
+            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 

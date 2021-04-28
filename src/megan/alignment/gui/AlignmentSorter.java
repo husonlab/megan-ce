@@ -183,7 +183,7 @@ public class AlignmentSorter {
     }
 
     /**
-     * extractSubGraph chain of nodes
+     * extract chain of nodes
      *
      * @param v
      * @param e

@@ -80,7 +80,7 @@ public class ApplyCommand extends CommandBase implements ICommand {
 
         StringBuilder buf = new StringBuilder();
 
-        buf.append("extractSubGraph what=reads");
+        buf.append("extract what=reads");
         buf.append(" outdir='");
         buf.append(outDirectory.getText()).append("'");
         buf.append(" outfile='");

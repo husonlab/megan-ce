@@ -119,7 +119,7 @@ public class SampleAttributeTable {
     }
 
     /**
-     * extractSubGraph a metadata table containing the named samples
+     * extract a metadata table containing the named samples
      *
      * @param samples
      * @return the new table

@@ -210,7 +210,7 @@ public class ClassificationFullTree extends PhyloTree {
     }
 
     /**
-     * extractSubGraph the induced tree
+     * extract the induced tree
      *
      * @param id2data
      * @param collapsedIds

@@ -88,7 +88,7 @@ public class CDS {
     }
 
     /**
-     * parse GFF files to extractSubGraph CDS
+     * parse GFF files to extract CDS
      *
      * @param inputFiles
      * @return list of CDS items

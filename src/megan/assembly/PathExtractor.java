@@ -80,7 +80,7 @@ public class PathExtractor {
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
 
-        // extractSubGraph contigs from graph, deleting their nodes
+        // extract contigs from graph, deleting their nodes
         progress.setSubtask("Extracting paths");
         progress.setMaximum(overlapGraphWorkingCopy.getNumberOfNodes());
         progress.setProgress(0);

@@ -441,7 +441,7 @@ public class NeighborNet {
             x = x.next;
         }
 
-        /* extractSubGraph the ordering */
+        /* extract the ordering */
         NetNode a = x;
         int t = 0;
         do {

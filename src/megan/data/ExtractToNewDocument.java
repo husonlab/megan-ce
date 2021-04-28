@@ -33,12 +33,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * extractSubGraph a given classification and class-ids to a new document
+ * extract a given classification and class-ids to a new document
  * Daniel Huson, 4.2015
  */
 public class ExtractToNewDocument {
     /**
-     * extractSubGraph all named classes in the given classsification to a new RMA6 file
+     * extract all named classes in the given classsification to a new RMA6 file
      *
      * @param srcDoc
      * @param srcClassification
@@ -57,7 +57,7 @@ public class ExtractToNewDocument {
         rma6FileCreator.startAddingQueries();
 
         try { // user might cancel inside this block
-            // determine the set of all positions to extractSubGraph:
+            // determine the set of all positions to extract:
             try (IReadBlockIterator iterator = connector.getReadsIteratorForListOfClassIds(srcClassification, srcClassIds, 0, 10, true, true)) {
                 progress.setTasks("Extracting", "Processing file: " + Basic.getFileNameWithoutPath(srcDoc.getMeganFile().getFileName()));
                 progress.setProgress(0);

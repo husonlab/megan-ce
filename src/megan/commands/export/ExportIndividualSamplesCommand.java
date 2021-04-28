@@ -42,11 +42,11 @@ import java.util.Collections;
 
 public class ExportIndividualSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extractSubGraph directory=<target-directory> replace={true|false};";
+        return "extract directory=<target-directory> replace={true|false};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("extractSubGraph directory=");
+        np.matchIgnoreCase("extract directory=");
         final String directory = np.getWordFileNamePunctuation();
         final boolean replace;
         if (np.peekMatchIgnoreCase("replace")) {
@@ -92,7 +92,7 @@ public class ExportIndividualSamplesCommand extends CommandBase implements IComm
 
             if (file != null) {
                 ProgramProperties.put(MeganProperties.SAVEFILE, file);
-                execute("extractSubGraph directory='" + file.getParent() + "' replace=true;");
+                execute("extract directory='" + file.getParent() + "' replace=true;");
             }
         }
     }

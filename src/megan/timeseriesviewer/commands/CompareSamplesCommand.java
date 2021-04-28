@@ -54,7 +54,7 @@ public class CompareSamplesCommand extends CommandBase implements ICommand {
         TimeSeriesViewer viewer = (TimeSeriesViewer) getViewer();
         Collection<String> samples = viewer.getDataJTable().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extractSubGraph samples='" + Basic.toString(samples, "' '") + "';");
+            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
         }
     }
 

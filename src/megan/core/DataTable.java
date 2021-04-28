@@ -1239,7 +1239,7 @@ public class DataTable {
     }
 
     /**
-     * extractSubGraph a set of samples to the given target
+     * extract a set of samples to the given target
      *
      * @param samples
      * @param target

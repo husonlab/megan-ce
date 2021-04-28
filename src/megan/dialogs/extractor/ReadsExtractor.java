@@ -40,7 +40,7 @@ import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
- * extractSubGraph reads using the IConnector
+ * extract reads using the IConnector
  * Daniel Huson, 4.2010
  */
 public class ReadsExtractor {
@@ -102,7 +102,7 @@ public class ReadsExtractor {
                     all.addAll(classId2Descendants.get(classId));
 
                 boolean first = true;
-                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extractSubGraph-reads", false);
+                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extract-reads", false);
 
                 try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
                     while (it.hasNext()) {
@@ -149,7 +149,7 @@ public class ReadsExtractor {
     }
 
     /**
-     * extractSubGraph all reads belonging to a given set of taxon ids
+     * extract all reads belonging to a given set of taxon ids
      *
      * @param progressListener
      * @param taxIds
@@ -173,7 +173,7 @@ public class ReadsExtractor {
     }
 
     /**
-     * extractSubGraph all reads belonging to a given set of  ids
+     * extract all reads belonging to a given set of  ids
      *
      * @param progressListener
      * @param classIds

@@ -31,12 +31,12 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * extractSubGraph a given classification and class-ids to a new document
+ * extract a given classification and class-ids to a new document
  * Daniel Huson, 4.2015
  */
 public class ExtractToNewDocumentRMA6 {
     /**
-     * extractSubGraph all named classes in the given classsification to a new RMA6 file
+     * extract all named classes in the given classsification to a new RMA6 file
      *
      * @param sourceRMA6FileName
      * @param sourceClassification
@@ -56,7 +56,7 @@ public class ExtractToNewDocumentRMA6 {
         final boolean pairedReads = sourceRMA6File.getHeaderSectionRMA6().isPairedReads();
         final String[] cNames = sourceRMA6File.getHeaderSectionRMA6().getMatchClassNames();
 
-        // determine the set of all positions to extractSubGraph:
+        // determine the set of all positions to extract:
         final ClassificationBlockRMA6 block = new ClassificationBlockRMA6(sourceClassification);
         long start = sourceRMA6File.getFooterSectionRMA6().getStartClassification(sourceClassification);
         block.read(start, sourceRMA6File.getReader());

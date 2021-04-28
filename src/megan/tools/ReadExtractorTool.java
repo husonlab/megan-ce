@@ -86,7 +86,7 @@ public class ReadExtractorTool {
         options.comment("Commands");
         final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
         final String classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
-        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extractSubGraph reads from (default: extractSubGraph all classes)", new String[0])));
+        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
         final boolean all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
 
         options.comment(ArgsOptions.OTHER);
@@ -138,7 +138,7 @@ public class ReadExtractorTool {
     }
 
     /**
-     * extractSubGraph all reads for each specified classes, or all classes, if none specified
+     * extract all reads for each specified classes, or all classes, if none specified
      *
      * @param extractCorrectedReads
      * @param classificationName

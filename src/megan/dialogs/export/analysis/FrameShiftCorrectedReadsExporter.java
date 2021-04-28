@@ -311,7 +311,7 @@ public class FrameShiftCorrectedReadsExporter {
     }
 
     /**
-     * parses the match text to extractSubGraph the query alignment string and start and end positions
+     * parses the match text to extract the query alignment string and start and end positions
      *
      * @param matchText
      * @return query string, nucleotide start and end positions

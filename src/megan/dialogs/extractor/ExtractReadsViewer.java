@@ -39,7 +39,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * extractSubGraph reads dialog
+ * extract reads dialog
  * Daniel Huson, 6.2007 (infight from Dubai to Christchurch)
  */
 public class ExtractReadsViewer extends JFrame implements IDirectableViewer {

@@ -430,7 +430,7 @@ public class ResamplingMethod {
     }
 
     /**
-     * extractSubGraph a row from a two dimensional matrix
+     * extract a row from a two dimensional matrix
      *
      * @param twoDimArray
      * @param r

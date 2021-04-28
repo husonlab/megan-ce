@@ -38,12 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * * extractSubGraph samples command
+ * * extract samples command
  * * Daniel Huson, 6.2015
  */
 public class ExtractSamplesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extractSubGraph samples=<name1 name2 ...> [toFile=<name>];";
+        return "extract samples=<name1 name2 ...> [toFile=<name>];";
     }
 
     /**
@@ -53,7 +53,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
      * @throws java.io.IOException
      */
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("extractSubGraph");
+        np.matchIgnoreCase("extract");
 
         final List<String> toExtract = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
             if (toExtract.size() == 1)
                 fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
             else
-                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extractSubGraph.megan")).toString();
+                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
         }
 
         final Director newDir = Director.newProject();

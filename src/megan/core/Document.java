@@ -1043,7 +1043,7 @@ public class Document {
     }
 
     /**
-     * extractSubGraph named samples from the given document
+     * extract named samples from the given document
      *
      * @param samples
      * @param srcDoc

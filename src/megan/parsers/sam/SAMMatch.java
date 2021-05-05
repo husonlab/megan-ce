@@ -213,10 +213,10 @@ public class SAMMatch implements megan.rma3.IMatch {
                     object = three[2].charAt(0);
                     break;
                 case 'i': // integer
-                    object = Integer.parseInt(three[2]);
+                    object = Basic.parseInt(three[2]);
                     break;
                 case 'f': // float
-                    object = Float.parseFloat(three[2]);
+                    object = Basic.parseFloat(three[2]);
                     break;
                 case 'Z': //string
                     object = three[2];

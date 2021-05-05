@@ -99,7 +99,7 @@ public class Megan6 {
 
         GraphView.defaultNodeView.setShape(NodeView.OVAL_NODE);
 
-        ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+        ResourceManager.insertResourceRoot(megan.resources.Resources.class);
         ResourceManagerFX.addResourceRoot(Megan6.class, "megan.resources");
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
         CommandManager.getGlobalCommands().addAll(ChartCommandHelper.getChartDrawerCommands());

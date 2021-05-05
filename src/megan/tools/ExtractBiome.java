@@ -29,7 +29,6 @@ import megan.commands.algorithms.ComputeBiomeCommand;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
-import megan.main.Megan6;
 import megan.viewer.TaxonomyData;
 
 import java.io.File;
@@ -54,7 +53,8 @@ public class ExtractBiome {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
+
             ProgramProperties.setProgramName("ExtractBiome");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

@@ -25,7 +25,6 @@ import jloda.util.*;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.dialogs.compare.Comparer;
-import megan.main.Megan6;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -48,7 +47,7 @@ public class CompareFiles {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("CompareFiles");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

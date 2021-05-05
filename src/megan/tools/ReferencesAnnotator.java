@@ -29,7 +29,6 @@ import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.classification.IdParser;
 import megan.classification.data.ClassificationCommandHelper;
-import megan.main.Megan6;
 import megan.main.MeganProperties;
 
 import java.io.BufferedOutputStream;
@@ -55,7 +54,7 @@ public class ReferencesAnnotator {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("ReferencesAnnotator");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

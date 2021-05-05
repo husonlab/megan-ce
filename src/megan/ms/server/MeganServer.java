@@ -28,7 +28,6 @@ import jloda.util.PeakMemoryUsageMonitor;
 import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import megan.daa.connector.DAAConnector;
-import megan.main.Megan6;
 import megan.rma6.RMA6Connector;
 
 import java.io.File;
@@ -46,7 +45,7 @@ public class MeganServer {
     public static void main(String[] args) {
         try {
             Basic.startCollectionStdErr();
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("MeganServer");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

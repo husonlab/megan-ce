@@ -48,7 +48,7 @@ public class Reanalyzer {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(megan.resources.Resources.class);
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("Reanalyzer");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

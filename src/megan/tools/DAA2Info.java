@@ -27,7 +27,6 @@ import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAHeader;
 import megan.daa.io.DAAParser;
-import megan.main.Megan6;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;
@@ -49,7 +48,7 @@ public class DAA2Info {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("DAA2Info");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

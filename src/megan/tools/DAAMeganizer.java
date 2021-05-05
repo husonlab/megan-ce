@@ -32,7 +32,6 @@ import megan.classification.IdParser;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Document;
 import megan.daa.Meganize;
-import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.util.DAAFileFilter;
 
@@ -57,7 +56,8 @@ public class DAAMeganizer {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
+
             ProgramProperties.setProgramName("Meganizer");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

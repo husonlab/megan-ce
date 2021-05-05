@@ -34,7 +34,7 @@ public class ZoomToFullCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        executeImmediately("zoom full;");
+        executeImmediately("zoom what=full;");
     }
 
     public String getName() {

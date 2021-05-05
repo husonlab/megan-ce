@@ -319,14 +319,12 @@ public class RMA6FromBlastCreator {
 
         rma6FileCreator.endAddingQueries();
 
-        if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         System.err.printf("Total reads:  %,16d%n", totalNumberOfReads);
         System.err.printf("Alignments:    %,15d%n", totalNumberOfMatches);
 
-        if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         // nothing to write
         rma6FileCreator.writeClassifications(null, null, null);

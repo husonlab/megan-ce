@@ -26,7 +26,6 @@ import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;
-import megan.main.Megan6;
 
 import java.io.*;
 
@@ -43,7 +42,7 @@ public class ApplyLCA {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("ApplyLCA");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

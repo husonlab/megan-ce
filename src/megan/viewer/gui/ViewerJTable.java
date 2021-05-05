@@ -233,7 +233,7 @@ public class ViewerJTable extends JTable {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
                 try {
-                    classificationViewer.getDir().executeImmediately("zoom full;zoom selected;", classificationViewer.getCommandManager());
+                    classificationViewer.getDir().executeImmediately("zoom what=full;zoom what=selected;", classificationViewer.getCommandManager());
                 } catch (Exception e1) {
                     Basic.caught(e1);
                 }

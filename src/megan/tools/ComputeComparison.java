@@ -29,7 +29,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
-import megan.main.Megan6;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class ComputeComparison {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("ComputeComparison");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

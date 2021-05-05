@@ -31,7 +31,6 @@ import megan.data.IConnector;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
-import megan.main.Megan6;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class ReadExtractorTool {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("ReadExtractorTool");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

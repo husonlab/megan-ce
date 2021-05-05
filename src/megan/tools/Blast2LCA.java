@@ -32,7 +32,6 @@ import megan.classification.IdMapper;
 import megan.classification.IdParser;
 import megan.core.Document;
 import megan.data.IReadBlock;
-import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
@@ -59,7 +58,7 @@ public class Blast2LCA {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("Blast2LCA");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

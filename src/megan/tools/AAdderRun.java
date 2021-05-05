@@ -30,7 +30,6 @@ import megan.genes.GeneItem;
 import megan.genes.GeneItemCreator;
 import megan.io.IInputReader;
 import megan.io.InputReader;
-import megan.main.Megan6;
 
 import java.io.*;
 import java.util.*;
@@ -48,7 +47,7 @@ public class AAdderRun {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("AAdderRun");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

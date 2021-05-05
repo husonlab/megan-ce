@@ -33,7 +33,6 @@ import megan.classification.data.ClassificationCommandHelper;
 import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
@@ -63,7 +62,7 @@ public class BLAST2RMA6 {
      */
     public static void main(String[] args) {
         try {
-            ResourceManager.addResourceRoot(Megan6.class, "megan.resources");
+            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("Blast2RMA");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

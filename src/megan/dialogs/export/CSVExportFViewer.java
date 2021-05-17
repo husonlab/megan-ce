@@ -52,13 +52,13 @@ public class CSVExportFViewer {
      * @return lines written
      */
     public static int exportName2Counts(String format, ViewerBase cViewer, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
+        var totalLines = 0;
         try {
-            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+            final var classification = ClassificationManager.get(cViewer.getClassName(), true);
+            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                final List<String> names = cViewer.getDocument().getSampleNames();
+            try (final var w = new BufferedWriter(new FileWriter(file))) {
+                final var names = cViewer.getDocument().getSampleNames();
                 if (names.size() > 1) {
                     w.write("#Datasets");
                     for (String name : names) {
@@ -73,21 +73,23 @@ public class CSVExportFViewer {
                     w.write("\n");
                 }
 
-                final NodeSet selected = cViewer.getSelectedNodes();
+                final var selected = cViewer.getSelectedNodes();
                 progressListener.setSubtask(shortName + " to counts");
                 progressListener.setMaximum(selected.size());
                 progressListener.setProgress(0);
-                Set<Integer> seen = new HashSet<>();
-                for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
-                    final Integer id = (Integer) v.getInfo();
-                    if (id != null && !seen.contains(id)) {
+                final var seen = new HashSet<>();
+                final var reportPath = format.startsWith(shortName + "Path");
+
+                for (var v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
+                    final var id = (Integer) v.getInfo();
+                    if (id != null && (reportPath || !seen.contains(id))) {
                         seen.add(id);
-                        final NodeData data = cViewer.getNodeData(v);
-                        final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                        final String name = getLabelSource(shortName, classification, format, v);
+                        final var data = cViewer.getNodeData(v);
+                        final var counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                        final var name = getLabelSource(shortName, classification, format, v);
                         if (counts.length == names.size()) {
                             w.write(name);
-                            for (float a : counts)
+                            for (var a : counts)
                                 w.write(Basic.removeTrailingZerosAfterDot(separator + " " + a));
                             w.write("\n");
                             totalLines++;

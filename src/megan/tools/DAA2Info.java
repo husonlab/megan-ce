@@ -93,6 +93,7 @@ public class DAA2Info {
         final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
         final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
+        final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
         final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
         options.done();
@@ -105,7 +106,7 @@ public class DAA2Info {
         else if (viralOnly)
             taxonomyRoot = TaxonomyData.VIRUSES_ID;
         else
-            taxonomyRoot = 0;
+            taxonomyRoot = TaxonomyData.ROOT_ID;
 
         final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, true);
 
@@ -139,11 +140,18 @@ public class DAA2Info {
                 }
             }
 
-            if (listClass2Count.size() > 0 || listRead2Class.size() > 0) {
+            if (listClass2Count.size() > 0) {
                 if (isMeganized)
-                    RMA2Info.reportFileContent(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, listRead2Class, taxonomyRoot, outs);
+                    RMA2Info.reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummary, outs);
                 else
-                    System.err.println("Can't list class to count or read to count: file has not been meganized");
+                    System.err.println("Can't list class-to-count: file has not been meganized");
+            }
+
+            if (listRead2Class.size() > 0) {
+                if (isMeganized)
+                    RMA2Info.reportRead2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listRead2Class, taxonomyRoot, outs);
+                else
+                    System.err.println("Can't list read-to-count: file has not been meganized");
             }
         }
         if (extractSummaryFile.length() > 0) {

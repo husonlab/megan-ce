@@ -157,7 +157,7 @@ public class CSVExporter {
         } else if (format.equalsIgnoreCase("taxonName_to_length") || format.equalsIgnoreCase("taxonId_to_length") || format.equalsIgnoreCase("taxonRank_to_length") || format.equalsIgnoreCase("taxonPath_to_length")) {
             count = CSVExportTaxonomy.exportTaxon2TotalLength(format, dir, file, separator, progressListener);
         } else if (format.equalsIgnoreCase("taxonName_to_percent") || format.equalsIgnoreCase("taxonId_to_percent") || format.equalsIgnoreCase("taxonRank_to_percent") || format.equalsIgnoreCase("taxonPath_to_percent")) {
-            count = CSVExportFViewer.exportName2Percent(format, dir.getMainViewer(), file, separator, true, progressListener);
+            count = CSVExportCViewer.exportName2Percent(format, dir.getMainViewer(), file, separator, true, progressListener);
         } else if (format.equalsIgnoreCase("readName_to_taxonName") || format.equalsIgnoreCase("readName_to_taxonId") || format.equalsIgnoreCase("readName_to_taxonPath")
                 || format.equalsIgnoreCase("readName_to_taxonPathKPCOFGS")) {
             count = CSVExportTaxonomy.exportReadName2Taxon(format, dir, file, separator, progressListener);
@@ -177,7 +177,7 @@ public class CSVExporter {
             for (String cName : cNames) {
                 if (format.startsWith(cName.toLowerCase())) {
                     ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
-                    count = CSVExportFViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
+                    count = CSVExportCViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
                     break;
                 }
             }
@@ -190,32 +190,32 @@ public class CSVExporter {
         } else if (format.startsWith("interpro2goName_to_taxon") || format.startsWith("interpro2Id_to_taxon")) {
             count = ExportFunctionalClassIds2TaxonIds.export("INTERPRO2GO", format, dir, file, separator, progressListener);
         } else if (format.startsWith("listTaxon")) {
-            count = CSVExportFViewer.exportNames(format, dir.getMainViewer(), file, progressListener);
+            count = CSVExportCViewer.exportNames(format, dir.getMainViewer(), file, progressListener);
         } else {
             for (String cName : cNames) {
                 if (format.startsWith(cName.toLowerCase())) {
                     final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
                     if (Basic.endsWithIgnoreCase(format, "Name_to_count") || Basic.endsWithIgnoreCase(format, "Path_to_count")) {
-                        count = CSVExportFViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
+                        count = CSVExportCViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
                         break;
                     } else if (Basic.endsWithIgnoreCase(format, "Name_to_readName") || Basic.endsWithIgnoreCase(format, "Path_to_readName")) {
-                        count = CSVExportFViewer.exportName2ReadNames(format, viewer, file, separator, progressListener);
+                        count = CSVExportCViewer.exportName2ReadNames(format, viewer, file, separator, progressListener);
                         break;
                     } else if (Basic.endsWithIgnoreCase(format, "Name_to_length") || Basic.endsWithIgnoreCase(format, "Path_to_length")) {
-                        count = CSVExportFViewer.exportName2TotalLength(format, viewer, file, separator, progressListener);
+                        count = CSVExportCViewer.exportName2TotalLength(format, viewer, file, separator, progressListener);
                         break;
                     } else if (Basic.endsWithIgnoreCase(format, "Name_to_RPK") || Basic.endsWithIgnoreCase(format, "Id_to_RPK") || Basic.endsWithIgnoreCase(format, "Path_to_RPK")) {
-                        count = CSVExportFViewer.exportName2CountPerKB(format, viewer, file, separator, progressListener);
+                        count = CSVExportCViewer.exportName2CountPerKB(format, viewer, file, separator, progressListener);
                         break;
                     }
                     if (Basic.endsWithIgnoreCase(format, "Name_to_percent") || Basic.endsWithIgnoreCase(format, "Id_to_percent") || Basic.endsWithIgnoreCase(format, "Path_to_percent")) {
-                        count = CSVExportFViewer.exportName2Percent(format, viewer, file, separator, true, progressListener);
+                        count = CSVExportCViewer.exportName2Percent(format, viewer, file, separator, true, progressListener);
                         break;
                     }
                 } else if (format.contains(cName.toLowerCase())) {
                     final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
                     if (format.startsWith("readName_to_")) {
-                        count = CSVExportFViewer.exportReadName2Name(format, viewer, file, separator, progressListener);
+                        count = CSVExportCViewer.exportReadName2Name(format, viewer, file, separator, progressListener);
                         break;
                     }
                 }

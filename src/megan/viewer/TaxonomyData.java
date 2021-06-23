@@ -35,6 +35,7 @@ import java.util.*;
  * Daniel Huson, 4.2015
  */
 public class TaxonomyData {
+    public static final int ROOT_ID =1;
     public static final int BACTERIA_ID = 2;
     public static final int VIRUSES_ID = 10239;
 

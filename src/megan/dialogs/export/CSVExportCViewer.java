@@ -41,7 +41,7 @@ import java.util.*;
  * methods for exporting FViewer data in csv format
  * Daniel Huson, 4.2010
  */
-public class CSVExportFViewer {
+public class CSVExportCViewer {
     /**
      * export name to counts
      *

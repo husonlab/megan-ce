@@ -75,46 +75,89 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
 
         matchesTextAndLength.setSecond(0);
 
-        final String line = nextLine();
-        final String[] tokens = Basic.split(line, ';');
+        final var line = nextLine();
 
-        int matchId = 0; // used to distinguish between matches when sorting
-        matches.clear();
-
-        int whichToken = 0;
-        final String queryName = tokens[whichToken++].trim();
-        final String direction = tokens[whichToken++];
-
-        final StringBuilder path = new StringBuilder();
-        // add one match block for each percentage given:
         try {
-            while (whichToken < tokens.length) {
-                String name = tokens[whichToken++];
-                if (name.equals("Root"))
-                    name = "root";
-                path.append(name).append(";");
-                String scoreString = tokens[whichToken++];
-                if (!scoreString.endsWith("%")) {
-                    System.err.println("Expected percentage in: " + line);
-                    break;
+            var containsSemiColons = line.contains(";");
+            var containsTabs = line.contains("\t");
+
+            if (containsSemiColons) {
+                final String[] tokens = Basic.split(line, ';');
+
+                int matchId = 0; // used to distinguish between matches when sorting
+                matches.clear();
+
+                int whichToken = 0;
+                final String queryName = tokens[whichToken++].trim();
+                final String direction = tokens[whichToken++];
+
+                final StringBuilder path = new StringBuilder();
+                // add one match block for each percentage given:
+                while (whichToken < tokens.length) {
+                    String name = tokens[whichToken++];
+                    if (name.equals("Root"))
+                        name = "root";
+                    path.append(name).append(";");
+                    String scoreString = tokens[whichToken++];
+                    if (!scoreString.endsWith("%")) {
+                        System.err.println("Expected percentage in: " + line);
+                        break;
+                    }
+                    float bitScore = Basic.parseFloat(scoreString);
+
+                    final Match match = new Match();
+                    match.bitScore = bitScore;
+                    match.id = matchId++;
+
+                    final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+                    match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
+                    matches.add(match);
                 }
-                float bitScore = Basic.parseFloat(scoreString);
+                return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches, null);
+            } else if (containsTabs) {
+                final String[] tokens = Basic.split(line, '\t');
 
-                final Match match = new Match();
-                match.bitScore = bitScore;
-                match.id = matchId++;
+                int matchId = 0; // used to distinguish between matches when sorting
+                matches.clear();
 
-                final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
-                match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
-                matches.add(match);
+                int whichToken = 0;
+                final String queryName = tokens[whichToken++].trim();
+
+                var path = new StringBuilder();
+                var foundRoot = false;
+                // add one match block for each percentage given:
+                while (whichToken < tokens.length) {
+                    String name = tokens[whichToken++];
+                    if (name.equals("Root")) {
+                        name = "root";
+                        foundRoot = true;
+                    }
+                    if (!foundRoot)
+                        continue;
+                    path.append(name).append(";");
+                    String scoreString = tokens[whichToken++];
+                    if (!scoreString.endsWith("%")) {
+                        System.err.println("Expected percentage in: " + line);
+                        break;
+                    }
+                    var bitScore = Basic.parseFloat(scoreString.substring(0, scoreString.length() - 1));
+
+                    var match = new Match();
+                    match.bitScore = bitScore;
+                    match.id = matchId++;
+
+                    final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+                    match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
+                    matches.add(match);
+                }
+                return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches, null);
             }
         } catch (Exception ex) {
             System.err.println("Error parsing file near line: " + getLineNumber());
             if (incrementNumberOfErrors() >= getMaxNumberOfErrors())
                 throw new RuntimeException("Too many errors");
         }
-
-        return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches, null);
+        return 0;
     }
 
     /**

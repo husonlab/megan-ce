@@ -79,7 +79,7 @@ public class GCAssembler {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Gene-centric assembly");
@@ -162,7 +162,7 @@ public class GCAssembler {
                 for (Integer id : classificationBlock.getKeySet()) {
                     if (id > 0 && classificationBlock.getSum(id) > 0)
                         classIdsList.add(id);
-                    classIdsList.sort((i, j) -> i.compareTo(j));
+                    classIdsList.sort(Integer::compareTo);
                 }
             } else {
                 classIdsList = new ArrayList<>(selectedClassIds.length);
@@ -201,7 +201,6 @@ public class GCAssembler {
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
         final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
 
-        try {
             for (int t = 0; t < numberOfThreads; t++) {
                 final int threadNumber = t;
 
@@ -233,12 +232,12 @@ public class GCAssembler {
                                 int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
                                 if (veryVerbose)
-                                    System.err.println(String.format("Number of contigs:%6d", count));
+                                    System.err.printf("Number of contigs:%6d%n", count);
 
                                 if (doOverlapContigs) {
                                     count = ReadAssembler.mergeOverlappingContigs(remainingThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
                                     if (veryVerbose)
-                                        System.err.println(String.format("Remaining contigs:%6d", count));
+                                        System.err.printf("Remaining contigs:%6d%n", count);
                                 }
 
                                 try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
@@ -260,12 +259,11 @@ public class GCAssembler {
                         if (e instanceof CanceledException) {
                             System.exit(1);
                         }
+                    } finally {
+                        countDownLatch.countDown();
                     }
                 });
             }
-        } finally {
-            countDownLatch.countDown();
-        }
 
         for (Integer classId : classIdsList) {
             try {

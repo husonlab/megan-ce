@@ -1017,7 +1017,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
             GraphView graphView = getGraphView();
             for (Node v : graphView.getSelectedNodes()) {
                 if (tab.isBiplotNode(v)) {
-                    Integer id = classification.getName2IdMap().get(graphView.getLabel(v));
+                    int id = classification.getName2IdMap().get(graphView.getLabel(v));
                     if (id != 0)
                         set.add(id);
                 }

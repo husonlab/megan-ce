@@ -167,7 +167,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         setMaxExpected(doc.getMaxExpected());
         setMinPercentIdentity(doc.getMinPercentIdentity());
         setMinSupportPercent(doc.getMinSupportPercent());
-        setMinSupport(doc.getMinSupportPercent() > 0 ? 0 : doc.getMinSupport());
+        setMinSupport(doc.getMinSupport());
         setMinPercentReadToCover(doc.getMinPercentReadToCover());
         setMinPercentReferenceToCover(doc.getMinPercentReferenceToCover());
         setMinReadLength(doc.getMinReadLength());

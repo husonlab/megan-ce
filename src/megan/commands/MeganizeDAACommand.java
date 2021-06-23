@@ -112,7 +112,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("minSupport")) {
             np.matchIgnoreCase("minSupport=");
             minSupport = np.getInt(0, Integer.MAX_VALUE);
-            if (minSupport > 1)
+            if (minSupport >= 1)
                 minSupportPercent = 0;
         }
 

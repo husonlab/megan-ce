@@ -103,7 +103,7 @@ public class RMA2Info {
         final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
         final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
-        final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
+        final boolean useSummarized = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
         final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
 
@@ -146,7 +146,7 @@ public class RMA2Info {
                 }
             }
             if (listClass2Count.size() > 0) {
-                reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummary, outs);
+                reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummarized, outs);
             }
 
             if (listRead2Class.size() > 0) {

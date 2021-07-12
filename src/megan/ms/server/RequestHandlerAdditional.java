@@ -27,10 +27,10 @@ public class RequestHandlerAdditional {
     static RequestHandler getDownloadPage(Database database) {
         return (c, p) -> {
             try {
-                RequestHandler.checkKnownParameters(p, "name");
-                RequestHandler.checkRequiredParameters(p, "name");
-                final String name = Parameters.getValue(p, "name");
-                final File file = database.getRecord(name).getFile();
+                RequestHandler.checkKnownParameters(p, "file");
+                RequestHandler.checkRequiredParameters(p, "file");
+                final var name = Parameters.getValue(p, "file");
+                final var file = database.getRecord(name).getFile();
                 return (DOWNLOAD_FILE_PREFIX + file).getBytes();
             } catch (IOException ex) {
                 return RequestHandler.reportError(c, p, ex.getMessage());
@@ -40,28 +40,28 @@ public class RequestHandlerAdditional {
 
     public static HttpHandlerMS getDownloadPageHandler(Database database) {
         final RequestHandler requestHandler = getDownloadPage(database);
-        final HttpHandlerMS handlerMS = new HttpHandlerMS(requestHandler) {
+        return new HttpHandlerMS(requestHandler) {
             public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
-                final byte[] bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
+                final var bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
 
                 if (!Basic.startsWith(bytes, DOWNLOAD_FILE_PREFIX))
                     throw new IOException("invalid");
-                final String fileName = Basic.getTextAfter(DOWNLOAD_FILE_PREFIX, Basic.toString(bytes));
+                final var fileName = Basic.getTextAfter(DOWNLOAD_FILE_PREFIX, Basic.toString(bytes));
                 if (fileName == null)
                     throw new IOException("No file name");
-                final File file = new File(fileName);
+                final var file = new File(fileName);
                 if (!file.exists())
                     throw new IOException("No such file: " + file);
 
                 httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
-                String headerKey = "Content-Disposition";
-                String headerValue = String.format("attachment; filename=\"%s\"", Basic.getFileNameWithoutPath(fileName));
+                var headerKey = "Content-Disposition";
+                var headerValue = String.format("attachment; filename=\"%s\"", Basic.getFileNameWithoutPath(fileName));
                 httpExchange.getResponseHeaders().set(headerKey, headerValue);
 
                 httpExchange.sendResponseHeaders(200, file.length());
-                try (OutputStream outs = httpExchange.getResponseBody();
-                     BufferedInputStream ins = new BufferedInputStream(new FileInputStream(fileName))) {
-                    byte[] buf = new byte[8192];
+                try (var outs = httpExchange.getResponseBody();
+                     var ins = new BufferedInputStream(new FileInputStream(fileName))) {
+                    var buf = new byte[8192];
                     int length;
                     while ((length = ins.read(buf)) > 0) {
                         outs.write(buf, 0, length);
@@ -69,6 +69,5 @@ public class RequestHandlerAdditional {
                 }
             }
         };
-        return handlerMS;
     }
 }

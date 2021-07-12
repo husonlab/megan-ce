@@ -22,13 +22,11 @@ package megan.ms.server;
 
 import com.sun.net.httpserver.BasicAuthenticator;
 import jloda.util.Basic;
-import jloda.util.FileLineIterator;
 import megan.ms.Utilities;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * manages Megan server users

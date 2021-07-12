@@ -44,6 +44,57 @@ import java.util.*;
  * Daniel Huson, 4.2010
  */
 public class ReadsExtractor {
+
+
+    /**
+     * extract all reads belonging to a given set of taxon ids
+     *
+     * @param progressListener
+     * @param taxIds
+     * @param outDirectory
+     * @param outFileName
+     * @param doc
+     * @param summarized
+     * @throws IOException
+     * @throws CanceledException
+     */
+    public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
+                                             final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
+        final Map<Integer, String> classId2Name = new HashMap<>();
+        final Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
+        for (Integer id : taxIds) {
+            classId2Name.put(id, TaxonomyData.getName2IdMap().get(id));
+            if (summarized)
+                classId2Descendants.put(id, TaxonomyData.getTree().getAllDescendants(id));
+        }
+        return extractReads(progressListener, ClassificationType.Taxonomy.toString(), taxIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
+    }
+
+    /**
+     * extract all reads belonging to a given set of  ids
+     *
+     * @param progressListener
+     * @param classIds
+     * @param outDirectory
+     * @param outFileName
+     * @param doc
+     * @param summarized
+     * @throws IOException
+     * @throws CanceledException
+     */
+    public static int extractReadsByFViewer(final String cName, final ProgressListener progressListener, final Collection<Integer> classIds,
+                                            final String outDirectory, final String outFileName, final Document doc, boolean summarized) throws IOException, CanceledException {
+
+        final Classification classification = ClassificationManager.get(cName, true);
+        Map<Integer, String> classId2Name = new HashMap<>();
+        Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
+        for (Integer id : classIds) {
+            classId2Name.put(id, classification.getName2IdMap().get(id));
+            classId2Descendants.put(id, classification.getFullTree().getAllDescendants(id));
+        }
+        return extractReads(progressListener, cName, classIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
+    }
+
     /**
      * extracts all reads for the given classes
      *
@@ -134,6 +185,7 @@ public class ReadsExtractor {
                             if (!readData.endsWith("\n"))
                                 w.write("\n");
                         }
+                        w.flush();
                         numberOfReads++;
                         progress.setProgress((long) (100000.0 * (countClassIds + (double) it.getProgress() / it.getMaximumProgress())));
                     }
@@ -146,54 +198,5 @@ public class ReadsExtractor {
                 w.close();
         }
         return numberOfReads;
-    }
-
-    /**
-     * extract all reads belonging to a given set of taxon ids
-     *
-     * @param progressListener
-     * @param taxIds
-     * @param outDirectory
-     * @param outFileName
-     * @param doc
-     * @param summarized
-     * @throws IOException
-     * @throws CanceledException
-     */
-    public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
-                                             final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
-        final Map<Integer, String> classId2Name = new HashMap<>();
-        final Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
-        for (Integer id : taxIds) {
-            classId2Name.put(id, TaxonomyData.getName2IdMap().get(id));
-            if (summarized)
-                classId2Descendants.put(id, TaxonomyData.getTree().getAllDescendants(id));
-        }
-        return extractReads(progressListener, ClassificationType.Taxonomy.toString(), taxIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
-    }
-
-    /**
-     * extract all reads belonging to a given set of  ids
-     *
-     * @param progressListener
-     * @param classIds
-     * @param outDirectory
-     * @param outFileName
-     * @param doc
-     * @param summarized
-     * @throws IOException
-     * @throws CanceledException
-     */
-    public static int extractReadsByFViewer(final String cName, final ProgressListener progressListener, final Collection<Integer> classIds,
-                                            final String outDirectory, final String outFileName, final Document doc, boolean summarized) throws IOException, CanceledException {
-
-        final Classification classification = ClassificationManager.get(cName, true);
-        Map<Integer, String> classId2Name = new HashMap<>();
-        Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
-        for (Integer id : classIds) {
-            classId2Name.put(id, classification.getName2IdMap().get(id));
-            classId2Descendants.put(id, classification.getFullTree().getAllDescendants(id));
-        }
-        return extractReads(progressListener, cName, classIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
     }
 }

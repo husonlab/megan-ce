@@ -22,12 +22,9 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
 import megan.daa.io.DAAParser;
-import megan.data.IClassificationBlock;
-import megan.data.IConnector;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
@@ -43,11 +40,7 @@ import java.util.*;
 public class ReadExtractorTool {
     /**
      * ReadExtractorTool
-     *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+      */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -66,45 +59,50 @@ public class ReadExtractorTool {
 
     /**
      * run
-     *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
-        final ArgsOptions options = new ArgsOptions(args, this, "Extracts reads from a DAA or RMA file by classification");
+    private void run(String[] args) throws UsageException, IOException {
+        final var options = new ArgsOptions(args, this, "Extracts reads from a DAA or RMA file by classification");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output");
-        final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "input", "Input DAA and/or RMA file(s)", new String[0])));
-        final ArrayList<String> outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %t for class name and %i for class id. (Directory, stdout, .gz ok)", new String[]{"stdout"})));
+        final var inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "input", "Input DAA and/or RMA file(s)", new String[0])));
+        final var outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %t for class name and %i for class id. (Directory, stdout, .gz ok)", new String[]{"stdout"})));
 
-        options.comment("Commands");
-        final boolean extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
-        final String classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
-        final ArrayList<String> classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
-        final boolean all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
+        options.comment("Options");
+        final var extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);
+        final var classificationName = options.getOption("-c", "classification", "The classification to use", ClassificationManager.getAllSupportedClassifications(), "");
+        final var classNames = new ArrayList<>(Arrays.asList(options.getOption("-n", "classNames", "Names (or ids) of classes to extract reads from (default: extract all classes)", new String[0])));
+        final var allBelow = options.getOption("-b", "allBelow", "Report all reads assigned to or below a named class", false);
+
+        final var all = options.getOption("-a", "all", "Extract all reads (not by class)", false);
 
         options.comment(ArgsOptions.OTHER);
-        final boolean ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);
-        final boolean gzOutputFiles = options.getOption("-gz", "gzipOutputFiles", "If output directory is given, gzip files written to directory", true);
+        final var ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);
+        final var gzOutputFiles = options.getOption("-gz", "gzipOutputFiles", "If output directory is given, gzip files written to directory", true);
         options.done();
 
-        if (classificationName.equals("") != all) {
-            throw new UsageException("Must specific either option --classification or --all");
-        }
+        if (classificationName.equals("") != all)
+            throw new UsageException("Must specific either option --classification or --all, but not both");
 
-        if (outputFiles.size() == 1 && outputFiles.get(0).equals("stdout")) {
+        if(allBelow && all)
+            throw new UsageException("Must specific either option --allBelow or --all, but not both");
+
+        if(allBelow && classNames.size()==0)
+            throw new UsageException("When using --allBelow, must specify --classNames");
+
+        if(allBelow && extractCorrectedReads)
+            throw new UsageException("Option --allBelow is not implemented for --extractCorrectedReads");
+
+            if (outputFiles.size() == 1 && outputFiles.get(0).equals("stdout")) {
             outputFiles.clear();
-            for (int i = 0; i < inputFiles.size(); i++)
+            for (var i = 0; i < inputFiles.size(); i++)
                 outputFiles.add("stdout");
         } else if (outputFiles.size() == 1 && Basic.isDirectory(outputFiles.get(0))) {
-            final String directory = outputFiles.get(0);
+            final var directory = outputFiles.get(0);
             outputFiles.clear();
-            for (String name : inputFiles) {
+            for (var name : inputFiles) {
                 if (all)
                     outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
                 else
@@ -117,14 +115,14 @@ public class ReadExtractorTool {
         int totalReads = 0;
 
         for (int i = 0; i < inputFiles.size(); i++) {
-            final String inputFile = inputFiles.get(i);
-            final String outputFile = outputFiles.get(i);
+            final var inputFile = inputFiles.get(i);
+            final var outputFile = outputFiles.get(i);
 
             try {
                 if (inputFile.toLowerCase().endsWith("daa") && !DAAParser.isMeganizedDAAFile(inputFile, true)) {
                     throw new IOException("Warning: non-meganized DAA file: " + inputFile);
                 } else {
-                    totalReads += extract(extractCorrectedReads, classificationName, classNames, all, inputFile, outputFile);
+                    totalReads += extract(extractCorrectedReads, classificationName, classNames, all,allBelow, inputFile, outputFile);
                 }
             } catch (Exception ex) {
                 if (ignoreExceptions)
@@ -138,21 +136,14 @@ public class ReadExtractorTool {
 
     /**
      * extract all reads for each specified classes, or all classes, if none specified
-     *
-     * @param extractCorrectedReads
-     * @param classificationName
-     * @param classNames
-     * @param inputFile
-     * @param outputFile
-     * @throws IOException
-     * @throws CanceledException
      */
-    private int extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames, boolean all, String inputFile, String outputFile) throws IOException, CanceledException {
-        final Document doc = new Document();
+    private int extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames,
+                        boolean all, boolean allBelow, String inputFile, String outputFile) throws IOException {
+        final var doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(inputFile, true);
         doc.loadMeganFile();
 
-        final IConnector connector = doc.getConnector();
+        final var connector = doc.getConnector();
 
         if (extractCorrectedReads && doc.getBlastMode() != BlastMode.BlastX)
             throw new IOException("Frame-shift correction only possible when BlastMode is BLASTX");
@@ -170,9 +161,9 @@ public class ReadExtractorTool {
                 throw new IOException("Input file does not contain the requested classification '" + classificationName + "'");
             }
 
-            final SortedSet<Integer> classIds = new TreeSet<>();
-            final Classification classification = ClassificationManager.get(classificationName, true);
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
+            final var classIds = new TreeSet<Integer>();
+            final var classification = ClassificationManager.get(classificationName, true);
+            final var classificationBlock = connector.getClassificationBlock(classificationName);
 
             if (classNames.size() == 0)// no class names given, use all
             {
@@ -181,13 +172,13 @@ public class ReadExtractorTool {
                         classIds.add(classId);
                 }
             } else {
-                int warnings = 0;
+                var warnings = 0;
 
-                for (String name : classNames) {
+                for (var name : classNames) {
                     if (Basic.isInteger(name))
                         classIds.add(Basic.parseInt(name));
                     else {
-                        int id = classification.getName2IdMap().get(name);
+                        var id = classification.getName2IdMap().get(name);
                         if (id > 0)
                             classIds.add(id);
                         else {
@@ -201,9 +192,9 @@ public class ReadExtractorTool {
                 }
             }
 
-            try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + inputFile)) {
+            try (var progress = new ProgressPercentage("Processing file: " + inputFile)) {
                 if (!extractCorrectedReads) {
-                    return ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc, false);
+                    return ReadsExtractor.extractReadsByFViewer(classificationName, progress, classIds, "", outputFile, doc, allBelow);
                 } else {
                     return FrameShiftCorrectedReadsExporter.export(classificationName, classIds, connector, outputFile, progress);
                 }

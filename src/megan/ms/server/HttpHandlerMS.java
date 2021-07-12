@@ -25,11 +25,10 @@ import com.sun.net.httpserver.HttpHandler;
 import jloda.util.Basic;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * handles an HTTP request for megan server
+ * handles an HTTP request
  * Daniel Huson, 8.2020
  */
 public class HttpHandlerMS implements HttpHandler {
@@ -63,10 +62,10 @@ public class HttpHandlerMS implements HttpHandler {
     }
 
     private String[] getGETParameters(HttpExchange httpExchange) {
-        final String uri = httpExchange.getRequestURI().toString();
-        final int posQuestionMark = uri.indexOf('?');
+        final var uri = httpExchange.getRequestURI().toString();
+        final var posQuestionMark = uri.indexOf('?');
         if (posQuestionMark > 0 && posQuestionMark < uri.length() - 1) {
-            final String parameters = uri.substring(posQuestionMark + 1);
+            final var parameters = uri.substring(posQuestionMark + 1);
             if (parameters.contains("&")) {
                 return Basic.split(parameters, '&');
             } else
@@ -80,9 +79,8 @@ public class HttpHandlerMS implements HttpHandler {
     }
 
     public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
-
-        final byte[] bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
-        try (OutputStream outputStream = httpExchange.getResponseBody()) {
+        final var bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
+        try (var outputStream = httpExchange.getResponseBody()) {
             httpExchange.sendResponseHeaders(200, bytes.length);
             outputStream.write(bytes);
             outputStream.flush();

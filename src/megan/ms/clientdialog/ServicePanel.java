@@ -22,6 +22,7 @@ package megan.ms.clientdialog;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.find.ISearcher;
+import jloda.swing.message.MessageWindow;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.ms.clientdialog.commands.*;
@@ -29,10 +30,7 @@ import megan.ms.clientdialog.commands.*;
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -49,7 +47,7 @@ public class ServicePanel extends JPanel {
 
     private final JTree fileTree;
 
-    private final Map<DefaultMutableTreeNode, String> leaf2file;
+    private final Map<DefaultMutableTreeNode, String> treeNode2File;
 
     private final JMenuItem openMenuItem;
     private final JMenuItem compareMenuItem;
@@ -73,7 +71,7 @@ public class ServicePanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Location: " + service.getServerURL()));
         setLayout(new BorderLayout());
 
-        leaf2file = new HashMap<>();
+        treeNode2File = new HashMap<>();
 
         fileTree = createFileTree(service);
         fileTree.setCellRenderer(new MyRenderer());
@@ -110,7 +108,6 @@ public class ServicePanel extends JPanel {
         collapseMenuItem = remoteServiceBrowser.getCommandManager().getJMenuItem(CollapseNodesCommand.ALTNAME);
 
         add(bottom, BorderLayout.SOUTH);
-
     }
 
     /**
@@ -125,11 +122,13 @@ public class ServicePanel extends JPanel {
             for (TreePath path : paths) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
                 if (node != null) {
-                    String file = leaf2file.get(node);
+                    String file = treeNode2File.get(node);
                     if (file != null) {
-                        file = service.getServerAndFileName(file);
-                        if (file != null)
-                            set.add(file);
+                        if(service.getAvailableFiles().contains(file)) {
+                            file = service.getServerAndFileName(file);
+                            if (file != null)
+                                set.add(file);
+                        }
                     }
                 }
             }
@@ -163,26 +162,31 @@ public class ServicePanel extends JPanel {
         final DefaultTreeModel treeModel = new DefaultTreeModel(null);
         tree.setModel(treeModel);
 
-        leaf2file.clear();
+        treeNode2File.clear();
 
-        Map<String, DefaultMutableTreeNode> path2node = new HashMap<>();
-        final DefaultMutableTreeNode root = new DefaultMutableTreeNode(service.getServerURL(), true);
+        final var path2node = new HashMap<String, DefaultMutableTreeNode>();
+        final var root = new DefaultMutableTreeNode(service.getServerURL(), true);
         treeModel.setRoot(root);
-        SortedSet<String> sortedSet = new TreeSet<>(service.getAvailableFiles());
-        for (String fileName : sortedSet) {
-            String[] levels = fileName.split("/");
-            String path = "";
+
+       treeNode2File.put(root,".");
+
+        var sortedSet = new TreeSet<>(service.getAvailableFiles());
+        for (var fileName : sortedSet) {
+            var levels = fileName.split("/");
+            var path = "";
             DefaultMutableTreeNode parent = root;
-            for (int i = 0; i < levels.length; i++) {
+            for (var i = 0; i < levels.length; i++) {
                 path += levels[i];
                 DefaultMutableTreeNode node = path2node.get(path);
                 if (node == null) {
                     boolean isLeaf = (i == levels.length - 1);
                     node = new DefaultMutableTreeNode(levels[i], !isLeaf);
                     if (isLeaf) {
-                        leaf2file.put(node, fileName);
+                        treeNode2File.put(node, fileName);
                         node.setUserObject("<html><b>" + node.getUserObject() + "</b></html>");
                     }
+                    else
+                        treeNode2File.put(node,String.join("/", Arrays.copyOf(levels, i)));
                     path2node.put(path, node);
                 }
                 parent.add(node);
@@ -208,7 +212,7 @@ public class ServicePanel extends JPanel {
             if (openFiles.contains(fileName)) {
                 buf.append("toFront file='").append(fileName).append("';");
             } else {
-                buf.append("open file='").append(fileName).append("';");
+                buf.append("open file='").append(fileName).append("' readOnly=true;");
                 count++;
             }
         }
@@ -243,7 +247,7 @@ public class ServicePanel extends JPanel {
         if (v == null)
             v = (DefaultMutableTreeNode) fileTree.getModel().getRoot();
 
-        for (Enumeration descendants = v.breadthFirstEnumeration(); descendants.hasMoreElements(); ) {
+        for (var descendants = v.breadthFirstEnumeration(); descendants.hasMoreElements(); ) {
             v = (DefaultMutableTreeNode) descendants.nextElement();
             fileTree.expandPath(new TreePath(v.getPath()));
         }
@@ -269,7 +273,7 @@ public class ServicePanel extends JPanel {
         if (v == null)
             v = (DefaultMutableTreeNode) fileTree.getModel().getRoot();
 
-        for (Enumeration descendants = v.depthFirstEnumeration(); descendants.hasMoreElements(); ) {
+        for (var descendants = v.depthFirstEnumeration(); descendants.hasMoreElements(); ) {
             v = (DefaultMutableTreeNode) descendants.nextElement();
             fileTree.collapsePath(new TreePath(v.getPath()));
         }
@@ -294,7 +298,7 @@ public class ServicePanel extends JPanel {
 
         for (int i = 0; i < fileTree.getRowCount(); i++) {
             DefaultMutableTreeNode v = (DefaultMutableTreeNode) fileTree.getPathForRow(i).getLastPathComponent();
-            String file = leaf2file.get(v);
+            String file = treeNode2File.get(v);
             if (file != null) {
                 if (openFiles.contains(service.getServerAndFileName(file))) {
                     int pos = file.lastIndexOf(File.separator);
@@ -322,7 +326,23 @@ public class ServicePanel extends JPanel {
 
     class MyMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2) {
+            if(e.getClickCount()==1) {
+                var path=fileTree.getPathForLocation(e.getX(), e.getY());
+                if(path!=null) {
+                    var node = (DefaultMutableTreeNode)path.getLastPathComponent();
+                    final String fileName = treeNode2File.get(node);
+                    if (fileName != null) {
+                        var about=service.getDescription(fileName);
+                        if(about!=null && !about.isBlank()) {
+                            MessageWindow.getInstance().getFrame().setVisible(true);
+                            MessageWindow.getInstance().getFrame().toFront();
+                            System.err.println("\n"+node.toString().replaceAll("<.*?>", "") +":\n"+about.trim());
+                            System.err.flush();
+                        }
+                    }
+                }
+            }
+            else if (e.getClickCount() == 2) {
                 int selRow = fileTree.getRowForLocation(e.getX(), e.getY());
                 TreePath path = fileTree.getPathForLocation(e.getX(), e.getY());
                 if (selRow != -1 && path != null) {
@@ -370,11 +390,9 @@ public class ServicePanel extends JPanel {
             setToolTipText(null);
             try {
                 final DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getPathForRow(row).getLastPathComponent();
-                if (node.isLeaf()) {
-                    final String fileName = leaf2file.get(node);
+                    final String fileName = treeNode2File.get(node);
                     if (fileName != null) {
                         setToolTipText(service.getDescription(fileName));
-                    }
                 }
             } catch (Exception ignored) {
             }

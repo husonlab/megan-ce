@@ -49,11 +49,11 @@ public interface RequestHandler {
                 "</html>\n").getBytes();
     }
 
-    static RequestHandler getAbout(Database database, HttpServerMS server) {
+    static RequestHandler getAbout(HttpServerMS server) {
         return (c, p) -> {
             checkKnownParameters(p);
-            return server.getAbout().getBytes();
-        };
+                return server.getAbout().getBytes();
+         };
     }
 
 
@@ -87,11 +87,11 @@ public interface RequestHandler {
     static RequestHandler getListDataset(Database database) {
         return (c, p) -> {
             try {
-                checkKnownParameters(p, "metadata", "readCount","matchCount");
+                checkKnownParameters(p, "readCount","matchCount","metadata");
 
-                final boolean includeMetadata = Parameters.getValue(p, "metadata", false);
                 final boolean readCount = Parameters.getValue(p, "readCount", false);
                 final boolean matchCount = Parameters.getValue(p, "matchCount", false);
+                final boolean includeMetadata = Parameters.getValue(p, "metadata", false);
 
                 final var list = new ArrayList<>();
                 for (String fileName : database.getFileNames()) {
@@ -99,13 +99,10 @@ public interface RequestHandler {
                     buf.append(fileName);
                     if (readCount)
                         buf.append("\t").append(database.getRecord(fileName).getNumberOfReads());
-                    if (matchCount) {
-                        final long matches=database.getRecord(fileName).getNumberOfMatches();
-                        if(matches>0)
-                        buf.append("\t").append(matches);
-                    }
+                    if (matchCount)
+                        buf.append("\t").append(database.getRecord(fileName).getNumberOfReads());
                     if (includeMetadata)
-                        buf.append("\n").append(database.getMetadata(fileName));
+                        buf.append("\t").append(database.getMetadata(fileName).replaceAll("\t",","));
                     list.add(buf.toString());
                 }
                 return Basic.toString(list, "\n").getBytes();
@@ -176,13 +173,13 @@ public interface RequestHandler {
                 final String fileName = Parameters.getValue(p, "file");
 
                 final ArrayList<String> list = new ArrayList<>();
-                Database.Record record = database.getRecord(fileName);
-                if (binary) {
-                    return Utilities.writeAuxiliaryDataToBytes(record.getAuxiliaryData());
+                Database.FileRecord fileRecord = database.getRecord(fileName);
+                if (fileRecord != null && fileRecord.getAuxiliaryData() != null) {
+                    if (binary) {
+                    return Utilities.writeAuxiliaryDataToBytes(fileRecord.getAuxiliaryData());
                 } else {
-                    if (record != null && record.getAuxiliaryData() != null) {
-                        for (String key : record.getAuxiliaryData().keySet()) {
-                            list.add(key + ":\n" + Basic.toString(record.getAuxiliaryData().get(key)));
+                        for (String key : fileRecord.getAuxiliaryData().keySet()) {
+                            list.add(key + ":\n" + Basic.toString(fileRecord.getAuxiliaryData().get(key)));
                         }
                     }
                 }
@@ -192,6 +189,16 @@ public interface RequestHandler {
             }
         };
     }
+
+    static RequestHandler getDescription(Database database) {
+        return (c, p) -> {
+            checkKnownParameters(p,"file");
+            final String fileName = Parameters.getValue(p, "file");
+            var description=database.getFileDescription(fileName);
+            return description!=null?description.getBytes():new byte[0];
+        };
+    }
+
 
     static RequestHandler getFileUid(Database database) {
         return (c, p) -> {

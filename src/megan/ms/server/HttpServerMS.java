@@ -71,16 +71,16 @@ public class HttpServerMS {
         final var authenticator = userManager.createAuthenticator(role);
 
         // general info:
-         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(database,this)),authenticator);
+         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
         createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
-        createContext(path + "/isReadOnly", new HttpHandlerMS((RequestHandler) (c, p) -> "true".getBytes()),authenticator);
+        createContext(path + "/isReadOnly", new HttpHandlerMS( (c, p) -> "true".getBytes()),authenticator);
         createContext(path + "/list", new HttpHandlerMS(RequestHandler.getListDataset(database)),authenticator);
 
         // file info:
         createContext(path + "/getFileUid", new HttpHandlerMS(RequestHandler.getFileUid(database)),authenticator);
         createContext(path + "/getAuxiliary", new HttpHandlerMS(RequestHandler.getAuxiliaryData(database)),authenticator);
-        createContext(path + "/getNumberOfReads", new HttpHandlerMS(RequestHandler.getNumberOfReads(database)),authenticator);
-        createContext(path + "/getNumberOfMatches", new HttpHandlerMS(RequestHandler.getNumberOfMatches(database)),authenticator);
+        createContext(path + "/numberOfReads", new HttpHandlerMS(RequestHandler.getNumberOfReads(database)),authenticator);
+        createContext(path + "/numberOfMatches", new HttpHandlerMS(RequestHandler.getNumberOfMatches(database)),authenticator);
         createContext(path + "/getClassificationNames", new HttpHandlerMS(RequestHandler.getClassifications(database)),authenticator);
 
         // access reads and matches
@@ -94,8 +94,10 @@ public class HttpServerMS {
         createContext(path + "/getClassificationBlock", new HttpHandlerMS(RequestHandler.getClassificationBlock(database)),authenticator);
         createContext(path + "/getClassSize", new HttpHandlerMS(RequestHandler.getClassSize(database)),authenticator);
 
+
         // download a file
         createContext(path + "/download", RequestHandlerAdditional.getDownloadPageHandler(database),authenticator);
+        createContext(path + "/getDescription", new HttpHandlerMS(RequestHandler.getDescription(database)),authenticator);
     }
     
     private void createContext(String path, HttpHandlerMS handler, BasicAuthenticator authenticator) {
@@ -165,7 +167,7 @@ public class HttpServerMS {
                 + "Known users: " + userManager.size() + "\n"
                 + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
                 + "Server started: " + (new Date(getStarted())) + "\n";
-        about += "Help: http://" + getAddress().getHostAddress() + ":8001" + defaultPath + "/help\n";
+        about += "Help: http://" + getAddress().getHostAddress() + ":"+getSocketAddress().getPort() + defaultPath + "/help\n";
         return about;
     }
 }

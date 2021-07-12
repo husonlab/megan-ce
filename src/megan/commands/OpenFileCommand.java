@@ -34,6 +34,8 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.main.MeganProperties;
+import megan.ms.Utilities;
+import megan.ms.client.connector.MSConnector;
 import megan.util.MeganAndRMAFileFilter;
 import megan.util.MeganizedDAAFileFilter;
 import megan.viewer.MainViewer;
@@ -89,35 +91,35 @@ public class OpenFileCommand extends CommandBase implements ICommand {
      */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
-        final Director dir = getDir();
-        final Document doc = dir.getDocument();
-        final MainViewer viewer = dir.getMainViewer();
+        final var dir = getDir();
+        final var doc = dir.getDocument();
+        final var viewer = dir.getMainViewer();
+
+        np.matchIgnoreCase("open file=");
+
+        var fileName = np.getAbsoluteFileName();
+        if (fileName.contains("'"))
+            NotificationsInSwing.showWarning(viewer.getFrame(), "File name or path contains a single quote ', this will cause problems, please change!");
+
+        var readOnly = false;
+        if (np.peekMatchIgnoreCase("readOnly=")) {
+            np.matchIgnoreCase("readOnly=");
+            readOnly = np.getBoolean();
+        }
+        np.matchIgnoreCase(";");
 
         if (ProgramProperties.isUseGUI() && (doc.getNumberOfSamples() > 0 || !doc.neverOpenedReads || doc.isDirty())) {
-            final Director newDir = Director.newProject();
+            final var newDir = Director.newProject();
             newDir.getMainViewer().setDoReInduce(true);
             newDir.getMainViewer().setDoReset(true);
             newDir.getMainViewer().getFrame().requestFocus(); // todo: recently added in an attempt to fix problem that window opens behind old one
-            newDir.execute(np.getQuotedTokensRespectCase(null, ";") + ";", newDir.getMainViewer().getCommandManager());
+            newDir.execute("open file='"+fileName+"' readOnly="+readOnly+";", newDir.getMainViewer().getCommandManager());
         } else {
             try {
                 SwingUtilities.invokeLater(() -> viewer.getFrame().toFront());
-                np.matchIgnoreCase("open file=");
+                 doc.closeConnector(); // close connector if it open
 
-                String fileName = np.getAbsoluteFileName();
-                if (fileName.contains("'"))
-                    NotificationsInSwing.showWarning(viewer.getFrame(), "File name or path contains a single quote ', this will cause problems, please change!");
-
-                boolean readOnly = false;
-                if (np.peekMatchIgnoreCase("readOnly=")) {
-                    np.matchIgnoreCase("readOnly=");
-                    readOnly = np.getBoolean();
-                }
-                np.matchIgnoreCase(";");
-
-                doc.closeConnector(); // close connector if it open
-
-                final MeganFile meganFile = doc.getMeganFile();
+                final var meganFile = doc.getMeganFile();
 
                 meganFile.setFileFromExistingFile(fileName, readOnly);
 
@@ -202,7 +204,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        File lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
+        var lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
 
         MeganAndRMAFileFilter meganRmaDaaFileFilter = new MeganAndRMAFileFilter();
         meganRmaDaaFileFilter.setAllowGZipped(true);
@@ -218,8 +220,8 @@ public class OpenFileCommand extends CommandBase implements ICommand {
         }
 
         if (files.size() > 0) {
-            final StringBuilder buf = new StringBuilder();
-            for (File file : files) {
+            var buf = new StringBuilder();
+            for (var file : files) {
                 if (file != null && file.exists() && file.canRead()) {
                     ProgramProperties.put(MeganProperties.MEGANFILE, file.getAbsolutePath());
                     buf.append("open file='").append(file.getPath()).append("';");

@@ -19,7 +19,9 @@
  */
 package megan.ms.clientdialog;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a (remote) MEGAN server
@@ -47,9 +49,9 @@ public interface IRemoteService {
      *
      * @return list of available files
      */
-    List<String> getAvailableFiles();
+    Collection<String> getAvailableFiles();
 
-    /**
+     /**
      * gets the server and file name
      *
      * @param file

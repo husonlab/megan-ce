@@ -19,29 +19,25 @@
  */
 package megan.ms.clientdialog.service;
 
-import jloda.util.Basic;
-import jloda.util.Triplet;
 import megan.ms.client.ClientMS;
 import megan.ms.clientdialog.IRemoteService;
 import megan.ms.server.MeganServer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * implements a remote service
  * <p/>
- * Created by huson on 10/3/14.
+ * Created by huson on 10/3/14, 7.2021
  */
 public class RemoteService implements IRemoteService {
-    private final String serverURL; // server URL, e.g. http://localhost:8080 or http://localhost:8080/Megan5Server
+    private final String serverURL;
     private final ClientMS clientMS;
-    private final List<String> files=new ArrayList<>();
+    private final Set<String> files=new TreeSet<>();
+    private final boolean serverSupportsGetDescription;
 
-    private String about;
+    private final String about;
 
     private final Map<String, String> fileName2Description = new HashMap<>();
 
@@ -66,22 +62,37 @@ public class RemoteService implements IRemoteService {
 
         about = clientMS.getAsString("about");
 
+        serverSupportsGetDescription =clientMS.getAsString("help").contains("getDescription");
+
         System.err.println(about);
 
-        final List<Triplet<String,Long,Long>> filesReadCountMatchCount=clientMS.getFilesReadCountMatchCount();
-        for(var triplet:filesReadCountMatchCount) {
-            final String file=triplet.getFirst();
-            files.add(file);
-            final long reads=triplet.getSecond();
-            final long matches=triplet.getThird();
-            final String description;
-            if (reads > 0 && matches > 0)
-                description = String.format("Reads: %,d, matches: %,d", reads, matches);
-            else if (reads > 0)
-                description = String.format("Reads: %,d", reads);
-            else
-                description = Basic.getFileNameWithoutPath(file);
-            fileName2Description.put(file, description);
+        var directories=new HashSet<String>();
+        directories.add(".");
+        for(var fileRecord:clientMS.getFileRecords()) {
+            var name=fileRecord.getName();
+            files.add(name);
+            if(serverSupportsGetDescription) {
+                try {
+                    var description = clientMS.getAsString("getDescription?file=" + fileRecord.getName());
+                    if (!description.isBlank())
+                        fileRecord.setDescription(description);
+                } catch (IOException ignored) {
+                }
+            }
+            fileName2Description.put(name, fileRecord.getDescription());
+            if(name.contains("/"))
+                directories.add(name.substring(0,name.lastIndexOf("/")));
+        }
+        if(serverSupportsGetDescription) {
+            for (var directory : directories) {
+                fileName2Description.put(directory, directory);
+                try {
+                    var description = clientMS.getAsString("getDescription?file=" + directory);
+                    if (!description.isBlank())
+                        fileName2Description.put(directory, description);
+                } catch (IOException ignored) {
+                }
+            }
         }
         System.err.println("Server: " + serverURL + ", number of available files: " + getAvailableFiles().size());
     }
@@ -103,7 +114,7 @@ public class RemoteService implements IRemoteService {
      * @return list of available files in format path,id
      */
     @Override
-    public List<String> getAvailableFiles() {
+    public Collection<String> getAvailableFiles() {
         return files;
     }
 

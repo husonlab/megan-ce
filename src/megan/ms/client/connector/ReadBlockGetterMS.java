@@ -51,7 +51,7 @@ public class ReadBlockGetterMS implements IReadBlockGetter {
         this.fileName = fileName;
         this.wantSequences = wantSequences;
         this.wantMatches = wantMatches;
-        this.numberOfReads = client.getAsInt("getNumberOfReads?file=" + fileName);
+        this.numberOfReads = client.getAsInt("numberOfReads?file=" + fileName);
         this.classifications = Basic.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
     }
 

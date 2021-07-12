@@ -31,13 +31,15 @@ import megan.ms.clientdialog.IRemoteService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * implements a local directory
+ * implements a local directory service
  * <p/>
- * Created by huson on 10/3/14.
+ * Daniel Huson, 2014, 2021
  */
 public class LocalService implements IRemoteService {
     private final String[] fileExtensions;
@@ -56,7 +58,6 @@ public class LocalService implements IRemoteService {
         fullServerDirectory = "Local::" + rootDirectory;
         files = new LinkedList<>();
         this.fileExtensions = fileExtensions;
-
 
         setRootDirectory(new File(rootDirectory));
     }
@@ -77,7 +78,7 @@ public class LocalService implements IRemoteService {
      * @return list of available files in format path,id
      */
     @Override
-    public List<String> getAvailableFiles() {
+    public Collection<String> getAvailableFiles() {
         return files;
     }
 
@@ -116,30 +117,43 @@ public class LocalService implements IRemoteService {
         lock.lock();
         try {
             files.clear();
-            final Collection<File> files = Basic.getAllFilesInDirectory(rootDirectory, true, fileExtensions);
-            for (File file : files) {
+            final var files = Basic.getAllFilesInDirectory(rootDirectory, true, fileExtensions);
+            var directories=new HashSet<File>();
+            for (var file : files) {
                 try {
-                    final File relative = Basic.getRelativeFile(file, rootDirectory);
-                    final Document doc = new Document();
+                    directories.add(file.getParentFile());
+                    final var relative = Basic.getRelativeFile(file, rootDirectory).getPath();
+                    final var doc = new Document();
 
                     doc.getMeganFile().setFileFromExistingFile(file.getPath(), true);
                     if (doc.getMeganFile().hasDataConnector()) {
-                        final IConnector connector = doc.getMeganFile().getConnector();
+                        final var connector = doc.getMeganFile().getConnector();
 
-                        final DataTable dataTable = new DataTable();
+                        final var dataTable = new DataTable();
                         SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
                         SyncArchiveAndDataTable.syncArchive2Summary(null, doc.getMeganFile().getFileName(), connector, dataTable, sampleAttributeTable);
-                        this.files.add(relative.getPath());
-                        fileName2Description.put(relative.getPath(), String.format("reads: %,d, matches: %,d", connector.getNumberOfReads(), connector.getNumberOfMatches()));
+                        this.files.add(relative);
+                        fileName2Description.put(relative, String.format("reads: %,d, matches: %,d", connector.getNumberOfReads(), connector.getNumberOfMatches()));
 
                     } else if (doc.getMeganFile().isMeganSummaryFile()) {
-                        this.files.add(relative.getPath());
-                        fileName2Description.put(relative.getPath(), String.format("reads: %,d", doc.getNumberOfReads()));
+                        this.files.add(relative);
+                        fileName2Description.put(relative, String.format("reads: %,d", doc.getNumberOfReads()));
                     }
+                    if(Basic.fileExistsAndIsNonEmpty(Basic.replaceFileSuffix(file,".txt")))
+                        fileName2Description.put(relative,Files.readString(Basic.replaceFileSuffix(file,".txt").toPath()));
                     progress.checkForCancel();
                 } catch (CanceledException ex) {
                     break;
                 } catch (IOException ignored) {
+                }
+            }
+            for(var directory:directories) {
+                var aboutFile=new File(directory,"About.txt");
+                if(aboutFile.exists()) {
+                    try {
+                        fileName2Description.put(directory.getPath(),Files.readString(aboutFile.toPath()));
+                    } catch (IOException ignored) {
+                    }
                 }
             }
         } finally {

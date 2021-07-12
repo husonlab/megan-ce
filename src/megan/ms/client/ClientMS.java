@@ -21,7 +21,6 @@
 package megan.ms.client;
 
 import jloda.util.Basic;
-import jloda.util.Triplet;
 import megan.ms.Utilities;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +50,7 @@ public class ClientMS {
         this.serverAndPrefix = serverAndPrefix.replaceAll("/$", "");
         this.timeoutSeconds = timeoutSeconds;
 
-        final InetSocketAddress proxyAddress = (Basic.notBlank(proxyName) ? new InetSocketAddress(proxyName, proxyPort) : null);
+        final var proxyAddress = (Basic.notBlank(proxyName) ? new InetSocketAddress(proxyName, proxyPort) : null);
 
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeoutSeconds))
@@ -70,9 +68,9 @@ public class ClientMS {
 
     public List<String> getFiles() throws IOException {
         try {
-            final HttpRequest request = setupRequest("/list", false);
-            HttpResponse<Stream<String>> response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
-            final List<String> list = response.body().collect(Collectors.toList());
+            final var request = setupRequest("/list", false);
+            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
+            final var list = response.body().collect(Collectors.toList());
             if (list.size() > 0 && list.get(0).startsWith(Utilities.SERVER_ERROR)) {
                 System.err.println(list.get(0));
                 throw new IOException(list.get(0));
@@ -83,29 +81,23 @@ public class ClientMS {
         }
     }
 
-    public List<Triplet<String,Long,Long>> getFilesReadCountMatchCount() throws IOException {
+    public List<FileRecord> getFileRecords() throws IOException {
         try {
-            final HttpRequest request = setupRequest("/list?readCount=true&matchCount=true", false);
-            HttpResponse<Stream<String>> response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
-            final List<String> list = response.body().collect(Collectors.toList());
+            final var request = setupRequest("/list?readCount=true&matchCount=true", false);
+            final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
+            final var list = response.body().collect(Collectors.toList());
             if (list.size() > 0 && list.get(0).startsWith(Utilities.SERVER_ERROR)) {
                 System.err.println(list.get(0));
                 throw new IOException(list.get(0));
             } else {
                 return list.stream().map(line->Basic.split(line,'\t'))
+                        .filter(tokens->tokens.length>0)
                         .map(tokens->{
-                            switch(tokens.length) {
-                                case 1:
-                                    return new Triplet<String,Long,Long>(tokens[0],0L,0L);
-                                case 2:
-                                    return new Triplet<String,Long,Long>(tokens[0],Basic.parseLong(tokens[1]),0L);
-                                case 3:
-                                    return new Triplet<String,Long,Long>(tokens[0],Basic.parseLong(tokens[1]),Basic.parseLong(tokens[2]));
-                                default:
-                                    return null;
-
-                            }
-                        }).filter(Objects::nonNull).collect(Collectors.toList());
+                            var name=tokens[0];
+                            var reads=(tokens.length>1? Basic.parseLong(tokens[1]):0);
+                            var matches=(tokens.length>2? Basic.parseLong(tokens[2]):0);
+                              return new FileRecord(name,reads,matches);
+                        }).collect(Collectors.toList());
             }
 
         } catch (InterruptedException e) {
@@ -181,5 +173,46 @@ public class ClientMS {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public static class FileRecord {
+        private final String name;
+        private final long reads;
+        private final long matches;
+        private String description;
+
+        public FileRecord(String name, long reads, long matches) {
+            this.name = name;
+            this.reads = reads;
+            this.matches = matches;
+            if(reads>0) {
+                var description=String.format("reads=%,d",reads);
+                if(matches>0)
+                    description+=String.format(", matches=%,d",matches);
+                this.description = description;
+            }
+            else
+                description=null;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getReads() {
+            return reads;
+        }
+
+        public long getMatches() {
+            return matches;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
     }
 }

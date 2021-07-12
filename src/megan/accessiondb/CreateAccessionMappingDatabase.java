@@ -128,8 +128,8 @@ public class CreateAccessionMappingDatabase {
      * @param classificationName name of the classifier used in the db
      * @param inputFile          path to file
      * @param description        description string to describe the used reference
-     * @oaram accessionColumn  accession column in input file (0-based)
-     * @oaram classColumn class column in input file (0-based)
+     * @param accessionColumn  accession column in input file (0-based)
+     * @param classColumn class column in input file (0-based)
      */
     public void insertClassification(String classificationName, String inputFile, int accessionColumn, int classColumn, String description) throws SQLException, IOException {
         if (classificationName == null) {
@@ -137,18 +137,18 @@ public class CreateAccessionMappingDatabase {
         }
         int count = 0;
 
-        try (Connection connection = config.createConnection("jdbc:sqlite:" + this.databaseFile);
-             Statement statement = connection.createStatement()) {
+        try (var connection = config.createConnection("jdbc:sqlite:" + this.databaseFile);
+             var statement = connection.createStatement()) {
             statement.execute("CREATE TABLE " + classificationName + "(Accession TEXT PRIMARY KEY, " + classificationName + "_id NUMBER NOT NULL); ");
             connection.setAutoCommit(false);
 
-            try (PreparedStatement insertStmd = connection.prepareStatement("INSERT INTO " + classificationName + " VALUES (?, ?);")) {
-                try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
+            try (var insertStmd = connection.prepareStatement("INSERT INTO " + classificationName + " VALUES (?, ?);")) {
+                try (var it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
-                        final String[] tokens = it.next().split("\t");
+                        final var tokens = it.next().split("\t");
                         if (accessionColumn < tokens.length && classColumn < tokens.length && Basic.isInteger(tokens[classColumn])) {
-                            final String accession = tokens[accessionColumn];
-                            final int value = Basic.parseInt(tokens[classColumn]);
+                            var accession = tokens[accessionColumn];
+                           var value = Basic.parseInt(tokens[classColumn]);
                             if (value != 0) {
                                 insertStmd.setString(1, accession);
                                 insertStmd.setInt(2, value);
@@ -164,7 +164,7 @@ public class CreateAccessionMappingDatabase {
             // write additional information into the info table
             statement.execute("INSERT INTO info VALUES ('" + classificationName + "', '" + description + "', " + count + ");");
         }
-        System.err.println(String.format("Table %s: added %,d items", classificationName, count));
+        System.err.printf("Table %s: added %,d items%n", classificationName, count);
         tables.add(classificationName);
     }
 
@@ -188,8 +188,8 @@ public class CreateAccessionMappingDatabase {
     private void createNCBIRefTable() throws SQLException {
         System.err.println("Creating accession table...");
 
-        final StringBuilder createTableCommand = new StringBuilder("CREATE TABLE Accession AS ");
-        for (int i = 0; i < tables.size(); i++) {
+        var createTableCommand = new StringBuilder("CREATE TABLE Accession AS ");
+        for (var i = 0; i < tables.size(); i++) {
             if (i > 0)
                 createTableCommand.append(" UNION ");
             createTableCommand.append("SELECT Accession FROM ").append(tables.get(i));
@@ -205,8 +205,8 @@ public class CreateAccessionMappingDatabase {
     private void joinTables() throws SQLException {
         System.err.println("Joining tables...");
 
-        // when adding more classifieres after initial merging this should enable the user to do so
-        final String renameQuery;
+        // when adding more classifications after initial merging this should enable the user to do so
+        String renameQuery;
         if (tables.contains("mappings")) {
             renameQuery = "ALTER TABLE mappings RENAME TO temp;";
             tables.add("temp");
@@ -215,10 +215,10 @@ public class CreateAccessionMappingDatabase {
             renameQuery = "DROP TABLE IF EXISTS mappings;";
 
         // create query string based on which reference dbs are used
-        final StringBuilder createMappingsCommand = new StringBuilder("CREATE TABLE mappings (Accession PRIMARY KEY ");
-        final StringBuilder fillMappingCommand = new StringBuilder(" INSERT INTO mappings SELECT * FROM Accession AS n ");
+        var createMappingsCommand = new StringBuilder("CREATE TABLE mappings (Accession PRIMARY KEY ");
+        var fillMappingCommand = new StringBuilder(" INSERT INTO mappings SELECT * FROM Accession AS n ");
 
-        for (String table : tables) {
+        for (var table : tables) {
             if (table.equals("temp")) {
                 // add all rows of temp (except accession)
                 createMappingsCommand.append(getTablesAlreadyIncluded());
@@ -227,7 +227,7 @@ public class CreateAccessionMappingDatabase {
             }
             fillMappingCommand.append("LEFT OUTER JOIN ").append(table).append(" USING (").append("Accession").append(") ");
         }
-        // turn rowid column off
+        // turn row ids column off
         createMappingsCommand.append(") WITHOUT ROWID;");
         fillMappingCommand.append(";"); // finishing the query
         // executing the queries
@@ -241,11 +241,11 @@ public class CreateAccessionMappingDatabase {
      * @throws SQLException
      */
     private String getTablesAlreadyIncluded() throws SQLException {
-        final StringBuilder buf = new StringBuilder();
-        try (Connection connection = createConnection();
-             ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM info WHERE id != 'general';")) {
+        var buf = new StringBuilder();
+        try (var connection = createConnection();
+             var rs = connection.createStatement().executeQuery("SELECT id FROM info WHERE id != 'general';")) {
             while (rs.next()) {
-                final String s = rs.getString("id");
+                var s = rs.getString("id");
                 if (!tables.contains(s)) {
                     buf.append(", ").append(s).append(" INT");
                 }
@@ -263,8 +263,8 @@ public class CreateAccessionMappingDatabase {
 
         tables.add("Accession");
 
-        final String[] commands = new String[tables.size() + 1];
-        for (int i = 0; i < tables.size(); i++) {
+        var commands = new String[tables.size() + 1];
+        for (var i = 0; i < tables.size(); i++) {
             if (!tables.get(i).equals("mappings")) {
                 commands[i] = "DROP TABLE IF EXISTS " + tables.get(i) + ";";
             }
@@ -275,11 +275,8 @@ public class CreateAccessionMappingDatabase {
         tables.clear();
         tables.add("mappings");
         // finally update the size information in the info table
-        final int size = computeSize("mappings");
+        var size = computeSize("mappings");
         execute("UPDATE info SET size = " + size + " WHERE id = 'general';");
-
-        final SQLiteConfig config = new SQLiteConfig();
-        config.setJournalMode(SQLiteConfig.JournalMode.DELETE);
     }
 
     /**
@@ -289,15 +286,15 @@ public class CreateAccessionMappingDatabase {
      * @return size of the table tableName
      */
     private int computeSize(String tableName) throws SQLException {
-        int counter = 0;
+        var count = 0;
 
-        try (Connection connection = createConnection(); Statement statement = connection.createStatement();
+        try (var connection = createConnection(); Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery("SELECT count(*) AS q FROM " + tableName + ";")) {
             while (rs.next()) {
-                counter = rs.getInt("q"); // todo: is this correct?
+                count = rs.getInt("q"); // todo: is this correct?
             }
         }
-        return counter;
+        return count;
     }
 
 
@@ -314,22 +311,22 @@ public class CreateAccessionMappingDatabase {
         if (classificationName == null) {
             throw new NullPointerException("classificationName");
         }
-        int count = 0;
+        var count = 0;
 
-        try (Connection connection = createConnection(); Statement statement = connection.createStatement()) {
+        try (var connection = createConnection(); var statement = connection.createStatement()) {
             statement.execute("ALTER TABLE mappings ADD COLUMN " + classificationName + " INTEGER;");
             connection.setAutoCommit(false);
 
-            try (PreparedStatement insertStmd = connection.prepareStatement("UPDATE mappings SET " + classificationName + "=? WHERE Accession=?")) {
-                try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
+            try (var insert = connection.prepareStatement("UPDATE mappings SET " + classificationName + "=? WHERE Accession=?")) {
+                try (var it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
-                        final String[] tokens = it.next().split("\t");
-                        final String accession = tokens[0];
-                        final int value = Basic.parseInt(tokens[1]);
+                        var tokens = it.next().split("\t");
+                        var accession = tokens[0];
+                        var value = Basic.parseInt(tokens[1]);
                         if (value != 0) {
-                            insertStmd.setString(2, accession);
-                            insertStmd.setInt(1, value);
-                            insertStmd.execute();
+                            insert.setString(2, accession);
+                            insert.setInt(1, value);
+                            insert.execute();
                             count++;
                         }
                     }
@@ -352,7 +349,7 @@ public class CreateAccessionMappingDatabase {
      * @throws SQLException if something goes wrong with the database
      */
     public void execute(String... commands) throws SQLException {
-        try (Connection connection = createConnection()) {
+        try (var connection = createConnection()) {
             execute(connection, commands);
         }
     }
@@ -363,9 +360,9 @@ public class CreateAccessionMappingDatabase {
     public static void execute(Connection connection, String... commands) throws SQLException {
         if (false)
             System.err.println("execute:\n" + Basic.toString(commands, "\n"));
-        final Statement statement = connection.createStatement();
+        var statement = connection.createStatement();
         {
-            for (String q : commands) {
+            for (var q : commands) {
                 statement.execute(q);
             }
         }
@@ -375,7 +372,7 @@ public class CreateAccessionMappingDatabase {
      * generic method for executing queries with results of type String
      */
     public ArrayList<String> executeQueryString(String query, int index) throws SQLException {
-        try (Connection connection = createConnection()) {
+        try (var connection = createConnection()) {
             return executeQueryString(connection, query, index);
         }
     }
@@ -385,8 +382,8 @@ public class CreateAccessionMappingDatabase {
      * generic method for executing queries with results of type String
      */
     public static ArrayList<String> executeQueryString(Connection connection, String query, int index) throws SQLException {
-        final ResultSet rs = connection.createStatement().executeQuery(query);
-        final ArrayList<String> result = new ArrayList<>();
+        var rs = connection.createStatement().executeQuery(query);
+        var result = new ArrayList<String>();
         while (rs.next()) {
             result.add(rs.getString(index));
         }

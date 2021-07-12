@@ -232,7 +232,7 @@ public class ConnectorCombiner implements IConnector {
 
     @Override
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
-        System.err.println("Can't getAuxiliaryData() for combined document");
+        System.err.println("Can't auxiliaryData() for combined document");
         return new HashMap<>();
     }
 

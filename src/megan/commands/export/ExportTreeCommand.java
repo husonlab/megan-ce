@@ -45,17 +45,17 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("file=");
         String outputFile = np.getAbsoluteFileName();
 
-        boolean simplify = false;
+        var simplify = false;
         if (np.peekMatchIgnoreCase("simplify")) {
             np.matchIgnoreCase("simplify=");
             simplify = np.getBoolean();
         }
-        boolean showInternalLabels = true;
+        var showInternalLabels = true;
         if (np.peekMatchIgnoreCase("showInternalLabels")) {
             np.matchIgnoreCase("showInternalLabels=");
             showInternalLabels = np.getBoolean();
         }
-        boolean showUnassigned = true;
+        var showUnassigned = true;
         if (np.peekMatchIgnoreCase("showUnassigned")) {
             np.matchIgnoreCase("showUnassigned=");
             showUnassigned = np.getBoolean();
@@ -64,10 +64,10 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof ViewerBase) {
-            ViewerBase viewer = (ViewerBase) getViewer();
-            BufferedWriter w = new BufferedWriter(new FileWriter(outputFile));
-            ExportTree.apply(viewer, w, showInternalLabels, showUnassigned, simplify);
-            w.close();
+            var viewer = (ViewerBase) getViewer();
+            try(var w = new BufferedWriter(new FileWriter(outputFile))) {
+                ExportTree.apply(viewer, w, showInternalLabels, showUnassigned, simplify);
+            }
         } else
             System.err.println("Invalid command");
     }
@@ -85,17 +85,16 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        Director dir = getDir();
+        var dir = getDir();
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), ".tre");
-        File lastOpenFile = new File(name);
-        String lastDir = ProgramProperties.get("TreeDirectory", "");
+        var name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), ".tre");
+        var lastOpenFile = new File(name);
+        var lastDir = ProgramProperties.get("TreeDirectory", "");
         if (lastDir.length() > 0) {
             lastOpenFile = new File(lastDir, name);
         }
 
-
-        File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save as tree", ".txt");
+        var file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save as tree", ".txt");
 
         if (file != null) {
             execute("export what=tree file='" + file.getPath() + "' showInternalLabels=true showUnassigned=true;");

@@ -30,7 +30,6 @@ import megan.daa.io.OutputWriterLittleEndian;
 import megan.data.IClassificationBlock;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,12 +46,12 @@ public class Utilities {
      * construct classification block from bytes
      */
     public static IClassificationBlock getClassificationBlockFromBytes(byte[] bytes) throws IOException {
-        try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new ByteInputStream(bytes, 0, bytes.length))) {
-            final String classificationName = ins.readNullTerminatedBytes();
-            final ClassificationBlockDAA classificationBlock = new ClassificationBlockDAA(classificationName);
-            int numberOfClasses = ins.readInt();
+        try (var ins = new InputReaderLittleEndian(new ByteInputStream(bytes, 0, bytes.length))) {
+            final var classificationName = ins.readNullTerminatedBytes();
+            final var classificationBlock = new ClassificationBlockDAA(classificationName);
+            final var numberOfClasses = ins.readInt();
 
-            for (int c = 0; c < numberOfClasses; c++) {
+            for (var c = 0; c < numberOfClasses; c++) {
                 int classId = ins.readInt();
                 classificationBlock.setWeightedSum(classId, ins.readInt());
                 classificationBlock.setSum(classId, ins.readInt());
@@ -65,12 +64,11 @@ public class Utilities {
      * save classification block to bytes
      */
     public static byte[] writeClassificationBlockToBytes(IClassificationBlock classificationBlock) throws IOException {
-        try (ByteOutputStream stream = new ByteOutputStream();
-             OutputWriterLittleEndian outs = new OutputWriterLittleEndian(stream)) {
+        try (var stream = new ByteOutputStream(); var outs = new OutputWriterLittleEndian(stream)) {
             outs.writeNullTerminatedString(classificationBlock.getName().getBytes());
-            final int numberOfClasses = classificationBlock.getKeySet().size();
+            final var numberOfClasses = classificationBlock.getKeySet().size();
             outs.writeInt(numberOfClasses);
-            for (int classId : classificationBlock.getKeySet()) {
+            for (var classId : classificationBlock.getKeySet()) {
                 outs.writeInt(classId);
                 outs.writeInt((int) classificationBlock.getWeightedSum(classId));
                 outs.writeInt(classificationBlock.getSum(classId));
@@ -80,17 +78,17 @@ public class Utilities {
     }
 
     public static Map<String, byte[]> getAuxiliaryDataFromBytes(byte[] bytes) throws IOException {
-        final Map<String, byte[]> label2data = new TreeMap<>();
+        final var label2data = new TreeMap<String, byte[]>();
 
-        try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new ByteInputStream(bytes, 0, bytes.length))) {
-            final int numberOfLabels = ins.readInt();
-            for (int i = 0; i < numberOfLabels; i++) {
-                final String label = ins.readNullTerminatedBytes();
-                final int size = ins.readInt();
-                final byte[] data = new byte[size];
-                final int length = ins.read_available(data, 0, size);
+       try (var ins = new InputReaderLittleEndian(new ByteInputStream(bytes, 0, bytes.length))) {
+            final var numberOfLabels = ins.readInt();
+            for (var i = 0; i < numberOfLabels; i++) {
+                final var label = ins.readNullTerminatedBytes();
+                final var size = ins.readInt();
+                final var data = new byte[size];
+                final var length = ins.read_available(data, 0, size);
                 if (length < size) {
-                    final byte[] tmp = new byte[length];
+                    final var tmp = new byte[length];
                     System.arraycopy(data, 0, tmp, 0, length);
                     label2data.put(label, tmp);
                     throw new IOException("buffer underflow");
@@ -102,12 +100,11 @@ public class Utilities {
     }
 
     public static byte[] writeAuxiliaryDataToBytes(Map<String, byte[]> label2data) throws IOException {
-        try (ByteOutputStream stream = new ByteOutputStream();
-             OutputWriterLittleEndian outs = new OutputWriterLittleEndian(stream)) {
+        try (var stream = new ByteOutputStream(); var outs = new OutputWriterLittleEndian(stream)) {
             outs.writeInt(label2data.size());
-            for (String label : label2data.keySet()) {
+            for (var label : label2data.keySet()) {
                 outs.writeNullTerminatedString(label.getBytes());
-                final byte[] data = label2data.get(label);
+                final var data = label2data.get(label);
                 outs.writeInt(data.length);
                 outs.write(data, 0, data.length);
             }

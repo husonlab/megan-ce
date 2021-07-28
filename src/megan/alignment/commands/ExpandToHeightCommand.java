@@ -1,5 +1,5 @@
 /*
- * ZoomToReadableHeight.java Copyright (C) 2021. Daniel H. Huson
+ * ExpandVerticalCommand.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -27,7 +27,7 @@ import megan.commands.CommandBase;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-class ZoomToReadableHeight extends CommandBase implements ICommand {
+public class ExpandToHeightCommand extends CommandBase implements ICommand {
     public String getSyntax() {
         return null;
     }
@@ -46,7 +46,7 @@ class ZoomToReadableHeight extends CommandBase implements ICommand {
     public String getName() {
         return "Expand To Height";
     }
-
+    
     public ImageIcon getIcon() {
         return ResourceManager.getIcon("sun/AlignJustifyVertical16.gif");
     }

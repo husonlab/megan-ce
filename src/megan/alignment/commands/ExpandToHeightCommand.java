@@ -46,8 +46,8 @@ public class ExpandToHeightCommand extends CommandBase implements ICommand {
     public String getName() {
         return "Expand To Height";
     }
-    
-    public ImageIcon getIcon() {
+
+	public ImageIcon getIcon() {
         return ResourceManager.getIcon("sun/AlignJustifyVertical16.gif");
     }
 

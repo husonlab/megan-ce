@@ -24,7 +24,6 @@ import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
-import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
 import megan.viewer.ClassificationViewer;
@@ -50,7 +49,7 @@ public class NaiveProjectionProfile {
     public static Map<Integer, float[]> compute(final ClassificationViewer viewer, final String rankName, final float minPercent) {
 
         int rank = TaxonomicLevels.getId(rankName);
-        final Set<Integer> nodeIdsAtGivenRank = ClassificationManager.get(Classification.Taxonomy, true).getFullTree().getNodeIdsAtGivenRank(rank, false);
+        final Set<Integer> nodeIdsAtGivenRank = ClassificationManager.get(viewer.getClassName(), true).getFullTree().getNodeIdsAtGivenRank(rank, false);
 
         final int numberOfSamples = viewer.getDocument().getNumberOfSamples();
 
@@ -142,10 +141,10 @@ public class NaiveProjectionProfile {
                 lostCount[i] = totalInitiallyAssigned[i] - totalProjected[i];
 
                 System.err.println("Sample " + i + ":");
-                System.err.println(String.format("Reads:    %,10.0f", viewer.getDocument().getDataTable().getSampleSizes()[i]));
-                System.err.println(String.format("Assigned: %,10d", totalInitiallyAssigned[i]));
-                System.err.println(String.format("Projected:%,10d", totalProjected[i]));
-                System.err.println(String.format("Lost:     %,10d", lostCount[i]));
+                System.err.printf("Reads:    %,10.0f%n", viewer.getDocument().getDataTable().getSampleSizes()[i]);
+                System.err.printf("Assigned: %,10d%n", totalInitiallyAssigned[i]);
+                System.err.printf("Projected:%,10d%n", totalProjected[i]);
+                System.err.printf("Lost:     %,10d%n", lostCount[i]);
             }
         }
 

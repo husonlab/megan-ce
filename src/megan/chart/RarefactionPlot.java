@@ -127,7 +127,7 @@ public class RarefactionPlot extends ChartViewer {
             for (String name : doc.getSampleNames())
                 chartData.setDataForSeries(name, name2counts.get(name));
 
-            getChartData().setSeriesLabel("Number of reads sampled from leaves");
+            getChartData().setSeriesLabel(doc.getReadAssignmentMode().getDisplayLabel() + " sampled from leaves");
             getChartData().setCountsLabel("Number of leaves in " + cName + " tree");
 
             super.sync();

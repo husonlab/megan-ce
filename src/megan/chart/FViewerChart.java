@@ -75,7 +75,7 @@ public class FViewerChart extends ChartViewer {
         setWindowTitle(cName + " Chart");
         chartData.setSeriesLabel("Samples");
         chartData.setClassesLabel(cName);
-        chartData.setCountsLabel("Number of reads");
+        chartData.setCountsLabel(dir.getDocument().getReadAssignmentMode().getDisplayLabel());
         setClassLabelAngle(Math.PI / 4);
 
         addWindowListener(new WindowAdapter() {

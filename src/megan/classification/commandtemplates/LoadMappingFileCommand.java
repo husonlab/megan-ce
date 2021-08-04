@@ -77,7 +77,6 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
             parseTaxonName = false;
         np.matchIgnoreCase(";");
 
-        try {
             final Classification classification = ClassificationManager.get(cName, true);
             classification.getIdMapper().setUseTextParsing(parseTaxonName);
             ProgressListener progressListener;
@@ -96,9 +95,6 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
                 ((ImportBlastDialog) getParent()).getCommandManager().execute("use cViewer=" + cName + " state=true;");
             }
             ProgramProperties.put(ClassificationManager.getMapFileKey(cName, mapType), fileName);
-        } catch (Exception ex) {
-            Basic.caught(ex);
-        }
     }
 
     /**

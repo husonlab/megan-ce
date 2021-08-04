@@ -105,7 +105,7 @@ public class IdMapper {
      * @param progress
      * @throws CanceledException
      */
-    public void loadMappingFile(String fileName, MapType mapType, boolean reload, ProgressListener progress) throws CanceledException {
+    public void loadMappingFile(String fileName, MapType mapType, boolean reload, ProgressListener progress) throws IOException {
         switch (mapType) {
             default:
             case Accession: {
@@ -113,16 +113,12 @@ public class IdMapper {
                     if (accessionMap != null) {
                         closeAccessionMap();
                     }
-                    try {
-                        this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
-                        loadedMaps.add(mapType);
+
+                    this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
+                    loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
-                    } catch (Exception e) {
-                        if (e instanceof CanceledException)
-                            throw (CanceledException) e;
-                        Basic.caught(e);
-                    }
+
                 }
                 break;
             }
@@ -136,17 +132,13 @@ public class IdMapper {
                         }
                     }
                     final String2IntegerMap synonymsMap = new String2IntegerMap();
-                    try {
+
                         synonymsMap.loadFile(name2IdMap, fileName, progress);
                         this.synonymsMap = synonymsMap;
                         loadedMaps.add(mapType);
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
-                    } catch (Exception e) {
-                        if (e instanceof CanceledException)
-                            throw (CanceledException) e;
-                        Basic.caught(e);
-                    }
+
                 }
                 break;
             }
@@ -161,7 +153,7 @@ public class IdMapper {
                         activeMaps.add(mapType);
                         map2Filename.put(mapType, fileName);
                     } catch (Exception e) {
-                        Basic.caught(e);
+                        throw new IOException(e);
                     }
                 }
                 break;
@@ -211,7 +203,7 @@ public class IdMapper {
             copy.setUseTextParsing(isUseTextParsing());
             try {
                 copy.loadMappingFile(((AccessAccessionAdapter) accessionMap).getMappingDBFile(), MapType.MeganMapDB, false, new ProgressSilent());
-            } catch (CanceledException e) {
+            } catch (IOException e) {
                 Basic.caught(e);
             }
             final IdParser idParser = new IdParser(copy);

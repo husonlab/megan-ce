@@ -165,7 +165,7 @@ public class AAdderBuild {
      * @return gene item creator
      * @throws CanceledException
      */
-    public static GeneItemCreator setupCreator(String acc2TaxaFile, Map<String, String> class2AccessionFile) throws CanceledException {
+    public static GeneItemCreator setupCreator(String acc2TaxaFile, Map<String, String> class2AccessionFile) throws IOException {
         final String[] cNames;
         {
             final ArrayList<String> list = new ArrayList<>();

@@ -28,7 +28,10 @@ import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.algorithms.NaiveProjectionProfile;
 import megan.classification.ClassificationManager;
-import megan.core.*;
+import megan.core.Director;
+import megan.core.Document;
+import megan.core.MeganFile;
+import megan.core.SampleAttributeTable;
 import megan.main.MeganProperties;
 import megan.util.CallBack;
 import megan.util.PopupChoice;
@@ -40,6 +43,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,9 +76,6 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
             sampleSizes[s] = Math.round(doc.getDataTable().getSampleSizes()[s]);
         }
 
-        final Map<Integer, float[]> taxonMap = NaiveProjectionProfile.compute((ClassificationViewer) getViewer(), rank, minPercent);
-        final Map<Integer, float[]>[] sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
-
         final Director newDir;
         final Document newDocument;
         if (ProgramProperties.isUseGUI()) {
@@ -90,14 +91,39 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
             newDocument.getSampleAttributeTable().clear();
         }
         newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
+        newDocument.setNumberReads(numberOfReads);
+
+        Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
+
+        {
+            var viewers = new ArrayList<ClassificationViewer>();
+            viewers.add(((Director) getDir()).getMainViewer());
+            if (doc.getClassificationNames().contains("GTDB")) {
+                for (var viewer : ((Director) getDir()).getViewers()) {
+                    if (viewer instanceof ClassificationViewer && viewer.getClassName().equals("GTDB")) {
+                        viewers.add((ClassificationViewer) viewer);
+                        break;
+                    }
+                }
+                if (viewers.size() < 2) {
+                    System.err.println("Document has GTDB classification, open GTDB viewer to ensure that it gets projected, too");
+                }
+            }
+            for (var viewer : viewers) {
+                final Map<Integer, float[]> taxonMap = NaiveProjectionProfile.compute(viewer, rank, minPercent);
+                final Map<Integer, float[]>[] sample2taxonMap = sortBySample(numberOfSamples, taxonMap);
+
+                for (int s = 0; s < numberOfSamples; s++) {
+                    classification2class2counts.put(viewer.getClassName(), sample2taxonMap[s]);
+                    // float sampleSize = computeSize(sample2taxonMap[s]);
+
+                }
+            }
+        }
 
         for (int s = 0; s < numberOfSamples; s++) {
-            Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
-            classification2class2counts.put(ClassificationType.Taxonomy.toString(), sample2taxonMap[s]);
-            // float sampleSize = computeSize(sample2taxonMap[s]);
             newDocument.addSample(sampleNames[s], sampleSizes[s], 0, doc.getBlastMode(), classification2class2counts);
         }
-        newDocument.setNumberReads(numberOfReads);
 
         System.err.println("Number of reads: " + newDocument.getNumberOfReads());
         newDocument.processReadHits();

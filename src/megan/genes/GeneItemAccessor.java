@@ -102,7 +102,7 @@ public class GeneItemAccessor {
      */
     private IntervalTree<GeneItem> getIntervals(int refIndex) {
         synchronized (syncObjects[refIndex & syncBits]) {
-            if (refIndex2Intervals[refIndex] == null && refIndex2FilePos[refIndex] != 0) {
+            if (refIndex < refIndex2Intervals.length && refIndex2Intervals[refIndex] == null && refIndex2FilePos[refIndex] != 0) {
                 synchronized (dbRaf) {
                     try {
                         final long pos = refIndex2FilePos[refIndex];

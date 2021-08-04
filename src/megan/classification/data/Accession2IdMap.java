@@ -20,7 +20,9 @@
 
 package megan.classification.data;
 
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.FileLineIterator;
+import jloda.util.ProgressListener;
 import megan.data.IName2IdMap;
 
 import java.io.Closeable;
@@ -42,7 +44,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
      * @param fileName
      * @throws IOException
      */
-    public Accession2IdMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
+    public Accession2IdMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException {
         map = new HashMap<>();
         try (FileLineIterator it = new FileLineIterator(fileName)) {
             progress.setSubtask("Loading file: " + fileName);
@@ -65,8 +67,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
                 }
                 progress.setProgress(it.getProgress());
             }
-            if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
         }
     }
 

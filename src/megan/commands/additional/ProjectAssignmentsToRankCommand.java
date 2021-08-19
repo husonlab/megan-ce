@@ -116,16 +116,13 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
                 for (int s = 0; s < numberOfSamples; s++) {
                     classification2class2counts.put(viewer.getClassName(), sample2taxonMap[s]);
                     // float sampleSize = computeSize(sample2taxonMap[s]);
-
+                    newDocument.addSample(sampleNames[s], sampleSizes[s], 0, doc.getBlastMode(), classification2class2counts);
                 }
             }
         }
 
-        for (int s = 0; s < numberOfSamples; s++) {
-            newDocument.addSample(sampleNames[s], sampleSizes[s], 0, doc.getBlastMode(), classification2class2counts);
-        }
+        System.err.printf("Number of reads: %,d%n",newDocument.getNumberOfReads());
 
-        System.err.println("Number of reads: " + newDocument.getNumberOfReads());
         newDocument.processReadHits();
         newDocument.setTopPercent(100);
         newDocument.setMinScore(0);

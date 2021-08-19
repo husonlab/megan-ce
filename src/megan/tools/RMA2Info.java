@@ -452,7 +452,7 @@ public class RMA2Info {
         Node v = taxonomy.getANode(taxId);
         while (true) {
             for (int id : ancestorIds)
-                if ((Integer) v.getInfo() == id)
+                if (v.getInfo()!=null && (Integer) v.getInfo() == id)
                     return true;
                 else if (v.getInDegree() > 0)
                     v = v.getFirstInEdge().getSource();

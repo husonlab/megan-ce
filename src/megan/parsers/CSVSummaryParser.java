@@ -144,17 +144,17 @@ public class CSVSummaryParser {
                             System.arraycopy(tokens, 1, names, 0, names.length);
                             table.setSamples(names, null, null, null);
                         } else if (tokens.length == 2) {
-                            names = new String[]{Basic.getFileBaseName((new File(fileName)).getName())};
-                        } else {
-                            names = new String[tokens.length - 1];
-                            for (int i = 0; i < names.length; i++)
-                                names[i] = "Sample" + (i + 1);
-                        }
+							names = new String[]{Basic.getFileBaseName((new File(fileName)).getName())};
+						} else {
+							names = new String[tokens.length - 1];
+							for (int i = 0; i < names.length; i++)
+								names[i] = "Sample" + (i + 1);
+						}
 
-                        Arrays.fill(total, new float[names.length]);
-                        if (headerLinePresent)
-                            continue; // don't try to parse numbers from header line
-                    }
+						Arrays.fill(total, new float[names.length]);
+						if (headerLinePresent)
+							continue; // don't try to parse numbers from header line
+					} // first
                     if (add == null)
                         add = new int[names.length];
                     for (int i = 1; i < tokens.length; i++) {
@@ -169,17 +169,19 @@ public class CSVSummaryParser {
 
                     boolean found = false;
                     for (int i = 0; i < idParsers.length; i++) {
-                        int id;
-                        if (i == taxonomyIndex && Basic.isInteger(tokens[0]))
-                            id = Basic.parseInt(tokens[0]);
-                        else
-                            id = idParsers[i].getIdFromHeaderLine(tokens[0]);
-                        if (id != 0) {
-                            found = true;
-                            if (knownIds[i].contains(id)) {
-                                float[] counts = getOrCreate(class2counts[i], id, names.length);
-                                addToArray(counts, add);
-                                addToArray(total[i], add);
+						int id;
+						if ((i == taxonomyIndex || taxonomyIndex == -1) && Basic.isInteger(tokens[0]))
+							id = Basic.parseInt(tokens[0]);
+						else
+							id = idParsers[i].getName2IdMap().get(tokens[0]);
+						if (id == 0)
+							id = idParsers[i].getIdFromHeaderLine(tokens[0]);
+						if (id != 0) {
+							found = true;
+							if (knownIds[i].contains(id)) {
+								float[] counts = getOrCreate(class2counts[i], id, names.length);
+								addToArray(counts, add);
+								addToArray(total[i], add);
 
                                 /*
                                 if(id>0) {

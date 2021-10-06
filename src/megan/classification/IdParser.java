@@ -21,6 +21,7 @@ package megan.classification;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import megan.classification.data.Name2IdMap;
 import megan.classification.util.MultiWords;
 import megan.classification.util.TaggedValueIterator;
 
@@ -324,14 +325,17 @@ public class IdParser {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
-    }
+	}
 
-    public boolean isUseTextParsing() {
-        return useTextParsing;
-    }
+	public boolean isUseTextParsing() {
+		return useTextParsing;
+	}
 
-    public void setUseTextParsing(boolean useTextParsing) {
-        this.useTextParsing = useTextParsing;
-    }
+	public void setUseTextParsing(boolean useTextParsing) {
+		this.useTextParsing = useTextParsing;
+	}
 
+	public Name2IdMap getName2IdMap() {
+		return idMapper.getName2IdMap();
+	}
 }

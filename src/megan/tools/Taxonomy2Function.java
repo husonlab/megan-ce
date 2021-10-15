@@ -24,7 +24,6 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.classification.IdMapper;
 import megan.core.Document;
 
 import java.io.BufferedWriter;
@@ -64,7 +63,7 @@ public class Taxonomy2Function {
 	/**
 	 * run
 	 */
-	private void run(String[] args) throws UsageException, IOException{
+	private void run(String[] args) throws UsageException, IOException {
 		final ArgsOptions options = new ArgsOptions(args, this, "Reports taxonomy-by-function classification");
 		options.setVersion(ProgramProperties.getProgramVersion());
 		options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -76,9 +75,9 @@ public class Taxonomy2Function {
 
 		options.comment("Options");
 		final var firstClassificationName = options.getOption("-a", "firstClassification", "first classification name", ClassificationManager.getAllSupportedClassifications(), "Taxonomy");
-		final var firstClasses= options.getOption("-ac","firstClasses","Class IDs in first classification?",Arrays.asList("all"));
+		final var firstClasses = options.getOption("-ac", "firstClasses", "Class IDs in first classification?", Arrays.asList("all"));
 		final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
-		final var secondClasses= options.getOption("-bc","secondClasses","Class IDs in second classifications?",Arrays.asList("all"));
+		final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", Arrays.asList("all"));
 
 		var formats = new String[]{"name", "id"};
 
@@ -89,9 +88,11 @@ public class Taxonomy2Function {
 
 		var separator = options.getOption("-s", "separator", "Separator", new String[]{"tab", "comma", "semi-colon"}, "tab");
 
-		final var includeFirstUnassigned=options.getOption("-au","includeFirstUnassigned","include reads unassigned in first classification",true);
-		final var includeSecondUnassigned=options.getOption("-bu","includeSecondUnassigned","include reads unassigned second classification",true);
+		final var includeFirstUnassigned = options.getOption("-au", "includeFirstUnassigned", "include reads unassigned in first classification", true);
+		final var includeSecondUnassigned = options.getOption("-bu", "includeSecondUnassigned", "include reads unassigned second classification", true);
 		options.done();
+
+		var debuggingRun = false;
 
 		if (firstClassificationName.equals(secondClassificationName))
 			throw new UsageException("First second classifications must be different");
@@ -108,22 +109,22 @@ public class Taxonomy2Function {
 				break;
 		}
 
-		Collection<Integer> firstIds=null;
-		if(!(firstClasses.size()==1 && firstClasses.get(0).equals("all"))) {
-			firstIds=new HashSet<>();
-			for(var token:firstClasses) {
-				if(!Basic.isInteger(token))
-					throw new UsageException("--firstClasses: integer expected, got: "+token);
+		Collection<Integer> firstIds = null;
+		if (!(firstClasses.size() == 1 && firstClasses.get(0).equals("all"))) {
+			firstIds = new HashSet<>();
+			for (var token : firstClasses) {
+				if (!Basic.isInteger(token))
+					throw new UsageException("--firstClasses: integer expected, got: " + token);
 				else
 					firstIds.add(Basic.parseInt(token));
 			}
 		}
-		Collection<Integer> secondIds=null;
-		if(!(secondClasses.size()==1 && secondClasses.get(0).equals("all"))) {
-			secondIds=new HashSet<>();
-			for(var token:secondClasses) {
-				if(!Basic.isInteger(token))
-					throw new UsageException("--secondClasses: integer expected, got: "+token);
+		Collection<Integer> secondIds = null;
+		if (!(secondClasses.size() == 1 && secondClasses.get(0).equals("all"))) {
+			secondIds = new HashSet<>();
+			for (var token : secondClasses) {
+				if (!Basic.isInteger(token))
+					throw new UsageException("--secondClasses: integer expected, got: " + token);
 				else
 					secondIds.add(Basic.parseInt(token));
 			}
@@ -148,16 +149,34 @@ public class Taxonomy2Function {
 		progress.setSubtask("First classification");
 		progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
-		if(firstIds==null || firstIds.size()==0)
-			firstIds=firstClassificationBlock.getKeySet();
+		if (firstIds == null || firstIds.size() == 0)
+			firstIds = firstClassificationBlock.getKeySet();
 
 		for (var classId : firstIds) {
-			if(includeFirstUnassigned || classId>0) {
+			if (includeFirstUnassigned || classId > 0) {
 				var list = new ArrayList<String>();
 				first2reads.put(classId, list);
 				var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
 				while (it.hasNext()) {
-					list.add(it.next().getReadName());
+					var readBlock = it.next();
+					if (debuggingRun) {
+						var ok = true;
+						var which = 0;
+						for (int m = 0; ok && m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+							var matchBlock = readBlock.getMatchBlock(m);
+							var id = matchBlock.getId(firstClassificationName);
+							if (id > 0) {
+								if (which == 0)
+									which = id;
+								else if (id != which)
+									ok = false;
+
+							}
+						}
+						if (!ok)
+							continue; // keep the good ones
+					}
+					list.add(readBlock.getReadName());
 				}
 			}
 			progress.incrementProgress();
@@ -173,14 +192,32 @@ public class Taxonomy2Function {
 		progress.setProgress(0);
 		progress.setMaximum(secondClassificationBlock.getKeySet().size());
 
-		if(secondIds==null || secondIds.size()==0)
-			secondIds=secondClassificationBlock.getKeySet();
+		if (secondIds == null || secondIds.size() == 0)
+			secondIds = secondClassificationBlock.getKeySet();
 
 		for (var classId : secondIds) {
-			if(includeSecondUnassigned || classId>0) {
+			if (includeSecondUnassigned || classId > 0) {
 				var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);
 				while (it.hasNext()) {
-					read2second.put(it.next().getReadName(), classId);
+					var readBlock = it.next();
+					if (debuggingRun) {
+						var ok = true;
+						var which = 0;
+						for (int m = 0; ok && m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+							var matchBlock = readBlock.getMatchBlock(m);
+							var id = matchBlock.getId(secondClassificationName);
+							if (id > 0) {
+								if (which == 0)
+									which = id;
+								else if (id != which)
+									ok = false;
+
+							}
+						}
+						if (ok)
+							continue; // keep the bad ones!
+					}
+					read2second.put(readBlock.getReadName(), classId);
 				}
 			}
 			progress.incrementProgress();
@@ -194,18 +231,18 @@ public class Taxonomy2Function {
 		progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
 		for (var classId : firstClassificationBlock.getKeySet()) {
-			if(first2reads.containsKey(classId)) {
-			for (var readName : first2reads.get(classId)) {
-				var otherId = read2second.get(readName);
-				if (otherId != null) {
-					var list = table.get(classId, otherId);
-					if (list == null) {
-						list = new ArrayList<>();
-						table.put(classId, otherId, list);
+			if (first2reads.containsKey(classId)) {
+				for (var readName : first2reads.get(classId)) {
+					var otherId = read2second.get(readName);
+					if (otherId != null) {
+						var list = table.get(classId, otherId);
+						if (list == null) {
+							list = new ArrayList<>();
+							table.put(classId, otherId, list);
+						}
+						list.add(readName);
 					}
-					list.add(readName);
 				}
-			}
 			}
 			progress.incrementProgress();
 		}
@@ -220,8 +257,8 @@ public class Taxonomy2Function {
 				var firstName = (firstFormat.equals("id") ? String.valueOf(firstId) : firstClassification.getName2IdMap().get(firstId));
 				for (var secondId : sorted(secondClassification, secondFormat, table.columnKeySet())) {
 					var secondName = (secondFormat.equals("id") ? String.valueOf(secondId) : secondClassification.getName2IdMap().get(secondId));
-					if(table.contains(firstId,secondId)) {
-					var values = table.get(firstId, secondId);
+					if (table.contains(firstId, secondId)) {
+						var values = table.get(firstId, secondId);
 						if (listOption.equals("counts"))
 							w.write(firstName + separator + secondName + separator + values.size() + "\n");
 						else

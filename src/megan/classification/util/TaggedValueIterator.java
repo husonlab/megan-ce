@@ -20,6 +20,8 @@
 
 package megan.classification.util;
 
+import jloda.util.ProgramProperties;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -35,6 +37,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     private boolean enabled;
 
     private String nextResult;
+
+    private final boolean allowMinusInAccession= ProgramProperties.get("enable-allow-minus-in-accession",false);
 
     /**
      * iterator over all values following an occurrence of tag in aLine.
@@ -98,16 +102,17 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
         nextResult = getNextResult();
 
         if (attemptFirstWord) {
-            int a = 0;
+            var a = 0;
             while (a < aLine.length()) {
                 if (aLine.charAt(a) == '>' || aLine.charAt(a) == '@' || Character.isWhitespace(aLine.charAt(a)))
                     a++;
                 else
                     break;
             }
-            int b = a + 1;
+            var b = a + 1;
             while (b < aLine.length()) {
-                if (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')
+                var ch=aLine.charAt(b);
+                if (Character.isLetterOrDigit(ch) ||ch == '_' || (allowMinusInAccession && ch=='-'))
                     b++;
                 else
                     break;
@@ -129,7 +134,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     public String next() {
         if (nextResult == null)
             throw new NoSuchElementException();
-        final String result = nextResult;
+        final var result = nextResult;
         nextResult = getNextResult();
         return result;
     }
@@ -151,7 +156,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
                 tagPos++;
                 break;
             }
-            for (String tag : tags) {
+            for (var tag : tags) {
                 if (match(aLine, tagPos, tag)) {
                     tagPos += tag.length();
                     break loop;
@@ -162,10 +167,16 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
         if (tagPos >= aLine.length())
             return null;
 
-        int b = tagPos + 1;
-        while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_'))
-            b++;
-        String result = aLine.substring(tagPos, b);
+        var b = tagPos + 1;
+        while(b <aLine.length()) {
+            var ch=aLine.charAt(b);
+            if (Character.isLetterOrDigit(ch) || ch == '_' || (allowMinusInAccession && ch=='-'))
+                b++;
+            else
+                break;
+
+        }
+         var result = aLine.substring(tagPos, b);
         tagPos = b;
         return result;
     }
@@ -182,7 +193,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
         if (string.length() - offset < query.length())
             return false;
 
-        for (int i = 0; i < query.length(); i++) {
+        for (var i = 0; i < query.length(); i++) {
             if (string.charAt(offset + i) != query.charAt(i))
                 return false;
         }
@@ -207,27 +218,5 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public static void main(String[] args) {
-        final String aLine = ">NP_001320305.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]AAC64897.1 Contains similarity to TM021B04.11 gi|2191197 from A. thaliana BAC gb|AF007271 [Arabidopsis thaliana]ANM57823.1 translation initiation factor 3 subunit I [Arabidopsis thaliana]\n";
-
-        System.err.println("Line: " + aLine);
-
-        for (int i = 0; i < aLine.length(); i++) {
-            int ch = aLine.charAt(i);
-
-            if (ch >= 32)
-                System.err.print((char) ch);
-            else
-                System.err.print(String.format("%c<0x%s>", ch, Integer.toHexString(aLine.charAt(i))));
-        }
-        System.err.println();
-
-        System.err.print("Values:");
-        for (Iterator<String> it = new TaggedValueIterator(aLine, true, "gi|", "ref|", "gb|"); it.hasNext(); ) {
-            System.err.print(" " + it.next());
-        }
-        System.err.println();
     }
 }

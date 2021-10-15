@@ -83,14 +83,18 @@ public class EnableFeatureCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        String feature = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter feature:", "");
+        var feature = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter feature:", "");
         if (feature != null) {
             feature = feature.trim().split("\\s+")[0];
-            if (feature.startsWith("!"))
-                execute("setprop enable-" + feature.substring(1) + "=false;");
-            else
-                execute("setprop enable-" + feature + "=true;");
-        }
+            var enable=true;
+            if (feature.startsWith("!")) {
+                enable = false;
+                feature=feature.substring(1);
+            }
+            if(!feature.startsWith("enable-"))
+                feature="enable-"+feature;
+            execute("setprop " + feature + "="+enable+";");
+         }
     }
 
     /**

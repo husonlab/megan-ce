@@ -38,6 +38,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     private String nextResult;
 
+   // private final boolean allowMinusInAccession= ProgramProperties.get("AllowMinusInAccession",false);
+
     /**
      * iterator over all values following an occurrence of tag in aLine.
      * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
@@ -108,6 +110,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
                     break;
             }
             var b = a + 1;
+            // while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-')) {
             while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_') {
                 b++;
             }
@@ -162,6 +165,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
             return null;
 
         var b = tagPos + 1;
+        // while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-')) {
         while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_') {
             b++;
         }

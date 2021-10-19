@@ -19,7 +19,7 @@
  */
 package megan.parsers.blast.blastxml;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 
 import java.io.StringWriter;
@@ -43,19 +43,19 @@ public class InfoBlock {
     }
 
     public void addInt(String name, String value) {
-        list.add(new Pair<>(name, Basic.parseInt(value)));
+		list.add(new Pair<>(name, NumberUtils.parseInt(value)));
     }
 
     public void addLong(String name, String value) {
-        list.add(new Pair<>(name, Basic.parseLong(value)));
+		list.add(new Pair<>(name, NumberUtils.parseLong(value)));
     }
 
     public void addFloat(String name, String value) {
-        list.add(new Pair<>(name, Basic.parseFloat(value)));
+		list.add(new Pair<>(name, NumberUtils.parseFloat(value)));
     }
 
     public void addDouble(String name, String value) {
-        list.add(new Pair<>(name, Basic.parseDouble(value)));
+		list.add(new Pair<>(name, NumberUtils.parseDouble(value)));
     }
 
     public String toString() {

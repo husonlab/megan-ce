@@ -23,7 +23,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
@@ -116,16 +116,16 @@ public class SetScaleCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         final ClusterViewer viewer = (ClusterViewer) getViewer();
         if (viewer.getSelectedComponent() instanceof ITab) {
-            final GraphView graphView = viewer.getGraphView();
-            double scale = graphView.trans.getScaleX();
-            if (viewer.getSelectedComponent() instanceof PCoATab)
-                scale *= PCoATab.COORDINATES_SCALE_FACTOR;
+			final GraphView graphView = viewer.getGraphView();
+			double scale = graphView.trans.getScaleX();
+			if (viewer.getSelectedComponent() instanceof PCoATab)
+				scale *= PCoATab.COORDINATES_SCALE_FACTOR;
 
 			final String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set scale", StringUtils.removeTrailingZerosAfterDot(String.format("%.4f", scale)));
-            if (result != null && Basic.isDouble(result) && Basic.parseDouble(result) > 0) {
-                execute("set scaleFactor=" + Basic.parseDouble(result) + ";");
-            }
-        }
+			if (result != null && NumberUtils.isDouble(result) && NumberUtils.parseDouble(result) > 0) {
+				execute("set scaleFactor=" + NumberUtils.parseDouble(result) + ";");
+			}
+		}
     }
 
     /**

@@ -170,13 +170,13 @@ public class GCAssembler {
             } else {
                 classIdsList = new ArrayList<>(selectedClassIds.length);
                 for (String str : selectedClassIds) {
-                    if (Basic.isInteger(str))
-                        classIdsList.add(Basic.parseInt(str));
+                    if (NumberUtils.isInteger(str))
+                        classIdsList.add(NumberUtils.parseInt(str));
                     else {
                         if (classification != null) {
                             int id = classification.getName2IdMap().get(str);
                             if (id != 0)
-                                classIdsList.add(Basic.parseInt(str));
+                                classIdsList.add(NumberUtils.parseInt(str));
                             else
                                 System.err.println("Unknown class: " + str);
                         }
@@ -293,8 +293,8 @@ public class GCAssembler {
         totalProgress.close();
 
         if (options.isVerbose()) {
-            System.err.println("Number of files produced: " + Basic.getSum(numberOfFilesProduced));
-            System.err.println("Total number of contigs:  " + Basic.getSum(totalContigs));
+            System.err.println("Number of files produced: " + CollectionUtils.getSum(numberOfFilesProduced));
+            System.err.println("Total number of contigs:  " + CollectionUtils.getSum(totalContigs));
         }
     }
 

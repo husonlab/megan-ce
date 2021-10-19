@@ -19,9 +19,9 @@
  */
 package megan.parsers.blast.blastxml;
 
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import megan.parsers.blast.Match;
 import megan.parsers.blast.Utilities;
 import org.xml.sax.Attributes;
@@ -257,7 +257,7 @@ public class BlastXMLParser extends DefaultHandler {
                 }
                 break;
             case "Iteration_iter-num":
-                iteration.iterNum = Basic.parseLong(getElementText());
+				iteration.iterNum = NumberUtils.parseLong(getElementText());
                 break;
             //  else if (qName.equals("Iteration_query-ID"))
             //              iteration.queryID = getElementText();
@@ -265,7 +265,7 @@ public class BlastXMLParser extends DefaultHandler {
                 iteration.queryDef = getElementText();
                 break;
             case "Iteration_query-len":
-                iteration.queryLen = Basic.parseInt(getElementText());
+				iteration.queryLen = NumberUtils.parseInt(getElementText());
                 break;
             case "Hit_def":
                 hit.def = getElementText();
@@ -277,7 +277,7 @@ public class BlastXMLParser extends DefaultHandler {
                 hit.id = getElementText();
                 break;
             case "Hit_len":
-                hit.len = Basic.parseInt(getElementText());
+				hit.len = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp":
                 // todo: a hit can have more than one HSP but we only keep the first one, for now
@@ -288,46 +288,46 @@ public class BlastXMLParser extends DefaultHandler {
                 iterationHits.add(hit);
                 break;
             case "Hsp_bit-score":
-                hsp.bitScore = Basic.parseFloat(getElementText());
+				hsp.bitScore = NumberUtils.parseFloat(getElementText());
                 break;
             case "Hsp_score":
-                hsp.score = Basic.parseFloat(getElementText());
+				hsp.score = NumberUtils.parseFloat(getElementText());
                 break;
             case "Hsp_evalue":
-                hsp.eValue = Basic.parseDouble(getElementText());
+				hsp.eValue = NumberUtils.parseDouble(getElementText());
                 break;
             case "Hsp_query-from":
                 hsp.queryFrom = Long.parseLong(getElementText());
                 break;
             case "Hsp_query-to":
-                hsp.queryTo = Basic.parseLong(getElementText());
+				hsp.queryTo = NumberUtils.parseLong(getElementText());
                 break;
             case "Hsp_hit-from":
-                hsp.hitFrom = Basic.parseLong(getElementText());
+				hsp.hitFrom = NumberUtils.parseLong(getElementText());
                 break;
             case "Hsp_hit-to":
-                hsp.hitTo = Basic.parseLong(getElementText());
+				hsp.hitTo = NumberUtils.parseLong(getElementText());
                 break;
             case "Hsp_hit-frame":
-                hsp.hitFrame = Basic.parseInt(getElementText());
+				hsp.hitFrame = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_query-frame":
-                hsp.queryFrame = Basic.parseInt(getElementText());
+				hsp.queryFrame = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_identity":
-                hsp.identity = Basic.parseInt(getElementText());
+				hsp.identity = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_positive":
-                hsp.positive = Basic.parseInt(getElementText());
+				hsp.positive = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_gaps":
-                hsp.gaps = Basic.parseInt(getElementText());
+				hsp.gaps = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_align-len":
-                hsp.alignLength = Basic.parseInt(getElementText());
+				hsp.alignLength = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_density":
-                hsp.density = Basic.parseInt(getElementText());
+				hsp.density = NumberUtils.parseInt(getElementText());
                 break;
             case "Hsp_qseq":
                 hsp.qSeq = getElementText();

@@ -19,11 +19,12 @@
  */
 package megan.dialogs.parameters;
 
+import jloda.seq.BlastMode;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
-import jloda.seq.BlastMode;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
@@ -668,7 +669,7 @@ public class ParametersDialog extends JDialog {
     private float getMinSupportPercent() {
         float value = 0;
         try {
-            value = Basic.parseFloat(minSupportPercentField.getText());
+            value = NumberUtils.parseFloat(minSupportPercentField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -758,7 +759,7 @@ public class ParametersDialog extends JDialog {
     private float getLCACoveragePercent() {
         float value = Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
         try {
-            value = Basic.parseFloat(lcaCoveragePercent.getText());
+            value = NumberUtils.parseFloat(lcaCoveragePercent.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }

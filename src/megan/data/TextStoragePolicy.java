@@ -19,7 +19,7 @@
  */
 package megan.data;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 /**
  * Constants for the different storage policies
@@ -48,15 +48,15 @@ public enum TextStoragePolicy {
      * @return value
      */
     public static TextStoragePolicy valueOfIgnoreCase(String label) {
-        for (TextStoragePolicy policy : values()) {
-            if (label.equalsIgnoreCase(policy.toString()))
-                return policy;
-        }
-        if (Basic.isInteger(label))
-            return fromId(Basic.parseInt(label));
-        else
-            return null;
-    }
+		for (TextStoragePolicy policy : values()) {
+			if (label.equalsIgnoreCase(policy.toString()))
+				return policy;
+		}
+		if (NumberUtils.isInteger(label))
+			return fromId(NumberUtils.parseInt(label));
+		else
+			return null;
+	}
 
     /**
      * gets an id

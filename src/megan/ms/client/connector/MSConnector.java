@@ -19,10 +19,10 @@
  */
 package megan.ms.client.connector;
 
-import jloda.util.Basic;
-import jloda.util.progress.ProgressListener;
+import jloda.util.NumberUtils;
 import jloda.util.Single;
 import jloda.util.StringUtils;
+import jloda.util.progress.ProgressListener;
 import megan.core.Document;
 import megan.data.*;
 import megan.ms.Utilities;
@@ -99,12 +99,12 @@ public class MSConnector implements IConnector {
 
     @Override
     public int getClassificationSize(String classificationName) throws IOException {
-        return Basic.parseInt(client.getAsString("getClassificationSize?file=" + fileName + "&classification=" + classificationName));
+        return NumberUtils.parseInt(client.getAsString("getClassificationSize?file=" + fileName + "&classification=" + classificationName));
     }
 
     @Override
     public int getClassSize(String classificationName, int classId) throws IOException {
-        return Basic.parseInt(client.getAsString("getClassSize?file=" + fileName + "&classification=" + classificationName + "&sum=true&classId=" + classId));
+        return NumberUtils.parseInt(client.getAsString("getClassSize?file=" + fileName + "&classification=" + classificationName + "&sum=true&classId=" + classId));
     }
 
     @Override
@@ -124,12 +124,12 @@ public class MSConnector implements IConnector {
 
     @Override
     public int getNumberOfReads() throws IOException {
-        return Basic.parseInt(client.getAsString("numberOfReads?file=" + fileName));
+        return NumberUtils.parseInt(client.getAsString("numberOfReads?file=" + fileName));
     }
 
     @Override
     public int getNumberOfMatches() throws IOException {
-        return Basic.parseInt(client.getAsString("numberOfMatches?file=" + fileName));
+        return NumberUtils.parseInt(client.getAsString("numberOfMatches?file=" + fileName));
     }
 
     @Override

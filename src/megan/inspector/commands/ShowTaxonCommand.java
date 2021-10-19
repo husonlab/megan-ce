@@ -22,7 +22,7 @@ package megan.inspector.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
@@ -55,14 +55,14 @@ public class ShowTaxonCommand extends CommandBase implements ICommand {
         if (getViewer() instanceof InspectorWindow) {
             InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
             int taxId;
-            if (Basic.isInteger(name))
-                taxId = Integer.parseInt(name);
-            else
-                taxId = TaxonomyData.getName2IdMap().get(name);
-            if (taxId == 0) {
-                NotificationsInSwing.showWarning(inspectorWindow.getFrame(), "Unknown taxon: " + name);
-            } else
-                inspectorWindow.addTopLevelNode(name, taxId, Classification.Taxonomy);
+			if (NumberUtils.isInteger(name))
+				taxId = Integer.parseInt(name);
+			else
+				taxId = TaxonomyData.getName2IdMap().get(name);
+			if (taxId == 0) {
+				NotificationsInSwing.showWarning(inspectorWindow.getFrame(), "Unknown taxon: " + name);
+			} else
+				inspectorWindow.addTopLevelNode(name, taxId, Classification.Taxonomy);
         } else
             NotificationsInSwing.showError(getViewer().getFrame(), "Command in invalid context");
     }

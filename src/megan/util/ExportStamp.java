@@ -23,10 +23,10 @@ package megan.util;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.progress.ProgressListener;
+import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.core.Director;
 import megan.viewer.ClassificationViewer;
@@ -211,7 +211,7 @@ public class ExportStamp {
                 break;
         }
         if (rankIndex == -1)
-			return StringUtils.toString(Basic.reverseList(list), "\t");
+            return StringUtils.toString(CollectionUtils.reverseList(list), "\t");
         return null;
     }
 

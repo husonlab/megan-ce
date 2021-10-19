@@ -22,7 +22,7 @@ package megan.dialogs.profile;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.RememberingComboBox;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import megan.dialogs.profile.commands.ApplyCommand;
 import megan.dialogs.profile.commands.CancelCommand;
@@ -171,8 +171,8 @@ public class TaxonomicProfileDialog extends JDialog {
      */
     public String getCommand() {
         rank = Objects.requireNonNull(rankCbox.getSelectedItem()).toString();
-        ProgramProperties.put("ProfileRank", rankCbox.getSelectedItem().toString());
-        ProgramProperties.put("ProfileMinPercent", Basic.parseDouble(minPercentageField.getText()));
+		ProgramProperties.put("ProfileRank", rankCbox.getSelectedItem().toString());
+		ProgramProperties.put("ProfileMinPercent", NumberUtils.parseDouble(minPercentageField.getText()));
         return "compute profile=" + getMethod().toString() + " rank=" + rank + " minPercent=" + minPercentageField.getText() + ";";
     }
 

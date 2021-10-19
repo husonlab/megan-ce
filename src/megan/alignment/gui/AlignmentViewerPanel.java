@@ -20,7 +20,7 @@
 package megan.alignment.gui;
 
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import megan.alignment.gui.colors.ColorSchemeAminoAcids;
 import megan.alignment.gui.colors.ColorSchemeNucleotides;
@@ -599,9 +599,9 @@ public class AlignmentViewerPanel extends JPanel {
             else if (what.equals("selection"))
                 hScale *= alignmentPanel.getHZoomToSelectionFactor();
             else if (what.equals("fit"))
-                hScale *= alignmentPanel.getHZoomToFitFactor();
-            else if (Basic.isDouble(what))
-                hScale = Math.max(0.0001, Basic.parseDouble(what));
+				hScale *= alignmentPanel.getHZoomToFitFactor();
+			else if (NumberUtils.isDouble(what))
+				hScale = Math.max(0.0001, NumberUtils.parseDouble(what));
         }
 
         if (axis.equals("vertical") || axis.equals("both")) {
@@ -614,9 +614,9 @@ public class AlignmentViewerPanel extends JPanel {
             else if (what.equals("selection"))
                 vScale *= alignmentPanel.getVZoomToSelectionFactor();
             else if (what.equals("fit"))
-                vScale *= alignmentPanel.getVZoomToFitFactor();
-            else if (Basic.isDouble(what))
-                vScale = Math.max(0.0001, Basic.parseDouble(what));
+				vScale *= alignmentPanel.getVZoomToFitFactor();
+			else if (NumberUtils.isDouble(what))
+				vScale = Math.max(0.0001, NumberUtils.parseDouble(what));
         }
 
         int maxFontSize = 24;

@@ -20,10 +20,8 @@
 
 package megan.ms.server;
 
-import jloda.util.Basic;
-import jloda.util.FileUtils;
+import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
-import jloda.util.StringUtils;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.core.SampleAttributeTable;
@@ -140,8 +138,8 @@ public class Database {
 
     public FileRecord getRecord(String fileName) {
         final Integer fileId;
-        if (Basic.isInteger(fileName))
-            fileId = Basic.parseInt(fileName);
+        if (NumberUtils.isInteger(fileName))
+            fileId = NumberUtils.parseInt(fileName);
         else
             fileId = fileName2Id.get(fileName);
         if (fileId != null)
@@ -199,7 +197,7 @@ public class Database {
             if (document.getClassificationNames().contains(classification)) {
                 final Map<Integer, float[]> class2count = document.getDataTable().getClass2Counts(classification);
                 for (var classId : class2count.keySet()) {
-                    classificationBlock.setSum(classId, Math.round(Basic.getSum(class2count.get(classId))));
+                    classificationBlock.setSum(classId, Math.round(CollectionUtils.getSum(class2count.get(classId))));
                 }
             }
             return classificationBlock;

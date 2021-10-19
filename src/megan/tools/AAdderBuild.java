@@ -22,9 +22,9 @@ package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.BasicSwing;
+import jloda.swing.util.GFF3FileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.swing.util.GFF3FileFilter;
 import jloda.util.interval.Interval;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
@@ -258,7 +258,7 @@ public class AAdderBuild {
                     idxWriter.writeLong(dbxWriter.getPosition()); // position of intervals in DB file
 
                     dbxWriter.writeInt(list.size());
-                    for (Interval<GeneItem> interval : Basic.randomize(list, 666)) { // need to save in random order
+                    for (Interval<GeneItem> interval : CollectionUtils.randomize(list, 666)) { // need to save in random order
                         dbxWriter.writeInt(interval.getStart());
                         dbxWriter.writeInt(interval.getEnd());
                         interval.getData().write(dbxWriter);

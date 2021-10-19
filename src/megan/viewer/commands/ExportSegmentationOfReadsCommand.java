@@ -26,8 +26,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
@@ -155,20 +155,20 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
 					File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(), new TextFileFilter(), e, "Save segmentation of reads file", ".txt");
 
                     if (file != null) {
-						if (FileUtils.getFileSuffix(file.getName()) == null)
-							file = FileUtils.replaceFileSuffix(file, ".fasta");
+                        if (FileUtils.getFileSuffix(file.getName()) == null)
+                            file = FileUtils.replaceFileSuffix(file, ".fasta");
 
-						if (rankMenu.getSelectedItem() != null)
-							ProgramProperties.put("SegmentationRank", rankMenu.getSelectedItem().toString());
-						ProgramProperties.put("SegmentationSwitchPenalty", Basic.parseFloat(switchPenaltyField.getText()));
-						ProgramProperties.put("SegmentationCompatibleFactor", Basic.parseFloat(compatibleFactorField.getText()));
-						ProgramProperties.put("SegmentationIncompatibleFactor", Basic.parseFloat(incompatibleFactorField.getText()));
-						ProgramProperties.put("SegmentationExportFile", file.getPath());
+                        if (rankMenu.getSelectedItem() != null)
+                            ProgramProperties.put("SegmentationRank", rankMenu.getSelectedItem().toString());
+                        ProgramProperties.put("SegmentationSwitchPenalty", NumberUtils.parseFloat(switchPenaltyField.getText()));
+                        ProgramProperties.put("SegmentationCompatibleFactor", NumberUtils.parseFloat(compatibleFactorField.getText()));
+                        ProgramProperties.put("SegmentationIncompatibleFactor", NumberUtils.parseFloat(incompatibleFactorField.getText()));
+                        ProgramProperties.put("SegmentationExportFile", file.getPath());
 
-						execute("export segmentedReads file='" + file.getPath() + "'"
-								+ " rank=" + rankMenu.getSelectedItem()
-                                + " switchPenalty=" + Basic.parseFloat(switchPenaltyField.getText()) + " compatibleFactor=" + Basic.parseFloat(compatibleFactorField.getText())
-                                + " incompatibleFactor=" + Basic.parseFloat(incompatibleFactorField.getText())
+                        execute("export segmentedReads file='" + file.getPath() + "'"
+                                + " rank=" + rankMenu.getSelectedItem()
+                                + " switchPenalty=" + NumberUtils.parseFloat(switchPenaltyField.getText()) + " compatibleFactor=" + NumberUtils.parseFloat(compatibleFactorField.getText())
+                                + " incompatibleFactor=" + NumberUtils.parseFloat(incompatibleFactorField.getText())
                                 + ";");
                     }
                 }

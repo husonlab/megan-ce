@@ -22,8 +22,8 @@ package megan.core;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.data.IReadBlock;
@@ -68,18 +68,18 @@ public class ContaminantManager {
                     } else {
                         try (NexusStreamParser np = new NexusStreamParser(new StringReader(aLine))) {
                             while ((np.peekNextToken()) != TT_EOF) {
-                                final String token = np.getWordRespectCase();
-                                final int taxonId;
-                                if (Basic.isInteger(token))
-                                    taxonId = Basic.parseInt(token);
-                                else
-                                    taxonId = TaxonomyData.getName2IdMap().get(token);
-                                if (taxonId > 0)
-                                    contaminants.add(taxonId);
-                                else
-                                    System.err.println("Failed to identify taxon for: '" + token + "'");
+								final String token = np.getWordRespectCase();
+								final int taxonId;
+								if (NumberUtils.isInteger(token))
+									taxonId = NumberUtils.parseInt(token);
+								else
+									taxonId = TaxonomyData.getName2IdMap().get(token);
+								if (taxonId > 0)
+									contaminants.add(taxonId);
+								else
+									System.err.println("Failed to identify taxon for: '" + token + "'");
 
-                            }
+							}
                         }
                     }
                 }
@@ -129,8 +129,8 @@ public class ContaminantManager {
         contaminants.clear();
         contaminantsAndDescendants.clear();
 		for (String word : StringUtils.splitOnWhiteSpace(taxonIdString)) {
-			if (Basic.isInteger(word)) {
-				final int taxonId = Basic.parseInt(word);
+			if (NumberUtils.isInteger(word)) {
+				final int taxonId = NumberUtils.parseInt(word);
 				if (taxonId > 0)
 					contaminants.add(taxonId);
 			}

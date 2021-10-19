@@ -20,8 +20,8 @@
 
 package megan.dialogs.export;
 
-import jloda.util.*;
 import jloda.seq.BlastMode;
+import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import jloda.util.progress.ProgressListener;
@@ -133,12 +133,12 @@ public class ExportAlignedReads2GFF3Format {
                     final String[] cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[0]);
                     if (cNames.length == 0)
                         System.err.println("Skipping '" + item.getReadName() + "': no classification showing");
-                    else if (classificationToReport != null && !Basic.contains(cNames, classificationToReport))
+                    else if (classificationToReport != null && !CollectionUtils.contains(cNames, classificationToReport))
                         System.err.println("Skipping '" + item.getReadName() + "': selected classification not showing");
                     else {
                         final String string = createGFFLines(blastMode, item.getReadName(), item.getReadLength(), cNames, classificationToReport, item.getPane().getIntervals(), taxonId, excludeIncompatible, excludeDominated);
-						w.write(string);
-						countAlignments += StringUtils.countOccurrences(string, '\n');
+                        w.write(string);
+                        countAlignments += StringUtils.countOccurrences(string, '\n');
                         if (string.length() > 0)
                             countReads++;
                     }

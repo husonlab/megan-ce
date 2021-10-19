@@ -20,9 +20,9 @@
 
 package megan.algorithms;
 
-import jloda.util.Basic;
 import jloda.util.FileLineIterator;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
@@ -113,9 +113,9 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
             final Map<String, Integer> map = new HashMap<>();
             try (final FileLineIterator it = new FileLineIterator(file, true)) {
                 while (it.hasNext()) {
-					final String[] tokens = StringUtils.split(it.next(), '\t');
-                    if (tokens.length == 2 && Basic.isInteger(tokens[1])) {
-                        int id = Basic.parseInt(tokens[1]);
+                    final String[] tokens = StringUtils.split(it.next(), '\t');
+                    if (tokens.length == 2 && NumberUtils.isInteger(tokens[1])) {
+                        int id = NumberUtils.parseInt(tokens[1]);
                         map.put(tokens[0], id);
                     }
                 }

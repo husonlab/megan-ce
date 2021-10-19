@@ -22,7 +22,10 @@ package megan.analysis;
 
 
 import jloda.graph.Node;
-import jloda.util.*;
+import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
+import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import jloda.util.progress.ProgressListener;
@@ -206,7 +209,7 @@ public class TaxonomicSegmentation {
             }
         }
         // reverse:
-        Basic.reverseInPlace(segments);
+        CollectionUtils.reverseInPlace(segments);
 
         //System.err.println(">" + Basic.swallowLeadingGreaterSign(readBlock.getReadName()) + ": segments: " + Basic.toString(segments, " "));
 

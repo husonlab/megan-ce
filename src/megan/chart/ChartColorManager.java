@@ -22,6 +22,7 @@ package megan.chart;
 import jloda.swing.util.ColorTable;
 import jloda.swing.util.ColorTableManager;
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
 import java.awt.*;
@@ -357,17 +358,17 @@ public class ChartColorManager {
             aLine = aLine.trim();
             if (aLine.length() > 0 && !aLine.startsWith("#")) {
                 String[] tokens = aLine.split("\t");
-                if (tokens.length >= 3 && Basic.isInteger(tokens[2])) {
-                    switch (tokens[0]) {
-                        case "C": {
-                            String className = tokens[1];
-                            Color color = new Color(Integer.parseInt(tokens[2]));
-                            if (tokens.length >= 4) {
-                                int alpha = Integer.parseInt(tokens[3]);
-                                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-                            }
-                            class2color.put(className, color);
-                            break;
+				if (tokens.length >= 3 && NumberUtils.isInteger(tokens[2])) {
+					switch (tokens[0]) {
+						case "C": {
+							String className = tokens[1];
+							Color color = new Color(Integer.parseInt(tokens[2]));
+							if (tokens.length >= 4) {
+								int alpha = Integer.parseInt(tokens[3]);
+								color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+							}
+							class2color.put(className, color);
+							break;
                         }
                         case "A": {
                             String attribute = tokens[1];

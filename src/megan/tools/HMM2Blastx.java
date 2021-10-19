@@ -19,11 +19,11 @@
  */
 package megan.tools;
 
+import jloda.seq.FastAFileIterator;
+import jloda.seq.IFastAIterator;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.seq.FastAFileIterator;
-import jloda.seq.IFastAIterator;
 import jloda.util.progress.ProgressPercentage;
 
 import java.io.BufferedWriter;
@@ -147,9 +147,9 @@ public class HMM2Blastx {
                             break;
                         case Score:
                             if (aLine.contains(" score:")) {
-								score = Basic.parseFloat(StringUtils.getWordAfter(" score:", aLine));
+                                score = NumberUtils.parseFloat(StringUtils.getWordAfter(" score:", aLine));
                                 if (aLine.contains(" E-value:"))
-									expected = Basic.parseFloat(StringUtils.getWordAfter(" E-value:", aLine));
+                                    expected = NumberUtils.parseFloat(StringUtils.getWordAfter(" E-value:", aLine));
                                 else
                                     throw new IOException("Couldn't find E-value in: " + aLine);
                                 state = EXPECTING.DomainAlignment;
@@ -183,9 +183,9 @@ public class HMM2Blastx {
                                 throw new IOException("Expected 4 tokens, got: " + refTokens.length + ": " + aLine);
                             if (!refTokens[0].equals(referenceName))
                                 throw new IOException("Ref expected, got: " + aLine);
-                            refStart = Basic.parseInt(refTokens[1]);
+                            refStart = NumberUtils.parseInt(refTokens[1]);
                             refAligned = refTokens[2];
-                            refEnd = Basic.parseInt(refTokens[3]);
+                            refEnd = NumberUtils.parseInt(refTokens[3]);
                         }
                         {
                             midAligned = it.next().trim();
@@ -197,9 +197,9 @@ public class HMM2Blastx {
                                 throw new IOException("Expected 4 tokens, got: " + queryTokens.length);
                             if (!removeFrameSuffix(queryTokens[0]).equals(queryName))
                                 throw new IOException("Query expected, got: " + aLine);
-                            queryStart = Basic.parseInt(queryTokens[1]);
+                            queryStart = NumberUtils.parseInt(queryTokens[1]);
                             queryAligned = queryTokens[2];
-                            queryEnd = Basic.parseInt(queryTokens[3]);
+                            queryEnd = NumberUtils.parseInt(queryTokens[3]);
                         }
 
                         if (score >= minScore) {
@@ -377,7 +377,7 @@ public class HMM2Blastx {
     private int getFrameFromSuffix(String query) {
         int pos = query.indexOf("_RF");
         if (pos != -1)
-            return Basic.parseInt(query.substring(pos + 3));
+            return NumberUtils.parseInt(query.substring(pos + 3));
         else
             return -1;
     }

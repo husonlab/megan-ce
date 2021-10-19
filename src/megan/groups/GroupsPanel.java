@@ -23,7 +23,7 @@ package megan.groups;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.ActionJList;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import megan.core.Document;
@@ -413,8 +413,8 @@ public class GroupsPanel extends JPanel {
         for (int i = 0; i < listModel.getSize(); i++) {
             Group group = listModel.elementAt(i);
             if (group.isGroupHeader() && !Objects.equals(group.getGroupId(), NOT_GROUPED)) {
-                if (Basic.isInteger(group.getGroupId()))
-                    used.set((Basic.parseInt(group.getGroupId())));
+                if (NumberUtils.isInteger(group.getGroupId()))
+                    used.set((NumberUtils.parseInt(group.getGroupId())));
             }
             if (Objects.equals(group.getGroupId(), NOT_GROUPED))
                 insertHere = i;

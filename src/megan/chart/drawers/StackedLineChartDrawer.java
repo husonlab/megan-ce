@@ -21,7 +21,7 @@ package megan.chart.drawers;
 
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.Triplet;
 import megan.chart.IChartDrawer;
@@ -172,7 +172,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         }
 
         // need to draw in reverse order to get correct ordering of polygons
-        list = Basic.reverseList(list);
+		list = CollectionUtils.reverseList(list);
         for (Triplet<String, String, int[]> pair : list) {
             String series = pair.getFirst();
             String className = pair.getSecond();
@@ -372,7 +372,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         }
 
         // need to draw in reverse order to get correct ordering of polygons
-        list = Basic.reverseList(list);
+		list = CollectionUtils.reverseList(list);
         for (Triplet<String, String, int[]> triplet : list) {
             String seriesName = triplet.getFirst();
             String className = triplet.getSecond();

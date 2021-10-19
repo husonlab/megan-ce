@@ -197,7 +197,7 @@ public class AAdderRun {
                                     }
                                 }
 
-                                final int startSubject = Basic.parseInt(tokens[3]);
+                                final int startSubject = NumberUtils.parseInt(tokens[3]);
                                 final int endSubject = startSubject + getRefLength(tokens[5]) - 1;
 
                                 final Interval<GeneItem> refInterval = tree.getBestInterval(new Interval<GeneItem>(startSubject, endSubject, null), minCoverageProportion);

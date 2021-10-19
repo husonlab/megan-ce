@@ -19,10 +19,10 @@
  */
 package megan.tools;
 
+import jloda.seq.BlastMode;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import jloda.util.progress.ProgressPercentage;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
@@ -33,7 +33,10 @@ import megan.dialogs.extractor.ReadsExtractor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.TreeSet;
 
 /**
  * extracts reads from a DAA or RMA file, by taxa
@@ -177,8 +180,8 @@ public class ReadExtractorTool {
                 var warnings = 0;
 
                 for (var name : classNames) {
-                    if (Basic.isInteger(name))
-                        classIds.add(Basic.parseInt(name));
+                    if (NumberUtils.isInteger(name))
+                        classIds.add(NumberUtils.parseInt(name));
                     else {
                         var id = classification.getName2IdMap().get(name);
                         if (id > 0)

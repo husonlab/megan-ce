@@ -20,8 +20,8 @@
 package megan.classification.data;
 
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.data.IName2IdMap;
@@ -172,7 +172,7 @@ public class Name2IdMap implements IName2IdMap {
                         int tokensLengthWithoutToolTip = (hasToolTip ? tokens.length - 1 : tokens.length);
 
                         Integer rank = null;
-                        if (tokensLengthWithoutToolTip == 3 && Basic.isInteger(tokens[2])) { // just level
+                        if (tokensLengthWithoutToolTip == 3 && NumberUtils.isInteger(tokens[2])) { // just level
                             rank = Integer.parseInt(tokens[2]);
                         } else if (tokensLengthWithoutToolTip == 4) { // genome size, level
                             rank = Integer.parseInt(tokens[3]);

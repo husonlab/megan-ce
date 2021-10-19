@@ -19,9 +19,9 @@
  */
 package megan.parsers.blast;
 
-import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
 import jloda.seq.BlastMode;
+import jloda.swing.window.NotificationsInSwing;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
@@ -192,9 +192,9 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
 
 		// check whether they are different "templates", that is, first and last of a read pair
 		try {
-			final int flagA = Basic.parseInt(tokensA[1]);
-			final int flagB = Basic.parseInt(tokensB[1]);
-			return (flagA & 192) == (flagB & 192); // second token is 'flag', must have same 7th and 8th bit for same query
+            final int flagA = NumberUtils.parseInt(tokensA[1]);
+            final int flagB = NumberUtils.parseInt(tokensB[1]);
+            return (flagA & 192) == (flagB & 192); // second token is 'flag', must have same 7th and 8th bit for same query
         } catch (Exception ex) {
             return true;
         }

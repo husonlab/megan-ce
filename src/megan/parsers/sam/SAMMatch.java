@@ -19,9 +19,11 @@
  */
 package megan.parsers.sam;
 
-import jloda.util.*;
 import jloda.seq.BlastMode;
 import jloda.seq.SequenceUtils;
+import jloda.util.NumberUtils;
+import jloda.util.Single;
+import jloda.util.StringUtils;
 import megan.util.BlosumMatrix;
 
 import java.io.IOException;
@@ -185,14 +187,14 @@ public class SAMMatch implements megan.rma3.IMatch {
             throw new IOException("Too few tokens in line: " + numberOfTokens);
         }
         setQueryName(tokens[0]);
-        setFlag(Basic.parseInt(tokens[1]));
+        setFlag(NumberUtils.parseInt(tokens[1]));
         setRefName(tokens[2]);
-        setPos(Basic.parseInt(tokens[3]));
-        setMapQuality(Basic.parseInt(tokens[4]));
+        setPos(NumberUtils.parseInt(tokens[3]));
+        setMapQuality(NumberUtils.parseInt(tokens[4]));
         setCigarString(tokens[5]);
         setRNext(tokens[6]);
-        setPNext(Basic.parseInt(tokens[7]));
-        setTLength(Math.abs(Basic.parseInt(tokens[8])));
+        setPNext(NumberUtils.parseInt(tokens[7]));
+        setTLength(Math.abs(NumberUtils.parseInt(tokens[8])));
         //setSequence(isReverseComplemented() ? SequenceUtils.getReverseComplement(tokens[9]) : tokens[9]);
         setSequence(tokens[9].toUpperCase());
 
@@ -212,10 +214,10 @@ public class SAMMatch implements megan.rma3.IMatch {
                     object = three[2].charAt(0);
                     break;
                 case 'i': // integer
-                    object = Basic.parseInt(three[2]);
+                    object = NumberUtils.parseInt(three[2]);
                     break;
                 case 'f': // float
-                    object = Basic.parseFloat(three[2]);
+                    object = NumberUtils.parseFloat(three[2]);
                     break;
                 case 'Z': //string
                     object = three[2];

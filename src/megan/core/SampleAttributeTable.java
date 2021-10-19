@@ -20,10 +20,7 @@
 package megan.core;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.StringUtils;
-import jloda.util.Table;
+import jloda.util.*;
 import megan.viewer.MainViewer;
 
 import java.awt.*;
@@ -686,12 +683,12 @@ public class SampleAttributeTable {
             if (value != null) {
                 String label = value.toString();
                 if (label.length() > 0) {
-                    if (!Basic.isInteger(label))
+                    if (!NumberUtils.isInteger(label))
                         isInteger = false;
-					if (!Basic.isFloat(label))
-						isFloat = false;
-					if (!StringUtils.isDate(label))
-						isDate = false;
+                    if (!NumberUtils.isFloat(label))
+                        isFloat = false;
+                    if (!StringUtils.isDate(label))
+                        isDate = false;
                 }
             }
         }
@@ -1194,7 +1191,7 @@ public class SampleAttributeTable {
                 swapSamples(index, index - 1);
             }
         } else { // down
-            for (String sample : Basic.reverseList(samples)) {
+            for (String sample : CollectionUtils.reverseList(samples)) {
                 final int index = sampleOrder.indexOf(sample);
                 swapSamples(index, index + 1);
             }

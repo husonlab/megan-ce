@@ -19,9 +19,9 @@
  */
 package megan.parsers;
 
+import jloda.seq.BlastMode;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import megan.algorithms.MinSupportFilter;
@@ -122,7 +122,7 @@ public class CSVReadsHitsParser {
                     final String readName = tokens[0].trim();
                     boolean found = false;
                     for (int i = 0; !found && i < parsers.length; i++) {
-                        final int id = (parsers.length == 1 && Basic.isInteger(tokens[1]) ? Basic.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
+                        final int id = (parsers.length == 1 && NumberUtils.isInteger(tokens[1]) ? NumberUtils.parseInt(tokens[1]) : parsers[i].getIdFromHeaderLine(tokens[1]));
 
                         if (id != 0) {
                             float score;
@@ -165,7 +165,7 @@ public class CSVReadsHitsParser {
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
 
-        final int totalReads = Basic.max(count);
+        final int totalReads = NumberUtils.max(count);
 
         if (taxonomyIndex >= 0) {
             progress.setSubtask("Running LCA");

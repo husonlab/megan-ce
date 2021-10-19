@@ -19,8 +19,8 @@
  */
 package megan.core;
 
-import jloda.util.*;
 import jloda.seq.BlastMode;
+import jloda.util.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -198,7 +198,7 @@ public class DataTable {
                             break;
                         case SIZES:
                             for (int i = 1; i < tokens.length; i++)
-                                sampleSizes.add(Basic.parseFloat(tokens[i]));
+                                sampleSizes.add(NumberUtils.parseFloat(tokens[i]));
                             break;
                         case TOTAL_READS:
                             totalReads = (Long.parseLong(tokens[1]));

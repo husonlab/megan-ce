@@ -1544,7 +1544,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     w = w.getFirstInEdge().getSource();
                     list.add(getLabel(w));
                 }
-				String str = StringUtils.toString(Basic.reverse(list), ";");
+				String str = StringUtils.toString(CollectionUtils.reverse(list), ";");
                 list.clear();
                 writer.write(str);
                 writer.write("<br>");

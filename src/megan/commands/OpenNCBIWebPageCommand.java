@@ -25,6 +25,7 @@ import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
@@ -48,10 +49,10 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
 
         boolean ok = false;
         int taxId;
-        if (Basic.isInteger(taxon))
-            taxId = Integer.parseInt(taxon);
-        else
-            taxId = TaxonomyData.getName2IdMap().get(taxon);
+		if (NumberUtils.isInteger(taxon))
+			taxId = Integer.parseInt(taxon);
+		else
+			taxId = TaxonomyData.getName2IdMap().get(taxon);
 
         if (taxId > 0) {
             try {

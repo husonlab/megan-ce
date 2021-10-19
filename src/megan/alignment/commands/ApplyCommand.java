@@ -21,7 +21,7 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -54,8 +54,8 @@ public class ApplyCommand extends CommandBase implements ICommand {
 
         if (reference != null) {
             final int posDoubleColon = reference.lastIndexOf("::");
-            if (posDoubleColon > 0 && Basic.isInteger(reference.substring(posDoubleColon + 2)))
-                reference = reference.substring(0, posDoubleColon);
+			if (posDoubleColon > 0 && NumberUtils.isInteger(reference.substring(posDoubleColon + 2)))
+				reference = reference.substring(0, posDoubleColon);
 
             if (reference.length() > 0) {
                 doc.getProgressListener().setTasks("Alignment viewer", "Calculating alignment");

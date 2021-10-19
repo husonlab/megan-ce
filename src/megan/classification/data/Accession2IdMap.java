@@ -20,10 +20,10 @@
 
 package megan.classification.data;
 
-import jloda.util.Basic;
 import jloda.util.FileLineIterator;
-import jloda.util.progress.ProgressListener;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
+import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
 import java.io.Closeable;
@@ -54,8 +54,8 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
             while (it.hasNext()) {
 				String[] tokens = StringUtils.split(it.next(), '\t');
                 if (tokens.length == 2) {
-                    if (Basic.isInteger(tokens[1])) {
-                        int id = Basic.parseInt(tokens[1]);
+                    if (NumberUtils.isInteger(tokens[1])) {
+                        int id = NumberUtils.parseInt(tokens[1]);
                         if (id != 0) {
                             map.put(tokens[0], id);
                         }

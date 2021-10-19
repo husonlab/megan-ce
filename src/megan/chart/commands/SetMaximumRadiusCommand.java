@@ -23,7 +23,7 @@ package megan.chart.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.drawers.CoOccurrenceDrawer;
@@ -59,8 +59,8 @@ public class SetMaximumRadiusCommand extends CommandBase implements ICommand {
         if (chartViewer.getChartDrawer() instanceof CoOccurrenceDrawer) {
 
             String result = JOptionPane.showInputDialog(chartViewer.getFrame(), "Set Max Radius", ((CoOccurrenceDrawer) chartViewer.getChartDrawer()).getMaxRadius());
-            if (result != null && Basic.isInteger(result))
-                execute("set maxRadius='" + result + "';");
+			if (result != null && NumberUtils.isInteger(result))
+				execute("set maxRadius='" + result + "';");
         }
     }
 

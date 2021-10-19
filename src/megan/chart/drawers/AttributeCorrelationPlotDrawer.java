@@ -22,10 +22,7 @@ package megan.chart.drawers;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.window.IPopupMenuModifier;
-import jloda.util.Basic;
-import jloda.util.Correlation;
-import jloda.util.ProgramProperties;
-import jloda.util.StringUtils;
+import jloda.util.*;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
@@ -688,8 +685,8 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                 y = 0;
             else if (obj instanceof Number)
                 y = ((Number) obj).doubleValue();
-            else if (Basic.isDouble(obj.toString())) {
-                y = Basic.parseDouble(obj.toString());
+            else if (NumberUtils.isDouble(obj.toString())) {
+                y = NumberUtils.parseDouble(obj.toString());
             } else
                 throw new IllegalArgumentException("Attribute '" + attributeNameY + "': has non-numerical value: " + obj);
 

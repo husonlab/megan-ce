@@ -19,7 +19,7 @@
  */
 package megan.parsers.sam;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -123,8 +123,8 @@ public class Diff {
                 int a = pos;
                 while (pos < diff.length() && Character.isDigit(diff.charAt(pos)))
                     pos++;
-                Integer i = Basic.parseInt(diff.substring(a, pos));
-                DiffElement element = new DiffElement();
+				Integer i = NumberUtils.parseInt(diff.substring(a, pos));
+				DiffElement element = new DiffElement();
                 element.type = Type.MATCH;
                 element.count = i;
                 differences.add(element);

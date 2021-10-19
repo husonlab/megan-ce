@@ -19,7 +19,8 @@
  */
 package megan.biom.biom1;
 
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -49,22 +50,22 @@ class Biom1ImportSEED {
         Integer[] row2class = new Integer[numberOfRows];
         int rowCount = 0;
         for (Map row : biom1Data.getRows()) {
-            //System.err.println("Obj: "+obj);
+			//System.err.println("Obj: "+obj);
 
-            Integer bestId = null;
-            String idStr = (String) row.get("id");
-            if (idStr != null && Basic.isInteger(idStr))
-                bestId = Basic.parseInt(idStr);
-            else {
-                final Map metaData = (Map) row.get("metadata");
+			Integer bestId = null;
+			String idStr = (String) row.get("id");
+			if (idStr != null && NumberUtils.isInteger(idStr))
+				bestId = NumberUtils.parseInt(idStr);
+			else {
+				final Map metaData = (Map) row.get("metadata");
 
-                if (metaData != null) {
-                    Object obj = metaData.get("taxonomy");
-                    if (obj == null)
-                        obj = metaData.get("ontology");
-                    if (obj instanceof ArrayList) {
-                        List<String> names = Basic.reverseList((ArrayList) obj);
-                        for (String name : names) {
+				if (metaData != null) {
+					Object obj = metaData.get("taxonomy");
+					if (obj == null)
+						obj = metaData.get("ontology");
+					if (obj instanceof ArrayList) {
+						List<String> names = CollectionUtils.reverseList((ArrayList) obj);
+						for (String name : names) {
                             int keggId = classification.getName2IdMap().get(name);
                             if (keggId > 0) {
                                 bestId = keggId;

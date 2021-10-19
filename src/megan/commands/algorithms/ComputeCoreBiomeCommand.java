@@ -22,7 +22,7 @@ package megan.commands.algorithms;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.TwoInputOptionsPanel;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
@@ -67,15 +67,15 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
                     "Minimum percent of samples in which class must be present",
                     "Class threshold (%)", "" + classThresholdPercent, "Percentage of assigned reads in sample that class must achieve to be considered present in that sample");
             if (result != null) {
-                if (Basic.isFloat(result[0]) && Basic.isFloat(result[1])) {
+				if (NumberUtils.isFloat(result[0]) && NumberUtils.isFloat(result[1])) {
 
-                    sampleThresholdPercent = Basic.parseFloat(result[0]);
-                    ProgramProperties.put("CoreBiomeSampleThreshold", sampleThresholdPercent);
-                    classThresholdPercent = Basic.parseFloat(result[1]);
-                    ProgramProperties.put("CoreBiomeClassThreshold", classThresholdPercent);
+					sampleThresholdPercent = NumberUtils.parseFloat(result[0]);
+					ProgramProperties.put("CoreBiomeSampleThreshold", sampleThresholdPercent);
+					classThresholdPercent = NumberUtils.parseFloat(result[1]);
+					ProgramProperties.put("CoreBiomeClassThreshold", classThresholdPercent);
 
 					execute("compute biome=core classThreshold=" + result[1] + " sampleThreshold=" + result[0] + " samples='" + StringUtils.toString(samples, "' '") + "';");
-                } else
+				} else
 					NotificationsInSwing.showError(getViewer().getFrame(), "Failed to parse values: " + StringUtils.toString(result, " "));
             }
         }

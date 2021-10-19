@@ -19,8 +19,8 @@
  */
 package megan.alignment;
 
-import jloda.util.*;
 import jloda.seq.SequenceUtils;
+import jloda.util.*;
 import jloda.util.progress.ProgressListener;
 import megan.algorithms.ActiveMatches;
 import megan.alignment.gui.Alignment;
@@ -532,7 +532,7 @@ public class Blast2Alignment {
      */
     private static void computeGappedSequenceBlastX(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Single<char[]> originalReferenceSequence, Alignment alignment) throws IOException {
-        int length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
+        int length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length == 0)
             length = 10000;
 
@@ -545,10 +545,10 @@ public class Blast2Alignment {
             }
         }
 
-        final int frame = Basic.parseInt(BlastParsingUtils.grabNext(text, "Frame =", "Frame="));
+        final int frame = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Frame =", "Frame="));
 
-        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
+        int startQuery = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");
@@ -557,8 +557,8 @@ public class Blast2Alignment {
             throw new IOException("Read '" + readName + "': read length too short: " + readSequence.length() + " < " + Math.max(startQuery, endQuery));
         }
 
-        int startSubject = Basic.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
-        int endSubject = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
+        int startSubject = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
+        int endSubject = NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
 
         String queryString = BlastParsingUtils.grabQueryString(text);
         String subjectString = BlastParsingUtils.grabSubjectString(text);
@@ -649,15 +649,15 @@ public class Blast2Alignment {
      */
     private static void computeGappedSequenceBlastP(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions, boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
 
-        int length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
+        int length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length == 0)
             length = 10000;
 
         if (referenceSequence.get() == null)
             referenceSequence.set(new char[length]);
 
-        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
+        int startQuery = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");
@@ -666,8 +666,8 @@ public class Blast2Alignment {
             throw new IOException("Read '" + readName + "': read length too short: " + readSequence.length() + " < " + Math.max(startQuery, endQuery));
         }
 
-        int startSubject = Basic.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
-        int endSubject = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
+        int startSubject = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
+        int endSubject = NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
 
         String queryString = BlastParsingUtils.grabQueryString(text);
 
@@ -735,12 +735,12 @@ public class Blast2Alignment {
     private static void computeGappedSequenceBlastN(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
         boolean hasExactLength;
-        Integer length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
+        Integer length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length > 0) {
             hasExactLength = true;
         } else {
             hasExactLength = false;
-            length = Basic.parseInt(BlastParsingUtils.grabNext(text, "Length >=", "Length>="));
+            length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length >=", "Length>="));
 
             if (referenceSequence.get() != null && referenceSequence.get().length < length) { // need to resize the reference sequence
                 char[] newRef = new char[length + 1];
@@ -760,8 +760,8 @@ public class Blast2Alignment {
         if (referenceSequence.get() == null)
             referenceSequence.set(new char[length + 10000]);
 
-        int startQuery = Basic.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
-        int endQuery = Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
+        int startQuery = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Query:", "Query"));
+        int endQuery = NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Query"));
 
         if (readSequence == null)
             throw new IOException("Read '" + readName + "': sequence not found");

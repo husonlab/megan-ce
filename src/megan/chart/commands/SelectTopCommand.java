@@ -21,7 +21,7 @@ package megan.chart.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.LabelsJList;
@@ -79,10 +79,10 @@ public class SelectTopCommand extends CommandBase implements ICommand {
         previousValue = Math.min(list.getAllLabels().size(), previousValue);
 
         final String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set number of top items to select", previousValue);
-        if (result != null && Basic.isInteger(result)) {
-            execute("select top='" + result + "';");
-            previousValue = Basic.parseInt(result);
-        }
+		if (result != null && NumberUtils.isInteger(result)) {
+			execute("select top='" + result + "';");
+			previousValue = NumberUtils.parseInt(result);
+		}
     }
 
     /**

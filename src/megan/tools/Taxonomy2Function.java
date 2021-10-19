@@ -114,20 +114,20 @@ public class Taxonomy2Function {
 		if (!(firstClasses.size() == 1 && firstClasses.get(0).equals("all"))) {
 			firstIds = new HashSet<>();
 			for (var token : firstClasses) {
-				if (!Basic.isInteger(token))
+				if (!NumberUtils.isInteger(token))
 					throw new UsageException("--firstClasses: integer expected, got: " + token);
 				else
-					firstIds.add(Basic.parseInt(token));
+					firstIds.add(NumberUtils.parseInt(token));
 			}
 		}
 		Collection<Integer> secondIds = null;
 		if (!(secondClasses.size() == 1 && secondClasses.get(0).equals("all"))) {
 			secondIds = new HashSet<>();
 			for (var token : secondClasses) {
-				if (!Basic.isInteger(token))
+				if (!NumberUtils.isInteger(token))
 					throw new UsageException("--secondClasses: integer expected, got: " + token);
 				else
-					secondIds.add(Basic.parseInt(token));
+					secondIds.add(NumberUtils.parseInt(token));
 			}
 		}
 

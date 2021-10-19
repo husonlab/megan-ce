@@ -28,7 +28,10 @@ import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreDirectoryProgramProperty;
@@ -143,9 +146,9 @@ public class CreateAccessionMappingDatabase {
                 try (var it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
                         final var tokens = it.next().split("\t");
-                        if (accessionColumn < tokens.length && classColumn < tokens.length && Basic.isInteger(tokens[classColumn])) {
+                        if (accessionColumn < tokens.length && classColumn < tokens.length && NumberUtils.isInteger(tokens[classColumn])) {
                             var accession = tokens[accessionColumn];
-                           var value = Basic.parseInt(tokens[classColumn]);
+                            var value = NumberUtils.parseInt(tokens[classColumn]);
                             if (value != 0) {
                                 insertStmd.setString(1, accession);
                                 insertStmd.setInt(2, value);
@@ -319,7 +322,7 @@ public class CreateAccessionMappingDatabase {
                     while (it.hasNext()) {
                         var tokens = it.next().split("\t");
                         var accession = tokens[0];
-                        var value = Basic.parseInt(tokens[1]);
+                        var value = NumberUtils.parseInt(tokens[1]);
                         if (value != 0) {
                             insert.setString(2, accession);
                             insert.setInt(1, value);

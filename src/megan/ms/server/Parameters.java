@@ -20,7 +20,8 @@
 
 package megan.ms.server;
 
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Parameters {
     public static boolean matchIgnoreCase(String[] parameters, String key, String value) {
         for (String param : parameters) {
 			final String[] tokens = StringUtils.split(param, '=');
-			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.contains(StringUtils.split(tokens[1].toLowerCase(), ','), value.toLowerCase()))
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && CollectionUtils.contains(StringUtils.split(tokens[1].toLowerCase(), ','), value.toLowerCase()))
 				return true;
 		}
         return false;
@@ -50,36 +51,36 @@ public class Parameters {
     public static boolean getValue(String[] parameters, String key, boolean defaultValue) {
         for (String param : parameters) {
 			final String[] tokens = StringUtils.split(param, '=');
-            if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isBoolean(tokens[1]))
-                return Basic.parseBoolean(tokens[1]);
-        }
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && NumberUtils.isBoolean(tokens[1]))
+				return NumberUtils.parseBoolean(tokens[1]);
+		}
         return defaultValue;
     }
 
     public static int getValue(String[] parameters, String key, int defaultValue) {
         for (String param : parameters) {
 			final String[] tokens = StringUtils.split(param, '=');
-            if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isInteger(tokens[1]))
-                return Basic.parseInt(tokens[1]);
-        }
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && NumberUtils.isInteger(tokens[1]))
+				return NumberUtils.parseInt(tokens[1]);
+		}
         return defaultValue;
     }
 
     public static long getValue(String[] parameters, String key, long defaultValue) {
         for (String param : parameters) {
 			final String[] tokens = StringUtils.split(param, '=');
-            if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isLong(tokens[1]))
-                return Basic.parseLong(tokens[1]);
-        }
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && NumberUtils.isLong(tokens[1]))
+				return NumberUtils.parseLong(tokens[1]);
+		}
         return defaultValue;
     }
 
     public static double getValue(String[] parameters, String key, double defaultValue) {
         for (String param : parameters) {
 			final String[] tokens = StringUtils.split(param, '=');
-            if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isDouble(tokens[1]))
-                return Basic.parseDouble(tokens[1]);
-        }
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && NumberUtils.isDouble(tokens[1]))
+				return NumberUtils.parseDouble(tokens[1]);
+		}
         return defaultValue;
     }
 
@@ -107,9 +108,9 @@ public class Parameters {
         final ArrayList<Integer> list = new ArrayList<>();
         final String[] values = getValues(parameters, key);
         for (String value : values) {
-            if (Basic.isInteger(value))
-                list.add(Basic.parseInt(value));
-        }
+			if (NumberUtils.isInteger(value))
+				list.add(NumberUtils.parseInt(value));
+		}
         return list;
     }
 }

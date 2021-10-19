@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 
 import jloda.graph.Node;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 
@@ -128,7 +128,7 @@ public class SetNodeRadiusCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         String radius = "" + getViewer().getNodeRadius();
         radius = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter node radius (0-100)", radius);
-        if (radius != null && Basic.isInteger(radius) && Integer.parseInt(radius) >= 0)
+        if (radius != null && NumberUtils.isInteger(radius) && Integer.parseInt(radius) >= 0)
             execute("set nodeRadius=" + radius + ";");
     }
 

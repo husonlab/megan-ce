@@ -19,7 +19,7 @@
  */
 package megan.util;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 /**
@@ -57,7 +57,7 @@ public class ReadMagnitudeParser {
                 }
 				String firstWord = StringUtils.getFirstWord(aLine);
 				int pos = firstWord.lastIndexOf('_');
-                if (Basic.isInteger(firstWord.substring(pos + 1)))
+                if (NumberUtils.isInteger(firstWord.substring(pos + 1)))
                     return Math.max(1, Integer.parseInt(firstWord.substring(pos + 1)));
             }
             if (enabled) {
@@ -72,8 +72,8 @@ public class ReadMagnitudeParser {
                     while (end < aLine.length() && Character.isDigit(aLine.charAt(end)))
                         end++;
                     String number = aLine.substring(next + 1, end);
-                    if (Basic.isInteger(number))
-                        return Math.max(1, Basic.parseInt(number));
+                    if (NumberUtils.isInteger(number))
+                        return Math.max(1, NumberUtils.parseInt(number));
                 }
             }
         }

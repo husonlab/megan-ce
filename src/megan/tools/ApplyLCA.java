@@ -21,10 +21,7 @@ package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
-import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
-import jloda.util.UsageException;
+import jloda.util.*;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;
 
@@ -105,15 +102,15 @@ public class ApplyLCA {
                     int taxonId = -1;
                     for (int i = 1; i < tokens.length; i++) {
                         final String token = tokens[i].trim();
-                        if (!Basic.isInteger(token)) {
-                            taxonId = 0;
-                            break;
-                        } else {
-                            final int id = Basic.parseInt(token);
-                            if (id > 0) {
-                                taxonId = (taxonId == -1 ? id : assignmentUsingLCA.getLCA(taxonId, id));
-                            }
-                        }
+						if (!NumberUtils.isInteger(token)) {
+							taxonId = 0;
+							break;
+						} else {
+							final int id = NumberUtils.parseInt(token);
+							if (id > 0) {
+								taxonId = (taxonId == -1 ? id : assignmentUsingLCA.getLCA(taxonId, id));
+							}
+						}
                     }
                     w.write(tokens[0] + separator + taxonId + "\n");
                 }

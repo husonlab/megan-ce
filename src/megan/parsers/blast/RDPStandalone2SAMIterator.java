@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import megan.util.RDPStandaloneFileFilter;
@@ -106,8 +106,8 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
                 final String rank = tokens[whichToken++];
                 // rank ignored...
 
-                final String scoreString = tokens[whichToken++];
-                float bitScore = 100 * Basic.parseFloat(scoreString);
+				final String scoreString = tokens[whichToken++];
+				float bitScore = 100 * NumberUtils.parseFloat(scoreString);
 
                 final Match match = new Match();
                 match.bitScore = bitScore;

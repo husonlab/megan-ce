@@ -20,7 +20,10 @@
 package megan.assembly.alignment;
 
 import jloda.graph.Node;
-import jloda.util.*;
+import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
+import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import megan.alignment.gui.Alignment;
@@ -187,7 +190,7 @@ public class ContigBuilder {
             }
         }
 
-        Basic.randomize(singles, 666);
+        CollectionUtils.randomize(singles, 666);
 
         for (Node v : singles) {
             Integer id = (Integer) v.getInfo();

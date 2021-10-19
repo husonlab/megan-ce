@@ -21,9 +21,9 @@ package megan.biom.biom2;
 
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
-import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
 import jloda.seq.BlastMode;
+import jloda.swing.window.NotificationsInSwing;
+import jloda.util.CollectionUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
@@ -90,7 +90,7 @@ public class Biom2Importer {
             }
 
             final float totalReads;
-            totalReads = Basic.getSum(sizes);
+            totalReads = CollectionUtils.getSum(sizes);
 
             doc.getActiveViewers().addAll(classification2class2sample2count.keySet());
 

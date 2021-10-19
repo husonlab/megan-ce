@@ -20,7 +20,7 @@
 package megan.chart.drawers;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import megan.chart.gui.ChartViewer;
 
 import javax.swing.*;
@@ -61,7 +61,7 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         add(getSmallLabel("Detection (%)"));
         minThresholdField.setMaximumSize(new Dimension(88, 15));
-        minThresholdField.setText(String.format("%2.5f", Basic.restrictToRange(0.0, 100.0, coOccurrenceDrawer.getMinThreshold())));
+        minThresholdField.setText(String.format("%2.5f", NumberUtils.restrictToRange(0.0, 100.0, coOccurrenceDrawer.getMinThreshold())));
         minThresholdField.setFont(font);
         minThresholdField.setToolTipText("Minimum % of reads that class must have to be considered present in a sample");
         add(minThresholdField);
@@ -69,12 +69,12 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         add(getSmallLabel("Min samples (%)"));
         minPrevalenceField.setMaximumSize(new Dimension(33, 15));
-        minPrevalenceField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
+        minPrevalenceField.setText("" + NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
         minPrevalenceField.setFont(font);
         minPrevalenceField.setToolTipText("Minimum % of samples for which class must be considered present");
 
         minPrevalenceSlider.setToolTipText(minPrevalenceField.getToolTipText());
-        minPrevalenceSlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
+        minPrevalenceSlider.setValue(NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMinPrevalence()));
         minPrevalenceSlider.addChangeListener(e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
             minPrevalenceField.setText("" + newValue);
@@ -82,8 +82,8 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         minPrevalenceField.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                if (Basic.isFloat(minPrevalenceField.getText())) {
-                    int value = Basic.restrictToRange(0, 100, (int) Float.parseFloat(minPrevalenceField.getText()));
+                if (NumberUtils.isFloat(minPrevalenceField.getText())) {
+                    int value = NumberUtils.restrictToRange(0, 100, (int) Float.parseFloat(minPrevalenceField.getText()));
                     minPrevalenceSlider.setValue(value);
                 }
             }
@@ -95,12 +95,12 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         add(getSmallLabel("Max samples (%)"));
         maxPrevalenceField.setMaximumSize(new Dimension(33, 15));
-        maxPrevalenceField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
+        maxPrevalenceField.setText("" + NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
         maxPrevalenceField.setFont(font);
         maxPrevalenceField.setToolTipText("Maximum % of samples for which class must be considered present");
 
         maxPrevalenceSlider.setToolTipText(maxPrevalenceField.getToolTipText());
-        maxPrevalenceSlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
+        maxPrevalenceSlider.setValue(NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMaxPrevalence()));
         maxPrevalenceSlider.addChangeListener(e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
             maxPrevalenceField.setText("" + newValue);
@@ -108,8 +108,8 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         maxPrevalenceField.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                if (Basic.isFloat(maxPrevalenceField.getText())) {
-                    int value = Basic.restrictToRange(0, 100, (int) Float.parseFloat(maxPrevalenceField.getText()));
+                if (NumberUtils.isFloat(maxPrevalenceField.getText())) {
+                    int value = NumberUtils.restrictToRange(0, 100, (int) Float.parseFloat(maxPrevalenceField.getText()));
                     maxPrevalenceSlider.setValue(value);
                 }
             }
@@ -121,12 +121,12 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         add(getSmallLabel("Edge threshold (%)"));
         minProbabilityField.setMaximumSize(new Dimension(33, 15));
-        minProbabilityField.setText("" + Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
+        minProbabilityField.setText("" + NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
         minProbabilityField.setFont(font);
         minProbabilityField.setToolTipText("Minimum % co-occurrence (or anti-occurrence) score required for two classes to be joined by an edge");
 
         minProbabilitySlider.setToolTipText(minProbabilityField.getToolTipText());
-        minProbabilitySlider.setValue(Basic.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
+        minProbabilitySlider.setValue(NumberUtils.restrictToRange(0, 100, coOccurrenceDrawer.getMinProbability()));
         minProbabilitySlider.addChangeListener(e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
             minProbabilityField.setText("" + newValue);
@@ -134,8 +134,8 @@ public class CoOccurrenceToolBar extends JToolBar {
 
         minProbabilityField.addActionListener(new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                if (Basic.isFloat(minProbabilityField.getText())) {
-                    int value = Basic.restrictToRange(0, 100, (int) Float.parseFloat(minProbabilityField.getText()));
+                if (NumberUtils.isFloat(minProbabilityField.getText())) {
+                    int value = NumberUtils.restrictToRange(0, 100, (int) Float.parseFloat(minProbabilityField.getText()));
                     minProbabilitySlider.setValue(value);
                 }
             }

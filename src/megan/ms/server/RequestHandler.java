@@ -21,7 +21,7 @@
 package megan.ms.server;
 
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
 import megan.daa.connector.ClassificationBlockDAA;
 import megan.data.IClassificationBlock;
@@ -31,7 +31,9 @@ import megan.ms.client.connector.ReadBlockMS;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -435,7 +437,7 @@ public interface RequestHandler {
                 return parameter;
         }).collect(Collectors.toList());
         for (String name : parameterNames) {
-            if (!Basic.contains(known, name))
+            if (!CollectionUtils.contains(known, name))
                 throw new IOException("Unknown parameter: '" + name + "'");
         }
     }

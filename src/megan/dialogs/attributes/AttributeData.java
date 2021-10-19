@@ -22,6 +22,7 @@ package megan.dialogs.attributes;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import megan.core.Document;
 import megan.main.MeganProperties;
@@ -168,15 +169,15 @@ public class AttributeData {
                 }
 
             } else {
-                String[] fields = aLine.split("\\t");
-                String idString = fields[attribute2index.get("Taxonomy ID")];
-                if (idString != null && Basic.isInteger(idString)) {
-                    Integer taxId = Basic.parseInt(idString);
-                    String taxName = TaxonomyData.getName2IdMap().get(taxId);
-                    if (taxName != null)
-                        this.taxaName2AttributesRawData.put(taxName, fields);
-                }
-            }
+				String[] fields = aLine.split("\\t");
+				String idString = fields[attribute2index.get("Taxonomy ID")];
+				if (idString != null && NumberUtils.isInteger(idString)) {
+					Integer taxId = NumberUtils.parseInt(idString);
+					String taxName = TaxonomyData.getName2IdMap().get(taxId);
+					if (taxName != null)
+						this.taxaName2AttributesRawData.put(taxName, fields);
+				}
+			}
         }
     }
 

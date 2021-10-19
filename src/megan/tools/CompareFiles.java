@@ -19,10 +19,10 @@
  */
 package megan.tools;
 
+import jloda.seq.BlastMode;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.dialogs.compare.Comparer;
@@ -195,7 +195,7 @@ public class CompareFiles {
             doc.getSampleAttributeTable().addAttribute("@Source",sample2source,false,true);
         }
 
-        doc.setNumberReads(Math.round(Basic.getSum(sizes)));
+        doc.setNumberReads(Math.round(CollectionUtils.getSum(sizes)));
 
         for(var classification: getClassifications(samples)) {
             final Map<Integer,float[]> class2counts=new HashMap<>();

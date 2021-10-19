@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import megan.util.IlluminaReporterFileFilter;
@@ -112,7 +112,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
 
 				String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
 				String scoreString = tokens[whichToken++];
-                float bitScore = 100 * Basic.parseFloat(scoreString);
+				float bitScore = 100 * NumberUtils.parseFloat(scoreString);
 
                 if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
                     Match match = new Match();

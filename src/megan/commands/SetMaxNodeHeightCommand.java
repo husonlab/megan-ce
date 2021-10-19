@@ -20,7 +20,7 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
@@ -46,9 +46,9 @@ public class SetMaxNodeHeightCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         String input = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter max node height in pixels", ((ClassificationViewer) getViewer()).getMaxNodeRadius());
-        if (input != null && Basic.isInteger(input)) {
-            execute("set maxNodeHeight=" + input + ";");
-        }
+		if (input != null && NumberUtils.isInteger(input)) {
+			execute("set maxNodeHeight=" + input + ";");
+		}
     }
 
     public boolean isApplicable() {

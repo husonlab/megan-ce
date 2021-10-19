@@ -19,7 +19,9 @@
  */
 package megan.classification.data;
 
-import jloda.util.*;
+import jloda.util.CanceledException;
+import jloda.util.FileLineIterator;
+import jloda.util.NumberUtils;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import megan.data.IName2IdMap;
@@ -70,10 +72,10 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
             while (it.hasNext()) {
                 String[] tokens = it.next().split("\t");
                 if (tokens[0].length() > 0 && tokens[0].charAt(0) != '#' && tokens.length == 2) {
-                    long giNumber = Basic.parseLong(tokens[0]);
+                    long giNumber = NumberUtils.parseLong(tokens[0]);
                     if (giNumber > 0) {
-                        if (Basic.isInteger(tokens[1])) {
-                            int id = Basic.parseInt(tokens[1]);
+                        if (NumberUtils.isInteger(tokens[1])) {
+                            int id = NumberUtils.parseInt(tokens[1]);
                             if (id != 0) {
                                 put(giNumber, id);
                                 totalIn++;

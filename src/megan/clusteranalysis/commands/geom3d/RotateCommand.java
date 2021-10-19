@@ -20,7 +20,7 @@
 package megan.clusteranalysis.commands.geom3d;
 
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.commands.CommandBase;
@@ -82,8 +82,8 @@ public class RotateCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         String input = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter axis and angle");
         if (input != null) {
-            char axis = input.charAt(0);
-            double angle = Basic.parseDouble(input.substring(1));
+			char axis = input.charAt(0);
+			double angle = NumberUtils.parseDouble(input.substring(1));
             executeImmediately("rotate axis=" + axis + " angle=" + angle + ";");
         }
     }

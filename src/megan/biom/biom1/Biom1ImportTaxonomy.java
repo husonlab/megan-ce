@@ -19,7 +19,7 @@
  */
 package megan.biom.biom1;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
@@ -67,15 +67,15 @@ class Biom1ImportTaxonomy {
             if (taxonId == null) {
                 final String idStr = (String) row.get("id");
                 if (idStr != null) {
-                    if (Basic.isInteger(idStr))
-                        taxonId = Basic.parseInt(idStr);
-                    else {
-                        int newTaxId = TaxonomyData.getName2IdMap().get(idStr);
-                        if (newTaxId != 0) {
-                            taxonId = newTaxId;
-                        }
-                    }
-                }
+					if (NumberUtils.isInteger(idStr))
+						taxonId = NumberUtils.parseInt(idStr);
+					else {
+						int newTaxId = TaxonomyData.getName2IdMap().get(idStr);
+						if (newTaxId != 0) {
+							taxonId = newTaxId;
+						}
+					}
+				}
             }
 
             if (taxonId != null)

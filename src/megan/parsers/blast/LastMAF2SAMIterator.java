@@ -19,9 +19,9 @@
  */
 package megan.parsers.blast;
 
-import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
 import jloda.seq.BlastMode;
+import jloda.swing.window.NotificationsInSwing;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
@@ -65,10 +65,10 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
         while (hasNextLine()) {
             String line = nextLine();
             String str = getNextToken(line, "lambda=");
-            if (Basic.isDouble(str)) {
-                lambda = Basic.parseDouble(str);
+            if (NumberUtils.isDouble(str)) {
+                lambda = NumberUtils.parseDouble(str);
                 str = getNextToken(line, "K=");
-                K = Basic.parseDouble(str);
+                K = NumberUtils.parseDouble(str);
                 break;
             }
         }
@@ -119,10 +119,10 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                      */
 
                     final String queryAligned = queryTokens[6];
-                    int queryStart = Basic.parseInt(queryTokens[2]) + 1;
-                    final int queryAlignmentLength = Basic.parseInt(queryTokens[3]);
+                    int queryStart = NumberUtils.parseInt(queryTokens[2]) + 1;
+                    final int queryAlignmentLength = NumberUtils.parseInt(queryTokens[3]);
                     final boolean queryReversed = !queryTokens[4].equals("+");
-                    final int queryLength = Basic.parseInt(queryTokens[5]);
+                    final int queryLength = NumberUtils.parseInt(queryTokens[5]);
                     int queryEnd;
 
                     final int frame = (queryReversed ? -1 : 1) * ((queryStart - 1) % 3 + 1); // do this before changing start to reflect reversed sequence
@@ -135,18 +135,18 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                     }
 
                     final String scoreLine = mafMatch[0];
-                    final int rawScore = Basic.parseInt(getNextToken(scoreLine, "score="));
-                    final double expect = Basic.parseDouble(getNextToken(scoreLine, "E="));
+                    final int rawScore = NumberUtils.parseInt(getNextToken(scoreLine, "score="));
+                    final double expect = NumberUtils.parseDouble(getNextToken(scoreLine, "E="));
                     final float bitScore = (float) ((lambda * rawScore - Math.log(K)) / Math.log(2));
 
                     final String[] subjTokens = StringUtils.splitOnWhiteSpace(mafMatch[1]);
 
                     final String subjName = subjTokens[1];
                     final String subjAligned = subjTokens[6];
-                    int subjStart = Basic.parseInt(subjTokens[2]) + 1;
-                    final int subjAlignmentLength = Basic.parseInt(subjTokens[3]);
+                    int subjStart = NumberUtils.parseInt(subjTokens[2]) + 1;
+                    final int subjAlignmentLength = NumberUtils.parseInt(subjTokens[3]);
                     final boolean subjReversed = !subjTokens[4].equals("+");
-                    final int subjLength = Basic.parseInt(subjTokens[5]);
+                    final int subjLength = NumberUtils.parseInt(subjTokens[5]);
                     int subjEnd;
 
                     if (subjReversed) {

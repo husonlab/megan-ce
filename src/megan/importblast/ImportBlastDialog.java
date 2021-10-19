@@ -19,13 +19,13 @@
  */
 package megan.importblast;
 
+import jloda.seq.BlastMode;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.util.StatusBar;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.commandtemplates.SetAnalyse4ViewerCommand;
@@ -328,7 +328,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     protected float getMinSupportPercent() {
         float value = 0;
         try {
-            value = Basic.parseFloat(minSupportPercentField.getText());
+            value = NumberUtils.parseFloat(minSupportPercentField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -342,7 +342,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     public int getMinReadLength() {
         int value = Document.DEFAULT_MIN_READ_LENGTH;
         try {
-            value = Basic.parseInt(minReadLengthField.getText());
+            value = NumberUtils.parseInt(minReadLengthField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -473,7 +473,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     protected double getLCACoveragePercent() {
         double value = Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS;
         try {
-            value = Basic.parseDouble(lcaCoveragePercentField.getText());
+            value = NumberUtils.parseDouble(lcaCoveragePercentField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -495,7 +495,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     protected double getMinPercentReadToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_READ_TO_COVER;
         try {
-            value = Basic.parseDouble(minPercentReadCoveredField.getText());
+            value = NumberUtils.parseDouble(minPercentReadCoveredField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -513,7 +513,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     protected double getMinPercentReferenceToCover() {
         double value = Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER;
         try {
-            value = Basic.parseDouble(minPercentReferenceCoveredField.getText());
+            value = NumberUtils.parseDouble(minPercentReferenceCoveredField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }

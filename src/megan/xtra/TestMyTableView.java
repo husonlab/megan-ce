@@ -31,7 +31,7 @@ import jloda.fx.control.table.MyTableView;
 import jloda.fx.control.table.MyTableViewSearcher;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.util.ResourceManagerFX;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class TestMyTableView extends Application {
             final MenuItem moveSamplesDown = new MenuItem("Move Samples Down");
             moveSamplesDown.setOnAction((e) ->
             {
-                final ArrayList<String> list = Basic.reverse(tableView.getSelectedRows());
+				final ArrayList<String> list = CollectionUtils.reverse(tableView.getSelectedRows());
 				System.err.println("Moving down:" + StringUtils.toString(list, " "));
                 for (String sample : list) {
                     final int oldPos = tableView.getRowIndex(sample);

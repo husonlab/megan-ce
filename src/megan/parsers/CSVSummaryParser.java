@@ -124,10 +124,10 @@ public class CSVSummaryParser {
 						boolean headerLinePresent = (StringUtils.getIndexIgnoreCase(tokens[0], "name", "names", "samples", "SampleId", SampleAttributeTable.SAMPLE_ID, "Dataset", "Datasets") != -1);
                         if (!headerLinePresent) { // check other tokens: unless all are numbers, assume the first line is header line
                             for (int i = 1; i < tokens.length; i++) {
-                                if (!Basic.isFloat(tokens[i])) {
-                                    headerLinePresent = true;
-                                    break;
-                                }
+                                if (!NumberUtils.isFloat(tokens[i])) {
+									headerLinePresent = true;
+									break;
+								}
                             }
                         }
 
@@ -157,19 +157,19 @@ public class CSVSummaryParser {
                         add = new int[names.length];
                     for (int i = 1; i < tokens.length; i++) {
                         String number = tokens[i].trim();
-                        if (number.length() == 0)
-                            add[i - 1] = 0;
-                        else if (Basic.isInteger(number))
-                            add[i - 1] = (int) (multiplier * Integer.parseInt(number));
-                        else
-                            add[i - 1] = (int) (multiplier * Double.parseDouble(number));
+						if (number.length() == 0)
+							add[i - 1] = 0;
+						else if (NumberUtils.isInteger(number))
+							add[i - 1] = (int) (multiplier * Integer.parseInt(number));
+						else
+							add[i - 1] = (int) (multiplier * Double.parseDouble(number));
                     }
 
                     boolean found = false;
                     for (int i = 0; i < idParsers.length; i++) {
 						int id;
-						if ((i == taxonomyIndex || taxonomyIndex == -1) && Basic.isInteger(tokens[0]))
-							id = Basic.parseInt(tokens[0]);
+						if ((i == taxonomyIndex || taxonomyIndex == -1) && NumberUtils.isInteger(tokens[0]))
+							id = NumberUtils.parseInt(tokens[0]);
 						else
 							id = idParsers[i].getName2IdMap().get(tokens[0]);
 						if (id == 0)

@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import megan.util.RDPAssignmentDetailsFileFilter;
@@ -104,7 +104,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
                         System.err.println("Expected percentage in: " + line);
                         break;
                     }
-                    float bitScore = Basic.parseFloat(scoreString);
+					float bitScore = NumberUtils.parseFloat(scoreString);
 
                     final Match match = new Match();
                     match.bitScore = bitScore;
@@ -141,7 +141,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
                         System.err.println("Expected percentage in: " + line);
                         break;
                     }
-                    var bitScore = Basic.parseFloat(scoreString.substring(0, scoreString.length() - 1));
+					var bitScore = NumberUtils.parseFloat(scoreString.substring(0, scoreString.length() - 1));
 
                     var match = new Match();
                     match.bitScore = bitScore;

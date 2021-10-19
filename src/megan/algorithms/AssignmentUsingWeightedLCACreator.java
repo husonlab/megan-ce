@@ -22,6 +22,7 @@ package megan.algorithms;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import megan.core.Document;
@@ -198,10 +199,10 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
 
         if (progress instanceof ProgressPercentage)
             ((ProgressPercentage) progress).reportTaskCompleted();
-        System.err.println(String.format("Total matches:    %,12d ", Basic.getSum(totalMatches)));
-        System.err.println(String.format("Total references: %,12d ", (ref2weight != null ? ref2weight.size() : refId2weight.length)));
-        System.err.println(String.format("Total weights:    %,12d ", Basic.getSum(totalWeight)));
-        System.err.println();
+		System.err.println(String.format("Total matches:    %,12d ", CollectionUtils.getSum(totalMatches)));
+		System.err.println(String.format("Total references: %,12d ", (ref2weight != null ? ref2weight.size() : refId2weight.length)));
+		System.err.println(String.format("Total weights:    %,12d ", CollectionUtils.getSum(totalWeight)));
+		System.err.println();
 
     }
 

@@ -20,6 +20,7 @@
 package megan.dialogs.parameters;
 
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import megan.core.Director;
 import megan.core.Document;
 
@@ -199,7 +200,7 @@ public class ParametersDialogSmall extends JDialog {
     public int getMinSupport() {
         int value = Document.DEFAULT_MINSUPPORT;
         try {
-            value = Basic.parseInt(minSupportField.getText());
+            value = NumberUtils.parseInt(minSupportField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }
@@ -214,7 +215,7 @@ public class ParametersDialogSmall extends JDialog {
     public float getMinSupportPercent() {
         float value = 0;
         try {
-            value = Basic.parseFloat(minSupportPercentField.getText());
+            value = NumberUtils.parseFloat(minSupportPercentField.getText());
         } catch (NumberFormatException e) {
             Basic.caught(e);
         }

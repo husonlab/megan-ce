@@ -23,8 +23,8 @@ package megan.biom.biom2;
 import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
-import jloda.util.Basic;
 import jloda.seq.BlastMode;
+import jloda.util.CollectionUtils;
 import jloda.util.FileUtils;
 import jloda.util.StringUtils;
 import megan.biom.biom1.QIIMETaxonParser;
@@ -151,8 +151,8 @@ public class Biom2ParserTest {
                 sizes[i] = size;
             }
 
-            doc.getDataTable().setSamples(sampleIds, null, sizes, new BlastMode[]{BlastMode.Classifier});
-            doc.getDataTable().setTotalReads(Math.round(Basic.getSum(sizes)));
+			doc.getDataTable().setSamples(sampleIds, null, sizes, new BlastMode[]{BlastMode.Classifier});
+			doc.getDataTable().setTotalReads(Math.round(CollectionUtils.getSum(sizes)));
 
             for (Integer classId : class2counts.keySet()) {
                 float[] array = class2counts.get(classId);

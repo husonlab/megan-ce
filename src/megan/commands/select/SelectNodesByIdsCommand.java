@@ -21,7 +21,7 @@ package megan.commands.select;
 
 import jloda.graph.Node;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.ViewerBase;
@@ -45,7 +45,7 @@ public class SelectNodesByIdsCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("select id=");
         Set<Integer> ids = new HashSet<>();
         while (!np.peekMatchAnyTokenIgnoreCase(";")) {
-            ids.add(Basic.parseInt(np.getWordRespectCase()));
+			ids.add(NumberUtils.parseInt(np.getWordRespectCase()));
         }
         np.matchRespectCase(";");
         Set<Node> nodes = new HashSet<>();

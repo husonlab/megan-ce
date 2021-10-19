@@ -19,9 +19,9 @@
  */
 package megan.classification.data;
 
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.FileLineIterator;
+import jloda.util.NumberUtils;
 import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
@@ -57,17 +57,17 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
                 String[] tokens = aLine.split("\t");
 
                 if (tokens.length >= 2) {
-                    final Integer id;
-                    if (Basic.isInteger(tokens[1])) {
-                        id = Basic.parseInt(tokens[1]);
-                    } else {
-                        id = label2id.get(tokens[1]);
-                    }
-                    if (id != 0)
-                        put(tokens[0], id);
-                    else
-                        System.err.println("Line " + it.getLineNumber() + ": invalid id: " + tokens[1]);
-                } else {
+					final Integer id;
+					if (NumberUtils.isInteger(tokens[1])) {
+						id = NumberUtils.parseInt(tokens[1]);
+					} else {
+						id = label2id.get(tokens[1]);
+					}
+					if (id != 0)
+						put(tokens[0], id);
+					else
+						System.err.println("Line " + it.getLineNumber() + ": invalid id: " + tokens[1]);
+				} else {
                     throw new IOException("Loading synonyms-to-id file, line: " + it.getLineNumber() +
                             ": expected two entries separated by a tab,  got: <" + aLine + ">");
                 }

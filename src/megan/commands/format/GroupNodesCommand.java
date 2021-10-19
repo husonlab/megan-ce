@@ -24,7 +24,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.gui.PCoATab;
@@ -72,12 +72,12 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
 
             int nextId = 1;
             for (String sample : doc.getSampleNames()) {
-                if (Basic.isInteger(doc.getSampleAttributeTable().getGroupId(sample))) {
-                    int joinId = Basic.parseInt(doc.getSampleAttributeTable().getGroupId(sample));
-                    if (joinId != 0 && nextId <= joinId)
-                        nextId = joinId + 1;
-                }
-            }
+				if (NumberUtils.isInteger(doc.getSampleAttributeTable().getGroupId(sample))) {
+					int joinId = NumberUtils.parseInt(doc.getSampleAttributeTable().getGroupId(sample));
+					if (joinId != 0 && nextId <= joinId)
+						nextId = joinId + 1;
+				}
+			}
             for (String sample : selectedSamples) {
                 doc.getSampleAttributeTable().putGroupId(sample, "" + nextId);
             }

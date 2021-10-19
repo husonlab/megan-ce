@@ -21,7 +21,7 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.main.MeganProperties;
@@ -68,8 +68,8 @@ public class SetMinimumSizeCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         int value = ProgramProperties.get(MeganProperties.MININUM_READS_IN_ALIGNMENT, 10);
         String result = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter minimum number of reads required for an alignment", "" + value);
-        if (result != null && Basic.isInteger(result))
-            execute("set minReadsAlignment=" + result + ";");
+		if (result != null && NumberUtils.isInteger(result))
+			execute("set minReadsAlignment=" + result + ";");
     }
 
     private static final String NAME = "Set Minimum Number of Reads...";

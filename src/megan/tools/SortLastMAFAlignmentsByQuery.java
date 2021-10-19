@@ -19,11 +19,11 @@
  */
 package megan.tools;
 
+import jloda.seq.FastAFileIterator;
+import jloda.seq.IFastAIterator;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.seq.FastAFileIterator;
-import jloda.seq.IFastAIterator;
 import jloda.util.progress.ProgressPercentage;
 
 import java.io.BufferedWriter;
@@ -194,7 +194,7 @@ public class SortLastMAFAlignmentsByQuery {
         int b = a;
         while (b < s.length && !Character.isWhitespace(string.charAt(b)))
             b++;
-        return Basic.parseInt(string.substring(a, b));
+        return NumberUtils.parseInt(string.substring(a, b));
     }
 
     private String getSecondWord(String string) {

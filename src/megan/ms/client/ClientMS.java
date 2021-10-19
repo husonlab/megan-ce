@@ -21,6 +21,7 @@
 package megan.ms.client;
 
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import megan.ms.Utilities;
 
@@ -94,8 +95,8 @@ public class ClientMS {
 						.filter(tokens -> tokens.length > 0)
 						.map(tokens -> {
 							var name = tokens[0];
-							var reads = (tokens.length > 1 ? Basic.parseLong(tokens[1]) : 0);
-							var matches = (tokens.length > 2 ? Basic.parseLong(tokens[2]) : 0);
+							var reads = (tokens.length > 1 ? NumberUtils.parseLong(tokens[1]) : 0);
+							var matches = (tokens.length > 2 ? NumberUtils.parseLong(tokens[2]) : 0);
 							return new FileRecord(name, reads, matches);
 						}).collect(Collectors.toList());
             }
@@ -157,14 +158,14 @@ public class ClientMS {
      * gets as long
      */
     public long getAsLong(String command) throws IOException {
-		return Basic.parseLong(StringUtils.getFirstWord(getAsString(command)));
+		return NumberUtils.parseLong(StringUtils.getFirstWord(getAsString(command)));
     }
 
     /**
      * gets as long
      */
     public int getAsInt(String command) throws IOException {
-		return Basic.parseInt(StringUtils.getFirstWord(getAsString(command)));
+		return NumberUtils.parseInt(StringUtils.getFirstWord(getAsString(command)));
     }
 
     public int getPageSize() {

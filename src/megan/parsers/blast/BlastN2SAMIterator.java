@@ -19,10 +19,10 @@
  */
 package megan.parsers.blast;
 
-import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.Pair;
 import jloda.seq.SequenceUtils;
+import jloda.swing.window.NotificationsInSwing;
+import jloda.util.NumberUtils;
+import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
@@ -133,7 +133,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                         refHeaderLines.add(line.replaceAll("\\s+", " "));
                     line = nextLine().trim();
                 }
-                final int referenceLength = Basic.parseInt(getNextToken(line, LENGTH, EQUALS));
+                final int referenceLength = NumberUtils.parseInt(getNextToken(line, LENGTH, EQUALS));
                 final String refName = StringUtils.swallowLeadingGreaterSign(StringUtils.toString(refHeaderLines, " "));
                 // Blast text downloaded from NBCI might have some text before the alignment starts:
                 do {
@@ -150,30 +150,30 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                 while (hasAnotherAlignmentAgainstReference) {
                     hasAnotherAlignmentAgainstReference = false;
 
-                    final float bitScore = Basic.parseFloat(getNextToken(line, SCORE, EQUALS));
-                    final int rawScore = Basic.parseInt(getNextToken(line, "("));
-                    final float expect = Basic.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
+                    final float bitScore = NumberUtils.parseFloat(getNextToken(line, SCORE, EQUALS));
+                    final int rawScore = NumberUtils.parseInt(getNextToken(line, "("));
+                    final float expect = NumberUtils.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
                     line = nextLine();
-                    final float percentIdentities = Basic.parseFloat(getNextToken(line, IDENTITIES, "("));
+                    final float percentIdentities = NumberUtils.parseFloat(getNextToken(line, IDENTITIES, "("));
                     line = nextLine();
                     final String queryDirection = getNextLetters(line, STRAND, "=");
                     final String refDirection = getNextToken(line, "/");
 
                     // skip line containing Strand
                     String[] queryLineTokens = getNextLineStartsWith(QUERY).split("\\s+"); // split on white space
-                    int queryStart = Basic.parseInt(queryLineTokens[1]);
+                    int queryStart = NumberUtils.parseInt(queryLineTokens[1]);
                     StringBuilder queryBuf = new StringBuilder();
                     queryBuf.append(queryLineTokens[2]);
-                    int queryEnd = Basic.parseInt(queryLineTokens[3]);
+                    int queryEnd = NumberUtils.parseInt(queryLineTokens[3]);
 
                     if (!hasNextLine())
                         break;
                     nextLine(); // skip middle line
                     String[] subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
-                    int subjStart = Basic.parseInt(subjectLineTokens[1]);
+                    int subjStart = NumberUtils.parseInt(subjectLineTokens[1]);
                     StringBuilder subjBuf = new StringBuilder();
                     subjBuf.append(subjectLineTokens[2]);
-                    int subjEnd = Basic.parseInt(subjectLineTokens[3]);
+                    int subjEnd = NumberUtils.parseInt(subjectLineTokens[3]);
                     // if match is broken over multiple lines, collect all parts of match:
                     while (hasNextLine()) {
                         line = skipEmptyLines();
@@ -194,10 +194,10 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                         } else if (line.startsWith(QUERY)) { // match continues...
                             queryLineTokens = line.split("\\s+");
                             queryBuf.append(queryLineTokens[2]);
-                            queryEnd = Basic.parseInt(queryLineTokens[3]);
+                            queryEnd = NumberUtils.parseInt(queryLineTokens[3]);
                             subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
                             subjBuf.append(subjectLineTokens[2]);
-                            subjEnd = Basic.parseInt(subjectLineTokens[3]);
+                            subjEnd = NumberUtils.parseInt(subjectLineTokens[3]);
                         }
                     }
 

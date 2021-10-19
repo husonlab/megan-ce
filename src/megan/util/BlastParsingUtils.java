@@ -20,7 +20,7 @@
 
 package megan.util;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import megan.alignment.Blast2Alignment;
 
 import java.io.BufferedReader;
@@ -223,10 +223,10 @@ public class BlastParsingUtils {
     }
 
     public static int getStartSubject(String text) {
-        return Basic.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
+		return NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Sbjct:", "Sbjct"));
     }
 
     public static int getEndSubject(String text) throws IOException {
-        return Basic.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
+		return NumberUtils.parseInt(BlastParsingUtils.grabLastInLinePassedScore(text, "Sbjct"));
     }
 }

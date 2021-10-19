@@ -20,8 +20,8 @@
 
 package megan.accessiondb;
 
-import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.NumberUtils;
 import org.sqlite.SQLiteConfig;
 
 import java.io.IOException;
@@ -97,8 +97,8 @@ public class ModifyAccessionMappingDatabase {
                 try (FileLineIterator it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
                         final String[] tokens = it.next().split("\t");
-                        final String accession = tokens[0];
-                        final int value = Basic.parseInt(tokens[1]);
+						final String accession = tokens[0];
+						final int value = NumberUtils.parseInt(tokens[1]);
                         if (value != 0) {
                             insertStmd.setString(2, accession);
                             insertStmd.setInt(1, value);

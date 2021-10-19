@@ -20,7 +20,10 @@
 
 package megan.genes;
 
-import jloda.util.*;
+import jloda.util.CanceledException;
+import jloda.util.FileLineIterator;
+import jloda.util.NumberUtils;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import megan.classification.util.TaggedValueIterator;
@@ -178,8 +181,8 @@ public class CDS {
                 while (it.hasNext()) { // only makes sense to process if there are more lines to be read, even if aLine!=null
 					final String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length == 3 && tokens[2].endsWith("CDS")) {
-                        int a = Basic.parseInt(tokens[0]);
-                        int b = Basic.parseInt(tokens[1]);
+                        int a = NumberUtils.parseInt(tokens[0]);
+                        int b = NumberUtils.parseInt(tokens[1]);
                         String proteinId = null;
                         while (it.hasNext()) {
                             aLine = it.next();

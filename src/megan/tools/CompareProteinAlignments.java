@@ -320,7 +320,7 @@ public class CompareProteinAlignments {
     private static int getSubjStart(IMatchBlock matchBlock) {
         final String text = matchBlock.getText();
         int pos = text.indexOf("Sbjct");
-        return (pos != -1 ? Basic.parseInt(text.substring(pos + 5)) : 0);
+        return (pos != -1 ? NumberUtils.parseInt(text.substring(pos + 5)) : 0);
     }
 
     /**
@@ -343,7 +343,7 @@ public class CompareProteinAlignments {
 
 		if (pos >= text.length())
 			return 0;
-		return Basic.parseInt(text.substring(pos));
+		return NumberUtils.parseInt(text.substring(pos));
 	}
 
     /**

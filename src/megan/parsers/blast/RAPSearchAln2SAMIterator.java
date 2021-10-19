@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
@@ -247,31 +247,31 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
             suffix = suffix.substring(index + 1).trim();
             String[] tokens = suffix.split(" ");
 
-            if (tokens[0].startsWith(bitsString) && Basic.isFloat(tokens[0].substring(bitsString.length())))
+            if (tokens[0].startsWith(bitsString) && NumberUtils.isFloat(tokens[0].substring(bitsString.length())))
                 bitScore = Float.parseFloat(tokens[0].substring(bitsString.length()));
             else
                 throw new IOException("Failed to parse  '" + bitsString + "' in: " + aLine);
 
-            if (tokens[1].startsWith(evalueString) && Basic.isFloat(tokens[1].substring(evalueString.length())))
+            if (tokens[1].startsWith(evalueString) && NumberUtils.isFloat(tokens[1].substring(evalueString.length())))
                 expected = (float) Math.pow(10, Float.parseFloat(tokens[1].substring(evalueString.length())));
-            else if (tokens[1].startsWith(evalueStringAlt) && Basic.isFloat(tokens[1].substring(evalueStringAlt.length())))
+            else if (tokens[1].startsWith(evalueStringAlt) && NumberUtils.isFloat(tokens[1].substring(evalueStringAlt.length())))
                 expected = (float) Math.pow(10, Float.parseFloat(tokens[1].substring(evalueStringAlt.length())));
             else
                 throw new IOException("Failed to parse '" + evalueString + "' or '" + evalueStringAlt + "' in: " + aLine);
 
-            if (tokens[2].startsWith(identityString) && Basic.isFloat(tokens[2].substring(identityString.length(), tokens[2].length() - 1)))
+            if (tokens[2].startsWith(identityString) && NumberUtils.isFloat(tokens[2].substring(identityString.length(), tokens[2].length() - 1)))
                 identity = Float.parseFloat(tokens[2].substring(identityString.length(), tokens[2].length() - 1));
             else
                 throw new IOException("Failed to parse '" + identityString + "' in: " + aLine);
 
-            if (tokens[3].startsWith(lengthString) && Basic.isInteger(tokens[3].substring(lengthString.length())))
+            if (tokens[3].startsWith(lengthString) && NumberUtils.isInteger(tokens[3].substring(lengthString.length())))
                 length = Integer.parseInt(tokens[3].substring(lengthString.length()));
-            else if (tokens[3].startsWith(lengthStringAlt) && Basic.isInteger(tokens[3].substring(lengthStringAlt.length())))
+            else if (tokens[3].startsWith(lengthStringAlt) && NumberUtils.isInteger(tokens[3].substring(lengthStringAlt.length())))
                 length = Integer.parseInt(tokens[3].substring(lengthStringAlt.length()));
             else
                 throw new IOException("Failed to parse '" + lengthString + "' or '" + lengthStringAlt + "' in: " + aLine);
 
-            if (tokens[6].startsWith(frameString) && Basic.isInteger(tokens[6].substring(frameString.length()))) {
+            if (tokens[6].startsWith(frameString) && NumberUtils.isInteger(tokens[6].substring(frameString.length()))) {
                 int f = Integer.parseInt(tokens[6].substring(frameString.length()));
                 if (f < 3)
                     frame = f + 1;  // 0,1,2->1,2,3
@@ -296,17 +296,17 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
             String[] queryTokens = queryLine.split("\\s+");
             if (queryTokens.length != 4)
                 throw new IOException("Wrong number of tokens: " + queryTokens.length + " in query line: " + queryLine);
-            queryStart = Basic.parseInt(queryTokens[1]);
+            queryStart = NumberUtils.parseInt(queryTokens[1]);
             querySequence = queryTokens[2];
-            queryEnd = Basic.parseInt(queryTokens[3]);
+            queryEnd = NumberUtils.parseInt(queryTokens[3]);
             if (!subjectLine.startsWith(Subject))
                 throw new IOException("Token '" + Subject + "' not found in line: " + midLine);
             String[] subjTokens = subjectLine.split("\\s+");
             if (subjTokens.length != 4)
                 throw new IOException("Wrong number of tokens: " + subjTokens.length + " in subject line: " + subjectLine);
-            refStart = Basic.parseInt(subjTokens[1]);
+            refStart = NumberUtils.parseInt(subjTokens[1]);
             refSequence = subjTokens[2];
-            refEnd = Basic.parseInt(subjTokens[3]);
+            refEnd = NumberUtils.parseInt(subjTokens[3]);
         }
     }
 }

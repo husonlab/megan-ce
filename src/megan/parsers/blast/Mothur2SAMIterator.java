@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import megan.util.MothurFileFilter;
@@ -108,7 +108,7 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                     System.err.println("Expected (number) in: " + line);
                     break;
                 }
-                float bitScore = Basic.parseFloat(scoreString);
+				float bitScore = NumberUtils.parseFloat(scoreString);
 
                 if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
                     Match match = new Match();

@@ -20,8 +20,8 @@
 package megan.util;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -68,7 +68,7 @@ public class RDPStandaloneFileFilter extends FileFilterBase implements FilenameF
 		final String firstLine = FileUtils.getFirstLineFromFile(new File(fileName));
         if (firstLine != null) { // need to have at least 5 tokens and the 5-th must be a float <=1
             final String[] tokens = firstLine.split("\t");
-            return tokens.length >= 5 && Basic.isFloat(tokens[4]) && Basic.parseFloat(tokens[4]) <= 1f;
+			return tokens.length >= 5 && NumberUtils.isFloat(tokens[4]) && NumberUtils.parseFloat(tokens[4]) <= 1f;
         }
         return false;
     }

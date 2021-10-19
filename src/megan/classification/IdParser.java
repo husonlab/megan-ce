@@ -19,7 +19,7 @@
  */
 package megan.classification;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.data.Name2IdMap;
@@ -103,7 +103,7 @@ public class IdParser {
             taggedIds.restart(headerString);
             for (String label : taggedIds) {
                 try {
-                    int id = Basic.parseInt(label);
+                    int id = NumberUtils.parseInt(label);
                     if (id != 0) {
                         if (disabledIds.contains(id))
                             disabled.add(id);

@@ -25,10 +25,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -91,20 +88,20 @@ public class AddSampleFromFileCommand extends CommandBase implements ICommand {
         Document doc = ((Director) getDir()).getDocument();
         int count = 0;
         for (Pair<String, String> pair : sampleAndSources) {
-            String sampleName = pair.getFirst();
-            String source = pair.getSecond();
-            if (Basic.isInteger(source)) { // is a director id
-                Director sourceDir = (Director) ProjectManager.getProject(Basic.parseInt(source));
-                if (sourceDir == null)
-                    throw new IOException("Document not found (pid=" + source + ")");
-                if (!sampleName.equalsIgnoreCase("ALL") && !sourceDir.getDocument().getSampleNames().contains(sampleName))
-                    throw new IOException("Sample not found in document (pid=" + source + "): " + sampleName);
-                if (sampleName.equalsIgnoreCase("ALL")) {
-                    for (String sample : sourceDir.getDocument().getSampleNames()) {
-                        if (!overwrite && doc.getSampleNames().contains(sample)) {
-                            skipped.add(sample);
-                        } else {
-                            doc.addSample(sample, sourceDir.getDocument());
+			String sampleName = pair.getFirst();
+			String source = pair.getSecond();
+			if (NumberUtils.isInteger(source)) { // is a director id
+				Director sourceDir = (Director) ProjectManager.getProject(NumberUtils.parseInt(source));
+				if (sourceDir == null)
+					throw new IOException("Document not found (pid=" + source + ")");
+				if (!sampleName.equalsIgnoreCase("ALL") && !sourceDir.getDocument().getSampleNames().contains(sampleName))
+					throw new IOException("Sample not found in document (pid=" + source + "): " + sampleName);
+				if (sampleName.equalsIgnoreCase("ALL")) {
+					for (String sample : sourceDir.getDocument().getSampleNames()) {
+						if (!overwrite && doc.getSampleNames().contains(sample)) {
+							skipped.add(sample);
+						} else {
+							doc.addSample(sample, sourceDir.getDocument());
                             count++;
                         }
                     }

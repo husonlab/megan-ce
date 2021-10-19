@@ -23,8 +23,8 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -40,25 +40,25 @@ import java.io.File;
 
 public class ExportMatchSignaturesCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase("export what=matchPatterns");
+		np.matchIgnoreCase("export what=matchPatterns");
 
-        final Document doc = getDir().getDocument();
+		final Document doc = getDir().getDocument();
 
-        np.matchIgnoreCase("taxon=");
-        String label = np.getWordRespectCase();
-        int taxonId;
-        if (Basic.isInteger(label))
-            taxonId = Basic.parseInt(label);
-        else
-            taxonId = TaxonomyData.getName2IdMap().get(label);
-        np.matchIgnoreCase("rank=");
+		np.matchIgnoreCase("taxon=");
+		String label = np.getWordRespectCase();
+		int taxonId;
+		if (NumberUtils.isInteger(label))
+			taxonId = NumberUtils.parseInt(label);
+		else
+			taxonId = TaxonomyData.getName2IdMap().get(label);
+		np.matchIgnoreCase("rank=");
 		String rank = np.getWordMatchesRespectingCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
 
-        np.matchIgnoreCase("file=");
-        String outputFile = np.getAbsoluteFileName();
-        np.matchIgnoreCase(";");
+		np.matchIgnoreCase("file=");
+		String outputFile = np.getAbsoluteFileName();
+		np.matchIgnoreCase(";");
 
-        MatchSignaturesExporter.export(doc.getConnector(), taxonId, rank, doc.getMinScore(), doc.getMaxExpected(), doc.getMinPercentIdentity(), doc.getTopPercent(), outputFile, doc.getProgressListener());
+		MatchSignaturesExporter.export(doc.getConnector(), taxonId, rank, doc.getMinScore(), doc.getMaxExpected(), doc.getMinPercentIdentity(), doc.getTopPercent(), outputFile, doc.getProgressListener());
     }
 
     public boolean isApplicable() {

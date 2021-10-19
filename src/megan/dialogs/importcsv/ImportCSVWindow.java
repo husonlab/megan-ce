@@ -20,7 +20,7 @@
 package megan.dialogs.importcsv;
 
 import jloda.swing.director.IDirectableViewer;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.ClassificationManager;
@@ -214,7 +214,7 @@ public class ImportCSVWindow extends JDialog {
 
             public void changedUpdate(DocumentEvent documentEvent) {
                 String text = multiplierField.getText();
-                if (Basic.isLong(text))
+                if (NumberUtils.isLong(text))
                     multiplier = Long.parseLong(text);
             }
         });

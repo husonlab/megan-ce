@@ -20,7 +20,7 @@
 package megan.alignment.gui;
 
 import jloda.graph.*;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.Pair;
 
 import java.util.*;
@@ -263,7 +263,7 @@ public class AlignmentSorter {
             int b = (Integer) last.getInfo();
             if (alignment.getLane(a).getFirstNonGapPosition() > alignment.getLane(b).getFirstNonGapPosition()) {
                 // need to reverse the chain
-                List<Node> tmp = Basic.reverseList(chain);
+				List<Node> tmp = CollectionUtils.reverseList(chain);
                 chain.clear();
                 chain.addAll(tmp);
             }

@@ -19,7 +19,7 @@
  */
 package megan.rma3;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 import java.io.IOException;
 
@@ -54,13 +54,13 @@ public class BlastTabMatch implements IMatch {
             clear();
             queryName = tokens[0];
         } else {
-            queryName = tokens[0];
-            refName = tokens[1];
-            bitScore = Basic.parseInt(tokens[11]);
-            expected = Basic.parseFloat(tokens[10]);
-            percentIdentity = Basic.parseInt(tokens[2]);
+			queryName = tokens[0];
+			refName = tokens[1];
+			bitScore = NumberUtils.parseInt(tokens[11]);
+			expected = NumberUtils.parseFloat(tokens[10]);
+			percentIdentity = NumberUtils.parseInt(tokens[2]);
 
-        }
+		}
     }
 
     @Override

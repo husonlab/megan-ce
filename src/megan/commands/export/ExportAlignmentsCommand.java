@@ -22,7 +22,7 @@ package megan.commands.export;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
@@ -375,17 +375,17 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
                     command += " translateCDNA=" + cDNAAsProteins.isSelected();
                     {
                         final String text = minReadsField.getText();
-                        if (Basic.isInteger(text) && Basic.parseInt(text) > 0)
+                        if (NumberUtils.isInteger(text) && NumberUtils.parseInt(text) > 0)
                             command += " minReads=" + text;
                     }
                     {
                         final String text = minLengthField.getText();
-                        if (Basic.isInteger(text) && Basic.parseInt(text) > 0)
+                        if (NumberUtils.isInteger(text) && NumberUtils.parseInt(text) > 0)
                             command += " minLength=" + text;
                     }
                     {
                         final String text = minCoverageField.getText();
-                        if (Basic.isDouble(text) && Basic.parseDouble(text) > 0)
+                        if (NumberUtils.isDouble(text) && NumberUtils.parseDouble(text) > 0)
                             command += " minCoverage=" + text;
                     }
                     command += ";";

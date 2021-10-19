@@ -20,7 +20,7 @@
 package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
@@ -146,7 +146,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                         refHeaderLines.add(line.replaceAll("\\s+", " "));
                     line = nextLine().trim();
                 }
-				final int referenceLength = Basic.parseInt(getNextToken(line, LENGTH, EQUALS));
+				final int referenceLength = NumberUtils.parseInt(getNextToken(line, LENGTH, EQUALS));
 				final String refName = StringUtils.swallowLeadingGreaterSign(StringUtils.toString(refHeaderLines, " "));
 
                 // Blast text downloaded from NBCI might have some text before the alignment starts:
@@ -162,34 +162,34 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
 
                 boolean hasAnotherAlignmentAgainstReference = true;
                 while (hasAnotherAlignmentAgainstReference) {
-                    hasAnotherAlignmentAgainstReference = false;
+					hasAnotherAlignmentAgainstReference = false;
 
-                    float bitScore = Basic.parseFloat(getNextToken(line, SCORE, EQUALS));
-                    int rawScore = Basic.parseInt(getNextToken(line, "("));
-                    float expect = Basic.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
-                    line = nextLine();
-                    float percentIdentities = Basic.parseFloat(getNextToken(line, IDENTITIES, "("));
-                    int frame;
-                    if (blastPMode) {
-                        frame = 0;
-                    } else {
-                        line = nextLine();
-                        frame = Basic.parseInt(getNextToken(line, FRAME, EQUALS));
-                    }
-                    String[] queryLineTokens = getNextLineStartsWith(QUERY).split("\\s+"); // split on white space
-                    int queryStart = Basic.parseInt(queryLineTokens[1]);
-                    StringBuilder queryBuf = new StringBuilder();
+					float bitScore = NumberUtils.parseFloat(getNextToken(line, SCORE, EQUALS));
+					int rawScore = NumberUtils.parseInt(getNextToken(line, "("));
+					float expect = NumberUtils.parseFloat(getNextToken(line, EXPECT, EQUALS)); // usually Expect = but can also be Expect(2)=
+					line = nextLine();
+					float percentIdentities = NumberUtils.parseFloat(getNextToken(line, IDENTITIES, "("));
+					int frame;
+					if (blastPMode) {
+						frame = 0;
+					} else {
+						line = nextLine();
+						frame = NumberUtils.parseInt(getNextToken(line, FRAME, EQUALS));
+					}
+					String[] queryLineTokens = getNextLineStartsWith(QUERY).split("\\s+"); // split on white space
+					int queryStart = NumberUtils.parseInt(queryLineTokens[1]);
+					StringBuilder queryBuf = new StringBuilder();
                     queryBuf.append(queryLineTokens[2]);
-                    int queryEnd = Basic.parseInt(queryLineTokens[3]);
+					int queryEnd = NumberUtils.parseInt(queryLineTokens[3]);
 
                     if (!hasNextLine())
                         break;
                     nextLine(); // skip middle line
-                    String[] subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
-                    int subjStart = Basic.parseInt(subjectLineTokens[1]);
-                    StringBuilder subjBuf = new StringBuilder();
+					String[] subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
+					int subjStart = NumberUtils.parseInt(subjectLineTokens[1]);
+					StringBuilder subjBuf = new StringBuilder();
                     subjBuf.append(subjectLineTokens[2]);
-                    int subjEnd = Basic.parseInt(subjectLineTokens[3]);
+					int subjEnd = NumberUtils.parseInt(subjectLineTokens[3]);
 
                     // if match is broken over multiple lines, collect all parts of match
                     while (hasNextLine()) {
@@ -210,11 +210,11 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                                 pushBackLine(getNextLineStartsWith(NEW_QUERY, NEW_MATCH)); // skip other matches to same query
                         } else if (line.startsWith(QUERY)) { // match continues...
                             queryLineTokens = line.split("\\s+");
-                            queryBuf.append(queryLineTokens[2]);
-                            queryEnd = Basic.parseInt(queryLineTokens[3]);
-                            subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
-                            subjBuf.append(subjectLineTokens[2]);
-                            subjEnd = Basic.parseInt(subjectLineTokens[3]);
+							queryBuf.append(queryLineTokens[2]);
+							queryEnd = NumberUtils.parseInt(queryLineTokens[3]);
+							subjectLineTokens = getNextLineStartsWith(SUBJECT).split("\\s+");
+							subjBuf.append(subjectLineTokens[2]);
+							subjEnd = NumberUtils.parseInt(subjectLineTokens[3]);
                         }
                     }
 

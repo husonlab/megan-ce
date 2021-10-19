@@ -22,7 +22,7 @@ package megan.commands.additional;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
@@ -61,8 +61,8 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
         final int n = sampleNames.length;
 
         for (String label : labels) {
-            final Integer id = (Basic.isInteger(label) ? Basic.parseInt(label) : name2IdMap.get(label));
-            final String name = (Basic.isInteger(label) ? name2IdMap.get(id) : label);
+            final Integer id = (NumberUtils.isInteger(label) ? NumberUtils.parseInt(label) : name2IdMap.get(label));
+            final String name = (NumberUtils.isInteger(label) ? name2IdMap.get(id) : label);
             if (id != 0) {
                 final Node v = viewer.getANode(id);
                 final NodeData nodeData = (NodeData) v.getData();

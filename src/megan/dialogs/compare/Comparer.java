@@ -20,8 +20,8 @@
 package megan.dialogs.compare;
 
 import jloda.fx.util.ProgramExecutorService;
-import jloda.util.*;
 import jloda.seq.BlastMode;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
@@ -244,7 +244,7 @@ public class Comparer {
                                                 }
                                             }
                                         }
-                                        final float count = Basic.getSum(class2countsSrc.get(classId));
+                                        final float count = CollectionUtils.getSum(class2countsSrc.get(classId));
                                         if (count == 0)
                                             countsTarget[pos] = 0;
                                         else if (useRelative) {
@@ -314,7 +314,7 @@ public class Comparer {
             result.setSamples(names, uids, sizes, blastModes);
             sampleAttributeTable.removeAttribute(SampleAttributeTable.HiddenAttribute.Label.toString());
 
-            final long totalAssigned = Basic.getSum(assignedCountPerThread);
+            final long totalAssigned = CollectionUtils.getSum(assignedCountPerThread);
 
             for (String classificationName : result.getClassification2Class2Counts().keySet()) {
                 result.setNodeStyle(classificationName, NodeDrawer.Style.PieChart.toString());
@@ -326,7 +326,7 @@ public class Comparer {
                 System.err.printf("Total assigned: %,12d%n", totalAssigned);
             }
 
-            result.setTotalReads((int) Basic.getSum(originalNumberOfReads));
+            result.setTotalReads((int) CollectionUtils.getSum(originalNumberOfReads));
         } finally {
             // unlock all projects involved in the comparison
             for (final Director dir : myLocked) {

@@ -21,7 +21,7 @@ package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 
@@ -126,18 +126,18 @@ public class SetTriplotSizeCommand extends CommandBase implements ICommand {
      * @param ev
      */
     public void actionPerformed(ActionEvent ev) {
-        final ClusterViewer viewer = getViewer();
-        int max = viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(null).size();
-        int number = Math.min(max, viewer.getPcoaTab().getTriplotSize());
+		final ClusterViewer viewer = getViewer();
+		int max = viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(null).size();
+		int number = Math.min(max, viewer.getPcoaTab().getTriplotSize());
 
-        String result = JOptionPane.showInputDialog(viewer.getFrame(), "Number of tri-plot vectors (0-" + max + "): ", number);
-        if (result != null && Basic.isInteger(result)) {
-            final int value = Basic.parseInt(result);
-            if (value < 0 || value > max)
-                NotificationsInSwing.showError(viewer.getFrame(), "Input '" + value + "' out of range: 0 -- " + max);
-            else executeImmediately("set triplotSize=" + value + ";");
-        }
-    }
+		String result = JOptionPane.showInputDialog(viewer.getFrame(), "Number of tri-plot vectors (0-" + max + "): ", number);
+		if (result != null && NumberUtils.isInteger(result)) {
+			final int value = NumberUtils.parseInt(result);
+			if (value < 0 || value > max)
+				NotificationsInSwing.showError(viewer.getFrame(), "Input '" + value + "' out of range: 0 -- " + max);
+			else executeImmediately("set triplotSize=" + value + ";");
+		}
+	}
 
     /**
      * gets the command needed to undo this command

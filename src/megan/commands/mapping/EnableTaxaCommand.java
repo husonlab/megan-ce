@@ -23,7 +23,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.MainViewer;
@@ -61,7 +61,7 @@ public class EnableTaxaCommand extends CommandBase implements ICommand {
 
         } else {
             while (!name.equals(";")) {
-                int taxonId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
+                int taxonId = NumberUtils.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
                 if (taxonId > 0)
                     TaxonomyData.getDisabledTaxa().remove(taxonId);
                 if (np.peekMatchIgnoreCase(",")) {
@@ -88,7 +88,7 @@ public class EnableTaxaCommand extends CommandBase implements ICommand {
                 boolean first = true;
                 for (String name : names) {
                     name = name.trim();
-                    int taxonId = Basic.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
+                    int taxonId = NumberUtils.isInteger(name) ? Integer.parseInt(name) : TaxonomyData.getName2IdMap().get(name);
                     if (taxonId <= 0) {
                         NotificationsInSwing.showError(viewer.getFrame(), "Unknown taxon: " + name);
                         return;

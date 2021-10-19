@@ -25,8 +25,8 @@ import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
@@ -87,7 +87,7 @@ public class ClassificationFullTree extends PhyloTree {
             read(r, true);
         }
         for (Node v = getFirstNode(); v != null; v = v.getNext()) {
-            if (Basic.isInteger(getLabel(v))) {
+            if (NumberUtils.isInteger(getLabel(v))) {
                 int id = Integer.parseInt(getLabel(v));
                 setInfo(v, id);
                 addId2Node(id, v);

@@ -20,6 +20,9 @@
 package megan.rma6;
 
 import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -93,7 +96,7 @@ public class RMA6FromBlastCreator {
         this.parsers = new IdParser[cNames.length];
         int taxonMapperIndex = -1;
 
-        System.err.println("Classifications: " + Basic.toString(cNames, ", "));
+		System.err.println("Classifications: " + StringUtils.toString(cNames, ", "));
 
         for (int i = 0; i < cNames.length; i++) {
             parsers[i] = ClassificationManager.get(cNames[i], true).getIdMapper().createIdParser();
@@ -167,8 +170,8 @@ public class RMA6FromBlastCreator {
             for (int fileNumber = 0; fileNumber < blastFiles.length; fileNumber++) {
                 int missingReadWarnings = 0;
                 final String blastFile = blastFiles[fileNumber];
-                progress.setTasks("Parsing file", Basic.getFileNameWithoutPath(blastFile));
-                System.err.println("Parsing file: " + blastFile);
+				progress.setTasks("Parsing file", FileUtils.getFileNameWithoutPath(blastFile));
+				System.err.println("Parsing file: " + blastFile);
 
                 final ISAMIterator iterator = IteratorManager.getIterator(blastFile, format, blastMode, maxMatchesPerRead, longReads);
 
@@ -177,15 +180,15 @@ public class RMA6FromBlastCreator {
 
                 final FileLineBytesIterator fastaIterator;
                 final boolean isFasta;
-                if (readsFiles != null && readsFiles.length > fileNumber && Basic.fileExistsAndIsNonEmpty(readsFiles[fileNumber])) {
-                    fastaIterator = new FileLineBytesIterator(readsFiles[fileNumber]);
-                    isFasta = (fastaIterator.peekNextByte() == '>');
-                    if (!isFasta && (fastaIterator.peekNextByte() != '@'))
-                        throw new IOException("Cannot determine type of reads file (doesn't start with '>' or '@': " + readsFiles[fileNumber]);
-                } else {
-                    fastaIterator = null;
-                    isFasta = false; // don't care, won't use
-                }
+				if (readsFiles != null && readsFiles.length > fileNumber && FileUtils.fileExistsAndIsNonEmpty(readsFiles[fileNumber])) {
+					fastaIterator = new FileLineBytesIterator(readsFiles[fileNumber]);
+					isFasta = (fastaIterator.peekNextByte() == '>');
+					if (!isFasta && (fastaIterator.peekNextByte() != '@'))
+						throw new IOException("Cannot determine type of reads file (doesn't start with '>' or '@': " + readsFiles[fileNumber]);
+				} else {
+					fastaIterator = null;
+					isFasta = false; // don't care, won't use
+				}
 
                 // MAIN LOOP:
                 while (iterator.hasNext()) {
@@ -193,15 +196,15 @@ public class RMA6FromBlastCreator {
                     final int numberOfMatches = iterator.next();
                     totalNumberOfMatches += numberOfMatches;
                     final byte[] matchesText = iterator.getMatchesText(); // get matches as '\n' separated strings
-                    final int matchesTextLength = iterator.getMatchesTextLength();
-                    final int queryNameLength = Basic.getFirstWord(matchesText, queryName);
+					final int matchesTextLength = iterator.getMatchesTextLength();
+					final int queryNameLength = StringUtils.getFirstWord(matchesText, queryName);
 
                     //System.err.println("Got: "+Basic.toString(matchesText,Math.min(100,matchesTextLength)));
 
                     Long mateLocation = null;
 
                     if (pairedReads) {
-                        final String strippedName = Basic.toString(queryName, 0, queryNameLength - pairedReadSuffixLength);
+						final String strippedName = StringUtils.toString(queryName, 0, queryNameLength - pairedReadSuffixLength);
                         mateLocation = read2PairedReadLocation.get(strippedName);
                         if (mateLocation == null) {
                             read2PairedReadLocation.put(strippedName, rma6FileCreator.getPosition());
@@ -220,7 +223,7 @@ public class RMA6FromBlastCreator {
 
                         } else {
                             if (missingReadWarnings++ < 50)
-                                System.err.println("WARNING: Failed to find read '" + Basic.toString(queryName, 0, queryNameLength) + "' in file: " + readsFiles[fileNumber]);
+								System.err.println("WARNING: Failed to find read '" + StringUtils.toString(queryName, 0, queryNameLength) + "' in file: " + readsFiles[fileNumber]);
                             if (missingReadWarnings == 50)
                                 System.err.println("No further 'failed to find read' warnings...");
                         }
@@ -362,7 +365,7 @@ public class RMA6FromBlastCreator {
         doc.processReadHits();
 
         // update and then save auxiliary data:
-        final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(rma6File), "");
+		final String sampleName = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(rma6File), "");
         SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), sampleName, "LCA", doc.getBlastMode(), doc.getParameterString(), new RMA6Connector(rma6File), doc.getDataTable(), 0);
         doc.saveAuxiliaryData();
     }

@@ -26,6 +26,7 @@ import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import megan.algorithms.LCAAddressing;
 import megan.classification.Classification;
@@ -81,7 +82,7 @@ public class ClassificationFullTree extends PhyloTree {
     public void loadFromFile(String fileName) throws IOException {
         clear();
 
-        System.err.print("Loading " + Basic.getFileNameWithoutPath(fileName) + ": ");
+		System.err.print("Loading " + FileUtils.getFileNameWithoutPath(fileName) + ": ");
         try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
             read(r, true);
         }

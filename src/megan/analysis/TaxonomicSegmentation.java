@@ -22,12 +22,10 @@ package megan.analysis;
 
 
 import jloda.graph.Node;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.IntervalTree4Matches;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
@@ -54,10 +52,10 @@ public class TaxonomicSegmentation {
     private float incompatibleFactor = defaultIncompatibleFactor;
 
     public String getParamaterString() {
-        return "rank=" + TaxonomicLevels.getName(rank) + " classId=" + TaxonomyData.getName2IdMap().get(classId) + " switchPenalty=" + Basic.removeTrailingZerosAfterDot("" + switchPenalty)
-                + " compatibleFactor=" + Basic.removeTrailingZerosAfterDot("" + compatibleFactor)
-                + " incompatibleFactor=" + Basic.removeTrailingZerosAfterDot("" + incompatibleFactor);
-    }
+		return "rank=" + TaxonomicLevels.getName(rank) + " classId=" + TaxonomyData.getName2IdMap().get(classId) + " switchPenalty=" + StringUtils.removeTrailingZerosAfterDot("" + switchPenalty)
+			   + " compatibleFactor=" + StringUtils.removeTrailingZerosAfterDot("" + compatibleFactor)
+			   + " incompatibleFactor=" + StringUtils.removeTrailingZerosAfterDot("" + incompatibleFactor);
+	}
 
     /**
      * constructor

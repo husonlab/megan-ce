@@ -20,7 +20,7 @@
 package megan.io;
 
 import jloda.util.Basic;
-import jloda.util.ProgressPercentage;
+import jloda.util.progress.ProgressPercentage;
 
 import java.io.*;
 import java.nio.BufferUnderflowException;

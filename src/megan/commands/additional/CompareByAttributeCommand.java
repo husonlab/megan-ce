@@ -23,7 +23,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.algorithms.ComputeCoreBiome;
@@ -96,7 +96,7 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
         }
 
         if (tarSample2SrcSamples.size() > 0) {
-            final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + attribute + ".megan");
+			final String fileName = FileUtils.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + attribute + ".megan");
 
             final Director newDir = Director.newProject(false);
             final Document newDocument = newDir.getDocument();

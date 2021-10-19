@@ -20,9 +20,9 @@
 package megan.algorithms;
 
 import jloda.graph.Node;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.Document;
@@ -129,11 +129,11 @@ class NaiveMatchBasedProfile {
         }
         for (String name : name2counts.keySet()) {
             final float[] counts = name2counts.get(name);
-            System.err.println(name + "\t" + Basic.toString(counts, 0, counts.length, ", ", true));
+			System.err.println(name + "\t" + StringUtils.toString(counts, 0, counts.length, ", ", true));
             for (int i = 0; i < 1; i++)
                 total[i] += counts[i];
         }
-        System.err.println("Total assigned: " + Basic.toString(total, ", "));
+		System.err.println("Total assigned: " + StringUtils.toString(total, ", "));
 
         return profile;
     }

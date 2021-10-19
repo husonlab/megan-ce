@@ -22,11 +22,10 @@ package megan.classification.commandtemplates;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ProgressDialog;
-import jloda.util.Basic;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -48,7 +47,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "load mapFile=<filename> mapType=<" + Basic.toString(IdMapper.MapType.values(), "|") + "> cName=<" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "> [parseTaxonNames={false|true}];";
+		return "load mapFile=<filename> mapType=<" + StringUtils.toString(IdMapper.MapType.values(), "|") + "> cName=<" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "> [parseTaxonNames={false|true}];";
     }
 
     /**
@@ -62,10 +61,10 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("load mapFile=");
         final String fileName = np.getWordFileNamePunctuation();
         np.matchIgnoreCase("mapType=");
-        final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(Basic.toString(IdMapper.MapType.values(), " ")));
+		final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(StringUtils.toString(IdMapper.MapType.values(), " ")));
         np.matchIgnoreCase("cName=");
-        final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
-        final boolean parseTaxonName;
+		final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		final boolean parseTaxonName;
         if (np.peekMatchIgnoreCase("parseTaxonNames")) {
             np.matchIgnoreCase("parseTaxonNames=");
             parseTaxonName = np.getBoolean();

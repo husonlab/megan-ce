@@ -20,7 +20,7 @@
 package megan.clusteranalysis.pcoa;
 
 import Jama.Matrix;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 /**
  * Math utilities for computing PCoA and biplot.
@@ -236,10 +236,10 @@ public class Utilities {
     public static void main(String[] args) {
         double[][] matrix = {{1, 3, 2}, {2, 6, 4}, {3, 9, 8}};
 
-        System.err.println(Basic.toString(matrix));
+		System.err.println(StringUtils.toString(matrix));
 
-        matrix = multiply(matrix, matrix);
-        System.err.println(Basic.toString(matrix));
+		matrix = multiply(matrix, matrix);
+		System.err.println(StringUtils.toString(matrix));
     }
 
     public static void scalarMultiply(final double value, double[] vector) {

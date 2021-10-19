@@ -19,7 +19,7 @@
  */
 package megan.genes;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import megan.io.InputReader;
 import megan.io.OutputWriter;
@@ -51,7 +51,7 @@ public class GeneItem {
     public void setProteinId(byte[] proteinId) throws IOException {
         this.proteinId = proteinId;
         try {
-            creator.map(Basic.toString(proteinId), ids);
+			creator.map(StringUtils.toString(proteinId), ids);
         } catch (SQLException ignored) {
         }
     }
@@ -81,7 +81,7 @@ public class GeneItem {
     }
 
     public String toString() {
-        final StringBuilder buf = new StringBuilder("proteinId=" + (proteinId == null ? "null" : Basic.toString(proteinId)));
+		final StringBuilder buf = new StringBuilder("proteinId=" + (proteinId == null ? "null" : StringUtils.toString(proteinId)));
         for (int i = 0; i < creator.numberOfClassifications(); i++) {
             buf.append(", ").append(creator.classification(i)).append("=").append(ids[i]);
         }
@@ -159,8 +159,8 @@ public class GeneItem {
      */
     public String getAnnotation(Interval<GeneItem> refInterval) {
         final StringBuilder buf = new StringBuilder();
-        buf.append("pos|").append(isReverse() ? refInterval.getEnd() + ".." + refInterval.getStart() : refInterval.getStart() + ".." + refInterval.getEnd());
-        buf.append("|ref|").append(Basic.toString(getProteinId()));
+		buf.append("pos|").append(isReverse() ? refInterval.getEnd() + ".." + refInterval.getStart() : refInterval.getStart() + ".." + refInterval.getEnd());
+		buf.append("|ref|").append(StringUtils.toString(getProteinId()));
         for (int i = 0; i < creator.numberOfClassifications(); i++) {
             if (getId(i) > 0)
                 buf.append("|").append(creator.getShortTag(i)).append(getId(i));

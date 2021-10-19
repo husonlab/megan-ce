@@ -21,7 +21,7 @@ package megan.dialogs.export;
 
 import jloda.graph.Node;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.classification.util.TaggedValueIterator;
 import megan.core.ClassificationType;
 import megan.core.Document;

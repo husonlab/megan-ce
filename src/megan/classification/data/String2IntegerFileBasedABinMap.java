@@ -21,7 +21,7 @@
 package megan.classification.data;
 
 import jloda.thirdparty.MurmurHash3;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.io.ByteFileGetterMappedMemory;
 
 import java.io.*;
@@ -60,12 +60,12 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
             {
                 final byte[] magicNumber = new byte[3];
                 raf.read(magicNumber);
-                if (Basic.toString(magicNumber).equals(MAGIC_NUMBER))
-                    extended = false; // old version that uses int to address data
-                else if (Basic.toString(magicNumber).equals(MAGIC_NUMBERX)) {
-                    extended = true; // uses long to address data
-                } else
-                    throw new IOException("File has wrong magic number");
+				if (StringUtils.toString(magicNumber).equals(MAGIC_NUMBER))
+					extended = false; // old version that uses int to address data
+				else if (StringUtils.toString(magicNumber).equals(MAGIC_NUMBERX)) {
+					extended = true; // uses long to address data
+				} else
+					throw new IOException("File has wrong magic number");
 
                 final byte bits = (byte) raf.read(); // yes, read a single byte
                 if (bits <= 0 || bits >= 30)
@@ -104,7 +104,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
             try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
                 final byte[] magicNumber = new byte[3];
                 raf.read(magicNumber);
-                return Basic.toString(magicNumber).equals(MAGIC_NUMBER) || Basic.toString(magicNumber).equals(MAGIC_NUMBERX);
+				return StringUtils.toString(magicNumber).equals(MAGIC_NUMBER) || StringUtils.toString(magicNumber).equals(MAGIC_NUMBERX);
             }
         } catch (Exception ex) {
             return false;
@@ -122,7 +122,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
             try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
                 final byte[] magicNumber = new byte[3];
                 raf.read(magicNumber);
-                return Basic.toString(magicNumber).equals(MAGIC_NUMBER.toLowerCase()) || Basic.toString(magicNumber).equals(MAGIC_NUMBERX.toLowerCase());
+				return StringUtils.toString(magicNumber).equals(MAGIC_NUMBER.toLowerCase()) || StringUtils.toString(magicNumber).equals(MAGIC_NUMBERX.toLowerCase());
             }
         } catch (Exception ex) {
             return false;

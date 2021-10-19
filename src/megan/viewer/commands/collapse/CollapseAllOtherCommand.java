@@ -22,7 +22,7 @@ package megan.viewer.commands.collapse;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.viewer.ClassificationViewer;
@@ -88,7 +88,7 @@ public class CollapseAllOtherCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         java.util.Collection<String> labels = ((ClassificationViewer) getViewer()).getSelectedNodeLabels(false);
         if (labels.size() > 0)
-            execute("collapse except='" + Basic.toString(labels, "' '") + "';");
+			execute("collapse except='" + StringUtils.toString(labels, "' '") + "';");
     }
 
     public boolean isApplicable() {

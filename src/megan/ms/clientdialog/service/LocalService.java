@@ -19,19 +19,17 @@
  */
 package megan.ms.clientdialog.service;
 
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.FileUtils;
+import jloda.util.progress.ProgressListener;
 import megan.core.DataTable;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
 import megan.core.SyncArchiveAndDataTable;
-import megan.data.IConnector;
 import megan.ms.clientdialog.IRemoteService;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -117,32 +115,32 @@ public class LocalService implements IRemoteService {
         lock.lock();
         try {
             files.clear();
-            final var files = Basic.getAllFilesInDirectory(rootDirectory, true, fileExtensions);
-            var directories=new HashSet<File>();
+			final var files = FileUtils.getAllFilesInDirectory(rootDirectory, true, fileExtensions);
+			var directories = new HashSet<File>();
             for (var file : files) {
                 try {
                     directories.add(file.getParentFile());
-                    final var relative = Basic.getRelativeFile(file, rootDirectory).getPath();
-                    final var doc = new Document();
+					final var relative = FileUtils.getRelativeFile(file, rootDirectory).getPath();
+					final var doc = new Document();
 
                     doc.getMeganFile().setFileFromExistingFile(file.getPath(), true);
                     if (doc.getMeganFile().hasDataConnector()) {
                         final var connector = doc.getMeganFile().getConnector();
 
-                        final var dataTable = new DataTable();
-                        SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                        SyncArchiveAndDataTable.syncArchive2Summary(null, doc.getMeganFile().getFileName(), connector, dataTable, sampleAttributeTable);
-                        this.files.add(relative);
-                        fileName2Description.put(relative, String.format("reads: %,d, matches: %,d", connector.getNumberOfReads(), connector.getNumberOfMatches()));
+						final var dataTable = new DataTable();
+						SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
+						SyncArchiveAndDataTable.syncArchive2Summary(null, doc.getMeganFile().getFileName(), connector, dataTable, sampleAttributeTable);
+						this.files.add(relative);
+						fileName2Description.put(relative, String.format("reads: %,d, matches: %,d", connector.getNumberOfReads(), connector.getNumberOfMatches()));
 
-                    } else if (doc.getMeganFile().isMeganSummaryFile()) {
-                        this.files.add(relative);
-                        fileName2Description.put(relative, String.format("reads: %,d", doc.getNumberOfReads()));
-                    }
-                    if(Basic.fileExistsAndIsNonEmpty(Basic.replaceFileSuffix(file,".txt")))
-                        fileName2Description.put(relative,Files.readString(Basic.replaceFileSuffix(file,".txt").toPath()));
-                    progress.checkForCancel();
-                } catch (CanceledException ex) {
+					} else if (doc.getMeganFile().isMeganSummaryFile()) {
+						this.files.add(relative);
+						fileName2Description.put(relative, String.format("reads: %,d", doc.getNumberOfReads()));
+					}
+					if (FileUtils.fileExistsAndIsNonEmpty(FileUtils.replaceFileSuffix(file, ".txt")))
+						fileName2Description.put(relative, Files.readString(FileUtils.replaceFileSuffix(file, ".txt").toPath()));
+					progress.checkForCancel();
+				} catch (CanceledException ex) {
                     break;
                 } catch (IOException ignored) {
                 }

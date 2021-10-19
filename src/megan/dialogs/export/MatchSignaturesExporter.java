@@ -20,10 +20,8 @@
 package megan.dialogs.export;
 
 import jloda.graph.Node;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
@@ -94,12 +92,12 @@ public class MatchSignaturesExporter {
             }
 
             if (fileName.contains("%t"))
-                fileName = fileName.replaceAll("%t", Basic.replaceSpaces(name, '_'));
+				fileName = fileName.replaceAll("%t", StringUtils.replaceSpaces(name, '_'));
             if (fileName.contains("%i"))
                 fileName = fileName.replaceAll("%i", "" + taxonId);
 
-            progressListener.setTasks("Export", "Writing to file: " + Basic.getFileBaseName(fileName));
-            progressListener.setMaximum(readsAndTaxa.size());
+			progressListener.setTasks("Export", "Writing to file: " + FileUtils.getFileBaseName(fileName));
+			progressListener.setMaximum(readsAndTaxa.size());
             progressListener.setProgress(0);
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {

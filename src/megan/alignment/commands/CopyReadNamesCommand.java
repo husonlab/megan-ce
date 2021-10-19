@@ -22,7 +22,7 @@ package megan.alignment.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -81,7 +81,7 @@ public class CopyReadNamesCommand extends CommandBase implements ICommand {
                     if ((block.isSelectedCol(lane.getFirstNonGapPosition() - firstJump + 1) /* && block.isSelectedCol(lane.getLastNonGapPosition() - firstJump) */)) {
                         if (count++ > 0)
                             buf.append("\n");
-                        buf.append(Basic.getFirstWord(lane.getName()));
+						buf.append(StringUtils.getFirstWord(lane.getName()));
                     }
                 }
             }

@@ -34,10 +34,8 @@ import javafx.scene.paint.Color;
 import jloda.fx.control.table.MyTableView;
 import jloda.fx.util.FXSwingUtilities;
 import jloda.swing.director.IDirector;
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.ProgressSilent;
-import jloda.util.Triplet;
+import jloda.util.*;
+import jloda.util.progress.ProgressSilent;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
@@ -591,10 +589,10 @@ public class SamplesTableView {
                 try {
                     doc.getSampleAttributeTable().moveSamples(up, samples);
                     doc.setProgressListener(new ProgressSilent());
-                    doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
-                    samplesViewer.getDir().executeImmediately("update reinduce=true;" +
-                            "select samples name='" + Basic.toString(samples, "' '") + "';", samplesViewer.getCommandManager());
-                    selectSamples(samples, true);
+					doc.reorderSamples(doc.getSampleAttributeTable().getSampleOrder());
+					samplesViewer.getDir().executeImmediately("update reinduce=true;" +
+															  "select samples name='" + StringUtils.toString(samples, "' '") + "';", samplesViewer.getCommandManager());
+					selectSamples(samples, true);
                     doc.getDir().notifyUpdateViewer(IDirector.ALL);
                 } catch (Exception e) {
                     Basic.caught(e);

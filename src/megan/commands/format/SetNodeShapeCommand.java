@@ -24,7 +24,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.NodeShape;
 import jloda.swing.graphview.NodeShapeIcon;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -49,7 +49,7 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "set nodeShape={" + Basic.toString(NodeShape.values(), "|") + "} sample=<name name...>;";
+		return "set nodeShape={" + StringUtils.toString(NodeShape.values(), "|") + "} sample=<name name...>;";
     }
 
     /**
@@ -62,8 +62,8 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
         final Document doc = ((Director) getDir()).getDocument();
 
         np.matchIgnoreCase("set nodeShape=");
-        String shape = np.getWordMatchesIgnoringCase(Basic.toString(NodeShape.values(), " "));
-        final List<String> samples = new LinkedList<>();
+		String shape = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeShape.values(), " "));
+		final List<String> samples = new LinkedList<>();
         if (np.peekMatchIgnoreCase("sample=")) {
             np.matchIgnoreCase("sample=");
             while (!np.peekMatchIgnoreCase(";")) {

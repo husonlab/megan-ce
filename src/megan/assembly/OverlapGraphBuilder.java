@@ -24,8 +24,8 @@ import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeArray;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 
 import java.util.*;
 

@@ -25,7 +25,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.daa.io.ByteInputStream;
@@ -51,9 +52,9 @@ public class ExportSelectedCommand extends CommandBase implements ICommand {
             final Document doc = ((LRInspectorViewer) getViewer()).getDir().getDocument();
             final byte[] selection = ((LRInspectorViewer) getViewer()).getSelection(doc.getProgressListener()).getBytes();
             try {
-                Basic.writeStreamToFile(new ByteInputStream(selection, selection.length), new File(fileName));
-                NotificationsInSwing.showInformation("Exported " + Basic.countOccurrences(selection, '\n') + " lines to file: " + fileName);
-            } catch (IOException ex) {
+				FileUtils.writeStreamToFile(new ByteInputStream(selection, selection.length), new File(fileName));
+				NotificationsInSwing.showInformation("Exported " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + fileName);
+			} catch (IOException ex) {
                 NotificationsInSwing.showError("Export failed: " + ex.getMessage());
             }
         }
@@ -65,13 +66,13 @@ public class ExportSelectedCommand extends CommandBase implements ICommand {
 
     public void actionPerformed(ActionEvent event) {
         if (getViewer() instanceof LRInspectorViewer) {
-            final String className = Basic.toCleanName(((LRInspectorViewer) getViewer()).getClassIdDisplayName());
-            final File lastOpenFile = new File(Basic.replaceFileSuffix(((LRInspectorViewer) getViewer()).getDir().getDocument().getMeganFile().getFileName(), "-" + className + ".txt"));
-            final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Export table");
-            if (file != null) {
-                execute("export-selection file='" + file.getPath() + "';");
-            }
-        }
+			final String className = StringUtils.toCleanName(((LRInspectorViewer) getViewer()).getClassIdDisplayName());
+			final File lastOpenFile = new File(FileUtils.replaceFileSuffix(((LRInspectorViewer) getViewer()).getDir().getDocument().getMeganFile().getFileName(), "-" + className + ".txt"));
+			final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Export table");
+			if (file != null) {
+				execute("export-selection file='" + file.getPath() + "';");
+			}
+		}
 
     }
 

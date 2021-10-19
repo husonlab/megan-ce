@@ -19,10 +19,8 @@
  */
 package megan.dialogs.extractor;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.ClassificationType;
@@ -49,26 +47,26 @@ public class ReadsExtractor {
     /**
      * extract all reads belonging to a given set of taxon ids
      *
-     * @param progressListener
-     * @param taxIds
-     * @param outDirectory
-     * @param outFileName
-     * @param doc
-     * @param summarized
-     * @throws IOException
-     * @throws CanceledException
-     */
-    public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
-                                             final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
-        final Map<Integer, String> classId2Name = new HashMap<>();
-        final Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
-        for (Integer id : taxIds) {
-            classId2Name.put(id, TaxonomyData.getName2IdMap().get(id));
-            if (summarized)
-                classId2Descendants.put(id, TaxonomyData.getTree().getAllDescendants(id));
-        }
-        return extractReads(progressListener, ClassificationType.Taxonomy.toString(), taxIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
-    }
+	 * @param progressListener
+	 * @param taxIds
+	 * @param outDirectory
+	 * @param outFileName
+	 * @param doc
+	 * @param summarized
+	 * @throws IOException
+	 * @throws CanceledException
+	 */
+	public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
+											 final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
+		final Map<Integer, String> classId2Name = new HashMap<>();
+		final Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
+		for (Integer id : taxIds) {
+			classId2Name.put(id, TaxonomyData.getName2IdMap().get(id));
+			if (summarized)
+				classId2Descendants.put(id, TaxonomyData.getTree().getAllDescendants(id));
+		}
+		return extractReads(progressListener, ClassificationType.Taxonomy.toString(), taxIds, classId2Name, classId2Descendants, outDirectory, outFileName, doc, summarized);
+	}
 
     /**
      * extract all reads belonging to a given set of  ids
@@ -130,8 +128,8 @@ public class ReadsExtractor {
 
         BufferedWriter w;
         if (useOneOutputFile) {
-            w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-            System.err.println("Writing to: " + fileName);
+			w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
+			System.err.println("Writing to: " + fileName);
         } else {
             w = null;
         }
@@ -159,12 +157,12 @@ public class ReadsExtractor {
                     while (it.hasNext()) {
                         if (first) {
                             if (!useOneOutputFile) {
-                                if (w != null)
-                                    w.close();
-                                final String cName = classId2Name.get(classId);
-                                final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
-                                w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fName)));
-                            }
+								if (w != null)
+									w.close();
+								final String cName = classId2Name.get(classId);
+								final String fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+								w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fName)));
+							}
                             first = false;
                         }
 

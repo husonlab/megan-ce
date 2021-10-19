@@ -23,8 +23,9 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.commandtemplates.SetUseLCA4ViewerCommand;
@@ -783,24 +784,24 @@ public class ParametersDialog extends JDialog {
     }
 
     public String getParameterString() {
-        return
-                " minScore=" + getMinScore() +
-                        " maxExpected=" + getMaxExpected() +
-                        " minPercentIdentity=" + getMinPercentIdentity() +
-                        " topPercent=" + getTopPercent() +
-                        " minSupportPercent=" + getMinSupportPercent() + " minSupport=" + getMinSupport() +
-                        " lcaAlgorithm=" + getLcaAlgorithm().toString() +
-                        " lcaCoveragePercent=" + getLCACoveragePercent() +
-                        " minPercentReadToCover=" + getMinPercentReadToCover() +
-                        " minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
-                        " minReadLength=" + getMinReadLength() +
-                        " longReads=" + isLongReads() +
-                        " pairedReads=" + isPairedReads() +
-                        " useIdentityFilter=" + isUsePercentIdentity()
-                        + (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
-                        + (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")
-                        + " readAssignmentMode=" + getReadAssignmentMode()
-                        + " fNames=" + Basic.toString(activeFNames, " ");
+		return
+				" minScore=" + getMinScore() +
+				" maxExpected=" + getMaxExpected() +
+				" minPercentIdentity=" + getMinPercentIdentity() +
+				" topPercent=" + getTopPercent() +
+				" minSupportPercent=" + getMinSupportPercent() + " minSupport=" + getMinSupport() +
+				" lcaAlgorithm=" + getLcaAlgorithm().toString() +
+				" lcaCoveragePercent=" + getLCACoveragePercent() +
+				" minPercentReadToCover=" + getMinPercentReadToCover() +
+				" minPercentReferenceToCover=" + getMinPercentReferenceToCover() +
+				" minReadLength=" + getMinReadLength() +
+				" longReads=" + isLongReads() +
+				" pairedReads=" + isPairedReads() +
+				" useIdentityFilter=" + isUsePercentIdentity()
+				+ (isUseContaminantsFilter() ? " useContaminantFilter=" + true : "")
+				+ (isUseContaminantsFilter() && getContaminantsFileName() != null ? " loadContaminantFile='" + getContaminantsFileName() + "'" : "")
+				+ " readAssignmentMode=" + getReadAssignmentMode()
+				+ " fNames=" + StringUtils.toString(activeFNames, " ");
     }
 
     private boolean isCanceled() {

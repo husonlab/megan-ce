@@ -21,9 +21,9 @@ package megan.clusteranalysis.indices;
 
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.clusteranalysis.tree.Distances;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.MainViewer;
@@ -50,7 +50,7 @@ public class UniFrac {
      * @return number of nodes used to compute value
      */
     public static int applyUnweightedUniformUniFrac(final MainViewer viewer, final int threshold, final Distances distances) throws CanceledException {
-        System.err.println("Computing " + Basic.fromCamelCase(UnweightedUniformUniFrac) + " distances");
+		System.err.println("Computing " + StringUtils.fromCamelCase(UnweightedUniformUniFrac) + " distances");
 
         final int nTax = distances.getNtax();
 
@@ -111,7 +111,7 @@ public class UniFrac {
      * @throws IOException
      */
     public static int applyWeightedUniformUniFrac(final ClassificationViewer viewer, final Distances distances) throws CanceledException {
-        System.err.println("Computing " + Basic.fromCamelCase(WeightedUniformUniFrac) + " distances");
+		System.err.println("Computing " + StringUtils.fromCamelCase(WeightedUniformUniFrac) + " distances");
 
         final int nTax = distances.getNtax();
 

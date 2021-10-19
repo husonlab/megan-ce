@@ -71,7 +71,7 @@ public class DiversityPlotViewer extends ChartViewer {
         IPlot2DData chartData = new DefaultPlot2DData();
 
         setChartTitle("Diversity plot for " + alignmentViewer.getSelectedReference());
-        String name = Basic.swallowLeadingGreaterSign(alignmentViewer.getSelectedReference());
+        String name = StringUtils.swallowLeadingGreaterSign(alignmentViewer.getSelectedReference());
         if (name.length() > 20) {
             chartData.setDataSetName(name.substring(0, 20));
             name = name.substring(0, 20) + "...";

@@ -20,7 +20,7 @@
 package megan.biom.biom1;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.IdMapper;

@@ -21,7 +21,9 @@
 package megan.ms.server;
 
 import jloda.util.Basic;
-import jloda.util.ProgressPercentage;
+import jloda.util.FileUtils;
+import jloda.util.progress.ProgressPercentage;
+import jloda.util.StringUtils;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.core.SampleAttributeTable;
@@ -73,7 +75,7 @@ public class Database {
         id2Record.clear();
         file2DescriptionFile.clear();
 
-        final var files = Basic.getAllFilesInDirectory(rootDirectory, recursive, fileExtensions);
+		final var files = FileUtils.getAllFilesInDirectory(rootDirectory, recursive, fileExtensions);
 
         final var fileName2IdRebuilt = new HashMap<String, Integer>();
         final var id2record = new HashMap<Integer, FileRecord>();
@@ -82,24 +84,24 @@ public class Database {
             System.err.println(Basic.getDateString("yyyy-MM-dd hh:mm:ss"));
             for(var file:files) {
                 try {
-                    if(Basic.fileExistsAndIsNonEmpty(Basic.replaceFileSuffix(file,".txt"))) {
-                        file2DescriptionFile.put(Basic.getRelativeFile(file, rootDirectory).getPath(), Basic.replaceFileSuffix(file, ".txt"));
-                    }
-                    final var meganFile = new MeganFile();
-                        meganFile.setFileFromExistingFile(file.getPath(), true);
-                        if (meganFile.isMeganSummaryFile()) {
-                            final var document = new Document();
-                            try (var r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
-                                document.loadMeganSummary(r);
-                                final var numberOfReads = document.getNumberOfReads();
-                                final var fileId = fileName2IdRebuilt.size() + 1;
-                                final String relativePath = Basic.getRelativeFile(file, rootDirectory).getPath();
-                                fileName2IdRebuilt.put(relativePath, fileId);
-                                try (var w = new StringWriter()) {
-                                    document.getDataTable().write(w);
-                                    document.getSampleAttributeTable().write(w, false, true);
-                                    final var data = new HashMap<String, byte[]>();
-                                    data.put("FILE_CONTENT", w.toString().getBytes());
+					if (FileUtils.fileExistsAndIsNonEmpty(FileUtils.replaceFileSuffix(file, ".txt"))) {
+						file2DescriptionFile.put(FileUtils.getRelativeFile(file, rootDirectory).getPath(), FileUtils.replaceFileSuffix(file, ".txt"));
+					}
+					final var meganFile = new MeganFile();
+					meganFile.setFileFromExistingFile(file.getPath(), true);
+					if (meganFile.isMeganSummaryFile()) {
+						final var document = new Document();
+						try (var r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+							document.loadMeganSummary(r);
+							final var numberOfReads = document.getNumberOfReads();
+							final var fileId = fileName2IdRebuilt.size() + 1;
+							final String relativePath = FileUtils.getRelativeFile(file, rootDirectory).getPath();
+							fileName2IdRebuilt.put(relativePath, fileId);
+							try (var w = new StringWriter()) {
+								document.getDataTable().write(w);
+								document.getSampleAttributeTable().write(w, false, true);
+								final var data = new HashMap<String, byte[]>();
+								data.put("FILE_CONTENT", w.toString().getBytes());
                                     id2record.put(fileId, new FileRecord(fileId, file, document.getClassificationNames(),data,numberOfReads,0));
                                 }
                             }
@@ -108,8 +110,8 @@ public class Database {
                             final var numberOfReads = connector.getNumberOfReads();
                             if (numberOfReads > 0) {
                                 final var numberOfMatches = connector.getNumberOfMatches();
-                                final var fileId = fileName2IdRebuilt.size() + 1;
-                                final var relativePath = Basic.getRelativeFile(file, rootDirectory).getPath();
+								final var fileId = fileName2IdRebuilt.size() + 1;
+								final var relativePath = FileUtils.getRelativeFile(file, rootDirectory).getPath();
                                 fileName2IdRebuilt.put(relativePath, fileId);
                                 id2record.put(fileId, new FileRecord(fileId, file, Arrays.asList(connector.getAllClassificationNames()), connector.getAuxiliaryData(),
                                         numberOfReads,numberOfMatches));
@@ -121,13 +123,13 @@ public class Database {
             }
         }
 
-        for(var aboutFile:Basic.getAllFilesInDirectory(rootDirectory, recursive, "About.txt")) {
-            try {
-                var relativePath = Basic.getRelativeFile(aboutFile.getParentFile(), rootDirectory).getPath();
-                file2DescriptionFile.put(relativePath,aboutFile);
-            } catch (IOException ignored) {
-            }
-        }
+		for (var aboutFile : FileUtils.getAllFilesInDirectory(rootDirectory, recursive, "About.txt")) {
+			try {
+				var relativePath = FileUtils.getRelativeFile(aboutFile.getParentFile(), rootDirectory).getPath();
+				file2DescriptionFile.put(relativePath, aboutFile);
+			} catch (IOException ignored) {
+			}
+		}
 
         this.fileName2Id.putAll(fileName2IdRebuilt);
         this.id2Record.putAll(id2record);
@@ -151,7 +153,7 @@ public class Database {
     public String getMetadata(String fileName) {
         final FileRecord fileRecord = getRecord(fileName);
         if (fileRecord != null && fileRecord.getAuxiliaryData() != null && fileRecord.getAuxiliaryData().containsKey(SampleAttributeTable.SAMPLE_ATTRIBUTES)) {
-            return Basic.toString(fileRecord.getAuxiliaryData().get(SampleAttributeTable.SAMPLE_ATTRIBUTES));
+			return StringUtils.toString(fileRecord.getAuxiliaryData().get(SampleAttributeTable.SAMPLE_ATTRIBUTES));
         } else
             return "";
     }
@@ -239,10 +241,10 @@ public class Database {
 
     public String getFileDescription(String fileName) throws IOException {
         var file= file2DescriptionFile.get(fileName);
-        if(Basic.fileExistsAndIsNonEmpty(file))
-            return Files.readString(file.toPath());
-        else
-            return null;
+		if (FileUtils.fileExistsAndIsNonEmpty(file))
+			return Files.readString(file.toPath());
+		else
+			return null;
     }
 
     public static class FileRecord {

@@ -20,7 +20,7 @@
 package megan.util;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -65,7 +65,7 @@ public class SilvaLogFileFilter extends FileFilterBase implements FilenameFilter
     public boolean accept(File directory, String fileName) {
         if (!super.accept(directory, fileName))
             return false;
-        String firstLine = Basic.getFirstLineFromFile(new File(fileName));
+		String firstLine = FileUtils.getFirstLineFromFile(new File(fileName));
         return firstLine != null && firstLine.startsWith("Reading from fasta file");
     }
 }

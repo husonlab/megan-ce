@@ -19,7 +19,7 @@
  */
 package megan.rma2;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.data.*;
 import megan.io.ByteByteInt;
 import megan.io.IInputReader;
@@ -221,7 +221,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
 
     @Override
     public String getTextFirstWord() {
-        return text != null ? Basic.getFirstWord(text) : null;
+		return text != null ? StringUtils.getFirstWord(text) : null;
     }
 
     public void setText(String text) {

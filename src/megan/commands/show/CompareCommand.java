@@ -24,6 +24,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressListener;
 import megan.commands.CommandBase;
 import megan.core.Director;
 import megan.core.Document;
@@ -47,10 +48,10 @@ import java.util.LinkedList;
 
 public class CompareCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "compare mode={" + Basic.toString(Comparer.COMPARISON_MODE.values(), "|") + "}" +
-                " readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}" +
-                " [keep1={false|true}] [ignoreUnassigned={false|true}] [pid=<number> ...] [meganFile=<filename> ...];";
-    }
+		return "compare mode={" + StringUtils.toString(Comparer.COMPARISON_MODE.values(), "|") + "}" +
+			   " readAssignmentMode={" + StringUtils.toString(Document.ReadAssignmentMode.values(), "|") + "}" +
+			   " [keep1={false|true}] [ignoreUnassigned={false|true}] [pid=<number> ...] [meganFile=<filename> ...];";
+	}
 
     public void apply(NexusStreamParser np) throws Exception {
         final Director dir = getDir();
@@ -64,13 +65,13 @@ public class CompareCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("compare");
         final Comparer comparer = new Comparer();
         if (np.peekMatchIgnoreCase("mode")) {
-            np.matchIgnoreCase("mode=");
-            comparer.setMode(np.getWordMatchesIgnoringCase(Basic.toString(Comparer.COMPARISON_MODE.values(), " ")));
+			np.matchIgnoreCase("mode=");
+			comparer.setMode(np.getWordMatchesIgnoringCase(StringUtils.toString(Comparer.COMPARISON_MODE.values(), " ")));
         }
         Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.readCount;
         if (np.peekMatchIgnoreCase("readAssignmentMode")) {
-            np.matchIgnoreCase("readAssignmentMode=");
-            readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " ")));
+			np.matchIgnoreCase("readAssignmentMode=");
+			readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(StringUtils.toString(Document.ReadAssignmentMode.values(), " ")));
         }
 
         if (np.peekMatchIgnoreCase("keep1")) {

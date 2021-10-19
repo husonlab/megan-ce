@@ -20,7 +20,7 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ViewerBase;
 
@@ -41,7 +41,7 @@ public class SetTreeDrawerCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set drawer=");
-        String drawerName = np.getWordMatchesIgnoringCase(Basic.toString(ViewerBase.DiagramType.values(), " "));
+		String drawerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ViewerBase.DiagramType.values(), " "));
         np.matchIgnoreCase(";");
 
         ViewerBase viewer = (ViewerBase) getViewer();
@@ -57,7 +57,7 @@ public class SetTreeDrawerCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "set drawer={" + Basic.toString(ViewerBase.DiagramType.values(), ",") + "};";
+		return "set drawer={" + StringUtils.toString(ViewerBase.DiagramType.values(), ",") + "};";
     }
 
     /**

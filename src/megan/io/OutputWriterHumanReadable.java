@@ -19,7 +19,7 @@
  */
 package megan.io;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -59,12 +59,12 @@ public class OutputWriterHumanReadable implements IOutputWriter {
 
     @Override
     public void write(byte[] bytes, int offset, int length) throws IOException {
-        writeString(Basic.toString(bytes, offset, length));
+		writeString(StringUtils.toString(bytes, offset, length));
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        writeString(Basic.toString(bytes));
+		writeString(StringUtils.toString(bytes));
     }
 
     @Override

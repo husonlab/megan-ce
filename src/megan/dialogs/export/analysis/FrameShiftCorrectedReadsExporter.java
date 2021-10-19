@@ -20,8 +20,10 @@
 package megan.dialogs.export.analysis;
 
 import jloda.util.*;
+import jloda.seq.SequenceUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -56,20 +58,20 @@ public class FrameShiftCorrectedReadsExporter {
     public static int exportAll(IConnector connector, String fileName, ProgressListener progress) throws IOException {
         int total = 0;
         try {
-            progress.setTasks("Export", "Writing all corrected reads");
-            final String fName = fileName.replaceAll("%t", "all").replaceAll("%i", "all");
+			progress.setTasks("Export", "Writing all corrected reads");
+			final String fName = fileName.replaceAll("%t", "all").replaceAll("%i", "all");
 
-            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-                 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
-                progress.setMaximum(it.getMaximumProgress());
-                progress.setProgress(0);
-                while (it.hasNext()) {
-                    total++;
-                    correctAndWrite(progress, it.next(), w);
-                    progress.setProgress(it.getProgress());
-                }
-            }
-        } catch (CanceledException ex) {
+			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
+				 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+				progress.setMaximum(it.getMaximumProgress());
+				progress.setProgress(0);
+				while (it.hasNext()) {
+					total++;
+					correctAndWrite(progress, it.next(), w);
+					progress.setProgress(it.getProgress());
+				}
+			}
+		} catch (CanceledException ex) {
             System.err.println("USER CANCELED");
         }
         return total;
@@ -96,8 +98,8 @@ public class FrameShiftCorrectedReadsExporter {
             final Classification classification;
             BufferedWriter w;
             if (useOneOutputFile) {
-                w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-                classification = null;
+				w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
+				classification = null;
             } else {
                 w = null;
                 classification = ClassificationManager.get(classificationName, true);
@@ -122,9 +124,9 @@ public class FrameShiftCorrectedReadsExporter {
                                 if (!useOneOutputFile) {
                                     if (w != null)
                                         w.close();
-                                    final String cName = classification.getName2IdMap().get(classId);
-                                    final String fName = fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId);
-                                    final File file = new File(fName);
+									final String cName = classification.getName2IdMap().get(classId);
+									final String fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+									final File file = new File(fName);
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);
                                         try {
@@ -175,9 +177,9 @@ public class FrameShiftCorrectedReadsExporter {
         final Pair<String, String> headerAndSequence = correctFrameShiftsInSequence(progress, readBlock);
         if (headerAndSequence != null) {
             w.write(headerAndSequence.getFirst());
-            w.write("\n");
-            w.write(Basic.foldHard(headerAndSequence.getSecond(), 140));
-            w.write("\n");
+			w.write("\n");
+			w.write(StringUtils.foldHard(headerAndSequence.getSecond(), 140));
+			w.write("\n");
         } else
             w.write("null\n");
     }
@@ -326,7 +328,7 @@ public class FrameShiftCorrectedReadsExporter {
             while ((aLine = reader.readLine()) != null) {
                 aLine = aLine.trim();
                 if (aLine.startsWith("Query:")) {
-                    final String[] tokens = Basic.splitOnWhiteSpace(aLine);
+					final String[] tokens = StringUtils.splitOnWhiteSpace(aLine);
                     if (startString == null)
                         startString = tokens[1];
                     buf.append(tokens[2]);

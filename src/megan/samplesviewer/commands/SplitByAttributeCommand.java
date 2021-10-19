@@ -22,9 +22,8 @@ package megan.samplesviewer.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
-import megan.dialogs.compare.Comparer;
 import megan.samplesviewer.SamplesTableView;
 import megan.samplesviewer.SamplesViewer;
 
@@ -56,7 +55,7 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
         final SamplesTableView samplesTable = ((SamplesViewer) getViewer()).getSamplesTableView();
 
         if (attribute != null && samplesTable.getCountSelectedSamples() > 0) {
-            execute("splitBy attribute='" + attribute + "' samples='" + Basic.toString(samplesTable.getSelectedSamples(), "' '") + "';");
+			execute("splitBy attribute='" + attribute + "' samples='" + StringUtils.toString(samplesTable.getSelectedSamples(), "' '") + "';");
         }
     }
 

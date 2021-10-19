@@ -24,7 +24,10 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.swing.util.GFF3FileFilter;
 import jloda.util.interval.Interval;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -101,8 +104,8 @@ public class AAdderBuild {
         options.done();
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if (mapDBClassifications.size() > 0 && Basic.hasPositiveLengthValue(class2AccessionFile))
-            throw new UsageException("Illegal to use both --mapDB and ---acc2... options");
+		if (mapDBClassifications.size() > 0 && StringUtils.hasPositiveLengthValue(class2AccessionFile))
+			throw new UsageException("Illegal to use both --mapDB and ---acc2... options");
 
         if (mapDBClassifications.size() > 0)
             ClassificationManager.setMeganMapDBFile(mapDBFile);

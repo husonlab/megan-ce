@@ -23,8 +23,9 @@ package megan.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -75,9 +76,9 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         {
             final String sourceFileName = ((Director) getDir()).getDocument().getMeganFile().getFileName();
             if (toExtract.size() == 1)
-                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-" + Basic.toCleanName(toExtract.get(0)) + ".megan")).toString();
+				fileName = FileUtils.getFileWithNewUniqueName(FileUtils.replaceFileSuffix(sourceFileName, "-" + StringUtils.toCleanName(toExtract.get(0)) + ".megan")).toString();
             else
-                fileName = Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
+				fileName = FileUtils.getFileWithNewUniqueName(FileUtils.replaceFileSuffix(sourceFileName, "-extract.megan")).toString();
         }
 
         final Director newDir = Director.newProject();

@@ -29,6 +29,7 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.seq.FastAFileIterator;
 import jloda.util.parse.NexusStreamParser;
 import megan.blastclient.BlastService;
 import megan.blastclient.RemoteBlastClient;
@@ -78,14 +79,14 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
 
         final String blastMode;
         if (np.peekMatchIgnoreCase("blastMode")) {
-            np.matchIgnoreCase("blastMode=");
-            blastMode = np.getWordMatchesIgnoringCase(Basic.toString(RemoteBlastClient.BlastProgram.values(), " "));
+			np.matchIgnoreCase("blastMode=");
+			blastMode = np.getWordMatchesIgnoringCase(StringUtils.toString(RemoteBlastClient.BlastProgram.values(), " "));
         } else
             blastMode = "blastn";
         final String blastDB;
         if (np.peekMatchIgnoreCase("blastDB")) {
-            np.matchIgnoreCase("blastDB=");
-            blastDB = np.getWordMatchesIgnoringCase(Basic.toString(RemoteBlastClient.getDatabaseNames(blastMode), " "));
+			np.matchIgnoreCase("blastDB=");
+			blastDB = np.getWordMatchesIgnoringCase(StringUtils.toString(RemoteBlastClient.getDatabaseNames(blastMode), " "));
         } else
             blastDB = "nr";
         np.matchIgnoreCase(";");
@@ -171,7 +172,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                     try {
                         if (result != null && result.length() > 0) {
                             try {
-                                final File blastFile = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), Basic.replaceFileSuffix(readsFile, "." + blastMode), new MeganFileFilter(), new MeganFileFilter(), null, "Save BLAST file", "." + blastMode);
+								final File blastFile = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), FileUtils.replaceFileSuffix(readsFile, "." + blastMode), new MeganFileFilter(), new MeganFileFilter(), null, "Save BLAST file", "." + blastMode);
                                 if (blastFile != null) {
                                     try (BufferedWriter w = new BufferedWriter(new FileWriter(blastFile))) {
                                         w.write(result);
@@ -184,9 +185,9 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                                             final ImportBlastDialog importBlastDialog = new ImportBlastDialog(getViewer().getFrame(), (Director) getDir(), "Import Blast File");
                                             importBlastDialog.getBlastFileNameField().setText(blastFile.getPath());
                                             importBlastDialog.getReadFileNameField().setText(readsFile.getPath());
-                                            importBlastDialog.setLongReads(longReads);
-                                            importBlastDialog.getMeganFileNameField().setText(Basic.replaceFileSuffix(blastFile.getPath(), "-" + blastMode + ".rma6"));
-                                            importBlastDialog.updateView(IDirector.ALL);
+											importBlastDialog.setLongReads(longReads);
+											importBlastDialog.getMeganFileNameField().setText(FileUtils.replaceFileSuffix(blastFile.getPath(), "-" + blastMode + ".rma6"));
+											importBlastDialog.updateView(IDirector.ALL);
                                             final String command = importBlastDialog.showAndGetCommand();
                                             if (command != null) {
                                                 getDir().notifyUnlockInput();
@@ -254,8 +255,8 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
         if (isApplicable()) {
             final IReadsProvider readProvider = ((IReadsProvider) getViewer());
             if (readProvider.isReadsAvailable()) {
-                final Pair<String, String> first = readProvider.getReads(1).iterator().next();
-                final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), readProvider, null, Basic.toCleanName(first.getFirst()));
+				final Pair<String, String> first = readProvider.getReads(1).iterator().next();
+				final String commandString = RemoteBlastDialog.apply(getViewer(), (Director) getDir(), readProvider, null, StringUtils.toCleanName(first.getFirst()));
 
                 if (commandString != null) {
                     final Director newDir = Director.newProject();

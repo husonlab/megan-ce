@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import megan.util.RDPStandaloneFileFilter;
 
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
                 match.bitScore = bitScore;
                 match.id = matchId++;
 
-                final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+				final String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
                 match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
                 matches.add(match);
             }
@@ -149,6 +150,6 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
      * make a SAM line
      */
     private String makeSAM(String queryName, String refName, float bitScore, String line) throws IOException {
-        return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' '));
+		return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
     }
 }

@@ -23,9 +23,8 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
-import jloda.util.Basic;
-import jloda.util.NexusFileFilter;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.swing.util.NexusFileFilter;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.core.Director;
@@ -110,14 +109,14 @@ public class ExportDataCommand extends CommandBase implements ICommand {
             TableModel model = viewer.getMatrixTab().getTable().getModel();
             w.write("begin taxa;\ndimensions ntax=" + model.getRowCount() + ";\n taxlabels\n");
             for (int r = 0; r < model.getRowCount(); r++) {
-                w.write("'" + Basic.toCleanName(model.getValueAt(r, 0).toString()) + "'\n");
+				w.write("'" + StringUtils.toCleanName(model.getValueAt(r, 0).toString()) + "'\n");
             }
             w.write(";\n");
             w.write("end;\n");
             w.write("begin distances;\ndimensions ntax=" + model.getRowCount() + ";\n");
             w.write("format triangle=both diagonal labels;\nmatrix\n");
             for (int r = 0; r < model.getRowCount(); r++) {
-                w.write("'" + Basic.toCleanName(model.getValueAt(r, 0).toString()) + "'");
+				w.write("'" + StringUtils.toCleanName(model.getValueAt(r, 0).toString()) + "'");
                 for (int c = 1; c < model.getColumnCount(); c++) {
                     w.write(" " + model.getValueAt(r, c));
                 }
@@ -141,8 +140,8 @@ public class ExportDataCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         ClusterViewer viewer = getViewer();
 
-        String name = Basic.replaceFileSuffix(((Director) getDir()).getDocument().getMeganFile().getName(), ".nex");
-        File lastOpenFile = new File(name);
+		String name = FileUtils.replaceFileSuffix(((Director) getDir()).getDocument().getMeganFile().getName(), ".nex");
+		File lastOpenFile = new File(name);
         String lastDir = ProgramProperties.get(MeganProperties.NETWORK_DIRECTORY, "");
         if (lastDir.length() > 0) {
             lastOpenFile = new File(lastDir, lastOpenFile.getName());

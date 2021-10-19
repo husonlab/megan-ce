@@ -22,7 +22,7 @@ package megan.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.biom.biom1.BIOM1Importer;
@@ -80,27 +80,27 @@ public class ImportBIOMCommand extends CommandBase implements ICommand {
             doc.neverOpenedReads = false;
             doc.clearReads();
 
-            if (BiomFileFilter.isBiom1File(fileName))
-                BIOM1Importer.apply(fileName, doc, type, taxonomyIgnorePath);
-            else if (BiomFileFilter.isBiom2File(fileName))
-                Biom2Importer.apply(fileName, doc, type, taxonomyIgnorePath);
+			if (BiomFileFilter.isBiom1File(fileName))
+				BIOM1Importer.apply(fileName, doc, type, taxonomyIgnorePath);
+			else if (BiomFileFilter.isBiom2File(fileName))
+				Biom2Importer.apply(fileName, doc, type, taxonomyIgnorePath);
 
-            if (dir.getViewerByClass(InspectorWindow.class) != null)
-                ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
-            getDir().getMainViewer().getCollapsedIds().clear();
+			if (dir.getViewerByClass(InspectorWindow.class) != null)
+				((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
+			getDir().getMainViewer().getCollapsedIds().clear();
 
-            doc.getMeganFile().setFileName(Basic.replaceFileSuffix(fileName, ".megan"));
-            final String docName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(fileName), "");
-            if (doc.getSampleNames().size() == 1 && !doc.getSampleNames().get(0).equals(docName)) {
-                doc.getDataTable().changeSampleName(0, docName);
-            }
-            doc.processReadHits();
-            doc.setDirty(true);
-            viewer.getNodeDrawer().setStyle(doc.getNumberOfSamples() > 1 ? NodeDrawer.Style.PieChart : NodeDrawer.Style.Circle);
-            viewer.setDoReInduce(true);
-            viewer.setDoReset(true);
-            doc.getSampleAttributeTable().setSampleOrder(doc.getSampleNames());
-        } else {
+			doc.getMeganFile().setFileName(FileUtils.replaceFileSuffix(fileName, ".megan"));
+			final String docName = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
+			if (doc.getSampleNames().size() == 1 && !doc.getSampleNames().get(0).equals(docName)) {
+				doc.getDataTable().changeSampleName(0, docName);
+			}
+			doc.processReadHits();
+			doc.setDirty(true);
+			viewer.getNodeDrawer().setStyle(doc.getNumberOfSamples() > 1 ? NodeDrawer.Style.PieChart : NodeDrawer.Style.Circle);
+			viewer.setDoReInduce(true);
+			viewer.setDoReset(true);
+			doc.getSampleAttributeTable().setSampleOrder(doc.getSampleNames());
+		} else {
             final Director newDir = Director.newProject();
             newDir.getMainViewer().getFrame().setVisible(true);
             newDir.getMainViewer().setDoReInduce(true);

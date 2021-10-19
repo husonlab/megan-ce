@@ -21,7 +21,7 @@
 package megan.classification.data;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
 import java.io.IOException;

@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import megan.util.RDPAssignmentDetailsFileFilter;
 
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
             var containsTabs = line.contains("\t");
 
             if (containsSemiColons) {
-                final String[] tokens = Basic.split(line, ';');
+				final String[] tokens = StringUtils.split(line, ';');
 
                 int matchId = 0; // used to distinguish between matches when sorting
                 matches.clear();
@@ -109,13 +110,13 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
                     match.bitScore = bitScore;
                     match.id = matchId++;
 
-                    final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+					final String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
                     match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
                     matches.add(match);
                 }
                 return getPostProcessMatches().apply(queryName, matchesTextAndLength, isParseLongReads(), null, matches, null);
             } else if (containsTabs) {
-                final String[] tokens = Basic.split(line, '\t');
+				final String[] tokens = StringUtils.split(line, '\t');
 
                 int matchId = 0; // used to distinguish between matches when sorting
                 matches.clear();
@@ -146,7 +147,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
                     match.bitScore = bitScore;
                     match.id = matchId++;
 
-                    final String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+					final String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
                     match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
                     matches.add(match);
                 }
@@ -185,6 +186,6 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
      */
     private String makeSAM(String queryName, String refName, float bitScore, String line) throws IOException {
 
-        return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' '));
+		return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
     }
 }

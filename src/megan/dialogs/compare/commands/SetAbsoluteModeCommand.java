@@ -21,7 +21,7 @@ package megan.dialogs.compare.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.compare.CompareWindow;
 import megan.dialogs.compare.Comparer;
@@ -63,7 +63,7 @@ public class SetAbsoluteModeCommand extends CommandBase implements ICheckBoxComm
      */
     @Override
     public String getSyntax() {
-        return "set mode={" + Basic.toString(Comparer.COMPARISON_MODE.values(), "|") + "};";
+		return "set mode={" + StringUtils.toString(Comparer.COMPARISON_MODE.values(), "|") + "};";
     }
 
     /**

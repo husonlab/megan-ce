@@ -23,7 +23,10 @@ import jloda.swing.util.ColorTableManager;
 import jloda.swing.util.ILabelGetter;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressCmdLine;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.DataProcessor;
 import megan.chart.ChartColorManager;
 import megan.classification.Classification;
@@ -59,7 +62,7 @@ public class Document {
         naive, weighted, longReads;
 
         public static LCAAlgorithm valueOfIgnoreCase(String str) {
-            return Basic.valueOfIgnoreCase(LCAAlgorithm.class, str);
+			return StringUtils.valueOfIgnoreCase(LCAAlgorithm.class, str);
         }
     }
 
@@ -67,7 +70,7 @@ public class Document {
         readCount, readLength, alignedBases, readMagnitude;
 
         public static ReadAssignmentMode valueOfIgnoreCase(String label) {
-            return Basic.valueOfIgnoreCase(ReadAssignmentMode.class, label);
+			return StringUtils.valueOfIgnoreCase(ReadAssignmentMode.class, label);
         }
 
         public String getDisplayLabel() {
@@ -233,11 +236,11 @@ public class Document {
         if (getMeganFile().isMeganSummaryFile() && !getMeganFile().isMeganServerFile()) {
             loadMeganSummaryFile();
         } else if (getMeganFile().hasDataConnector() || getMeganFile().isMeganServerFile()) {
-            reloadFromConnector(null);
-        } else if (!Basic.fileExistsAndIsNonEmpty(getMeganFile().getFileName()))
-            throw new IOException("File doesn't exist or is empty: " + getMeganFile().getFileName());
-        else
-            throw new IOException("Unknown file error (perhaps invalid file format?)");
+			reloadFromConnector(null);
+		} else if (!FileUtils.fileExistsAndIsNonEmpty(getMeganFile().getFileName()))
+			throw new IOException("File doesn't exist or is empty: " + getMeganFile().getFileName());
+		else
+			throw new IOException("Unknown file error (perhaps invalid file format?)");
 
         lastRecomputeTime = System.currentTimeMillis();
     }
@@ -266,7 +269,7 @@ public class Document {
             }
 
             if (connector.getNumberOfReads() > 0) {
-                SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getReadAssignmentMode(), Basic.replaceFileSuffix(getMeganFile().getName(),""), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
+				SyncArchiveAndDataTable.syncRecomputedArchive2Summary(getReadAssignmentMode(), FileUtils.replaceFileSuffix(getMeganFile().getName(), ""), "merge", getDataTable().getBlastMode(), "", connector, dataTable, 0);
             }
 
             getSampleAttributeTable().addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), getMeganFile().getFileName(), true);
@@ -447,9 +450,9 @@ public class Document {
      * load the set megan summary file
      */
     public void loadMeganSummaryFile() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())))) {
-            loadMeganSummary(reader);
-        }
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(getMeganFile().getFileName())))) {
+			loadMeganSummary(reader);
+		}
     }
 
     public void loadMeganSummary(BufferedReader reader) throws IOException {
@@ -844,7 +847,7 @@ public class Document {
      */
     static public void loadVersionInfo(String name, String fileName) {
         try {
-            fileName = Basic.replaceFileSuffix(fileName, ".info");
+			fileName = FileUtils.replaceFileSuffix(fileName, ".info");
             InputStream ins = ResourceManager.getFileAsStream(fileName);
             BufferedReader r = new BufferedReader(new InputStreamReader(ins));
             StringBuilder buf = new StringBuilder();
@@ -1021,7 +1024,7 @@ public class Document {
     // all the sample stuff below here is chaotic and really needs to be reimplemented...
 
     public void renameSample(String oldName, String newName) throws IOException {
-        int pid = Basic.getIndex(oldName, getSampleNames());
+		int pid = StringUtils.getIndex(oldName, getSampleNames());
         if (pid != -1)
             renameSample(pid + 1, newName);
     }
@@ -1098,7 +1101,7 @@ public class Document {
     }
 
     public float getNumberOfReads(String sample) {
-        int i = Basic.getIndex(sample, getDataTable().getSampleNamesArray());
+		int i = StringUtils.getIndex(sample, getDataTable().getSampleNamesArray());
         if (i == -1)
             return -1;
         else

@@ -19,8 +19,8 @@
  */
 package megan.rma6;
 
-import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
+import jloda.util.StringUtils;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.io.IInputReader;
@@ -80,7 +80,7 @@ public class ReadBlockRMA6 implements IReadBlock {
      * @return name
      */
     public String getReadName() {
-        return readHeader != null ? Basic.swallowLeadingGreaterSign(Basic.getFirstWord(readHeader)) : null;
+		return readHeader != null ? StringUtils.swallowLeadingGreaterSign(StringUtils.getFirstWord(readHeader)) : null;
     }
 
     /**
@@ -252,7 +252,7 @@ public class ReadBlockRMA6 implements IReadBlock {
                 setReadHeader(readText.substring(0, pos));
                 setReadWeight(ReadMagnitudeParser.parseMagnitude(getReadHeader()));
                 if (pos + 1 < readText.length()) {
-                    String sequence = Basic.removeAllWhiteSpaces(readText.substring(pos + 1));
+					String sequence = StringUtils.removeAllWhiteSpaces(readText.substring(pos + 1));
                     setReadSequence(wantReadSequence ? sequence : null);
                     setReadLength(sequence.length());
                 } else {
@@ -294,7 +294,7 @@ public class ReadBlockRMA6 implements IReadBlock {
                         end = matchesText.length();
                     final String aLine = matchesText.substring(offset, end);
                     offset = end + 1;
-                    final String[] tokens = Basic.split(aLine, '\t');
+					final String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length > 10) {
                         final String query = tokens[9];
                         if (query != null && (querySequence == null || querySequence.length() < query.length())) {
@@ -322,8 +322,8 @@ public class ReadBlockRMA6 implements IReadBlock {
                 final String aLine = matchesText.substring(offset, end);
                 offset = end + 1;
                 try {
-                    final SAMMatch samMatch = new SAMMatch(blastMode);
-                    final String[] tokens = Basic.split(aLine, '\t');
+					final SAMMatch samMatch = new SAMMatch(blastMode);
+					final String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length > 10) {
                         if ((tokens[9].equals("*") || tokens[9].length() == 0) && querySequence != null) {
                             tokens[9] = querySequence;

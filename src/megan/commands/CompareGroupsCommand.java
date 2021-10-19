@@ -23,10 +23,8 @@ package megan.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.algorithms.ComputeCoreBiome;
 import megan.core.Director;
@@ -100,8 +98,8 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
                     System.err.println("Ignored empty group: " + group.getFirst());
             }
             if (np.peekMatchIgnoreCase("mode")) {
-                np.matchIgnoreCase("mode=");
-                mode = np.getWordMatchesRespectingCase(Basic.toString(Comparer.COMPARISON_MODE.values(), " "));
+				np.matchIgnoreCase("mode=");
+				mode = np.getWordMatchesRespectingCase(StringUtils.toString(Comparer.COMPARISON_MODE.values(), " "));
             }
             if (np.peekMatchIgnoreCase("ignoreUnassigned")) {
                 np.matchIgnoreCase("ignoreUnassigned=");
@@ -168,8 +166,8 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
             newViewer.getFrame().setVisible(true);
             newViewer.setDoReInduce(true);
             newViewer.setDoReset(true);
-            final Document newDocument = newDir.getDocument();
-            final String fileName = Basic.replaceFileSuffix(new File(new File(doc.getMeganFile().getFileName()).getParent(), title).getPath(), ".megan");
+			final Document newDocument = newDir.getDocument();
+			final String fileName = FileUtils.replaceFileSuffix(new File(new File(doc.getMeganFile().getFileName()).getParent(), title).getPath(), ".megan");
             newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
             newDocument.setReadAssignmentMode(doc.getReadAssignmentMode());
@@ -206,7 +204,7 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
     }
 
     public String getSyntax() {
-        return "compare title=<string> name=<string> samples=<string ...> [name=<string> samples=<string ...>] ... [comparisonMode={" + Basic.toString(Comparer.COMPARISON_MODE.values(), "|") + "}] [ignoreUnassigned={false|true}] ;";
+		return "compare title=<string> name=<string> samples=<string ...> [name=<string> samples=<string ...>] ... [comparisonMode={" + StringUtils.toString(Comparer.COMPARISON_MODE.values(), "|") + "}] [ignoreUnassigned={false|true}] ;";
     }
 
     public void actionPerformed(ActionEvent event) {

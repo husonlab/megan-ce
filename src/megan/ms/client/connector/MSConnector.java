@@ -20,8 +20,9 @@
 package megan.ms.client.connector;
 
 import jloda.util.Basic;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.Single;
+import jloda.util.StringUtils;
 import megan.core.Document;
 import megan.data.*;
 import megan.ms.Utilities;
@@ -93,7 +94,7 @@ public class MSConnector implements IConnector {
 
     @Override
     public String[] getAllClassificationNames() throws IOException {
-        return Basic.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName)).toArray(new String[0]);
+		return StringUtils.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName)).toArray(new String[0]);
     }
 
     @Override
@@ -150,7 +151,7 @@ public class MSConnector implements IConnector {
      * load the set megan summary file
      */
     public void loadMeganSummaryFile(Document document) throws IOException {
-        final String fileContent = Basic.toString(getAuxiliaryData().get("FILE_CONTENT"));
+		final String fileContent = StringUtils.toString(getAuxiliaryData().get("FILE_CONTENT"));
         document.loadMeganSummary(new BufferedReader(new StringReader(fileContent)));
     }
 }

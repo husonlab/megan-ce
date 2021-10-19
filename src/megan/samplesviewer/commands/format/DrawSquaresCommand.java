@@ -22,7 +22,7 @@ package megan.samplesviewer.commands.format;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
@@ -112,7 +112,7 @@ public class DrawSquaresCommand extends CommandBase implements ICommand {
         final SamplesViewer samplesViewer = ((SamplesViewer) getViewer());
         final Collection<String> samples = samplesViewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0)
-            execute("set nodeShape=square sample='" + Basic.toString(samples, "' '") + "';");
+			execute("set nodeShape=square sample='" + StringUtils.toString(samples, "' '") + "';");
     }
 
     /**

@@ -21,7 +21,7 @@ package megan.io;
 
 //import jloda.util.Basic;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -206,8 +206,8 @@ public class Compressor {
                     System.err.println("decompressed: " + outputString.length());
                     {
                         byte[] target = new byte[10 * bytes.length];
-                        compression.inflateByteArray(-numberOfBytes, bytes, target);
-                        System.err.println("decompressed bytes: " + Basic.toString(target));
+						compression.inflateByteArray(-numberOfBytes, bytes, target);
+						System.err.println("decompressed bytes: " + StringUtils.toString(target));
                     }
 
                     inputString = "";

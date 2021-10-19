@@ -13,7 +13,8 @@
 package megan.ms.server;
 
 import com.sun.net.httpserver.HttpExchange;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 
 import java.io.*;
 
@@ -44,9 +45,9 @@ public class RequestHandlerAdditional {
             public void respond(HttpExchange httpExchange, String[] parameters) throws IOException {
                 final var bytes = requestHandler.handle(httpExchange.getHttpContext().getPath(), parameters);
 
-                if (!Basic.startsWith(bytes, DOWNLOAD_FILE_PREFIX))
-                    throw new IOException("invalid");
-                final var fileName = Basic.getTextAfter(DOWNLOAD_FILE_PREFIX, Basic.toString(bytes));
+				if (!StringUtils.startsWith(bytes, DOWNLOAD_FILE_PREFIX))
+					throw new IOException("invalid");
+				final var fileName = StringUtils.getTextAfter(DOWNLOAD_FILE_PREFIX, StringUtils.toString(bytes));
                 if (fileName == null)
                     throw new IOException("No file name");
                 final var file = new File(fileName);
@@ -54,8 +55,8 @@ public class RequestHandlerAdditional {
                     throw new IOException("No such file: " + file);
 
                 httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
-                var headerKey = "Content-Disposition";
-                var headerValue = String.format("attachment; filename=\"%s\"", Basic.getFileNameWithoutPath(fileName));
+				var headerKey = "Content-Disposition";
+				var headerValue = String.format("attachment; filename=\"%s\"", FileUtils.getFileNameWithoutPath(fileName));
                 httpExchange.getResponseHeaders().set(headerKey, headerValue);
 
                 httpExchange.sendResponseHeaders(200, file.length());

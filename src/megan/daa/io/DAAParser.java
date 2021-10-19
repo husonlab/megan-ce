@@ -24,6 +24,7 @@ import jloda.util.Basic;
 import jloda.util.ByteInputBuffer;
 import jloda.util.ByteOutputBuffer;
 import jloda.util.Pair;
+import jloda.seq.BlastMode;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.io.FileInputStreamAdapter;
@@ -47,7 +48,7 @@ public class DAAParser {
     private final byte[] sourceAlphabet;
     private final byte[] alignmentAlphabet;
 
-    private final jloda.util.BlastMode blastMode;
+	private final BlastMode blastMode;
 
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
@@ -124,23 +125,23 @@ public class DAAParser {
         }
     }
 
-    /**
-     * get the blast mode
-     *
-     * @return blast mode
-     */
-    public jloda.util.BlastMode getBlastMode() {
-        return blastMode;
-    }
+	/**
+	 * get the blast mode
+	 *
+	 * @return blast mode
+	 */
+	public BlastMode getBlastMode() {
+		return blastMode;
+	}
 
-    public static jloda.util.BlastMode getBlastMode(String fileName) {
-        try {
-            DAAParser daaParser = new DAAParser(fileName);
-            return daaParser.getBlastMode();
-        } catch (IOException ignored) {
-        }
-        return jloda.util.BlastMode.Unknown;
-    }
+	public static BlastMode getBlastMode(String fileName) {
+		try {
+			DAAParser daaParser = new DAAParser(fileName);
+			return daaParser.getBlastMode();
+		} catch (IOException ignored) {
+		}
+		return BlastMode.Unknown;
+	}
 
     /**
      * get all alignments in SAM format

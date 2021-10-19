@@ -23,7 +23,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
@@ -107,8 +107,8 @@ public class SaveCommand extends CommandBase implements ICommand {
             }
 
             System.err.println("done");
-            if (Basic.getFileSuffix(file.getPath()).equalsIgnoreCase(".megan"))
-                MeganProperties.addRecentFile(file);
+			if (FileUtils.getFileSuffix(file.getPath()).equalsIgnoreCase(".megan"))
+				MeganProperties.addRecentFile(file);
         } catch (IOException ex) {
             NotificationsInSwing.showError(Objects.requireNonNull(viewer).getFrame(), "Save file '" + fileName + "'failed: " + ex, Integer.MAX_VALUE);
             throw ex;
@@ -136,19 +136,19 @@ public class SaveCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN file", ".megan");
 
         if (file != null) {
-            // if file name has no suffix, add one, unless file with suffix already exists.
-            if (file.getPath().equals(Basic.replaceFileSuffix(file.getPath(), ""))) {
-                final File other = Basic.replaceFileSuffix(file, ".megan");
-                if (!other.exists())
-                    file = other;
-            }
+			// if file name has no suffix, add one, unless file with suffix already exists.
+			if (file.getPath().equals(FileUtils.replaceFileSuffix(file.getPath(), ""))) {
+				final File other = FileUtils.replaceFileSuffix(file, ".megan");
+				if (!other.exists())
+					file = other;
+			}
 
-            ProgramProperties.put(MeganProperties.SAVEFILE, file);
-            String cmd = "save file='" + file.getPath() + "' summary=true;";
-            if (inAskToSave)
-                executeImmediately(cmd);  // we are already in a thread, use immediate execution
-            else
-                execute(cmd);
+			ProgramProperties.put(MeganProperties.SAVEFILE, file);
+			String cmd = "save file='" + file.getPath() + "' summary=true;";
+			if (inAskToSave)
+				executeImmediately(cmd);  // we are already in a thread, use immediate execution
+			else
+				execute(cmd);
         }
     }
 

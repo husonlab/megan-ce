@@ -24,7 +24,7 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IViewerWithLegend;
 import jloda.swing.export.*;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Document;
@@ -111,7 +111,7 @@ public class ExportLegendCommand extends CommandBase implements ICommand {
         Document doc = getDir().getDocument();
         if (doc.getMeganFile().getFileName() != null)
             fileName = doc.getMeganFile().getFileName();
-        fileName = Basic.replaceFileSuffix(fileName, "-legend.pdf");
+		fileName = FileUtils.replaceFileSuffix(fileName, "-legend.pdf");
         ExportImageDialog saveImageDialog;
         if (viewer instanceof IViewerWithLegend) {
             saveImageDialog = new ExportImageDialog(viewer.getFrame(), fileName, false, true, true, event);

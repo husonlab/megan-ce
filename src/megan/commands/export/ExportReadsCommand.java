@@ -24,7 +24,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -45,7 +46,7 @@ import java.util.Set;
 public class ExportReadsCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "export what=reads [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
+		return "export what=reads [data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -53,8 +54,8 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
 
         final String data;
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            data = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("data=");
+			data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         } else
             data = Classification.Taxonomy;
         np.matchIgnoreCase("file=");
@@ -97,8 +98,8 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
         Director dir = getDir();
         if (!dir.getDocument().getMeganFile().hasDataConnector())
             return;
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.fasta");
-        File lastOpenFile = new File(name);
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.fasta");
+		File lastOpenFile = new File(name);
 
         final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new FastaFileFilter(), new FastaFileFilter(), event, "Save all READs to file", ".fasta");
 

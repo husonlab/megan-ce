@@ -23,7 +23,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -86,9 +86,9 @@ public class ExportIndividualSamplesCommand extends CommandBase implements IComm
     public void actionPerformed(ActionEvent event) {
         if (getDoc().getMeganFile().hasDataConnector()) {
             final File savedFile = ProgramProperties.getFile(MeganProperties.SAVEFILE);
-            final File directory = (savedFile != null ? savedFile.getParentFile() : null);
-            final File lastOpenFile = Basic.replaceFileSuffix(new File(directory, getDoc().getSampleNames().get(0)), ".megan");
-            final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Extract MEGAN files", ".megan");
+			final File directory = (savedFile != null ? savedFile.getParentFile() : null);
+			final File lastOpenFile = FileUtils.replaceFileSuffix(new File(directory, getDoc().getSampleNames().get(0)), ".megan");
+			final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Extract MEGAN files", ".megan");
 
             if (file != null) {
                 ProgramProperties.put(MeganProperties.SAVEFILE, file);

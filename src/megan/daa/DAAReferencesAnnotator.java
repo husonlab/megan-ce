@@ -22,10 +22,9 @@ package megan.daa;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jloda.fx.util.ProgramExecutorService;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -169,7 +168,7 @@ class DAAReferencesAnnotator {
                             }
 
                             for (int r = task; r < header.getNumberOfReferences(); r += numberOfThreads) {
-                                final String ref = Basic.toString(header.getReference(r, null));
+								final String ref = StringUtils.toString(header.getReference(r, null));
                                 for (int i = 0; i < idParsers.length; i++) {
                                     try {
                                         cName2ref2class[i][r] = idParsers[i].getIdFromHeaderLine(ref);

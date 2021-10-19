@@ -22,7 +22,7 @@ package megan.timeseriesviewer.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.timeseriesviewer.TimeSeriesViewer;
@@ -75,7 +75,7 @@ public class CompareSubjectsCommand extends CommandBase implements ICommand {
 
         if (subject2samples.size() > 0) {
             final StringBuilder buf = new StringBuilder();
-            buf.append("compare title='").append(Basic.replaceFileSuffix(doc.getTitle(), "")).append("-").append(subjectDefiningAttribute).append("'");
+			buf.append("compare title='").append(FileUtils.replaceFileSuffix(doc.getTitle(), "")).append("-").append(subjectDefiningAttribute).append("'");
             for (String subject : subjectOrder) {
                 buf.append(" name='").append(subjectDefiningAttribute).append(":").append(subject).append("' samples=");
                 for (String sample : subject2samples.get(subject)) {

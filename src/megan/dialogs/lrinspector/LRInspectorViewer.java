@@ -40,6 +40,7 @@ import jloda.swing.util.IViewerWithJComponent;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -114,7 +115,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         this.classId = classId;
         this.classIdName = ClassificationManager.get(classificationName, true).getName2IdMap().get(classId);
         if (classIdName != null)
-            classIdName = Basic.abbreviateDotDotDot(Basic.toCleanName(classIdName), 60);
+			classIdName = StringUtils.abbreviateDotDotDot(StringUtils.toCleanName(classIdName), 60);
         else
             classIdName = "" + classId;
 
@@ -501,10 +502,10 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         if (getClassificationName().equals(Classification.Taxonomy)) {
             int rank = TaxonomyData.getTaxonomicRank(getClassId());
             if (rank != 0) {
-                return Basic.abbreviateDotDotDot(TaxonomicLevels.getName(rank) + " " + getClassIdName(), 80);
+				return StringUtils.abbreviateDotDotDot(TaxonomicLevels.getName(rank) + " " + getClassIdName(), 80);
             }
         }
-        return Basic.abbreviateDotDotDot(getClassIdName(), 80);
+		return StringUtils.abbreviateDotDotDot(getClassIdName(), 80);
     }
 
     public void selectAllCompatible(boolean compatible) {
@@ -711,8 +712,8 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
                 progressListener.setMaximum(getController().getTableView().getSelectionModel().getSelectedItems().size());
                 progressListener.setProgress(0);
                 for (TableItem item : getController().getTableView().getSelectionModel().getSelectedItems()) {
-                    w.write(">" + Basic.swallowLeadingGreaterSign(item.getReadName()) + "\n");
-                    w.write(item.getReadSequence() + "\n");
+					w.write(">" + StringUtils.swallowLeadingGreaterSign(item.getReadName()) + "\n");
+					w.write(item.getReadSequence() + "\n");
                     count++;
                     progressListener.incrementProgress();
                 }

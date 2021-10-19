@@ -26,7 +26,10 @@ import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.alignment.AlignmentViewer;
 import megan.assembly.ReadAssembler;
 import megan.assembly.ReadData;
@@ -190,8 +193,8 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
                 final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true);
                 try (IReadBlockIterator it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
-                    final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedNodeIds(), ", ");
-                    final java.util.List<ReadData> readData = ReadDataCollector.apply(it, progress);
+					final String label = viewer.getClassName() + ". Id(s): " + StringUtils.toString(viewer.getSelectedNodeIds(), ", ");
+					final java.util.List<ReadData> readData = ReadDataCollector.apply(it, progress);
                     readAssembler.computeOverlapGraph(label, minOverlap, readData, progress);
                     int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
@@ -275,21 +278,21 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             middlePanel.add(messagePanel);
         }
 
-        File lastOpenFile = ProgramProperties.getFile("AssemblyFile");
-        String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getName(), "");
-        String addOn = null;
+		File lastOpenFile = ProgramProperties.getFile("AssemblyFile");
+		String fileName = FileUtils.replaceFileSuffix(doc.getMeganFile().getName(), "");
+		String addOn = null;
         if (getViewer() instanceof AlignmentViewer) {
-            addOn = Basic.toCleanName(((AlignmentViewer) getViewer()).getAlignment().getName()).replaceAll("[_]+", "_");
+			addOn = StringUtils.toCleanName(((AlignmentViewer) getViewer()).getAlignment().getName()).replaceAll("[_]+", "_");
         } else if (getViewer() instanceof ViewerBase) {
             addOn = getViewer().getClassName().toLowerCase();
             final Set<String> labels = new HashSet<>(((ViewerBase) getViewer()).getSelectedNodeLabels(false));
             if (labels.size() == 1)
-                addOn += "-" + Basic.toCleanName(labels.iterator().next()).replaceAll("[_]+", "_");
+				addOn += "-" + StringUtils.toCleanName(labels.iterator().next()).replaceAll("[_]+", "_");
         }
         if (addOn != null) {
             final File file = new File(fileName);
             final String name = file.getName();
-            fileName = Basic.getFilePath(file.getParent(), Basic.replaceFileSuffix(name, "-" + addOn));
+			fileName = FileUtils.getFilePath(file.getParent(), FileUtils.replaceFileSuffix(name, "-" + addOn));
         }
 
         if (lastOpenFile != null) {
@@ -403,18 +406,18 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                 String fileName = (new File(outfile.getText().trim())).getPath();
 
                 if (fileName.length() > 0) {
-                    if (Basic.getFileSuffix(fileName) == null)
-                        fileName = Basic.replaceFileSuffix(fileName, ".fasta");
-                    if (!askedToOverwrite.get() && (new File(fileName)).exists()) {
-                        switch (JOptionPane.showConfirmDialog(getViewer().getFrame(), "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
-                            case JOptionPane.CANCEL_OPTION: // close and abort
-                                dialog.setVisible(false);
-                                return;
-                            case JOptionPane.NO_OPTION: // don't close
-                                return;
-                            default: // close and continue
-                        }
-                    }
+					if (FileUtils.getFileSuffix(fileName) == null)
+						fileName = FileUtils.replaceFileSuffix(fileName, ".fasta");
+					if (!askedToOverwrite.get() && (new File(fileName)).exists()) {
+						switch (JOptionPane.showConfirmDialog(getViewer().getFrame(), "File already exists, do you want to replace it?", "File exists", JOptionPane.YES_NO_CANCEL_OPTION)) {
+							case JOptionPane.CANCEL_OPTION: // close and abort
+								dialog.setVisible(false);
+								return;
+							case JOptionPane.NO_OPTION: // don't close
+								return;
+							default: // close and continue
+						}
+					}
                     dialog.setVisible(false);
 
                     ProgramProperties.put("AssemblyFile", fileName);

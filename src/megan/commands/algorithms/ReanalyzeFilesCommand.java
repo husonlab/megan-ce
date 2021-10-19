@@ -23,9 +23,9 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
@@ -44,12 +44,12 @@ import java.util.List;
  */
 public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>]\n" +
-                "\t[topPercent=<number>] [minSupportPercent=<num>] [minSupport=<num>]\n" +
-                "\t[lcaAlgorithm={" + Basic.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
-                " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
-                "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
-                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "|*}];";
+		return "reanalyzeFiles file=<name> [,<name>...] [minSupportPercent=<number>] [minSupport=<number>] [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>]\n" +
+			   "\t[topPercent=<number>] [minSupportPercent=<num>] [minSupport=<num>]\n" +
+			   "\t[lcaAlgorithm={" + StringUtils.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
+			   " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+			   "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
+			   "\t[readAssignmentMode={" + StringUtils.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "|*}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -72,7 +72,7 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
         final String fNames = np.findIgnoreCase(tokens, "fName=", null, "*");
         final boolean allFNames = (fNames.equals("*"));
 
-        final String recomputeParameters = Basic.toString(tokens, " ").replaceAll("fNames\\s*=.*", "");
+		final String recomputeParameters = StringUtils.toString(tokens, " ").replaceAll("fNames\\s*=.*", "");
 
         for (String file : files) {
             progress.setTasks("Reanalyzing", file);
@@ -92,7 +92,7 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
                 doc.setOpenDAAFileOnlyIfMeganized(false);
                 doc.getMeganFile().setFileFromExistingFile(file, false);
 
-                final String fNamesToUse = (allFNames ? Basic.toString(Basic.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy"), " ") : fNames).trim();
+				final String fNamesToUse = (allFNames ? StringUtils.toString(StringUtils.remove(doc.getConnector().getAllClassificationNames(), "Taxonomy"), " ") : fNames).trim();
 
                 final String recomputeCommand = "recompute " + recomputeParameters + (fNamesToUse.length() > 0 ? " fNames = " + fNamesToUse : "") + ";";
 

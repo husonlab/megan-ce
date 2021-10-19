@@ -22,7 +22,7 @@ package megan.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -41,9 +41,9 @@ import java.util.Set;
 
 public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract what=reads outDir=<directory> outFile=<filename-template> [data={"
-                + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}][ids=<SELECTED|numbers...>]\n" +
-                "\t[names=<names...>] [allBelow={false|true}];";
+		return "extract what=reads outDir=<directory> outFile=<filename-template> [data={"
+			   + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}][ids=<SELECTED|numbers...>]\n" +
+			   "\t[names=<names...>] [allBelow={false|true}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -62,8 +62,8 @@ public class ExtractReadsDialogCommand extends CommandBase implements ICommand {
 
         String cName = Classification.Taxonomy;
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("data=");
+			cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
 
         final ViewerBase viewer;

@@ -25,9 +25,7 @@ import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -56,11 +54,11 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
      * @return usage
      */
     public String getSyntax() {
-        return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [lcaAlgorithm={" + Basic.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>]\n" +
-                "\t[minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
-                "\t[fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[contaminantsFile=<filename>] [description=<text>];";
+		return "meganize daaFile=<name> [,<name>...] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
+			   "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [lcaAlgorithm={" + StringUtils.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>]\n" +
+			   "\t[minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+			   "\t[fNames={" + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
+			   "\t[contaminantsFile=<filename>] [description=<text>];";
     }
 
     /**
@@ -174,8 +172,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
 
         Document.ReadAssignmentMode readAssignmentMode = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS;
         if (np.peekMatchIgnoreCase("readAssignmentMode")) {
-            np.matchIgnoreCase("readAssignmentMode=");
-            readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " ")));
+			np.matchIgnoreCase("readAssignmentMode=");
+			readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(StringUtils.toString(Document.ReadAssignmentMode.values(), " ")));
         }
 
         final Collection<String> known = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
@@ -256,7 +254,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
 
                     if (description != null && description.length() > 0) {
                         description = description.replaceAll("^ +| +$|( )+", "$1"); // replace all white spaces by a single space
-                        final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(tmpDoc.getMeganFile().getFileName()), "");
+						final String sampleName = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(tmpDoc.getMeganFile().getFileName()), "");
                         tmpDoc.getSampleAttributeTable().put(sampleName, SampleAttributeTable.DescriptionAttribute, description);
                     }
                     if (tmpDoc.getNumberOfReads() == 0)

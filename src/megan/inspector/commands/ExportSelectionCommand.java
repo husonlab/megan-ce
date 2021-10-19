@@ -26,7 +26,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.inspector.InspectorWindow;
@@ -52,11 +53,11 @@ public class ExportSelectionCommand extends CommandBase implements ICommand {
 
         final String selection = ((InspectorWindow) getViewer()).getSelection();
         if (selection.length() > 0) {
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
-                writer.write(selection);
-            }
+			try (Writer writer = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+				writer.write(selection);
+			}
         }
-        NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + Basic.countOccurrences(selection, '\n') + " lines to file: " + outputFile);
+		NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + outputFile);
     }
 
     public boolean isApplicable() {
@@ -70,8 +71,8 @@ public class ExportSelectionCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         final Director dir = (Director) getDir();
         if (getViewer() instanceof InspectorWindow) {
-            String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-inspector.txt");
-            File lastOpenFile = new File(name);
+			String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-inspector.txt");
+			File lastOpenFile = new File(name);
 
             final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save selected text to file", ".txt");
 

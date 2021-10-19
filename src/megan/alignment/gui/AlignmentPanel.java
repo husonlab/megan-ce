@@ -22,8 +22,8 @@ package megan.alignment.gui;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.Cursors;
 import jloda.swing.util.ToolTipHelper;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.alignment.gui.colors.ColorSchemeText;
 import megan.alignment.gui.colors.IColorScheme;
 
@@ -493,8 +493,8 @@ public class AlignmentPanel extends BasePanel {
                         int firstCol = lane.getFirstNonGapPosition() - firstJump;
                         int lastCol = lane.getLastNonGapPosition() - firstJump - 1;
                         selectedBlock.select(row, firstCol, row, lastCol, alignment.isTranslate());
-                        ProjectManager.getPreviouslySelectedNodeLabels().clear();
-                        ProjectManager.getPreviouslySelectedNodeLabels().add(Basic.getFirstWord(lane.getName()));
+						ProjectManager.getPreviouslySelectedNodeLabels().clear();
+						ProjectManager.getPreviouslySelectedNodeLabels().add(StringUtils.getFirstWord(lane.getName()));
                     } else if ((me.isAltDown() && selectedBlock.isSelected()) || !selectedBlock.contains(row, col)) {
                         selectedBlock.clear();
                     }

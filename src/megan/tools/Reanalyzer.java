@@ -23,6 +23,7 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.UsageException;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -143,7 +144,7 @@ public class Reanalyzer {
 
         if (runClassifications) {
             final StringBuilder buf = new StringBuilder();
-            buf.append("reanalyzeFiles file='").append(Basic.toString(inputFiles, "', '")).append("'");
+			buf.append("reanalyzeFiles file='").append(StringUtils.toString(inputFiles, "', '")).append("'");
             if (minSupportPercent != -1f)
                 buf.append(" minSupportPercent = ").append(minSupportPercent);
             if (minSupport != -1f)

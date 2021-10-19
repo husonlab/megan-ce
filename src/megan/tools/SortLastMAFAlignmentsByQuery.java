@@ -22,6 +22,9 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.FastAFileIterator;
+import jloda.seq.IFastAIterator;
+import jloda.util.progress.ProgressPercentage;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -82,8 +85,8 @@ public class SortLastMAFAlignmentsByQuery {
             try (IFastAIterator iterator = FastAFileIterator.getFastAOrFastQAsFastAIterator(readsFile); ProgressPercentage progress = new ProgressPercentage("Processing file: " + readsFile)) {
                 progress.setMaximum(iterator.getMaximumProgress());
                 while (iterator.hasNext()) {
-                    readNamesOrder.add(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(iterator.next().getFirst())));
-                    progress.setProgress(iterator.getProgress());
+					readNamesOrder.add(StringUtils.getFirstWord(StringUtils.swallowLeadingGreaterSign(iterator.next().getFirst())));
+					progress.setProgress(iterator.getProgress());
                 }
             }
             orderSetFromReadsFile = (readNamesOrder.size() > 0);
@@ -97,18 +100,18 @@ public class SortLastMAFAlignmentsByQuery {
         long alignmentsIn = 0;
         long alignmentsOut = 0;
 
-        try (FileLineIterator it = new FileLineIterator(lastMAFFile);
-             BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+		try (FileLineIterator it = new FileLineIterator(lastMAFFile);
+			 BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 
-            try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + lastMAFFile)) {
-                progress.setMaximum(it.getMaximumProgress());
-                while (it.hasNext()) {
-                    String line = it.next();
-                    if (line.startsWith("#")) {
-                        if (inInitialComments && !line.startsWith("# batch")) {
-                            w.write(line);
-                            w.write('\n');
-                        }
+			try (ProgressPercentage progress = new ProgressPercentage("Processing file: " + lastMAFFile)) {
+				progress.setMaximum(it.getMaximumProgress());
+				while (it.hasNext()) {
+					String line = it.next();
+					if (line.startsWith("#")) {
+						if (inInitialComments && !line.startsWith("# batch")) {
+							w.write(line);
+							w.write('\n');
+						}
                     } else {
                         if (inInitialComments)
                             inInitialComments = false;
@@ -161,8 +164,8 @@ public class SortLastMAFAlignmentsByQuery {
                             });
                             for (byte[][] alignment : alignments) {
                                 for (byte[] line : alignment) {
-                                    w.write(Basic.toString(line));
-                                    w.write('\n');
+									w.write(StringUtils.toString(line));
+									w.write('\n');
                                 }
                                 w.write('\n');
                                 alignmentsOut++;
@@ -186,8 +189,8 @@ public class SortLastMAFAlignmentsByQuery {
     }
 
     private int parseScoreFromA(byte[] s) {
-        String string = Basic.toString(s);
-        int a = string.indexOf('=') + 1;
+		String string = StringUtils.toString(s);
+		int a = string.indexOf('=') + 1;
         int b = a;
         while (b < s.length && !Character.isWhitespace(string.charAt(b)))
             b++;

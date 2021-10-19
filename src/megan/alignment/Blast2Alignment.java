@@ -20,6 +20,8 @@
 package megan.alignment;
 
 import jloda.util.*;
+import jloda.seq.SequenceUtils;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.ActiveMatches;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
@@ -121,8 +123,8 @@ public class Blast2Alignment {
                 ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
 
                 if (activeMatches.cardinality() > 0) {
-                    final String readHeader = Basic.swallowLeadingGreaterSign(readBlock.getReadHeader().substring(1)).replaceAll("[\r\n]", "").trim();
-                    final String readSequence;
+					final String readHeader = StringUtils.swallowLeadingGreaterSign(readBlock.getReadHeader().substring(1)).replaceAll("[\r\n]", "").trim();
+					final String readSequence;
                     {
                         final String sequence = readBlock.getReadSequence();
                         if (sequence == null)
@@ -143,7 +145,7 @@ public class Blast2Alignment {
                             final String matchText = BlastParsingUtils.removeReferenceHeaderFromBlastMatch(BlastParsingUtils.truncateBeforeSecondOccurrence(matchBlock.getText(), "Score ="));
                             //  todo: not sure what the following was supposed to do, but it broke the code: .replaceAll("[\t\r\n ]+", " ");
 
-                            String key = Basic.getFirstLine(matchBlock.getText());
+							String key = StringUtils.getFirstLine(matchBlock.getText());
                             // if this is an augmented DNA reference, remove everything from |pos| onward
 
                             //  System.err.println("key:  "+key);
@@ -333,19 +335,19 @@ public class Blast2Alignment {
         Integer which = 0;
 
         for (byte[][] readMatchPair : readMatchPairs) {
-            String readHeader = Basic.toString(readMatchPair[0]);
-            String readSequence = Basic.toString(readMatchPair[1]);
-            String matchText = Basic.toString(readMatchPair[2]);
-            totalReadsIn++;
+			String readHeader = StringUtils.toString(readMatchPair[0]);
+			String readSequence = StringUtils.toString(readMatchPair[1]);
+			String matchText = StringUtils.toString(readMatchPair[2]);
+			totalReadsIn++;
 
-            if (getBlastType().equals(UNKNOWN))
-                setBlastType(BlastParsingUtils.guessBlastType(matchText));
-            // set sequence type
-            switch (getBlastType()) {
-                case BLASTX:
-                    alignment.setReferenceType(Alignment.PROTEIN);
-                    alignment.setSequenceType(Alignment.cDNA);
-                    break;
+			if (getBlastType().equals(UNKNOWN))
+				setBlastType(BlastParsingUtils.guessBlastType(matchText));
+			// set sequence type
+			switch (getBlastType()) {
+				case BLASTX:
+					alignment.setReferenceType(Alignment.PROTEIN);
+					alignment.setSequenceType(Alignment.cDNA);
+					break;
                 case BLASTP:
                     alignment.setReferenceType(Alignment.PROTEIN);
                     alignment.setSequenceType(Alignment.PROTEIN);

@@ -24,10 +24,8 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.director.*;
 import jloda.swing.util.ListTransferHandler;
 import jloda.swing.util.PopupMenu;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import megan.chart.ChartColorManager;
 import megan.chart.gui.LabelsJList;
 import megan.chart.gui.SyncListener;
@@ -202,7 +200,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             if (ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE).equals(MeganProperties.DEFAULT_TAXONOMYFILE))
                 buf2.append("Taxonomy");
             else
-                buf2.append("Taxonomy=").append(Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE)), ""));
+                buf2.append("Taxonomy=").append(FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE)), ""));
             if (TaxonomyData.isAvailable()) {
                 if (TaxonomyData.getTree().getNumberOfNodes() > 0)
                     buf2.append(String.format(" size=%,d,", TaxonomyData.getTree().getNumberOfNodes()));

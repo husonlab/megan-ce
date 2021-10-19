@@ -21,9 +21,9 @@ package megan.dialogs.export;
 
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.algorithms.TopAssignment;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -117,7 +117,7 @@ class ExportFunctionalClassIds2TaxonIds {
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 if (useTaxonId)
-                    w.write("#" + format + separator + Basic.toString(taxonIds, "" + separator) + "\n");
+					w.write("#" + format + separator + StringUtils.toString(taxonIds, "" + separator) + "\n");
                 else {
                     String[] taxonNames = new String[taxonIds.length];
                     for (int i = 0; i < taxonIds.length; i++) {
@@ -125,7 +125,7 @@ class ExportFunctionalClassIds2TaxonIds {
                         if (taxonNames[i] == null)
                             taxonNames[i] = "" + taxonIds[i];
                     }
-                    w.write("#" + format + separator + Basic.toString(taxonNames, "" + separator) + "\n");
+					w.write("#" + format + separator + StringUtils.toString(taxonNames, "" + separator) + "\n");
                 }
                 for (Map.Entry<Integer, int[]> entry : classId2Counts.entrySet()) {
                     final int classId = entry.getKey();

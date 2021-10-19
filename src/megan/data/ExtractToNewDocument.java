@@ -20,6 +20,8 @@
 package megan.data;
 
 import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressListener;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.parsers.blast.BlastN2SAMIterator;
@@ -59,8 +61,8 @@ public class ExtractToNewDocument {
         try { // user might cancel inside this block
             // determine the set of all positions to extract:
             try (IReadBlockIterator iterator = connector.getReadsIteratorForListOfClassIds(srcClassification, srcClassIds, 0, 10, true, true)) {
-                progress.setTasks("Extracting", "Processing file: " + Basic.getFileNameWithoutPath(srcDoc.getMeganFile().getFileName()));
-                progress.setProgress(0);
+				progress.setTasks("Extracting", "Processing file: " + FileUtils.getFileNameWithoutPath(srcDoc.getMeganFile().getFileName()));
+				progress.setProgress(0);
                 progress.setMaximum(iterator.getMaximumProgress());
 
                 while (iterator.hasNext()) {

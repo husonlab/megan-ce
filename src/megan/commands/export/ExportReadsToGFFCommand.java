@@ -26,6 +26,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -49,7 +50,7 @@ import java.io.File;
 public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "export what=GFF file=<file-name> [classification={all|" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={true|false}]";
+		return "export what=GFF file=<file-name> [classification={all|" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "] [excludeIncompatible={false|true}] [excludeDominated={true|false}]";
     }
 
     /**
@@ -64,8 +65,8 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         final String fileName = np.getWordFileNamePunctuation();
         final String classification;
         if (np.peekMatchIgnoreCase("classification")) {
-            np.matchIgnoreCase("classification=");
-            classification = np.getWordMatchesIgnoringCase("all " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("classification=");
+			classification = np.getWordMatchesIgnoringCase("all " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         } else
             classification = "all";
 
@@ -121,8 +122,8 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         final Triplet<Boolean, Boolean, String> options = getOptions(getViewer().getFrame(), canExport, canExcludeIncompatible);
         if (options != null) {
 
-            String name = Basic.replaceFileSuffix(((Director) getDir()).getDocument().getTitle(), "-" + ExportAlignedReads2GFF3Format.getShortName(options.getThird()) + ".gff");
-            String lastGFFFile = ProgramProperties.get("lastGFFFile", "");
+			String name = FileUtils.replaceFileSuffix(((Director) getDir()).getDocument().getTitle(), "-" + ExportAlignedReads2GFF3Format.getShortName(options.getThird()) + ".gff");
+			String lastGFFFile = ProgramProperties.get("lastGFFFile", "");
             File lastOpenFile = new File((new File(lastGFFFile)).getParent(), name);
 
             final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(".gff"), new TextFileFilter(".gff"), event, "Save read annotations to file", ".gff");

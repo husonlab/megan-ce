@@ -21,7 +21,7 @@ package megan.alignment;
 
 import jloda.util.CanceledException;
 import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
 

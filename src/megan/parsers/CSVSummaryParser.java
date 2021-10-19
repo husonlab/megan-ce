@@ -20,9 +20,7 @@
 package megan.parsers;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.FileLineIterator;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -56,8 +54,8 @@ public class CSVSummaryParser {
      */
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator, long multiplier) throws IOException {
         String separator = (tabSeparator ? "\t" : ",");
-        System.err.println("Importing summary of " + Basic.toString(cNames, ", ") + " assignments from CSV file");
-        System.err.println("Specified line format: classname" + separator + "count{" + separator + "count" + separator + "count...}");
+		System.err.println("Importing summary of " + StringUtils.toString(cNames, ", ") + " assignments from CSV file");
+		System.err.println("Specified line format: classname" + separator + "count{" + separator + "count" + separator + "count...}");
 
         DataTable table = doc.getDataTable();
         table.clear();
@@ -123,7 +121,7 @@ public class CSVSummaryParser {
                         if (tokens.length < 2)
                             throw new IOException("Line " + it.getLineNumber() + ": incorrect number of columns, expected at least 2, got: " + tokens.length + " (" + aLine + ")");
 
-                        boolean headerLinePresent = (Basic.getIndexIgnoreCase(tokens[0], "name", "names", "samples", "SampleId", SampleAttributeTable.SAMPLE_ID, "Dataset", "Datasets") != -1);
+						boolean headerLinePresent = (StringUtils.getIndexIgnoreCase(tokens[0], "name", "names", "samples", "SampleId", SampleAttributeTable.SAMPLE_ID, "Dataset", "Datasets") != -1);
                         if (!headerLinePresent) { // check other tokens: unless all are numbers, assume the first line is header line
                             for (int i = 1; i < tokens.length; i++) {
                                 if (!Basic.isFloat(tokens[i])) {
@@ -134,7 +132,7 @@ public class CSVSummaryParser {
                         }
 
                         if (!headerLinePresent && tokens[0].startsWith("#")) {
-                            System.err.println("Skipping comment line: " + Basic.abbreviateDotDotDot(aLine, 80));
+							System.err.println("Skipping comment line: " + StringUtils.abbreviateDotDotDot(aLine, 80));
                             continue;
                         }
                         first = false;
@@ -144,7 +142,7 @@ public class CSVSummaryParser {
                             System.arraycopy(tokens, 1, names, 0, names.length);
                             table.setSamples(names, null, null, null);
                         } else if (tokens.length == 2) {
-							names = new String[]{Basic.getFileBaseName((new File(fileName)).getName())};
+							names = new String[]{FileUtils.getFileBaseName((new File(fileName)).getName())};
 						} else {
 							names = new String[tokens.length - 1];
 							for (int i = 0; i < names.length; i++)

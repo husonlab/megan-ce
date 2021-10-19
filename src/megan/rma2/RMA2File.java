@@ -19,7 +19,7 @@
  */
 package megan.rma2;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import megan.core.SampleAttributeTable;
 import megan.data.LocationManager;
 import megan.data.TextStoragePolicy;
@@ -253,13 +253,13 @@ public class RMA2File {
     }
 
     public File getIndexTmpFile() {
-        File tmpFile = new File(file.getParent(), Basic.replaceFileSuffix(file.getName(), ".tmp0"));
+		File tmpFile = new File(file.getParent(), FileUtils.replaceFileSuffix(file.getName(), ".tmp0"));
         tmpFile.deleteOnExit();
         return tmpFile;
     }
 
     public File getClassificationIndexTmpFile() {
-        File tmpFile = new File(file.getParent(), Basic.replaceFileSuffix(file.getName(), ".tmp1"));
+		File tmpFile = new File(file.getParent(), FileUtils.replaceFileSuffix(file.getName(), ".tmp1"));
         tmpFile.deleteOnExit();
         return tmpFile;
     }

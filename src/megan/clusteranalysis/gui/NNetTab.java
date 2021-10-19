@@ -22,7 +22,7 @@ package megan.clusteranalysis.gui;
 
 import jloda.swing.util.GraphViewPopupListener;
 import jloda.util.ProgramProperties;
-import jloda.util.ProgressCmdLine;
+import jloda.util.progress.ProgressCmdLine;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.nnet.NeighborNet;
 import megan.clusteranalysis.nnet.Outline;

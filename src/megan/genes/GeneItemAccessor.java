@@ -20,7 +20,8 @@
 package megan.genes;
 
 import jloda.util.Basic;
-import jloda.util.ProgressPercentage;
+import jloda.util.progress.ProgressPercentage;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.classification.IdMapper;
@@ -154,7 +155,7 @@ public class GeneItemAccessor {
             if (refInterval != null) {
                 final GeneItem geneItem = refInterval.getData();
 
-                return Basic.swallowLeadingGreaterSign(Basic.getFirstWord(referenceHeader)) + "|" + geneItem.getAnnotation(refInterval);
+				return StringUtils.swallowLeadingGreaterSign(StringUtils.getFirstWord(referenceHeader)) + "|" + geneItem.getAnnotation(refInterval);
             }
         }
         return referenceHeader;

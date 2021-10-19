@@ -28,6 +28,7 @@ import jloda.swing.commands.ICommand;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -50,7 +51,7 @@ import java.util.*;
  */
 public class ComputeContrastsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "compute contrasts data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), ",") + "}";
+		return "compute contrasts data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), ",") + "}";
     }
 
     /**
@@ -62,7 +63,7 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute contrasts data=");
-        final String viewerName = np.getWordMatchesIgnoringCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		final String viewerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof GroupsViewer) {
@@ -110,27 +111,27 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
 
                     final Contrasts contrasts = new Contrasts();
 
-                    try {
-                        Basic.hideSystemErr();
-                        contrasts.apply(data);
-                    } finally {
-                        Basic.restoreSystemErr();
-                    }
-                    executeImmediately("show window=message;");
-                    System.out.println("\nContrasts for " + viewerName + " assignments on " + numberOfNodes + " nodes:");
+					try {
+						Basic.hideSystemErr();
+						contrasts.apply(data);
+					} finally {
+						Basic.restoreSystemErr();
+					}
+					executeImmediately("show window=message;");
+					System.out.println("\nContrasts for " + viewerName + " assignments on " + numberOfNodes + " nodes:");
 
-                    System.out.println("Group " + twoGroupIds.getFirst() + ": " + Basic.toString(first, ","));
-                    System.out.println("Group " + twoGroupIds.getSecond() + ": " + Basic.toString(second, ","));
+					System.out.println("Group " + twoGroupIds.getFirst() + ": " + StringUtils.toString(first, ","));
+					System.out.println("Group " + twoGroupIds.getSecond() + ": " + StringUtils.toString(second, ","));
 
-                    System.out.println("Results for group " + twoGroupIds.getFirst() + " vs group " + twoGroupIds.getSecond() + ":");
-                    Map<String, Double> results = contrasts.getSplitScores(first.toArray(new String[0]), second.toArray(new String[0]));
+					System.out.println("Results for group " + twoGroupIds.getFirst() + " vs group " + twoGroupIds.getSecond() + ":");
+					Map<String, Double> results = contrasts.getSplitScores(first.toArray(new String[0]), second.toArray(new String[0]));
 
-                    SortedSet<Pair<Double, String>> sorted = new TreeSet<>();
-                    System.out.println(String.format("%-20s\tScore", viewerName));
-                    for (String taxon : results.keySet()) {
-                        double value = results.get(taxon); // clamp to range -1 1
-                        if (value < -1)
-                            value = -1;
+					SortedSet<Pair<Double, String>> sorted = new TreeSet<>();
+					System.out.println(String.format("%-20s\tScore", viewerName));
+					for (String taxon : results.keySet()) {
+						double value = results.get(taxon); // clamp to range -1 1
+						if (value < -1)
+							value = -1;
                         else if (value > 1)
                             value = 1;
                         sorted.add(new Pair<>(-value, taxon)); // negative sign to sort from high to low...

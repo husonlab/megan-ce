@@ -22,7 +22,7 @@ package megan.biom.biom2;
 
 import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.IdMapper;
 
@@ -47,12 +47,12 @@ class ImportBiom2Taxonomy {
         int[] dimensions = null;
 
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
-            if (Basic.getIndexIgnoreCase(metaKey, keys) != -1) {
-                pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
-                dimensions = pathArray.dimensions();
-                if (dimensions != null && dimensions.length > 0)
-                    break;
-            }
+			if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
+				pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
+				dimensions = pathArray.dimensions();
+				if (dimensions != null && dimensions.length > 0)
+					break;
+			}
         }
         if (dimensions == null)
             return null;
@@ -110,12 +110,12 @@ class ImportBiom2Taxonomy {
      */
     public static boolean hasTaxonomyMetadata(IHDF5Reader reader) {
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
-            if (Basic.getIndexIgnoreCase(metaKey, keys) != -1) {
-                final MDArray<String> pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
-                final int[] dimensions = pathArray.dimensions();
-                if (dimensions != null && dimensions.length > 0)
-                    return true;
-            }
+			if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
+				final MDArray<String> pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
+				final int[] dimensions = pathArray.dimensions();
+				if (dimensions != null && dimensions.length > 0)
+					return true;
+			}
         }
         return false;
     }

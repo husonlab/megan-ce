@@ -21,6 +21,7 @@
 package megan.ms.server;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,16 +30,16 @@ import java.util.List;
 public class Parameters {
     public static boolean matchIgnoreCase(String[] parameters, String key, String value) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
-            if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.contains(Basic.split(tokens[1].toLowerCase(), ','), value.toLowerCase()))
-                return true;
-        }
+			final String[] tokens = StringUtils.split(param, '=');
+			if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.contains(StringUtils.split(tokens[1].toLowerCase(), ','), value.toLowerCase()))
+				return true;
+		}
         return false;
     }
 
     public static String getValue(String[] parameters, String key) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key))
                 return tokens[1];
         }
@@ -48,7 +49,7 @@ public class Parameters {
 
     public static boolean getValue(String[] parameters, String key, boolean defaultValue) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isBoolean(tokens[1]))
                 return Basic.parseBoolean(tokens[1]);
         }
@@ -57,7 +58,7 @@ public class Parameters {
 
     public static int getValue(String[] parameters, String key, int defaultValue) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isInteger(tokens[1]))
                 return Basic.parseInt(tokens[1]);
         }
@@ -66,7 +67,7 @@ public class Parameters {
 
     public static long getValue(String[] parameters, String key, long defaultValue) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isLong(tokens[1]))
                 return Basic.parseLong(tokens[1]);
         }
@@ -75,7 +76,7 @@ public class Parameters {
 
     public static double getValue(String[] parameters, String key, double defaultValue) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key) && Basic.isDouble(tokens[1]))
                 return Basic.parseDouble(tokens[1]);
         }
@@ -85,9 +86,9 @@ public class Parameters {
     public static String[] getValues(String[] parameters, String key) {
         final ArrayList<String> values = new ArrayList<>();
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key)) {
-                values.addAll(Arrays.asList(Basic.split(tokens[1], ',')));
+				values.addAll(Arrays.asList(StringUtils.split(tokens[1], ',')));
             }
         }
         return values.toArray(new String[0]);
@@ -95,7 +96,7 @@ public class Parameters {
 
     public static boolean hasKey(String[] parameters, String key) {
         for (String param : parameters) {
-            final String[] tokens = Basic.split(param, '=');
+			final String[] tokens = StringUtils.split(param, '=');
             if (tokens.length == 2 && tokens[0].equalsIgnoreCase(key))
                 return true;
         }

@@ -21,7 +21,7 @@ package megan.parsers.blast;
 
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 
@@ -70,9 +70,9 @@ public class Fasta2SAMIterator extends SAMIteratorBase implements ISAMIterator {
         if (line == null || !line.startsWith(">"))
             return -1;
 
-        final String queryName = Basic.getReadName(line);
+		final String queryName = StringUtils.getReadName(line);
 
-        matchesText = makeSAM(queryName, Basic.replaceSpaces(line, ' ')).getBytes();
+		matchesText = makeSAM(queryName, StringUtils.replaceSpaces(line, ' ')).getBytes();
 
         while (hasNextLine()) {
             line = nextLine();

@@ -23,8 +23,8 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FileFilterBase;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 import megan.importblast.commands.CommandBase;
@@ -75,10 +75,10 @@ public class ChooseDAAFilesCommand extends CommandBase implements ICommand {
         java.util.List<File> files = ChooseFileDialog.chooseFilesToOpen(importBlastDialog, lastOpenFile, fileFilter, fileFilter, event, "Open Diamond DAA file(s)");
 
         if (files.size() > 0) {
-            importBlastDialog.setBlastFileName(Basic.toString(files, "\n"));
-            importBlastDialog.getBlastFileNameField().setText(Basic.toString(files, "\n"));
-            ProgramProperties.put(MeganProperties.BLASTFILE, files.get(0));
-        }
+			importBlastDialog.setBlastFileName(StringUtils.toString(files, "\n"));
+			importBlastDialog.getBlastFileNameField().setText(StringUtils.toString(files, "\n"));
+			ProgramProperties.put(MeganProperties.BLASTFILE, files.get(0));
+		}
     }
 
     public String getName() {

@@ -19,9 +19,8 @@
  */
 package megan.core;
 
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -246,7 +245,7 @@ public class DataTable {
                             break;
                         case COLOR_EDITS:
                             if (tokens.length > 1) {
-                                colorEdits = Basic.toString(tokens, 1, tokens.length - 1, "\t");
+								colorEdits = StringUtils.toString(tokens, 1, tokens.length - 1, "\t");
                             } else
                                 colorEdits = null;
                             break;
@@ -378,7 +377,7 @@ public class DataTable {
                     if (counts != null) {
                         w.write(classification + "\t" + classId);
                         for (int i = 0; i < getNumberOfSamples(); i++) {
-                            w.write("\t" + (i < counts.length ? Basic.removeTrailingZerosAfterDot(""+counts[i]) : 0));
+							w.write("\t" + (i < counts.length ? StringUtils.removeTrailingZerosAfterDot("" + counts[i]) : 0));
                         }
                         w.write("\n");
                     }
@@ -395,20 +394,20 @@ public class DataTable {
      * @throws IOException
      */
     private void writeHeader(Writer w) throws IOException {
-        w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
-        w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
-        w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
-        w.write(String.format("%s\t%s\n", NAMES, Basic.toString(sampleNames, "\t")));
-        w.write(String.format("%s\t%s\n", BLAST_MODE, Basic.toString(blastModes, "\t")));
-        if (disabledSamples.size() > 0) {
-            w.write(String.format("%s\t%s\n", DISABLED, Basic.toString(disabledSamples, "\t")));
-        }
-        if (sampleUIds.size() > 0) {
-            w.write(String.format("%s\t%s\n", UIDS, Basic.toString(sampleUIds, "\t")));
-        }
-        if (sampleSizes.size() > 0) {
-            w.write(String.format("%s\t%s\n", SIZES, Basic.removeTrailingZerosAfterDot(Basic.toString(sampleSizes, "\t"))));
-        }
+		w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
+		w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
+		w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
+		w.write(String.format("%s\t%s\n", NAMES, StringUtils.toString(sampleNames, "\t")));
+		w.write(String.format("%s\t%s\n", BLAST_MODE, StringUtils.toString(blastModes, "\t")));
+		if (disabledSamples.size() > 0) {
+			w.write(String.format("%s\t%s\n", DISABLED, StringUtils.toString(disabledSamples, "\t")));
+		}
+		if (sampleUIds.size() > 0) {
+			w.write(String.format("%s\t%s\n", UIDS, StringUtils.toString(sampleUIds, "\t")));
+		}
+		if (sampleSizes.size() > 0) {
+			w.write(String.format("%s\t%s\n", SIZES, StringUtils.removeTrailingZerosAfterDot(StringUtils.toString(sampleSizes, "\t"))));
+		}
 
         if (totalReads != -1)
             w.write(String.format("%s\t%d\n", TOTAL_READS, totalReads));
@@ -419,7 +418,7 @@ public class DataTable {
         for (String classification : classification2collapsedIds.keySet()) {
             Set<Integer> collapsed = classification2collapsedIds.get(classification);
             if (collapsed != null && collapsed.size() > 0) {
-                w.write(String.format("%s\t%s\t%s\n", COLLAPSE, classification, Basic.toString(collapsed, "\t")));
+				w.write(String.format("%s\t%s\t%s\n", COLLAPSE, classification, StringUtils.toString(collapsed, "\t")));
             }
         }
 
@@ -514,12 +513,12 @@ public class DataTable {
         if (parameters != null)
             w.write(String.format("<b>%s:</b> %s<br>\n", PARAMETERS.substring(1), parameters));
         if (hasContaminants())
-            w.write(String.format("<b>%s:</b> %d taxa<br>\n", CONTAMINANTS.substring(1), Basic.countWords(getContaminants())));
+			w.write(String.format("<b>%s:</b> %d taxa<br>\n", CONTAMINANTS.substring(1), StringUtils.countWords(getContaminants())));
         if (colorTable != null)
             w.write(String.format("<b>ColorTable:</b> %s%s <b>HeatMapColorTable:</b> %s<br>\n", colorTable, (colorByPosition ? " byPosition" : ""), colorTableHeatMap));
 
         if (colorEdits != null)
-            w.write(String.format("<b>ColorEdits:</b> %s<br>\n", Basic.abbreviateDotDotDot(colorEdits, 50)));
+			w.write(String.format("<b>ColorEdits:</b> %s<br>\n", StringUtils.abbreviateDotDotDot(colorEdits, 50)));
 
         return w.toString();
     }
@@ -531,23 +530,23 @@ public class DataTable {
      * @throws IOException
      */
     public String getSummary() throws IOException {
-        Writer w = new StringWriter();
+		Writer w = new StringWriter();
 
-        w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
-        w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
-        w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
-        w.write(String.format("%s\t%s\n", NAMES, Basic.toString(sampleNames, "\t")));
-        w.write(String.format("%s\t%s\n", BLAST_MODE, Basic.toString(blastModes, "\t")));
+		w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
+		w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
+		w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
+		w.write(String.format("%s\t%s\n", NAMES, StringUtils.toString(sampleNames, "\t")));
+		w.write(String.format("%s\t%s\n", BLAST_MODE, StringUtils.toString(blastModes, "\t")));
 
-        if (sampleUIds.size() > 0) {
-            w.write(String.format("%s\t%s\n", UIDS, Basic.toString(sampleUIds, "\t")));
-        }
-        if (sampleSizes.size() > 0) {
-            w.write(String.format("%s\t%s\n", SIZES, Basic.toString(sampleSizes, "\t")));
-        }
+		if (sampleUIds.size() > 0) {
+			w.write(String.format("%s\t%s\n", UIDS, StringUtils.toString(sampleUIds, "\t")));
+		}
+		if (sampleSizes.size() > 0) {
+			w.write(String.format("%s\t%s\n", SIZES, StringUtils.toString(sampleSizes, "\t")));
+		}
 
-        if (totalReads != -1)
-            w.write(String.format("%s\t%d\n", TOTAL_READS, totalReads));
+		if (totalReads != -1)
+			w.write(String.format("%s\t%d\n", TOTAL_READS, totalReads));
 
         if (additionalReads != -1)
             w.write(String.format("%s\t%d\n", ADDITIONAL_READS, additionalReads));
@@ -589,9 +588,9 @@ public class DataTable {
         int lineNumber = 0;
         try (r) {
             String aLine;
-            sampleNames.clear();
-            sampleNames.add(Basic.getFileBaseName(fileName));
-            blastModes.clear();
+			sampleNames.clear();
+			sampleNames.add(FileUtils.getFileBaseName(fileName));
+			blastModes.clear();
             contaminants = null;
             while ((aLine = r.readLine()) != null) {
                 lineNumber++;
@@ -1095,7 +1094,7 @@ public class DataTable {
     private void removeSamples(Collection<String> toDelete) {
         Set<Integer> dead = new HashSet<>();
         for (String name : toDelete) {
-            dead.add(Basic.getIndex(name, sampleNames));
+			dead.add(StringUtils.getIndex(name, sampleNames));
         }
 
         // System.err.println("Existing sample name: "+Basic.toString(sampleNames,","));
@@ -1174,14 +1173,14 @@ public class DataTable {
         DataTable target = this;
 
         if (!Arrays.asList(target.getSampleNamesArray()).contains(sample)) {
-            int srcId = Basic.getIndex(sample, source.sampleNames);
+			int srcId = StringUtils.getIndex(sample, source.sampleNames);
             target.sampleSizes.add(source.sampleSizes.get(srcId));
             target.sampleNames.add(sample);
             target.sampleUIds.add(System.currentTimeMillis());
             if (srcId < blastModes.size())
                 target.blastModes.add(blastModes.get(srcId));
 
-            int tarId = Basic.getIndex(sample, target.sampleNames);
+			int tarId = StringUtils.getIndex(sample, target.sampleNames);
 
             for (String classification : source.classification2class2counts.keySet()) {
                 Map<Integer, float[]> sourceClass2counts = source.classification2class2counts.get(classification);
@@ -1216,7 +1215,7 @@ public class DataTable {
             this.sampleUIds.add(System.currentTimeMillis());
             this.blastModes.add(mode);
 
-            int tarId = Basic.getIndex(sample, this.sampleNames);
+			int tarId = StringUtils.getIndex(sample, this.sampleNames);
 
             for (String classification : sourceClassification2class2counts.keySet()) {
                 Map<Integer, float[]> sourceClass2counts = sourceClassification2class2counts.get(classification);
@@ -1265,7 +1264,7 @@ public class DataTable {
         Set<Integer> pids = new HashSet<>();
         BlastMode mode = null;
         for (String name : samples) {
-            int pid = Basic.getIndex(name, sampleNames);
+			int pid = StringUtils.getIndex(name, sampleNames);
             if (pid == -1) {
                 System.err.println("No such sample: " + name);
                 return;
@@ -1286,7 +1285,7 @@ public class DataTable {
         sampleUIds.add(System.currentTimeMillis());
         blastModes.add(mode);
 
-        int tarId = Basic.getIndex(newName, sampleNames);
+		int tarId = StringUtils.getIndex(newName, sampleNames);
         for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
             for (Integer classId : class2counts.keySet()) {
                 float[] counts = class2counts.get(classId);
@@ -1320,7 +1319,7 @@ public class DataTable {
 
         int i = 0;
         for (String sample : newOrder) {
-            int pid = Basic.getIndex(sample, getSampleNamesArray());
+			int pid = StringUtils.getIndex(sample, getSampleNamesArray());
             if (pid == -1)
                 throw new IOException("Can't reorder: unknown sample: " + sample);
             order[i++] = pid;

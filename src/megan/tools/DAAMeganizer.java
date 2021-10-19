@@ -24,6 +24,7 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -191,40 +192,40 @@ public class DAAMeganizer {
             System.err.println("Java version: " + System.getProperty("java.version"));
 
         for (String fileName : daaFiles) {
-            Basic.checkFileReadableNonEmpty(fileName);
+			FileUtils.checkFileReadableNonEmpty(fileName);
             if (!DAAFileFilter.getInstance().accept(fileName))
                 throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);
-        }
+		}
 
-        for (String fileName : metaDataFiles) {
-            Basic.checkFileReadableNonEmpty(fileName);
-        }
+		for (String fileName : metaDataFiles) {
+			FileUtils.checkFileReadableNonEmpty(fileName);
+		}
 
-        if (metaDataFiles.length > 1 && metaDataFiles.length != daaFiles.length) {
-            throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
-        }
+		if (metaDataFiles.length > 1 && metaDataFiles.length != daaFiles.length) {
+			throw new IOException("Number of metadata files (" + metaDataFiles.length + ") doesn't match number of DAA files (" + daaFiles.length + ")");
+		}
 
-        if (Basic.notBlank(mapDBFile))
-            Basic.checkFileReadableNonEmpty(mapDBFile);
+		if (StringUtils.notBlank(mapDBFile))
+			FileUtils.checkFileReadableNonEmpty(mapDBFile);
 
-        if (Basic.notBlank(contaminantsFile))
-            Basic.checkFileReadableNonEmpty(contaminantsFile);
+		if (StringUtils.notBlank(contaminantsFile))
+			FileUtils.checkFileReadableNonEmpty(contaminantsFile);
 
-        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
-            throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
+		final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+		if (mapDBClassifications.size() > 0 && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
+			throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if (mapDBClassifications.size() > 0)
-            ClassificationManager.setMeganMapDBFile(mapDBFile);
+		if (mapDBClassifications.size() > 0)
+			ClassificationManager.setMeganMapDBFile(mapDBFile);
 
-        final ArrayList<String> cNames = new ArrayList<>();
-        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if ((dbSelectedClassifications.size() == 0 || dbSelectedClassifications.contains(cName))
-                    && (mapDBClassifications.contains(cName) || Basic.notBlank(class2AccessionFile.get(cName)) || Basic.notBlank(class2SynonymsFile.get(cName))))
-                cNames.add(cName);
+		final ArrayList<String> cNames = new ArrayList<>();
+		for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+			if ((dbSelectedClassifications.size() == 0 || dbSelectedClassifications.contains(cName))
+				&& (mapDBClassifications.contains(cName) || StringUtils.notBlank(class2AccessionFile.get(cName)) || StringUtils.notBlank(class2SynonymsFile.get(cName))))
+				cNames.add(cName);
         }
         if (cNames.size() > 0)
-            System.err.println("Functional classifications to use: " + Basic.toString(cNames, ", "));
+			System.err.println("Functional classifications to use: " + StringUtils.toString(cNames, ", "));
 
         final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
         final IdMapper[] idMappers = new IdMapper[cNames.size()];
@@ -234,27 +235,27 @@ public class DAAMeganizer {
             ClassificationManager.get(Classification.Taxonomy, true);
             taxonIdMapper.setUseTextParsing(parseTaxonNames);
 
-            if (Basic.notBlank(mapDBFile)) {
-                taxonIdMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
-            }
-            if (Basic.notBlank(acc2TaxaFile)) {
-                taxonIdMapper.loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
-            }
-            if (Basic.notBlank(synonyms2TaxaFile)) {
-                taxonIdMapper.loadMappingFile(synonyms2TaxaFile, IdMapper.MapType.Synonyms, false, new ProgressPercentage());
-            }
+			if (StringUtils.notBlank(mapDBFile)) {
+				taxonIdMapper.loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
+			}
+			if (StringUtils.notBlank(acc2TaxaFile)) {
+				taxonIdMapper.loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
+			}
+			if (StringUtils.notBlank(synonyms2TaxaFile)) {
+				taxonIdMapper.loadMappingFile(synonyms2TaxaFile, IdMapper.MapType.Synonyms, false, new ProgressPercentage());
+			}
 
             for (int i = 0; i < cNames.size(); i++) {
                 final String cName = cNames.get(i);
 
                 idMappers[i] = ClassificationManager.get(cName, true).getIdMapper();
 
-                if (mapDBClassifications.contains(cName))
-                    idMappers[i].loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
-                if (Basic.notBlank(class2AccessionFile.get(cName)))
-                    idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());
-                if (Basic.notBlank(class2SynonymsFile.get(cName)))
-                    idMappers[i].loadMappingFile(class2SynonymsFile.get(cName), IdMapper.MapType.Synonyms, false, new ProgressPercentage());
+				if (mapDBClassifications.contains(cName))
+					idMappers[i].loadMappingFile(mapDBFile, IdMapper.MapType.MeganMapDB, false, new ProgressPercentage());
+				if (StringUtils.notBlank(class2AccessionFile.get(cName)))
+					idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());
+				if (StringUtils.notBlank(class2SynonymsFile.get(cName)))
+					idMappers[i].loadMappingFile(class2SynonymsFile.get(cName), IdMapper.MapType.Synonyms, false, new ProgressPercentage());
             }
         }
 

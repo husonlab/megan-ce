@@ -23,6 +23,7 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressSilent;
 import megan.commands.SaveCommand;
 import megan.commands.show.CompareCommand;
 import megan.core.Director;
@@ -97,15 +98,15 @@ public class ComputeComparison {
 
         options.done();
 
-        if (inputFiles.size() == 1 && Basic.isDirectory(inputFiles.get(0))) {
-            final String directory = inputFiles.get(0);
-            inputFiles.clear();
-            inputFiles.addAll(Basic.getAllFilesInDirectory(directory, true, ".daa", ".rma", ".rma6"));
-        }
+		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
+			final String directory = inputFiles.get(0);
+			inputFiles.clear();
+			inputFiles.addAll(FileUtils.getAllFilesInDirectory(directory, true, ".daa", ".rma", ".rma6"));
+		}
 
         for (String fileName : inputFiles) {
-            if (!Basic.fileExistsAndIsNonEmpty(fileName))
-                throw new IOException("No such file or file empty: " + fileName);
+			if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
+				throw new IOException("No such file or file empty: " + fileName);
         }
 
         if (inputFiles.size() == 0)
@@ -118,28 +119,28 @@ public class ComputeComparison {
         {
             CompareCommand compareCommand = new CompareCommand();
             compareCommand.setDir(dir);
-            final String command = "compare mode=" + (normalize ? Comparer.COMPARISON_MODE.RELATIVE : Comparer.COMPARISON_MODE.ABSOLUTE) +
-                    " readAssignmentMode=" + readAssignmentMode + " keep1=" + keepOne + " ignoreUnassigned=" + ignoreUnassignedReads +
-                    " meganFile='" + Basic.toString(inputFiles, "', '") + "';";
-            try {
-                compareCommand.apply(new NexusStreamParser(new StringReader(command)));
-            } catch (Exception ex) {
-                Basic.caught(ex);
-            }
-        }
+			final String command = "compare mode=" + (normalize ? Comparer.COMPARISON_MODE.RELATIVE : Comparer.COMPARISON_MODE.ABSOLUTE) +
+								   " readAssignmentMode=" + readAssignmentMode + " keep1=" + keepOne + " ignoreUnassigned=" + ignoreUnassignedReads +
+								   " meganFile='" + StringUtils.toString(inputFiles, "', '") + "';";
+			try {
+				compareCommand.apply(new NexusStreamParser(new StringReader(command)));
+			} catch (Exception ex) {
+				Basic.caught(ex);
+			}
+		}
 
-        if (Basic.notBlank(metadataFile)) {
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
-                System.err.print("Processing Metadata: " + metadataFile);
-                doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
-                System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
-            }
-        }
+		if (StringUtils.notBlank(metadataFile)) {
+			try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+				System.err.print("Processing Metadata: " + metadataFile);
+				doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
+				System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
+			}
+		}
 
-        doc.getMeganFile().setFile(outputFile, MeganFile.Type.MEGAN_SUMMARY_FILE);
-        final SaveCommand saveCommand = new SaveCommand();
-        saveCommand.setDir(dir);
-        System.err.println("Saving to file: " + outputFile);
+		doc.getMeganFile().setFile(outputFile, MeganFile.Type.MEGAN_SUMMARY_FILE);
+		final SaveCommand saveCommand = new SaveCommand();
+		saveCommand.setDir(dir);
+		System.err.println("Saving to file: " + outputFile);
         saveCommand.apply(new NexusStreamParser(new StringReader("save file='" + outputFile + "';")));
 
     }

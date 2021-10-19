@@ -19,10 +19,7 @@
  */
 package megan.rma6;
 
-import jloda.util.Basic;
-import jloda.util.FileLineBytesIterator;
-import jloda.util.FileLineIterator;
-import jloda.util.Single;
+import jloda.util.*;
 import megan.io.InputReader;
 
 import java.io.File;
@@ -55,7 +52,7 @@ class Utilities {
                     byte[] line = it.next();
                     // System.err.println(Basic.toString(line,it.getLineLength()));
                     if (line[0] != '@')
-                        throw new IOException("Expected FastQ header line (starting with '@'), got: " + Basic.toString(line, it.getLineLength()));
+						throw new IOException("Expected FastQ header line (starting with '@'), got: " + StringUtils.toString(line, it.getLineLength()));
                     if (matchName(queryName, queryNameLength, line, it.getLineLength()))
                         return true;
                     it.next();
@@ -66,7 +63,7 @@ class Utilities {
                     byte[] line = it.next();
                     // System.err.println(Basic.toString(line,it.getLineLength()));
                     if (line[0] != '@')
-                        throw new IOException("Expected FastQ header line (starting with '@'), got: " + Basic.toString(line, it.getLineLength()));
+						throw new IOException("Expected FastQ header line (starting with '@'), got: " + StringUtils.toString(line, it.getLineLength()));
                     if (matchName(queryName, queryNameLength, line, it.getLineLength()))
                         return true;
                     it.next();
@@ -315,7 +312,7 @@ class Utilities {
      * @return true, if file is MALT or Diamond generated SAM file
      */
     public static boolean IsMaltOrDiamondSAMFile(File file) {
-        String suffix = Basic.getFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(file.getName()));
+		String suffix = FileUtils.getFileSuffix(FileUtils.getFileNameWithoutZipOrGZipSuffix(file.getName()));
         if (suffix == null)
             return false;
         if (!suffix.toLowerCase().equals(".sam"))

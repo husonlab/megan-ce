@@ -20,6 +20,8 @@
 package megan.classification;
 
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 import megan.accessiondb.AccessAccessionAdapter;
 import megan.classification.data.*;
 import megan.main.MeganProperties;

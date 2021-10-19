@@ -20,7 +20,7 @@
 package megan.inspector.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.clipboard.ClipboardBase;
 import megan.inspector.InspectorWindow;
@@ -55,7 +55,7 @@ public class DisableTaxonCommand extends ClipboardBase implements ICommand {
             return;
 
         if (set.size() > 0)
-            execute("disable taxa=" + Basic.toString(set, " ") + ";");
+			execute("disable taxa=" + StringUtils.toString(set, " ") + ";");
     }
 
     public boolean isApplicable() {

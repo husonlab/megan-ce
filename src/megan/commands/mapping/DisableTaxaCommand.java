@@ -25,6 +25,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.main.MeganProperties;
@@ -78,7 +79,7 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
         TaxonomyData.getDisabledTaxa().clear();
         TaxonomyData.setDisabledInternalTaxa(disabledInternalIds);
 
-        ProgramProperties.put(MeganProperties.DISABLED_TAXA, Basic.toString(TaxonomyData.getDisabledInternalTaxa(), " "));
+		ProgramProperties.put(MeganProperties.DISABLED_TAXA, StringUtils.toString(TaxonomyData.getDisabledInternalTaxa(), " "));
 
         System.err.println("Total disabled taxa: " + TaxonomyData.getDisabledTaxa().size());
 

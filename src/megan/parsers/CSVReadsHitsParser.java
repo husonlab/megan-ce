@@ -21,6 +21,9 @@ package megan.parsers;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.algorithms.MinSupportFilter;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -52,8 +55,8 @@ public class CSVReadsHitsParser {
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator) throws IOException, CanceledException {
         final char separator = (tabSeparator ? '\t' : ',');
 
-        System.err.println("Importing list of read to CLASS-id hits from CSV file");
-        System.err.println("Line format: readname,CLASS-id,score     - for one of the following classifications: " + Basic.toString(cNames, " name,"));
+		System.err.println("Importing list of read to CLASS-id hits from CSV file");
+		System.err.println("Line format: readname,CLASS-id,score     - for one of the following classifications: " + StringUtils.toString(cNames, " name,"));
 
         System.err.println("Using topPercent=" + doc.getTopPercent() + " minScore=" + doc.getMinScore() +
                 (doc.getMinSupportPercent() > 0 ? " minSupportPercent=" + doc.getMinSupportPercent() : "") +
@@ -111,7 +114,7 @@ public class CSVReadsHitsParser {
                 if (aLine.length() == 0 || aLine.startsWith("#"))
                     continue;
                 try {
-                    final String[] tokens = Basic.split(aLine, separator);
+					final String[] tokens = StringUtils.split(aLine, separator);
 
                     if (tokens.length < 2 || tokens.length > 3)
                         throw new IOException("Line " + numberOfLines + ": incorrect number of columns, expected 2 or 3, got: " + tokens.length);
@@ -273,8 +276,8 @@ public class CSVReadsHitsParser {
             }
         }
 
-        table.setSamples(new String[]{Basic.getFileBaseName(new File(fileName).getName())}, null, new float[]{totalReads}, new BlastMode[]{BlastMode.Unknown});
-        table.setTotalReads(totalReads);
+		table.setSamples(new String[]{FileUtils.getFileBaseName(new File(fileName).getName())}, null, new float[]{totalReads}, new BlastMode[]{BlastMode.Unknown});
+		table.setTotalReads(totalReads);
         doc.setNumberReads(totalReads);
         for (int i = 0; i < cNames.length; i++) {
             if (i != taxonomyIndex)

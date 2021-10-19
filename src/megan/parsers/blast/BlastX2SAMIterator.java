@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.util.BlastXTextFileFilter;
@@ -145,8 +146,8 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                         refHeaderLines.add(line.replaceAll("\\s+", " "));
                     line = nextLine().trim();
                 }
-                final int referenceLength = Basic.parseInt(getNextToken(line, LENGTH, EQUALS));
-                final String refName = Basic.swallowLeadingGreaterSign(Basic.toString(refHeaderLines, " "));
+				final int referenceLength = Basic.parseInt(getNextToken(line, LENGTH, EQUALS));
+				final String refName = StringUtils.swallowLeadingGreaterSign(StringUtils.toString(refHeaderLines, " "));
 
                 // Blast text downloaded from NBCI might have some text before the alignment starts:
                 do {

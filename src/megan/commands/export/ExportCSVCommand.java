@@ -26,8 +26,9 @@ import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.commands.CommandBase;
@@ -67,7 +68,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         final List<String> formats = CSVExporter.getFormats(classificationName, doc);
 
         np.matchIgnoreCase("format=");
-        final String format = np.getWordMatchesIgnoringCase(Basic.toString(formats, " "));
+		final String format = np.getWordMatchesIgnoringCase(StringUtils.toString(formats, " "));
 
         char separator = '\t';
         if (np.peekMatchIgnoreCase("separator")) {
@@ -78,8 +79,8 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         boolean reportSummarized = false;
         if (np.peekMatchIgnoreCase("counts")) {
             np.matchIgnoreCase("counts=");
-            if (np.getWordMatchesIgnoringCase(Basic.toString(Choice.values(), " ")).equalsIgnoreCase(Choice.summarized.toString()))
-                reportSummarized = true;
+			if (np.getWordMatchesIgnoringCase(StringUtils.toString(Choice.values(), " ")).equalsIgnoreCase(Choice.summarized.toString()))
+				reportSummarized = true;
         }
 
         np.matchIgnoreCase("file=");
@@ -113,7 +114,7 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
         final String countChoice = choice[1];
         final String separator = choice[2];
 
-        final String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
+		final String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
 
         File lastOpenFile = new File(name);
         final String lastDir = ProgramProperties.get("CSVDirectory", "");

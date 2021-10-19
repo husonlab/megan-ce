@@ -20,7 +20,7 @@
 
 package megan.assembly.align;
 
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.BoyerMoore;
 import jloda.util.Single;
 

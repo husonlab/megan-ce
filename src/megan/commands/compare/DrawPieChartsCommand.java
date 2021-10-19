@@ -21,8 +21,8 @@ package megan.commands.compare;
 
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Document;
@@ -42,8 +42,8 @@ public class DrawPieChartsCommand extends CommandBase implements ICheckBoxComman
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeDrawer=");
         final ViewerBase viewer = (ViewerBase) getViewer();
-        final Document doc = getDoc();
-        final String style = np.getWordMatchesIgnoringCase(Basic.toString(NodeDrawer.Style.values(), " "));
+		final Document doc = getDoc();
+		final String style = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.Style.values(), " "));
         np.matchIgnoreCase(";");
         viewer.getNodeDrawer().setStyle(style, NodeDrawer.Style.Circle);
         viewer.getLegendPanel().setStyle(viewer.getNodeDrawer().getStyle());
@@ -54,7 +54,7 @@ public class DrawPieChartsCommand extends CommandBase implements ICheckBoxComman
     }
 
     public String getSyntax() {
-        return "set nodeDrawer={" + Basic.toString(NodeDrawer.ScaleBy.values(), "|") + "};";
+		return "set nodeDrawer={" + StringUtils.toString(NodeDrawer.ScaleBy.values(), "|") + "};";
     }
 
     public void actionPerformed(ActionEvent event) {

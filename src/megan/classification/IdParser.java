@@ -21,6 +21,7 @@ package megan.classification;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.data.Name2IdMap;
 import megan.classification.util.MultiWords;
 import megan.classification.util.TaggedValueIterator;
@@ -188,7 +189,7 @@ public class IdParser {
         // if text parsing is allowed and no ids have been found yet:
         if (isTaxonomy && useTextParsing && ids.size() == 0 && disabled.size() == 0) {
             // parse taxonomic path in which taxa are separated by ;
-            final int countSemiColons = Basic.countOccurrences(headerString, ';');
+			final int countSemiColons = StringUtils.countOccurrences(headerString, ';');
             if (countSemiColons > 0 && countSemiColons >= (headerString.length() / 32)) // assume is taxonomy path e.g. Bacteria;Proteobacteria;
             {
                 // find last legal name

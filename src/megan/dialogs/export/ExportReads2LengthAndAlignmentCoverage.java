@@ -22,7 +22,7 @@ package megan.dialogs.export;
 
 import jloda.graph.Node;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.interval.IntervalTree;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

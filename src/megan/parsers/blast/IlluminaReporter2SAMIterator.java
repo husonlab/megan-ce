@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import megan.util.IlluminaReporterFileFilter;
 
 import java.io.IOException;
@@ -85,12 +86,12 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
         if (line == null || !line.startsWith(">"))
             return -1;
 
-        final String queryName = Basic.getReadName(line);
+		final String queryName = StringUtils.getReadName(line);
         if (!hasNextLine())
             return -1;
         line = nextLine();
 
-        final String[] tokens = Basic.split(line, ';');
+		final String[] tokens = StringUtils.split(line, ';');
 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
@@ -109,8 +110,8 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
                 if (!name.equalsIgnoreCase("root"))
                     path.append(name).append(";");
 
-                String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
-                String scoreString = tokens[whichToken++];
+				String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
+				String scoreString = tokens[whichToken++];
                 float bitScore = 100 * Basic.parseFloat(scoreString);
 
                 if (matches.size() < getMaxNumberOfMatchesPerRead() || bitScore > matches.last().bitScore) {
@@ -157,6 +158,6 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
      * make a SAM line
      */
     private String makeSAM(String queryName, String refName, float bitScore, String line) throws IOException {
-        return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' '));
+		return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
     }
 }

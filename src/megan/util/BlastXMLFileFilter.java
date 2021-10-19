@@ -20,7 +20,7 @@
 package megan.util;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -67,7 +67,7 @@ public class BlastXMLFileFilter extends FileFilterBase implements FilenameFilter
         if (!super.accept(directory, fileName))
             return false;
 
-        String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 2);
+		String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 2);
         return lines != null && lines[0] != null && lines[1] != null && lines[0].startsWith("<?xml") && (lines[1].startsWith("<!DOCTYPE BlastOutput") || lines[1].startsWith("<BlastOutput>"));
     }
 }

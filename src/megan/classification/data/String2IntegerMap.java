@@ -22,7 +22,7 @@ package megan.classification.data;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.FileLineIterator;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
 import java.io.BufferedWriter;

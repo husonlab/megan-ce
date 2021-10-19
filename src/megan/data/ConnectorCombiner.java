@@ -20,9 +20,9 @@
 
 package megan.data;
 
-import jloda.util.Basic;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.Single;
+import jloda.util.StringUtils;
 import megan.core.MeganFile;
 import megan.rma6.ClassificationBlockRMA6;
 
@@ -155,9 +155,9 @@ public class ConnectorCombiner implements IConnector {
     public int getClassificationSize(String classificationName) throws IOException {
         int size = 0;
         for (IConnector connector : connectors) {
-            if (Basic.getIndex(classificationName, connector.getAllClassificationNames()) != -1) {
-                size += connector.getClassificationSize(classificationName);
-            }
+			if (StringUtils.getIndex(classificationName, connector.getAllClassificationNames()) != -1) {
+				size += connector.getClassificationSize(classificationName);
+			}
         }
         return size;
     }
@@ -166,9 +166,9 @@ public class ConnectorCombiner implements IConnector {
     public int getClassSize(String classificationName, int classId) throws IOException {
         int size = 0;
         for (IConnector connector : connectors) {
-            if (Basic.getIndex(classificationName, connector.getAllClassificationNames()) != -1) {
-                size += connector.getClassSize(classificationName, classId);
-            }
+			if (StringUtils.getIndex(classificationName, connector.getAllClassificationNames()) != -1) {
+				size += connector.getClassSize(classificationName, classId);
+			}
         }
         return size;
     }

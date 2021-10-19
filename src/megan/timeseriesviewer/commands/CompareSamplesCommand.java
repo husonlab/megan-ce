@@ -22,7 +22,7 @@ package megan.timeseriesviewer.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.timeseriesviewer.TimeSeriesViewer;
 
@@ -54,7 +54,7 @@ public class CompareSamplesCommand extends CommandBase implements ICommand {
         TimeSeriesViewer viewer = (TimeSeriesViewer) getViewer();
         Collection<String> samples = viewer.getDataJTable().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
+			execute("extract samples='" + StringUtils.toString(samples, "' '") + "';");
         }
     }
 

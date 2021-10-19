@@ -20,6 +20,7 @@
 package megan.rma3;
 
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.core.ClassificationType;
 import megan.data.*;
 
@@ -146,17 +147,17 @@ public class RMA3Connector implements IConnector {
         rma3FileModifier.startModification();
 
         for (int i = 0; i < numClassifications; i++) {
-            if (Basic.toString(ClassificationType.values(), " ").contains(names[i])) {
-                ClassificationType classificationType = ClassificationType.valueOf(names[i]);
+			if (StringUtils.toString(ClassificationType.values(), " ").contains(names[i])) {
+				ClassificationType classificationType = ClassificationType.valueOf(names[i]);
 
-                final Map<Integer, ListOfLongs> classId2Locations = new HashMap<>();
-                for (Integer classId : updateItems.getClassIds(i)) {
-                    float weight = updateItems.getWeight(i, classId);
-                    final ListOfLongs positions = new ListOfLongs();
-                    classId2Locations.put(classId, positions);
-                    if (updateItems.getWeight(i, classId) > 0) {
-                        for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
-                            positions.add(item.getReadUId());
+				final Map<Integer, ListOfLongs> classId2Locations = new HashMap<>();
+				for (Integer classId : updateItems.getClassIds(i)) {
+					float weight = updateItems.getWeight(i, classId);
+					final ListOfLongs positions = new ListOfLongs();
+					classId2Locations.put(classId, positions);
+					if (updateItems.getWeight(i, classId) > 0) {
+						for (UpdateItem item = updateItems.getFirst(i, classId); item != null; item = item.getNextInClassification(i)) {
+							positions.add(item.getReadUId());
                         }
                     }
                     progressListener.incrementProgress();

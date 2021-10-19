@@ -21,7 +21,7 @@ package megan.classification.commandtemplates;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -42,9 +42,9 @@ public class SetUseMapTypeCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("use mapType=");
-        final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(Basic.toString(IdMapper.MapType.values(), " ")));
+		final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(StringUtils.toString(IdMapper.MapType.values(), " ")));
         np.matchIgnoreCase("cName=");
-        final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase("state=");
         final boolean state = np.getBoolean();
         np.matchIgnoreCase(";");

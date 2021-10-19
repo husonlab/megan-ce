@@ -19,9 +19,9 @@
  */
 package megan.dialogs.export;
 
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;

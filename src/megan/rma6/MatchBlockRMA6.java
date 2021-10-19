@@ -19,8 +19,8 @@
  */
 package megan.rma6;
 
-import jloda.util.Basic;
 import jloda.util.Single;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.IdParser;
 import megan.data.IMatchBlock;
@@ -230,7 +230,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
 
     @Override
     public String getTextFirstWord() {
-        return getText() != null ? Basic.getFirstWord(getText()) : null;
+		return getText() != null ? StringUtils.getFirstWord(getText()) : null;
     }
 
     public void setText(String text) {

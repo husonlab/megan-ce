@@ -22,6 +22,9 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.FastAFileIterator;
+import jloda.seq.IFastAIterator;
+import jloda.util.progress.ProgressPercentage;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -83,11 +86,11 @@ public class HMM2Blastx {
                 try (IFastAIterator it = FastAFileIterator.getFastAOrFastQAsFastAIterator(readsFile)) {
                     final ProgressPercentage progress = new ProgressPercentage("Parsing file: " + readsFile, it.getMaximumProgress());
                     while (it.hasNext()) {
-                        Pair<String, String> pair = it.next();
-                        String name = Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst()));
-                        reads.add(name);
-                        read2length.put(Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst())), pair.getSecond().length());
-                        progress.setProgress(it.getProgress());
+						Pair<String, String> pair = it.next();
+						String name = StringUtils.getFirstWord(StringUtils.swallowLeadingGreaterSign(pair.getFirst()));
+						reads.add(name);
+						read2length.put(StringUtils.getFirstWord(StringUtils.swallowLeadingGreaterSign(pair.getFirst())), pair.getSecond().length());
+						progress.setProgress(it.getProgress());
                     }
                     progress.close();
                 }
@@ -128,15 +131,15 @@ public class HMM2Blastx {
                             break;
                         case NextReference:
                             if (aLine.startsWith("Query:")) { // yes, queries are references...
-                                referenceName = Basic.getWordAfter("Query:", aLine);
-                                state = EXPECTING.NextQuery;
+								referenceName = StringUtils.getWordAfter("Query:", aLine);
+								state = EXPECTING.NextQuery;
                                 countReferences++;
                             }
                             break;
                         case NextQuery:
                             if (aLine.startsWith(">>")) {
-                                queryName = Basic.getWordAfter(">>", aLine);
-                                frame = getFrameFromSuffix(Objects.requireNonNull(queryName));
+								queryName = StringUtils.getWordAfter(">>", aLine);
+								frame = getFrameFromSuffix(Objects.requireNonNull(queryName));
                                 queryName = removeFrameSuffix(queryName);
                                 state = EXPECTING.Score;
                                 countQueries++;
@@ -144,9 +147,9 @@ public class HMM2Blastx {
                             break;
                         case Score:
                             if (aLine.contains(" score:")) {
-                                score = Basic.parseFloat(Basic.getWordAfter(" score:", aLine));
+								score = Basic.parseFloat(StringUtils.getWordAfter(" score:", aLine));
                                 if (aLine.contains(" E-value:"))
-                                    expected = Basic.parseFloat(Basic.getWordAfter(" E-value:", aLine));
+									expected = Basic.parseFloat(StringUtils.getWordAfter(" E-value:", aLine));
                                 else
                                     throw new IOException("Couldn't find E-value in: " + aLine);
                                 state = EXPECTING.DomainAlignment;

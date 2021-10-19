@@ -24,7 +24,9 @@ import ch.systemsx.cisd.base.mdarray.MDArray;
 import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
 import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
@@ -46,7 +48,7 @@ public class Biom2ParserTest {
      * @throws IOException
      */
     private static Document apply(String inputFile, boolean preservePaths) throws IOException {
-        Writer dumpWriter = new BufferedWriter(new FileWriter(Basic.replaceFileSuffix(inputFile, (preservePaths ? "+p" : "-p") + "-dmp.txt")));
+		Writer dumpWriter = new BufferedWriter(new FileWriter(FileUtils.replaceFileSuffix(inputFile, (preservePaths ? "+p" : "-p") + "-dmp.txt")));
 
         final Document doc = new Document();
         doc.getDataTable().setCreator("MEGAN6 Biom2 import");
@@ -127,14 +129,14 @@ public class Biom2ParserTest {
                             final String[] path = new String[]{pathArray.get(indices[j])};
                             taxonId = QIIMETaxonParser.parseTaxon(path, preservePaths);
                             //System.err.println(Basic.toString(path, ";") + " -> " +taxonId+" -> "+TaxonomyData.getName2IdMap().get(taxonId)+" ->"+data[j]);
-                            dumpWriter.append(Basic.toString(path, ";")).append(" -> ").append(String.valueOf(taxonId)).append(" -> ").
-                                    append(TaxonomyData.getName2IdMap().get(taxonId)).append(" ->").append(String.valueOf(data[j])).append("\n");
+							dumpWriter.append(StringUtils.toString(path, ";")).append(" -> ").append(String.valueOf(taxonId)).append(" -> ").
+									append(TaxonomyData.getName2IdMap().get(taxonId)).append(" ->").append(String.valueOf(data[j])).append("\n");
                         } else if (dimensions.length == 2) {
                             final String[] path = getPath(pathArray, indices[j], dimensions[1]);
                             taxonId = QIIMETaxonParser.parseTaxon(path, preservePaths);
                             //System.err.println(Basic.toString(path, ";") + " -> " + data[j]);
-                            dumpWriter.append(Basic.toString(path, ";")).append(" -> ").append(String.valueOf(taxonId)).append(" -> ").
-                                    append(TaxonomyData.getName2IdMap().get(taxonId)).append(" ->").append(String.valueOf(data[j])).append("\n");
+							dumpWriter.append(StringUtils.toString(path, ";")).append(" -> ").append(String.valueOf(taxonId)).append(" -> ").
+									append(TaxonomyData.getName2IdMap().get(taxonId)).append(" ->").append(String.valueOf(data[j])).append("\n");
                         } else {
                             taxonId = IdMapper.UNASSIGNED_ID;
                             countLinesSkipped++;
@@ -199,7 +201,7 @@ public class Biom2ParserTest {
         doc.getDataTable().write(w);
         doc.getSampleAttributeTable().write(w, false, true);
 
-        final String outputFile = Basic.replaceFileSuffix(inputFile, "-p" + ".megan");
+		final String outputFile = FileUtils.replaceFileSuffix(inputFile, "-p" + ".megan");
         System.err.println("Writing file: " + outputFile);
         try (Writer writer = new FileWriter(outputFile)) {
             doc.getDataTable().write(writer);

@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.util.RAPSearch2AlnFileFilter;
@@ -75,7 +76,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
         if (queryLine == null)
             return -1; // at end of file
 
-        final String queryName = Basic.swallowLeadingGreaterSign(Basic.getFirstWord(queryLine));
+		final String queryName = StringUtils.swallowLeadingGreaterSign(StringUtils.getFirstWord(queryLine));
         pushBackLine(queryLine);
 
         int matchId = 0; // used to distinguish between matches when sorting
@@ -89,7 +90,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                 queryLine = getNextLineContains(vsString);
                 if (queryLine == null)
                     break; // end of file
-                String currentQueryName = Basic.swallowLeadingGreaterSign(Basic.getFirstWord(queryLine));
+				String currentQueryName = StringUtils.swallowLeadingGreaterSign(StringUtils.getFirstWord(queryLine));
                 if (!currentQueryName.equals(queryName)) {
                     pushBackLine(queryLine); // start of next query
                     break;

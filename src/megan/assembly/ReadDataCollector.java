@@ -20,10 +20,10 @@
 
 package megan.assembly;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
+import jloda.seq.SequenceUtils;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
@@ -88,7 +88,7 @@ public class ReadDataCollector {
             if (bestCoordinates[0] < bestCoordinates[1])
                 readData.setSegment(readBlock.getReadSequence().substring(bestCoordinates[0] - 1, bestCoordinates[1]));
             else
-                readData.setSegment(Basic.getReverseComplement(readBlock.getReadSequence().substring(bestCoordinates[1] - 1, bestCoordinates[0])));
+				readData.setSegment(SequenceUtils.getReverseComplement(readBlock.getReadSequence().substring(bestCoordinates[1] - 1, bestCoordinates[0])));
 
             final List<MatchData> matches = new LinkedList<>();
 
@@ -98,7 +98,7 @@ public class ReadDataCollector {
                     final int[] queryCoordinates = getQueryCoordinates(matchBlock);
                     if (queryCoordinates[0] == bestCoordinates[0] && queryCoordinates[1] == bestCoordinates[1]) { // must all reference same segment in same orientation
                         int[] refCoordinates = getReferenceCoordinates(matchBlock);
-                        matches.add(new MatchData(readData, Basic.getFirstWord(matchBlock.getText()), refCoordinates[0], refCoordinates[1], matchBlock.getText(), matchBlock.getBitScore()));
+						matches.add(new MatchData(readData, StringUtils.getFirstWord(matchBlock.getText()), refCoordinates[0], refCoordinates[1], matchBlock.getText(), matchBlock.getBitScore()));
                     }
                 }
             }

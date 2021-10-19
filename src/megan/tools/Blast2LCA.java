@@ -23,6 +23,8 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressPercentage;
 import megan.algorithms.ActiveMatches;
 import megan.algorithms.TaxonPathAssignment;
 import megan.algorithms.TopAssignment;
@@ -83,28 +85,28 @@ public class Blast2LCA {
      */
     private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA alignment to reads and produce a taxonomic classification");
-        options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-        options.setAuthors("Daniel H. Huson");
+		options.setVersion(ProgramProperties.getProgramVersion());
+		options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setAuthors("Daniel H. Huson");
 
-        options.comment("Input");
+		options.comment("Input");
 
-        String blastFile = options.getOptionMandatory("-i", "input", "Input BLAST file", "foo.blast");
-        String blastFormat = options.getOption("-f", "format", "BLAST format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString());
-        String blastMode = options.getOption("-m", "mode", "BLAST mode", BlastMode.values(), BlastMode.Unknown.toString());
-        options.comment("Output");
-        String outputFile = options.getOption("-o", "output", "Taxonomy output file", Basic.getFileBaseName(Basic.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-taxonomy.txt");
-        String keggOutputFile = options.getOption("-ko", "keggOutput", "KEGG output file", Basic.getFileBaseName(Basic.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-kegg.txt");
+		String blastFile = options.getOptionMandatory("-i", "input", "Input BLAST file", "foo.blast");
+		String blastFormat = options.getOption("-f", "format", "BLAST format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString());
+		String blastMode = options.getOption("-m", "mode", "BLAST mode", BlastMode.values(), BlastMode.Unknown.toString());
+		options.comment("Output");
+		String outputFile = options.getOption("-o", "output", "Taxonomy output file", FileUtils.getFileBaseName(FileUtils.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-taxonomy.txt");
+		String keggOutputFile = options.getOption("-ko", "keggOutput", "KEGG output file", FileUtils.getFileBaseName(FileUtils.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-kegg.txt");
 
-        options.comment("Functional classification:");
-        final boolean doKegg = options.getOption("-k", "kegg", "Map reads to KEGG KOs?", false);
+		options.comment("Functional classification:");
+		final boolean doKegg = options.getOption("-k", "kegg", "Map reads to KEGG KOs?", false);
 
-        options.comment("Output options:");
-        final boolean showRank = options.getOption("-sr", "showRanks", "Show taxonomic ranks", true);
-        final boolean useOfficialRanksOnly = options.getOption("-oro", "officialRanksOnly", "Report only taxa that have an official rank", true);
-        final boolean showTaxonIds = options.getOption("-tid", "showTaxIds", "Report taxon ids rather than taxon names", false);
+		options.comment("Output options:");
+		final boolean showRank = options.getOption("-sr", "showRanks", "Show taxonomic ranks", true);
+		final boolean useOfficialRanksOnly = options.getOption("-oro", "officialRanksOnly", "Report only taxa that have an official rank", true);
+		final boolean showTaxonIds = options.getOption("-tid", "showTaxIds", "Report taxon ids rather than taxon names", false);
 
-        options.comment("Parameters");
+		options.comment("Parameters");
         // todo: implement long reads
         final boolean longReads = false;
         // final boolean longReads=options.getOption("-lg","longReads","Parse and analyse as long reads",Document.DEFAULT_LONG_READS);

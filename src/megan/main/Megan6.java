@@ -31,6 +31,7 @@ import jloda.swing.window.About;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
@@ -79,7 +80,7 @@ public class Megan6 {
             if (args.length == 1 && !args[0].startsWith("-")) {// assume this is a single file name or URL
                 String fileName = args[0];
                 if (fileName.startsWith("megan:"))
-                    fileName = Basic.convertPercentEncoding(fileName.substring("megan:".length()));
+					fileName = StringUtils.convertPercentEncoding(fileName.substring("megan:".length()));
                 return new String[]{"-f", fileName};
             }
         } catch (Exception ex) {

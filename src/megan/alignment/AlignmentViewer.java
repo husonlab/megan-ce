@@ -32,6 +32,9 @@ import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.util.progress.ProgressCmdLine;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.alignment.commands.*;
 import megan.alignment.gui.*;
 import megan.alignment.gui.colors.ColorSchemeAminoAcids;
@@ -260,7 +263,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
                 if (!isShowAsMapping()) {
                     Set<String> selectedLabels = new HashSet<>();
                     for (int row = getSelectedBlock().getFirstRow(); row <= getSelectedBlock().getLastRow(); row++) {
-                        selectedLabels.add(Basic.getFirstWord(getAlignment().getLane(row).getName()));
+						selectedLabels.add(StringUtils.getFirstWord(getAlignment().getLane(row).getName()));
                     }
 
                     if (selectedLabels.size() != 0) {

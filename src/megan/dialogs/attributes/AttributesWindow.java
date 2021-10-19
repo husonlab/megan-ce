@@ -25,10 +25,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 import megan.core.Director;
 import megan.dialogs.attributes.commands.ShowInNCBIWebPageCommand;
 import megan.main.MeganProperties;
@@ -105,7 +102,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
         ProjectManager.addAnotherWindowWithWindowMenu(dir, menuBar.getWindowMenu());
 
         statusBar = new StatusBar();
-        String dataset = Basic.getFileBaseName(dir.getDocument().getTitle());
+		String dataset = FileUtils.getFileBaseName(dir.getDocument().getTitle());
         attData = AttributeData.getInstance();
 
         //fill attribute2taxa2value

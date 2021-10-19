@@ -31,8 +31,8 @@ import jloda.swing.window.MenuBar;
 import jloda.swing.window.MenuConfiguration;
 import jloda.util.APoint2D;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressPercentage;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.assembly.commands.SelectFromPreviousWindowCommand;
 import megan.core.Director;
 

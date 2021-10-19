@@ -22,7 +22,8 @@ package megan.commands.additional;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -69,7 +70,7 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
         for (String sample : srcSamples) {
             final Object obj = doc.getSampleAttributeTable().get(sample, attribute);
             if (obj != null) {
-                final String value =  Basic.toCleanName(obj.toString());
+				final String value = StringUtils.toCleanName(obj.toString());
                 if (value.length() > 0) {
                     final String tarSample =attribute.equals(SampleAttributeTable.SAMPLE_ID) ? value : attribute + "-" + value;
                     tarSample2SrcSamples.computeIfAbsent(tarSample, k -> new ArrayList<>());
@@ -82,13 +83,13 @@ public class SplitByAttributeCommand extends CommandBase implements ICommand {
 
         if (tarSample2SrcSamples.size() > 0) {
             for(String tarName:tarSample2SrcSamples.keySet()) {
-                final String fileName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "-"+tarName+ ".megan");
-                  final List<String> samples=tarSample2SrcSamples.get(tarName);
+				final String fileName = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "-" + tarName + ".megan");
+				final List<String> samples = tarSample2SrcSamples.get(tarName);
                   if(samples.size()>0)
-                      commands.add(String.format("extract samples='%s' file='%s';", Basic.toString(samples, "' '"), fileName));
+					  commands.add(String.format("extract samples='%s' file='%s';", StringUtils.toString(samples, "' '"), fileName));
             }
         }
-        executeImmediately(Basic.toString(commands,"\n"));
+		executeImmediately(StringUtils.toString(commands, "\n"));
     }
 
     public void actionPerformed(ActionEvent event) {

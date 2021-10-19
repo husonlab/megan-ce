@@ -22,7 +22,7 @@ package megan.commands.show;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.RarefactionPlot;
 import megan.chart.gui.ChartViewer;
@@ -37,7 +37,7 @@ import java.awt.event.ActionEvent;
 
 public class ShowChartRareFactionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "show rarefaction data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "};";
+		return "show rarefaction data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -48,8 +48,8 @@ public class ShowChartRareFactionCommand extends CommandBase implements ICommand
         np.matchIgnoreCase("show rarefaction");
         String data = "taxonomy";
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            data = np.getWordMatchesIgnoringCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("data=");
+			data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
         np.matchIgnoreCase(";");
 

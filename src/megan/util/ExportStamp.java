@@ -25,7 +25,8 @@ import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.core.Director;
 import megan.viewer.ClassificationViewer;
@@ -166,8 +167,8 @@ public class ExportStamp {
                 final Integer taxonId = (Integer) w.getInfo();
                 final int rank = TaxonomyData.getTaxonomicRank(taxonId);
                 if (rank != 0) {
-                    final String rankName = TaxonomicLevels.getName(rank);
-                    final int index = Basic.getIndex(rankName, ranks);
+					final String rankName = TaxonomicLevels.getName(rank);
+					final int index = StringUtils.getIndex(rankName, ranks);
                     if (index != -1) {
                         topRankIndex = index;
                         topRankTaxonName = TaxonomyData.getName2IdMap().get(taxonId);
@@ -190,8 +191,8 @@ public class ExportStamp {
             final Integer taxonId = (Integer) w.getInfo();
             final int rank = TaxonomyData.getTaxonomicRank(taxonId);
             if (rank != 0) {
-                final String rankName = TaxonomicLevels.getName(rank);
-                final int index = Basic.getIndex(rankName, ranks);
+				final String rankName = TaxonomicLevels.getName(rank);
+				final int index = StringUtils.getIndex(rankName, ranks);
                 if (index >= 0) {
                     String previousName = (list.size() > 0 ? list.get(list.size() - 1).substring(3) : null);
                     while (rankIndex > index) {
@@ -210,7 +211,7 @@ public class ExportStamp {
                 break;
         }
         if (rankIndex == -1)
-            return Basic.toString(Basic.reverseList(list), "\t");
+			return StringUtils.toString(Basic.reverseList(list), "\t");
         return null;
     }
 
@@ -225,8 +226,8 @@ public class ExportStamp {
         for (Node v : selectedNodes) {
             int rank = TaxonomyData.getTaxonomicRank((Integer) v.getInfo());
             if (rank != 0) {
-                String rankName = TaxonomicLevels.getName(rank);
-                int index = Basic.getIndex(rankName, ranks);
+				String rankName = TaxonomicLevels.getName(rank);
+				int index = StringUtils.getIndex(rankName, ranks);
                 if (index > maxRankIndex)
                     maxRankIndex = index;
             }

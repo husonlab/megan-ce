@@ -24,8 +24,9 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 import megan.main.MeganProperties;
@@ -59,8 +60,8 @@ public class ChooseReadsFileCommand extends CommandBase implements ICommand {
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.READSFILE);
         if (lastOpenFile != null) {
-            lastOpenFile = new File(lastOpenFile.getParentFile(),
-                    Basic.replaceFileSuffix(lastOpenFile.getName(), ".fna"));
+			lastOpenFile = new File(lastOpenFile.getParentFile(),
+					FileUtils.replaceFileSuffix(lastOpenFile.getName(), ".fna"));
         }
         final FastaFileFilter fastAFileFilter = new FastaFileFilter();
         fastAFileFilter.add("fastq");
@@ -75,15 +76,15 @@ public class ChooseReadsFileCommand extends CommandBase implements ICommand {
         if (files.size() > 0) {
             ProgramProperties.put(MeganProperties.READSFILE, files.get(0).getPath());
             try {
-                for (File file : files) {
-                    if (!file.exists())
-                        throw new IOException("No such file: " + file);
-                    if (!file.canRead())
-                        throw new IOException("Cannot read file: " + file);
-                }
-                importBlastDialog.setReadFileName(Basic.toString(files, "\n"));
-                importBlastDialog.getReadFileNameField().setText(Basic.toString(files, "\n"));
-            } catch (IOException ex) {
+				for (File file : files) {
+					if (!file.exists())
+						throw new IOException("No such file: " + file);
+					if (!file.canRead())
+						throw new IOException("Cannot read file: " + file);
+				}
+				importBlastDialog.setReadFileName(StringUtils.toString(files, "\n"));
+				importBlastDialog.getReadFileNameField().setText(StringUtils.toString(files, "\n"));
+			} catch (IOException ex) {
                 NotificationsInSwing.showError(getViewer().getFrame(), "Failed to load file: " + ex.getMessage());
             }
         }

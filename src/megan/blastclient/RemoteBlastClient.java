@@ -20,8 +20,8 @@
 
 package megan.blastclient;
 
-import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -84,7 +84,7 @@ public class RemoteBlastClient {
             return null;
         final StringBuilder query = new StringBuilder();
         for (Pair<String, String> pair : queries) {
-            query.append(">").append(Basic.swallowLeadingGreaterSign(pair.getFirst().trim())).append("\n").append(pair.getSecond().trim()).append("\n");
+			query.append(">").append(StringUtils.swallowLeadingGreaterSign(pair.getFirst().trim())).append("\n").append(pair.getSecond().trim()).append("\n");
         }
         requestId = null;
         estimatedTime = -1;

@@ -22,7 +22,7 @@ package megan.importblast.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
@@ -56,7 +56,7 @@ public class ChooseMeganFileCommand extends CommandBase implements ICommand {
         File lastOpenFile;
         String name = importBlastDialog.getBlastFileName();
         if (name.length() > 0)
-            lastOpenFile = new File(Basic.replaceFileSuffix(name, ".rma6"));
+			lastOpenFile = new File(FileUtils.replaceFileSuffix(name, ".rma6"));
         else
             lastOpenFile = new File(ProgramProperties.getFile(MeganProperties.SAVEFILE), "Untitled.rma6");
 

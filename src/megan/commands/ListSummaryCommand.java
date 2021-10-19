@@ -26,11 +26,9 @@ import jloda.graph.NodeSet;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.Single;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
@@ -117,8 +115,8 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
             if (data.getCountSummarized() > 0) {
                 for (int i = 0; i < indent; i++)
                     outs.write(" ");
-                outs.write(name + ": " + Basic.toString(data.getSummarized(), ",") + "\n");
-                countLines.set(countLines.get() + 1);
+				outs.write(name + ": " + StringUtils.toString(data.getSummarized(), ",") + "\n");
+				countLines.set(countLines.get() + 1);
             }
         }
         if (viewer.getCollapsedIds().contains(id)) {

@@ -20,7 +20,7 @@
 package megan.util;
 
 import jloda.graph.Node;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
 

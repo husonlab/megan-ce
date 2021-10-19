@@ -21,6 +21,7 @@
 package megan.ms.client;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.ms.Utilities;
 
 import java.io.IOException;
@@ -31,7 +32,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * MeganServer client
@@ -50,7 +50,7 @@ public class ClientMS {
         this.serverAndPrefix = serverAndPrefix.replaceAll("/$", "");
         this.timeoutSeconds = timeoutSeconds;
 
-        final var proxyAddress = (Basic.notBlank(proxyName) ? new InetSocketAddress(proxyName, proxyPort) : null);
+		final var proxyAddress = (StringUtils.notBlank(proxyName) ? new InetSocketAddress(proxyName, proxyPort) : null);
 
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeoutSeconds))
@@ -90,14 +90,14 @@ public class ClientMS {
                 System.err.println(list.get(0));
                 throw new IOException(list.get(0));
             } else {
-                return list.stream().map(line->Basic.split(line,'\t'))
-                        .filter(tokens->tokens.length>0)
-                        .map(tokens->{
-                            var name=tokens[0];
-                            var reads=(tokens.length>1? Basic.parseLong(tokens[1]):0);
-                            var matches=(tokens.length>2? Basic.parseLong(tokens[2]):0);
-                              return new FileRecord(name,reads,matches);
-                        }).collect(Collectors.toList());
+				return list.stream().map(line -> StringUtils.split(line, '\t'))
+						.filter(tokens -> tokens.length > 0)
+						.map(tokens -> {
+							var name = tokens[0];
+							var reads = (tokens.length > 1 ? Basic.parseLong(tokens[1]) : 0);
+							var matches = (tokens.length > 2 ? Basic.parseLong(tokens[2]) : 0);
+							return new FileRecord(name, reads, matches);
+						}).collect(Collectors.toList());
             }
 
         } catch (InterruptedException e) {
@@ -114,9 +114,9 @@ public class ClientMS {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             final String result = response.body();
             if (result.startsWith(Utilities.SERVER_ERROR)) {
-                System.err.println(Basic.getFirstLine(result));
-                throw new IOException(Basic.getFirstLine(result));
-            } else
+				System.err.println(StringUtils.getFirstLine(result));
+				throw new IOException(StringUtils.getFirstLine(result));
+			} else
                 return result;
         } catch (InterruptedException e) {
             throw new IOException(e);
@@ -125,15 +125,15 @@ public class ClientMS {
 
     public byte[] getAsBytes(String command) throws IOException {
         try {
-            final HttpRequest request = setupRequest(command, true);
-            final HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-            final byte[] result = response.body();
-            if (Basic.startsWith(result, Utilities.SERVER_ERROR)) {
-                System.err.println(Basic.getFirstLine(result));
-                throw new IOException(Basic.getFirstLine(result));
-            } else
-                return result;
-        } catch (InterruptedException e) {
+			final HttpRequest request = setupRequest(command, true);
+			final HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+			final byte[] result = response.body();
+			if (StringUtils.startsWith(result, Utilities.SERVER_ERROR)) {
+				System.err.println(StringUtils.getFirstLine(result));
+				throw new IOException(StringUtils.getFirstLine(result));
+			} else
+				return result;
+		} catch (InterruptedException e) {
             throw new IOException(e);
         }
     }
@@ -157,14 +157,14 @@ public class ClientMS {
      * gets as long
      */
     public long getAsLong(String command) throws IOException {
-        return Basic.parseLong(Basic.getFirstWord(getAsString(command)));
+		return Basic.parseLong(StringUtils.getFirstWord(getAsString(command)));
     }
 
     /**
      * gets as long
      */
     public int getAsInt(String command) throws IOException {
-        return Basic.parseInt(Basic.getFirstWord(getAsString(command)));
+		return Basic.parseInt(StringUtils.getFirstWord(getAsString(command)));
     }
 
     public int getPageSize() {

@@ -21,8 +21,8 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.colors.ColorSchemeNucleotides;
@@ -45,7 +45,7 @@ public class SetNucleotideColorSchemeCommand extends CommandBase implements ICom
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nucleotideColors=");
 
-        String value = np.getWordMatchesIgnoringCase(Basic.toString(ColorSchemeNucleotides.getNames(), " "));
+		String value = np.getWordMatchesIgnoringCase(StringUtils.toString(ColorSchemeNucleotides.getNames(), " "));
         np.matchIgnoreCase(";");
 
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -61,7 +61,7 @@ public class SetNucleotideColorSchemeCommand extends CommandBase implements ICom
      */
     @Override
     public String getSyntax() {
-        return "set nucleotideColors=[" + Basic.toString(ColorSchemeNucleotides.getNames(), "|") + "];";
+		return "set nucleotideColors=[" + StringUtils.toString(ColorSchemeNucleotides.getNames(), "|") + "];";
     }
 
     /**

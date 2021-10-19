@@ -19,9 +19,9 @@
  */
 package megan.dialogs.export;
 
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.FileUtils;
+import jloda.util.progress.ProgressListener;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
@@ -48,19 +48,19 @@ public class ReadsExporter {
     public static int exportAll(IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
         int total = 0;
         try {
-            progressListener.setTasks("Export", "Writing all reads");
+			progressListener.setTasks("Export", "Writing all reads");
 
-            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)));
-                 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false)) {
-                progressListener.setMaximum(it.getMaximumProgress());
-                progressListener.setProgress(0);
-                while (it.hasNext()) {
-                    total++;
-                    write(it.next(), w);
-                    progressListener.setProgress(it.getProgress());
-                }
-            }
-        } catch (CanceledException ex) {
+			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
+				 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, false)) {
+				progressListener.setMaximum(it.getMaximumProgress());
+				progressListener.setProgress(0);
+				while (it.hasNext()) {
+					total++;
+					write(it.next(), w);
+					progressListener.setProgress(it.getProgress());
+				}
+			}
+		} catch (CanceledException ex) {
             System.err.println("USER CANCELED");
         }
         return total;
@@ -82,17 +82,17 @@ public class ReadsExporter {
         try {
             progressListener.setTasks("Export", "Writing selected reads");
 
-            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName)))) {
-                int maxProgress = 100000 * classIds.size();
-                int currentProgress;
-                progressListener.setMaximum(maxProgress);
-                progressListener.setProgress(0);
-                int countClassIds = 0;
-                for (Integer classId : classIds) {
-                    countClassIds++;
-                    currentProgress = 100000 * countClassIds;
-                    try (IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10000, true, false)) {
-                        long progressIncrement = 100000 / (it.getMaximumProgress() + 1);
+			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)))) {
+				int maxProgress = 100000 * classIds.size();
+				int currentProgress;
+				progressListener.setMaximum(maxProgress);
+				progressListener.setProgress(0);
+				int countClassIds = 0;
+				for (Integer classId : classIds) {
+					countClassIds++;
+					currentProgress = 100000 * countClassIds;
+					try (IReadBlockIterator it = connector.getReadsIterator(classification, classId, 0, 10000, true, false)) {
+						long progressIncrement = 100000 / (it.getMaximumProgress() + 1);
 
                         while (it.hasNext()) {
                             total++;

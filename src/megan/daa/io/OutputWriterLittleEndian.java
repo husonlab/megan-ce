@@ -21,8 +21,8 @@
 package megan.daa.io;
 
 
-import jloda.util.Basic;
 import jloda.util.ByteInputBuffer;
+import jloda.util.StringUtils;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileOutputStreamAdapter;
 import megan.io.IOutput;
@@ -233,7 +233,7 @@ public class OutputWriterLittleEndian implements Closeable {
             System.err.println(r.readDouble());
             byte[] bytes = new byte[100];
             int len = r.readNullTerminatedBytes(bytes);
-            System.err.println(Basic.toString(bytes, 0, len));
+			System.err.println(StringUtils.toString(bytes, 0, len));
             ByteInputBuffer buffer = new ByteInputBuffer();
             r.readSizePrefixedBytes(buffer);
             System.err.println(buffer.toString());

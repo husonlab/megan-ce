@@ -21,9 +21,8 @@ package megan.commands.algorithms;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
@@ -71,8 +70,8 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
         } else
             samplesThreshold = 50;
 
-        final String legalSampleNames = "'" + Basic.toString(doc.getSampleNames(), "' '") + "' ALL";
-        final Set<String> selectedSamples = new HashSet<>();
+		final String legalSampleNames = "'" + StringUtils.toString(doc.getSampleNames(), "' '") + "' ALL";
+		final Set<String> selectedSamples = new HashSet<>();
         np.matchIgnoreCase("samples=");
         while (!np.peekMatchIgnoreCase(";")) {
             selectedSamples.add(np.getWordMatchesRespectingCase(legalSampleNames));
@@ -114,7 +113,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
             newDocument.addSample(title, sampleSize, 0, BlastMode.Unknown, classification2class2counts);
 
             newDocument.setNumberReads(newDocument.getDataTable().getTotalReads());
-            String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + title + ".megan");
+			String fileName = FileUtils.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + title + ".megan");
             newDocument.getMeganFile().setFile(fileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
             System.err.println("Number of reads: " + newDocument.getNumberOfReads());
             newDocument.processReadHits();
@@ -133,7 +132,7 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
             if (newDocument.getNumberOfSamples() > 1) {
                 newDir.getMainViewer().getNodeDrawer().setStyle(ProgramProperties.get(MeganProperties.COMPARISON_STYLE, ""), NodeDrawer.Style.PieChart);
             }
-            NotificationsInSwing.showInformation(String.format(Basic.capitalizeFirstLetter(what) + " biome has %,d reads", newDocument.getNumberOfReads()));
+			NotificationsInSwing.showInformation(String.format(StringUtils.capitalizeFirstLetter(what) + " biome has %,d reads", newDocument.getNumberOfReads()));
 
             newDir.execute("update reprocess=true reinduce=true;", newDir.getMainViewer().getCommandManager());
         }

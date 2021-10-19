@@ -32,6 +32,8 @@ import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.GUIConfiguration;
 import megan.clusteranalysis.pcoa.ComputeEllipse;
@@ -509,7 +511,7 @@ public class PCoATab extends JPanel implements ITab {
             if (!isShowTriPlot())
                 setShowTriPlot(false);
 
-            clusterViewer.getStatusBar().setText2(clusterViewer.getStatusBar().getText2() + " Eigenvalues: " + Basic.toString(pcoa.getEigenValues(), ","));
+			clusterViewer.getStatusBar().setText2(clusterViewer.getStatusBar().getText2() + " Eigenvalues: " + StringUtils.toString(pcoa.getEigenValues(), ","));
             // System.err.println("" + item.get() + "=(" + 100 * item.get(0).floatValue() + "," + 100 * item.get(1).floatValue() + ")");
             graphView.trans.setCoordinateRect(graphView.getBBox());
             graphView.fitGraphToWindow();

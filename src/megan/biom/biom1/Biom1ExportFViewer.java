@@ -23,9 +23,9 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.FileUtils;
+import jloda.util.progress.ProgressListener;
 import megan.core.Director;
 import megan.viewer.ClassificationViewer;
 
@@ -65,8 +65,8 @@ public class Biom1ExportFViewer {
         LinkedList<Map> colList = new LinkedList<>();
         for (String name : names) {
             Map colItem = new StringMap();
-            colItem.put("id", Basic.getFileNameWithoutPath(Basic.getFileBaseName(name)));
-            colItem.put("metadata", new StringMap());
+			colItem.put("id", FileUtils.getFileNameWithoutPath(FileUtils.getFileBaseName(name)));
+			colItem.put("metadata", new StringMap());
             colList.add(colItem);
         }
         biom1Data.setColumns(colList.toArray(new Map[0]));

@@ -21,6 +21,8 @@
 package megan.parsers.maf;
 
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -68,37 +70,37 @@ public class MAFSorter {
         final ArrayList<Long> batchPositions = getBatchStartPositions(mafFile, progress);
         final int numberOfBatches = batchPositions.size();
 
-        if (numberOfBatches == 1)
-            return mafFile.toString();
-        else
-            System.err.println("Batches in MAF file: " + numberOfBatches);
+		if (numberOfBatches == 1)
+			return mafFile.toString();
+		else
+			System.err.println("Batches in MAF file: " + numberOfBatches);
 
-        final ArrayList<BufferedReader> readers = getReaders(mafFile, batchPositions);
-        final ArrayList<Pair<String, String[]>> nextMaf = new ArrayList<>();
-        for (int i = 0; i < numberOfBatches; i++)
-            nextMaf.add(start);
+		final ArrayList<BufferedReader> readers = getReaders(mafFile, batchPositions);
+		final ArrayList<Pair<String, String[]>> nextMaf = new ArrayList<>();
+		for (int i = 0; i < numberOfBatches; i++)
+			nextMaf.add(start);
 
-        final File outputFile = new File(mafFile.getParent(), Basic.replaceFileSuffix(mafFile.getName(), "-sorted.maf.gz"));
-        try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile.getPath())))) {
-            w.write(fileHeader);
+		final File outputFile = new File(mafFile.getParent(), FileUtils.replaceFileSuffix(mafFile.getName(), "-sorted.maf.gz"));
+		try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile.getPath())))) {
+			w.write(fileHeader);
 
-            try {
-                progress.setSubtask("Processing batches:");
-                progress.setProgress(0);
-                try (FileLineIterator it = new FileLineIterator(readsFile)) {
-                    progress.setProgress(it.getMaximumProgress());
-                    while (it.hasNext()) {
-                        final String line = it.next();
-                        if (line.startsWith(">")) {
-                            final String name = Basic.getFirstWord(line.substring(1));
+			try {
+				progress.setSubtask("Processing batches:");
+				progress.setProgress(0);
+				try (FileLineIterator it = new FileLineIterator(readsFile)) {
+					progress.setProgress(it.getMaximumProgress());
+					while (it.hasNext()) {
+						final String line = it.next();
+						if (line.startsWith(">")) {
+							final String name = StringUtils.getFirstWord(line.substring(1));
                             for (int i = 0; i < numberOfBatches; i++) {
                                 if (nextMaf.get(i) == start) {
                                     nextMaf.set(i, readNextMafRecord(readers.get(i)));
                                 }
                                 while (nextMaf.get(i).getFirst().equals(name)) {
-                                    w.write("\n");
-                                    w.write(Basic.toString(nextMaf.get(i).getSecond(), "\n"));
-                                    w.write("\n");
+									w.write("\n");
+									w.write(StringUtils.toString(nextMaf.get(i).getSecond(), "\n"));
+									w.write("\n");
                                     nextMaf.set(i, readNextMafRecord(readers.get(i)));
                                 }
                             }
@@ -112,7 +114,7 @@ public class MAFSorter {
                 for (int i = 0; i < nextMaf.size(); i++) {
                     final Pair<String, String[]> pair = nextMaf.get(i);
                     if (pair != done) {
-                        System.err.println("Error: not all MAF records in batch " + i + " processed, e.g:\n" + Basic.toString(pair.getSecond(), "\n"));
+						System.err.println("Error: not all MAF records in batch " + i + " processed, e.g:\n" + StringUtils.toString(pair.getSecond(), "\n"));
                     }
                 }
             } finally {
@@ -144,8 +146,8 @@ public class MAFSorter {
         while ((aLine = r.readLine()) != null) {
             if (aLine.startsWith("a")) {
                 String s2 = r.readLine();
-                String s3 = r.readLine();
-                String name = Basic.getFirstWord(s3.substring((2)));
+				String s3 = r.readLine();
+				String name = StringUtils.getFirstWord(s3.substring((2)));
                 return new Pair<>(name, new String[]{aLine, s2, s3});
             } else if (aLine.startsWith(BATCH))
                 break;

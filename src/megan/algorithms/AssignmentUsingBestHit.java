@@ -22,6 +22,8 @@ package megan.algorithms;
 
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import megan.classification.IdMapper;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
@@ -105,13 +107,13 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
      * @return all read to id assignments
      */
     private Map<String, Integer> loadAssignmentFiles(String cName, String fileName) {
-        final File file = new File(Basic.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
+		final File file = new File(FileUtils.replaceFileSuffix(fileName, "." + cName.toLowerCase()));
         if (file.exists() && file.canRead()) {
             System.err.println("External assignment file for " + cName + " detected: " + file);
             final Map<String, Integer> map = new HashMap<>();
             try (final FileLineIterator it = new FileLineIterator(file, true)) {
                 while (it.hasNext()) {
-                    final String[] tokens = Basic.split(it.next(), '\t');
+					final String[] tokens = StringUtils.split(it.next(), '\t');
                     if (tokens.length == 2 && Basic.isInteger(tokens[1])) {
                         int id = Basic.parseInt(tokens[1]);
                         map.put(tokens[0], id);

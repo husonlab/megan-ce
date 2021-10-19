@@ -20,15 +20,17 @@
 
 package megan.daa.io;
 
+import jloda.seq.BlastMode;
+
 /**
  * alignment mode enum
  * Daniel Huson, 8.2015
  */
 public enum AlignMode {
-    blastp, blastx, blastn;
+	blastp, blastx, blastn;
 
-    public static byte rank(AlignMode mode) {
-        switch (mode) {
+	public static byte rank(AlignMode mode) {
+		switch (mode) {
             case blastp:
                 return 2;
             case blastx:
@@ -52,16 +54,16 @@ public enum AlignMode {
         }
     }
 
-    public static jloda.util.BlastMode getBlastMode(int rank) {
-        switch (rank) {
-            case 2:
-                return jloda.util.BlastMode.BlastP;
-            case 3:
-                return jloda.util.BlastMode.BlastX;
-            default:
-            case 4:
-                return jloda.util.BlastMode.BlastN;
-        }
+	public static BlastMode getBlastMode(int rank) {
+		switch (rank) {
+			case 2:
+				return BlastMode.BlastP;
+			case 3:
+				return BlastMode.BlastX;
+			default:
+			case 4:
+				return BlastMode.BlastN;
+		}
 
     }
 }

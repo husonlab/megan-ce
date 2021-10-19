@@ -25,7 +25,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
@@ -100,7 +100,7 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase(";");
 
         if (mapFile == null)
-            mapFile = Basic.replaceFileSuffix(treeFile, ".map");
+			mapFile = FileUtils.replaceFileSuffix(treeFile, ".map");
 
         final Classification classification = ClassificationManager.load(Classification.Taxonomy, treeFile, mapFile, getDoc().getProgressListener());
         TaxonomyData.ensureDisabledTaxaInitialized();
@@ -131,7 +131,7 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
 
         if (file != null && file.exists() && file.canRead()) {
             ProgramProperties.put(MeganProperties.TAXONOMYFILE, file.getAbsolutePath());
-            String mappingFile = Basic.replaceFileSuffix(file.getPath(), ".map");
+			String mappingFile = FileUtils.replaceFileSuffix(file.getPath(), ".map");
             if (!(new File(mappingFile)).exists()) {
                 mappingFile = null;
             }

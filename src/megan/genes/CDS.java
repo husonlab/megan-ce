@@ -21,6 +21,8 @@
 package megan.genes;
 
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.classification.util.TaggedValueIterator;
 
 import java.io.IOException;
@@ -136,8 +138,8 @@ public class CDS {
 
         final ArrayList<CDS> list = new ArrayList<>(100000);
         while (iterator.hasNext()) {
-            final String aLine = iterator.next();
-            final String[] tokens = Basic.split(aLine, '\t');
+			final String aLine = iterator.next();
+			final String[] tokens = StringUtils.split(aLine, '\t');
             if (tokens.length >= 9 && tokens[2].equals("CDS")) {
                 final CDS cds = new CDS();
                 dnaAccessionIterator.restart(tokens[0]);
@@ -174,7 +176,7 @@ public class CDS {
             String aLine = it.next();
             if (aLine.length() > 0 && Character.isDigit(aLine.charAt(0))) { // coordinates
                 while (it.hasNext()) { // only makes sense to process if there are more lines to be read, even if aLine!=null
-                    final String[] tokens = Basic.split(aLine, '\t');
+					final String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length == 3 && tokens[2].endsWith("CDS")) {
                         int a = Basic.parseInt(tokens[0]);
                         int b = Basic.parseInt(tokens[1]);

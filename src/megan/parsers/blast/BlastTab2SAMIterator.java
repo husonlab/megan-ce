@@ -21,7 +21,9 @@ package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 
@@ -49,7 +51,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
     public BlastTab2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         setSkipCommentLines(true);
-        final String line = Basic.getFirstLineFromFile(new File(fileName), "#", 1000);
+		final String line = FileUtils.getFirstLineFromFile(new File(fileName), "#", 1000);
         if (line != null && line.split("\t").length < 12) {
             NotificationsInSwing.showWarning("Might not be a BLAST file in TAB format: " + fileName);
         }
@@ -74,8 +76,8 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         if (!hasNextLine())
             return -1;
 
-        String line = nextLine();
-        final String queryName = Basic.getReadName(line);
+		String line = nextLine();
+		final String queryName = StringUtils.getReadName(line);
         pushBackLine(line);
 
         int matchId = 0; // used to distinguish between matches when sorting
@@ -105,7 +107,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
                     break;
                 }
 
-                String[] tokens = Basic.split(line, '\t');
+				String[] tokens = StringUtils.split(line, '\t');
                 if (tokens.length == 1)
                     continue;
 
@@ -221,8 +223,8 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
         buffer.append(String.format("ZE:f:%g\t", expect));
         buffer.append(String.format("ZI:i:%d\t", Math.round(percentIdentity)));
         buffer.append(String.format("ZS:i:%s\t", queryStart));
-        buffer.append(String.format("ZQ:i:%s\t", queryEnd));
-        buffer.append(String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' ')));
+		buffer.append(String.format("ZQ:i:%s\t", queryEnd));
+		buffer.append(String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' ')));
 
         return buffer.toString();
     }

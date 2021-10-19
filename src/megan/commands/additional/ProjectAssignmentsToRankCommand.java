@@ -23,8 +23,9 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.algorithms.NaiveProjectionProfile;
 import megan.classification.ClassificationManager;
@@ -50,13 +51,13 @@ import java.util.Map;
 public class ProjectAssignmentsToRankCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "project rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "} [minPercent={number}];";
+		return "project rank={" + StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "} [minPercent={number}];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("project rank=");
-        final String rank = np.getWordMatchesRespectingCase(Basic.toString(TaxonomicLevels.getAllNames(), " "));
-        final float minPercent;
+		final String rank = np.getWordMatchesRespectingCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
+		final float minPercent;
         if (np.peekMatchIgnoreCase("minPercent")) {
             np.matchIgnoreCase("minPercent=");
             minPercent = (float) np.getDouble(0, 100);
@@ -66,9 +67,9 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
 
         final Document doc = ((Director) getDir()).getDocument();
         final int numberOfSamples = doc.getNumberOfSamples();
-        final String[] sampleNames = doc.getSampleNamesAsArray();
-        final String fileName = Basic.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + rank + "-projection.megan");
-        final SampleAttributeTable sampleAttributeTable = doc.getSampleAttributeTable().copy();
+		final String[] sampleNames = doc.getSampleNamesAsArray();
+		final String fileName = FileUtils.replaceFileSuffix(doc.getMeganFile().getFileName(), "-" + rank + "-projection.megan");
+		final SampleAttributeTable sampleAttributeTable = doc.getSampleAttributeTable().copy();
 
         final long numberOfReads = doc.getNumberOfReads();
         final int[] sampleSizes = new int[numberOfSamples];

@@ -22,6 +22,7 @@ package megan.parsers.blast;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import megan.util.MothurFileFilter;
 
 import java.io.IOException;
@@ -75,12 +76,12 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         String line = nextLine();
         boolean found = false;
         while (line != null && !found) {
-            if (Basic.countOccurrences(line, '\t') == 1)
-                found = true;
-            else if (hasNext())
-                line = nextLine();
-            else
-                line = null;
+			if (StringUtils.countOccurrences(line, '\t') == 1)
+				found = true;
+			else if (hasNext())
+				line = nextLine();
+			else
+				line = null;
         }
         if (line == null)
             return -1;
@@ -89,9 +90,9 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
         int matchId = 0; // used to distinguish between matches when sorting
         matches.clear();
 
-        final String[] lines = Basic.split(line, '\t');
-        final String queryName = lines[0];
-        final String[] tokens = Basic.split(lines[1], ';');
+		final String[] lines = StringUtils.split(line, '\t');
+		final String queryName = lines[0];
+		final String[] tokens = StringUtils.split(lines[1], ';');
 
         StringBuilder path = new StringBuilder();
         // add one match block for each percentage given:
@@ -114,7 +115,7 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
                     match.bitScore = bitScore;
                     match.id = matchId++;
 
-                    String ref = Basic.toString(tokens, 0, whichToken, ";") + ";";
+					String ref = StringUtils.toString(tokens, 0, whichToken, ";") + ";";
                     match.samLine = makeSAM(queryName, path.toString(), bitScore, ref);
                     matches.add(match);
                     if (matches.size() > getMaxNumberOfMatchesPerRead())
@@ -155,6 +156,6 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
      */
     private String makeSAM(String queryName, String refName, float bitScore, String line) throws IOException {
 
-        return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", Basic.replaceSpaces(line, ' '));
+		return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
     }
 }

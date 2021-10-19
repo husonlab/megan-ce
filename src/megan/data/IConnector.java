@@ -19,7 +19,7 @@
  */
 package megan.data;
 
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.Single;
 
 import java.io.IOException;

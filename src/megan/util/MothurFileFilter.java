@@ -20,7 +20,7 @@
 package megan.util;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -64,7 +64,7 @@ public class MothurFileFilter extends FileFilterBase implements FilenameFilter {
     public boolean accept(File directory, String fileName) {
         if (!super.accept(directory, fileName))
             return false;
-        String line = Basic.getFirstLineFromFile(new File(fileName));
+		String line = FileUtils.getFirstLineFromFile(new File(fileName));
         return line != null && line.split("\t").length == 2 && line.endsWith(";");
     }
 }

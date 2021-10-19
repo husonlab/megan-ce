@@ -25,6 +25,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressPercentage;
 import megan.classification.IdMapper;
 import megan.genes.GeneItem;
 import megan.genes.GeneItemCreator;
@@ -151,7 +152,7 @@ public class AAdderRun {
                             w.write(aLine);
                         else {
 
-                            final String[] tokens = Basic.split(aLine, '\t');
+							final String[] tokens = StringUtils.split(aLine, '\t');
 
                             if (tokens.length < 2 || tokens[2].equals("*")) {
                                 w.write(aLine);
@@ -267,9 +268,9 @@ public class AAdderRun {
     public static void readAndVerifyMagicNumber(IInputReader ins, byte[] expectedMagicNumber) throws IOException {
         byte[] magicNumber = new byte[expectedMagicNumber.length];
         if (ins.read(magicNumber, 0, magicNumber.length) != expectedMagicNumber.length || !Basic.equal(magicNumber, expectedMagicNumber)) {
-            System.err.println("Expected: " + Basic.toString(expectedMagicNumber));
-            System.err.println("Got:      " + Basic.toString(magicNumber));
-            throw new IOException("Index is too old or incorrect file (wrong magic number). Please recompute index.");
-        }
+			System.err.println("Expected: " + StringUtils.toString(expectedMagicNumber));
+			System.err.println("Got:      " + StringUtils.toString(magicNumber));
+			throw new IOException("Index is too old or incorrect file (wrong magic number). Please recompute index.");
+		}
     }
 }

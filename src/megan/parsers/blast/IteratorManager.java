@@ -19,7 +19,7 @@
  */
 package megan.parsers.blast;
 
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import megan.daa.io.DAA2SAMIterator;
 
 import java.io.IOException;

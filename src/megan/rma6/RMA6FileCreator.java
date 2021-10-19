@@ -20,7 +20,7 @@
 
 package megan.rma6;
 
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.ListOfLongs;
 import megan.io.OutputWriter;
 

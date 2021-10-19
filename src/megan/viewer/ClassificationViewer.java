@@ -32,6 +32,7 @@ import jloda.swing.util.PopupMenu;
 import jloda.swing.util.*;
 import jloda.swing.window.MenuBar;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.SyncDataTableAndClassificationViewer;
@@ -750,7 +751,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                 buf2.append(String.format(" total terms=%,d", getTree().getNumberOfNodes()));
         }
         if (Document.getVersionInfo().get(getClassName() + " tree") != null)
-            buf2.append("     ").append(Basic.skipFirstLine(Document.getVersionInfo().get(getClassName() + " tree")).replaceAll("\\s+", " "));
+			buf2.append("     ").append(StringUtils.skipFirstLine(Document.getVersionInfo().get(getClassName() + " tree")).replaceAll("\\s+", " "));
         statusBar.setText2(buf2.toString());
     }
 
@@ -1267,17 +1268,17 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
             final Random random = new Random(26660);
             for (int run = 0; run < 20; run++) {
                 boolean changed = false;
-                for (Iterator it = Basic.randomize(pairs.iterator(), random); it.hasNext(); ) {
-                    Pair pair = (Pair) it.next();
-                    Node v = (Node) pair.getFirst();
-                    Node w = (Node) pair.getSecond();
-                    Rectangle rv = getNV(v).getLabelRect(trans);
-                    Rectangle rw = getNV(w).getLabelRect(trans);
-                    if (rv != null && rw != null && rv.intersects(rw)) {
-                        Point pv = getNV(v).getLabelPosition(trans);
-                        Point pw = getNV(w).getLabelPosition(trans);
+				for (Iterator it = IteratorUtils.randomize(pairs.iterator(), random); it.hasNext(); ) {
+					Pair pair = (Pair) it.next();
+					Node v = (Node) pair.getFirst();
+					Node w = (Node) pair.getSecond();
+					Rectangle rv = getNV(v).getLabelRect(trans);
+					Rectangle rw = getNV(w).getLabelRect(trans);
+					if (rv != null && rw != null && rv.intersects(rw)) {
+						Point pv = getNV(v).getLabelPosition(trans);
+						Point pw = getNV(w).getLabelPosition(trans);
 
-                        if (pv == null || pw == null)
+						if (pv == null || pw == null)
                             continue;
 
                         if (rv.x <= rw.x) {
@@ -1439,7 +1440,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                             } else if (nodeData.getAssigned().length > 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(Basic.toString(nodeData.getAssigned(), 0, nodeData.getAssigned().length, " ", true));
+								buf.append(StringUtils.toString(nodeData.getAssigned(), 0, nodeData.getAssigned().length, " ", true));
                             }
                         } else {
                             if (nodeData.getSummarized().length == 1) {
@@ -1449,7 +1450,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                             } else if (nodeData.getAssigned().length > 1) {
                                 if (buf.length() > 0)
                                     buf.append("; ");
-                                buf.append(Basic.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
+								buf.append(StringUtils.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
                             }
                         }
                         if (buf.length() > 0 && !getLabelVisible(v))
@@ -1463,7 +1464,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                         } else if (nodeData.getAssigned().length > 1) {
                             if (buf.length() > 0)
                                 buf.append("; ");
-                            buf.append(Basic.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
+							buf.append(StringUtils.toString(nodeData.getSummarized(), 0, nodeData.getSummarized().length, " ", true));
                         }
                         if (buf.length() > 0 && !getLabelVisible(v))
                             setLabelVisible(v, true); // explicitly set, make visible
@@ -1533,7 +1534,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
         if (text == null || text.length() == 0)
             text = getLabel(v);
         else
-            text = Basic.fold(text, 80, "<br>");
+			text = StringUtils.fold(text, 80, "<br>");
         writer.write(text);
         writer.write("</i><p>");
         {
@@ -1543,7 +1544,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
                     w = w.getFirstInEdge().getSource();
                     list.add(getLabel(w));
                 }
-                String str = Basic.toString(Basic.reverse(list), ";");
+				String str = StringUtils.toString(Basic.reverse(list), ";");
                 list.clear();
                 writer.write(str);
                 writer.write("<br>");

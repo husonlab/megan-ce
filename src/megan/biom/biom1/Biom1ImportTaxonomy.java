@@ -20,6 +20,7 @@
 package megan.biom.biom1;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.classification.IdMapper;
 import megan.viewer.TaxonomyData;
 
@@ -80,8 +81,8 @@ class Biom1ImportTaxonomy {
             if (taxonId != null)
                 row2class[rowCount++] = taxonId;
             else {
-                row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
-                System.err.println("Failed to determine taxon for: " + Basic.toString(row.values(), ","));
+				row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
+				System.err.println("Failed to determine taxon for: " + StringUtils.toString(row.values(), ","));
             }
         }
 

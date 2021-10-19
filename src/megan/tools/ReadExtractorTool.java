@@ -22,6 +22,8 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressPercentage;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
 import megan.daa.io.DAAParser;
@@ -95,21 +97,21 @@ public class ReadExtractorTool {
         if(allBelow && extractCorrectedReads)
             throw new UsageException("Option --allBelow is not implemented for --extractCorrectedReads");
 
-            if (outputFiles.size() == 1 && outputFiles.get(0).equals("stdout")) {
-            outputFiles.clear();
-            for (var i = 0; i < inputFiles.size(); i++)
-                outputFiles.add("stdout");
-        } else if (outputFiles.size() == 1 && Basic.isDirectory(outputFiles.get(0))) {
-            final var directory = outputFiles.get(0);
-            outputFiles.clear();
-            for (var name : inputFiles) {
-                if (all)
-                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
-                else
-                    outputFiles.add(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
-            }
-        } else if (inputFiles.size() != outputFiles.size()) {
-            throw new UsageException("Number of input and output files must be equal, or output must be 'stdout' or a directory");
+		if (outputFiles.size() == 1 && outputFiles.get(0).equals("stdout")) {
+			outputFiles.clear();
+			for (var i = 0; i < inputFiles.size(); i++)
+				outputFiles.add("stdout");
+		} else if (outputFiles.size() == 1 && FileUtils.isDirectory(outputFiles.get(0))) {
+			final var directory = outputFiles.get(0);
+			outputFiles.clear();
+			for (var name : inputFiles) {
+				if (all)
+					outputFiles.add(new File(directory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(name), "-all.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+				else
+					outputFiles.add(new File(directory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(name), "-%i-%t.txt" + (gzOutputFiles ? ".gz" : ""))).getPath());
+			}
+		} else if (inputFiles.size() != outputFiles.size()) {
+			throw new UsageException("Number of input and output files must be equal, or output must be 'stdout' or a directory");
         }
 
         int totalReads = 0;

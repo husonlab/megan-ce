@@ -22,6 +22,7 @@ package megan.dialogs.export.analysis;
 
 import jloda.graph.Node;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.analysis.TaxonomicSegmentation;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -101,8 +102,8 @@ public class SegmentationOfReadsExporter {
                                 if (!useOneOutputFile) {
                                     if (w != null)
                                         w.close();
-                                    final String cName = classification.getName2IdMap().get(classId);
-                                    final File file = new File(fileName.replaceAll("%t", Basic.toCleanName(cName)).replaceAll("%i", "" + classId));
+									final String cName = classification.getName2IdMap().get(classId);
+									final File file = new File(fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId));
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);
                                         try {
@@ -177,7 +178,7 @@ public class SegmentationOfReadsExporter {
         String header = readBlock.getReadHeader();
         if (header == null)
             header = "untitled";
-        w.write(Basic.swallowLeadingGreaterSign(header) + "\t" + Basic.toString(segmentation, "\t") + "\n");
+		w.write(StringUtils.swallowLeadingGreaterSign(header) + "\t" + StringUtils.toString(segmentation, "\t") + "\n");
     }
 
 }

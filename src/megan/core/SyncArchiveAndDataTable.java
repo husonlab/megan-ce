@@ -19,9 +19,8 @@
  */
 package megan.core;
 
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;
 import megan.data.IConnector;
@@ -91,19 +90,19 @@ public class SyncArchiveAndDataTable {
         if (label2data.containsKey(SampleAttributeTable.SAMPLE_ATTRIBUTES)) {
             sampleAttributeTable.read(new StringReader(new String(label2data.get(SampleAttributeTable.SAMPLE_ATTRIBUTES))), null, true);
             if (sampleAttributeTable.getSampleSet().size() > 0) {
-                String sampleName = sampleAttributeTable.getSampleSet().iterator().next();
-                String name = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(fileName), "");
+				String sampleName = sampleAttributeTable.getSampleSet().iterator().next();
+				String name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
                 if (!sampleName.equals(name))
                     sampleAttributeTable.renameSample(sampleName, name, false);
             }
         } else {
-            String name = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(fileName), "");
+			String name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
             sampleAttributeTable.addSample(name, new HashMap<>(), true, true);
         }
 
         // fix some broken files that contain two lines of metadata...
         if (sampleAttributeTable.getSampleSet().size() > 1) {
-            String sampleName = Basic.getFileNameWithoutPath(fileName);
+			String sampleName = FileUtils.getFileNameWithoutPath(fileName);
             if (sampleAttributeTable.getSampleSet().contains(sampleName))
                 sampleAttributeTable.removeSample(sampleName);
         }
@@ -151,7 +150,7 @@ public class SyncArchiveAndDataTable {
      */
     static private void syncAux2Summary(String fileName, byte[] bytes, DataTable table) throws IOException {
         if (bytes != null) {
-            String string = Basic.toString(bytes);
+			String string = StringUtils.toString(bytes);
             if (string.startsWith(DataTable.MEGAN6_SUMMARY_TAG_NOT_USED_ANYMORE) || string.startsWith(DataTable.MEGAN4_SUMMARY_TAG) || string.startsWith("!MEGAN4")) {
                 BufferedReader r = new BufferedReader(new StringReader(string));
                 table.read(r, true);

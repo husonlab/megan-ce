@@ -25,6 +25,7 @@ import jloda.swing.util.BasicSwing;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.SelectionGraphics;
@@ -123,8 +124,8 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 gc.draw(line);
                 if (isShowValues()) {
                     gc.setColor(Color.DARK_GRAY);
-                    gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
-                    gc.drawString(Basic.removeTrailingZerosAfterDot(String.format("%.4f", edgeValue.get(e))), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
+					gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
+					gc.drawString(StringUtils.removeTrailingZerosAfterDot(String.format("%.4f", edgeValue.get(e))), (int) Math.round(0.5 * factorX * (pv.getX() + pw.getX()) + dx), (int) Math.round(0.5 * factorY * (pv.getY() + pw.getY()) + dy));
                 }
             } catch (Exception ex) {
                 Basic.caught(ex);

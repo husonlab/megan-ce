@@ -22,7 +22,7 @@ package megan.biom.biom2;
 
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
 import ch.systemsx.cisd.hdf5.IHDF5Writer;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -115,14 +115,14 @@ public class TopLevelAttributes {
     }
 
     public String toString() {
-        return "id:            " + id + "\n" +
-                "type:          " + type + "\n" +
-                "formatURL:     " + formatURL + "\n" +
-                "formatVersion: " + Basic.toString(formatVersion, ".") + "\n" +
-                "generatedBy:   " + generatedBy + "\n" +
-                "creationDate:  " + creationDate + "\n" +
-                "shape:         " + Basic.toString(shape, ",") + "\n" +
-                "nnz:           " + nnz + "\n";
+		return "id:            " + id + "\n" +
+			   "type:          " + type + "\n" +
+			   "formatURL:     " + formatURL + "\n" +
+			   "formatVersion: " + StringUtils.toString(formatVersion, ".") + "\n" +
+			   "generatedBy:   " + generatedBy + "\n" +
+			   "creationDate:  " + creationDate + "\n" +
+			   "shape:         " + StringUtils.toString(shape, ",") + "\n" +
+			   "nnz:           " + nnz + "\n";
     }
 
     public String getId() {

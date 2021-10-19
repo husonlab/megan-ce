@@ -23,6 +23,9 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
+import jloda.util.progress.ProgressSilent;
 import megan.assembly.ReadAssembler;
 import megan.assembly.ReadData;
 import megan.assembly.ReadDataCollector;
@@ -88,15 +91,15 @@ public class GCAssembler {
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and output");
-        final String inputFile = options.getOptionMandatory("-i", "input", "Input DAA or RMA6 file", "");
-        final String outputFileTemplate = options.getOption("-o", "output", "Output filename template, use %d or %s to represent class id or name, respectively",
-                Basic.replaceFileSuffix(inputFile.length() == 0 ? "input" : inputFile, "-%d.fasta"));
+		final String inputFile = options.getOptionMandatory("-i", "input", "Input DAA or RMA6 file", "");
+		final String outputFileTemplate = options.getOption("-o", "output", "Output filename template, use %d or %s to represent class id or name, respectively",
+				FileUtils.replaceFileSuffix(inputFile.length() == 0 ? "input" : inputFile, "-%d.fasta"));
 
         options.comment("Classification");
 
-        final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
-                + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ", none)", "");
-        final String[] selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
+		final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
+																						 + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ", none)", "");
+		final String[] selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
 
         options.comment("Options");
 
@@ -126,7 +129,7 @@ public class GCAssembler {
 
         final Set<String> supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
         if (!supportedClassifications.contains(classificationName) && !classificationName.equalsIgnoreCase("none")) {
-            throw new UsageException("--function: Must be one of: " + Basic.toString(supportedClassifications, ",") + ", none");
+			throw new UsageException("--function: Must be one of: " + StringUtils.toString(supportedClassifications, ",") + ", none");
         }
 
         // todo; fun=none mode does not work
@@ -309,9 +312,9 @@ public class GCAssembler {
         if (outputFileTemplate.contains("%d"))
             outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
         if (outputFileTemplate.contains("%s"))
-            outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", Basic.toCleanName(className));
+			outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", StringUtils.toCleanName(className));
         if (outputFile == null && numberOfIds > 1)
-            outputFile = Basic.replaceFileSuffix(outputFileTemplate, "-" + classId + ".fasta");
+			outputFile = FileUtils.replaceFileSuffix(outputFileTemplate, "-" + classId + ".fasta");
         if (outputFile == null)
             outputFile = outputFileTemplate;
         return outputFile;

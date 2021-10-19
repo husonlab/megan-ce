@@ -21,6 +21,7 @@ package megan.daa.connector;
 
 import jloda.util.Basic;
 import jloda.util.ByteOutputBuffer;
+import jloda.util.StringUtils;
 import megan.classification.IdParser;
 import megan.daa.io.*;
 import megan.data.IMatchBlock;
@@ -300,7 +301,7 @@ public class MatchBlockDAA implements IMatchBlock {
 
     @Override
     public String getTextFirstWord() {
-        return Basic.toString(matchRecord.getSubjectName());
+		return StringUtils.toString(matchRecord.getSubjectName());
     }
 
     public void setText(String text) {

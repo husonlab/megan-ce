@@ -74,28 +74,28 @@ public class DAA2Info {
         final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-        options.setAuthors("Daniel H. Huson");
+		options.setAuthors("Daniel H. Huson");
 
-        options.comment("Input and Output");
-        final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
+		options.comment("Input and Output");
+		final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
+		final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
-        options.comment("Commands");
-        final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
-        final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
+		options.comment("Commands");
+		final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
+		final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
 
-        final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-        final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-        final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
-        final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
-        final boolean prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
-        final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
-        final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
-        final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
-        final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
-        final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
+		final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
+		final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
+		final boolean prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
+		final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+		final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
+		final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
+		final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
+		final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
-        final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
+		final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
         options.done();
 
         final int taxonomyRoot;
@@ -116,17 +116,17 @@ public class DAA2Info {
             doc.loadMeganFile();
         }
 
-        try (Writer outs = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
-            if (listGeneralInfo || listMoreStuff) {
-                final DAAHeader daaHeader = new DAAHeader(daaFile, true);
-                outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
-                outs.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
-                outs.write(String.format("# Is meganized:    %s\n", isMeganized));
+		try (Writer outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+			if (listGeneralInfo || listMoreStuff) {
+				final DAAHeader daaHeader = new DAAHeader(daaFile, true);
+				outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
+				outs.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
+				outs.write(String.format("# Is meganized:    %s\n", isMeganized));
 
-                if (isMeganized) {
-                    outs.write("# Classifications:");
-                    final DAAConnector connector = new DAAConnector(daaFile);
-                    for (String classificationName : connector.getAllClassificationNames()) {
+				if (isMeganized) {
+					outs.write("# Classifications:");
+					final DAAConnector connector = new DAAConnector(daaFile);
+					for (String classificationName : connector.getAllClassificationNames()) {
                         if (ClassificationManager.getAllSupportedClassifications().contains(classificationName)) {
                             outs.write(" " + classificationName);
                         }

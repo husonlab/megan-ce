@@ -24,7 +24,7 @@ import javafx.concurrent.Task;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.data.IMatchBlock;

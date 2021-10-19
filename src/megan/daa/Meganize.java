@@ -20,10 +20,8 @@
 
 package megan.daa;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.core.ContaminantManager;
 import megan.core.Document;
@@ -52,30 +50,30 @@ public class Meganize {
      * @param cNames
      * @param minScore
      * @param maxExpected
-     * @param topPercent
-     * @param minSupportPercent
-     * @param minSupport
-     * @param pairedReads
-     * @param pairedReadsSuffixLength
-     * @param lcaAlgorithm
-     * @throws IOException
-     * @throws CanceledException
-     */
-    public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile,
-                             final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
-                             int minSupport, boolean pairedReads, int pairedReadsSuffixLength, int minReadLength,
-                             Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent,
-                             boolean longReads, float minPercentReadToCover, float minPercentReferenceToCover, String contaminantsFile) throws IOException, CanceledException {
+	 * @param topPercent
+	 * @param minSupportPercent
+	 * @param minSupport
+	 * @param pairedReads
+	 * @param pairedReadsSuffixLength
+	 * @param lcaAlgorithm
+	 * @throws IOException
+	 * @throws CanceledException
+	 */
+	public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile,
+							 final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,
+							 int minSupport, boolean pairedReads, int pairedReadsSuffixLength, int minReadLength,
+							 Document.LCAAlgorithm lcaAlgorithm, Document.ReadAssignmentMode readAssignmentMode, float lcaCoveragePercent,
+							 boolean longReads, float minPercentReadToCover, float minPercentReferenceToCover, String contaminantsFile) throws IOException, CanceledException {
 
-        progress.setTasks("Meganizing", "init");
-        final long start = System.currentTimeMillis();
+		progress.setTasks("Meganizing", "init");
+		final long start = System.currentTimeMillis();
 
-        DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
+		DAAReferencesAnnotator.apply(daaFile, true, cNames, progress);
 
-        if (ProgramProperties.get("enable-database-lookup", false))
-            System.err.printf("(Reference annotation of file %s took %.1f sec)%n", daaFile, (System.currentTimeMillis() - start) / 1000.0);
+		if (ProgramProperties.get("enable-database-lookup", false))
+			System.err.printf("(Reference annotation of file %s took %.1f sec)%n", daaFile, (System.currentTimeMillis() - start) / 1000.0);
 
-        final Document doc = new Document();
+		final Document doc = new Document();
         doc.setOpenDAAFileOnlyIfMeganized(false);
         doc.getMeganFile().setFileFromExistingFile(daaFile, false);
         doc.getActiveViewers().add(Classification.Taxonomy);
@@ -117,7 +115,7 @@ public class Meganize {
             try {
                 System.err.println("Saving metadata:");
                 SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                sampleAttributeTable.read(new FileReader(metaDataFile), Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(daaFile))), false);
+				sampleAttributeTable.read(new FileReader(metaDataFile), Collections.singletonList(FileUtils.getFileBaseName(FileUtils.getFileNameWithoutPath(daaFile))), false);
                 Map<String, byte[]> label2data = new HashMap<>();
                 label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributeTable.getBytes());
                 connector.putAuxiliaryData(label2data);

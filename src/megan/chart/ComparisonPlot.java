@@ -24,7 +24,7 @@ import jloda.graph.NodeData;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.chart.data.DefaultPlot2DData;
 import megan.chart.data.IPlot2DData;
 import megan.chart.drawers.ChartDrawerBase;

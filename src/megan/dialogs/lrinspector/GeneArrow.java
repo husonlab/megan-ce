@@ -26,6 +26,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.shape.Polygon;
 import jloda.swing.util.BasicSwing;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
 
@@ -167,7 +168,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
     public void showContextMenu(double screenX, double screenY) {
         final Set<String> accessions = new TreeSet<>();
         for (IMatchBlock matchBlock : getMatchBlocks()) {
-            accessions.add(Basic.swallowLeadingGreaterSign(matchBlock.getTextFirstWord()));
+			accessions.add(StringUtils.swallowLeadingGreaterSign(matchBlock.getTextFirstWord()));
             if (accessions.size() == 20)
                 break;
         }
@@ -235,7 +236,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
         if (matchBlocks.size() > 1)
             buf.append("Matches: ").append(matchBlocks.size()).append("\n");
         for (IMatchBlock matchBlock : getMatchBlocks()) {
-            final String accession = Basic.swallowLeadingGreaterSign(matchBlock.getTextFirstWord());
+			final String accession = StringUtils.swallowLeadingGreaterSign(matchBlock.getTextFirstWord());
             buf.append(String.format("-- Accession: %s --\n", accession));
             buf.append(String.format("Bit score: %.0f, Expect: %f\n", matchBlock.getBitScore(), matchBlock.getExpected()));
             for (String cName : cNames) {
@@ -244,7 +245,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
                     String name = ClassificationManager.get(cName, true).getName2IdMap().get(classId);
                     if (name == null)
                         name = "[" + classId + "]";
-                    buf.append(String.format("%s: %s\n", cName, Basic.abbreviateDotDotDot(name, 80)));
+					buf.append(String.format("%s: %s\n", cName, StringUtils.abbreviateDotDotDot(name, 80)));
                 }
             }
         }

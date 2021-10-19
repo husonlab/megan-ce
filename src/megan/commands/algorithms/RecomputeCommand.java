@@ -24,6 +24,7 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -44,11 +45,11 @@ import java.util.ArrayList;
  */
 public class RecomputeCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "recompute [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>] [minSupportPercent=<number>] [minSupport=<number>]\n" +
-                "\t[lcaAlgorithm={" + Basic.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
-                " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
-                "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
-                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
+		return "recompute [minScore=<number>] [maxExpected=<number>] [minPercentIdentity=<number>] [topPercent=<number>] [minSupportPercent=<number>] [minSupport=<number>]\n" +
+			   "\t[lcaAlgorithm={" + StringUtils.toString(Document.LCAAlgorithm.values(), "|") + "}] [lcaCoveragePercent=<number>] [minPercentReadToCover=<number>]  [minPercentReferenceToCover=<number>]" +
+			   " [minComplexity=<number>] [longReads={false|true}] [pairedReads={false|true}] [useIdentityFilter={false|true}]\n" +
+			   "\t[useContaminantFilter={false|true}] [loadContaminantFile=<filename>]\n" +
+			   "\t[readAssignmentMode={" + StringUtils.toString(Document.ReadAssignmentMode.values(), "|") + "} [fNames={" + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), "|") + "];";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -137,8 +138,8 @@ public class RecomputeCommand extends CommandBase implements ICommand {
         }
 
         if (np.peekMatchIgnoreCase("readAssignmentMode")) {
-            np.matchIgnoreCase("readAssignmentMode=");
-            getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " "))));
+			np.matchIgnoreCase("readAssignmentMode=");
+			getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(StringUtils.toString(Document.ReadAssignmentMode.values(), " "))));
         }
         if (np.peekMatchIgnoreCase("fNames")) {
             getDoc().getActiveViewers().clear();

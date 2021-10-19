@@ -23,7 +23,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -57,16 +57,16 @@ public class SelectFromPreviousWindowCommand extends CommandBase implements ICom
             final Alignment alignment = viewer.getAlignment();
             for (int row = 0; row < alignment.getNumberOfSequences(); row++) {
                 Lane lane = alignment.getLane(row);
-                if (previousSelection.contains(Basic.getFirstWord(lane.getName()))) {
-                    int firstJump = alignment.getGapColumnContractor().getTotalJumpBeforeLayoutColumn(lane.getFirstNonGapPosition());
-                    int firstCol = lane.getFirstNonGapPosition() - firstJump;
-                    int lastCol = lane.getLastNonGapPosition() - firstJump - 1;
-                    row = alignment.getRowCompressor().getRow(row);
-                    viewer.getSelectedBlock().select(row, firstCol, row, lastCol, alignment.isTranslate());
-                    System.err.println("Found: " + lane.getName());
-                    executeImmediately("zoom axis=both what=selection;");
-                    return;
-                }
+				if (previousSelection.contains(StringUtils.getFirstWord(lane.getName()))) {
+					int firstJump = alignment.getGapColumnContractor().getTotalJumpBeforeLayoutColumn(lane.getFirstNonGapPosition());
+					int firstCol = lane.getFirstNonGapPosition() - firstJump;
+					int lastCol = lane.getLastNonGapPosition() - firstJump - 1;
+					row = alignment.getRowCompressor().getRow(row);
+					viewer.getSelectedBlock().select(row, firstCol, row, lastCol, alignment.isTranslate());
+					System.err.println("Found: " + lane.getName());
+					executeImmediately("zoom axis=both what=selection;");
+					return;
+				}
             }
         }
     }

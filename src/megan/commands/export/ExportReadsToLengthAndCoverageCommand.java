@@ -24,7 +24,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
@@ -69,8 +69,8 @@ public class ExportReadsToLengthAndCoverageCommand extends CommandBase implement
     public void actionPerformed(ActionEvent event) {
         final Director dir = (Director) getDir();
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), ".txt");
-        String lastGFFFile = ProgramProperties.get("lastExportFile", "");
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), ".txt");
+		String lastGFFFile = ProgramProperties.get("lastExportFile", "");
         File lastOpenFile = new File((new File(lastGFFFile)).getParent(), name);
 
         final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save read length and covered bases", ".txt");

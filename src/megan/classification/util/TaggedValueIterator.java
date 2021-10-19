@@ -38,7 +38,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     private String nextResult;
 
-   // private final boolean allowMinusInAccession= ProgramProperties.get("AllowMinusInAccession",false);
+   private final boolean allowMinusInAccession = ProgramProperties.get("AllowMinusInAccession", false);
 
     /**
      * iterator over all values following an occurrence of tag in aLine.
@@ -110,8 +110,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
                     break;
             }
             var b = a + 1;
-            // while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-')) {
-            while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_') {
+            while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-'))) {
+                // while(b <aLine.length() && C(haracter.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
                 b++;
             }
             if (b - a > 4) {
@@ -165,11 +165,11 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
             return null;
 
         var b = tagPos + 1;
-        // while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-')) {
-        while(b <aLine.length() && Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_') {
+        while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-'))) {
+            //while(b <aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
             b++;
         }
-         var result = aLine.substring(tagPos, b);
+        var result = aLine.substring(tagPos, b);
         tagPos = b;
         return result;
     }

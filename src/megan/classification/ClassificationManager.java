@@ -19,9 +19,9 @@
  */
 package megan.classification;
 
-import jloda.util.Basic;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressSilent;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 
 import java.io.IOException;
 import java.util.*;
@@ -146,7 +146,7 @@ public class ClassificationManager {
     }
 
     public static String getIconFileName(String classificationName) {
-        return Basic.capitalizeFirstLetter(classificationName.toLowerCase()) + "Viewer16.gif";
+		return StringUtils.capitalizeFirstLetter(classificationName.toLowerCase()) + "Viewer16.gif";
     }
 
     public static boolean isActiveMapper(String name, IdMapper.MapType mapType) {
@@ -190,8 +190,8 @@ public class ClassificationManager {
     }
 
     public static void setMeganMapDBFile(String meganMapDBFile) throws IOException {
-        if (meganMapDBFile != null && !Basic.fileExistsAndIsNonEmpty(meganMapDBFile))
-            throw new IOException("File not found or not readable: " + meganMapDBFile);
+		if (meganMapDBFile != null && !FileUtils.fileExistsAndIsNonEmpty(meganMapDBFile))
+			throw new IOException("File not found or not readable: " + meganMapDBFile);
         ClassificationManager.meganMapDBFile = meganMapDBFile;
         if (meganMapDBFile != null)
             setUseFastAccessionMappingMode(true);

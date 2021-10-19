@@ -19,7 +19,7 @@
  */
 package megan.daa.connector;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.daa.io.DAAMatchRecord;
 import megan.daa.io.DAAQueryRecord;
 import megan.daa.io.Translator;
@@ -65,7 +65,7 @@ public class ReadBlockDAA implements IReadBlock {
      * @return name
      */
     public String getReadName() {
-        return Basic.toString(queryRecord.getQueryName());
+		return StringUtils.toString(queryRecord.getQueryName());
     }
 
     /**
@@ -74,7 +74,7 @@ public class ReadBlockDAA implements IReadBlock {
      * @return fastA header
      */
     public String getReadHeader() {
-        return Basic.toString(queryRecord.getQueryName());
+		return StringUtils.toString(queryRecord.getQueryName());
     }
 
     public void setReadHeader(String readHeader) {
@@ -87,7 +87,7 @@ public class ReadBlockDAA implements IReadBlock {
      * @return sequence
      */
     public String getReadSequence() {
-        return (wantReadSequences ? Basic.toString(Translator.translate(queryRecord.getSourceSequence(), queryRecord.getDaaParser().getSourceAlphabet())) : null);
+		return (wantReadSequences ? StringUtils.toString(Translator.translate(queryRecord.getSourceSequence(), queryRecord.getDaaParser().getSourceAlphabet())) : null);
     }
 
     public void setReadSequence(String readSequence) {

@@ -20,6 +20,7 @@
 package megan.rma3;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockGetter;
 import megan.data.MatchBlockFromBlast;
@@ -208,7 +209,7 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
             }
         }
         if (wantReadText && (readBlock.getReadHeader() == null || readBlock.getReadHeader().length() == 0) && firstSAMLineForCurrentRead != null)
-            readBlock.setReadHeader(Basic.getFirstWord(firstSAMLineForCurrentRead));
+			readBlock.setReadHeader(StringUtils.getFirstWord(firstSAMLineForCurrentRead));
 
         readBlock.setMatchBlocks(matches.toArray(new MatchBlockFromBlast[0]));
 

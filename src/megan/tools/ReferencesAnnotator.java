@@ -23,6 +23,8 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.FastAFileIterator;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -121,11 +123,11 @@ public class ReferencesAnnotator {
             propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
-        Basic.checkFileReadableNonEmpty(inputFile);
+		FileUtils.checkFileReadableNonEmpty(inputFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
-            throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
+		if (mapDBClassifications.size() > 0 && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
+			throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
         final ArrayList<String> cNames = new ArrayList<>();
         for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
@@ -133,7 +135,7 @@ public class ReferencesAnnotator {
                 cNames.add(cName);
         }
         if (cNames.size() > 0)
-            System.err.println("Functional classifications to use: " + Basic.toString(cNames, ", "));
+			System.err.println("Functional classifications to use: " + StringUtils.toString(cNames, ", "));
 
 
         final IdMapper[] idMappers = new IdMapper[cNames.size() + 1];
@@ -176,14 +178,14 @@ public class ReferencesAnnotator {
         final int[] counts = new int[idMappers.length];
 
         try (FastAFileIterator it = new FastAFileIterator(inputFile);
-             OutputStream outs = new BufferedOutputStream(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile));
-             ProgressPercentage progress = new ProgressPercentage("Reading file: " + inputFile, it.getMaximumProgress())) {
+			 OutputStream outs = new BufferedOutputStream(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile));
+			 ProgressPercentage progress = new ProgressPercentage("Reading file: " + inputFile, it.getMaximumProgress())) {
             System.err.println("Writing file: " + outputFile);
 
             while (it.hasNext()) {
                 final Pair<String, String> pair = it.next();
-                final StringBuilder header = new StringBuilder();
-                final String firstWord = Basic.getFirstWord(pair.getFirst());
+				final StringBuilder header = new StringBuilder();
+				final String firstWord = StringUtils.getFirstWord(pair.getFirst());
                 header.append(firstWord);
                 boolean first = true;
                 for (int i = 0; i < idParsers.length; i++) {

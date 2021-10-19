@@ -22,6 +22,7 @@ package megan.dialogs.importcsv;
 import jloda.swing.director.IDirectableViewer;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 
@@ -196,9 +197,9 @@ public class ImportCSVWindow extends JDialog {
                 parseAccessions = useAccessionIds.isSelected();
             }
         });
-        useAccessionIds.setSelected(parseAccessions);
-        useAccessionIds.setToolTipText("Use accession number parsing for " + Basic.toString(classifications, ", ") + " ids");
-        line2.add(useAccessionIds);
+		useAccessionIds.setSelected(parseAccessions);
+		useAccessionIds.setToolTipText("Use accession number parsing for " + StringUtils.toString(classifications, ", ") + " ids");
+		line2.add(useAccessionIds);
 
         dPanel.add(line2);
 

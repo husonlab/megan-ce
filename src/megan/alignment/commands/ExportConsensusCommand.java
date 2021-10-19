@@ -26,8 +26,9 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -87,23 +88,23 @@ public class ExportConsensusCommand extends CommandBase implements ICommand {
         if (fileName == null)
             fileName = "Untitled";
         else
-            fileName = Basic.toCleanName(fileName);
+			fileName = StringUtils.toCleanName(fileName);
         if (lastOpenFile != null) {
             fileName = new File(lastOpenFile.getParent(), fileName).getPath();
         }
-        fileName = Basic.replaceFileSuffix(fileName, "-consensus.fasta");
+		fileName = FileUtils.replaceFileSuffix(fileName, "-consensus.fasta");
 
 
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save consensus file", ".fasta");
 
         if (file != null) {
-            if (Basic.getFileSuffix(file.getName()) == null)
-                file = Basic.replaceFileSuffix(file, ".txt");
-            ProgramProperties.put("SaveConsensus", file);
-            SelectedBlock selectedBlock = ((AlignmentViewer) getViewer()).getSelectedBlock();
+			if (FileUtils.getFileSuffix(file.getName()) == null)
+				file = FileUtils.replaceFileSuffix(file, ".txt");
+			ProgramProperties.put("SaveConsensus", file);
+			SelectedBlock selectedBlock = ((AlignmentViewer) getViewer()).getSelectedBlock();
 
-            executeImmediately("export consensus file='" + file.getPath() + "' what=" + (selectedBlock == null || !selectedBlock.isSelected() ? "all" : "Selected") + ";");
-        }
+			executeImmediately("export consensus file='" + file.getPath() + "' what=" + (selectedBlock == null || !selectedBlock.isSelected() ? "all" : "Selected") + ";");
+		}
     }
 
     public boolean isApplicable() {

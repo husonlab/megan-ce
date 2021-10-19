@@ -19,8 +19,8 @@
  */
 package megan.rma2;
 
-import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import megan.data.*;
 import megan.io.IInputReader;
 import megan.io.IOutputWriter;
@@ -85,7 +85,7 @@ public class ReadBlockRMA2 implements IReadBlock {
      */
     public String getReadName() {
         if (readHeader != null) {
-            String name = Basic.getFirstWord(readHeader);
+			String name = StringUtils.getFirstWord(readHeader);
             if (name.startsWith(">"))
                 return name.substring(1).trim();
             else

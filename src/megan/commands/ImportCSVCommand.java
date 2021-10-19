@@ -24,8 +24,9 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -48,9 +49,9 @@ import java.util.List;
 
 public class ImportCSVCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "import csv={reads|summary} separator={comma|tab} file=<fileName> fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|")
-                + ",...} [topPercent=<num>] [minScore=<num>] [minSupportPercent=<num>]  [minSupport=<num>] [multiplier=<number>];";
-    }
+		return "import csv={reads|summary} separator={comma|tab} file=<fileName> fNames={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|")
+			   + ",...} [topPercent=<num>] [minScore=<num>] [minSupportPercent=<num>]  [minSupport=<num>] [multiplier=<number>];";
+	}
 
     public void apply(NexusStreamParser np) throws Exception {
         final Director dir = getDir();
@@ -122,9 +123,9 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
 
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
-                viewer.collapseToDefault();
-                doc.getMeganFile().setFileName(Basic.replaceFileSuffix(fileName, ".megan"));
-                doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
+				viewer.collapseToDefault();
+				doc.getMeganFile().setFileName(FileUtils.replaceFileSuffix(fileName, ".megan"));
+				doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
                 doc.getActiveViewers().clear();
                 doc.getActiveViewers().addAll(cNames);
                 doc.processReadHits();
@@ -141,10 +142,10 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 newDir.getMainViewer().setDoReInduce(true);
                 newDir.getMainViewer().setDoReset(true);
                 newDir.execute("import csv=reads separator=" + (tabSeparator ? "tab" : "comma") + " file='"
-                                + fileName + "' fNames=" + Basic.toString(cNames, " ")
-                                + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent
-                                + " minSupport=" + minSupport + ";",
-                        newDir.getMainViewer().getCommandManager());
+							   + fileName + "' fNames=" + StringUtils.toString(cNames, " ")
+							   + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent
+							   + " minSupport=" + minSupport + ";",
+						newDir.getMainViewer().getCommandManager());
             }
         } else // csv-summary
         {
@@ -161,9 +162,9 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 CSVSummaryParser.apply(fileName, doc, cNames.toArray(new String[0]), tabSeparator, multiplier);
                 if (dir.getViewerByClass(InspectorWindow.class) != null)
                     ((InspectorWindow) dir.getViewerByClass(InspectorWindow.class)).clear();
-                viewer.collapseToDefault();
-                doc.getMeganFile().setFileName(Basic.getFileBaseName(fileName) + ".megan");
-                doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
+				viewer.collapseToDefault();
+				doc.getMeganFile().setFileName(FileUtils.getFileBaseName(fileName) + ".megan");
+				doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
                 if (doc.getNumberOfReads() > 0)
                     doc.setDirty(true);
                 if (doc.getNumberOfSamples() > 1)
@@ -176,10 +177,10 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                 Director newDir = Director.newProject();
                 newDir.getMainViewer().getFrame().setVisible(true);
                 newDir.getMainViewer().setDoReInduce(true);
-                newDir.getMainViewer().setDoReset(true);
-                newDir.executeImmediately("import csv=summary separator=" + (tabSeparator ? "tab" : "comma") + " file='"
-                        + fileName + "' fNames=" + Basic.toString(cNames, " ")
-                        + (multiplier != 1 ? " multiplier=" + multiplier : "") + ";", newDir.getMainViewer().getCommandManager());
+				newDir.getMainViewer().setDoReset(true);
+				newDir.executeImmediately("import csv=summary separator=" + (tabSeparator ? "tab" : "comma") + " file='"
+										  + fileName + "' fNames=" + StringUtils.toString(cNames, " ")
+										  + (multiplier != 1 ? " multiplier=" + multiplier : "") + ";", newDir.getMainViewer().getCommandManager());
             }
         }
     }
@@ -206,17 +207,17 @@ public class ImportCSVCommand extends CommandBase implements ICommand {
                     int minSupport = dialog.getMinSupport();
                     float minSupportPercent = dialog.getMinSupportPercent();
 
-                    template = ("import csv=reads separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
-                            + Basic.toString(importCSVWindow.getSelectedCNames(), " ")
-                            + " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent + " minSupport=" + minSupport + ";\n");
+					template = ("import csv=reads separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
+								+ StringUtils.toString(importCSVWindow.getSelectedCNames(), " ")
+								+ " topPercent=" + topPercent + " minScore=" + minScore + " minSupportPercent=" + minSupportPercent + " minSupport=" + minSupport + ";\n");
                 } else {
-                    template = ("import csv=summary separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
-                            + Basic.toString(importCSVWindow.getSelectedCNames(), " ")
-                            + (importCSVWindow.getMultiplier() != 1 ? " multiplier=" + importCSVWindow.getMultiplier() : "") + ";\n");
+					template = ("import csv=summary separator=" + (importCSVWindow.isTabSeparator() ? "tab" : "comma") + " file='XXXXXXXX' fNames="
+								+ StringUtils.toString(importCSVWindow.getSelectedCNames(), " ")
+								+ (importCSVWindow.getMultiplier() != 1 ? " multiplier=" + importCSVWindow.getMultiplier() : "") + ";\n");
                 }
                 StringBuilder buf = new StringBuilder();
                 for (File aFile : files) {
-                    String cName = Basic.protectBackSlashes(aFile.getPath());
+					String cName = StringUtils.protectBackSlashes(aFile.getPath());
                     buf.append(template.replaceAll("XXXXXXXX", cName));
                 }
                 execute(buf.toString());

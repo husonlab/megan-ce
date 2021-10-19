@@ -22,7 +22,7 @@ package megan.commands.show;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.PopupMenu;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.AttributesChart;
 import megan.chart.FViewerChart;
@@ -51,16 +51,16 @@ import java.io.IOException;
 public class ShowChartCommand extends CommandBase implements ICommand {
 
     public String getSyntax() {
-        return "show chart drawer={" + Basic.toString(DrawerManager.getAllSupportedChartDrawers(), ",") + "} data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "|attributes|metadata};";
+		return "show chart drawer={" + StringUtils.toString(DrawerManager.getAllSupportedChartDrawers(), ",") + "} data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "|attributes|metadata};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         final Director dir = getDir();
 
         np.matchIgnoreCase("show chart drawer=");
-        final String drawerType = np.getWordMatchesRespectingCase(Basic.toString(DrawerManager.getAllSupportedChartDrawers(), " "));
+		final String drawerType = np.getWordMatchesRespectingCase(StringUtils.toString(DrawerManager.getAllSupportedChartDrawers(), " "));
         np.matchIgnoreCase("data=");
-        final String data = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes metadata");
+		final String data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes metadata");
         np.matchIgnoreCase(";");
 
         ChartViewer chartViewer = null;

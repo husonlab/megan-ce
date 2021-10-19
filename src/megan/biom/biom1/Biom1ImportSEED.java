@@ -20,6 +20,7 @@
 package megan.biom.biom1;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -78,8 +79,8 @@ class Biom1ImportSEED {
             if (bestId != null)
                 row2class[rowCount++] = bestId;
             else {
-                row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
-                System.err.println("Failed to determine SEED for: " + Basic.toString(row.values(), ","));
+				row2class[rowCount++] = IdMapper.UNASSIGNED_ID;
+				System.err.println("Failed to determine SEED for: " + StringUtils.toString(row.values(), ","));
             }
         }
 

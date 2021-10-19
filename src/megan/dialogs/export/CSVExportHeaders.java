@@ -20,9 +20,9 @@
 package megan.dialogs.export;
 
 import jloda.graph.Node;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.core.Document;
 import megan.data.IConnector;
 import megan.data.IMatchBlock;
@@ -80,7 +80,7 @@ class CSVExportHeaders {
                                 if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                                         (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())
                                         && matchBlock.getText() != null) {
-                                    w.write(" " + Basic.swallowLeadingGreaterSign(Basic.getFirstWord(matchBlock.getText())));
+									w.write(" " + StringUtils.swallowLeadingGreaterSign(StringUtils.getFirstWord(matchBlock.getText())));
                                 }
                             }
                             w.write("\n");

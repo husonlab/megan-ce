@@ -23,7 +23,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -106,8 +106,8 @@ public class AddFilesCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("add file=");
         final String fileName = np.getAbsoluteFileName();
-        np.matchIgnoreCase(";");
-        Basic.checkFileReadableNonEmpty(fileName);
+		np.matchIgnoreCase(";");
+		FileUtils.checkFileReadableNonEmpty(fileName);
         CompareWindow viewer = (CompareWindow) getParent();
         viewer.addFile(fileName);
     }

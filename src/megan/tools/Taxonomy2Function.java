@@ -22,6 +22,7 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.util.progress.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
@@ -252,7 +253,7 @@ public class Taxonomy2Function {
 		progress.setProgress(0);
 		progress.setMaximum(table.getNumberOfRows());
 
-		try (Writer w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+		try (Writer w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 			for (var firstId : sorted(firstClassification, firstFormat, table.rowKeySet())) {
 				var firstName = (firstFormat.equals("id") ? String.valueOf(firstId) : firstClassification.getName2IdMap().get(firstId));
 				for (var secondId : sorted(secondClassification, secondFormat, table.columnKeySet())) {
@@ -262,7 +263,7 @@ public class Taxonomy2Function {
 						if (listOption.equals("counts"))
 							w.write(firstName + separator + secondName + separator + values.size() + "\n");
 						else
-							w.write(firstName + separator + secondName + separator + Basic.toString(values, ", ") + "\n");
+							w.write(firstName + separator + secondName + separator + StringUtils.toString(values, ", ") + "\n");
 					}
 				}
 				progress.incrementProgress();

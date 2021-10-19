@@ -23,8 +23,9 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -52,7 +53,7 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
         Document doc = dir.getDocument();
 
         np.matchIgnoreCase("data=");
-        String data = np.getWordMatchesIgnoringCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		String data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
 
         np.matchIgnoreCase("file=");
         String outputFile = np.getAbsoluteFileName();
@@ -76,7 +77,7 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
     }
 
     public String getSyntax() {
-        return "export format=stamp data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "} file=<filename>;";
+		return "export format=stamp data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "} file=<filename>;";
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -100,7 +101,7 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
                 allLevels = true;
         }
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".spf");
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".spf");
 
         File lastOpenFile = new File(name);
         String lastDir = ProgramProperties.get("StampDirectory", "");

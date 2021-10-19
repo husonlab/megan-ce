@@ -19,7 +19,7 @@
  */
 package megan.inspector;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 /**
  * node representing head line for read
@@ -60,8 +60,8 @@ public class ReadDataHeadLineNode extends NodeBase {
             builder.append("]");
         setText(builder.toString());
 
-        this.data = (data != null && data.startsWith(">") ? data : ">" + data);
-        this.data = Basic.foldHard(this.data, 140);
+		this.data = (data != null && data.startsWith(">") ? data : ">" + data);
+		this.data = StringUtils.foldHard(this.data, 140);
     }
 
     private void setText(String text) {

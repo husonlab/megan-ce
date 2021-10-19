@@ -24,6 +24,7 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -87,8 +88,8 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         var dir = getDir();
 
-        var name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), ".tre");
-        var lastOpenFile = new File(name);
+		var name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), ".tre");
+		var lastOpenFile = new File(name);
         var lastDir = ProgramProperties.get("TreeDirectory", "");
         if (lastDir.length() > 0) {
             lastOpenFile = new File(lastDir, name);

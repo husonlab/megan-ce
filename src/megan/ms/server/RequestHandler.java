@@ -22,6 +22,7 @@ package megan.ms.server;
 
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.daa.connector.ClassificationBlockDAA;
 import megan.data.IClassificationBlock;
 import megan.data.IReadBlock;
@@ -41,12 +42,12 @@ public interface RequestHandler {
     byte[] handle(String context, String[] parameters) throws IOException;
 
     static RequestHandler getDefault() {
-        return (c, p) -> ("<html>\n" +
-                "<body>\n" +
-                "<b> Not implemented: " + c + " " + Basic.toString(p, ", ") +
-                "</b>\n" +
-                "</body>\n" +
-                "</html>\n").getBytes();
+		return (c, p) -> ("<html>\n" +
+						  "<body>\n" +
+						  "<b> Not implemented: " + c + " " + StringUtils.toString(p, ", ") +
+						  "</b>\n" +
+						  "</body>\n" +
+						  "</html>\n").getBytes();
     }
 
     static RequestHandler getAbout(HttpServerMS server) {
@@ -105,7 +106,7 @@ public interface RequestHandler {
                         buf.append("\t").append(database.getMetadata(fileName).replaceAll("\t",","));
                     list.add(buf.toString());
                 }
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -122,7 +123,7 @@ public interface RequestHandler {
                 for (String fileName : Parameters.getValues(p, "file")) {
                     list.add(database.getRecord(fileName).getNumberOfReads());
                 }
-                return Basic.toString(list, " ").getBytes();
+				return StringUtils.toString(list, " ").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -139,7 +140,7 @@ public interface RequestHandler {
                 for (String fileName : Parameters.getValues(p, "file")) {
                     list.add(database.getRecord(fileName).getNumberOfMatches());
                 }
-                return Basic.toString(list, " ").getBytes();
+				return StringUtils.toString(list, " ").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -154,9 +155,9 @@ public interface RequestHandler {
 
                 final ArrayList<String> list = new ArrayList<>();
                 for (String fileName : Parameters.getValues(p, "file")) {
-                    list.add(Basic.toString(database.getClassifications(fileName), "\n") + "\n");
+					list.add(StringUtils.toString(database.getClassifications(fileName), "\n") + "\n");
                 }
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -179,11 +180,11 @@ public interface RequestHandler {
                     return Utilities.writeAuxiliaryDataToBytes(fileRecord.getAuxiliaryData());
                 } else {
                         for (String key : fileRecord.getAuxiliaryData().keySet()) {
-                            list.add(key + ":\n" + Basic.toString(fileRecord.getAuxiliaryData().get(key)));
+							list.add(key + ":\n" + StringUtils.toString(fileRecord.getAuxiliaryData().get(key)));
                         }
                     }
                 }
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -211,7 +212,7 @@ public interface RequestHandler {
                     final Integer fileId = database.getFileName2Id().get(fileName);
                     list.add(fileId != null ? String.valueOf(fileId) : "File not found: " + fileName);
                 }
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -239,7 +240,7 @@ public interface RequestHandler {
                     for (Integer id : classificationBlock.getKeySet()) {
                         list.add(id + "\t" + classificationBlock.getWeightedSum(id) + "\t" + classificationBlock.getSum(id));
                     }
-                    return Basic.toString(list, "\n").getBytes();
+					return StringUtils.toString(list, "\n").getBytes();
                 }
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
@@ -271,7 +272,7 @@ public interface RequestHandler {
                         list.add(id + "\t" + classificationBlock.getSum(id));
                     }
                 }
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -389,7 +390,7 @@ public interface RequestHandler {
                     list.add(bytes);
                 }
                 list.add(Utilities.getBytesLittleEndian(page.getNextPage()));
-                return Basic.concatenate(list);
+				return StringUtils.concatenate(list);
             } else {
                 final ArrayList<String> list = new ArrayList<>();
                 for (IReadBlock readBlock : page.getReads()) {
@@ -399,7 +400,7 @@ public interface RequestHandler {
                     list.add("Next pageId=" + nextPageId);
                 else
                     list.add("done");
-                return Basic.toString(list, "\n").getBytes();
+				return StringUtils.toString(list, "\n").getBytes();
             }
         } else
             return reportError(c, new String[0], "failed");
@@ -420,7 +421,7 @@ public interface RequestHandler {
     }
 
     static byte[] reportError(String content, String[] parameters, String message) {
-        final String error = (Utilities.SERVER_ERROR + content + "?" + Basic.toString(parameters, "&") + ": " + message);
+		final String error = (Utilities.SERVER_ERROR + content + "?" + StringUtils.toString(parameters, "&") + ": " + message);
         System.err.println(error);
         return error.getBytes();
     }

@@ -21,8 +21,9 @@ package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.util.LastMAFFileFilter;
@@ -110,7 +111,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
         try {
             while (true) {
                 if (mafMatch[2] != null && getNextToken(mafMatch[2], "s").trim().equals(firstQueryName)) {
-                    final String[] queryTokens = Basic.splitOnWhiteSpace(mafMatch[2]);
+                    final String[] queryTokens = StringUtils.splitOnWhiteSpace(mafMatch[2]);
                     /*
                         a score=159 EG2=1e-08 E=4.3e-17
                         s WP_005682092.1                       18 33 + 516 SAEANENERRWNDDKIDRKNQDSTNNYDKTRMK
@@ -138,7 +139,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
                     final double expect = Basic.parseDouble(getNextToken(scoreLine, "E="));
                     final float bitScore = (float) ((lambda * rawScore - Math.log(K)) / Math.log(2));
 
-                    final String[] subjTokens = Basic.splitOnWhiteSpace(mafMatch[1]);
+                    final String[] subjTokens = StringUtils.splitOnWhiteSpace(mafMatch[1]);
 
                     final String subjName = subjTokens[1];
                     final String subjAligned = subjTokens[6];

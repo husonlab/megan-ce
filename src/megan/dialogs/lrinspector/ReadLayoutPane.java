@@ -40,6 +40,7 @@ import jloda.swing.util.BasicSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.chart.ChartColorManager;
@@ -348,8 +349,8 @@ public class ReadLayoutPane extends Pane {
                         for (IMatchBlock matchBlock : geneArrow.getMatchBlocks()) {
                             int classId = matchBlock.getId(cNames[c]);
                             if (classId > 0) {
-                                final String fullLabel = getClassName(c, classId).replaceAll("\\s+", " ");
-                                final String abbreviatedLabel = Basic.abbreviateDotDotDot(fullLabel, 60);
+								final String fullLabel = getClassName(c, classId).replaceAll("\\s+", " ");
+								final String abbreviatedLabel = StringUtils.abbreviateDotDotDot(fullLabel, 60);
 
                                 double anchorX = xScaleFactor * geneArrow.getMiddle();
                                 int estimatedPreferredLabelWidth = (int) Math.round(0.6 * fontSize * abbreviatedLabel.length());
@@ -738,9 +739,9 @@ public class ReadLayoutPane extends Pane {
         if (text != null)
             label.setText(text);
         label.setFont(font);
-        label.setUserData(new IMatchBlock[0]);
-        label.setTooltip(new Tooltip(Basic.abbreviateDotDotDot(fullText.replaceAll("\\s+", " "), 100)));
-        label.setOnMousePressed(mousePressedHandler);
+		label.setUserData(new IMatchBlock[0]);
+		label.setTooltip(new Tooltip(StringUtils.abbreviateDotDotDot(fullText.replaceAll("\\s+", " "), 100)));
+		label.setOnMousePressed(mousePressedHandler);
         label.setOnMouseClicked(mouseClickedHandler);
         label.setOnMouseReleased(mouseReleasedHandler);
         label.setOnMouseDragged(mouseDraggedHandler);

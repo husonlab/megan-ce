@@ -21,7 +21,7 @@ package megan.dialogs.extractor.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
@@ -109,11 +109,11 @@ public class ChooseDirectoryCommand extends CommandBase implements ICommand {
      * @return lcp
      */
     private String getLongestCommonPrefix(File[] files) {
-        String first = Basic.getFileBaseName(files[0].getName());
+		String first = FileUtils.getFileBaseName(files[0].getName());
         for (int i = 0; i < first.length(); i++) {
             for (int j = 1; j < files.length; j++) {
-                File file = files[j];
-                String name = Basic.getFileBaseName(file.getName());
+				File file = files[j];
+				String name = FileUtils.getFileBaseName(file.getName());
                 if (name.length() < i || name.charAt(i) != first.charAt(i)) {
                     if (i > 0)
                         return first.substring(0, i);

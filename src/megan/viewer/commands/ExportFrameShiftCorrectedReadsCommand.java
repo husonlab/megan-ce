@@ -26,7 +26,7 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Document;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
@@ -72,14 +72,14 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
         if (getViewer() instanceof ClassificationViewer) {
             final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
-            final String fileName = Basic.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-%i-%t-fs_corrected.fasta");
-            File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save corrected reads file", ".fasta");
+			final String fileName = FileUtils.replaceFileSuffix(viewer.getDocument().getMeganFile().getFileName(), "-%i-%t-fs_corrected.fasta");
+			File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new FastaFileFilter(), new FastaFileFilter(), event, "Save corrected reads file", ".fasta");
 
             if (file != null) {
-                if (Basic.getFileSuffix(file.getName()) == null)
-                    file = Basic.replaceFileSuffix(file, ".fasta");
-                execute("export correctedReads file='" + file.getPath() + "' what=" + (viewer.hasSelectedNodes() ? "selected" : "all") + ";");
-            }
+				if (FileUtils.getFileSuffix(file.getName()) == null)
+					file = FileUtils.replaceFileSuffix(file, ".fasta");
+				execute("export correctedReads file='" + file.getPath() + "' what=" + (viewer.hasSelectedNodes() ? "selected" : "all") + ";");
+			}
         }
     }
 

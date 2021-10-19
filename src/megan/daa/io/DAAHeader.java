@@ -21,6 +21,7 @@
 package megan.daa.io;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.io.FileInputStreamAdapter;
 import megan.io.FileRandomAccessReadOnlyAdapter;
@@ -154,7 +155,7 @@ public class DAAHeader {
                 for (int i = 0; i < scoreMatrix.length; i++) {
                     scoreMatrix[i] = (byte) ins.read();
                 }
-                scoreMatrixName = Basic.toString(scoreMatrix);
+				scoreMatrixName = StringUtils.toString(scoreMatrix);
 
                 for (int i = 0; i < blockSize.length; i++)
                     blockSize[i] = ins.readLong();
@@ -604,7 +605,7 @@ public class DAAHeader {
             for (byte a : scoreMatrix) {
                 outs.write(a);
             }
-            scoreMatrixName = Basic.toString(scoreMatrix);
+			scoreMatrixName = StringUtils.toString(scoreMatrix);
 
             for (long a : blockSize) {
                 outs.writeLong(a);

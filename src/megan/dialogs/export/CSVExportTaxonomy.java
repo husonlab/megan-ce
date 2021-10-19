@@ -22,9 +22,9 @@ package megan.dialogs.export;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.algorithms.ActiveMatches;
 import megan.algorithms.TaxonPathAssignment;
 import megan.classification.Classification;
@@ -410,17 +410,17 @@ class CSVExportTaxonomy {
      */
     private static String getTaxonLabelSource(String format, int taxonId) {
         if (format.startsWith("taxonName"))
-            return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+			return StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.startsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId, false));
+			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.startsWith("taxonPathKPCOFGS"))
             return getPath(taxonId, true);
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
-                return rankName + ":" + Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+				return rankName + ":" + StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
             else
-                return "No_rank:" + Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+				return "No_rank:" + StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         } else
             return "" + taxonId;
     }
@@ -433,9 +433,9 @@ class CSVExportTaxonomy {
      */
     private static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
         if (format.endsWith("taxonName"))
-            return Basic.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
+			return StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
         else if (format.endsWith("taxonPath"))
-            return Basic.getInCleanQuotes(getPath(taxonId, false));
+			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.endsWith("taxonPathKPCOFGS"))
             return getPath(taxonId, true);
         else if (format.endsWith("taxonPathPercent")) // // PathPercent has been disabled

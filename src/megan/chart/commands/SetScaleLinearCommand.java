@@ -22,7 +22,7 @@ package megan.chart.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 import megan.util.ScalingType;
@@ -37,12 +37,12 @@ public class SetScaleLinearCommand extends CommandBase implements ICheckBoxComma
     }
 
     public String getSyntax() {
-        return "set chartScale={" + Basic.toString(ScalingType.values(), "|") + "};";
+		return "set chartScale={" + StringUtils.toString(ScalingType.values(), "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set chartScale=");
-        String scale = np.getWordMatchesIgnoringCase(Basic.toString(ScalingType.values(), " "));
+		String scale = np.getWordMatchesIgnoringCase(StringUtils.toString(ScalingType.values(), " "));
         np.matchIgnoreCase(";");
 
         final ChartViewer chartViewer = (ChartViewer) getViewer();

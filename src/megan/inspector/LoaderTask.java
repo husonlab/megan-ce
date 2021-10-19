@@ -19,7 +19,7 @@
  */
 package megan.inspector;
 
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 /**
  * a task that can be run by the loader

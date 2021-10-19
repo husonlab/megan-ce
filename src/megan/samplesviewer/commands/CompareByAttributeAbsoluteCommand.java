@@ -22,7 +22,7 @@ package megan.samplesviewer.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.dialogs.compare.Comparer;
 import megan.samplesviewer.SamplesTableView;
@@ -56,8 +56,8 @@ public class CompareByAttributeAbsoluteCommand extends CommandBase implements IC
         final SamplesTableView samplesTable = ((SamplesViewer) getViewer()).getSamplesTableView();
 
         if (attribute != null && samplesTable.getCountSelectedSamples() > 0) {
-            execute("compareBy attribute='" + attribute + "' mode=" + Comparer.COMPARISON_MODE.ABSOLUTE.toString().toLowerCase() +
-                    " samples='" + Basic.toString(samplesTable.getSelectedSamples(), "' '") + "';");
+			execute("compareBy attribute='" + attribute + "' mode=" + Comparer.COMPARISON_MODE.ABSOLUTE.toString().toLowerCase() +
+					" samples='" + StringUtils.toString(samplesTable.getSelectedSamples(), "' '") + "';");
         }
     }
 

@@ -24,10 +24,8 @@ import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.util.StatusBar;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.commandtemplates.SetAnalyse4ViewerCommand;
@@ -740,7 +738,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         ClassificationManager.get(Classification.Taxonomy, true).getIdMapper().setUseTextParsing(isParseTaxonNames());
 
         final String blastFileName = getBlastFileName();
-        ProgramProperties.put(MeganProperties.BLASTFILE, new File(Basic.getLinesFromString(blastFileName).get(0)));
+		ProgramProperties.put(MeganProperties.BLASTFILE, new File(StringUtils.getLinesFromString(blastFileName).get(0)));
         final String readFileName = getReadFileName();
         String meganFileName = getMeganFileName();
         if (!meganFileName.startsWith("MS:::") && !(meganFileName.toLowerCase().endsWith(".rma")
@@ -758,7 +756,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
         if (blastFileName.length() > 0) {
             {
-                java.util.List<String> fileNames = Basic.getLinesFromString(blastFileName);
+				java.util.List<String> fileNames = StringUtils.getLinesFromString(blastFileName);
 
                 boolean first = true;
                 for (String name : fileNames) {
@@ -775,7 +773,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
                 }
             }
 
-            final String fileName = Basic.getFirstLine(blastFileName);
+			final String fileName = StringUtils.getFirstLine(blastFileName);
             if (blastFormat.equals(BlastFileFormat.Unknown.toString())) {
                 String formatName = BlastFileFormat.detectFormat(this, fileName, true).toString();
                 if (formatName != null)
@@ -795,7 +793,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
             if (readFileName.length() > 0) {
                 buf.append(" fastaFile=");
-                java.util.List<String> fileNames = Basic.getLinesFromString(readFileName);
+				java.util.List<String> fileNames = StringUtils.getLinesFromString(readFileName);
 
                 boolean first = true;
                 for (String name : fileNames) {
@@ -846,8 +844,8 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         buf.append(" minPercentReferenceToCover=").append(getMinPercentReferenceToCover());
         buf.append(" minReadLength=").append(getMinReadLength());
         buf.append(" useIdentityFilter=").append(isUsePercentIdentityFilter());
-        buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
-        buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
+		buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
+		buf.append(" fNames=").append(StringUtils.toString(getSelectedFNames(), " "));
 
         if (isLongReads())
             buf.append(" longReads=").append(isLongReads());
@@ -861,11 +859,11 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             buf.append(" pairSuffixLength=").append(pattern1.length());
         }
 
-        if (isUseContaminantsFilter() && Basic.notBlank(getContaminantsFileName()))
-            buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
+		if (isUseContaminantsFilter() && StringUtils.notBlank(getContaminantsFileName()))
+			buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
 
-        if (Basic.notBlank(getShortDescription()))
-            buf.append(" description='").append(getShortDescription()).append("'");
+		if (StringUtils.notBlank(getShortDescription()))
+			buf.append(" description='").append(getShortDescription()).append("'");
 
         buf.append(";");
 
@@ -873,7 +871,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
         File file = new File(meganFileName);
         if (file.exists()) {
             System.err.println("Removing file " + file.getPath() + ": " + file.delete());
-            File rmazFile = new File(Basic.getFileSuffix(file.getPath()) + ".rmaz");
+			File rmazFile = new File(FileUtils.getFileSuffix(file.getPath()) + ".rmaz");
             if (rmazFile.exists())
                 System.err.println("Removing file " + rmazFile.getPath() + ": " + rmazFile.delete());
             rmazFile = new File(file.getPath() + "z");

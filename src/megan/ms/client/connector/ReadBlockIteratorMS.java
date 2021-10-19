@@ -20,7 +20,7 @@
 
 package megan.ms.client.connector;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.daa.io.ByteInputStream;
 import megan.daa.io.InputReaderLittleEndian;
 import megan.data.IReadBlock;
@@ -47,19 +47,19 @@ public class ReadBlockIteratorMS implements IReadBlockIterator {
      * constructor
      */
     public ReadBlockIteratorMS(ClientMS client, String fileName, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        this.client = client;
-        this.classifications = Basic.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
-        processBytes(client.getAsBytes("getReads?file=" + fileName + "&binary=true&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + client.getPageSize()));
+		this.client = client;
+		this.classifications = StringUtils.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
+		processBytes(client.getAsBytes("getReads?file=" + fileName + "&binary=true&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + client.getPageSize()));
     }
 
     /**
      * constructor
      */
     public ReadBlockIteratorMS(ClientMS client, String fileName, String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
-        this.client = client;
-        this.classifications = Basic.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
-        processBytes(client.getAsBytes("getReadsForClass?file=" + fileName + "&binary=true&classification=" + classification + "&classId=" + Basic.toString(classIds, ",") + "&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + client.getPageSize()));
-    }
+		this.client = client;
+		this.classifications = StringUtils.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
+		processBytes(client.getAsBytes("getReadsForClass?file=" + fileName + "&binary=true&classification=" + classification + "&classId=" + StringUtils.toString(classIds, ",") + "&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + client.getPageSize()));
+	}
 
     private void processBytes(byte[] bytes) throws IOException {
         reads.clear();

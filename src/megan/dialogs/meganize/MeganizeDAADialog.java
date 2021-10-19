@@ -24,6 +24,7 @@ import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -66,13 +67,13 @@ public class MeganizeDAADialog extends ImportBlastDialog {
         ClassificationManager.get(Classification.Taxonomy, true).getIdMapper().setUseTextParsing(isParseTaxonNames());
         final String daaFileNames = getBlastFileName();
         if (daaFileNames.length() > 0) {
-            ProgramProperties.put(MeganProperties.BLASTFILE, new File(Basic.getLinesFromString(daaFileNames).get(0)));
+			ProgramProperties.put(MeganProperties.BLASTFILE, new File(StringUtils.getLinesFromString(daaFileNames).get(0)));
 
             final StringBuilder buf = new StringBuilder();
 
             buf.append("meganize daaFile=");
 
-            java.util.List<String> fileNames = Basic.getLinesFromString(daaFileNames);
+			java.util.List<String> fileNames = StringUtils.getLinesFromString(daaFileNames);
 
             boolean first = true;
             for (String name : fileNames) {
@@ -109,7 +110,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
 
             buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
 
-            buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
+			buf.append(" fNames=").append(StringUtils.toString(getSelectedFNames(), " "));
 
             buf.append(" longReads=").append(isLongReads());
 
@@ -121,11 +122,11 @@ public class MeganizeDAADialog extends ImportBlastDialog {
                 buf.append(" pairSuffixLength=").append(pattern1.length());
             }
 
-            if (isUseContaminantsFilter() && Basic.notBlank(getContaminantsFileName()))
-                buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
+			if (isUseContaminantsFilter() && StringUtils.notBlank(getContaminantsFileName()))
+				buf.append(" contaminantsFile='").append(getContaminantsFileName()).append("'");
 
-            if (Basic.notBlank(getShortDescription()))
-                buf.append(" description='").append(getShortDescription()).append("'");
+			if (StringUtils.notBlank(getShortDescription()))
+				buf.append(" description='").append(getShortDescription()).append("'");
 
             buf.append(";");
 
@@ -153,7 +154,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
      * @return true, if applicable
      */
     public boolean isAppliable() {
-        return getBlastFileName().trim().length() > 0 && (new File(Basic.getFirstLine(getBlastFileName()).trim())).exists();
+		return getBlastFileName().trim().length() > 0 && (new File(StringUtils.getFirstLine(getBlastFileName()).trim())).exists();
     }
 
 }

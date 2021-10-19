@@ -19,7 +19,7 @@
  */
 package megan.core;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.Pair;
 import megan.daa.connector.DAAConnector;
 import megan.data.ConnectorCombiner;
@@ -301,7 +301,7 @@ public class MeganFile {
         if (fileName == null)
             return "Untitled";
         else
-            return Basic.getFileNameWithoutPath(fileName);
+			return FileUtils.getFileNameWithoutPath(fileName);
     }
 
     /**

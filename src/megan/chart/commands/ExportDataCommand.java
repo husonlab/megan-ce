@@ -26,8 +26,9 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.gui.ChartViewer;
 
@@ -64,8 +65,8 @@ public class ExportDataCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        ChartViewer viewer = (ChartViewer) getViewer();
-        String name = Basic.toCleanName(viewer.getChartData().getDataSetName()) + "-chart";
+		ChartViewer viewer = (ChartViewer) getViewer();
+		String name = StringUtils.toCleanName(viewer.getChartData().getDataSetName()) + "-chart";
 
         String lastOpenFile = ProgramProperties.get("DataFile", "");
         if (lastOpenFile == null)
@@ -76,11 +77,11 @@ public class ExportDataCommand extends CommandBase implements ICommand {
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(lastOpenFile), new TextFileFilter(), new TextFileFilter(), event, "Save data file", ".txt");
 
         if (file != null) {
-            if (Basic.getFileSuffix(file.getName()) == null)
-                file = Basic.replaceFileSuffix(file, ".txt");
-            ProgramProperties.put("DataFile", file.getPath());
-            execute("export what=chartData file='" + file.getPath() + "';");
-        }
+			if (FileUtils.getFileSuffix(file.getName()) == null)
+				file = FileUtils.replaceFileSuffix(file, ".txt");
+			ProgramProperties.put("DataFile", file.getPath());
+			execute("export what=chartData file='" + file.getPath() + "';");
+		}
     }
 
     // if in ask to save, modify event source to tell calling method can see that user has canceled

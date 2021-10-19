@@ -20,10 +20,8 @@
 package megan.assembly.alignment;
 
 import jloda.graph.*;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
 
@@ -84,8 +82,8 @@ public class OverlapGraphBuilder {
             // compute mapping to nodes:
             final Node[] i2node = new Node[alignment.getNumberOfSequences()];
             for (int i = 0; i < alignment.getNumberOfSequences(); i++) {
-                i2node[i] = overlapGraph.newNode(i);
-                node2readName.put(i2node[i], Basic.getFirstWord(alignment.getLane(i).getName()));
+				i2node[i] = overlapGraph.newNode(i);
+				node2readName.put(i2node[i], StringUtils.getFirstWord(alignment.getLane(i).getName()));
             }
             // compute edges and mark contained reads for removal
             for (int il = 0; il < list.length; il++) {

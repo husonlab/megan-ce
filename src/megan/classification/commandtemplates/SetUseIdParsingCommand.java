@@ -21,8 +21,8 @@ package megan.classification.commandtemplates;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 
@@ -43,7 +43,7 @@ public class SetUseIdParsingCommand extends CommandBase implements ICommand {
         boolean useIdParsing = np.getBoolean();
 
         np.matchIgnoreCase("cName=");
-        final String cName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
 
         ProgramProperties.put(cName + "ParseIds", useIdParsing);
 

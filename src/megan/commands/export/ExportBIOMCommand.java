@@ -24,7 +24,9 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.biom.biom1.Biom1ExportFViewer;
 import megan.biom.biom1.Biom1ExportTaxonomy;
@@ -55,7 +57,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
         Document doc = dir.getDocument();
 
         np.matchIgnoreCase("data=");
-        String data = np.getWordMatchesIgnoringCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		String data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
 
         np.matchIgnoreCase("file=");
         String outputFile = np.getAbsoluteFileName();
@@ -90,7 +92,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
     }
 
     public String getSyntax() {
-        return "export format=biom data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "} file=<filename> [officialRanksOnly={true|false}];";
+		return "export format=biom data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "} file=<filename> [officialRanksOnly={true|false}];";
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -112,7 +114,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
         else
             return;
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".biom");
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-" + choice + ".biom");
 
         File lastOpenFile = new File(name);
         String lastDir = ProgramProperties.get("BiomDirectory", "");

@@ -23,6 +23,7 @@ package megan.ms.server;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -67,7 +68,7 @@ public class HttpHandlerMS implements HttpHandler {
         if (posQuestionMark > 0 && posQuestionMark < uri.length() - 1) {
             final var parameters = uri.substring(posQuestionMark + 1);
             if (parameters.contains("&")) {
-                return Basic.split(parameters, '&');
+				return StringUtils.split(parameters, '&');
             } else
                 return new String[]{parameters};
         }

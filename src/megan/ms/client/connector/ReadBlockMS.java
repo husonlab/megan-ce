@@ -20,7 +20,7 @@
 
 package megan.ms.client.connector;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.daa.io.ByteInputStream;
 import megan.daa.io.ByteOutputStream;
 import megan.daa.io.InputReaderLittleEndian;
@@ -62,7 +62,7 @@ public class ReadBlockMS implements IReadBlock {
 
     @Override
     public String getReadName() {
-        return Basic.getFirstWord(Basic.swallowLeadingGreaterOrAtSign(getReadHeader()));
+		return StringUtils.getFirstWord(StringUtils.swallowLeadingGreaterOrAtSign(getReadHeader()));
     }
 
 
@@ -181,7 +181,7 @@ public class ReadBlockMS implements IReadBlock {
                 list.add(readBlock.getMatchBlock(i).getText());
             }
         }
-        return Basic.toString(list, "\n");
+		return StringUtils.toString(list, "\n");
     }
 
     /**

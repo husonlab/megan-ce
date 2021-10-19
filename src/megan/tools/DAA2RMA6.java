@@ -24,6 +24,8 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -198,41 +200,41 @@ public class DAA2RMA6 {
             propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
-        for (String fileName : daaFiles) {
-            Basic.checkFileReadableNonEmpty(fileName);
-            if (!DAAFileFilter.getInstance().accept(fileName))
-                throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);
-        }
+		for (String fileName : daaFiles) {
+			FileUtils.checkFileReadableNonEmpty(fileName);
+			if (!DAAFileFilter.getInstance().accept(fileName))
+				throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);
+		}
 
-        for (String fileName : metaDataFiles) {
-            Basic.checkFileReadableNonEmpty(fileName);
-        }
+		for (String fileName : metaDataFiles) {
+			FileUtils.checkFileReadableNonEmpty(fileName);
+		}
 
-        if (Basic.notBlank(contaminantsFile))
-            Basic.checkFileReadableNonEmpty(contaminantsFile);
+		if (StringUtils.notBlank(contaminantsFile))
+			FileUtils.checkFileReadableNonEmpty(contaminantsFile);
 
-        final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-        if (mapDBClassifications.size() > 0 && (Basic.hasPositiveLengthValue(class2AccessionFile) || Basic.hasPositiveLengthValue(class2SynonymsFile)))
-            throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
+		final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+		if (mapDBClassifications.size() > 0 && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
+			throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-        if (mapDBClassifications.size() > 0)
-            ClassificationManager.setMeganMapDBFile(mapDBFile);
+		if (mapDBClassifications.size() > 0)
+			ClassificationManager.setMeganMapDBFile(mapDBFile);
 
-        final ArrayList<String> cNames = new ArrayList<>();
-        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+		final ArrayList<String> cNames = new ArrayList<>();
+		for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
             if ((selectedClassifications.size() == 0 || selectedClassifications.contains(cName))
                     && (mapDBClassifications.contains(cName) || class2AccessionFile.get(cName).length() > 0 || class2SynonymsFile.get(cName).length() > 0))
                 cNames.add(cName);
         }
         if (cNames.size() > 0)
-            System.err.println("Functional classifications to use: " + Basic.toString(cNames, ", "));
+			System.err.println("Functional classifications to use: " + StringUtils.toString(cNames, ", "));
 
         final boolean processInPairs = (pairedReads && !pairsInSingleFile);
 
         if (outputFiles.length == 1) {
             if (daaFiles.length == 1 || (processInPairs && daaFiles.length == 2)) {
                 if ((new File(outputFiles[0]).isDirectory()))
-                    outputFiles[0] = (new File(outputFiles[0], Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(Basic.getFileNameWithoutZipOrGZipSuffix(daaFiles[0])), ".rma6"))).getPath();
+					outputFiles[0] = (new File(outputFiles[0], FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(FileUtils.getFileNameWithoutZipOrGZipSuffix(daaFiles[0])), ".rma6"))).getPath();
             } else if (daaFiles.length > 1) {
                 if (!(new File(outputFiles[0]).isDirectory()))
                     throw new IOException("Multiple files given, but given single output is not a directory");
@@ -240,11 +242,11 @@ public class DAA2RMA6 {
                 if (!processInPairs) {
                     outputFiles = new String[daaFiles.length];
                     for (int i = 0; i < daaFiles.length; i++)
-                        outputFiles[i] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
+						outputFiles[i] = new File(outputDirectory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutZipOrGZipSuffix(FileUtils.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
                 } else {
                     outputFiles = new String[daaFiles.length / 2];
                     for (int i = 0; i < daaFiles.length; i += 2)
-                        outputFiles[i / 2] = new File(outputDirectory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(Basic.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
+						outputFiles[i / 2] = new File(outputDirectory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutZipOrGZipSuffix(FileUtils.getFileNameWithoutPath(daaFiles[i])), ".rma6")).getPath();
                 }
             }
         } else // output.length >1
@@ -349,8 +351,8 @@ public class DAA2RMA6 {
                 try {
                     System.err.println("Saving metadata:");
                     SampleAttributeTable sampleAttributeTable = new SampleAttributeTable();
-                    sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(iOutput, metaDataFiles.length - 1)]),
-                            Collections.singletonList(Basic.getFileBaseName(Basic.getFileNameWithoutPath(outputFiles[iOutput]))), false);
+					sampleAttributeTable.read(new FileReader(metaDataFiles[Math.min(iOutput, metaDataFiles.length - 1)]),
+							Collections.singletonList(FileUtils.getFileBaseName(FileUtils.getFileNameWithoutPath(outputFiles[iOutput]))), false);
                     Map<String, byte[]> label2data = new HashMap<>();
                     label2data.put(SampleAttributeTable.SAMPLE_ATTRIBUTES, sampleAttributeTable.getBytes());
                     connector.putAuxiliaryData(label2data);

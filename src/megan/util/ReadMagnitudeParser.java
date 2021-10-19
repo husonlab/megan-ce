@@ -20,6 +20,7 @@
 package megan.util;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 /**
  * parses the weight of a read from the fasta header line
@@ -54,8 +55,8 @@ public class ReadMagnitudeParser {
                     System.err.println("Using underscore parsing of magnitudes - only use with CREST");
                     warned = true;
                 }
-                String firstWord = Basic.getFirstWord(aLine);
-                int pos = firstWord.lastIndexOf('_');
+				String firstWord = StringUtils.getFirstWord(aLine);
+				int pos = firstWord.lastIndexOf('_');
                 if (Basic.isInteger(firstWord.substring(pos + 1)))
                     return Math.max(1, Integer.parseInt(firstWord.substring(pos + 1)));
             }

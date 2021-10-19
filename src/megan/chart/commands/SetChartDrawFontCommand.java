@@ -23,9 +23,9 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ChooseFontDialog;
-import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.drawers.MultiChartDrawer;
 import megan.chart.gui.ChartViewer;
@@ -40,7 +40,7 @@ import java.awt.event.ActionEvent;
  */
 public class SetChartDrawFontCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "set chartfont=<name-style-size> color={<color>|default} target={" + Basic.toString(ChartViewer.FontKeys.values(), "|") + "};";
+		return "set chartfont=<name-style-size> color={<color>|default} target={" + StringUtils.toString(ChartViewer.FontKeys.values(), "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -56,7 +56,7 @@ public class SetChartDrawFontCommand extends CommandBase implements ICommand {
         }
 
         np.matchIgnoreCase("target=");
-        String target = np.getWordMatchesRespectingCase(Basic.toString(ChartViewer.FontKeys.values(), " "));
+		String target = np.getWordMatchesRespectingCase(StringUtils.toString(ChartViewer.FontKeys.values(), " "));
         np.matchIgnoreCase(";");
 
         ProgramProperties.put(target, fontLabel);

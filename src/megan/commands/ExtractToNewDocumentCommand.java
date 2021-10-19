@@ -24,10 +24,7 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -58,9 +55,9 @@ import java.util.Set;
  */
 public class ExtractToNewDocumentCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "extract what=document file=<megan-filename> [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
-                "\t[ids=<SELECTED|numbers...>] [includeCollapsed={true|false}];";
-    }
+		return "extract what=document file=<megan-filename> [data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}]\n" +
+			   "\t[ids=<SELECTED|numbers...>] [includeCollapsed={true|false}];";
+	}
 
     public void apply(NexusStreamParser np) throws Exception {
         final Director srcDir = getDir();
@@ -77,8 +74,8 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
 
         String classificationName = ClassificationType.Taxonomy.toString();
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            classificationName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " readNames");
+			np.matchIgnoreCase("data=");
+			classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " readNames");
         }
 
         final Set<Integer> ids = new HashSet<>();
@@ -204,10 +201,10 @@ public class ExtractToNewDocumentCommand extends CommandBase implements ICommand
             final ClassificationViewer viewer = (ClassificationViewer) getViewer();
             Collection<String> selectedLabels = viewer.getSelectedNodeLabels(false);
             if (selectedLabels.size() == 1)
-                className = Basic.toCleanName(selectedLabels.iterator().next());
+				className = StringUtils.toCleanName(selectedLabels.iterator().next());
         }
-        final String name = ProjectManager.getUniqueName(Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + (className != null ? className : "Extracted") + ".rma"));
-        final String directory = (new File(ProgramProperties.get("ExtractToNewFile", ""))).getParent();
+		final String name = ProjectManager.getUniqueName(FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-" + (className != null ? className : "Extracted") + ".rma"));
+		final String directory = (new File(ProgramProperties.get("ExtractToNewFile", ""))).getParent();
         File lastOpenFile = new File(directory, name);
 
         dir.notifyLockInput();

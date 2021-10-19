@@ -21,7 +21,7 @@ package megan.viewer.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;
@@ -39,15 +39,15 @@ import java.awt.event.ActionEvent;
  */
 public class SelectByRankCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "select rank={" + Basic.toString(TaxonomicLevels.getAllNames(), "|") + "}";
+		return "select rank={" + StringUtils.toString(TaxonomicLevels.getAllNames(), "|") + "}";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
         np.matchIgnoreCase("select rank=");
-        String rankName = np.getWordMatchesIgnoringCase(Basic.toString(TaxonomicLevels.getAllNames(), " "));
-        int rank = TaxonomicLevels.getId(rankName);
+		String rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
+		int rank = TaxonomicLevels.getId(rankName);
         np.matchRespectCase(";");
         if (rank == 0)
             NotificationsInSwing.showError(getViewer().getFrame(), "Unknown rank: " + rankName);

@@ -24,6 +24,7 @@ import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -71,13 +72,13 @@ public class ReanalyzeDialog extends ImportBlastDialog {
         ClassificationManager.get(Classification.Taxonomy, true).getIdMapper().setUseTextParsing(isParseTaxonNames());
         final String files = getBlastFileName();
         if (files.length() > 0) {
-            ProgramProperties.put(MeganProperties.BLASTFILE, new File(Basic.getLinesFromString(files).get(0)));
+			ProgramProperties.put(MeganProperties.BLASTFILE, new File(StringUtils.getLinesFromString(files).get(0)));
 
             final StringBuilder buf = new StringBuilder();
 
             buf.append("reanalyzeFiles file=");
 
-            java.util.List<String> fileNames = Basic.getLinesFromString(files);
+			java.util.List<String> fileNames = StringUtils.getLinesFromString(files);
 
             boolean first = true;
             for (String name : fileNames) {
@@ -115,9 +116,9 @@ public class ReanalyzeDialog extends ImportBlastDialog {
                 buf.append(" useContaminantFilter=").append(isUseContaminantsFilter());
             if (getContaminantsFileName() != null && getContaminantsFileName().length() > 0)
                 buf.append(" loadContaminantFile=").append(getContaminantsFileName());
-            buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
-            buf.append(" fNames=").append(Basic.toString(getSelectedFNames(), " "));
-            buf.append(";");
+			buf.append(" readAssignmentMode=").append(getReadAssignmentMode());
+			buf.append(" fNames=").append(StringUtils.toString(getSelectedFNames(), " "));
+			buf.append(";");
 
             setResult(buf.toString());
             try {
@@ -143,7 +144,7 @@ public class ReanalyzeDialog extends ImportBlastDialog {
      * @return true, if applicable
      */
     public boolean isAppliable() {
-        return getBlastFileName().trim().length() > 0 && (new File(Basic.getFirstLine(getBlastFileName()).trim())).exists();
+		return getBlastFileName().trim().length() > 0 && (new File(StringUtils.getFirstLine(getBlastFileName()).trim())).exists();
     }
 }
 

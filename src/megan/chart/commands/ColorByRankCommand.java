@@ -21,8 +21,8 @@ package megan.chart.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.TaxaChart;
 import megan.chart.data.IChartData;
@@ -42,12 +42,12 @@ public class ColorByRankCommand extends CommandBase implements ICheckBoxCommand 
     }
 
     public String getSyntax() {
-        return "colorBy rank={" + Basic.toString(ranks, "|") + "};";
+		return "colorBy rank={" + StringUtils.toString(ranks, "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("colorBy rank=");
-        String rank = np.getWordMatchesRespectingCase(Basic.toString(ranks, " "));
+		String rank = np.getWordMatchesRespectingCase(StringUtils.toString(ranks, " "));
         np.matchIgnoreCase(";");
         if (rank != null) {
             ChartViewer chartViewer = (ChartViewer) getViewer();

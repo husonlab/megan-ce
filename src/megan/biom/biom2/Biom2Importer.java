@@ -23,8 +23,9 @@ import ch.systemsx.cisd.hdf5.HDF5Factory;
 import ch.systemsx.cisd.hdf5.IHDF5Reader;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.IdMapper;
 import megan.core.DataTable;
@@ -61,7 +62,7 @@ public class Biom2Importer {
             System.err.println(topLevelAttributes.toString());
 
             if (topLevelAttributes.getShape().length > 0 && topLevelAttributes.getShape()[0] > 200000)
-                throw new IOException("Too many rows,shape=" + Basic.toString(topLevelAttributes.getShape(), ", "));
+				throw new IOException("Too many rows,shape=" + StringUtils.toString(topLevelAttributes.getShape(), ", "));
 
             final String[] sampleIds = reader.readStringArray("/sample/ids"); // dataset of the sample IDs
             final int numberOfSamples = sampleIds.length;

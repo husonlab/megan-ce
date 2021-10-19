@@ -23,7 +23,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseColorDialog;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -150,7 +150,7 @@ public class SetSampleColorCommand extends CommandBase implements ICommand {
             Color color = ChooseColorDialog.showChooseColorDialog(getViewer().getFrame(), "Choose sample color", null);
 
             if (color != null)
-                execute("set nodeColor=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " sample='" + Basic.toString(selected, "' '") + "';");
+				execute("set nodeColor=" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " sample='" + StringUtils.toString(selected, "' '") + "';");
         }
     }
 

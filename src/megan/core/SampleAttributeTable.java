@@ -22,6 +22,7 @@ package megan.core;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.Table;
 import megan.viewer.MainViewer;
 
@@ -687,10 +688,10 @@ public class SampleAttributeTable {
                 if (label.length() > 0) {
                     if (!Basic.isInteger(label))
                         isInteger = false;
-                    if (!Basic.isFloat(label))
-                        isFloat = false;
-                    if (!Basic.isDate(label))
-                        isDate = false;
+					if (!Basic.isFloat(label))
+						isFloat = false;
+					if (!StringUtils.isDate(label))
+						isDate = false;
                 }
             }
         }
@@ -806,13 +807,13 @@ public class SampleAttributeTable {
                     if (attributes.contains("BarcodeSequence")) {
                         Object barcodeSequence = attributes2value.get("BarcodeSequence");
                         if (barcodeSequence != null)
-                            w.write("\t" + Basic.quoteIfContainsTab(barcodeSequence));
+							w.write("\t" + StringUtils.quoteIfContainsTab(barcodeSequence));
                         else
                             w.write("\tAAA");
                     }
                     Object linkerPrimerSequence = attributes2value.get("LinkerPrimerSequence");
                     if (linkerPrimerSequence != null)
-                        w.write("\t" + Basic.quoteIfContainsTab(linkerPrimerSequence));
+						w.write("\t" + StringUtils.quoteIfContainsTab(linkerPrimerSequence));
                     else
                         w.write("\t");
 
@@ -820,14 +821,14 @@ public class SampleAttributeTable {
                         if (!name.equals(SAMPLE_ID) && !name.equals("BarcodeSequence") && !name.equals("LinkerPrimerSequence") && (includeSecret || !isSecretAttribute(name))) {
                             Object value = attributes2value.get(name);
                             if (value != null)
-                                w.write("\t" + Basic.quoteIfContainsTab(value));
+								w.write("\t" + StringUtils.quoteIfContainsTab(value));
                             else
                                 w.write("\tNA");
                         }
                     }
                     Object description = attributes2value.get("Description");
                     if (description != null)
-                        w.write("\t" + Basic.quoteIfContainsTab(description));
+						w.write("\t" + StringUtils.quoteIfContainsTab(description));
                     else
                         w.write("\tNA");
 
@@ -836,7 +837,7 @@ public class SampleAttributeTable {
                         if (!name.equals(SAMPLE_ID) && !name.equals("BarcodeSequence") && !name.equals("LinkerPrimerSequence") && (includeSecret || !isSecretAttribute(name))) {
                             Object value = attributes2value.get(name);
                             if (value != null)
-                                w.write("\t" + Basic.quoteIfContainsTab(value));
+								w.write("\t" + StringUtils.quoteIfContainsTab(value));
                             else
                                 w.write("\tNA");
                         }
@@ -881,7 +882,7 @@ public class SampleAttributeTable {
             }
 
             if (aLine != null) {
-                String[] tokens = Basic.splitWithQuotes(aLine, '\t');
+				String[] tokens = StringUtils.splitWithQuotes(aLine, '\t');
 
                 if (tokens.length < 1 || !tokens[0].startsWith(SAMPLE_ID)) {
                     throw new IOException(SAMPLE_ID + " tag not found, no sample-attributes data...");
@@ -925,7 +926,7 @@ public class SampleAttributeTable {
                         else if (!description.equals("#EOF") && !description.equals("# EOF"))
                             description += " " + aLine;
                     } else {
-                        tokens = Basic.splitWithQuotes(aLine, '\t');
+						tokens = StringUtils.splitWithQuotes(aLine, '\t');
                         if (tokens.length > 0) {
                             if (tokens.length != tokensPerLine)
                                 throw new IOException("Expected " + tokensPerLine + " tokens, got " + tokens.length + " in line: " + aLine);
@@ -1186,7 +1187,7 @@ public class SampleAttributeTable {
      * @param samples
      */
     public void moveSamples(boolean up, Collection<String> samples) {
-        samples = Basic.sortSubsetAsContainingSet(sampleOrder, samples);
+		samples = StringUtils.sortSubsetAsContainingSet(sampleOrder, samples);
         if (up) {
             for (String sample : samples) {
                 final int index = sampleOrder.indexOf(sample);

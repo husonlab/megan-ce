@@ -23,6 +23,8 @@ import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 
 import java.util.ArrayList;
 import java.util.List;

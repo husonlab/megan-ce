@@ -19,7 +19,7 @@
  */
 package megan.parsers.blast.blastxml;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 /**
  * Blast HSP
@@ -52,8 +52,8 @@ public class HSP {
     public String toString(String hitDef, int hitLen) {
         StringBuilder buffer = new StringBuilder();
 
-        buffer.append(String.format(">%s\n\tLength = %d\n", Basic.fold(hitDef, 100), hitLen));
-        buffer.append(String.format(" Score = %.1f bits (%.1f), Expect= %e\n", bitScore, score, eValue));
+		buffer.append(String.format(">%s\n\tLength = %d\n", StringUtils.fold(hitDef, 100), hitLen));
+		buffer.append(String.format(" Score = %.1f bits (%.1f), Expect= %e\n", bitScore, score, eValue));
         buffer.append(String.format(" Identities = %d/%d (%d%%), Positives = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n", identity, alignLength, Math.round(100 * identity / alignLength), positive, alignLength, 100 * positive / alignLength, gaps, alignLength, 100 * gaps / alignLength));
         if (queryFrame != 0)
             buffer.append(String.format(" Frame = %+d\n", queryFrame));

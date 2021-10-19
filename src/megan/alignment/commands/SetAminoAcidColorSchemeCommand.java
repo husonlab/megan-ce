@@ -21,8 +21,8 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.colors.ColorSchemeAminoAcids;
@@ -45,7 +45,7 @@ public class SetAminoAcidColorSchemeCommand extends CommandBase implements IComm
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set aminoAcidColors=");
 
-        String value = np.getWordMatchesIgnoringCase(Basic.toString(ColorSchemeAminoAcids.getNames(), " "));
+		String value = np.getWordMatchesIgnoringCase(StringUtils.toString(ColorSchemeAminoAcids.getNames(), " "));
         np.matchIgnoreCase(";");
 
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -61,7 +61,7 @@ public class SetAminoAcidColorSchemeCommand extends CommandBase implements IComm
      */
     @Override
     public String getSyntax() {
-        return "set aminoAcidColors=[" + Basic.toString(ColorSchemeAminoAcids.getNames(), "|") + "];";
+		return "set aminoAcidColors=[" + StringUtils.toString(ColorSchemeAminoAcids.getNames(), "|") + "];";
     }
 
     /**

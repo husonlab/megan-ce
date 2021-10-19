@@ -20,7 +20,7 @@
 package megan.clusteranalysis.indices;
 
 import jloda.graph.Node;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.clusteranalysis.tree.Distances;
 import megan.core.Document;
 import megan.viewer.ViewerBase;
@@ -42,7 +42,7 @@ public class JensenShannonDivergence {
      * @throws java.io.IOException
      */
     public static int apply(final ViewerBase viewer, final Distances distances) {
-        System.err.println("Computing " + Basic.fromCamelCase(NAME) + " distances");
+		System.err.println("Computing " + StringUtils.fromCamelCase(NAME) + " distances");
 
         final double[][] profiles = computeProfiles(viewer.getDocument(), viewer);
 

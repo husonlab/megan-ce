@@ -20,7 +20,8 @@
 package megan.util;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -67,10 +68,10 @@ public class BiomFileFilter extends FileFilterBase implements FilenameFilter {
     @Override
     public boolean accept(File dir, String name) {
         if (super.accept(dir, name)) {
-            final byte[] bytes = Basic.getFirstBytesFromFile(new File(dir, name), 4);
-            boolean isV2 = (bytes != null && bytes[0] != '{' && Basic.toString(bytes).contains("ﾉHDF"));
-            return (version == Version.All || (version == Version.V1 && !isV2) || (version == Version.V2 && isV2));
-        }
+			final byte[] bytes = FileUtils.getFirstBytesFromFile(new File(dir, name), 4);
+			boolean isV2 = (bytes != null && bytes[0] != '{' && StringUtils.toString(bytes).contains("ﾉHDF"));
+			return (version == Version.All || (version == Version.V1 && !isV2) || (version == Version.V2 && isV2));
+		}
         return false;
     }
 

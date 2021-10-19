@@ -24,7 +24,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
@@ -65,9 +65,9 @@ public class ExportMetaDataCommand extends CommandBase implements ICommand {
         String name = ((Director) getDir()).getDocument().getMeganFile().getName();
         File lastOpenFile = ProgramProperties.getFile("MetaDataFilePath");
         if (lastOpenFile != null) {
-            lastOpenFile = new File(lastOpenFile.getParent(), Basic.replaceFileSuffix(name, "-metadata.txt"));
+			lastOpenFile = new File(lastOpenFile.getParent(), FileUtils.replaceFileSuffix(name, "-metadata.txt"));
         } else
-            lastOpenFile = new File(Basic.replaceFileSuffix(name, "-metadata.txt"));
+			lastOpenFile = new File(FileUtils.replaceFileSuffix(name, "-metadata.txt"));
 
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Export metadata mapping file");
         if (file != null) {

@@ -21,6 +21,7 @@
 package megan.ms.server;
 
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class RequestHandlerAdmin {
     public static final AtomicBoolean inUpdate = new AtomicBoolean(false);
 
     static RequestHandler listUsers(UserManager userManager) {
-        return (c, p) -> (Basic.toString(userManager.listAllUsers(), "\n")).getBytes();
+		return (c, p) -> (StringUtils.toString(userManager.listAllUsers(), "\n")).getBytes();
     }
 
     static RequestHandler addUser(UserManager userManager) {
@@ -72,14 +73,14 @@ public class RequestHandlerAdmin {
                 checkKnownParameters(p, "user", "role");
                 checkRequiredParameters(p, "user", "role");
 
-                final String user = Parameters.getValue(p, "user");
-                final String[] roles = Basic.split(Parameters.getValue(p, "role"), ',');
+				final String user = Parameters.getValue(p, "user");
+				final String[] roles = StringUtils.split(Parameters.getValue(p, "role"), ',');
 
                 if (!userManager.userExists(user))
                     throw new IOException("No such user: " + user);
 
                 userManager.addRoles(user, roles);
-                return ("User " + user + ": role " + Basic.toString(roles, ",") + " added").getBytes();
+				return ("User " + user + ": role " + StringUtils.toString(roles, ",") + " added").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -95,14 +96,14 @@ public class RequestHandlerAdmin {
                 checkKnownParameters(p, "user", "role");
                 checkRequiredParameters(p, "user", "role");
 
-                final String user = Parameters.getValue(p, "name");
-                final String[] roles = Basic.split(Parameters.getValue(p, "role"), ',');
+				final String user = Parameters.getValue(p, "name");
+				final String[] roles = StringUtils.split(Parameters.getValue(p, "role"), ',');
 
                 if (!userManager.userExists(user))
                     throw new IOException("No such user: " + user);
 
                 userManager.removeRoles(user, roles);
-                return ("User " + user + ": role " + Basic.toString(roles, ",") + " removed").getBytes();
+				return ("User " + user + ": role " + StringUtils.toString(roles, ",") + " removed").getBytes();
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             }
@@ -141,7 +142,7 @@ public class RequestHandlerAdmin {
                 final ArrayList<byte[]> list = new ArrayList<>();
                 for (var database : databases)
                     list.add(database.rebuild().getBytes());
-                return Basic.concatenate(list);
+				return StringUtils.concatenate(list);
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());
             } finally {

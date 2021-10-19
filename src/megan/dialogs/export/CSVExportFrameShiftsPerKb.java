@@ -24,6 +24,7 @@ import jloda.graph.Node;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.core.Document;
@@ -140,12 +141,12 @@ class CSVExportFrameShiftsPerKb {
             try {
                 final IntervalTree<IMatchBlock> intervals = IntervalTree4Matches.extractStronglyDominatingIntervals(IntervalTree4Matches.computeIntervalTree(readBlock, null, null), new String[]{Classification.Taxonomy}, "all");
                 for (IMatchBlock matchBlock : intervals.values()) {
-                    for (String line : Basic.getLinesFromString(matchBlock.getText())) {
-                        if (line.startsWith("Query:")) {
-                            countFrameShifts += Basic.countOccurrences(line, '\\');
-                            countFrameShifts += Basic.countOccurrences(line, '/');
-                        }
-                    }
+					for (String line : StringUtils.getLinesFromString(matchBlock.getText())) {
+						if (line.startsWith("Query:")) {
+							countFrameShifts += StringUtils.countOccurrences(line, '\\');
+							countFrameShifts += StringUtils.countOccurrences(line, '/');
+						}
+					}
                     countAlignedBases += Math.abs(matchBlock.getAlignedQueryStart() - matchBlock.getAlignedQueryEnd()) + 1;
                 }
             } catch (CanceledException ex) {
@@ -155,12 +156,12 @@ class CSVExportFrameShiftsPerKb {
             for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
                 final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
 
-                for (String line : Basic.getLinesFromString(matchBlock.getText())) {
-                    if (line.startsWith("Query:")) {
-                        countFrameShifts += Basic.countOccurrences(line, '\\');
-                        countFrameShifts += Basic.countOccurrences(line, '/');
-                    }
-                }
+				for (String line : StringUtils.getLinesFromString(matchBlock.getText())) {
+					if (line.startsWith("Query:")) {
+						countFrameShifts += StringUtils.countOccurrences(line, '\\');
+						countFrameShifts += StringUtils.countOccurrences(line, '/');
+					}
+				}
                 countAlignedBases += matchBlock.getLength();
             }
         }

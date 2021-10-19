@@ -21,7 +21,7 @@ package megan.chart.commandtemplates;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.data.IPlot2DData;
 import megan.chart.drawers.Plot2DDrawer;
@@ -45,13 +45,13 @@ public class SetChartDrawerCommand extends CommandBase implements ICommand {
         if (names == null || names.size() == 0)
             return "set chartDrawer=<name>;";
         else
-            return "set chartDrawer={" + Basic.toString(names, "|") + "};";
+			return "set chartDrawer={" + StringUtils.toString(names, "|") + "};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
         np.matchIgnoreCase("set chartDrawer=");
-        String chartDrawerName = np.getWordMatchesRespectingCase(Basic.toString(chartViewer.getChartDrawerNames(), " "));
+		String chartDrawerName = np.getWordMatchesRespectingCase(StringUtils.toString(chartViewer.getChartDrawerNames(), " "));
         np.matchIgnoreCase(";");
 
         chartViewer.chooseDrawer(chartDrawerName);

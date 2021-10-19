@@ -24,10 +24,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import megan.assembly.ReadAssembler;
 import megan.assembly.ReadData;
@@ -86,8 +84,8 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
             final ReadAssembler readAssembler = new ReadAssembler(true);
 
             try (IReadBlockIterator it = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true)) {
-                final String label = viewer.getClassName() + ". Id(s): " + Basic.toString(viewer.getSelectedNodeIds(), ", ");
-                final List<ReadData> readData = ReadDataCollector.apply(it, doc.getProgressListener());
+				final String label = viewer.getClassName() + ". Id(s): " + StringUtils.toString(viewer.getSelectedNodeIds(), ", ");
+				final List<ReadData> readData = ReadDataCollector.apply(it, doc.getProgressListener());
                 readAssembler.computeOverlapGraph(label, minOverlap, readData, doc.getProgressListener());
 
                 if (overlapGraphFile != null) {
@@ -116,20 +114,20 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
         if (fileName == null)
             fileName = "Untitled";
         else
-            fileName = Basic.toCleanName(fileName);
+			fileName = StringUtils.toCleanName(fileName);
         if (lastOpenFile != null) {
             fileName = new File(lastOpenFile.getParent(), fileName).getPath();
         }
-        fileName = Basic.replaceFileSuffix(fileName, "-overlap.gml");
+		fileName = FileUtils.replaceFileSuffix(fileName, "-overlap.gml");
 
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(".gml"), new TextFileFilter(".gml"), event, "Save overlap graph", ".gml");
 
         if (file != null) {
-            if (Basic.getFileSuffix(file.getName()) == null)
-                file = Basic.replaceFileSuffix(file, ".gml");
-            ProgramProperties.put("OverlapGraphFile", file);
-            execute("export overlapGraph file='" + file.getPath() + "' minOverlap=" + ProgramProperties.get("AssemblyMinOverlap", 20) + " showGraph=false;");
-        }
+			if (FileUtils.getFileSuffix(file.getName()) == null)
+				file = FileUtils.replaceFileSuffix(file, ".gml");
+			ProgramProperties.put("OverlapGraphFile", file);
+			execute("export overlapGraph file='" + file.getPath() + "' minOverlap=" + ProgramProperties.get("AssemblyMinOverlap", 20) + " showGraph=false;");
+		}
     }
 
     public boolean isApplicable() {

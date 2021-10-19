@@ -21,8 +21,8 @@ package megan.commands.preferences;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.IdParser;
 import megan.commands.CommandBase;
@@ -43,8 +43,8 @@ public class SetAccessionTagsCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-        String[] tags = ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS);
-        String result = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter tag(s) for identifying accession numbers (separated by spaces):", Basic.toString(tags, " "));
+		String[] tags = ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS);
+		String result = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter tag(s) for identifying accession numbers (separated by spaces):", StringUtils.toString(tags, " "));
         if (result != null)
             executeImmediately("set accessionTags='" + result + "';");
     }

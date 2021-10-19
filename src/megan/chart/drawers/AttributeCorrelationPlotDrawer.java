@@ -25,6 +25,7 @@ import jloda.swing.window.IPopupMenuModifier;
 import jloda.util.Basic;
 import jloda.util.Correlation;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;
@@ -717,7 +718,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                         final StringBuilder buf = new StringBuilder();
                         buf.append("show window=Message;");
                         for (String attribute : getChartData().getChartSelection().getSelectedSeries()) {
-                            buf.append(";correlate class='").append(Basic.toString(getChartData().getChartSelection().getSelectedClasses(), "' '")).append("'")
+							buf.append(";correlate class='").append(StringUtils.toString(getChartData().getChartSelection().getSelectedClasses(), "' '")).append("'")
                                     .append(" classification='").append(classification).append("' attribute='").append(attribute).append("';");
                         }
                         commandManager.getDir().execute(buf.toString(), commandManager);

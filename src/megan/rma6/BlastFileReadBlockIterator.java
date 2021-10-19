@@ -20,6 +20,7 @@
 package megan.rma6;
 
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
 import megan.parsers.blast.BlastFileFormat;
@@ -149,15 +150,15 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
 
         final ReadBlockRMA6 readBlock = new ReadBlockRMA6(blastMode, false, cNames);
 
-        final int queryNameLength = Basic.getFirstWord(matchesText, queryName);
+		final int queryNameLength = StringUtils.getFirstWord(matchesText, queryName);
 
         // write the read text
         boolean foundRead = false;
         if (fastaIterator != null) {
             if (Utilities.findQuery(queryName, queryNameLength, fastaIterator, isFasta)) {
-                final int length = Utilities.getFastAText(fastaIterator, isFasta, fastAText);
-                String fasta = Basic.toString(fastAText.get(), 0, length);
-                int pos = fasta.indexOf('\n');
+				final int length = Utilities.getFastAText(fastaIterator, isFasta, fastAText);
+				String fasta = StringUtils.toString(fastAText.get(), 0, length);
+				int pos = fasta.indexOf('\n');
                 if (pos > 0) {
                     readBlock.setReadHeader(fasta.substring(0, pos));
                     if (pos + 1 < fasta.length())
@@ -166,19 +167,19 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
                 foundRead = true;
             } else {
                 if (missingReadWarnings++ < 50)
-                    System.err.println("WARNING: Failed to find read '" + Basic.toString(queryName, 0, queryNameLength) + "' in file: " + readsFile);
+					System.err.println("WARNING: Failed to find read '" + StringUtils.toString(queryName, 0, queryNameLength) + "' in file: " + readsFile);
                 if (missingReadWarnings == 50)
                     System.err.println("No further missing warnings");
             }
         }
         if (!foundRead) {
-            readBlock.setReadHeader(String.format(">%s\n", Basic.toString(queryName, 0, queryNameLength)));
+			readBlock.setReadHeader(String.format(">%s\n", StringUtils.toString(queryName, 0, queryNameLength)));
         }
         int start = 0;
         MatchBlockRMA6[] matchBlocks = new MatchBlockRMA6[numberOfMatches];
         for (int matchCount = 0; matchCount < numberOfMatches; matchCount++) {
-            int end = Utilities.nextNewLine(matchesText, start);
-            final String aLine = Basic.toString(matchesText, start, end - start + 1);
+			int end = Utilities.nextNewLine(matchesText, start);
+			final String aLine = StringUtils.toString(matchesText, start, end - start + 1);
             start = end + 1;
             MatchBlockRMA6 matchBlock = new MatchBlockRMA6();
             SAMMatch samMatch = new SAMMatch(blastMode);

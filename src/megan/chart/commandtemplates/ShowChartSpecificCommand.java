@@ -22,7 +22,7 @@ package megan.chart.commandtemplates;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.viewer.ClassificationViewer;
@@ -40,8 +40,8 @@ public class ShowChartSpecificCommand extends CommandBase implements ICommand {
     private final String displayName;
 
     public ShowChartSpecificCommand(String chartDrawerName) {
-        this.chartDrawerName = chartDrawerName;
-        displayName = Basic.fromCamelCase(chartDrawerName);
+		this.chartDrawerName = chartDrawerName;
+		displayName = StringUtils.fromCamelCase(chartDrawerName);
     }
 
     public String getSyntax() {

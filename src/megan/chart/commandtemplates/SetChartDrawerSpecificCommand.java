@@ -22,7 +22,7 @@ package megan.chart.commandtemplates;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.data.IChartData;
 import megan.chart.data.IPlot2DData;
@@ -43,8 +43,8 @@ public class SetChartDrawerSpecificCommand extends CommandBase implements ICheck
     private final String displayName;
 
     public SetChartDrawerSpecificCommand(String chartDrawerName) {
-        this.chartDrawerName = chartDrawerName;
-        displayName = Basic.fromCamelCase(chartDrawerName);
+		this.chartDrawerName = chartDrawerName;
+		displayName = StringUtils.fromCamelCase(chartDrawerName);
     }
 
     public boolean isSelected() {

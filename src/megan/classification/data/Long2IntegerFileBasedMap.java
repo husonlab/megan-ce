@@ -20,6 +20,8 @@
 package megan.classification.data;
 
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.data.IName2IdMap;
 import megan.io.OutputWriter;
 

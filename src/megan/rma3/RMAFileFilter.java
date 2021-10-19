@@ -20,7 +20,7 @@
 package megan.rma3;
 
 import jloda.swing.util.FileFilterBase;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import megan.io.InputReader;
 import megan.rma2.RMA2File;
 
@@ -56,7 +56,7 @@ public class RMAFileFilter extends FileFilterBase implements FilenameFilter {
      */
     @Override
     public boolean accept(File pathname) {
-        String suffix = Basic.getFileSuffix(pathname.getName()).toLowerCase();
+		String suffix = FileUtils.getFileSuffix(pathname.getName()).toLowerCase();
         if (suffix.startsWith(".rma")) {
             try (InputReader r = new InputReader(pathname, null, null, true)) {
                 int magicNumber = r.readInt();

@@ -22,6 +22,7 @@ package megan.accessiondb;
 
 
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import org.sqlite.SQLiteConfig;
@@ -67,8 +68,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @throws SQLException
      */
     public AccessAccessionMappingDatabase(String dbFile) throws IOException, SQLException {
-        if (!Basic.fileExistsAndIsNonEmpty(dbFile))
-            throw new IOException("File not found or unreadable: " + dbFile);
+		if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
+			throw new IOException("File not found or unreadable: " + dbFile);
 
         final SQLiteConfig config = new SQLiteConfig();
         config.setCacheSize(10000);
@@ -89,7 +90,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
         if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))
-            throw new IOException("Mapping file " + Basic.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
+			throw new IOException("Mapping file " + FileUtils.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
     }
 
     /**
@@ -341,13 +342,13 @@ public class AccessAccessionMappingDatabase implements Closeable {
     }
 
     public static Collection<String> getContainedClassificationsIfDBExists(String fileName) {
-        if (Basic.fileExistsAndIsNonEmpty(fileName)) {
-            try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(fileName)) {
-                return accessAccessionMappingDatabase.getClassificationNames();
-            } catch (IOException | SQLException ex) {
-                // ignore
-            }
-        }
+		if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
+			try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(fileName)) {
+				return accessAccessionMappingDatabase.getClassificationNames();
+			} catch (IOException | SQLException ex) {
+				// ignore
+			}
+		}
         return Collections.emptySet();
     }
 }

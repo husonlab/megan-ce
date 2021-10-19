@@ -24,6 +24,7 @@ import jloda.swing.util.TwoInputOptionsPanel;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.samplesviewer.SamplesViewer;
@@ -69,9 +70,9 @@ public class ComputeRareBiomeCommand extends CommandBase implements ICommand {
                     classThresholdPercent = Basic.parseFloat(result[1]);
                     ProgramProperties.put("RareBiomeClassThreshold", classThresholdPercent);
 
-                    execute("compute biome=rare classThreshold=" + result[1] + " sampleThreshold=" + result[0] + " samples='" + Basic.toString(samples, "' '") + "';");
+					execute("compute biome=rare classThreshold=" + result[1] + " sampleThreshold=" + result[0] + " samples='" + StringUtils.toString(samples, "' '") + "';");
                 } else
-                    NotificationsInSwing.showError(getViewer().getFrame(), "Failed to parse values: " + Basic.toString(result, " "));
+					NotificationsInSwing.showError(getViewer().getFrame(), "Failed to parse values: " + StringUtils.toString(result, " "));
             }
         }
 

@@ -19,7 +19,7 @@
  */
 package megan.data;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.rma2.ReadBlockRMA2;
 
 /**
@@ -43,7 +43,7 @@ public class ReadBlockFromBlast extends ReadBlockRMA2 implements IReadBlock, IRe
     public void setReadSequence(String readSequence) {
         super.setReadSequence(readSequence);
         if (readSequence != null) {
-            setReadLength(Basic.getNumberOfNonSpaceCharacters(readSequence));
+			setReadLength(StringUtils.getNumberOfNonSpaceCharacters(readSequence));
         }
     }
 

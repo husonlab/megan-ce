@@ -21,7 +21,7 @@ package megan.commands.show;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.ComparisonPlot;
 import megan.chart.gui.ChartViewer;
@@ -40,7 +40,7 @@ import java.io.IOException;
 
 public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "show comparisonPlot [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "]};";
+		return "show comparisonPlot [data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "]};";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -51,8 +51,8 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("show comparisonPlot");
         String data = "taxonomy";
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            data = np.getWordMatchesIgnoringCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("data=");
+			data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
         np.matchIgnoreCase(";");
 

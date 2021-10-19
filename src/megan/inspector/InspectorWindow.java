@@ -447,7 +447,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                 final String sequence = readBlock.getReadSequence();
                 int length = readBlock.getReadLength();
                 if (length == 0 && sequence != null)
-                    length = Basic.getNumberOfNonSpaceCharacters(sequence);
+                    length = StringUtils.getNumberOfNonSpaceCharacters(sequence);
                 parent.setCompleted(true);
                 final ReadDataHeadLineNode readDataHeadLineNode = new ReadDataHeadLineNode("DATA", length, readBlock.getComplexity(), readBlock.getReadWeight(), header + (sequence != null ? "\n" + sequence : ""));
 
@@ -483,8 +483,8 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
                             if (id > 0) {
                                 String label = ClassificationManager.get(cName, true).getName2IdMap().get(id);
                                 if (label != null) {
-                                    label = Basic.abbreviateDotDotDot(label, 50);
-                                    buf.append(" ").append(label).append(";");
+									label = StringUtils.abbreviateDotDotDot(label, 50);
+									buf.append(" ").append(label).append(";");
                                 }
                             }
                         }

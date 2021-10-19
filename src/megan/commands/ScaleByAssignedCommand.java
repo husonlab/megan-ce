@@ -20,7 +20,7 @@
 package megan.commands;
 
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ViewerBase;
 import megan.viewer.gui.NodeDrawer;
@@ -37,7 +37,7 @@ public class ScaleByAssignedCommand extends CommandBase implements ICheckBoxComm
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set scaleBy=");
-        String value = np.getWordMatchesIgnoringCase(Basic.toString(NodeDrawer.ScaleBy.values(), " "));
+		String value = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.ScaleBy.values(), " "));
         np.matchIgnoreCase(";");
         ViewerBase viewer = (ViewerBase) getViewer();
         viewer.getNodeDrawer().setScaleBy(value);
@@ -53,7 +53,7 @@ public class ScaleByAssignedCommand extends CommandBase implements ICheckBoxComm
     }
 
     public String getSyntax() {
-        return "set scaleBy={" + Basic.toString(NodeDrawer.ScaleBy.values(), "|") + "};";
+		return "set scaleBy={" + StringUtils.toString(NodeDrawer.ScaleBy.values(), "|") + "};";
     }
 
     public void actionPerformed(ActionEvent event) {

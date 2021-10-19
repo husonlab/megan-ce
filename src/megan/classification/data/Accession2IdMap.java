@@ -22,7 +22,8 @@ package megan.classification.data;
 
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
+import jloda.util.StringUtils;
 import megan.data.IName2IdMap;
 
 import java.io.Closeable;
@@ -51,7 +52,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
             progress.setMaximum(it.getMaximumProgress());
             progress.setProgress(it.getProgress());
             while (it.hasNext()) {
-                String[] tokens = Basic.split(it.next(), '\t');
+				String[] tokens = StringUtils.split(it.next(), '\t');
                 if (tokens.length == 2) {
                     if (Basic.isInteger(tokens[1])) {
                         int id = Basic.parseInt(tokens[1]);

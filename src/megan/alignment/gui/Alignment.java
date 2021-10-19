@@ -19,10 +19,8 @@
  */
 package megan.alignment.gui;
 
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressPercentage;
+import jloda.util.*;
+import jloda.util.progress.ProgressPercentage;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -428,7 +426,7 @@ public class Alignment {
 
             boolean debug = false;
             if (debug)
-                System.err.println("Active rows: " + Basic.toString(activeRows, ","));
+				System.err.println("Active rows: " + StringUtils.toString(activeRows, ","));
             if (activeRows.size() > 0) {
                 for (int col = pos; col < nextPos; col++) {
                     if (debug)

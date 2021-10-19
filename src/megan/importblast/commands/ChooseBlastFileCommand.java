@@ -24,8 +24,9 @@ import jloda.swing.util.BlastFileFilter;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
 import megan.main.MeganProperties;
@@ -85,25 +86,25 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
         java.util.List<File> files = ChooseFileDialog.chooseFilesToOpen(importBlastDialog, lastOpenFile, blastFileFilter, blastFileFilter, event, "Open BLAST (RDP, Silva or SAM) file(s)");
 
         if (files.size() > 0) {
-            importBlastDialog.setBlastFileName(Basic.toString(files, "\n"));
-            importBlastDialog.getBlastFileNameField().setText(Basic.toString(files, "\n"));
+			importBlastDialog.setBlastFileName(StringUtils.toString(files, "\n"));
+			importBlastDialog.getBlastFileNameField().setText(StringUtils.toString(files, "\n"));
 
-            final FastaFileFilter fastaFileFilter = new FastaFileFilter();
-            fastaFileFilter.add(".fastq");
-            fastaFileFilter.add(".fnq");
-            fastaFileFilter.add(".fq");
+			final FastaFileFilter fastaFileFilter = new FastaFileFilter();
+			fastaFileFilter.add(".fastq");
+			fastaFileFilter.add(".fnq");
+			fastaFileFilter.add(".fq");
 
-            importBlastDialog.setReadFileName("");
-            for (File aFile : files) {
-                String fileName = Basic.getAnExistingFileWithGivenExtension(aFile.getPath(), fastaFileFilter.getFileExtensions());
-                if (fileName == null)
-                    fileName = Basic.getAnExistingFileWithGivenExtension(Basic.getFilePath(ProgramProperties.get(MeganProperties.READSFILE, ""), aFile.getName()), fastaFileFilter.getFileExtensions());
+			importBlastDialog.setReadFileName("");
+			for (File aFile : files) {
+				String fileName = FileUtils.getAnExistingFileWithGivenExtension(aFile.getPath(), fastaFileFilter.getFileExtensions());
+				if (fileName == null)
+					fileName = FileUtils.getAnExistingFileWithGivenExtension(FileUtils.getFilePath(ProgramProperties.get(MeganProperties.READSFILE, ""), aFile.getName()), fastaFileFilter.getFileExtensions());
                 if (fileName != null)
                     importBlastDialog.addReadFileName(fileName);
             }
             importBlastDialog.getReadFileNameField().setText(importBlastDialog.getReadFileName());
 
-            final String fileName = (files.size() > 1 ? Basic.getCommonPrefix(files.toArray(new File[0]), "out") : files.get(0).getName());
+			final String fileName = (files.size() > 1 ? StringUtils.getCommonPrefix(files.toArray(new File[0]), "out") : files.get(0).getName());
 
             final File meganFile = makeNewRMAFile(files.get(0).getParentFile(), fileName);
 
@@ -123,7 +124,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
     private File makeNewRMAFile(File directory, String fileName) {
         int count = 0;
         while (true) {
-            File meganFile = new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutZipOrGZipSuffix(fileName), (count > 0 ? "-" + count : "") + ".rma6"));
+			File meganFile = new File(directory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutZipOrGZipSuffix(fileName), (count > 0 ? "-" + count : "") + ".rma6"));
             if (!meganFile.exists())
                 return meganFile;
             count++;

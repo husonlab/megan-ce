@@ -20,6 +20,9 @@
 package megan.alignment;
 
 import jloda.util.*;
+import jloda.seq.SequenceUtils;
+import jloda.util.progress.ProgressCmdLine;
+import jloda.util.progress.ProgressListener;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
 import megan.core.Document;
@@ -97,7 +100,7 @@ public class AlignmentExporter {
                 for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                             (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
-                        String key = Basic.getFirstLine(matchBlock.getText());
+						String key = StringUtils.getFirstLine(matchBlock.getText());
                         if (!matchesSeenForGivenRead.contains(key)) {
                             matchesSeenForGivenRead.add(key);
                             List<Pair<IReadBlock, IMatchBlock>> pairs = reference2ReadMatchPairs.computeIfAbsent(key, k -> new LinkedList<>());
@@ -150,7 +153,7 @@ public class AlignmentExporter {
                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                             (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
                         if (!refSeqOnly || (matchBlock.getRefSeqId() != null && matchBlock.getRefSeqId().length() > 0)) {
-                            String key = Basic.getFirstLine(matchBlock.getText());
+							String key = StringUtils.getFirstLine(matchBlock.getText());
                             if (!matchesSeenForGivenRead.contains(key)) {
                                 matchesSeenForGivenRead.add(key);
 
@@ -286,12 +289,12 @@ public class AlignmentExporter {
                 if (fileName.contains("%n"))
                     fileName = fileNameTemplate.replaceAll("%n", String.format("%05d", totalFilesWritten));
                 if (fileName.contains("%c"))
-                    fileName = fileName.replaceAll("%c", (className != null ? Basic.toCleanName(className.trim()) : ""));
+					fileName = fileName.replaceAll("%c", (className != null ? StringUtils.toCleanName(className.trim()) : ""));
                 if (fileName.contains("%r"))
-                    fileName = fileName.replaceAll("%r", Basic.toCleanName(reference.trim()));
+					fileName = fileName.replaceAll("%r", StringUtils.toCleanName(reference.trim()));
 
                 if (fileNames.contains(fileName))
-                    fileName = Basic.replaceFileSuffix(fileName, "-" + totalFilesWritten + Basic.getFileSuffix(fileName));
+					fileName = FileUtils.replaceFileSuffix(fileName, "-" + totalFilesWritten + FileUtils.getFileSuffix(fileName));
                 fileNames.add(fileName);
 
                 if ((new File(fileName)).exists()) {
@@ -342,7 +345,7 @@ public class AlignmentExporter {
                             int minRow = 0;
                             int maxRow = alignment.getNumberOfSequences() - 1;
                             for (int row = minRow; row <= maxRow; row++) {
-                                w.write(">" + Basic.swallowLeadingGreaterSign(alignment.getName(row)) + "\n");
+								w.write(">" + StringUtils.swallowLeadingGreaterSign(alignment.getName(row)) + "\n");
                                 Lane lane = alignment.getLane(row);
                                 for (int i = 0; i < lane.getFirstNonGapPosition(); i += 3)
                                     w.write("-");

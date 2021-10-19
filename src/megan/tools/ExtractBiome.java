@@ -24,6 +24,7 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressSilent;
 import megan.commands.SaveCommand;
 import megan.commands.algorithms.ComputeBiomeCommand;
 import megan.core.Director;
@@ -88,7 +89,7 @@ public class ExtractBiome {
         final String outputFile = options.getOption("-o", "out", "Output file", "biome.megan");
 
         options.comment("Options:");
-        final Mode mode = Basic.valueOfIgnoreCase(Mode.class, options.getOption("-b", "biome", "Biome type to compute", Mode.values(), Mode.total.toString()));
+		final Mode mode = StringUtils.valueOfIgnoreCase(Mode.class, options.getOption("-b", "biome", "Biome type to compute", Mode.values(), Mode.total.toString()));
 
         final String[] samplesToUseOption = options.getOption("-s", "samples", "Samples to use or 'ALL'", new String[]{"ALL"});
 
@@ -134,8 +135,8 @@ public class ExtractBiome {
         computeBiomeCommand.setDir(dir);
 
         // compute the biome:
-        final String command = "compute biome=" + mode + " classThreshold=" + classThreshold + " sampleThreshold=" + sampleThreshold + " samples='"
-                + Basic.toString(selectedSamples, "' '") + "';";
+		final String command = "compute biome=" + mode + " classThreshold=" + classThreshold + " sampleThreshold=" + sampleThreshold + " samples='"
+							   + StringUtils.toString(selectedSamples, "' '") + "';";
         computeBiomeCommand.apply(new NexusStreamParser(new StringReader(command)));
 
         // save to new file:

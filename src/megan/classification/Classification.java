@@ -21,7 +21,8 @@ package megan.classification;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.ProgressListener;
+import jloda.util.FileUtils;
+import jloda.util.progress.ProgressListener;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
@@ -76,7 +77,7 @@ public class Classification {
             progress.setMaximum(2);
             progress.setProgress(0);
 
-            Document.loadVersionInfo(cName + " tree", Basic.replaceFileSuffix(treeFile, ".info"));
+			Document.loadVersionInfo(cName + " tree", FileUtils.replaceFileSuffix(treeFile, ".info"));
 
             name2IdMap.loadFromFile(mapFile);
 

@@ -22,7 +22,7 @@ package megan.alignment.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -78,7 +78,7 @@ public class ShowInspectReadsCommand extends CommandBase implements ICommand {
                     Lane lane = alignment.getLane(read);
                     int firstJump = alignment.getGapColumnContractor().getTotalJumpBeforeLayoutColumn(block.getFirstCol());
                     if ((block.isSelectedCol(lane.getFirstNonGapPosition() - firstJump + 1) /* && block.isSelectedCol(lane.getLastNonGapPosition() - firstJump) */)) {
-                        names.add(Basic.getFirstWord(lane.getName()));
+						names.add(StringUtils.getFirstWord(lane.getName()));
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class ShowInspectReadsCommand extends CommandBase implements ICommand {
             executeImmediately("show window=Inspector;");
             final InspectorWindow inspectorWindow = (InspectorWindow) getDir().getViewerByClass(InspectorWindow.class);
             if (inspectorWindow != null) {
-                final String command = "show read='\\Q" + Basic.toString(names, "\\E|\\Q") + "\\E';";
+				final String command = "show read='\\Q" + StringUtils.toString(names, "\\E|\\Q") + "\\E';";
                 System.err.println(command);
                 getDir().execute(command, inspectorWindow.getCommandManager());
             }

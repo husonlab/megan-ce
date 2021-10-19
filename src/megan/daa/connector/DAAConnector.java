@@ -21,7 +21,7 @@ package megan.daa.connector;
 
 import jloda.util.CanceledException;
 import jloda.util.ListOfLongs;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import jloda.util.Single;
 import megan.daa.io.*;
 import megan.data.*;

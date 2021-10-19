@@ -24,6 +24,8 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
@@ -50,7 +52,7 @@ public class ExportMatchSignaturesCommand extends CommandBase implements IComman
         else
             taxonId = TaxonomyData.getName2IdMap().get(label);
         np.matchIgnoreCase("rank=");
-        String rank = np.getWordMatchesRespectingCase(Basic.toString(TaxonomicLevels.getAllNames(), " "));
+		String rank = np.getWordMatchesRespectingCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
 
         np.matchIgnoreCase("file=");
         String outputFile = np.getAbsoluteFileName();
@@ -77,8 +79,8 @@ public class ExportMatchSignaturesCommand extends CommandBase implements IComman
             return;
         int taxon = getDir().getMainViewer().getSelectedNodeIds().iterator().next();
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
-        File lastOpenFile = new File(name);
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.txt");
+		File lastOpenFile = new File(name);
 
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new FastaFileFilter(), new FastaFileFilter(), event, "Save all READs to file", ".fasta");
 

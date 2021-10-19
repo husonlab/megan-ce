@@ -22,6 +22,8 @@ package megan.assembly;
 
 import jloda.graph.*;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.assembly.align.SimpleAligner4DNA;
 import megan.core.Director;
 
@@ -217,9 +219,9 @@ public class ReadAssembler {
         progress.setSubtask("Overlapping contigs");
 
         final ArrayList<Pair<String, String>> sortedContigs = new ArrayList<>(contigs.size());
-        sortedContigs.addAll(contigs);
-        sortedContigs.sort(Basic.getComparatorDecreasingLengthOfSecond());
-        contigs.clear();
+		sortedContigs.addAll(contigs);
+		sortedContigs.sort(StringUtils.getComparatorDecreasingLengthOfSecond());
+		contigs.clear();
 
         final Graph overlapGraph = new Graph();
         final List<Integer>[] contigId2ContainedContigs = new List[sortedContigs.size()];
@@ -370,8 +372,8 @@ public class ReadAssembler {
 
                 Pair<String, String> prevContig = sortedContigs.get(contigId);
 
-                headerBuffer.append("[").append(Basic.skipFirstWord(prevContig.getFirst()));
-                sequenceBuffer.append(prevContig.getSecond());
+				headerBuffer.append("[").append(StringUtils.skipFirstWord(prevContig.getFirst()));
+				sequenceBuffer.append(prevContig.getSecond());
 
                 int length = prevContig.getSecond().length();
 
@@ -383,7 +385,7 @@ public class ReadAssembler {
                     final int overlap = (Integer) overlapGraph.getCommonEdge(prev, current).getInfo();
 
                     final Pair<String, String> currentContig = sortedContigs.get(contigId);
-                    headerBuffer.append(" + (-").append(overlap).append(") + ").append(Basic.skipFirstWord(currentContig.getFirst()));
+					headerBuffer.append(" + (-").append(overlap).append(") + ").append(StringUtils.skipFirstWord(currentContig.getFirst()));
 
                     sequenceBuffer.append(currentContig.getSecond().substring(overlap));
 
@@ -426,10 +428,10 @@ public class ReadAssembler {
             System.err.println(String.format("Merged contigs:   %6d", countMergedContigs));
 
         // sort and renumber contigs:
-        contigs.sort(Basic.getComparatorDecreasingLengthOfSecond());
+		contigs.sort(StringUtils.getComparatorDecreasingLengthOfSecond());
         int contigNumber = 1;
         for (Pair<String, String> contig : contigs) {
-            contig.setFirst(String.format(">Contig-%06d %s", contigNumber++, (contig.getFirst().startsWith(">") ? Basic.skipFirstWord(contig.getFirst()) : contig.getFirst())));
+			contig.setFirst(String.format(">Contig-%06d %s", contigNumber++, (contig.getFirst().startsWith(">") ? StringUtils.skipFirstWord(contig.getFirst()) : contig.getFirst())));
         }
         return contigs.size();
     }

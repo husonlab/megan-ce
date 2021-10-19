@@ -25,6 +25,7 @@ import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentExporter;
 import megan.classification.Classification;
@@ -49,18 +50,18 @@ import java.util.Set;
  */
 public class ExportAlignmentsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "export what=alignment file=<filename> data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}" +
-                " classId={number[,number...]|selected} [asConsensus={false|true}]\n" +
-                "\t[useEachReadOnlyOnce={true|false}] [useEachReferenceOnlyOnce={true|false}] [includeInsertions={true|false}]\n" +
-                "\t[refSeqOnly={false|true}] [contractGaps={false|true}] [translateCDNA={false|true}] [minReads={number}] [minLength={number}] [minCoverage={number}];";
-    }
+		return "export what=alignment file=<filename> data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}" +
+			   " classId={number[,number...]|selected} [asConsensus={false|true}]\n" +
+			   "\t[useEachReadOnlyOnce={true|false}] [useEachReferenceOnlyOnce={true|false}] [includeInsertions={true|false}]\n" +
+			   "\t[refSeqOnly={false|true}] [contractGaps={false|true}] [translateCDNA={false|true}] [minReads={number}] [minLength={number}] [minCoverage={number}];";
+	}
 
     public void apply(NexusStreamParser np) throws Exception {
 
         np.matchIgnoreCase("export what=alignment file=");
         String fileName = np.getWordFileNamePunctuation();
         np.matchIgnoreCase("data=");
-        String classificationName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+		String classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase("classId=");
         boolean useSelected = false;
         Set<Integer> classIds = new HashSet<>();

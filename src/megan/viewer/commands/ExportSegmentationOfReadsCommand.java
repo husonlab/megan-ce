@@ -27,7 +27,9 @@ import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.analysis.TaxonomicSegmentation;
 import megan.core.Document;
@@ -49,9 +51,9 @@ import java.io.IOException;
  */
 public class ExportSegmentationOfReadsCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "export segmentedReads file=<filename> [rank={" + Basic.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "|next}" +
-                " [switchPenalty=<number>] [compatibleFactor=<number>] [incompatibleFactor=<number>];";
-    }
+		return "export segmentedReads file=<filename> [rank={" + StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), "|") + "|next}" +
+			   " [switchPenalty=<number>] [compatibleFactor=<number>] [incompatibleFactor=<number>];";
+	}
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export segmentedReads file=");
@@ -59,8 +61,8 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
 
         final String rankName;
         if (np.peekMatchIgnoreCase("rank")) {
-            np.matchIgnoreCase("rank=");
-            rankName = np.getWordMatchesIgnoringCase(Basic.toString(TaxonomicLevels.getAllMajorRanks(), " ") + " next");
+			np.matchIgnoreCase("rank=");
+			rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), " ") + " next");
         } else
             rankName = "next";
         final int rank = (rankName.equals("next") ? 0 : TaxonomicLevels.getId(rankName));
@@ -110,7 +112,7 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
             center.setBorder(new EtchedBorder());
             pane.add(center, BorderLayout.CENTER);
             center.add(new JLabel("Rank:"));
-            final JComboBox<String> rankMenu = new JComboBox<>(Basic.toArray("next " + " " + Basic.toString(TaxonomicLevels.getAllMajorRanks(), " ")));
+			final JComboBox<String> rankMenu = new JComboBox<>(StringUtils.toArray("next " + " " + StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), " ")));
             rankMenu.setSelectedItem(ProgramProperties.get("SegmentationRank", "next"));
             rankMenu.setEditable(false);
             rankMenu.setToolTipText("Use 'next' to always use the next rank down below rank at which read is assigned");
@@ -149,22 +151,22 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
                 public void actionPerformed(ActionEvent e) {
                     final String prevFile = ProgramProperties.get("SegmentationExportFile", viewer.getDocument().getMeganFile().getFileName());
                     frame.setVisible(false);
-                    final String fileName = Basic.replaceFileSuffix(Basic.getFilePath(prevFile, Basic.getFileNameWithoutPath(viewer.getDocument().getMeganFile().getFileName())), "-%i-%t-segmentation.txt");
-                    File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(), new TextFileFilter(), e, "Save segmentation of reads file", ".txt");
+					final String fileName = FileUtils.replaceFileSuffix(FileUtils.getFilePath(prevFile, FileUtils.getFileNameWithoutPath(viewer.getDocument().getMeganFile().getFileName())), "-%i-%t-segmentation.txt");
+					File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), new File(fileName), new TextFileFilter(), new TextFileFilter(), e, "Save segmentation of reads file", ".txt");
 
                     if (file != null) {
-                        if (Basic.getFileSuffix(file.getName()) == null)
-                            file = Basic.replaceFileSuffix(file, ".fasta");
+						if (FileUtils.getFileSuffix(file.getName()) == null)
+							file = FileUtils.replaceFileSuffix(file, ".fasta");
 
-                        if (rankMenu.getSelectedItem() != null)
-                            ProgramProperties.put("SegmentationRank", rankMenu.getSelectedItem().toString());
-                        ProgramProperties.put("SegmentationSwitchPenalty", Basic.parseFloat(switchPenaltyField.getText()));
-                        ProgramProperties.put("SegmentationCompatibleFactor", Basic.parseFloat(compatibleFactorField.getText()));
-                        ProgramProperties.put("SegmentationIncompatibleFactor", Basic.parseFloat(incompatibleFactorField.getText()));
-                        ProgramProperties.put("SegmentationExportFile", file.getPath());
+						if (rankMenu.getSelectedItem() != null)
+							ProgramProperties.put("SegmentationRank", rankMenu.getSelectedItem().toString());
+						ProgramProperties.put("SegmentationSwitchPenalty", Basic.parseFloat(switchPenaltyField.getText()));
+						ProgramProperties.put("SegmentationCompatibleFactor", Basic.parseFloat(compatibleFactorField.getText()));
+						ProgramProperties.put("SegmentationIncompatibleFactor", Basic.parseFloat(incompatibleFactorField.getText()));
+						ProgramProperties.put("SegmentationExportFile", file.getPath());
 
-                        execute("export segmentedReads file='" + file.getPath() + "'"
-                                + " rank=" + rankMenu.getSelectedItem()
+						execute("export segmentedReads file='" + file.getPath() + "'"
+								+ " rank=" + rankMenu.getSelectedItem()
                                 + " switchPenalty=" + Basic.parseFloat(switchPenaltyField.getText()) + " compatibleFactor=" + Basic.parseFloat(compatibleFactorField.getText())
                                 + " incompatibleFactor=" + Basic.parseFloat(incompatibleFactorField.getText())
                                 + ";");

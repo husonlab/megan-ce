@@ -21,6 +21,7 @@ package megan.util;
 
 import jloda.swing.util.FileFilterBase;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -69,7 +70,7 @@ public class LastMAFFileFilter extends FileFilterBase implements FilenameFilter 
             return true;
         if (!super.accept(directory, fileName))
             return false;
-        String firstLine = Basic.getFirstLineFromFile(new File(directory, fileName));
+		String firstLine = FileUtils.getFirstLineFromFile(new File(directory, fileName));
         return firstLine != null && firstLine.startsWith("# LAST");
     }
 }

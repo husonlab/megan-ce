@@ -22,10 +22,9 @@ package megan.dialogs.export;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.*;
@@ -90,7 +89,7 @@ public class CSVExportCViewer {
                         if (counts.length == names.size()) {
                             w.write(name);
                             for (var a : counts)
-                                w.write(Basic.removeTrailingZerosAfterDot(separator + " " + a));
+								w.write(StringUtils.removeTrailingZerosAfterDot(separator + " " + a));
                             w.write("\n");
                             totalLines++;
                         } else
@@ -166,7 +165,7 @@ public class CSVExportCViewer {
                                 w.write(name);
                                 for (int i = 0; i < counts.length; i++) {
                                     double value = (total[i] == 0 ? 0 : (100.0 * counts[i]) / (double) total[i]);
-                                    w.write(Basic.removeTrailingZerosAfterDot(String.format("%c%f", separator, (float) value)));
+									w.write(StringUtils.removeTrailingZerosAfterDot(String.format("%c%f", separator, (float) value)));
                                 }
                                 w.write("\n");
                                 totalLines++;
@@ -334,8 +333,8 @@ public class CSVExportCViewer {
                             }
                         }
                         if (hasSome) {
-                            w.write(Basic.removeTrailingZerosAfterDot(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length)))));
-                            totalLines++;
+							w.write(StringUtils.removeTrailingZerosAfterDot(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length)))));
+							totalLines++;
                         }
                         progressListener.incrementProgress();
                     }
@@ -473,9 +472,9 @@ public class CSVExportCViewer {
      */
     private static String getLabelSource(String cName, Classification classification, String format, Node v) {
         if (format.startsWith(cName.toLowerCase() + "Name"))
-            return Basic.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
+			return StringUtils.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.startsWith(cName.toLowerCase() + "Path")) {
-            return Basic.getInCleanQuotes(getPath(classification, v));
+			return StringUtils.getInCleanQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }
@@ -489,9 +488,9 @@ public class CSVExportCViewer {
      */
     private static String getLabelTarget(Classification classification, String format, Node v) {
         if (format.endsWith("Name"))
-            return Basic.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
+			return StringUtils.getInCleanQuotes(classification.getName2IdMap().get((Integer) v.getInfo()));
         else if (format.endsWith("Path")) {
-            return Basic.getInCleanQuotes(getPath(classification, v));
+			return StringUtils.getInCleanQuotes(getPath(classification, v));
         } else
             return "" + v.getInfo();
     }

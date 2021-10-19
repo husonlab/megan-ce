@@ -21,7 +21,7 @@ package megan.rma3;
 
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.TextFileFilter;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.GZipUtils;
 import jloda.util.ProgramProperties;
 import megan.io.InputOutputReaderWriter;
@@ -65,8 +65,8 @@ public class FileManagerRMA3 {
         final String fileName = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getAlignmentFile();
         if (fileName == null || fileName.length() == 0)
             return null;
-        final String suffix = Basic.getFileSuffix(fileName);
-        final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getAlignmentFileFormat();
+		final String suffix = FileUtils.getFileSuffix(fileName);
+		final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getAlignmentFileFormat();
 
         return getFile(rma3File, fileName, suffix, type, true);
     }
@@ -81,8 +81,8 @@ public class FileManagerRMA3 {
         final String fileName = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getReadsFile();
         if (fileName == null || fileName.length() == 0)
             return null;
-        final String suffix = Basic.getFileSuffix(fileName);
-        final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getReadsFileFormat();
+		final String suffix = FileUtils.getFileSuffix(fileName);
+		final String type = (new RMA3File(rma3File, RMA3FileModifier.READ_ONLY)).getFileFooter().getReadsFileFormat();
 
         return getFile(rma3File, fileName, suffix, type, false);
     }
@@ -129,7 +129,7 @@ public class FileManagerRMA3 {
             }
             if (ProgramProperties.isUseGUI()) {
                 if (!file.getParentFile().exists() || !file.getParentFile().isDirectory()) {
-                    file = new File((new File(rma3File)).getParent(), Basic.getFileNameWithoutPath(fileName));
+					file = new File((new File(rma3File)).getParent(), FileUtils.getFileNameWithoutPath(fileName));
                 }
 
                 String[] choices = new String[]{"Locate missing " + type + " file", "Don't ask again for this missing file", "Don't ask again for any missing files"};

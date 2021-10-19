@@ -19,10 +19,9 @@
  */
 package megan.parsers.sam;
 
-import jloda.util.Basic;
-import jloda.util.BlastMode;
-import jloda.util.SequenceUtils;
-import jloda.util.Single;
+import jloda.util.*;
+import jloda.seq.BlastMode;
+import jloda.seq.SequenceUtils;
 import megan.util.BlosumMatrix;
 
 import java.io.IOException;
@@ -140,8 +139,8 @@ public class SAMMatch implements megan.rma3.IMatch {
                 System.arraycopy(tokens, 0, tmp, 0, tokens.length);
                 tokens = tmp;
             }
-            tokens[numberOfTokens++] = Basic.toString(aLine, start, end - start);
-            start = end + 1;
+			tokens[numberOfTokens++] = StringUtils.toString(aLine, start, end - start);
+			start = end + 1;
         }
         parse(tokens, numberOfTokens);
     }
@@ -398,7 +397,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         int gaps = 2 * aligned[0].length() - queryLength - getUngappedLength(aligned[2]);
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
+		buffer.append(String.format(">%s\n", StringUtils.fold(refName, ALIGNMENT_FOLD)));
         {
             final int len = getRefLength();
             if (len >= refLength)
@@ -497,7 +496,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         int gaps = 2 * aligned[0].length() - queryLength - getUngappedLength(aligned[2]);
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
+		buffer.append(String.format(">%s\n", StringUtils.fold(refName, ALIGNMENT_FOLD)));
         {
             final int len = getRefLength();
             if (len >= refLength)
@@ -519,8 +518,8 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
-        int numberOfPositives = alignmentLength - Basic.countOccurrences(aligned[1], ' ');
-        float pIdentity = 100f * identities / alignmentLength;
+		int numberOfPositives = alignmentLength - StringUtils.countOccurrences(aligned[1], ' ');
+		float pIdentity = 100f * identities / alignmentLength;
         if (percentIdentity != null)
             percentIdentity.set(pIdentity);
 
@@ -593,7 +592,7 @@ public class SAMMatch implements megan.rma3.IMatch {
         final int gaps = 2 * aligned[0].length() - queryLengthForGapCalculation - getUngappedLength(aligned[2]);
 
         final StringBuilder buffer = new StringBuilder();
-        buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
+		buffer.append(String.format(">%s\n", StringUtils.fold(refName, ALIGNMENT_FOLD)));
 
         {
             final int len = getRefLength();
@@ -628,8 +627,8 @@ public class SAMMatch implements megan.rma3.IMatch {
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
-        int numberOfPositives = alignmentLength - Basic.countOccurrences(aligned[1], ' ');
-        float pIdentity = 100f * identities / alignmentLength;
+		int numberOfPositives = alignmentLength - StringUtils.countOccurrences(aligned[1], ' ');
+		float pIdentity = 100f * identities / alignmentLength;
         if (percentIdentity != null)
             percentIdentity.set(pIdentity);
 
@@ -709,7 +708,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     private String shortDescription() {
         StringBuilder buffer = new StringBuilder();
         if (refName.length() > 0)
-            buffer.append(String.format(">%s\n", Basic.fold(refName, ALIGNMENT_FOLD)));
+			buffer.append(String.format(">%s\n", StringUtils.fold(refName, ALIGNMENT_FOLD)));
         {
             if (getRefLength() > 9)
                 buffer.append(String.format("\tLength = %d\n\n", getRefLength()));

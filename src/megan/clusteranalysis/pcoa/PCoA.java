@@ -21,10 +21,8 @@ package megan.clusteranalysis.pcoa;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.clusteranalysis.tree.Distances;
 import megan.clusteranalysis.tree.Taxa;
 
@@ -149,8 +147,8 @@ public class PCoA {
             total += eigenValues[j] = positiveEigenValues.get(indices[j], indices[j]);
         }
 
-        System.err.println("Positive eigenvalues:");
-        System.err.println(Basic.toString("%.8f", eigenValues, ", "));
+		System.err.println("Positive eigenvalues:");
+		System.err.println(StringUtils.toString("%.8f", eigenValues, ", "));
 
         if (total > 0) {
             for (int j = 0; j < eigenValues.length; j++) {
@@ -158,8 +156,8 @@ public class PCoA {
             }
         }
 
-        System.err.println("Percent explained:");
-        System.err.println(Basic.toString("%.1f%%", percentExplained, ", "));
+		System.err.println("Percent explained:");
+		System.err.println(StringUtils.toString("%.1f%%", percentExplained, ", "));
 
         for (int i = 0; i < rank; i++) {
             String name = samples.getLabel(i + 1);

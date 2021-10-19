@@ -22,6 +22,7 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import megan.algorithms.AssignmentUsingLCA;
@@ -75,7 +76,7 @@ public class ApplyLCA {
 
         final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy, false, 0);
 
-        final Writer w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(outputFile)));
+		final Writer w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)));
         try (BufferedReader r = new BufferedReader(inputFile.equals("stdin") ? new InputStreamReader(System.in) : new FileReader(inputFile))) {
             String line;
             boolean first = true;

@@ -19,10 +19,8 @@
  */
 package megan.dialogs.export;
 
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.ProgressListener;
+import jloda.util.*;
+import jloda.util.progress.ProgressListener;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.data.*;
@@ -77,8 +75,8 @@ class CSVExportReference2Read {
                             IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                             if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() &&
                                     (matchBlock.getPercentIdentity() == 0 || matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity())) {
-                                String reference = Basic.getFirstLine(matchBlock.getText());
-                                List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
+								String reference = StringUtils.getFirstLine(matchBlock.getText());
+								List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
                                 list.add(readBlock.getReadName());
                                 if (eachReadOnceOnly)
                                     break;
@@ -102,8 +100,8 @@ class CSVExportReference2Read {
                                 for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                                     IMatchBlock matchBlock = readBlock.getMatchBlock(i);
                                     if (matchBlock.getBitScore() >= doc.getMinScore() && matchBlock.getExpected() <= doc.getMaxExpected() && matchBlock.getPercentIdentity() >= doc.getMinPercentIdentity()) {
-                                        String reference = Basic.getFirstLine(matchBlock.getText());
-                                        List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
+										String reference = StringUtils.getFirstLine(matchBlock.getText());
+										List<String> list = reference2reads.computeIfAbsent(reference, k -> new LinkedList<>());
                                         list.add(readBlock.getReadName());
                                         if (eachReadOnceOnly)
                                             break;
@@ -119,8 +117,8 @@ class CSVExportReference2Read {
             progressListener.setMaximum(reference2reads.size());
             progressListener.setProgress(0);
             for (String reference : reference2reads.keySet()) {
-                w.write(reference + separator + Basic.toString(reference2reads.get(reference), "" + separator) + "\n");
-                progressListener.incrementProgress();
+				w.write(reference + separator + StringUtils.toString(reference2reads.get(reference), "" + separator) + "\n");
+				progressListener.incrementProgress();
                 totalLines++;
             }
 

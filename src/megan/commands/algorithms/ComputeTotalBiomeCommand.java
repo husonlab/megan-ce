@@ -21,7 +21,7 @@
 package megan.commands.algorithms;
 
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.samplesviewer.SamplesViewer;
@@ -53,7 +53,7 @@ public class ComputeTotalBiomeCommand extends CommandBase implements ICommand {
             return;
 
         if (samples.size() > 1) {
-            execute("compute biome=total samples='" + Basic.toString(samples, "' '") + "';");
+			execute("compute biome=total samples='" + StringUtils.toString(samples, "' '") + "';");
         }
     }
 

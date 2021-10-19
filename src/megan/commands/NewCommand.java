@@ -21,7 +21,7 @@ package megan.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 
@@ -48,8 +48,8 @@ public class NewCommand extends CommandBase implements ICommand {
         final Director newDir = Director.newProject();
         newDir.getMainViewer().getFrame().setVisible(true);
         newDir.getMainViewer().setDoReInduce(true);
-        newDir.getMainViewer().setDoReset(true);
-        newDir.execute(Basic.toString(commands,"; ")+";", newDir.getMainViewer().getCommandManager());
+		newDir.getMainViewer().setDoReset(true);
+		newDir.execute(StringUtils.toString(commands, "; ") + ";", newDir.getMainViewer().getCommandManager());
         return newDir;
     }
 

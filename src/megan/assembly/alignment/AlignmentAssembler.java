@@ -21,6 +21,8 @@ package megan.assembly.alignment;
 
 import jloda.graph.*;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.alignment.gui.Alignment;
 import megan.assembly.OverlapGraphViewer;
 import megan.assembly.PathExtractor;
@@ -95,8 +97,8 @@ public class AlignmentAssembler {
 
         for (Node v = overlapGraph.getFirstNode(); v != null; v = v.getNext()) {
             int i = (Integer) v.getInfo();
-            sequences.put(v, alignment.getLane(i).getBlock());
-            names.put(v, Basic.getFirstWord(alignment.getLane(i).getName()));
+			sequences.put(v, alignment.getLane(i).getBlock());
+			names.put(v, StringUtils.getFirstWord(alignment.getLane(i).getName()));
         }
         final Map<String, NodeArray<?>> label2nodes = new TreeMap<>();
         label2nodes.put("label", names);

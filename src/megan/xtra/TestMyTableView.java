@@ -32,6 +32,7 @@ import jloda.fx.control.table.MyTableViewSearcher;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,7 +71,7 @@ public class TestMyTableView extends Application {
             moveSamplesUp.setOnAction((e) ->
             {
                 final ArrayList<String> list = new ArrayList<>(tableView.getSelectedRows());
-                System.err.println("Moving up: " + Basic.toString(list, " "));
+				System.err.println("Moving up: " + StringUtils.toString(list, " "));
 
                 for (String sample : list) {
                     final int oldPos = tableView.getRowIndex(sample);
@@ -86,7 +87,7 @@ public class TestMyTableView extends Application {
             moveSamplesDown.setOnAction((e) ->
             {
                 final ArrayList<String> list = Basic.reverse(tableView.getSelectedRows());
-                System.err.println("Moving down:" + Basic.toString(list, " "));
+				System.err.println("Moving down:" + StringUtils.toString(list, " "));
                 for (String sample : list) {
                     final int oldPos = tableView.getRowIndex(sample);
                     final int newPos = oldPos + 1;

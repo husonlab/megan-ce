@@ -25,7 +25,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.NodeShape;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
@@ -132,7 +132,7 @@ public class SetSampleShapeCommand extends CommandBase implements ICommand {
                 dialog.setContentText("Shape:");
 
                 final Optional<NodeShape> result = dialog.showAndWait();
-                result.ifPresent(shape -> execute("set nodeShape=" + shape + " sample='" + Basic.toString(selected, "' '") + "';"));
+				result.ifPresent(shape -> execute("set nodeShape=" + shape + " sample='" + StringUtils.toString(selected, "' '") + "';"));
             };
             if (Platform.isFxApplicationThread())
                 runnable.run();

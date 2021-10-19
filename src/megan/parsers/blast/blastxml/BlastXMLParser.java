@@ -21,6 +21,7 @@ package megan.parsers.blast.blastxml;
 
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.FileUtils;
 import megan.parsers.blast.Match;
 import megan.parsers.blast.Utilities;
 import org.xml.sax.Attributes;
@@ -82,8 +83,8 @@ public class BlastXMLParser extends DefaultHandler {
     public BlastXMLParser(File blastFile, BlockingQueue<MatchesText> blockQueue, int maxMatchesPerRead) {
         this.blastFile = blastFile;
         this.blockQueue = blockQueue;
-        this.maxMatchesPerRead = maxMatchesPerRead;
-        maximumProgress = (Basic.isZIPorGZIPFile(blastFile.getPath()) ? blastFile.length() / (10 * AVERAGE_CHARACTERS_PER_READ) : blastFile.length() / AVERAGE_CHARACTERS_PER_READ);
+		this.maxMatchesPerRead = maxMatchesPerRead;
+		maximumProgress = (FileUtils.isZIPorGZIPFile(blastFile.getPath()) ? blastFile.length() / (10 * AVERAGE_CHARACTERS_PER_READ) : blastFile.length() / AVERAGE_CHARACTERS_PER_READ);
     }
 
     /**
@@ -96,7 +97,7 @@ public class BlastXMLParser extends DefaultHandler {
         if (saxParserFactory == null)
             saxParserFactory = SAXParserFactory.newInstance();
         SAXParser saxParser = saxParserFactory.newSAXParser();
-        saxParser.parse(Basic.getInputStreamPossiblyZIPorGZIP(blastFile.getPath()), this);
+		saxParser.parse(FileUtils.getInputStreamPossiblyZIPorGZIP(blastFile.getPath()), this);
     }
 
     /**

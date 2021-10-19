@@ -19,8 +19,8 @@
  */
 package megan.rma6;
 
-import jloda.util.Basic;
 import jloda.util.ListOfLongs;
+import jloda.util.StringUtils;
 import megan.io.InputOutputReaderWriter;
 
 import java.io.Closeable;
@@ -73,8 +73,8 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
                 classification.setSum(id, list != null ? list.size() : 0);
             }
             footerSectionRMA6.getAvailableClassification2Position().put(cName, io.getPosition());
-            classification.write(io, id2locations);
-            System.err.printf("Numb. %4s classes: %,10d%n", Basic.abbreviate(cName, 4), id2locations.size());
+			classification.write(io, id2locations);
+			System.err.printf("Numb. %4s classes: %,10d%n", StringUtils.abbreviate(cName, 4), id2locations.size());
         }
 
         footerSectionRMA6.setEndClassificationsSection(io.getPosition());

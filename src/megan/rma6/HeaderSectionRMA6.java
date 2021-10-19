@@ -19,7 +19,7 @@
  */
 package megan.rma6;
 
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import megan.io.IInputReader;
 import megan.io.IOutputWriter;
 

@@ -25,6 +25,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressPercentage;
 import megan.core.MeganFile;
 import megan.data.*;
 
@@ -79,7 +80,7 @@ public class CompareProteinAlignments {
         options.done();
 
         if (inputFiles.length < 2)
-            throw new UsageException("--input '" + Basic.toString(inputFiles, " ") + "': must specify at least 2 input files");
+			throw new UsageException("--input '" + StringUtils.toString(inputFiles, " ") + "': must specify at least 2 input files");
 
         if (onlyCompareDominatingMatches)
             throw new UsageException("--dominatingOnly: not implemented");
@@ -105,7 +106,7 @@ public class CompareProteinAlignments {
                     int count = 0;
                     try (IReadBlockIterator it = connector1.getAllReadsIterator(0, 10, true, true);
                          ProgressPercentage progress = new ProgressPercentage("Comparing files " + inputFiles[i] + " and " + inputFiles[j], it.getMaximumProgress())) {
-                        w.write("# Comparison " + Basic.getFileNameWithoutPath(inputFiles[i]) + " and " + Basic.getFileNameWithoutPath(inputFiles[j]) + ":\n");
+						w.write("# Comparison " + FileUtils.getFileNameWithoutPath(inputFiles[i]) + " and " + FileUtils.getFileNameWithoutPath(inputFiles[j]) + ":\n");
                         while (it.hasNext()) {
                             final IReadBlock readBlock1 = it.next();
 
@@ -329,21 +330,21 @@ public class CompareProteinAlignments {
      * @return end or 0
      */
     private static int getSubjEnd(IMatchBlock matchBlock) {
-        final String text = matchBlock.getText();
-        int pos = text.lastIndexOf("Sbjct");
-        if (pos == -1)
-            return 0;
-        pos = Basic.skipNonWhiteSpace(text, pos); // Sjbct:
-        pos = Basic.skipWhiteSpace(text, pos);
-        pos = Basic.skipNonWhiteSpace(text, pos);  // number
-        pos = Basic.skipNonWhiteSpace(text, pos);
-        pos = Basic.skipWhiteSpace(text, pos); // sequence
-        pos = Basic.skipNonWhiteSpace(text, pos);
+		final String text = matchBlock.getText();
+		int pos = text.lastIndexOf("Sbjct");
+		if (pos == -1)
+			return 0;
+		pos = StringUtils.skipNonWhiteSpace(text, pos); // Sjbct:
+		pos = StringUtils.skipWhiteSpace(text, pos);
+		pos = StringUtils.skipNonWhiteSpace(text, pos);  // number
+		pos = StringUtils.skipNonWhiteSpace(text, pos);
+		pos = StringUtils.skipWhiteSpace(text, pos); // sequence
+		pos = StringUtils.skipNonWhiteSpace(text, pos);
 
-        if (pos >= text.length())
-            return 0;
-        return Basic.parseInt(text.substring(pos));
-    }
+		if (pos >= text.length())
+			return 0;
+		return Basic.parseInt(text.substring(pos));
+	}
 
     /**
      * compute accession to matches mapping

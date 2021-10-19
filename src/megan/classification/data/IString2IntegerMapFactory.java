@@ -21,7 +21,7 @@
 package megan.classification.data;
 
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
 import java.io.IOException;

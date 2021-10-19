@@ -22,6 +22,7 @@ package megan.dialogs.attributes;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import megan.core.Document;
 import megan.main.MeganProperties;
 import megan.viewer.MainViewer;
@@ -114,7 +115,7 @@ public class MicrobialAttributes {
                         Integer taxonId = Integer.parseInt(tokens[attribute2column.get("Taxonomy ID")]);
                         for (int i = 0; i < tokens.length; i++) {
                             if (attributesOfInterest.contains(column2attribute.get(i))) {
-                                String state = Basic.capitalizeWords(tokens[i].trim());
+								String state = StringUtils.capitalizeWords(tokens[i].trim());
                                 if (state.length() == 0 || (state.equals("-") && i != attribute2column.get("Gram Stain")))
                                     state = "Unknown";
                                 if ((state.equals("_") && i == attribute2column.get("Gram Stain")))
@@ -182,7 +183,7 @@ public class MicrobialAttributes {
             for (int i = 0; i < mapTo.length; i++) {
                 int j = mapTo[i];
                 if (j <= i) {
-                    String newBestState = Basic.capitalizeWords(originalStates[i]).replaceAll(" In ", " in ").replaceAll(" And ", " and ").replaceAll(" Or ", " or ");
+					String newBestState = StringUtils.capitalizeWords(originalStates[i]).replaceAll(" In ", " in ").replaceAll(" And ", " and ").replaceAll(" Or ", " or ");
                     if (newBestState.endsWith(",") || newBestState.endsWith("."))
                         newBestState = newBestState.substring(0, newBestState.length() - 1);
                     if (bestStates[j] == null || newBestState.length() < bestStates[j].length() || newBestState.compareTo(bestStates[j]) < 0)

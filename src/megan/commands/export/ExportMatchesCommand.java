@@ -24,7 +24,8 @@ import jloda.swing.util.BlastFileFilter;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -44,7 +45,7 @@ import java.util.Set;
 
 public class ExportMatchesCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "export what=matches [data={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
+		return "export what=matches [data={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "}] file=<filename>;";
     }
 
     public void apply(NexusStreamParser np) throws Exception {
@@ -56,8 +57,8 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
 
         String classificationName = ClassificationType.Taxonomy.toString();
         if (np.peekMatchIgnoreCase("data")) {
-            np.matchIgnoreCase("data=");
-            classificationName = np.getWordMatchesRespectingCase(Basic.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+			np.matchIgnoreCase("data=");
+			classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
         Set<Integer> classIds = new HashSet<>();
         if (classificationName.equals(Classification.Taxonomy))
@@ -100,8 +101,8 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
         if (!dir.getDocument().getMeganFile().hasDataConnector())
             return;
 
-        String name = Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.blast");
-        File lastOpenFile = new File(name);
+		String name = FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-ex.blast");
+		File lastOpenFile = new File(name);
         File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new BlastFileFilter(), new BlastFileFilter(), event, "Save all BLAST matches to file", ".blast");
 
         String data;

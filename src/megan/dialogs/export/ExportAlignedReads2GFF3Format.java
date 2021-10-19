@@ -21,8 +21,10 @@
 package megan.dialogs.export;
 
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
+import jloda.util.progress.ProgressListener;
 import megan.algorithms.IntervalTree4Matches;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -84,8 +86,8 @@ public class ExportAlignedReads2GFF3Format {
                                     if (uid != 0)
                                         seen.add(uid);
                                     final String string = createGFFLines(blastMode, readBlock, cNames, classificationToReport, taxonId, excludeIncompatible, excludeDominated);
-                                    w.write(string);
-                                    countAlignments += Basic.countOccurrences(string, '\n');
+									w.write(string);
+									countAlignments += StringUtils.countOccurrences(string, '\n');
                                     if (string.length() > 0)
                                         countReads++;
                                 }
@@ -135,8 +137,8 @@ public class ExportAlignedReads2GFF3Format {
                         System.err.println("Skipping '" + item.getReadName() + "': selected classification not showing");
                     else {
                         final String string = createGFFLines(blastMode, item.getReadName(), item.getReadLength(), cNames, classificationToReport, item.getPane().getIntervals(), taxonId, excludeIncompatible, excludeDominated);
-                        w.write(string);
-                        countAlignments += Basic.countOccurrences(string, '\n');
+						w.write(string);
+						countAlignments += StringUtils.countOccurrences(string, '\n');
                         if (string.length() > 0)
                             countReads++;
                     }
@@ -191,8 +193,8 @@ public class ExportAlignedReads2GFF3Format {
             buf.append(String.format("# Taxon for %s: id=%d name=%s\n", readName, readTaxonId, TaxonomyData.getName2IdMap().get(readTaxonId)));
         }
 
-        final boolean reportAllClassifications = (classificationToReport.equalsIgnoreCase("all"));
-        final int classificationToReportIndex = Basic.getIndex(classificationToReport, cNames);
+		final boolean reportAllClassifications = (classificationToReport.equalsIgnoreCase("all"));
+		final int classificationToReportIndex = StringUtils.getIndex(classificationToReport, cNames);
 
         for (Interval<IMatchBlock> interval : intervals) {
             final IMatchBlock matchBlock = interval.getData();
@@ -250,7 +252,7 @@ public class ExportAlignedReads2GFF3Format {
                     readName, ProgramProperties.getProgramName(), "CDS", start, end, score, strand, frame));
 
             try {
-                final String acc = Basic.swallowLeadingGreaterSign(matchBlockFirstWord.replaceAll("\\s+", "_"));
+				final String acc = StringUtils.swallowLeadingGreaterSign(matchBlockFirstWord.replaceAll("\\s+", "_"));
                 buf.append(String.format("\tId=%s; acc=%s;", acc, acc));
 
                 final StringBuilder nameBuffer = new StringBuilder();
@@ -272,7 +274,7 @@ public class ExportAlignedReads2GFF3Format {
                     if (id > 0 && classifications[i] != null) {
                         final String value = classifications[i].getName2IdMap().get(id);
                         if (value != null && value.length() > 0) {
-                            final String displayValue = Basic.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll("=", "%3D").replaceAll(" ", "_"), 80);
+							final String displayValue = StringUtils.abbreviateDotDotDot(value.replaceAll("\t", "%09").replaceAll(";", "%3B").replaceAll("=", "%3D").replaceAll(" ", "_"), 80);
                             buf.append(String.format(" %s=%s;", shortName, displayValue));
                             if (taxRel != null) {
                                 buf.append(" taxRel=").append(taxRel).append(";");

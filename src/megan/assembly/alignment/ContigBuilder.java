@@ -21,6 +21,8 @@ package megan.assembly.alignment;
 
 import jloda.graph.Node;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
 import megan.alignment.gui.Alignment;
 import megan.alignment.gui.Lane;
 
@@ -116,11 +118,11 @@ public class ContigBuilder {
                     continue;
                 }
 
-                final String referenceName = Basic.replaceSpaces(alignment.getReferenceName(), '_');
+				final String referenceName = StringUtils.replaceSpaces(alignment.getReferenceName(), '_');
 
                 final Pair<String, String> aContig = new Pair<>();
-                aContig.setFirst(String.format(">%s\tlength=%d\treads=%d\tcoverage=%.1f\tref=%s\tcoords=%d..%d\n", contigName, contigSequence.length(), totalReads, coverage, Basic.swallowLeadingGreaterSign(referenceName), (minCoordinate + 1), (maxCoordinate + 1)));
-                aContig.setSecond(contigSequence);
+				aContig.setFirst(String.format(">%s\tlength=%d\treads=%d\tcoverage=%.1f\tref=%s\tcoords=%d..%d\n", contigName, contigSequence.length(), totalReads, coverage, StringUtils.swallowLeadingGreaterSign(referenceName), (minCoordinate + 1), (maxCoordinate + 1)));
+				aContig.setSecond(contigSequence);
 
                 System.err.print(aContig.getFirst());
                 result.add(aContig);

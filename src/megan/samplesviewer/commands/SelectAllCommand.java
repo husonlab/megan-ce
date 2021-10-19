@@ -22,7 +22,7 @@ package megan.samplesviewer.commands;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
@@ -42,7 +42,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
     private static final String[] legalOptions = {"all", "none", "similar", "commentLike", "numerical", "uninformative", "romPrevious", "samples"};
 
     public String getSyntax() {
-        return "select {" + Basic.toString(legalOptions, "|") + "} [name=<string>] [value=<string>];";
+		return "select {" + StringUtils.toString(legalOptions, "|") + "} [name=<string>] [value=<string>];";
     }
 
     /**

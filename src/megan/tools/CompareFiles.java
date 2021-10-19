@@ -22,6 +22,7 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.dialogs.compare.Comparer;
@@ -90,15 +91,15 @@ public class CompareFiles {
 
         options.done();
 
-        if (inputFiles.size() == 1 && Basic.isDirectory(inputFiles.get(0))) {
-            final String directory = inputFiles.get(0);
-            inputFiles.clear();
-            inputFiles.addAll(Basic.getAllFilesInDirectory(directory, true, ".megan",".megan.gz",".daa", ".rma", ".rma6"));
-        }
+		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
+			final String directory = inputFiles.get(0);
+			inputFiles.clear();
+			inputFiles.addAll(FileUtils.getAllFilesInDirectory(directory, true, ".megan", ".megan.gz", ".daa", ".rma", ".rma6"));
+		}
 
         for (String fileName : inputFiles) {
-            if (!Basic.fileExistsAndIsNonEmpty(fileName))
-                throw new IOException("No such file or file empty: " + fileName);
+			if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
+				throw new IOException("No such file or file empty: " + fileName);
         }
 
         if (inputFiles.size() == 0)
@@ -129,7 +130,7 @@ public class CompareFiles {
                     if (allowSameNames) {
                         if(count==0)
                             System.err.println("Renaming samples to make all names unique:");
-                        final var name=Basic.getUniqueName(sample.getName(), names);
+						final var name = StringUtils.getUniqueName(sample.getName(), names);
                         System.err.println(sample.getName()+" -> "+name);
                         sample.setName(name);
                     }
@@ -154,7 +155,7 @@ public class CompareFiles {
         {
             final var modes = new TreeSet<>(Arrays.asList(getReadAssignmentModes(samples)));
             if (modes.size() > 1)
-                throw new IOException("Can't compare normalized samples with mixed assignment modes, found: " + Basic.toString(modes, ", "));
+				throw new IOException("Can't compare normalized samples with mixed assignment modes, found: " + StringUtils.toString(modes, ", "));
             readAssignmentMode = (modes.size() == 0 ? Document.ReadAssignmentMode.readCount : modes.first());
         }
 
@@ -231,28 +232,28 @@ public class CompareFiles {
 
          doc.setReadAssignmentMode(readAssignmentMode);
 
-        String parameters="mode=" +(normalize? Comparer.COMPARISON_MODE.RELATIVE:Comparer.COMPARISON_MODE.ABSOLUTE);
-        if (normalize)
-            parameters += " normalizedTo=" + Basic.removeTrailingZerosAfterDot(""+min.getAsDouble());
-        parameters+=" readAssignmentMode="+readAssignmentMode.toString();
-        if (ignoreUnassignedReads)
-            parameters += " ignoreUnassigned=true";
-        doc.getDataTable().setParameters(parameters);
+		String parameters = "mode=" + (normalize ? Comparer.COMPARISON_MODE.RELATIVE : Comparer.COMPARISON_MODE.ABSOLUTE);
+		if (normalize)
+			parameters += " normalizedTo=" + StringUtils.removeTrailingZerosAfterDot("" + min.getAsDouble());
+		parameters += " readAssignmentMode=" + readAssignmentMode.toString();
+		if (ignoreUnassignedReads)
+			parameters += " ignoreUnassigned=true";
+		doc.getDataTable().setParameters(parameters);
 
-        System.err.printf("Output count:%,12d%n",doc.getNumberOfReads());
+		System.err.printf("Output count:%,12d%n", doc.getNumberOfReads());
 
-        if (Basic.notBlank(metadataFile)) {
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
-                System.err.print("Processing Metadata: " + metadataFile);
-                doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
-                System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
-            }
-        }
+		if (StringUtils.notBlank(metadataFile)) {
+			try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+				System.err.print("Processing Metadata: " + metadataFile);
+				doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
+				System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());
+			}
+		}
 
-        System.err.println("Saving to file: " + outputFile);
+		System.err.println("Saving to file: " + outputFile);
 
-        try (var writer = new FileWriter(outputFile)) {
-            doc.getDataTable().write(writer);
+		try (var writer = new FileWriter(outputFile)) {
+			doc.getDataTable().write(writer);
             doc.getSampleAttributeTable().write(writer, false, true);
         }
     }
@@ -393,8 +394,8 @@ public class CompareFiles {
 
         @Override
         public String toString() {
-            return String.format("Sample %s [%d in %s]: count=%,d assigned=%,d mode=%s classifications=%s",
-                    name,which,Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()),(int)count,(int)assigned, readAssignmentMode.toString(),Basic.toString(classifications," "));
+			return String.format("Sample %s [%d in %s]: count=%,d assigned=%,d mode=%s classifications=%s",
+					name, which, FileUtils.getFileNameWithoutPath(doc.getMeganFile().getFileName()), (int) count, (int) assigned, readAssignmentMode.toString(), StringUtils.toString(classifications, " "));
          }
 
         @Override

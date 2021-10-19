@@ -20,10 +20,7 @@
 
 package megan.accessiondb;
 
-import jloda.util.Basic;
-import jloda.util.FileLineIterator;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -359,7 +356,7 @@ public class CreateAccessionMappingDatabase {
      */
     public static void execute(Connection connection, String... commands) throws SQLException {
         if (false)
-            System.err.println("execute:\n" + Basic.toString(commands, "\n"));
+			System.err.println("execute:\n" + StringUtils.toString(commands, "\n"));
         var statement = connection.createStatement();
         {
             for (var q : commands) {

@@ -26,19 +26,15 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.ClassificationType;
 import megan.core.Director;
-import megan.core.Document;
 import megan.core.MeganFile;
 import megan.main.MeganProperties;
-import megan.ms.Utilities;
-import megan.ms.client.connector.MSConnector;
 import megan.util.MeganAndRMAFileFilter;
 import megan.util.MeganizedDAAFileFilter;
-import megan.viewer.MainViewer;
 import megan.viewer.SyncDataTableAndTaxonomy;
 import megan.viewer.gui.NodeDrawer;
 
@@ -165,7 +161,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                         }
                         viewer.getNodeDrawer().setStyle(doc.getDataTable().getNodeStyle(ClassificationType.Taxonomy.toString()), NodeDrawer.Style.Circle);
                         // make sure we use the correct name for the sample:
-                        doc.getDataTable().setSamples(new String[]{Basic.getFileBaseName(meganFile.getName())}, doc.getDataTable().getSampleUIds(), doc.getDataTable().getSampleSizes(), doc.getDataTable().getBlastModes());
+						doc.getDataTable().setSamples(new String[]{FileUtils.getFileBaseName(meganFile.getName())}, doc.getDataTable().getSampleUIds(), doc.getDataTable().getSampleSizes(), doc.getDataTable().getBlastModes());
                     }
                 } else
                     throw new IOException("Old MEGAN2 format, not supported by this version of MEGAN");
@@ -180,7 +176,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector())
                     MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
-                    NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", Basic.getFileNameWithoutPath(fileName), doc.getNumberOfReads()), 5000);
+					NotificationsInSwing.showInformation(String.format("Opened file '%s' with %,d reads", FileUtils.getFileNameWithoutPath(fileName), doc.getNumberOfReads()), 5000);
                 } else
                     System.err.printf("Opened file '%s' with %,d reads%n", fileName, doc.getNumberOfReads());
                 timeOfLastOpen = System.currentTimeMillis();

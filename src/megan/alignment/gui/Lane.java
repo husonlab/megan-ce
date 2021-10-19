@@ -19,7 +19,7 @@
  */
 package megan.alignment.gui;
 
-import jloda.util.SequenceUtils;
+import jloda.seq.SequenceUtils;
 
 /**
  * represents a lane of an alignment

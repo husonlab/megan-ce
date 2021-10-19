@@ -24,6 +24,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
@@ -127,13 +128,13 @@ public class ContaminantManager {
     public void parseTaxonIdsString(String taxonIdString) {
         contaminants.clear();
         contaminantsAndDescendants.clear();
-        for (String word : Basic.splitOnWhiteSpace(taxonIdString)) {
-            if (Basic.isInteger(word)) {
-                final int taxonId = Basic.parseInt(word);
-                if (taxonId > 0)
-                    contaminants.add(taxonId);
-            }
-        }
+		for (String word : StringUtils.splitOnWhiteSpace(taxonIdString)) {
+			if (Basic.isInteger(word)) {
+				final int taxonId = Basic.parseInt(word);
+				if (taxonId > 0)
+					contaminants.add(taxonId);
+			}
+		}
         if (contaminants.size() > 0)
             setAllDescendentsRec(TaxonomyData.getTree().getRoot(), contaminants.contains((Integer) TaxonomyData.getTree().getRoot().getInfo()), contaminants, contaminantsAndDescendants);
     }
@@ -169,7 +170,7 @@ public class ContaminantManager {
      * @return taxon ids
      */
     public String getTaxonIdsString() {
-        return Basic.toString(contaminants, " ");
+		return StringUtils.toString(contaminants, " ");
     }
 
     /**

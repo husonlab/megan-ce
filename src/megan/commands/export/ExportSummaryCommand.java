@@ -22,7 +22,7 @@ package megan.commands.export;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -47,9 +47,9 @@ public class ExportSummaryCommand extends CommandBase implements ICommand {
         Director dir = getDir();
         if (dir.getDocument().getMeganFile().hasDataConnector()) {
             final File savedFile = ProgramProperties.getFile(MeganProperties.SAVEFILE);
-            final File directory = (savedFile != null ? savedFile.getParentFile() : null);
-            final File lastOpenFile = Basic.replaceFileSuffix(new File(directory, dir.getTitle()), ".megan");
-            final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN summary file", ".megan");
+			final File directory = (savedFile != null ? savedFile.getParentFile() : null);
+			final File lastOpenFile = FileUtils.replaceFileSuffix(new File(directory, dir.getTitle()), ".megan");
+			final File file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new MeganFileFilter(), new MeganFileFilter(), event, "Save MEGAN summary file", ".megan");
 
             if (file != null) {
                 ProgramProperties.put(MeganProperties.SAVEFILE, file);

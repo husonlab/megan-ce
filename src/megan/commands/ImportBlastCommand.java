@@ -22,8 +22,9 @@ package megan.commands;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -55,12 +56,12 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
      * @return usage
      */
     public String getSyntax() {
-        return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
-                "\tformat={" + Basic.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
-                "\tmode={" + Basic.toString(BlastModeUtils.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
-                "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minPercentReferenceToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
-                "\t[readAssignmentMode={" + Basic.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + Basic.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
-                "\t[contaminantsFile=<filename>] [description=<text>];";
+		return "import blastFile=<name> [,<name>...] [fastaFile=<name> [,<name>...]] meganFile=<name> [useCompression={true|false}]\n" +
+			   "\tformat={" + StringUtils.toString(BlastFileFormat.valuesExceptUnknown(), "|") + "}\n" +
+			   "\tmode={" + StringUtils.toString(BlastModeUtils.valuesExceptUnknown(), "|") + "} [maxMatches=<num>] [minScore=<num>] [maxExpected=<num>] [minPercentIdentity=<num>]\n" +
+			   "\t[topPercent=<num>] [minSupportPercent=<num>] [minSupport=<num>] [weightedLCA={false|true}] [lcaCoveragePercent=<num>] [minPercentReadToCover=<num>] [minPercentReferenceToCover=<num>] [minComplexity=<num>] [useIdentityFilter={false|true}]\n" +
+			   "\t[readAssignmentMode={" + StringUtils.toString(Document.ReadAssignmentMode.values(), "|") + "}] [fNames={" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "...} [longReads={false|true}] [paired={false|true} [pairSuffixLength={number}]]\n" +
+			   "\t[contaminantsFile=<filename>] [description=<text>];";
     }
 
     /**
@@ -126,11 +127,11 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
 
             np.matchAnyTokenIgnoreCase("format blastFormat");
             np.matchIgnoreCase("=");
-            final BlastFileFormat format = BlastFileFormat.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastFileFormat.valuesExceptUnknown(), " ")));
+			final BlastFileFormat format = BlastFileFormat.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(StringUtils.toString(BlastFileFormat.valuesExceptUnknown(), " ")));
 
             np.matchAnyTokenIgnoreCase("mode blastMode");
-            np.matchIgnoreCase("=");
-            doc.setBlastMode(BlastModeUtils.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(Basic.toString(BlastModeUtils.valuesExceptUnknown(), " "))));
+			np.matchIgnoreCase("=");
+			doc.setBlastMode(BlastModeUtils.valueOfIgnoringCase(np.getWordMatchesIgnoringCase(StringUtils.toString(BlastModeUtils.valuesExceptUnknown(), " "))));
 
             int maxMatchesPerRead = 25;
             if (np.peekMatchIgnoreCase("maxMatches")) {
@@ -206,8 +207,8 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
             }
 
             if (np.peekMatchIgnoreCase("readAssignmentMode")) {
-                np.matchIgnoreCase("readAssignmentMode=");
-                getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(Basic.toString(Document.ReadAssignmentMode.values(), " "))));
+				np.matchIgnoreCase("readAssignmentMode=");
+				getDoc().setReadAssignmentMode(Document.ReadAssignmentMode.valueOfIgnoreCase(np.getWordMatchesIgnoringCase(StringUtils.toString(Document.ReadAssignmentMode.values(), " "))));
             }
 
             Collection<String> known = ClassificationManager.getAllSupportedClassifications();
@@ -286,7 +287,7 @@ public class ImportBlastCommand extends CommandBase implements ICommand {
 
             if (description != null && description.length() > 0) {
                 description = description.replaceAll("^ +| +$|( )+", "$1"); // replace all white spaces by a single space
-                final String sampleName = Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "");
+				final String sampleName = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(doc.getMeganFile().getFileName()), "");
                 doc.getSampleAttributeTable().put(sampleName, SampleAttributeTable.DescriptionAttribute, description);
             }
 

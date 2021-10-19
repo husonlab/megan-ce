@@ -24,10 +24,7 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.FastaFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 import megan.core.Director;
 import megan.core.MeganFile;
 import megan.util.IReadsProvider;
@@ -62,8 +59,8 @@ public class RemoteBlastDialog {
             return null; // no reads provided...
 
         final MeganFile meganFile = dir.getDocument().getMeganFile();
-        final String lastDir = (meganFile.isMeganServerFile() ? ProgramProperties.get("RemoteBlastDir", System.getProperty("user.dir")) : new File(meganFile.getFileName()).getParent());
-        final File lastOpenFile = new File(lastDir, ProgramProperties.get("RemoteBlastFile", Basic.replaceFileSuffix(dir.getDocument().getTitle(), "-" + Basic.toCleanName(queryName) + ".fasta")));
+		final String lastDir = (meganFile.isMeganServerFile() ? ProgramProperties.get("RemoteBlastDir", System.getProperty("user.dir")) : new File(meganFile.getFileName()).getParent());
+		final File lastOpenFile = new File(lastDir, ProgramProperties.get("RemoteBlastFile", FileUtils.replaceFileSuffix(dir.getDocument().getTitle(), "-" + StringUtils.toCleanName(queryName) + ".fasta")));
 
         final boolean needToSaveReads = (providedReadsFile == null);
 

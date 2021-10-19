@@ -24,6 +24,7 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.gui.ITab;
@@ -120,7 +121,7 @@ public class SetScaleCommand extends CommandBase implements ICommand {
             if (viewer.getSelectedComponent() instanceof PCoATab)
                 scale *= PCoATab.COORDINATES_SCALE_FACTOR;
 
-            final String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set scale", Basic.removeTrailingZerosAfterDot(String.format("%.4f", scale)));
+			final String result = JOptionPane.showInputDialog(viewer.getFrame(), "Set scale", StringUtils.removeTrailingZerosAfterDot(String.format("%.4f", scale)));
             if (result != null && Basic.isDouble(result) && Basic.parseDouble(result) > 0) {
                 execute("set scaleFactor=" + Basic.parseDouble(result) + ";");
             }

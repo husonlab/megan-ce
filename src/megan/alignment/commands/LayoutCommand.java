@@ -21,7 +21,7 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.core.Director;
@@ -44,7 +44,7 @@ public class LayoutCommand extends CommandBase implements ICommand {
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set layout=");
-        String layout = np.getWordMatchesIgnoringCase(Basic.toString(AlignmentViewer.AlignmentLayout.values(), " "));
+		String layout = np.getWordMatchesIgnoringCase(StringUtils.toString(AlignmentViewer.AlignmentLayout.values(), " "));
         np.matchIgnoreCase(";");
 
         AlignmentViewer viewer = (AlignmentViewer) getViewer();
@@ -60,7 +60,7 @@ public class LayoutCommand extends CommandBase implements ICommand {
      */
     @Override
     public String getSyntax() {
-        return "set layout={" + Basic.toString(AlignmentViewer.AlignmentLayout.values(), "|") + "};";
+		return "set layout={" + StringUtils.toString(AlignmentViewer.AlignmentLayout.values(), "|") + "};";
     }
 
     /**

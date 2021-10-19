@@ -20,8 +20,8 @@
 package megan.biom.biom1;
 
 import com.google.gson.Gson;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -166,7 +166,7 @@ data                : <list of lists>, counts of observations by sample
             }
         }
         if (!ok)
-            throw new IOException("type=" + type + ", must be one of: " + Basic.toString(AcceptableTypes.values(), ", ").replaceAll("_", " "));
+			throw new IOException("type=" + type + ", must be one of: " + StringUtils.toString(AcceptableTypes.values(), ", ").replaceAll("_", " "));
 
         ok = false;
         if (matrix_type != null) {
@@ -178,7 +178,7 @@ data                : <list of lists>, counts of observations by sample
             }
         }
         if (!ok)
-            throw new IOException("matrix_type=" + matrix_type + ", must be one of: " + Basic.toString(AcceptableMatrixTypes.values(), ", "));
+			throw new IOException("matrix_type=" + matrix_type + ", must be one of: " + StringUtils.toString(AcceptableMatrixTypes.values(), ", "));
 
         ok = false;
         if (matrix_element_type != null) {
@@ -190,7 +190,7 @@ data                : <list of lists>, counts of observations by sample
             }
         }
         if (!ok)
-            throw new IOException("matrix_element_type=" + matrix_element_type + ", must be one of: " + Basic.toString(AcceptableMatrixElementTypes.values(), ", "));
+			throw new IOException("matrix_element_type=" + matrix_element_type + ", must be one of: " + StringUtils.toString(AcceptableMatrixElementTypes.values(), ", "));
     }
 
     /**

@@ -21,8 +21,9 @@ package megan.parsers.blast;
 
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.BlastMode;
+import jloda.seq.BlastMode;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.parsers.sam.SAMMatch;
@@ -182,18 +183,18 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
      * @return true, if same query
      */
     private boolean sameQuery(String samA, String samB) {
-        String[] tokensA = Basic.split(samA, '\t', 2);
-        String[] tokensB = Basic.split(samB, '\t', 2);
+		String[] tokensA = StringUtils.split(samA, '\t', 2);
+		String[] tokensB = StringUtils.split(samB, '\t', 2);
 
-        // not the same name, return false
-        if (tokensA.length >= 1 && tokensB.length >= 1 && !tokensA[0].equals(tokensB[0]))
-            return false;
+		// not the same name, return false
+		if (tokensA.length >= 1 && tokensB.length >= 1 && !tokensA[0].equals(tokensB[0]))
+			return false;
 
-        // check whether they are different "templates", that is, first and last of a read pair
-        try {
-            final int flagA = Basic.parseInt(tokensA[1]);
-            final int flagB = Basic.parseInt(tokensB[1]);
-            return (flagA & 192) == (flagB & 192); // second token is 'flag', must have same 7th and 8th bit for same query
+		// check whether they are different "templates", that is, first and last of a read pair
+		try {
+			final int flagA = Basic.parseInt(tokensA[1]);
+			final int flagB = Basic.parseInt(tokensB[1]);
+			return (flagA & 192) == (flagB & 192); // second token is 'flag', must have same 7th and 8th bit for same query
         } catch (Exception ex) {
             return true;
         }

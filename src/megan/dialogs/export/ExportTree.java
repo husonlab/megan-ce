@@ -23,7 +23,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import megan.viewer.ViewerBase;
 
 import java.io.IOException;
@@ -114,8 +114,8 @@ public class ExportTree {
      */
     private static int writeAsTreeRec(ViewerBase viewer, NodeSet toUse, Node v, Writer writer, boolean showInternalLabels, boolean showUnassignedNodes, boolean simplify, int count) throws IOException {
         if (v.getOutDegree() == 0) {
-            writer.write(Basic.toCleanName(viewer.getLabel(v)));
-            count++;
+			writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
+			count++;
         } else {
             LinkedList<Edge> toVisit = new LinkedList<>();
             for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
@@ -140,8 +140,8 @@ public class ExportTree {
                 writer.write(")");
 
             if (showInternalLabels && viewer.getLabel(v) != null && (!simplify || count != 1)) {
-                writer.write(Basic.toCleanName(viewer.getLabel(v)));
-                count++;
+				writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
+				count++;
             }
 
         }

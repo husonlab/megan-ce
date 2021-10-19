@@ -21,7 +21,8 @@
 package megan.ms.server;
 
 import com.sun.net.httpserver.BasicAuthenticator;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import megan.ms.Utilities;
 
 import java.io.*;
@@ -48,39 +49,39 @@ public class UserManager {
     }
 
     public List<String> listAllUsers() {
-        return user2passwordHash.keySet().stream().map(user -> user+" "+ Basic.toString(user2roles.get(user),",")).collect(Collectors.toList());
+		return user2passwordHash.keySet().stream().map(user -> user + " " + StringUtils.toString(user2roles.get(user), ",")).collect(Collectors.toList());
     }
 
     public void readFile() throws IOException {
-        if (Basic.fileExistsAndIsNonEmpty(fileName)) {
-            if(true) {
-                if(Basic.getLinesFromFile(fileName).stream().filter(line -> line.startsWith("#")).anyMatch(line->line.contains("password-md5"))) {
-                    throw new IOException("Users file '"+fileName+"' contains md5 hashes, no longer supported, please delete and setup new file");
-                }
-            }
+		if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
+			if (true) {
+				if (FileUtils.getLinesFromFile(fileName).stream().filter(line -> line.startsWith("#")).anyMatch(line -> line.contains("password-md5"))) {
+					throw new IOException("Users file '" + fileName + "' contains md5 hashes, no longer supported, please delete and setup new file");
+				}
+			}
 
-            Basic.getLinesFromFile(fileName).stream().filter(line -> line.length() > 0 && !line.startsWith("#"))
-                        .map(line->line.contains("\t")?line:line.replaceAll("\\s+","\t"))
-                        .map(line -> Basic.split(line, '\t'))
-                        .filter(tokens -> tokens.length >= 2 && tokens[0].length() > 0 && tokens[1].length() > 0)
+			FileUtils.getLinesFromFile(fileName).stream().filter(line -> line.length() > 0 && !line.startsWith("#"))
+					.map(line -> line.contains("\t") ? line : line.replaceAll("\\s+", "\t"))
+					.map(line -> StringUtils.split(line, '\t'))
+					.filter(tokens -> tokens.length >= 2 && tokens[0].length() > 0 && tokens[1].length() > 0)
                         .forEach(tokens -> {
                             user2passwordHash.put(tokens[0], tokens[1]);
                             final Set<String> roles=new TreeSet<>();
                             user2roles.put(tokens[0],roles);
                             if (tokens.length == 3 && tokens[2].length()>0)
-                                roles.addAll(Arrays.asList(Basic.split(tokens[2],',')));
+								roles.addAll(Arrays.asList(StringUtils.split(tokens[2], ',')));
                         });
         }
     }
 
     public void writeFile() throws IOException {
         System.err.println("Updating file: " + fileName);
-        try (var w = new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(fileName))) {
-            w.write("#MeganServer registered users\n");
-            w.write("#Name\tpassword-hash\troles\n");
-            for (var entry : user2passwordHash.entrySet())
-                w.write(String.format("%s\t%s\t%s\n", entry.getKey(), entry.getValue(), Basic.toString(user2roles.get(entry.getKey()),",")));
-        }
+		try (var w = new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName))) {
+			w.write("#MeganServer registered users\n");
+			w.write("#Name\tpassword-hash\troles\n");
+			for (var entry : user2passwordHash.entrySet())
+				w.write(String.format("%s\t%s\t%s\n", entry.getKey(), entry.getValue(), StringUtils.toString(user2roles.get(entry.getKey()), ",")));
+		}
     }
 
     public void addUser(String name, String password, boolean allowReplace, String... roles) throws IOException {

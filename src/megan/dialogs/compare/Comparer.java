@@ -21,7 +21,10 @@ package megan.dialogs.compare;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.util.*;
+import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 import megan.classification.Classification;
 import megan.core.ClassificationType;
 import megan.core.DataTable;
@@ -106,8 +109,8 @@ public class Comparer {
                     myLocked.add(dir);
                 }
                 final int pos = pid2pos[dir.getID()];
-                names[pos] = getUniqueName(names, pos, Basic.getFileBaseName(dir.getDocument().getTitle()));
-                originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
+				names[pos] = getUniqueName(names, pos, FileUtils.getFileBaseName(dir.getDocument().getTitle()));
+				originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
                 blastModes[pos] = dir.getDocument().getBlastMode();
                 if (dir.getDocument().getSampleAttributeTable().getNumberOfSamples() == 1) {
                     String oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();

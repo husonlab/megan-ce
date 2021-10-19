@@ -21,7 +21,7 @@ package megan.samplesviewer.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.samplesviewer.SamplesViewer;
 
@@ -51,7 +51,7 @@ public class ExtractSamplesCommand extends CommandBase implements ICommand {
         SamplesViewer viewer = (SamplesViewer) getViewer();
         List<String> samples = viewer.getSamplesTableView().getSelectedSamples();
         if (samples.size() > 0) {
-            execute("extract samples='" + Basic.toString(samples, "' '") + "';");
+			execute("extract samples='" + StringUtils.toString(samples, "' '") + "';");
         }
     }
 

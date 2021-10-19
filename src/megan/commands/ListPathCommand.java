@@ -25,7 +25,7 @@ import jloda.graph.NodeSet;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -111,7 +111,7 @@ public class ListPathCommand extends CommandBase implements ICommand {
                     else
                         summarized = data.getAssigned();
                     if (summarized != null && summarized.length >= 1) {
-                        writer.write("\t" + Basic.toString(summarized, ", "));
+						writer.write("\t" + StringUtils.toString(summarized, ", "));
                     }
                 }
 

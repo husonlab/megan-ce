@@ -20,7 +20,6 @@
 package megan.tools;
 
 import jloda.seq.FastAFileIterator;
-import jloda.seq.IFastAIterator;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;

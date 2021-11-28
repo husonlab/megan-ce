@@ -65,13 +65,13 @@ public class Taxonomy2Function {
 	 * run
 	 */
 	private void run(String[] args) throws UsageException, IOException {
-		final ArgsOptions options = new ArgsOptions(args, this, "Reports taxonomy-by-function classification");
+		final var options = new ArgsOptions(args, this, "Reports taxonomy-by-function classification");
 		options.setVersion(ProgramProperties.getProgramVersion());
 		options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
 		options.setAuthors("Daniel H. Huson");
 
 		options.comment("Input and Output");
-		final var inputFile = options.getOptionMandatory("-i", "in", "Input file", "");
+		final var inputFiles = options.getOptionMandatory("-i", "in", "Input file(s)", new String[0]);
 		final var outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
 		options.comment("Options");
@@ -80,7 +80,7 @@ public class Taxonomy2Function {
 		final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
 		final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", Arrays.asList("all"));
 
-		var formats = new String[]{"name", "id"};
+		var formats = new String[]{"name", "id", "path"};
 
 		final var firstFormat = options.getOption("-af", "firstFormat", "Format to report first classification class", formats, "name");
 		final var secondFormat = options.getOption("-bf", "secondFormat", "Format to report second classification class", formats, firstFormat);
@@ -91,23 +91,33 @@ public class Taxonomy2Function {
 
 		final var includeFirstUnassigned = options.getOption("-au", "includeFirstUnassigned", "include reads unassigned in first classification", true);
 		final var includeSecondUnassigned = options.getOption("-bu", "includeSecondUnassigned", "include reads unassigned second classification", true);
-		options.done();
 
-		var debuggingRun = false;
+		options.comment(ArgsOptions.OTHER);
+		var showHeaderLine = options.getOption("-sh", "showHeadline", "Show a headline in the output naming classifications and files", false);
+		var pathSeparator = options.getOption("-ps", "pathSeparator", "Separator used when reporting paths", new String[]{"::", "|", "tab", "comma", "semi-colon"}, "::");
+		options.done();
 
 		if (firstClassificationName.equals(secondClassificationName))
 			throw new UsageException("First second classifications must be different");
 
+		for (var file : inputFiles) {
+			if (!FileUtils.fileExistsAndIsNonEmpty(file))
+				throw new IOException("Can't open input file: " + file);
+		}
+
+		if (inputFiles.length > 1 && listOption.equals("reads"))
+			throw new UsageException("Can't specify multiple input files and --list reads");
+
 		switch (separator) {
-			case "command":
-				separator = "'";
-				break;
-			case "semi-colon":
-				separator = ";";
-				break;
-			case "tab":
-				separator = "\t";
-				break;
+			case "comma" -> separator = "'";
+			case "semi-colon" -> separator = ";";
+			case "tab" -> separator = "\t";
+		}
+
+		switch (pathSeparator) {
+			case "comma" -> pathSeparator = "'";
+			case "semi-colon" -> pathSeparator = ";";
+			case "tab" -> pathSeparator = "\t";
 		}
 
 		Collection<Integer> firstIds = null;
@@ -131,145 +141,153 @@ public class Taxonomy2Function {
 			}
 		}
 
-		final var doc = new Document();
-		doc.getMeganFile().setFileFromExistingFile(inputFile, true);
-		doc.loadMeganFile();
+		var useReadsTable = listOption.equals("reads");
+		var readsTable = new Table<Integer, Integer, ArrayList<String>>();
+		var countsTable = new Table<Integer, Integer, int[]>();
 
-		var connector = doc.getConnector();
+		for (var f = 0; f < inputFiles.length; f++) {
+			var inputFile = inputFiles[f];
+			var progress = new ProgressPercentage("Processing file", inputFile);
 
-		if (doc.getMeganFile().isMeganSummaryFile())
-			throw new UsageException("Input file must be RMA or meganized DAA file");
+			final var doc = new Document();
+			doc.getMeganFile().setFileFromExistingFile(inputFile, true);
+			doc.loadMeganFile();
 
-		var first2reads = new TreeMap<Integer, ArrayList<String>>();
+			var connector = doc.getConnector();
 
-		var progress = new ProgressPercentage("Processing");
+			if (doc.getMeganFile().isMeganSummaryFile())
+				throw new UsageException("Input file '" + inputFile + "': must be RMA or meganized DAA file");
 
-		var firstClassification = (firstFormat.equals("id") ? null : ClassificationManager.get(firstClassificationName, true));
-		var firstClassificationBlock = connector.getClassificationBlock(firstClassificationName);
+			var first2reads = new TreeMap<Integer, ArrayList<String>>();
 
-		progress.setSubtask("First classification");
-		progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
-		if (firstIds == null || firstIds.size() == 0)
-			firstIds = firstClassificationBlock.getKeySet();
+			var firstClassificationBlock = connector.getClassificationBlock(firstClassificationName);
 
-		for (var classId : firstIds) {
-			if (includeFirstUnassigned || classId > 0) {
-				var list = new ArrayList<String>();
-				first2reads.put(classId, list);
-				var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
-				while (it.hasNext()) {
-					var readBlock = it.next();
-					if (debuggingRun) {
-						var ok = true;
-						var which = 0;
-						for (int m = 0; ok && m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-							var matchBlock = readBlock.getMatchBlock(m);
-							var id = matchBlock.getId(firstClassificationName);
-							if (id > 0) {
-								if (which == 0)
-									which = id;
-								else if (id != which)
-									ok = false;
+			progress.setSubtask("First classification");
+			progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
-							}
-						}
-						if (!ok)
-							continue; // keep the good ones
-					}
-					list.add(readBlock.getReadName());
-				}
-			}
-			progress.incrementProgress();
-		}
-		progress.reportTaskCompleted();
+			if (firstIds == null || firstIds.size() == 0)
+				firstIds = firstClassificationBlock.getKeySet();
 
-		var read2second = new HashMap<String, Integer>();
-
-		var secondClassification = (secondFormat.equals("id") ? null : ClassificationManager.get(secondClassificationName, true));
-		var secondClassificationBlock = connector.getClassificationBlock(secondClassificationName);
-
-		progress.setSubtask("Second classification");
-		progress.setProgress(0);
-		progress.setMaximum(secondClassificationBlock.getKeySet().size());
-
-		if (secondIds == null || secondIds.size() == 0)
-			secondIds = secondClassificationBlock.getKeySet();
-
-		for (var classId : secondIds) {
-			if (includeSecondUnassigned || classId > 0) {
-				var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);
-				while (it.hasNext()) {
-					var readBlock = it.next();
-					if (debuggingRun) {
-						var ok = true;
-						var which = 0;
-						for (int m = 0; ok && m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
-							var matchBlock = readBlock.getMatchBlock(m);
-							var id = matchBlock.getId(secondClassificationName);
-							if (id > 0) {
-								if (which == 0)
-									which = id;
-								else if (id != which)
-									ok = false;
-
-							}
-						}
-						if (ok)
-							continue; // keep the bad ones!
-					}
-					read2second.put(readBlock.getReadName(), classId);
-				}
-			}
-			progress.incrementProgress();
-		}
-		progress.reportTaskCompleted();
-
-		var table = new Table<Integer, Integer, ArrayList<String>>();
-
-		progress.setSubtask("Merging");
-		progress.setProgress(0);
-		progress.setMaximum(firstClassificationBlock.getKeySet().size());
-
-		for (var classId : firstClassificationBlock.getKeySet()) {
-			if (first2reads.containsKey(classId)) {
-				for (var readName : first2reads.get(classId)) {
-					var otherId = read2second.get(readName);
-					if (otherId != null) {
-						var list = table.get(classId, otherId);
-						if (list == null) {
-							list = new ArrayList<>();
-							table.put(classId, otherId, list);
-						}
-						list.add(readName);
-					}
-				}
-			}
-			progress.incrementProgress();
-		}
-		progress.reportTaskCompleted();
-
-		progress.setSubtask("Writing to: " + outputFile);
-		progress.setProgress(0);
-		progress.setMaximum(table.getNumberOfRows());
-
-		try (Writer w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
-			for (var firstId : sorted(firstClassification, firstFormat, table.rowKeySet())) {
-				var firstName = (firstFormat.equals("id") ? String.valueOf(firstId) : firstClassification.getName2IdMap().get(firstId));
-				for (var secondId : sorted(secondClassification, secondFormat, table.columnKeySet())) {
-					var secondName = (secondFormat.equals("id") ? String.valueOf(secondId) : secondClassification.getName2IdMap().get(secondId));
-					if (table.contains(firstId, secondId)) {
-						var values = table.get(firstId, secondId);
-						if (listOption.equals("counts"))
-							w.write(firstName + separator + secondName + separator + values.size() + "\n");
-						else
-							w.write(firstName + separator + secondName + separator + StringUtils.toString(values, ", ") + "\n");
+			for (var classId : firstIds) {
+				if (includeFirstUnassigned || classId > 0) {
+					var list = new ArrayList<String>();
+					first2reads.put(classId, list);
+					var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
+					while (it.hasNext()) {
+						var readBlock = it.next();
+						list.add(readBlock.getReadName());
 					}
 				}
 				progress.incrementProgress();
 			}
+			progress.reportTaskCompleted();
+
+			var read2second = new HashMap<String, Integer>();
+
+			var secondClassificationBlock = connector.getClassificationBlock(secondClassificationName);
+
+			progress.setSubtask("Second classification");
+			progress.setProgress(0);
+			progress.setMaximum(secondClassificationBlock.getKeySet().size());
+
+			if (secondIds == null || secondIds.size() == 0)
+				secondIds = secondClassificationBlock.getKeySet();
+
+			for (var classId : secondIds) {
+				if (includeSecondUnassigned || classId > 0) {
+					var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);
+					while (it.hasNext()) {
+						var readBlock = it.next();
+						read2second.put(readBlock.getReadName(), classId);
+					}
+				}
+				progress.incrementProgress();
+			}
+			progress.reportTaskCompleted();
+
+			progress.setSubtask("Merging");
+			progress.setProgress(0);
+			progress.setMaximum(firstClassificationBlock.getKeySet().size());
+
+			for (var classId : firstClassificationBlock.getKeySet()) {
+				if (first2reads.containsKey(classId)) {
+					for (var readName : first2reads.get(classId)) {
+						var otherId = read2second.get(readName);
+						if (otherId != null) {
+							if (useReadsTable) {
+								var list = readsTable.get(classId, otherId);
+								if (list == null) {
+									list = new ArrayList<>();
+									readsTable.put(classId, otherId, list);
+								}
+								list.add(readName);
+							} else {
+								var counts = countsTable.get(classId, otherId);
+								if (counts == null) {
+									counts = new int[inputFiles.length];
+									countsTable.put(classId, otherId, counts);
+								}
+								counts[f]++;
+							}
+						}
+					}
+				}
+				progress.incrementProgress();
+			}
+			progress.reportTaskCompleted();
 		}
-		progress.reportTaskCompleted();
+
+		{
+			var firstClassification = (firstFormat.equals("id") ? null : ClassificationManager.get(firstClassificationName, true));
+			var secondClassification = (secondFormat.equals("id") ? null : ClassificationManager.get(secondClassificationName, true));
+
+			var progress = new ProgressPercentage("Writing", outputFile);
+			progress.setProgress(0);
+
+			var rowSet = (useReadsTable ? readsTable.rowKeySet() : countsTable.rowKeySet());
+			var colSet = (useReadsTable ? readsTable.columnKeySet() : countsTable.columnKeySet());
+			var numberOfReads = (useReadsTable ? readsTable.getNumberOfRows() : countsTable.getNumberOfRows());
+
+			progress.setMaximum(numberOfReads);
+
+			try (Writer w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+				if (showHeaderLine)
+					w.write(firstClassificationName + separator + secondClassificationName + separator + StringUtils.toString(inputFiles, separator) + "\n");
+				for (var firstId : sorted(firstClassification, firstFormat, rowSet)) {
+					var firstName =
+							switch (firstFormat) {
+								default -> String.valueOf(firstId);
+								case "id" -> String.valueOf(firstId);
+								case "name" -> firstClassification.getName2IdMap().get(firstId);
+								case "path" -> firstClassification.getPath(firstId, pathSeparator);
+							};
+					for (var secondId : sorted(secondClassification, secondFormat, colSet)) {
+						var secondName =
+								switch (secondFormat) {
+									default -> String.valueOf(secondId);
+									case "id" -> String.valueOf(secondId);
+									case "name" -> secondClassification.getName2IdMap().get(secondId);
+									case "path" -> secondClassification.getPath(secondId, pathSeparator);
+								};
+						if (useReadsTable) {
+							if (readsTable.contains(firstId, secondId)) {
+								var values = readsTable.get(firstId, secondId);
+								w.write(firstName + separator + secondName + separator + StringUtils.toString(values, ", ") + "\n");
+							}
+						} else {
+							if (countsTable.contains(firstId, secondId)) {
+								var values = countsTable.get(firstId, secondId);
+								w.write(firstName + separator + secondName + separator + StringUtils.toString(values, separator) + "\n");
+
+							}
+						}
+					}
+					progress.incrementProgress();
+				}
+			}
+			progress.reportTaskCompleted();
+		}
 	}
 
 	private Collection<Integer> sorted(Classification classification, String format, Collection<Integer> values) {

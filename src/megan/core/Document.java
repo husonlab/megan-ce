@@ -19,11 +19,11 @@
  */
 package megan.core;
 
+import jloda.seq.BlastMode;
 import jloda.swing.util.ColorTableManager;
 import jloda.swing.util.ILabelGetter;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressCmdLine;
 import jloda.util.progress.ProgressListener;
@@ -246,7 +246,7 @@ public class Document {
     }
 
     /**
-     * relead from connector
+     * reload from connector
      *
      * @throws IOException
      */

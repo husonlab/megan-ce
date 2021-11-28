@@ -85,10 +85,10 @@ public class Database {
 					if (FileUtils.fileExistsAndIsNonEmpty(FileUtils.replaceFileSuffix(file, ".txt"))) {
 						file2DescriptionFile.put(FileUtils.getRelativeFile(file, rootDirectory).getPath(), FileUtils.replaceFileSuffix(file, ".txt"));
 					}
-					final var meganFile = new MeganFile();
+					final var document = new Document();
+					final var meganFile = document.getMeganFile();
 					meganFile.setFileFromExistingFile(file.getPath(), true);
 					if (meganFile.isMeganSummaryFile()) {
-						final var document = new Document();
 						try (var r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
 							document.loadMeganSummary(r);
 							final var numberOfReads = document.getNumberOfReads();
@@ -100,21 +100,22 @@ public class Database {
 								document.getSampleAttributeTable().write(w, false, true);
 								final var data = new HashMap<String, byte[]>();
 								data.put("FILE_CONTENT", w.toString().getBytes());
-                                    id2record.put(fileId, new FileRecord(fileId, file, document.getClassificationNames(),data,numberOfReads,0));
+								id2record.put(fileId, new FileRecord(fileId, file, document.getClassificationNames(), data, numberOfReads, 0, document.isLongReads()));
                                 }
                             }
                         } else if (meganFile.hasDataConnector()) {
-                            final var connector = meganFile.getConnector();
-                            final var numberOfReads = connector.getNumberOfReads();
-                            if (numberOfReads > 0) {
-                                final var numberOfMatches = connector.getNumberOfMatches();
-								final var fileId = fileName2IdRebuilt.size() + 1;
-								final var relativePath = FileUtils.getRelativeFile(file, rootDirectory).getPath();
-                                fileName2IdRebuilt.put(relativePath, fileId);
-                                id2record.put(fileId, new FileRecord(fileId, file, Arrays.asList(connector.getAllClassificationNames()), connector.getAuxiliaryData(),
-                                        numberOfReads,numberOfMatches));
-                            }
-                        }
+						final var connector = meganFile.getConnector();
+						document.loadMeganFile();
+						final var numberOfReads = connector.getNumberOfReads();
+						if (numberOfReads > 0) {
+							final var numberOfMatches = connector.getNumberOfMatches();
+							final var fileId = fileName2IdRebuilt.size() + 1;
+							final var relativePath = FileUtils.getRelativeFile(file, rootDirectory).getPath();
+							fileName2IdRebuilt.put(relativePath, fileId);
+							id2record.put(fileId, new FileRecord(fileId, file, Arrays.asList(connector.getAllClassificationNames()), connector.getAuxiliaryData(),
+									numberOfReads, numberOfMatches, document.isLongReads()));
+						}
+					}
                     progress.incrementProgress();
                 } catch (IOException ignored) {
                 }
@@ -251,16 +252,18 @@ public class Database {
         private final List<String> classifications;
         private final Map<String, byte[]> auxiliaryData;
         private final long numberOfReads;
-        private final long numberOfMatches;
+		private final long numberOfMatches;
+		private final boolean longReads;
 
-        public FileRecord(long fileId, File file, List<String> classifications, Map<String, byte[]> auxiliaryData, long numberOfReads, long numberOfMatches) {
-            this.fileId = fileId;
-            this.file = file;
-            this.classifications = new ArrayList<>(classifications);
-            this.auxiliaryData = auxiliaryData;
-            this.numberOfReads = numberOfReads;
-            this.numberOfMatches = numberOfMatches;
-        }
+		public FileRecord(long fileId, File file, List<String> classifications, Map<String, byte[]> auxiliaryData, long numberOfReads, long numberOfMatches, boolean longReads) {
+			this.fileId = fileId;
+			this.file = file;
+			this.classifications = new ArrayList<>(classifications);
+			this.auxiliaryData = auxiliaryData;
+			this.numberOfReads = numberOfReads;
+			this.numberOfMatches = numberOfMatches;
+			this.longReads = longReads;
+		}
 
         public long getFileId() {
             return fileId;
@@ -275,15 +278,19 @@ public class Database {
         }
 
         public Map<String, byte[]> getAuxiliaryData() {
-            return auxiliaryData;
-        }
+			return auxiliaryData;
+		}
 
-        public long getNumberOfReads() {
-            return numberOfReads;
-        }
+		public long getNumberOfReads() {
+			return numberOfReads;
+		}
 
-        public long getNumberOfMatches() {
-            return numberOfMatches;
-        }
-    }
+		public long getNumberOfMatches() {
+			return numberOfMatches;
+		}
+
+		public boolean isLongReads() {
+			return longReads;
+		}
+	}
 }

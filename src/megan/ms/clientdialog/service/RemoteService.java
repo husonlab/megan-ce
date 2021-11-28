@@ -52,7 +52,7 @@ public class RemoteService implements IRemoteService {
             serverURL += "/megan6server";
         this.serverURL = serverURL;
 
-        clientMS = new ClientMS(this.serverURL, null, 0, user, passwordHash, 100);
+        clientMS = new ClientMS(this.serverURL, null, 0, user, passwordHash, 600);
 
         final String remoteVersion = clientMS.getAsString("version");
         if (!remoteVersion.startsWith("MeganServer"))

@@ -307,7 +307,6 @@ public class LRInspectorController {
         }
         if (newLayoutTableColumnWidth > layoutCol.getWidth())
             layoutCol.setPrefWidth(newLayoutTableColumnWidth);
-
     }
 
     private String computeReadStats() {

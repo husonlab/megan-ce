@@ -1,5 +1,5 @@
 <!--
-	~  build.xml Copyright (C) 2019 Daniel H. Huson
+	~  build.xml Copyright (C) 2021 Daniel H. Huson
 	~
 	~  (Some files contain contributions from other authors, who are then mentioned separately.)
 	~
@@ -18,8 +18,8 @@
 -->
 	<project name="MEGAN" default="jar" basedir=".">
 
-		<property name="ant.build.javac.source" value="13"/>
-		<property name="ant.build.javac.target" value="13"/>
+		<property name="ant.build.javac.source" value="16"/>
+		<property name="ant.build.javac.target" value="16"/>
 
 		<property name="jfxDir" value="../../javafx/lib"/>
 		<property name="jlodaAntDir" value="../../jloda/antbuild"/>
@@ -69,7 +69,8 @@
 		</target>
 
 		<target name="compile" depends="copy_resources">
-			<javac  includeantruntime="false"
+			<javac  source="16" target="16"
+				includeantruntime="false"
 				srcdir="../antbuild/src/megan"
 				destdir="${buildModulesDir}/megan"
 				debug="on"

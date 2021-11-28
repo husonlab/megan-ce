@@ -312,21 +312,26 @@ public interface RequestHandler {
     static RequestHandler getReads(Database database,int defaultReadsPerPage) {
         return (c, p) -> {
             try {
-                checkKnownParameters(p, "pageSize", "file", "readIds", "headers", "sequences", "matches", "binary");
-                checkRequiredParameters(p, "file");
+				checkKnownParameters(p, "pageSize", "file", "readIds", "headers", "sequences", "matches", "binary");
+				checkRequiredParameters(p, "file");
 
-                final int pageSize = Parameters.getValue(p, "pageSize", defaultReadsPerPage);
-                final String fileName = Parameters.getValue(p, "file");
+				var pageSize = Parameters.getValue(p, "pageSize", defaultReadsPerPage);
+				final var fileName = Parameters.getValue(p, "file");
 
-                final ReadsOutputFormat format = new ReadsOutputFormat(
-                        Parameters.getValue(p, "readIds", true),
-                        Parameters.getValue(p, "headers", true),
-                        Parameters.getValue(p, "sequences", true),
-                        Parameters.getValue(p, "matches", true));
+				if (pageSize == 100) { // older versions of MEGAN always request 100 reads per page, reduce to 1 for long reads
+					// set page size depending on whether long reads or not
+					pageSize = database.getRecord(fileName).isLongReads() ? 1 : 100;
+				}
 
-                final boolean binary = Parameters.getValue(p, "binary", true);
+				final ReadsOutputFormat format = new ReadsOutputFormat(
+						Parameters.getValue(p, "readIds", true),
+						Parameters.getValue(p, "headers", true),
+						Parameters.getValue(p, "sequences", true),
+						Parameters.getValue(p, "matches", true));
 
-                final ReadIteratorPagination.Page page = database.getReads(fileName, format, pageSize);
+				final boolean binary = Parameters.getValue(p, "binary", true);
+
+				final ReadIteratorPagination.Page page = database.getReads(fileName, format, pageSize);
                 return getReads(c, binary, page);
             } catch (IOException ex) {
                 return reportError(c, p, ex.getMessage());

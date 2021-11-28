@@ -22,6 +22,7 @@ package megan.classification;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
@@ -29,6 +30,7 @@ import megan.core.Document;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -139,14 +141,28 @@ public class Classification {
      * @return short tag
      */
     public static String createShortTag(String cName) {
-        if (cName.equalsIgnoreCase(Taxonomy))
-            return "tax|";
-        else if (cName.equalsIgnoreCase("interpro2go"))
-            return "IPR|";
-        else if (cName.equalsIgnoreCase("eggnog"))
-            return "cog|";
-        else
-            return cName.toLowerCase() + "|";
-    }
+		if (cName.equalsIgnoreCase(Taxonomy))
+			return "tax|";
+		else if (cName.equalsIgnoreCase("interpro2go"))
+			return "IPR|";
+		else if (cName.equalsIgnoreCase("eggnog"))
+			return "cog|";
+		else
+			return cName.toLowerCase() + "|";
+	}
+
+	public String getPath(int id) {
+		return getPath(id, "|");
+	}
+
+	public String getPath(int id, String separator) {
+		var node = getFullTree().getANode(id);
+		var list = new ArrayList<String>();
+		while (node != null) {
+			list.add(0, idMapper.getName2IdMap().get((int) node.getInfo()));
+			node = node.getParent();
+		}
+		return StringUtils.toString(list, separator);
+	}
 
 }

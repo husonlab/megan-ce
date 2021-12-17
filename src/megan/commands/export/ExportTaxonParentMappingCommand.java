@@ -50,8 +50,6 @@
 
 package megan.commands.export;
 
-import jloda.graph.Node;
-import jloda.graph.algorithms.Traversals;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
@@ -62,7 +60,6 @@ import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
-import megan.viewer.MainViewer;
 import megan.viewer.TaxonomyData;
 
 import javax.swing.*;
@@ -104,22 +101,21 @@ public class ExportTaxonParentMappingCommand extends CommandBase implements ICom
         progress.setProgress(0);
         progress.setMaximum(TaxonomyData.getTree().getNumberOfNodes());
         try(var writer=new BufferedWriter(new FileWriter(file))) {
-
             var root=TaxonomyData.getTree().getRoot();
             var cellularOrganisms=131567;
             var topNode=new Single<>(root);
 
-            Traversals.preOrderTreeTraversal(root,(v)->{
-                if(exception.isNull() && v.getParent()!=null) {
-                    try {
-                        progress.incrementProgress();
-                        var id = (int) v.getInfo();
-                        int other;
-                        if (top) {
-                            if(v.getParent()==root || (int)v.getParent().getInfo()==cellularOrganisms)
-                                topNode.set(v);
-                            other = (int)topNode.get().getInfo();
-                        } else {
+            TaxonomyData.getTree().preorderTraversal(v -> {
+				if (exception.isNull() && v.getParent() != null) {
+					try {
+						progress.incrementProgress();
+						var id = (int) v.getInfo();
+						int other;
+						if (top) {
+							if (v.getParent() == root || (int) v.getParent().getInfo() == cellularOrganisms)
+								topNode.set(v);
+							other = (int) topNode.get().getInfo();
+						} else {
                             other = (int) v.getParent().getInfo();
                         }
                         if(names)

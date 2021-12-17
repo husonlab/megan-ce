@@ -20,7 +20,6 @@
 package megan.tools;
 
 import jloda.graph.Node;
-import jloda.graph.algorithms.Traversals;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
@@ -220,17 +219,17 @@ public class RMA2Info {
                     var id2summarized = new HashMap<Integer, Float>();
                     var root = (isTaxonomy? taxonomyTree.getANode(taxonomyRootId) : tree.getRoot());
 
-                    Traversals.postOrderTreeTraversal(root, v -> {
-                        var summarized = classificationBlock.getWeightedSum((Integer) v.getInfo());
-                        for (var w : v.children()) {
-                            var id = (Integer) w.getInfo();
-                            if (id2summarized.containsKey(id))
-                                summarized += id2summarized.get(id);
-                        }
-                        if (summarized > 0) {
-                            var id = (Integer) v.getInfo();
-                            id2summarized.put(id, summarized);
-                        }
+                    tree.postorderTraversal(v -> {
+						var summarized = classificationBlock.getWeightedSum((Integer) v.getInfo());
+						for (var w : v.children()) {
+							var id = (Integer) w.getInfo();
+							if (id2summarized.containsKey(id))
+								summarized += id2summarized.get(id);
+						}
+						if (summarized > 0) {
+							var id = (Integer) v.getInfo();
+							id2summarized.put(id, summarized);
+						}
                     });
                     id2count = (id) -> id2summarized.getOrDefault(id, 0f);
                     ids.addAll(id2summarized.keySet());
@@ -246,17 +245,17 @@ public class RMA2Info {
                             var map = new HashMap<Integer, Float>();
                             taxId2count = map::get;
 
-                            Traversals.postOrderTreeTraversal(taxonomyTree.getANode(taxonomyRootId), v -> {
-                                var vid = (Integer) v.getInfo();
-                                var count = id2count.apply(vid);
-                                for (var w : v.children()) {
-                                    var id = (Integer) w.getInfo();
-                                    count += unused.getOrDefault(id, 0f);
-                                }
-                                if (count > 0) {
-                                    if (vid.equals(taxonomyRootId) || TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(vid))) {
-                                        map.put(vid, count);
-                                    } else
+							taxonomyTree.postorderTraversal(taxonomyTree.getANode(taxonomyRootId), v -> {
+								var vid = (Integer) v.getInfo();
+								var count = id2count.apply(vid);
+								for (var w : v.children()) {
+									var id = (Integer) w.getInfo();
+									count += unused.getOrDefault(id, 0f);
+								}
+								if (count > 0) {
+									if (vid.equals(taxonomyRootId) || TaxonomicLevels.isMajorRank(TaxonomyData.getTaxonomicRank(vid))) {
+										map.put(vid, count);
+									} else
                                         unused.put(vid, count);
                                 }
                             });

@@ -84,7 +84,7 @@ public class ExpandHorizontalCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Expand canvas horizontally";
+        return "Expand tree horizontally";
     }
 
     public boolean isCritical() {

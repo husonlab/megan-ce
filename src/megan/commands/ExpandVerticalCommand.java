@@ -52,7 +52,7 @@ public class ExpandVerticalCommand extends CommandBase implements ICommand {
     }
 
     public String getDescription() {
-        return "Expand canvas vertically";
+        return "Expand tree vertically";
     }
 
     public boolean isCritical() {

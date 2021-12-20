@@ -184,22 +184,22 @@ public class SplitSystem {
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
             Node w = f.getTarget();
             BitSet f_taxa;
-            if (!tree.isSpecial(f) || reticulateNode2Taxa.get(w) == null)
-                f_taxa = splitsFromTreeRec(w, tree, allTaxa, activeTaxa, reticulateNode2Taxa, splits);
-            else
-                f_taxa = (BitSet) reticulateNode2Taxa.get(w);
+            if (!tree.isReticulatedEdge(f) || reticulateNode2Taxa.get(w) == null)
+				f_taxa = splitsFromTreeRec(w, tree, allTaxa, activeTaxa, reticulateNode2Taxa, splits);
+			else
+				f_taxa = (BitSet) reticulateNode2Taxa.get(w);
 
-            if (!tree.isSpecial(f)) {
-                BitSet complement = (BitSet) activeTaxa.clone();
-                complement.andNot(f_taxa);
-                Split split = new Split(f_taxa, complement, tree.getWeight(f));
-                if (!splits.contains(split))
-                    splits.addSplit(split);
-                else if (v == tree.getRoot() && v.getOutDegree() == 2) // is root split
-                {
-                    Split prevSplit = splits.get(split);
-                    if(prevSplit!=null)
-                        prevSplit.setWeight(prevSplit.getWeight() + split.getWeight());
+			if (!tree.isReticulatedEdge(f)) {
+				BitSet complement = (BitSet) activeTaxa.clone();
+				complement.andNot(f_taxa);
+				Split split = new Split(f_taxa, complement, tree.getWeight(f));
+				if (!splits.contains(split))
+					splits.addSplit(split);
+				else if (v == tree.getRoot() && v.getOutDegree() == 2) // is root split
+				{
+					Split prevSplit = splits.get(split);
+					if (prevSplit != null)
+						prevSplit.setWeight(prevSplit.getWeight() + split.getWeight());
                 }
             } else
                 reticulateNode2Taxa.put(w, f_taxa);

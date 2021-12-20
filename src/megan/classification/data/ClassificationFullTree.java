@@ -318,7 +318,7 @@ public class ClassificationFullTree extends PhyloTree {
 
                 if (wCpy.getInDegree() > 1) {
                     for (Edge f = wCpy.getFirstInEdge(); f != null; f = wCpy.getNextInEdge(f))
-                        treeCpy.setSpecial(f, true);
+                        treeCpy.setReticulated(f, true);
                 }
                 if (!stopIds.contains(w.getInfo()))
                     induceRec(w, wCpy, treeCpy, keep, stopIds, id2data, node2copy);

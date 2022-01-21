@@ -54,7 +54,7 @@ public class CSVExportCViewer {
         var totalLines = 0;
         try {
             final var classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+            final var shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (final var w = new BufferedWriter(new FileWriter(file))) {
                 final var names = cViewer.getDocument().getSampleNames();
@@ -194,7 +194,6 @@ public class CSVExportCViewer {
         int totalLines = 0;
         try {
             final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final NodeSet selected = cViewer.getSelectedNodes();
@@ -347,7 +346,7 @@ public class CSVExportCViewer {
     }
 
     /**
-     * export readid to  names mapping
+     * export read to  names mapping
      *
      * @param cViewer
      * @param file
@@ -356,34 +355,34 @@ public class CSVExportCViewer {
      * @return lines written
      */
     public static int exportReadName2Name(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
+        var totalLines = 0;
         try {
-            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+            final var classification = ClassificationManager.get(cViewer.getClassName(), true);
+            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = cViewer.getDocument().getConnector();
+            try (var w = new BufferedWriter(new FileWriter(file))) {
+                var connector = cViewer.getDocument().getConnector();
                 java.util.Collection<Integer> ids = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask("Read names to " + shortName);
                 progressListener.setMaximum(ids.size());
                 progressListener.setProgress(0);
 
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
+                final var classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
 
                 if (classificationBlock != null) {
                     for (int classId : ids) {
-                        final Set<Long> seen = new HashSet<>();
+                        final var seen = new HashSet<Long>();
                         final Collection<Integer> allBelow;
-                        final Node v = classification.getFullTree().getANode(classId);
+                        final var v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
                         else
                             allBelow = Collections.singletonList(classId);
 
-                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                        try (var it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
                             while (it.hasNext()) {
-                                final IReadBlock readBlock = it.next();
-                                final long uid = readBlock.getUId();
+                                final var readBlock = it.next();
+                                final var uid = readBlock.getUId();
                                 if (!seen.contains(uid)) {
                                     if (uid != 0)
                                         seen.add(uid);
@@ -412,39 +411,39 @@ public class CSVExportCViewer {
      * @param progressListener @return lines written
      */
     public static int exportName2ReadNames(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
+        var totalLines = 0;
         try {
-            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+            final var classification = ClassificationManager.get(cViewer.getClassName(), true);
+            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
 
-            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-                IConnector connector = cViewer.getDocument().getConnector();
+            try (var w = new BufferedWriter(new FileWriter(file))) {
+                var connector = cViewer.getDocument().getConnector();
                 java.util.Collection<Integer> ids = cViewer.getSelectedNodeIds();
                 progressListener.setSubtask(shortName + " to read names");
                 progressListener.setMaximum(ids.size());
                 progressListener.setProgress(0);
 
-                final IClassificationBlock classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
+                final var classificationBlock = connector.getClassificationBlock(cViewer.getClassName());
 
                 if (classificationBlock != null) {
-                    for (int classId : ids) {
+                    for (var classId : ids) {
                         final Collection<Integer> allBelow;
-                        final Node v = classification.getFullTree().getANode(classId);
+                        final var v = classification.getFullTree().getANode(classId);
                         if (v.getOutDegree() > 0)
                             allBelow = classification.getFullTree().getAllDescendants(classId);
                         else {
                             allBelow = Collections.singletonList(classId);
                         }
-                        boolean hasSome = false;
+                        var hasSome = false;
 
-                        try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                        try (var it = connector.getReadsIteratorForListOfClassIds(cViewer.getClassName(), allBelow, 0, 10000, true, false)) {
                             while (it.hasNext()) {
                                 if (!hasSome) {
                                     w.write(getLabelSource(shortName, classification, format, v));
                                     hasSome = true;
                                 }
 
-                                String readId = it.next().getReadName();
+                                var readId = it.next().getReadName();
                                 w.write(separator + " " + readId);
                                 progressListener.checkForCancel();
                             }
@@ -503,7 +502,7 @@ public class CSVExportCViewer {
      * @return path label
      */
     public static String getPath(Classification classification, Node v) {
-        final List<String> path = new LinkedList<>();
+        final var path = new LinkedList<String>();
         while (v != null && v.getInfo() != null) {
             path.add(classification.getName2IdMap().get((Integer) v.getInfo()));
             if (v.getInDegree() > 0)
@@ -511,9 +510,9 @@ public class CSVExportCViewer {
             else
                 v = null;
         }
-        final String[] array = path.toArray(new String[0]);
-        final StringBuilder buf = new StringBuilder();
-        for (int i = array.length - 1; i >= 0; i--) {
+        final var array = path.toArray(new String[0]);
+        final var buf = new StringBuilder();
+        for (var i = array.length - 1; i >= 0; i--) {
             if (array[i] != null)
                 buf.append(array[i].replaceAll(";", "_")).append(";");
         }

@@ -143,8 +143,8 @@ public class CSVExporter {
     public static int apply(Director dir, ProgressListener progressListener, File file, String format, char separator, boolean reportSummarized) throws IOException {
         progressListener.setTasks("Export in CSV format", "Initializing");
 
-        final Collection<String> cNames = ClassificationManager.getAllSupportedClassifications();
-        int count = 0;
+        final var cNames = ClassificationManager.getAllSupportedClassifications();
+        var count = 0;
 
         if (format.equalsIgnoreCase("readName_to_GC"))
             count = CSVExportGCPercent.apply(dir.getMainViewer(), file, separator, progressListener);
@@ -176,7 +176,7 @@ public class CSVExporter {
 		} else if (StringUtils.endsWithIgnoreCase(format, "Name_to_count") || StringUtils.endsWithIgnoreCase(format, "Path_to_count")) {
 			for (String cName : cNames) {
 				if (format.startsWith(cName.toLowerCase())) {
-					ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
+					var viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
 					count = CSVExportCViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
 					break;
 				}
@@ -192,9 +192,9 @@ public class CSVExporter {
         } else if (format.startsWith("listTaxon")) {
             count = CSVExportCViewer.exportNames(format, dir.getMainViewer(), file, progressListener);
         } else {
-            for (String cName : cNames) {
+            for (var cName : cNames) {
                 if (format.startsWith(cName.toLowerCase())) {
-                    final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
+                    final var viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
 					if (StringUtils.endsWithIgnoreCase(format, "Name_to_count") || StringUtils.endsWithIgnoreCase(format, "Path_to_count")) {
 						count = CSVExportCViewer.exportName2Counts(format, viewer, file, separator, true, progressListener);
 						break;
@@ -213,7 +213,7 @@ public class CSVExporter {
 						break;
 					}
                 } else if (format.contains(cName.toLowerCase())) {
-                    final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
+                    final var viewer = (ClassificationViewer) dir.getViewerByClassName(ClassificationViewer.getClassName(cName));
                     if (format.startsWith("readName_to_")) {
                         count = CSVExportCViewer.exportReadName2Name(format, viewer, file, separator, progressListener);
                         break;

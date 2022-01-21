@@ -53,31 +53,30 @@ class CSVExportTaxonomy {
      * @return lines written
      */
     public static int exportTaxon2TotalLength(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
-        final MainViewer viewer = dir.getMainViewer();
+        var totalLines = 0;
+        final var viewer = dir.getMainViewer();
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final IConnector connector = viewer.getDir().getDocument().getConnector();
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
+        try (var w = new BufferedWriter(new FileWriter(file))) {
+            final var connector = viewer.getDir().getDocument().getConnector();
+            final var taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to total length");
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            for (int taxonId : taxonIds) {
+            for (var taxonId : taxonIds) {
                 final Collection<Integer> allBelow;
-                final Node v = viewer.getTaxId2Node(taxonId);
+                final var v = viewer.getTaxId2Node(taxonId);
                 if (v.getOutDegree() == 0)
                     allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                 else
                     allBelow = Collections.singletonList(taxonId);
 
-                final String name = getTaxonLabelSource(format, taxonId);
+                final var name = getTaxonLabelSource(format, taxonId);
                 w.write(name);
                 long length = 0L;
 
-                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
                     while (it.hasNext()) {
                         length += it.next().getReadLength();
                         progressListener.checkForCancel();
@@ -103,14 +102,14 @@ class CSVExportTaxonomy {
      * @return lines written
      */
     public static int exportTaxon2Counts(String format, Director dir, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
-        final MainViewer viewer = dir.getMainViewer();
+        var totalLines = 0;
+        final var viewer = dir.getMainViewer();
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final List<String> names = viewer.getDir().getDocument().getSampleNames();
+        try (var w = new BufferedWriter(new FileWriter(file))) {
+            final var names = viewer.getDir().getDocument().getSampleNames();
             if (names.size() > 1) {
                 w.write("#Datasets");
-                for (String name : names) {
+                for (var name : names) {
                     if (name == null)
                         System.err.println("Internal error, sample name is null");
                     else {
@@ -122,21 +121,21 @@ class CSVExportTaxonomy {
                 w.write("\n");
             }
 
-            final NodeSet selected = viewer.getSelectedNodes();
+            final var selected = viewer.getSelectedNodes();
 
             progressListener.setSubtask("Taxa to counts");
             progressListener.setMaximum(selected.size());
             progressListener.setProgress(0);
 
-            for (Node v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
-                Integer taxonId = (Integer) v.getInfo();
+            for (var v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
+                var taxonId = (Integer) v.getInfo();
                 if (taxonId != null) {
-                    final NodeData data = viewer.getNodeData(v);
-                    final float[] counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
-                    final String name = getTaxonLabelSource(format, taxonId);
+                    final var data = viewer.getNodeData(v);
+                    final var counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
+                    final var name = getTaxonLabelSource(format, taxonId);
                     if (counts.length == names.size()) {
                         w.write(name);
-                        for (float num : counts)
+                        for (var num : counts)
                             w.write(separator + "" + num);
                         w.write("\n");
                         totalLines++;
@@ -161,33 +160,32 @@ class CSVExportTaxonomy {
      * @return lines written
      */
     public static int exportReadName2Taxon(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
-        final MainViewer viewer = dir.getMainViewer();
+        var totalLines = 0;
+        final var viewer = dir.getMainViewer();
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final IConnector connector = viewer.getDir().getDocument().getConnector();
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(ClassificationType.Taxonomy.toString());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
+        try (var w = new BufferedWriter(new FileWriter(file))) {
+            final var connector = viewer.getDir().getDocument().getConnector();
+            final var taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Read names to taxa");
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            final boolean wantMatches = (format.endsWith("PathKPCOFGS")); // PathPercent has been disabled
+            final var wantMatches = (format.endsWith("PathKPCOFGS")); // PathPercent has been disabled
 
-            for (int taxonId : taxonIds) {
-                final Set<Long> seen = new HashSet<>();
+            for (var taxonId : taxonIds) {
+                final var seen = new HashSet<Long>();
                 final Collection<Integer> allBelow;
-                Node v = viewer.getTaxId2Node(taxonId);
+                var v = viewer.getTaxId2Node(taxonId);
                 if (v.getOutDegree() == 0)
                     allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                 else
                     allBelow = Collections.singletonList(taxonId);
 
-                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, wantMatches)) {
+                try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, wantMatches)) {
                     while (it.hasNext()) {
-                        final IReadBlock readBlock = it.next();
-                        final long uid = readBlock.getUId();
+                        final var readBlock = it.next();
+                        final var uid = readBlock.getUId();
                         if (!seen.contains(uid)) {
                             if (uid != 0)
                                 seen.add(uid);
@@ -215,13 +213,14 @@ class CSVExportTaxonomy {
      * @return lines written
      */
     public static int exportReadName2Matches(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
-        final MainViewer viewer = dir.getMainViewer();
+        var totalLines = 0;
+        final  var viewer = dir.getMainViewer();
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final IConnector connector = viewer.getDir().getDocument().getConnector();
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
+        try (var w = new BufferedWriter(new FileWriter(file))) {
+            final var connector = viewer.getDir().getDocument().getConnector();
+            final var taxonIds = viewer.getSelectedNodeIds();
+
+            w.write("# read-name"+separator+"taxon-id"+separator+"match-length"+separator+"bit-score"+separator+"percent-identity\n");
 
             progressListener.setSubtask("Read names to matches");
 
@@ -229,19 +228,19 @@ class CSVExportTaxonomy {
                 progressListener.setMaximum(taxonIds.size());
                 progressListener.setProgress(0);
 
-                for (int taxonId : taxonIds) {
-                    final Set<Long> seen = new HashSet<>();
+                for (var taxonId : taxonIds) {
+                    final var seen = new HashSet<Long>();
                     final Collection<Integer> allBelow;
-                    final Node v = viewer.getTaxId2Node(taxonId);
+                    final var v = viewer.getTaxId2Node(taxonId);
                     if (v.getOutDegree() == 0)
                         allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                     else
                         allBelow = Collections.singletonList(taxonId);
 
-                    try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, true)) {
+                    try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, true)) {
                         while (it.hasNext()) {
-                            final IReadBlock readBlock = it.next();
-                            final long uid = readBlock.getUId();
+                            final var readBlock = it.next();
+                            final var uid = readBlock.getUId();
                             if (!seen.contains(uid)) {
                                 if (uid != 0)
                                     seen.add(uid);
@@ -258,9 +257,9 @@ class CSVExportTaxonomy {
                 progressListener.setMaximum(viewer.getDir().getDocument().getNumberOfReads());
                 progressListener.setProgress(0);
 
-                try (IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+                try (var it = connector.getAllReadsIterator(0, 10000, true, true)) {
                     while (it.hasNext()) {
-                        final IReadBlock readBlock = it.next();
+                        final var readBlock = it.next();
                         writeMatches(separator, readBlock.getReadName(), readBlock, w);
                         totalLines++;
                         progressListener.incrementProgress();
@@ -284,22 +283,17 @@ class CSVExportTaxonomy {
      * @throws IOException
      */
     private static int writeMatches(char separator, String readName, IReadBlock readBlock, Writer w) throws IOException {
-
         int countMatches = 0;
         if (readBlock.getNumberOfAvailableMatchBlocks() == 0)
             w.write(String.format("%s%c\n", readName, separator));
         else {
-            w.write(readName);
             for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
-                w.write(String.format("%c%d%c%.2f", separator, matchBlock.getTaxonId(), separator, matchBlock.getBitScore()));
+                w.write(String.format("%s%c%d%c%d%c%.1f%c%.1f\n", readBlock.getReadName(),separator, matchBlock.getTaxonId(), separator,matchBlock.getLength(),separator, matchBlock.getBitScore(),separator,matchBlock.getPercentIdentity()));
                 countMatches++;
             }
-            w.write("\n");
-
         }
         return countMatches;
     }
-
     /**
      * export taxon name to read-ids mapping
      *
@@ -313,29 +307,28 @@ class CSVExportTaxonomy {
         int totalLines = 0;
         final MainViewer viewer = dir.getMainViewer();
 
-        try (final BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final IConnector connector = viewer.getDir().getDocument().getConnector();
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
+        try (final var w = new BufferedWriter(new FileWriter(file))) {
+            final var connector = viewer.getDir().getDocument().getConnector();
+            final var taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to read names");
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            for (int taxonId : taxonIds) {
+            for (var taxonId : taxonIds) {
                 final Collection<Integer> allBelow;
-                final Node v = viewer.getTaxId2Node(taxonId);
+                final var v = viewer.getTaxId2Node(taxonId);
                 if (v.getOutDegree() == 0)
                     allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                 else
                     allBelow = Collections.singletonList(taxonId);
 
-                final String name = getTaxonLabelSource(format, taxonId);
+                final var name = getTaxonLabelSource(format, taxonId);
                 w.write(name);
 
-                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
                     while (it.hasNext()) {
-                        String readId = it.next().getReadName();
+                        var readId = it.next().getReadName();
                         w.write(separator + "" + readId);
                         progressListener.checkForCancel();
                     }
@@ -361,32 +354,31 @@ class CSVExportTaxonomy {
      * @throws IOException
      */
     public static int exportTaxon2ReadIds(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
-        int totalLines = 0;
-        final MainViewer viewer = dir.getMainViewer();
+        var totalLines = 0;
+        final var viewer = dir.getMainViewer();
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            final IConnector connector = viewer.getDir().getDocument().getConnector();
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(viewer.getClassName());
-            final java.util.Collection<Integer> taxonIds = viewer.getSelectedNodeIds();
+        try (var w = new BufferedWriter(new FileWriter(file))) {
+            final var connector = viewer.getDir().getDocument().getConnector();
+            final var taxonIds = viewer.getSelectedNodeIds();
 
             progressListener.setSubtask("Taxa to read Ids");
             progressListener.setMaximum(taxonIds.size());
             progressListener.setProgress(0);
 
-            for (int taxonId : taxonIds) {
+            for (var taxonId : taxonIds) {
                 final Collection<Integer> allBelow;
-                final Node v = viewer.getTaxId2Node(taxonId);
+                final var v = viewer.getTaxId2Node(taxonId);
                 if (v.getOutDegree() == 0)
                     allBelow = TaxonomyData.getTree().getAllDescendants(taxonId);
                 else
                     allBelow = Collections.singletonList(taxonId);
 
-                final String name = getTaxonLabelSource(format, taxonId);
+                final var name = getTaxonLabelSource(format, taxonId);
                 w.write(name);
 
-                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
+                try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
                     while (it.hasNext()) {
-                        String readId = it.next().getReadName();
+                        var readId = it.next().getReadName();
                         w.write(separator + "" + readId);
                         progressListener.checkForCancel();
                     }
@@ -450,17 +442,17 @@ class CSVExportTaxonomy {
      * @return
      */
     private static String getPath(int taxonId, boolean majorRanksWithPrefixes) {
-        final List<String> path = new LinkedList<>();
-        Node v = TaxonomyData.getTree().getANode(taxonId);
+        final var path = new LinkedList<String>();
+        var v = TaxonomyData.getTree().getANode(taxonId);
         while (v != null && v.getInfo() != null) {
             taxonId = (Integer) v.getInfo();
             if (!majorRanksWithPrefixes) {
-                String name = TaxonomyData.getName2IdMap().get(taxonId);
+                var name = TaxonomyData.getName2IdMap().get(taxonId);
                 path.add(name);
             } else {
-                final int rank = TaxonomyData.getTaxonomicRank(taxonId);
+                final var rank = TaxonomyData.getTaxonomicRank(taxonId);
                 if (TaxonomicLevels.isMajorRank(rank)) {
-                    String name = TaxonomicLevels.getOneLetterCodeFromRank(rank) + "__" + TaxonomyData.getName2IdMap().get(taxonId);
+                    var name = TaxonomicLevels.getOneLetterCodeFromRank(rank) + "__" + TaxonomyData.getName2IdMap().get(taxonId);
                     path.add(name);
                 }
             }
@@ -469,9 +461,9 @@ class CSVExportTaxonomy {
             else
                 v = null;
         }
-        final StringBuilder buf = new StringBuilder();
-        final String[] array = path.toArray(new String[0]);
-        for (int i = array.length - 1; i >= 0; i--) {
+        final var buf = new StringBuilder();
+        final var array = path.toArray(new String[0]);
+        for (var i = array.length - 1; i >= 0; i--) {
             buf.append(array[i].replaceAll(";", "_")).append(";");
         }
         return buf.toString();
@@ -487,8 +479,8 @@ class CSVExportTaxonomy {
      */
     @Deprecated
     private static String getPathPercent(Director dir, IReadBlock readBlock) {
-        final Document doc = dir.getDocument();
-        final BitSet activeMatchesForTaxa = new BitSet();
+        final var doc = dir.getDocument();
+        final var activeMatchesForTaxa = new BitSet();
         ActiveMatches.compute(doc.getMinScore(), Math.max(0.0001f, doc.getTopPercent()), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, Classification.Taxonomy, activeMatchesForTaxa);
         return TaxonPathAssignment.getPathAndPercent(readBlock, activeMatchesForTaxa, false, true, true, true);
     }

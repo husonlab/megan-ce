@@ -1,3 +1,22 @@
+/*
+ * HttpServerMS.java Copyright (C) 2022 Daniel H. Huson
+ *
+ * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package megan.ms.server;
 
 import com.sun.net.httpserver.BasicAuthenticator;
@@ -10,7 +29,10 @@ import jloda.util.ProgramProperties;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -26,7 +48,7 @@ public class HttpServerMS {
     private final String defaultPath;
     private long started = 0L;
     private final int readsPerPage;
-    
+
     private final ArrayList<HttpContext> contexts=new ArrayList<>();
 
     public HttpServerMS(String path, int port, UserManager userManager, int backlog, int readsPerPage, int pageTimeout) throws IOException {
@@ -71,7 +93,7 @@ public class HttpServerMS {
         final var authenticator = userManager.createAuthenticator(role);
 
         // general info:
-         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
+        createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
         createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
         createContext(path + "/isReadOnly", new HttpHandlerMS( (c, p) -> "true".getBytes()),authenticator);
         createContext(path + "/list", new HttpHandlerMS(RequestHandler.getListDataset(database)),authenticator);
@@ -99,7 +121,7 @@ public class HttpServerMS {
         createContext(path + "/download", RequestHandlerAdditional.getDownloadPageHandler(database),authenticator);
         createContext(path + "/getDescription", new HttpHandlerMS(RequestHandler.getDescription(database)),authenticator);
     }
-    
+
     private void createContext(String path, HttpHandlerMS handler, BasicAuthenticator authenticator) {
         final HttpContext context=httpServer.createContext(path,handler);
         if(authenticator!=null)
@@ -160,13 +182,13 @@ public class HttpServerMS {
 
     public String getAbout() {
         String about = MeganServer.Version + "\n"
-                + "Version: " + ProgramProperties.getProgramVersion() + "\n"
-                + "Hostname: " + getAddress().getHostName() + "\n"
-                + "IP address: " + getAddress().getHostAddress() + "\n"
-                + "Port: " + getSocketAddress().getPort() + "\n"
-                + "Known users: " + userManager.size() + "\n"
-                + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
-                + "Server started: " + (new Date(getStarted())) + "\n";
+                       + "Version: " + ProgramProperties.getProgramVersion() + "\n"
+                       + "Hostname: " + getAddress().getHostName() + "\n"
+                       + "IP address: " + getAddress().getHostAddress() + "\n"
+                       + "Port: " + getSocketAddress().getPort() + "\n"
+                       + "Known users: " + userManager.size() + "\n"
+                       + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
+                       + "Server started: " + (new Date(getStarted())) + "\n";
         about += "Help: http://" + getAddress().getHostAddress() + ":"+getSocketAddress().getPort() + defaultPath + "/help\n";
         return about;
     }

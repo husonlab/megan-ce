@@ -1,21 +1,20 @@
 /*
- * Megan6.java Copyright (C) 2021. Daniel H. Huson
+ * Megan6.java Copyright (C) 2022 Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package megan.main;
 
@@ -35,6 +34,7 @@ import jloda.util.StringUtils;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
+import megan.util.ClassificationRegistration;
 import megan.viewer.MainViewer;
 
 import javax.swing.*;
@@ -51,14 +51,26 @@ public class Megan6 {
      */
     public static void main(String[] args) {
         try {
-            ensureInitFXInSwingProgram();
-            NotificationsInSwing.setTitle("MEGAN6");
+			{
+				ResourceManager.insertResourceRoot(megan.resources.Resources.class);
 
-            //install shutdown hook
-            //its run() method is executed for sure as the VM shuts down
-            Runnable finalizer = () -> {
-            };
-            Runtime.getRuntime().addShutdownHook(new Thread(finalizer));
+				// need to read properties so that registration can add external files directory
+				if (ProgramProperties.isMacOS())
+					MeganProperties.initializeProperties(System.getProperty("user.home") + "/Library/Preferences/Megan.def");
+				else
+					MeganProperties.initializeProperties(System.getProperty("user.home") + File.separator + ".Megan.def");
+
+				ClassificationRegistration.register();
+			}
+
+			ensureInitFXInSwingProgram();
+			NotificationsInSwing.setTitle("MEGAN6");
+
+			//install shutdown hook
+			//its run() method is executed for sure as the VM shuts down
+			Runnable finalizer = () -> {
+			};
+			Runtime.getRuntime().addShutdownHook(new Thread(finalizer));
 
             //run application
             (new Megan6()).parseArguments(args);

@@ -1,24 +1,24 @@
 /*
- * ExportReadsToGFFCommand.java Copyright (C) 2021. Daniel H. Huson
+ * ExportReadsToGFFCommand.java Copyright (C) 2022 Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package megan.commands.export;
 
+import jloda.seq.BlastMode;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
@@ -26,7 +26,6 @@ import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
-import jloda.seq.BlastMode;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -85,13 +84,11 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
         np.matchIgnoreCase(";");
 
-        if (getViewer() instanceof ClassificationViewer) {
-            final ClassificationViewer viewer = (ClassificationViewer) getViewer();
+        if (getViewer() instanceof final ClassificationViewer viewer) {
             final Document doc = viewer.getDocument();
             final Pair<Long, Long> counts = ExportAlignedReads2GFF3Format.apply(viewer, new File(fileName), classification, excludeIncompatible, excludeDominated, doc.getProgressListener());
             NotificationsInSwing.showInformation(viewer.getFrame(), "Number of reads exported: " + counts.getFirst() + ", alignments exported: " + counts.getSecond());
-        } else if (getViewer() instanceof LRInspectorViewer) {
-            final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
+        } else if (getViewer() instanceof final LRInspectorViewer viewer) {
             final Document doc = viewer.getDir().getDocument();
             final Pair<Long, Long> counts = ExportAlignedReads2GFF3Format.apply(viewer, new File(fileName), classification, excludeIncompatible, excludeDominated, doc.getProgressListener());
             NotificationsInSwing.showInformation(viewer.getFrame(), "Number of reads exported: " + counts.getFirst() + ", alignments exported: " + counts.getSecond());
@@ -109,8 +106,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
             } else if (getViewer() instanceof ClassificationViewer) {
                 canExcludeIncompatible = false;
                 canExport = (((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0);
-            } else if (getViewer() instanceof LRInspectorViewer) {
-                final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
+            } else if (getViewer() instanceof final LRInspectorViewer viewer) {
                 canExcludeIncompatible = viewer.getClassificationName().equals(Classification.Taxonomy) && viewer.someSelectedItemHasTaxonLabelsShowing();
                 canExport = viewer.someSelectedItemHasAnyLabelsShowing();
             } else {
@@ -121,7 +117,6 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
         final Triplet<Boolean, Boolean, String> options = getOptions(getViewer().getFrame(), canExport, canExcludeIncompatible);
         if (options != null) {
-
 			String name = FileUtils.replaceFileSuffix(((Director) getDir()).getDocument().getTitle(), "-" + ExportAlignedReads2GFF3Format.getShortName(options.getThird()) + ".gff");
 			String lastGFFFile = ProgramProperties.get("lastGFFFile", "");
             File lastOpenFile = new File((new File(lastGFFFile)).getParent(), name);
@@ -238,8 +233,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
     public boolean isApplicable() {
         if (((Director) getDir()).getDocument().getBlastMode() == BlastMode.BlastX) {
-            if (getViewer() instanceof ClassificationViewer) {
-                final ClassificationViewer viewer = (ClassificationViewer) getViewer();
+            if (getViewer() instanceof final ClassificationViewer viewer) {
                 return viewer.getDocument().isLongReads() && viewer.getNumberSelectedNodes() > 0;
             } else if (getViewer() instanceof LRInspectorViewer) {
                 return ((LRInspectorViewer) getViewer()).getNumberOfSelectedItems() > 0;

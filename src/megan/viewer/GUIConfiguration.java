@@ -1,21 +1,20 @@
 /*
- * GUIConfiguration.java Copyright (C) 2021. Daniel H. Huson
+ * GUIConfiguration.java Copyright (C) 2022 Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package megan.viewer;
 
@@ -51,7 +50,7 @@ public class GUIConfiguration {
 
         menuConfig.defineMenu("Edit", "Cut;Copy;Copy Image;Copy Legend;Paste;|;Edit Node Label;Edit Edge Label;Description...;|;Format...;|;Find...;Find Again;|;Colors...;|;@Preferences;");
 
-        menuConfig.defineMenu("Preferences", "Show Notifications;|;@Accession Parsing;@Taxon Disabling;|;Use Alternative Taxonomy...;Use Default NCBI Taxonomy;|;Set Search URL...;Enable Software Feature...;");
+		menuConfig.defineMenu("Preferences", "Show Notifications;|;@Accession Parsing;@Taxon Disabling;|;Add Classification...;|;Use Alternative Taxonomy...;Use Default NCBI Taxonomy;|;Set Search URL...;Enable Software Feature...;");
 
         menuConfig.defineMenu("Accession Parsing", "First Word Is Accession;Set Accession Tags;");
         menuConfig.defineMenu("Taxon Disabling", "List Disabled...;|;Disable...;Enable...;|;Enable All;Disable Default;");

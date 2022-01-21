@@ -1,6 +1,25 @@
+<!--
+  ~ help.html Copyright (C) 2022 Daniel H. Huson
+  ~
+  ~ (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
-<h1 >MeganServer commands</h1>
+<h1>MeganServer commands</h1>
 
 All commands are prefixed by "megan6server/" (or similar prefix).
 
@@ -52,12 +71,12 @@ All commands are prefixed by "megan6server/" (or similar prefix).
     <tr>
         <td>getReads?file=<i>name</i></td>
         <td> Get all reads for a given file; returns first page and page-id for next.
-        Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
+            Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
         <td> getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td>
         <td> Get all reads for a given file,  classification and one or more classes. Returns first page and page-id for next.
-        Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
+            Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
         <td>getNext?pageId=<i>num</i></td> <td> Get the next page of reads</td>
@@ -69,12 +88,12 @@ All commands are prefixed by "megan6server/" (or similar prefix).
     <tr>
         <td>getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td>
         <td> Get the classifications block for a named file and classification.
-        Optional parameter: binary=<i>bool</i></td>
+            Optional parameter: binary=<i>bool</i></td>
     </tr>
     <tr>
         <td>getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td>
         <td> Get the number reads for a given file, classification and classId.
-        Optional parameter: sum=<i>bool</i></td>
+            Optional parameter: sum=<i>bool</i></td>
     </tr>
 </table>
 
@@ -89,7 +108,7 @@ All commands are prefixed by "megan6server/" (or similar prefix).
     <tr>
         <td>admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td>
         <td> Add a new user.
-        Optional parameter: replace=<i>bool</i></td>
+            Optional parameter: replace=<i>bool</i></td>
     </tr>
     <tr>
         <td>admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>

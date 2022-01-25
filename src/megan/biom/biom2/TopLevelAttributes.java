@@ -106,7 +106,6 @@ public class TopLevelAttributes {
         }
         if (!isValidType(type))
             throw new IOException("Invalid type: " + type);
-
     }
 
     public void write(IHDF5Writer writer) throws IOException {

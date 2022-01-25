@@ -47,7 +47,7 @@ class ImportBiom2Taxonomy {
 
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
 			if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
-				pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
+                pathArray = reader.string().readMDArray("/observation/metadata/" + metaKey);
 				dimensions = pathArray.dimensions();
 				if (dimensions != null && dimensions.length > 0)
 					break;
@@ -110,7 +110,7 @@ class ImportBiom2Taxonomy {
     public static boolean hasTaxonomyMetadata(IHDF5Reader reader) {
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
 			if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
-				final MDArray<String> pathArray = reader.readStringMDArray("/observation/metadata/" + metaKey);
+                final MDArray<String> pathArray = reader.string().readMDArray("/observation/metadata/" + metaKey);
 				final int[] dimensions = pathArray.dimensions();
 				if (dimensions != null && dimensions.length > 0)
 					return true;

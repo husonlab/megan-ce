@@ -66,7 +66,7 @@ public class Taxonomy2Function {
 	private void run(String[] args) throws UsageException, IOException {
 		final var options = new ArgsOptions(args, this, "Reports taxonomy-by-function classification");
 		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
 		options.setAuthors("Daniel H. Huson");
 
 		options.comment("Input and Output");

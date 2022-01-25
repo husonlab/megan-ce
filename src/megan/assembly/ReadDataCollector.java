@@ -23,12 +23,12 @@ import jloda.seq.SequenceUtils;
 import jloda.util.CanceledException;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
-import jloda.util.progress.ProgressPercentage;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,24 +44,22 @@ public class ReadDataCollector {
      * @return list of contig names and contigs
      */
     public static List<ReadData> apply(final IReadBlockIterator iterator, final ProgressListener progress) throws IOException, CanceledException {
-        // collect all readDatas:
         progress.setSubtask("Collecting reads:");
 
-        final List<ReadData> list = new LinkedList<>();
+        final var list = new LinkedList<ReadData>();
 
-        int countReads = 0;
+        var countReads = 0;
         {
             progress.setMaximum(iterator.getMaximumProgress());
             progress.setProgress(0);
             while (iterator.hasNext()) {
-                final IReadBlock readBlock = iterator.next();
+                final var readBlock = iterator.next();
                 //System.err.println(readBlock.getReadName()+" -> "+countReads);
                 list.add(createReadData(countReads++, readBlock));
                 progress.setProgress(iterator.getProgress());
             }
         }
-        if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+        progress.reportTaskCompleted();
         return list;
     }
 
@@ -73,26 +71,26 @@ public class ReadDataCollector {
      * @throws IOException
      */
     private static ReadData createReadData(int id, IReadBlock readBlock) throws IOException {
-        ReadData readData = new ReadData(id, readBlock.getReadName());
+        var readData = new ReadData(id, readBlock.getReadName());
 
-        int best = -1;
-        float bestScore = 0;
-        for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+        var best = -1;
+        var bestScore = 0f;
+        for (var m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
             if (readBlock.getMatchBlock(m).getBitScore() > bestScore) {
                 best = m;
                 bestScore = readBlock.getMatchBlock(m).getBitScore();
             }
         }
         if (best >= 0) {
-            int[] bestCoordinates = getQueryCoordinates(readBlock.getMatchBlock(best));
+            var bestCoordinates = getQueryCoordinates(readBlock.getMatchBlock(best));
             if (bestCoordinates[0] < bestCoordinates[1])
                 readData.setSegment(readBlock.getReadSequence().substring(bestCoordinates[0] - 1, bestCoordinates[1]));
             else
 				readData.setSegment(SequenceUtils.getReverseComplement(readBlock.getReadSequence().substring(bestCoordinates[1] - 1, bestCoordinates[0])));
 
-            final List<MatchData> matches = new LinkedList<>();
+            final var matches = new ArrayList<MatchData>(readBlock.getNumberOfAvailableMatchBlocks());
 
-            for (int m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
+            for (var m = 0; m < readBlock.getNumberOfAvailableMatchBlocks(); m++) {
                 if (readBlock.getMatchBlock(m).getBitScore() == bestScore) {
                     final IMatchBlock matchBlock = readBlock.getMatchBlock(m);
                     final int[] queryCoordinates = getQueryCoordinates(matchBlock);
@@ -114,9 +112,9 @@ public class ReadDataCollector {
      * @return query coordinates, 1-based
      * @throws IOException
      */
-    private static int[] getQueryCoordinates(IMatchBlock matchBlock) throws IOException {
-        int start = matchBlock.getAlignedQueryStart();
-        int end = matchBlock.getAlignedQueryEnd();
+    private static int[] getQueryCoordinates(IMatchBlock matchBlock) {
+        var start = matchBlock.getAlignedQueryStart();
+        var end = matchBlock.getAlignedQueryEnd();
         return new int[]{start, end};
     }
 
@@ -128,8 +126,8 @@ public class ReadDataCollector {
      * @throws IOException
      */
     private static int[] getReferenceCoordinates(IMatchBlock matchBlock) throws IOException {
-        String[] tokensFirst = getLineTokens("Sbjct:", matchBlock.getText(), false);
-        String[] tokensLast = getLineTokens("Sbjct:", matchBlock.getText(), true);
+        var tokensFirst = getLineTokens("Sbjct:", matchBlock.getText(), false);
+        var tokensLast = getLineTokens("Sbjct:", matchBlock.getText(), true);
         if (tokensFirst == null) {
             tokensFirst = getLineTokens("Sbjct", matchBlock.getText(), false);
             tokensLast = getLineTokens("Sbjct", matchBlock.getText(), true);
@@ -137,8 +135,8 @@ public class ReadDataCollector {
         if (tokensFirst == null || tokensFirst.length != 4 || tokensLast == null || tokensLast.length != 4) {
             throw new IOException("Failed to parse sbjct line for match:\n" + matchBlock.getText());
         }
-        int a = Integer.parseInt(tokensFirst[1]);
-        int b = Integer.parseInt(tokensLast[3]);
+        var a = Integer.parseInt(tokensFirst[1]);
+        var b = Integer.parseInt(tokensLast[3]);
         return new int[]{a, b};
     }
 
@@ -151,9 +149,9 @@ public class ReadDataCollector {
      * @return tokens
      */
     private static String[] getLineTokens(String start, String text, boolean last) {
-        int a = (last ? text.lastIndexOf("\n" + start) : text.indexOf("\n" + start));
+        var a = (last ? text.lastIndexOf("\n" + start) : text.indexOf("\n" + start));
         if (a != -1) {
-            int b = text.indexOf('\n', a + 1);
+            var b = text.indexOf('\n', a + 1);
             if (b == -1)
                 return text.substring(a + 1).split("\\s+");
             else

@@ -68,7 +68,7 @@ public class AAdderRun {
     private void run(String[] args) throws CanceledException, IOException, UsageException {
         final ArgsOptions options = new ArgsOptions(args, this, "Adds functional accessions to DNA alignments");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input Output");

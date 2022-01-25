@@ -26,312 +26,286 @@ import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressPercentage;
 import jloda.util.progress.ProgressSilent;
 import megan.assembly.ReadAssembler;
-import megan.assembly.ReadData;
 import megan.assembly.ReadDataCollector;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Document;
-import megan.data.IClassificationBlock;
 import megan.data.IConnector;
 import megan.data.IReadBlockIterator;
 import megan.main.MeganProperties;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * performs gene-centric assemblies
  * Daniel Huson, 8/2016
  */
 public class GCAssembler {
-    /**
-     * performs gene-centric assemblies
-     *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
-    public static void main(String[] args) {
-        try {
-            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
-            ProgramProperties.setProgramName("GCAssembler");
-            ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
+	/**
+	 * performs gene-centric assemblies
+	 *
+	 * @param args
+	 * @throws UsageException
+	 * @throws IOException
+	 */
+	public static void main(String[] args) {
+		try {
+			ResourceManager.insertResourceRoot(megan.resources.Resources.class);
+			ProgramProperties.setProgramName("GCAssembler");
+			ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 
-            PeakMemoryUsageMonitor.start();
-            (new GCAssembler()).run(args);
-            System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
-            System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
-            System.exit(0);
-        } catch (Exception ex) {
-            Basic.caught(ex);
-            System.exit(1);
-        }
-    }
+			PeakMemoryUsageMonitor.start();
+			(new GCAssembler()).run(args);
+			System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
+			System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+			System.exit(0);
+		} catch (Exception ex) {
+			Basic.caught(ex);
+			System.exit(1);
+		}
+	}
 
-    /**
-     * parse arguments the program
-     *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
-    private void run(String[] args) throws UsageException, IOException {
-        CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
+	/**
+	 * parse arguments the program
+	 *
+	 * @param args
+	 * @throws UsageException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void run(String[] args) throws UsageException, IOException {
+		CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, "Gene-centric assembly");
-        options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-        options.setAuthors("Daniel H. Huson");
+		final var options = new ArgsOptions(args, this, "Gene-centric assembly");
+		options.setVersion(ProgramProperties.getProgramVersion());
+		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setAuthors("Daniel H. Huson");
 
-        options.comment("Input and output");
-		final String inputFile = options.getOptionMandatory("-i", "input", "Input DAA or RMA6 file", "");
-		final String outputFileTemplate = options.getOption("-o", "output", "Output filename template, use %d or %s to represent class id or name, respectively",
+		options.comment("Input and output");
+		final var inputFile = options.getOptionMandatory("-i", "input", "Input DAA or RMA6 file", "");
+		final var outputFileTemplate = options.getOption("-o", "output", "Output filename template, use %d or %s to represent class id or name, respectively",
 				FileUtils.replaceFileSuffix(inputFile.length() == 0 ? "input" : inputFile, "-%d.fasta"));
 
-        options.comment("Classification");
+		options.comment("Classification");
 
-		final String classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
-																						 + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ", none)", "");
-		final String[] selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
+		final var classificationName = options.getOptionMandatory("-fun", "function", "Name of functional classification (choices: "
+																					  + StringUtils.toString(ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy(), ", ") + ", none)", "");
+		final var selectedClassIds = options.getOptionMandatory("-id", "ids", "Names or ids of classes to assemble, or keyword ALL for all", new String[0]);
 
-        options.comment("Options");
+		options.comment("Options");
 
-        final int minOverlapReads = options.getOption("-mor", "minOverlapReads", "Minimum overlap for two reads", 20);
-        final int minLength = options.getOption("-len", "minLength", "Minimum contig length", 200);
-        final int minReads = options.getOption("-reads", "minReads", "Minimum number of reads", 2);
-        final int minAvCoverage = options.getOption("-mac", "minAvCoverage", "Minimum average coverage", 1);
-        final boolean doOverlapContigs = options.getOption("-c", "overlapContigs", "Attempt to overlap contigs", true);
-        final int minOverlapContigs = options.getOption("-moc", "minOverlapContigs", "Minimum overlap for two contigs", 20);
-        final float minPercentIdentityContigs = (float) options.getOption("-mic", "minPercentIdentityContigs", "Mininum percent identity to merge contigs", 98.0);
+		final var minOverlapReads = options.getOption("-mor", "minOverlapReads", "Minimum overlap for two reads", 20);
+		final var minLength = options.getOption("-len", "minLength", "Minimum contig length", 200);
+		final var minReads = options.getOption("-reads", "minReads", "Minimum number of reads", 2);
+		final var minAvCoverage = options.getOption("-mac", "minAvCoverage", "Minimum average coverage", 1);
+		final var doOverlapContigs = options.getOption("-c", "overlapContigs", "Attempt to overlap contigs", true);
+		final var minOverlapContigs = options.getOption("-moc", "minOverlapContigs", "Minimum overlap for two contigs", 20);
+		final var minPercentIdentityContigs = (float) options.getOption("-mic", "minPercentIdentityContigs", "Mininum percent identity to merge contigs", 98.0);
 
-        options.comment(ArgsOptions.OTHER);
+		options.comment(ArgsOptions.OTHER);
 
-        final int desiredNumberOfThreads = options.getOption("-t", "threads", "Number of worker threads", 4);
-        final boolean veryVerbose = options.getOption("-vv", "veryVerbose", "Report program is very verbose detail", false);
+		final var desiredNumberOfThreads = options.getOption("-t", "threads", "Number of worker threads", 8);
+		final var veryVerbose = options.getOption("-vv", "veryVerbose", "Report program is very verbose detail", false);
 
-        options.done();
+		options.done();
 
-        final boolean doAllClasses = selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all");
+		final var doAllClasses = selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all");
 
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
-        MeganProperties.initializeProperties(propertiesFile);
+		final String propertiesFile;
+		if (ProgramProperties.isMacOS())
+			propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
+		else
+			propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
+		MeganProperties.initializeProperties(propertiesFile);
 
-        final Set<String> supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
-        if (!supportedClassifications.contains(classificationName) && !classificationName.equalsIgnoreCase("none")) {
+		final var supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
+		if (!supportedClassifications.contains(classificationName) && !classificationName.equalsIgnoreCase("none")) {
 			throw new UsageException("--function: Must be one of: " + StringUtils.toString(supportedClassifications, ",") + ", none");
-        }
+		}
 
-        // todo; fun=none mode does not work
+		// todo; fun=none mode does not work
 
-        if (classificationName.equalsIgnoreCase("none") && !(selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all")))
-            throw new UsageException("--function 'none': --ids must be 'all' ");
+		if (classificationName.equalsIgnoreCase("none") && !(selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all")))
+			throw new UsageException("--function 'none': --ids must be 'all' ");
 
-        if (options.isVerbose())
-            System.err.println("Opening file: " + inputFile);
+		if (options.isVerbose())
+			System.err.println("Opening file: " + inputFile);
 
 
-        final Document document = new Document();
-        document.getMeganFile().setFileFromExistingFile(inputFile, true);
-        if (!(document.getMeganFile().isDAAFile() || document.getMeganFile().isRMA6File()))
-            throw new IOException("Input file has wrong type: must be meganized DAA file or RMA6 file");
-        if (document.getMeganFile().isDAAFile() && document.getConnector() == null)
-            throw new IOException("Input DAA file: Must first be meganized");
+		final var document = new Document();
+		document.getMeganFile().setFileFromExistingFile(inputFile, true);
+		if (!(document.getMeganFile().isDAAFile() || document.getMeganFile().isRMA6File()))
+			throw new IOException("Input file has wrong type: must be meganized DAA file or RMA6 file");
+		if (document.getMeganFile().isDAAFile() && document.getConnector() == null)
+			throw new IOException("Input DAA file: Must first be meganized");
 
-        final Classification classification;
-        final List<Integer> classIdsList;
-        if (classificationName.equalsIgnoreCase("none")) {
-            classification = null;
-            classIdsList = Collections.singletonList(0);
-        } else {
-            final IClassificationBlock classificationBlock;
-            classification = ClassificationManager.get(classificationName, true);
+		final Classification classification;
+		final List<Integer> classIdsList;
+		if (classificationName.equalsIgnoreCase("none")) {
+			classification = null; // all reads!
+			classIdsList = Collections.singletonList(0); // all reads!
+		} else {
+			classification = ClassificationManager.get(classificationName, true);
 
-            final IConnector connector = document.getConnector();
-            classificationBlock = connector.getClassificationBlock(classificationName);
+			final var connector = document.getConnector();
+			final var classificationBlock = connector.getClassificationBlock(classificationName);
 
-            if (doAllClasses) {
-                classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
-                for (Integer id : classificationBlock.getKeySet()) {
-                    if (id > 0 && classificationBlock.getSum(id) > 0)
-                        classIdsList.add(id);
-                    classIdsList.sort(Integer::compareTo);
-                }
-            } else {
-                classIdsList = new ArrayList<>(selectedClassIds.length);
-                for (String str : selectedClassIds) {
-                    if (NumberUtils.isInteger(str))
-                        classIdsList.add(NumberUtils.parseInt(str));
-                    else {
-                        if (classification != null) {
-                            int id = classification.getName2IdMap().get(str);
-                            if (id != 0)
-                                classIdsList.add(NumberUtils.parseInt(str));
-                            else
-                                System.err.println("Unknown class: " + str);
-                        }
-                    }
-                }
-            }
-        }
-        if (options.isVerbose())
-            System.err.println("Number of classes to assemble: " + classIdsList.size());
+			if (doAllClasses) {
+				classIdsList = new ArrayList<>(classificationBlock.getKeySet().size());
+				for (Integer id : classificationBlock.getKeySet()) {
+					if (id > 0 && classificationBlock.getSum(id) > 0)
+						classIdsList.add(id);
+					classIdsList.sort(Integer::compareTo);
+				}
+			} else {
+				classIdsList = new ArrayList<>(selectedClassIds.length);
+				for (String str : selectedClassIds) {
+					if (NumberUtils.isInteger(str))
+						classIdsList.add(NumberUtils.parseInt(str));
+					else {
+						if (classification != null) {
+							int id = classification.getName2IdMap().get(str);
+							if (id != 0)
+								classIdsList.add(NumberUtils.parseInt(str));
+							else
+								System.err.println("Unknown class: " + str);
+						}
+					}
+				}
+			}
+		}
+		if (options.isVerbose())
+			System.err.println("Number of classes to assemble: " + classIdsList.size());
 
-        if (classIdsList.size() == 0)
-            throw new UsageException("No valid classes specified");
+		if (classIdsList.size() == 0)
+			throw new UsageException("No valid classes specified");
 
-        final int numberOfThreads = Math.min(classIdsList.size(), desiredNumberOfThreads);
-        final int remainingThreads = Math.max(1, Runtime.getRuntime().availableProcessors() - numberOfThreads);
+		final var numberOfThreads = Math.min(classIdsList.size(), desiredNumberOfThreads);
 
-        final BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(classIdsList.size() + numberOfThreads, true);
-        final Integer sentinel = Integer.MAX_VALUE;
+		var numberOfFilesProduced = new LongAdder();
+		var totalContigs = new LongAdder();
 
-        final int[] numberOfFilesProduced = new int[numberOfThreads];
-        final int[] totalContigs = new int[numberOfThreads];
+		final var executorService = Executors.newFixedThreadPool(Math.max(1,doOverlapContigs?numberOfThreads/2:numberOfThreads));
 
-        final ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()));
+		try (ProgressListener totalProgress = (veryVerbose ? new ProgressSilent() : new ProgressPercentage("Progress:", classIdsList.size()))) {
+			var exception = new Single<Exception>();
+			final var doc = new Document();
+			doc.getMeganFile().setFileFromExistingFile(inputFile, true);
+			doc.loadMeganFile();
+			final var connector = doc.getConnector();
+			for (var classId : classIdsList) {
+				if (exception.isNull()) {
+					try (final var it = getIterator(connector, classificationName, classId)) {
+						final var readAssembler = new ReadAssembler(veryVerbose);
+						final var readData = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 
-        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-        final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
+						executorService.submit(() -> {
+							try {
+								final var progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+								final var className = classification != null ? classification.getName2IdMap().get(classId) : "none";
+								if (veryVerbose)
+									System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
 
-            for (int t = 0; t < numberOfThreads; t++) {
-                final int threadNumber = t;
+								final var outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
+								final var label = classificationName + ". Id: " + classId;
 
-                service.submit(() -> {
-                    try {
-                        final ProgressListener progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
+								readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
 
-                        final ReadAssembler readAssembler = new ReadAssembler(veryVerbose);
-                        final Document doc = new Document();
-                        doc.getMeganFile().setFileFromExistingFile(inputFile, true);
-                        doc.loadMeganFile();
-                        final IConnector connector = doc.getConnector();
+								var count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
-                        while (true) {
-                            Integer classId = queue.take();
-                            if (classId.equals(sentinel))
-                                return;
-                            try (final IReadBlockIterator it = getIterator(connector, classificationName, classId)) {
-                                final List<ReadData> readData = ReadDataCollector.apply(it, veryVerbose ? new ProgressPercentage() : new ProgressSilent());
-                                final String className = classification != null ? classification.getName2IdMap().get(classId) : "none";
-                                if (veryVerbose)
-                                    System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
+								if (veryVerbose)
+									System.err.printf("Number of contigs:%6d%n", count);
 
-                                final String outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
-                                final String label = classificationName + ". Id: " + classId;
+								if (doOverlapContigs) {
+									count = ReadAssembler.mergeOverlappingContigs(4, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
+									if (veryVerbose)
+										System.err.printf("Remaining contigs:%6d%n", count);
+								}
 
-                                readAssembler.computeOverlapGraph(label, minOverlapReads, readData, progress);
+								try (var w = new BufferedWriter(new FileWriter(outputFile))) {
+									readAssembler.writeContigs(w, progress);
+									if (veryVerbose) {
+										System.err.println("Contigs written to: " + outputFile);
+										readAssembler.reportContigStats();
+									}
+									numberOfFilesProduced.increment();
+									totalContigs.add(readAssembler.getContigs().size());
+								}
+								synchronized (totalProgress) {
+									totalProgress.incrementProgress();
+								}
+							} catch (Exception ex) {
+								exception.setIfCurrentValueIsNull(ex);
+							}
+						});
+					}
+				}
+			}
+			executorService.shutdown();
+			try {
+				executorService.awaitTermination(1000, TimeUnit.DAYS);
+			} catch (InterruptedException e) {
+				exception.set(e);
+			}
+			if (exception.isNotNull())
+				throw new IOException(exception.get());
 
-                                int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+		} finally {
+			executorService.shutdownNow();
+		}
 
-                                if (veryVerbose)
-                                    System.err.printf("Number of contigs:%6d%n", count);
+		if (options.isVerbose()) {
+			System.err.println("Number of files produced: " + numberOfFilesProduced.intValue());
+			System.err.println("Total number of contigs:  " + totalContigs.intValue());
+		}
+	}
 
-                                if (doOverlapContigs) {
-                                    count = ReadAssembler.mergeOverlappingContigs(remainingThreads, progress, minPercentIdentityContigs, minOverlapContigs, readAssembler.getContigs(), veryVerbose);
-                                    if (veryVerbose)
-                                        System.err.printf("Remaining contigs:%6d%n", count);
-                                }
-
-                                try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
-                                    readAssembler.writeContigs(w, progress);
-                                    if (veryVerbose) {
-                                        System.err.println("Contigs written to: " + outputFile);
-                                        readAssembler.reportContigStats();
-                                    }
-                                    numberOfFilesProduced[threadNumber]++;
-                                    totalContigs[threadNumber] += readAssembler.getContigs().size();
-                                }
-                            }
-                            synchronized (totalProgress) {
-                                totalProgress.incrementProgress();
-                            }
-                        }
-                    } catch (Exception e) {
-                        Basic.caught(e);
-                        if (e instanceof CanceledException) {
-                            System.exit(1);
-                        }
-                    } finally {
-                        countDownLatch.countDown();
-                    }
-                });
-            }
-
-        for (Integer classId : classIdsList) {
-            try {
-                queue.put(classId);
-            } catch (InterruptedException e) {
-                Basic.caught(e);
-            }
-        }
-
-        try {
-            for (int i = 0; i < numberOfThreads; i++)
-                queue.put(sentinel);
-        } catch (InterruptedException e) {
-            Basic.caught(e);
-        }
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            Basic.caught(e);
-        } finally {
-            service.shutdownNow();
-        }
-
-        totalProgress.close();
-
-        if (options.isVerbose()) {
-            System.err.println("Number of files produced: " + CollectionUtils.getSum(numberOfFilesProduced));
-            System.err.println("Total number of contigs:  " + CollectionUtils.getSum(totalContigs));
-        }
-    }
-
-    /**
-     * create the output file name
-     *
-     * @param outputFileTemplate
-     * @param classId
-     * @param className
-     * @param numberOfIds
-     * @return output file name
-     */
-    private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
-        String outputFile = null;
-        if (outputFileTemplate.contains("%d"))
-            outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
-        if (outputFileTemplate.contains("%s"))
+	/**
+	 * create the output file name
+	 *
+	 * @param outputFileTemplate
+	 * @param classId
+	 * @param className
+	 * @param numberOfIds
+	 * @return output file name
+	 */
+	private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
+		String outputFile = null;
+		if (outputFileTemplate.contains("%d"))
+			outputFile = outputFileTemplate.replaceAll("%d", "" + classId);
+		if (outputFileTemplate.contains("%s"))
 			outputFile = (outputFile == null ? outputFileTemplate : outputFile).replaceAll("%s", StringUtils.toCleanName(className));
-        if (outputFile == null && numberOfIds > 1)
+		if (outputFile == null && numberOfIds > 1)
 			outputFile = FileUtils.replaceFileSuffix(outputFileTemplate, "-" + classId + ".fasta");
-        if (outputFile == null)
-            outputFile = outputFileTemplate;
-        return outputFile;
-    }
+		if (outputFile == null)
+			outputFile = outputFileTemplate;
+		return outputFile;
+	}
 
-    /**
-     * get the iterator
-     *
-     * @param connector
-     * @param classificationName
-     * @param classId
-     * @return iterator
-     * @throws IOException
-     */
-    private IReadBlockIterator getIterator(IConnector connector, String classificationName, int classId) throws IOException {
-        if (classificationName.equalsIgnoreCase("none"))
-            return connector.getAllReadsIterator(0, 10, true, true);
-        else
-            return connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
-    }
+	/**
+	 * get the iterator. It will be an interator over all reads in a given class, if classificationName and classId given, otherwise, over all reads
+	 *
+	 * @param connector
+	 * @param classificationName
+	 * @param classId
+	 * @return iterator
+	 * @throws IOException
+	 */
+	private IReadBlockIterator getIterator(IConnector connector, String classificationName, int classId) throws IOException {
+		if (classificationName.equalsIgnoreCase("none"))
+			return connector.getAllReadsIterator(0, 10, true, true);
+		else
+			return connector.getReadsIterator(classificationName, classId, 0, 10, true, true);
+	}
 }

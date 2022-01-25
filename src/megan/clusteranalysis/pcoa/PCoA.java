@@ -218,17 +218,17 @@ public class PCoA {
     public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float[]> class2counts) {
         loadingVectorsBiPlot.clear();
 
-        final int numberOfClasses = (class2counts == null ? 0 : class2counts.size());
+        final var numberOfClasses = (class2counts == null ? 0 : class2counts.size());
 
-        final double[][] matrixM = new double[numberOfSamples][numberOfClasses]; // sample X class matrix
+        final var matrixM = new double[numberOfSamples][numberOfClasses]; // sample X class matrix
 
         // setup classes
         final String[] classNames;
         if (class2counts != null) {
             classNames = class2counts.keySet().toArray(new String[numberOfClasses]);
-            for (int classNumber = 0; classNumber < classNames.length; classNumber++) {
-                final String name = classNames[classNumber];
-                final float[] counts = class2counts.get(name);
+            for (var classNumber = 0; classNumber < classNames.length; classNumber++) {
+                final var name = classNames[classNumber];
+                final var counts = class2counts.get(name);
                 if (counts != null) {
                     for (int sampleNumber = 0; sampleNumber < counts.length; sampleNumber++) {
                         matrixM[sampleNumber][classNumber] += counts[sampleNumber];
@@ -240,29 +240,29 @@ public class PCoA {
 
         // standardize points:
 
-        final double[][] standardizedPoints = Utilities.centerAndScale(points);
-        final double[][] S = Utilities.computeCovariance(matrixM, standardizedPoints, true);
+        final var standardizedPoints = Utilities.centerAndScale(points);
+        final var S = Utilities.computeCovariance(matrixM, standardizedPoints, true);
 
-        final double[] values = eigenValues.clone();
+        final var values = eigenValues.clone();
         Utilities.scalarMultiply(1.0 / (numberOfSamples - 1), values);
         Utilities.sqrt(values);
         Utilities.invertValues(values);
-        double[][] diagonal = Utilities.diag(values);
-        double[][] biplotProjection = Utilities.multiply(S, diagonal);
+        var diagonal = Utilities.diag(values);
+        var plotProjection = Utilities.multiply(S, diagonal);
 
-        for (double[] row : biplotProjection)
+        for (var row : plotProjection)
             Utilities.scalarMultiply(0.00001, row);
 
 
-        Pair<String, double[]>[] nameAndLoadingVectorBiPlot = new Pair[numberOfClasses];
-        for (int i = 0; i < numberOfClasses; i++) {
-            nameAndLoadingVectorBiPlot[i] = (new Pair<>(classNames[i], biplotProjection[i]));
+        var nameAndLoadingVector = (Pair<String, double[]>[])new Pair[numberOfClasses];
+        for (var i = 0; i < numberOfClasses; i++) {
+            nameAndLoadingVector[i] = (new Pair<>(classNames[i], plotProjection[i]));
         }
 
         // sort by decreasing length of vector
-        Arrays.sort(nameAndLoadingVectorBiPlot, (a, b) -> {
-            double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-            double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+        Arrays.sort(nameAndLoadingVector, (a, b) -> {
+            var aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+            var bSquaredLength = Utilities.getSquaredLength(b.getSecond());
             if (aSquaredLength > bSquaredLength)
                 return -1;
             else if (aSquaredLength < bSquaredLength)
@@ -278,7 +278,7 @@ public class PCoA {
 
         }
         */
-        loadingVectorsBiPlot.addAll(Arrays.asList(nameAndLoadingVectorBiPlot));
+        loadingVectorsBiPlot.addAll(Arrays.asList(nameAndLoadingVector));
     }
 
     /**
@@ -289,19 +289,19 @@ public class PCoA {
     public void computeLoadingVectorsTriPlot(final int numberOfSamples, final Map<String, float[]> attribute2counts) {
         loadingVectorsTriPlot.clear();
 
-        final int numberOfAttributes = (attribute2counts == null ? 0 : attribute2counts.size());
+        final var numberOfAttributes = (attribute2counts == null ? 0 : attribute2counts.size());
 
-        final double[][] matrixM = new double[numberOfSamples][numberOfAttributes]; // sample X class matrix
+        final var matrixM = new double[numberOfSamples][numberOfAttributes]; // sample X class matrix
 
         // setup attributes
         final String[] attributeNames;
         if (attribute2counts != null) {
             attributeNames = attribute2counts.keySet().toArray(new String[numberOfAttributes]);
-            for (int attributeNumber = 0; attributeNumber < attributeNames.length; attributeNumber++) {
-                final String name = attributeNames[attributeNumber];
-                final float[] counts = attribute2counts.get(name);
+            for (var attributeNumber = 0; attributeNumber < attributeNames.length; attributeNumber++) {
+                final var name = attributeNames[attributeNumber];
+                final var counts = attribute2counts.get(name);
                 if (counts != null) {
-                    for (int sampleNumber = 0; sampleNumber < counts.length; sampleNumber++) {
+                    for (var sampleNumber = 0; sampleNumber < counts.length; sampleNumber++) {
                         matrixM[sampleNumber][attributeNumber] += counts[sampleNumber];
                     }
                 }
@@ -311,28 +311,28 @@ public class PCoA {
 
         // standardize points:
 
-        final double[][] standardizedPoints = Utilities.centerAndScale(points);
-        final double[][] S = Utilities.computeCovariance(matrixM, standardizedPoints, true);
+        final var standardizedPoints = Utilities.centerAndScale(points);
+        final var S = Utilities.computeCovariance(matrixM, standardizedPoints, true);
 
-        final double[] values = eigenValues.clone();
+        final var values = eigenValues.clone();
         Utilities.scalarMultiply(1.0 / (numberOfSamples - 1), values);
         Utilities.sqrt(values);
         Utilities.invertValues(values);
-        double[][] diagonal = Utilities.diag(values);
-        double[][] biplotProjection = Utilities.multiply(S, diagonal);
+        var diagonal = Utilities.diag(values);
+        var projection = Utilities.multiply(S, diagonal);
 
-        for (double[] row : biplotProjection)
+        for (var row : projection)
             Utilities.scalarMultiply(0.00001, row);
 
-        Pair<String, double[]>[] nameAndLoadingVectorBiPlot = new Pair[numberOfAttributes];
-        for (int i = 0; i < numberOfAttributes; i++) {
-            nameAndLoadingVectorBiPlot[i] = (new Pair<>(attributeNames[i], biplotProjection[i]));
+        var nameAndLoadingVector = ( Pair<String, double[]>[] )new Pair[numberOfAttributes];
+        for (var i = 0; i < numberOfAttributes; i++) {
+            nameAndLoadingVector[i] = (new Pair<>(attributeNames[i], projection[i]));
         }
 
         // sort by decreasing length of vector
-        Arrays.sort(nameAndLoadingVectorBiPlot, (a, b) -> {
-            double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-            double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+        Arrays.sort(nameAndLoadingVector, (a, b) -> {
+            var aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+            var bSquaredLength = Utilities.getSquaredLength(b.getSecond());
             if (aSquaredLength > bSquaredLength)
                 return -1;
             else if (aSquaredLength < bSquaredLength)
@@ -349,7 +349,7 @@ public class PCoA {
         }
         */
 
-        loadingVectorsTriPlot.addAll(Arrays.asList(nameAndLoadingVectorBiPlot));
+        loadingVectorsTriPlot.addAll(Arrays.asList(nameAndLoadingVector));
     }
 
     public List<Pair<String, double[]>> getLoadingVectorsBiPlot() {

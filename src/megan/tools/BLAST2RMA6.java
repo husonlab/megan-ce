@@ -92,7 +92,7 @@ public class BLAST2RMA6 {
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes MEGAN RMA files from  BLAST (or similar) files");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");

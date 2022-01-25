@@ -152,18 +152,17 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
 
         String message = "";
 
-        if (getViewer() instanceof AlignmentViewer) {
-            final AlignmentViewer viewer = (AlignmentViewer) getViewer();
-            final AlignmentAssembler alignmentAssembler = new AlignmentAssembler();
+        if (getViewer() instanceof final AlignmentViewer viewer) {
+            final var alignmentAssembler = new AlignmentAssembler();
             alignmentAssembler.computeOverlapGraph(minOverlap, viewer.getAlignment(), progress);
-            int count = alignmentAssembler.computeContigs(0, minReads, minAvCoverage, minLength, false, progress);
+            var count = alignmentAssembler.computeContigs(0, minReads, minAvCoverage, minLength, false, progress);
 
-            System.err.println(String.format("Number of contigs:%6d", count));
+            System.err.printf("Number of contigs:%6d%n", count);
 
             if (doOverlapContigs) {
                 final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
                 count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, alignmentAssembler.getContigs(), true);
-                System.err.println(String.format("Remaining contigs:%6d", count));
+                System.err.printf("Remaining contigs:%6d%n", count);
             }
 
             try (Writer w = new BufferedWriter(new FileWriter(outputFile))) {
@@ -190,14 +189,14 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
             if (viewer.getSelectedNodeIds().size() > 0) {
                 final ReadAssembler readAssembler = new ReadAssembler(true);
 
-                final IReadBlockIterator it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true);
-                try (IReadBlockIterator it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
-					final String label = viewer.getClassName() + ". Id(s): " + StringUtils.toString(viewer.getSelectedNodeIds(), ", ");
-					final java.util.List<ReadData> readData = ReadDataCollector.apply(it, progress);
+                final var it0 = doc.getConnector().getReadsIteratorForListOfClassIds(viewer.getClassName(), viewer.getSelectedNodeIds(), 0, 10, true, true);
+                try (var it = (maxNumberOfReads > 0 ? new ReadBlockIteratorMaxCount(it0, maxNumberOfReads) : it0)) {
+					final var label = viewer.getClassName() + ". Id(s): " + StringUtils.toString(viewer.getSelectedNodeIds(), ", ");
+					final var readData = ReadDataCollector.apply(it, progress);
                     readAssembler.computeOverlapGraph(label, minOverlap, readData, progress);
-                    int count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
+                    var count = readAssembler.computeContigs(minReads, minAvCoverage, minLength, progress);
 
-                    System.err.println(String.format("Number of contigs:%6d", count));
+                    System.err.printf("Number of contigs:%6d%n", count);
 
                     if (count == 0) {
                         message = "Could not assemble reads, 0 contigs created.";
@@ -205,7 +204,7 @@ public class ExportGeneCentricAssemblyCommand extends CommandBase implements ICo
                         if (doOverlapContigs) {
                             final int numberOfThreads = ProgramExecutorService.getNumberOfCoresToUse();
                             count = ReadAssembler.mergeOverlappingContigs(numberOfThreads, progress, maxPercentIdentity, minContigOverlap, readAssembler.getContigs(), true);
-                            System.err.println(String.format("Remaining contigs:%6d", count));
+                            System.err.printf("Remaining contigs:%6d%n", count);
                         }
 
                         if (ProgramProperties.get("verbose-assembly", false)) {

@@ -92,14 +92,14 @@ public class TopLevelAttributes {
      */
     private void read(IHDF5Reader reader) throws IOException {
         try {
-            id = reader.getStringAttribute("/", "id");
-            type = reader.getStringAttribute("/", "type");
-            formatURL = reader.getStringAttribute("/", "format-url");
-            formatVersion = reader.getIntArrayAttribute("/", "format-version");
-            generatedBy = reader.getStringAttribute("/", "generated-by");
-            creationDate = reader.getStringAttribute("/", "creation-date");
-            shape = reader.getIntArrayAttribute("/", "shape");
-            nnz = reader.getIntAttribute("/", "nnz");
+            id = reader.string().getAttr("/", "id");
+            type = reader.string().getAttr("/", "type");
+            formatURL = reader.string().getAttr("/", "format-url");
+            formatVersion = reader.int32().getArrayAttr("/", "format-version");
+            generatedBy = reader.string().getAttr("/", "generated-by");
+            creationDate = reader.string().getAttr("/", "creation-date");
+            shape = reader.int32().getArrayAttr("/", "shape");
+            nnz = reader.int32().getAttr("/", "nnz");
         } catch (Exception ex) {
             System.err.println("BIOM2 parser: Some required top-level attribute(s) missing.");
             throw new IOException(ex);

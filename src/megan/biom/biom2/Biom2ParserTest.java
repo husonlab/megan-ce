@@ -74,7 +74,7 @@ public class Biom2ParserTest {
                     classifications.add(taxonomyNameMetadata);
                     // System.err.println("Elements:  " + reader.getDataSetInformation("/observation/metadata/"+taxonomyNameMetadata).getNumberOfElements());
 
-                    final MDArray<String> array = reader.readStringMDArray("/observation/metadata/" + taxonomyNameMetadata);
+                    final MDArray<String> array = reader.string().readMDArray("/observation/metadata/" + taxonomyNameMetadata);
                     /*
                     int[] dimensions = array.dimensions();
                     if (dimensions.length == 2) {

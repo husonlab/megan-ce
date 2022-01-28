@@ -126,8 +126,8 @@ public class MeganProperties {
         ProgramProperties.load(propertiesFile);
 
         if (!ProgramProperties.get("Version", "").equals(ProgramProperties.getProgramName())) {
-            // System.err.println("malt.Version has changed, resetting path to initialization files");
-            // malt.Version has changed, reset paths to taxonomy
+            // System.err.println("Version has changed, resetting path to initialization files");
+            // Version has changed, reset paths to taxonomy
             ProgramProperties.put("Version", ProgramProperties.getProgramName());
             // make sure we find the initialization files:
             ProgramProperties.put(TAXONOMYFILE, DEFAULT_TAXONOMYFILE);

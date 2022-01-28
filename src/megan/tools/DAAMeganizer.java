@@ -51,9 +51,7 @@ public class DAAMeganizer {
      * meganizes a DAA file
      *
      * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+      */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);

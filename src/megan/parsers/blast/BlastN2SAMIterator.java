@@ -268,7 +268,6 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
             else { // query minus, ref plus
                 int tmp = queryStart;
                 queryStart = queryEnd;
-                queryEnd = tmp;
                 tmp = referenceStart;
                 referenceStart = referenceEnd;
                 referenceEnd = tmp;

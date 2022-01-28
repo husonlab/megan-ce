@@ -45,8 +45,8 @@ public class OverlapAvoider<T> {
      */
     public OverlapAvoider() {
         sortedByMinX = new TreeSet<>((id1, id2) -> {
-            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinX() : data.get(id1).getFirst().getMaxX());
-            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinX() : data.get(id2).getFirst().getMaxX());
+            double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinX() : data.get(id1).getFirst().getMaxX());
+            double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinX() : data.get(id2).getFirst().getMaxX());
             if (d1 < d2)
                 return -1;
             else if (d1 > d2)
@@ -54,8 +54,8 @@ public class OverlapAvoider<T> {
             else return id1.compareTo(id2);
         });
         sortedByMaxX = new TreeSet<>((id1, id2) -> {
-            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxX() : data.get(id1).getFirst().getMinX());
-            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxX() : data.get(id2).getFirst().getMinX());
+            double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMaxX() : data.get(id1).getFirst().getMinX());
+            double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMaxX() : data.get(id2).getFirst().getMinX());
             if (d1 < d2)
                 return -1;
             else if (d1 > d2)
@@ -63,8 +63,8 @@ public class OverlapAvoider<T> {
             else return id1.compareTo(id2);
         });
         sortedByMinY = new TreeSet<>((id1, id2) -> {
-            Double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinY() : data.get(id1).getFirst().getMaxY());
-            Double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinY() : data.get(id2).getFirst().getMaxY());
+            double d1 = (id1 != currentComparison ? data.get(id1).getFirst().getMinY() : data.get(id1).getFirst().getMaxY());
+            double d2 = (id2 != currentComparison ? data.get(id2).getFirst().getMinY() : data.get(id2).getFirst().getMaxY());
             if (d1 < d2)
                 return -1;
             else if (d1 > d2)

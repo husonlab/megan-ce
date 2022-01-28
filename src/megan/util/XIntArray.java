@@ -40,10 +40,8 @@ public class XIntArray {
 
     /**
      * constructs a new array of initial size 0. If size is known, use other constructor
-     *
-     * @throws java.io.IOException
      */
-    public XIntArray() throws IOException {
+    public XIntArray() {
         this((byte) 0);
     }
 

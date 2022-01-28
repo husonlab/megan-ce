@@ -26,6 +26,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -76,14 +77,13 @@ public class RemoteBlastClient {
      * launch the search
      *
      * @param queries
-     * @return request Id
      */
-    public String startRemoteSearch(Collection<Pair<String, String>> queries) throws IOException {
+    public void startRemoteSearch(Collection<Pair<String, String>> queries) throws IOException {
         if (queries.size() == 0)
-            return null;
+            return;
         final StringBuilder query = new StringBuilder();
         for (Pair<String, String> pair : queries) {
-			query.append(">").append(StringUtils.swallowLeadingGreaterSign(pair.getFirst().trim())).append("\n").append(pair.getSecond().trim()).append("\n");
+            query.append(">").append(StringUtils.swallowLeadingGreaterSign(pair.getFirst().trim())).append("\n").append(pair.getSecond().trim()).append("\n");
         }
         requestId = null;
         estimatedTime = -1;
@@ -101,7 +101,6 @@ public class RemoteBlastClient {
             throw new IOException("Failed to obtain valid requestId");
         estimatedTime = parseEstimatedTime(response);
 
-        return requestId;
     }
 
     /**
@@ -125,19 +124,13 @@ public class RemoteBlastClient {
             for (String aLine : getLinesBetween(response, "QBlastInfoBegin", "QBlastInfoEnd")) {
                 if (aLine.contains("Status=")) {
                     switch (aLine.replaceAll("Status=", "").trim()) {
-                        case "WAITING":
-                            status = Status.searching;
-                            break;
-                        case "FAILED":
-                            status = Status.failed;
-                            break;
-                        case "READY":
+                        case "WAITING" -> status = Status.searching;
+                        case "FAILED" -> status = Status.failed;
+                        case "READY" -> {
                             actualTime = (int) ((System.currentTimeMillis() - startTime) / 1000);
                             status = Status.hitsFound; // will check whether hits really found
-                            break;
-                        default:
-                        case "UNKNOWN":
-                            status = Status.unknown;
+                        }
+                        case "UNKNOWN" -> status = Status.unknown;
                     }
                 } else if (aLine.contains("ThereAreHits=no"))
                     thereAreNoHits = true;
@@ -186,11 +179,9 @@ public class RemoteBlastClient {
      * set the blast program
      *
      * @param program
-     * @return
      */
-    public RemoteBlastClient setProgram(BlastProgram program) {
+    public void setProgram(BlastProgram program) {
         this.program = program;
-        return this;
     }
 
     /**
@@ -206,11 +197,9 @@ public class RemoteBlastClient {
      * set the database
      *
      * @param database
-     * @return
      */
-    public RemoteBlastClient setDatabase(String database) {
+    public void setDatabase(String database) {
         this.database = database;
-        return this;
     }
 
     /**
@@ -308,9 +297,9 @@ public class RemoteBlastClient {
                 first = false;
             } else
                 urlString.append("&");
-            urlString.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+            urlString.append(URLEncoder.encode(param.getKey(), StandardCharsets.UTF_8));
             urlString.append('=');
-            urlString.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+            urlString.append(URLEncoder.encode(String.valueOf(param.getValue()), StandardCharsets.UTF_8));
         }
 
         if (verbose) {
@@ -327,13 +316,13 @@ public class RemoteBlastClient {
         connection.connect();
 
         final StringBuilder response = new StringBuilder();
-        try (Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+        try (Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             for (int c; (c = in.read()) >= 0; ) {
                 response.append((char) c);
             }
         }
         if (verbose)
-            System.err.println("Response " + response.toString());
+            System.err.println("Response " + response);
         return response.toString();
     }
 
@@ -348,15 +337,15 @@ public class RemoteBlastClient {
         final StringBuilder postData = new StringBuilder();
         for (Map.Entry<String, Object> param : parameters.entrySet()) {
             if (postData.length() != 0) postData.append('&');
-            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+            postData.append(URLEncoder.encode(param.getKey(), StandardCharsets.UTF_8));
             postData.append('=');
-            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), StandardCharsets.UTF_8));
         }
-        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+        byte[] postDataBytes = postData.toString().getBytes(StandardCharsets.UTF_8);
 
         if (verbose) {
             System.err.println("POST " + baseURL);
-            System.err.println(postData.toString());
+            System.err.println(postData);
         }
 
         final URL url = new URL(baseURL);
@@ -368,13 +357,13 @@ public class RemoteBlastClient {
         connection.getOutputStream().write(postDataBytes);
 
         final StringBuilder response = new StringBuilder();
-        try (Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+        try (Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             for (int c; (c = in.read()) >= 0; ) {
                 response.append((char) c);
             }
         }
         if (verbose)
-            System.err.println("Response " + response.toString());
+            System.err.println("Response " + response);
         return response.toString();
     }
 
@@ -383,15 +372,12 @@ public class RemoteBlastClient {
     }
 
     public static String[] getDatabaseNames(BlastProgram blastProgram) {
-        switch (blastProgram) {
-            case blastp:
-            case blastx:
-                return new String[]{"nr", "refseq_protein", "SMARTBLAST/landmark", "swissprot", "pat", "pdb", "env_nr", "tsa_nr"};
-            default:
-                return new String[]{"nr", "refseq_rna", "refseq_genomic", "refseq_representative_genomes",
-                        "genomic/9606/RefSeqGene", "est", "gss", "htgs", "pat", "pdb", "alu", "dbsts",
-                        "chromosome", "Whole_Genome_Shotgun_contigs", "tsa_nt", "rRNA_typestrains/prokaryotic_16S_ribosomal_RNA",
-                        "sra"};
-        }
+        return switch (blastProgram) {
+            case blastp, blastx -> new String[]{"nr", "refseq_protein", "SMARTBLAST/landmark", "swissprot", "pat", "pdb", "env_nr", "tsa_nr"};
+            default -> new String[]{"nr", "refseq_rna", "refseq_genomic", "refseq_representative_genomes",
+                    "genomic/9606/RefSeqGene", "est", "gss", "htgs", "pat", "pdb", "alu", "dbsts",
+                    "chromosome", "Whole_Genome_Shotgun_contigs", "tsa_nt", "rRNA_typestrains/prokaryotic_16S_ribosomal_RNA",
+                    "sra"};
+        };
     }
 }

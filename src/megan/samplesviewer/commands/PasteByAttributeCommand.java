@@ -22,7 +22,6 @@ import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.clipboard.ClipboardBase;
@@ -32,7 +31,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.Optional;
 
 public class PasteByAttributeCommand extends ClipboardBase implements ICommand {
@@ -41,7 +39,7 @@ public class PasteByAttributeCommand extends ClipboardBase implements ICommand {
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -59,17 +57,13 @@ public class PasteByAttributeCommand extends ClipboardBase implements ICommand {
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()) {
                     final String selected = result.get();
-                    try {
-                        ProgramProperties.put("PasteByAttribute", selected);
-                        samplesViewer.getSamplesTableView().pasteClipboardByAttribute(selected);
-                        samplesViewer.getSamplesTableView().syncFromViewToDocument();
-                        samplesViewer.getCommandManager().updateEnableStateFXItems();
-                        if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTableView().isDirty()) {
-                            samplesViewer.getDocument().setDirty(true);
-                            samplesViewer.setWindowTitle();
-                        }
-                    } catch (IOException e) {
-                        Basic.caught(e);
+                    ProgramProperties.put("PasteByAttribute", selected);
+                    samplesViewer.getSamplesTableView().pasteClipboardByAttribute(selected);
+                    samplesViewer.getSamplesTableView().syncFromViewToDocument();
+                    samplesViewer.getCommandManager().updateEnableStateFXItems();
+                    if (!samplesViewer.getDocument().isDirty() && samplesViewer.getSamplesTableView().isDirty()) {
+                        samplesViewer.getDocument().setDirty(true);
+                        samplesViewer.setWindowTitle();
                     }
                 }
             }

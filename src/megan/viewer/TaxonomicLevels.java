@@ -128,24 +128,16 @@ public class TaxonomicLevels {
      * @return level
      */
     public static int getRankForOneLetterCode(String oneLetterLabel) {
-        switch (oneLetterLabel.toLowerCase()) {
-            case "d":
-                return getId(Domain);
-            case "p":
-                return getId(Phylum);
-            case "c":
-                return getId(Class);
-            case "o":
-                return getId(Order);
-            case "f":
-                return getId(Family);
-            case "g":
-                return getId(Genus);
-            case "s":
-                return getId(Species);
-            default:
-                return 0;
-        }
+        return switch (oneLetterLabel.toLowerCase()) {
+            case "d" -> getId(Domain);
+            case "p" -> getId(Phylum);
+            case "c" -> getId(Class);
+            case "o" -> getId(Order);
+            case "f" -> getId(Family);
+            case "g" -> getId(Genus);
+            case "s" -> getId(Species);
+            default -> 0;
+        };
     }
 
     /**

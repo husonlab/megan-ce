@@ -183,8 +183,8 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
     /**
      * make a SAM line
      */
-    private String makeSAM(String queryName, String refName, float bitScore, String line) throws IOException {
+    private String makeSAM(String queryName, String refName, float bitScore, String line) {
 
-		return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
+        return String.format("%s\t0\t%s\t0\t255\t*\t*\t0\t0\t*\t*\tAS:i:%d\t", queryName, refName, Math.round(bitScore)) + String.format("AL:Z:%s\t", StringUtils.replaceSpaces(line, ' '));
     }
 }

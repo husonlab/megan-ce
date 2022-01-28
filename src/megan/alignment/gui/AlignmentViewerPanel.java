@@ -395,36 +395,28 @@ public class AlignmentViewerPanel extends JPanel {
         consensusPanel.setAlignment(alignment);
 
         switch (alignment.getSequenceType()) {
-            case Alignment.PROTEIN:
+            case Alignment.PROTEIN -> {
                 alignmentPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColorScheme));
                 consensusPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColorScheme));
-                break;
-            case Alignment.DNA:
+            }
+            case Alignment.DNA -> {
                 alignmentPanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
                 consensusPanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
-                break;
-            case Alignment.cDNA:
+            }
+            case Alignment.cDNA -> {
                 alignmentPanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
                 consensusPanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
-                break;
-            default:
+            }
+            default -> {
                 alignmentPanel.setColorScheme(new ColorSchemeText());
                 consensusPanel.setColorScheme(new ColorSchemeText());
-                break;
+            }
         }
         switch (alignment.getReferenceType()) {
-            case Alignment.PROTEIN:
-                referencePanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColorScheme));
-                break;
-            case Alignment.DNA:
-                referencePanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
-                break;
-            case Alignment.cDNA:
-                referencePanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
-                break;
-            default:
-                referencePanel.setColorScheme(new ColorSchemeText());
-                break;
+            case Alignment.PROTEIN -> referencePanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColorScheme));
+            case Alignment.DNA -> referencePanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
+            case Alignment.cDNA -> referencePanel.setColorScheme(new ColorSchemeNucleotides(nuceoltidesColorScheme));
+            default -> referencePanel.setColorScheme(new ColorSchemeText());
         }
         setShowConsensus(true);
     }
@@ -671,14 +663,12 @@ public class AlignmentViewerPanel extends JPanel {
     /**
      * copy selected consensus to clip-board
      */
-    public boolean copyConsensus() {
+    public void copyConsensus() {
         final SelectedBlock selectedBlock = getSelectedBlock();
         if (selectedBlock.isSelected()) {
             StringSelection ss = new StringSelection(getSelectedConsensus());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -697,14 +687,12 @@ public class AlignmentViewerPanel extends JPanel {
     /**
      * copy selected reference to clip-board
      */
-    public boolean copyReference() {
+    public void copyReference() {
         final SelectedBlock selectedBlock = getSelectedBlock();
         if (selectedBlock.isSelected()) {
             StringSelection ss = new StringSelection(getSelectedReference());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-            return true;
         }
-        return false;
     }
 
     /**

@@ -112,7 +112,7 @@ public class MSConnector implements IConnector {
     }
 
     @Override
-    public void updateClassifications(String[] classificationNames, List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException {
+    public void updateClassifications(String[] classificationNames, List<UpdateItem> updateItems, ProgressListener progressListener) {
         System.err.println("updateClassifications: not implemented");
     }
 
@@ -132,12 +132,12 @@ public class MSConnector implements IConnector {
     }
 
     @Override
-    public void setNumberOfReads(int numberOfReads) throws IOException {
+    public void setNumberOfReads(int numberOfReads) {
         System.err.println("setNumberOfReads: not implemented");
     }
 
     @Override
-    public void putAuxiliaryData(Map<String, byte[]> label2data) throws IOException {
+    public void putAuxiliaryData(Map<String, byte[]> label2data) {
         System.err.println("putAuxiliaryData: not implemented");
     }
 

@@ -145,10 +145,9 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * read in the classification block from a file
      *
-     * @return classes read
      * @throws java.io.IOException
      */
-    public int load(IInputReader r) throws IOException {
+    public void load(IInputReader r) throws IOException {
         id2SumAndPos.clear();
         try (r) {
             int numberOfClasses = 0;
@@ -166,7 +165,6 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
             }
             // System.err.println("Loaded:\n"+toString());
 
-            return numberOfClasses;
         }
     }
 

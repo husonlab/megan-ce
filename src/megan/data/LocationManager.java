@@ -78,8 +78,8 @@ public class LocationManager {
      *
      * @param file
      */
-    public int addFile(File file) {
-        return getFileId(file);
+    public void addFile(File file) {
+        getFileId(file);
     }
 
     /**
@@ -88,11 +88,10 @@ public class LocationManager {
      * @param file
      * @param fileSize
      */
-    public int addFile(File file, Long fileSize) {
+    public void addFile(File file, Long fileSize) {
         int fileId = getFileId(file);
         if (fileSize != null)
             fileSizes.set(fileId, fileSize);
-        return fileId;
     }
 
     /**

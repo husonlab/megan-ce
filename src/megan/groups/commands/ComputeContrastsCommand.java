@@ -126,7 +126,7 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
 					Map<String, Double> results = contrasts.getSplitScores(first.toArray(new String[0]), second.toArray(new String[0]));
 
 					SortedSet<Pair<Double, String>> sorted = new TreeSet<>();
-					System.out.println(String.format("%-20s\tScore", viewerName));
+					System.out.printf("%-20s\tScore%n", viewerName);
 					for (String taxon : results.keySet()) {
 						double value = results.get(taxon); // clamp to range -1 1
 						if (value < -1)
@@ -139,9 +139,9 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
                     System.out.println("--------------------------------------");
                     for (Pair<Double, String> pair : sorted) {
                         if ((-pair.getFirst()) >= 0)
-                            System.out.println(String.format("%-20s\t %1.4f", pair.getSecond(), (-pair.getFirst())));
+                            System.out.printf("%-20s\t %1.4f%n", pair.getSecond(), (-pair.getFirst()));
                         else
-                            System.out.println(String.format("%-20s\t%1.4f", pair.getSecond(), (-pair.getFirst())));
+                            System.out.printf("%-20s\t%1.4f%n", pair.getSecond(), (-pair.getFirst()));
                     }
                     System.out.println("--------------------------------------");
                 }

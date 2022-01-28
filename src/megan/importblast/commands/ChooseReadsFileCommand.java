@@ -42,7 +42,7 @@ import java.util.Objects;
  * Daniel Huson, 11.2010
  */
 public class ChooseReadsFileCommand extends CommandBase implements ICommand {
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

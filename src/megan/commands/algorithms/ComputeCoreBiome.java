@@ -130,7 +130,7 @@ public class ComputeCoreBiome {
             }
             System.err.println("Read detection thresholds for " + classificationName + ":");
             for (float value : array) {
-                System.err.print(String.format(" %,12.0f", value));
+                System.err.printf(" %,12.0f", value);
             }
             System.err.println();
         }

@@ -98,21 +98,20 @@ class TaxonomyEditing {
     public void apply(Map<Integer, String> taxId2TaxName, Map<String, Integer> taxName2TaxId) {
         for (Edit edit : list) {
             switch (edit.type) {
-                case Edit.APPEND:
+                case Edit.APPEND -> {
                     taxId2TaxName.put(edit.taxId, edit.taxName);
                     taxName2TaxId.put(edit.taxName, edit.taxId);
-                    break;
-                case Edit.RENAME:
+                }
+                case Edit.RENAME -> {
                     taxId2TaxName.put(edit.taxId, edit.taxName);
                     taxName2TaxId.put(edit.taxName, edit.taxId);
-                    break;
-                case Edit.DELETE:
+                }
+                case Edit.DELETE -> {
                     taxId2TaxName.remove(edit.taxId);
                     taxName2TaxId.remove(edit.taxName);
-
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         }
     }
@@ -224,16 +223,12 @@ class Edit {
      * @return
      */
     public String toString() {
-        switch (type) {
-            case APPEND:
-                return "A " + parentId + " " + taxId + " '" + taxName + "'";
-            case DELETE:
-                return "D " + taxId;
-            case RENAME:
-                return "R " + taxId + " '" + taxName + "'";
-            default:
-                return "NONE";
-        }
+        return switch (type) {
+            case APPEND -> "A " + parentId + " " + taxId + " '" + taxName + "'";
+            case DELETE -> "D " + taxId;
+            case RENAME -> "R " + taxId + " '" + taxName + "'";
+            default -> "NONE";
+        };
     }
 
 

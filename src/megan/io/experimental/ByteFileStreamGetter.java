@@ -69,7 +69,6 @@ public class ByteFileStreamGetter implements IByteGetter {
                 throw new IOException("seek(): not supported");
             else {
                 len = raf.read(bytes, offset, len);
-                index += len;
                 return len;
             }
         }

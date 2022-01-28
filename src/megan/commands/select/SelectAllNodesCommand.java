@@ -66,15 +66,9 @@ public class SelectAllNodesCommand extends CommandBase implements ICommand {
             return;
         } else if (getViewer() instanceof GroupsViewer) {
             switch (what.toLowerCase()) {
-                case "previous":
-                    ((GroupsViewer) getViewer()).selectFromPrevious(ProjectManager.getPreviouslySelectedNodeLabels());
-                    break;
-                case "all":
-                    ((GroupsViewer) getViewer()).getGroupsPanel().selectAll();
-                    break;
-                case "none":
-                    ((GroupsViewer) getViewer()).getGroupsPanel().selectNone();
-                    break;
+                case "previous" -> ((GroupsViewer) getViewer()).selectFromPrevious(ProjectManager.getPreviouslySelectedNodeLabels());
+                case "all" -> ((GroupsViewer) getViewer()).getGroupsPanel().selectAll();
+                case "none" -> ((GroupsViewer) getViewer()).getGroupsPanel().selectNone();
             }
             return;
         } else

@@ -95,8 +95,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
                 seriesList.inSelection = true;
                 try {
                     // select series in window
-                    Set<String> selected = new HashSet<>();
-                    selected.addAll(seriesList.getSelectedLabels());
+                    Set<String> selected = new HashSet<>(seriesList.getSelectedLabels());
                     selectedSeries.clear();
                     selectedSeries.setSelected(selected, true);
                 } finally {

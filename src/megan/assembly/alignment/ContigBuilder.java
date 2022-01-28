@@ -139,7 +139,7 @@ public class ContigBuilder {
             sortAlignmentByContigs(alignment);
 
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
     }
 
     /**

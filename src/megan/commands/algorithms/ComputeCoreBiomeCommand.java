@@ -42,7 +42,7 @@ public class ComputeCoreBiomeCommand extends CommandBase implements ICommand {
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public boolean isCritical() {

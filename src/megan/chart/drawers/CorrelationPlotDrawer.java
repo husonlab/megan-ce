@@ -373,7 +373,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
         Color color = getChartColors().getHeatMapTable().getColor((int) Math.round(500.0 * (correlationCoefficent + 1.0)), 1000);
 
         switch (getMode()) {
-            case Beans: {
+            case Beans -> {
                 double width = 2 + Math.min(boundingBox[2], boundingBox[3]) * (correlationCoefficent + 1.0) / 2.0;
                 double height = 2 + Math.min(boundingBox[2], boundingBox[3]) * (1.0 - correlationCoefficent) / 2.0;
                 int x = (int) Math.round(centerX - width / 2.0); // left
@@ -398,7 +398,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 }
                 break;
             }
-            case Circles: {
+            case Circles -> {
                 double width = Math.min(boundingBox[2], boundingBox[3]);
                 double height = Math.min(boundingBox[2], boundingBox[3]);
                 double radius = Math.abs(correlationCoefficent) * Math.min(width, height);
@@ -410,7 +410,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 gc.drawOval(x, y, (int) Math.round(radius), (int) Math.round(radius));
                 break;
             }
-            case Squares: {
+            case Squares -> {
                 double width = Math.min(boundingBox[2], boundingBox[3]) * Math.abs(correlationCoefficent);
                 double height = Math.min(boundingBox[2], boundingBox[3]) * Math.abs(correlationCoefficent);
                 int x = (int) Math.round(centerX - width / 2.0); // left
@@ -421,7 +421,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 gc.drawRect(x, y, (int) Math.round(width), (int) Math.round(height));
                 break;
             }
-            case Colors: {
+            case Colors -> {
                 final double width = boundingBox[2];
                 final double height = boundingBox[3];
                 final double x = centerX - width / 2.0; // left
@@ -440,7 +440,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 }
                 break;
             }
-            case Numbers: {
+            case Numbers -> {
                 gc.setFont(getFont(ChartViewer.FontKeys.DrawFont.toString()));
                 String label = String.format("%.3f", correlationCoefficent);
                 Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();

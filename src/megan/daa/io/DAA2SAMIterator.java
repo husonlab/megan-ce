@@ -61,7 +61,7 @@ public class DAA2SAMIterator implements ISAMIterator {
      * @return true, if more data available
      */
     @Override
-    public boolean hasNext() throws IOException {
+    public boolean hasNext() {
         return daa2QuerySAMIterator.hasNext();
     }
 

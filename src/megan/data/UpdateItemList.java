@@ -56,7 +56,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * @param readUid
      * @param classIds
      */
-    public UpdateItem addItem(final long readUid, float readWeight, final int[] classIds) throws IOException {
+    public void addItem(final long readUid, float readWeight, final int[] classIds) throws IOException {
         if (classIds.length != numberOfClassifications)
             throw new IOException("classIds has wrong length: " + classIds.length + ", should be: " + numberOfClassifications);
         final UpdateItem item = new UpdateItem(numberOfClassifications);
@@ -85,7 +85,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
                 }
             }
         }
-        return item;
     }
 
     /**

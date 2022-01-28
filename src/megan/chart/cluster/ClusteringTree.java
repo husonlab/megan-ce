@@ -103,7 +103,7 @@ public class ClusteringTree {
                 final Taxa taxa;
                 final Distances distances;
                 switch (type) {
-                    case SERIES: {
+                    case SERIES -> {
                         final String[] series = seriesAndClass2Value.rowKeySet().toArray(new String[0]);
 
                         taxa = new Taxa();
@@ -118,7 +118,7 @@ public class ClusteringTree {
                         }
                         break;
                     }
-                    case CLASSES: {
+                    case CLASSES -> {
                         final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[0]);
 
                         taxa = new Taxa();
@@ -133,8 +133,7 @@ public class ClusteringTree {
                         }
                         break;
                     }
-                    default:
-                        throw new RuntimeException("Invalid case: " + type.toString());
+                    default -> throw new RuntimeException("Invalid case: " + type);
                 }
 
                 treeView.getGraph().clear();
@@ -352,17 +351,14 @@ public class ClusteringTree {
                 gc.fillOval(ax - 1, ay - 1, 3, 3);
 
                 switch (rootSide) {
-                    case BOTTOM:
-                    case TOP:
+                    case BOTTOM, TOP -> {
                         gc.drawLine(ax, ay, (int) Math.round(b.getX()), ay);
                         gc.drawLine((int) Math.round(b.getX()), ay, (int) Math.round(b.getX()), (int) Math.round(b.getY()));
-                        break;
-                    default:
-                    case RIGHT:
-                    case LEFT:
+                    }
+                    case RIGHT, LEFT -> {
                         gc.drawLine(ax, ay, (int) Math.round(a.getX()), (int) Math.round(b.getY()));
                         gc.drawLine(ax, (int) Math.round(b.getY()), (int) Math.round(b.getX()), (int) Math.round(b.getY()));
-                        break;
+                    }
                 }
             /*
             if (e.getTarget().getOutDegree() == 0)
@@ -370,7 +366,7 @@ public class ClusteringTree {
                 */
             } finally {
                 if (gc instanceof SelectionGraphics)
-                    ((SelectionGraphics) gc).clearCurrentItem();
+                    ((SelectionGraphics<?>) gc).clearCurrentItem();
             }
         }
     }

@@ -53,7 +53,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
     private final NodeSet toSelect;
     private final NodeSet toDeselect;
 
-    private boolean searchInCollapsed = false;
+    private boolean searchInCollapsed;
 
     private int countCurrent = 0; // use this to cycle throug different instances of current node id
 

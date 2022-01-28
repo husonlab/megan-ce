@@ -79,7 +79,7 @@ public class ReferenceCoverFilter {
             final Map<String, IntervalChain> ref2intervals = new HashMap<>();
 
             progress.setSubtask("Determining reference coverage");
-            System.err.println(String.format("Running reference coverage filter with threshold=%.1f%%", getPercentToCover()));
+            System.err.printf("Running reference coverage filter with threshold=%.1f%%%n", getPercentToCover());
 
             final int numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), connector.getNumberOfReads());
             if (numberOfThreads == 0)
@@ -169,7 +169,7 @@ public class ReferenceCoverFilter {
                 }
             }
             if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
 
             System.err.println("Reference cover filter: using " + referencesToUse.size() + " of " + ref2intervals.size() + " references");
             if (referencesToUse.size() == ref2intervals.size()) {

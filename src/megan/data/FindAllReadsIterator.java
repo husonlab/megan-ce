@@ -36,7 +36,7 @@ public class FindAllReadsIterator implements IReadBlockIterator {
 
     private final IReadBlockIterator allReadsIterator;
 
-    private IReadBlock nextRead = null;
+    private IReadBlock nextRead;
     private int countReads = 0;
 
     /**
@@ -45,7 +45,7 @@ public class FindAllReadsIterator implements IReadBlockIterator {
      * @param allReadsIterator
      * @param canceled
      */
-    public FindAllReadsIterator(String regularExpression, FindSelection findSelector, IReadBlockIterator allReadsIterator, Single<Boolean> canceled) throws IOException {
+    public FindAllReadsIterator(String regularExpression, FindSelection findSelector, IReadBlockIterator allReadsIterator, Single<Boolean> canceled) {
         this.findSelector = findSelector;
         this.canceled = canceled;
         pattern = Pattern.compile(regularExpression);

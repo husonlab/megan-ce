@@ -156,7 +156,7 @@ public class PostProcessMatches {
                 System.err.println("Using TopPercentScoreToStronglyDominate=" + topPercentScoreToStronglyDominate);
             topProportionScoreToStronglyDominate = topPercentScoreToStronglyDominate / 100.0f;
 
-            System.err.println(String.format("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and TopPercentScoreToStronglyDominate=%.1f", minPercentCoverToStronglyDominate, topPercentScoreToStronglyDominate));
+            System.err.printf("Input domination filter: MinPercentCoverToStronglyDominate=%.1f and TopPercentScoreToStronglyDominate=%.1f%n", minPercentCoverToStronglyDominate, topPercentScoreToStronglyDominate);
         }
     }
 }

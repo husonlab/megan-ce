@@ -216,7 +216,7 @@ public class DefaultPlot2DData implements IPlot2DData {
             rangeY.set(Math.min(rangeY.getFirst().doubleValue(), y.doubleValue()), Math.max(rangeY.getSecond().doubleValue(), y.doubleValue()));
     }
 
-    public void read(Reader r) throws IOException {
+    public void read(Reader r) {
         System.err.println("Read data: not implemented");
     }
 

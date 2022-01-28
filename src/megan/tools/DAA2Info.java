@@ -67,19 +67,18 @@ public class DAA2Info {
      * @param args
      * @throws UsageException
      * @throws IOException
-     * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-		options.setAuthors("Daniel H. Huson");
+        options.setAuthors("Daniel H. Huson");
 
-		options.comment("Input and Output");
-		final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
-		final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
+        options.comment("Input and Output");
+        final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
+        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
-		options.comment("Commands");
+        options.comment("Commands");
 		final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
 		final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
 

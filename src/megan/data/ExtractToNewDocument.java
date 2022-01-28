@@ -119,26 +119,25 @@ public class ExtractToNewDocument {
     private static byte[] computeSAM(BlastMode blastMode, int maxNumberOfReads, String matchesText) throws IOException {
         final ISAMIterator iterator;
         switch (blastMode) {
-            case BlastN: {
+            case BlastN -> {
                 final BlastN2SAMIterator blastN2SAMIterator = new BlastN2SAMIterator(matchesText, maxNumberOfReads);
                 blastN2SAMIterator.setReportAllMatchesInOriginalOrder(true);
                 iterator = blastN2SAMIterator;
                 break;
             }
-            case BlastP: {
+            case BlastP -> {
                 final BlastP2SAMIterator blastP2SAMIterator = new BlastP2SAMIterator(matchesText, maxNumberOfReads);
                 blastP2SAMIterator.setReportAllMatchesInOriginalOrder(true);
                 iterator = blastP2SAMIterator;
                 break;
             }
-            case BlastX: {
+            case BlastX -> {
                 final BlastX2SAMIterator blastX2SAMIterator = new BlastX2SAMIterator(matchesText, maxNumberOfReads);
                 blastX2SAMIterator.setReportAllMatchesInOriginalOrder(true);
                 iterator = blastX2SAMIterator;
                 break;
             }
-            default:
-                throw new IOException("Invalid BLAST mode: " + blastMode.toString());
+            default -> throw new IOException("Invalid BLAST mode: " + blastMode);
         }
         try {
             // don't want any long read optimizations as they will change the order of the reads!

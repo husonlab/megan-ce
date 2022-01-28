@@ -45,7 +45,7 @@ import java.util.*;
 public class CompareWindow extends JDialog {
     private final ActionJList<MyListItem> jList;
     private final DefaultListModel<MyListItem> listModel;
-    private Comparer.COMPARISON_MODE mode = Comparer.COMPARISON_MODE.RELATIVE;
+    private Comparer.COMPARISON_MODE mode;
     private boolean ignoreNoHits;
     private boolean keep1;
 
@@ -279,8 +279,8 @@ public class CompareWindow extends JDialog {
             buf.append(" ignoreUnassigned=").append(isIgnoreNoHits());
 
             boolean first = true;
-            for (Object aSelected : selected) {
-                MyListItem item = (MyListItem) aSelected;
+            for (MyListItem aSelected : selected) {
+                MyListItem item = aSelected;
                 if (item.getPID() >= 0) {
                     if (first) {
                         buf.append(" pid=");

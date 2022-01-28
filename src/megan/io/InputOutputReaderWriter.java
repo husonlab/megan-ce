@@ -113,11 +113,10 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
      * skip some bytes
      *
      * @param bytes
-     * @return number of bytes skipped
      * @throws IOException
      */
-    public int skipBytes(int bytes) throws IOException {
-        return io.skipBytes(bytes);
+    public void skipBytes(int bytes) throws IOException {
+        io.skipBytes(bytes);
     }
 
     public int read() throws IOException {

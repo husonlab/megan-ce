@@ -36,9 +36,8 @@ public class UngroupNodesCommand extends CommandBase implements ICommand {
      * apply
      *
      * @param np
-     * @throws Exception
      */
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

@@ -25,7 +25,6 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.Table;
 import megan.core.Director;
@@ -119,7 +118,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
 
         seriesScrollPane.getVerticalScrollBar().setModel(dataScrollPane.getVerticalScrollBar().getModel());
 
-        selectionListener = (labels, selected) -> dataJTable.selectSamples(labels, selected);
+        selectionListener = dataJTable::selectSamples;
         dir.getDocument().getSampleSelection().addSampleSelectionListener(selectionListener);
 
 
@@ -266,7 +265,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
         return locked;
     }
 
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         ProgramProperties.put(getClassName() + "Geometry", new int[]
                 {getFrame().getLocation().x, getFrame().getLocation().y, getFrame().getSize().width, getFrame().getSize().height});
 

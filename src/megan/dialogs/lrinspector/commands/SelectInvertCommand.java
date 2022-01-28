@@ -34,7 +34,7 @@ import java.awt.event.KeyEvent;
  */
 public class SelectInvertCommand extends CommandBase implements ICommand {
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

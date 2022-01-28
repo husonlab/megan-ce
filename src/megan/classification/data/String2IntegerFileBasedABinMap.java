@@ -74,7 +74,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
                 indexStartPos = magicNumber.length + 1; //  header consists of 4 bytes: 3 for magic number plus mask byte
             }
 
-            dataStartPos = indexStartPos + (extended ? 8 : 4) * (mask + 1); // This is where the data begins.
+            dataStartPos = indexStartPos + (long) (extended ? 8 : 4) * (mask + 1); // This is where the data begins.
 
             dataByteBuffer = new ByteFileGetterMappedMemory(new File(fileName));
             size = dataByteBuffer.getInt(dataByteBuffer.limit() - 4);
@@ -138,7 +138,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     public int get(String keyString) throws IOException {
         byte[] key = keyString.getBytes();
         final int keyHash = computeHash(key, mask);
-        long dataOffset = extended ? dataByteBuffer.getLong(8 * keyHash + indexStartPos) : dataByteBuffer.getInt(4 * keyHash + indexStartPos);
+        long dataOffset = extended ? dataByteBuffer.getLong(8L * keyHash + indexStartPos) : dataByteBuffer.getInt(4L * keyHash + indexStartPos);
         if (dataOffset == 0)
             return 0;
         // cache:
@@ -195,7 +195,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         dataByteBuffer.close();
     }
 
@@ -215,9 +215,8 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
      *
      * @param byteBuffer
      * @return number of bytes read excluding termining 0, if match, or -number of bytes read, if no match
-     * @throws IOException
      */
-    private int readAndCompareBytes0Terminated(byte[] key, int keyLength, long pos, ByteFileGetterMappedMemory byteBuffer) throws IOException {
+    private int readAndCompareBytes0Terminated(byte[] key, int keyLength, long pos, ByteFileGetterMappedMemory byteBuffer) {
         int i = 0;
         boolean equal = true;
         // byte[] got=new byte[10000];

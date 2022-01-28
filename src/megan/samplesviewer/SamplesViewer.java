@@ -28,7 +28,6 @@ import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
 import jloda.swing.window.MenuConfiguration;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
@@ -319,7 +318,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         locked = true;
         ProgramProperties.put("SampleViewerGeometry", new int[]{frame.getLocation().x, frame.getLocation().y, frame.getSize().width, frame.getSize().height});
         frame.setVisible(false);

@@ -50,8 +50,7 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
         final LinkedList<String> disabled = new LinkedList<>(list.getDisabledLabels());
 
         switch (which.toLowerCase()) {
-            case "up":
-            case "down": {
+            case "up", "down" -> {
                 final int direction = (which.equalsIgnoreCase("up") ? -1 : 1);
 
                 final SortedSet<Pair<Number, String>> sorted = new TreeSet<>((pair1, pair2) -> {
@@ -92,15 +91,14 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                 }
                 break;
             }
-            case "alphabetically":
-            case "alphabackward": {
+            case "alphabetically", "alphabackward" -> {
                 final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
                 final SortedSet<String> sorted = new TreeSet<>((s, s1) -> direction * s.compareToIgnoreCase(s1));
                 sorted.addAll(list.getAllLabels());
                 list.sync(sorted, list.getLabel2ToolTips(), true);
                 break;
             }
-            case "enabled": {
+            case "enabled" -> {
                 final String[] array = list.getAllLabels().toArray(new String[0]);
                 final Set<String> disabledSet = new HashSet<>(disabled);
                 Arrays.sort(array, (a, b) -> {

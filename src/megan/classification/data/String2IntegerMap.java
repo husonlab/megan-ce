@@ -56,7 +56,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
                 String[] tokens = aLine.split("\t");
 
                 if (tokens.length >= 2) {
-					final Integer id;
+					final int id;
 					if (NumberUtils.isInteger(tokens[1])) {
 						id = NumberUtils.parseInt(tokens[1]);
 					} else {
@@ -103,7 +103,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         clear();
     }
 }

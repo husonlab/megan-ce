@@ -69,7 +69,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
 
         this.percentToCover = (percentToCover >= 99.9999 ? 100 : percentToCover);
 
-        System.err.println(String.format("Using 'Weighted LCA' assignment (%.1f %%) on %s", this.percentToCover, cName));
+        System.err.printf("Using 'Weighted LCA' assignment (%.1f %%) on %s%n", this.percentToCover, cName);
 
         computeWeights(doc);
     }
@@ -197,11 +197,11 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
             throw new CanceledException();
 
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
-		System.err.println(String.format("Total matches:    %,12d ", CollectionUtils.getSum(totalMatches)));
-		System.err.println(String.format("Total references: %,12d ", (ref2weight != null ? ref2weight.size() : refId2weight.length)));
-		System.err.println(String.format("Total weights:    %,12d ", CollectionUtils.getSum(totalWeight)));
-		System.err.println();
+            progress.reportTaskCompleted();
+        System.err.printf("Total matches:    %,12d %n", CollectionUtils.getSum(totalMatches));
+        System.err.printf("Total references: %,12d %n", (ref2weight != null ? ref2weight.size() : refId2weight.length));
+        System.err.printf("Total weights:    %,12d %n", CollectionUtils.getSum(totalWeight));
+        System.err.println();
 
     }
 

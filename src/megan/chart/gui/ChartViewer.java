@@ -48,7 +48,6 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -159,7 +158,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         for (FontKeys target : FontKeys.values()) {
             fonts.put(target.toString(),
                     new Pair<>(ProgramProperties.get(target.toString(), defaultFont),
-                            ProgramProperties.get(target.toString() + "Color", (Color) null)));
+                            ProgramProperties.get(target + "Color", (Color) null)));
         }
 
         setIconImages(ProgramProperties.getProgramIconImages());
@@ -866,7 +865,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         return statusbar;
     }
 
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
             gc.setFont(getFont());
@@ -996,15 +995,11 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     }
 
     public LabelsJList getLabelsJList(String name) {
-        switch (name.toLowerCase()) {
-            case "attributes":
-                return getAttributesList();
-            case "classes":
-                return getClassesList();
-            default:
-            case "series":
-                return getSeriesList();
-        }
+        return switch (name.toLowerCase()) {
+            case "attributes" -> getAttributesList();
+            case "classes" -> getClassesList();
+            case "series" -> getSeriesList();
+        };
     }
 
     public SeriesList getSeriesList() {

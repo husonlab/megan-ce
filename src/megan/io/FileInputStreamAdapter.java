@@ -54,11 +54,11 @@ public class FileInputStreamAdapter implements IInput {
         bif.close();
     }
 
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return position;
     }
 
-    public long length() throws IOException {
+    public long length() {
         return length;
     }
 

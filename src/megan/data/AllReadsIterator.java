@@ -36,7 +36,7 @@ public class AllReadsIterator implements IReadBlockIterator {
      *
      * @param readBlockGetter
      */
-    public AllReadsIterator(IReadBlockGetter readBlockGetter) throws IOException {
+    public AllReadsIterator(IReadBlockGetter readBlockGetter) {
         this.readBlockGetter = readBlockGetter;
         totalCount = readBlockGetter.getCount();
     }

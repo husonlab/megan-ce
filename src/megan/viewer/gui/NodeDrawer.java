@@ -116,15 +116,8 @@ public class NodeDrawer implements INodeDrawer {
         this.style = style;
 
         switch (style) {
-            default:
-            case PieChart:
-            case Circle:
-                maxValue = maxTotalCount;
-                break;
-            case CoxComb:
-            case BarChart:
-            case HeatMap:
-                maxValue = maxSingleCount;
+            case PieChart, Circle -> maxValue = maxTotalCount;
+            case CoxComb, BarChart, HeatMap -> maxValue = maxSingleCount;
         }
         this.linearFactor = (maxValue > 0 ? maxNodeHeight / maxValue : 0);
         this.sqrtFactor = (maxValue > 0 ? maxNodeHeight / Math.sqrt(maxValue) : 0);
@@ -198,15 +191,11 @@ public class NodeDrawer implements INodeDrawer {
     public double getScaledSize(double value) {
         if (value > maxValue)
             value = maxValue;
-        switch (scalingType) {
-            default:
-            case LINEAR:
-                return value * linearFactor;
-            case SQRT:
-                return Math.sqrt(value) * sqrtFactor;
-            case LOG:
-                return Math.log(value) * logFactor;
-        }
+        return switch (scalingType) {
+            case LINEAR -> value * linearFactor;
+            case SQRT -> Math.sqrt(value) * sqrtFactor;
+            case LOG -> Math.log(value) * logFactor;
+        };
     }
 
     /**
@@ -223,23 +212,14 @@ public class NodeDrawer implements INodeDrawer {
 
         if ((!drawLeavesOnly || v.getOutDegree() == 0) && scaleBy != ScaleBy.None && nv.getNodeShape() != NodeShape.None) {
             switch (style) {
-                case HeatMap:
-                    drawAsHeatMap(v, nv, data);
-                    break;
-                case BarChart:
-                    drawAsBarChart(v, nv, data);
-                    break;
-                case PieChart:
+                case HeatMap -> drawAsHeatMap(v, nv, data);
+                case BarChart -> drawAsBarChart(v, nv, data);
+                case PieChart -> {
                     drawAsCircle(v, nv, data);
                     drawAsPieChart(v, nv, data);
-                    break;
-                case CoxComb:
-                    drawAsCoxComb(v, nv, data);
-                    break;
-                default:
-                case Circle:
-                    drawAsCircle(v, nv, data);
-                    break;
+                }
+                case CoxComb -> drawAsCoxComb(v, nv, data);
+                case Circle -> drawAsCircle(v, nv, data);
             }
         } else {
             nv.setNodeShape(NodeShape.None);
@@ -636,19 +616,11 @@ public class NodeDrawer implements INodeDrawer {
         //gc.drawString(""+count,apt.x+30,apt.y);
         if (v.getOutDegree() == 0 || count > 0) {
             for (int i = 0; i < array.length; i++) {
-                Color color;
-                switch (scalingType) {
-                    default:
-                    case LINEAR:
-                        color = doc.getChartColorManager().getHeatMapTable().getColor((int) array[i], (int) maxValue);
-                        break;
-                    case SQRT:
-                        color = doc.getChartColorManager().getHeatMapTable().getColorSqrtScale((int) array[i], inverseSqrtMaxCount);
-                        break;
-                    case LOG:
-                        color = doc.getChartColorManager().getHeatMapTable().getColorLogScale((int) array[i], inverseLogMaxCount);
-                        break;
-                }
+                Color color = switch (scalingType) {
+                    case LINEAR -> doc.getChartColorManager().getHeatMapTable().getColor((int) array[i], (int) maxValue);
+                    case SQRT -> doc.getChartColorManager().getHeatMapTable().getColorSqrtScale((int) array[i], inverseSqrtMaxCount);
+                    case LOG -> doc.getChartColorManager().getHeatMapTable().getColorLogScale((int) array[i], inverseLogMaxCount);
+                };
                 gc.setColor(color);
 
                 // gc.setColor(getLogScaleColor(COLORS[i % COLORS.length], array[i], inverseLogTotalReads));

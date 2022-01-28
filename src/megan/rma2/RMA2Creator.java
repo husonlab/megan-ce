@@ -66,7 +66,7 @@ public class RMA2Creator {
         infoSection.setTextStoragePolicy(textStoragePolicy);
 
         switch (textStoragePolicy) {
-            case Embed:
+            case Embed -> {
                 infoSection.setTextFileNames(new String[0]);
                 infoSection.setTextFileSizes(new Long[0]);
                 fileWriter = rma2File.getFileWriter();
@@ -74,8 +74,8 @@ public class RMA2Creator {
                 tmpWriter = rma2File.getTmpIndexFileWriter();
                 dumpWriter = null;
                 infoSection.setDataDumpSectionStart(fileWriter.getPosition());
-                break;
-            case InRMAZ:
+            }
+            case InRMAZ -> {
                 if (locationManager.getFiles().size() != 1)
                     throw new IOException("Wrong number of dump-file names: " + locationManager.getFileNames().length);
                 infoSection.setTextFileNames(locationManager.getFileNames());
@@ -86,8 +86,8 @@ public class RMA2Creator {
                 tmpWriter = null;
                 infoSection.setDataIndexSectionStart(fileWriter.getPosition());
                 fileWriter.write(RMA2File.CHECK_BYTE); // required by dataindex
-                break;
-            case Reference:
+            }
+            case Reference -> {
                 infoSection.setTextFileNames(locationManager.getFileNames());
                 infoSection.setTextFileSizes(locationManager.getFileSizes());
                 fileWriter = rma2File.getFileWriter();
@@ -95,9 +95,8 @@ public class RMA2Creator {
                 tmpWriter = null;
                 infoSection.setDataIndexSectionStart(fileWriter.getPosition());
                 fileWriter.write(RMA2File.CHECK_BYTE);  // required by dataindex
-                break;
-            default:
-                throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
+            }
+            default -> throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
         }
     }
 
@@ -111,17 +110,10 @@ public class RMA2Creator {
         numberOfReads++;
         numberOfMatches += readBlock.getNumberOfMatches();
         switch (textStoragePolicy) {
-            case Embed:
-                ReadBlockRMA2.write(rma2Formatter, readBlock, fileWriter, tmpWriter);
-                break;
-            case InRMAZ:
-                ReadBlockRMA2.write(rma2Formatter, readBlock, dumpWriter, fileWriter);
-                break;
-            case Reference:
-                ReadBlockRMA2.write(rma2Formatter, readBlock, null, fileWriter);
-                break;
-            default:
-                throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
+            case Embed -> ReadBlockRMA2.write(rma2Formatter, readBlock, fileWriter, tmpWriter);
+            case InRMAZ -> ReadBlockRMA2.write(rma2Formatter, readBlock, dumpWriter, fileWriter);
+            case Reference -> ReadBlockRMA2.write(rma2Formatter, readBlock, null, fileWriter);
+            default -> throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
         }
     }
 
@@ -134,16 +126,14 @@ public class RMA2Creator {
         infoSection.syncLocationManager2InfoSection(locationManager);
 
         switch (textStoragePolicy) {
-            case Embed:
+            case Embed -> {
                 infoSection.setDataDumpSectionEnd(fileWriter.getPosition());
                 infoSection.setDataIndexSectionStart(fileWriter.getPosition());
 
                 // copy the temporary index file to the main file:
                 tmpWriter.close();
-
                 InputReader indexReader = rma2File.getTmpIndexFileReader();
                 FileChannel indexChannel = indexReader.getChannel();
-
                 fileWriter.write(RMA2File.CHECK_BYTE);
                 final int bufferSize = 1000000;
                 byte[] buffer = new byte[bufferSize];
@@ -165,15 +155,12 @@ public class RMA2Creator {
                 // empty summary section:
                 infoSection.setAuxiliaryDataStart(fileWriter.getPosition());
                 infoSection.setAuxiliaryDataEnd(fileWriter.getPosition());
-
                 indexReader.close();
                 indexChannel.close();
-
                 rma2File.getIndexTmpFile().delete();
-                break;
-            case InRMAZ:
+            }
+            case InRMAZ -> {
                 dumpWriter.close();
-
                 infoSection.setDataIndexSectionEnd(fileWriter.getPosition());
 
                 // there are no classifications (yet), so we dont't write them
@@ -181,8 +168,8 @@ public class RMA2Creator {
                 // empty summary section:
                 infoSection.setAuxiliaryDataStart(fileWriter.getPosition());
                 infoSection.setAuxiliaryDataEnd(fileWriter.getPosition());
-                break;
-            case Reference:
+            }
+            case Reference -> {
                 infoSection.setDataIndexSectionEnd(fileWriter.getPosition());
 
                 // there are no classifications (yet), so we dont't write them
@@ -190,9 +177,8 @@ public class RMA2Creator {
                 // empty summary section:
                 infoSection.setAuxiliaryDataStart(fileWriter.getPosition());
                 infoSection.setAuxiliaryDataEnd(fileWriter.getPosition());
-                break;
-            default:
-                throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
+            }
+            default -> throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
         }
 
         infoSection.setNumberOfReads(numberOfReads);

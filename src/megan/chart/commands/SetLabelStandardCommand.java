@@ -46,21 +46,11 @@ public class SetLabelStandardCommand extends CommandBase implements ICheckBoxCom
         ChartViewer chartViewer = (ChartViewer) getViewer();
 
         switch (what) {
-            case "standard":
-                chartViewer.setClassLabelAngle(0);
-                break;
-            case "up45":
-                chartViewer.setClassLabelAngle(-Math.PI / 4);
-                break;
-            case "up90":
-                chartViewer.setClassLabelAngle(Math.PI / 2);
-                break;
-            case "down45":
-                chartViewer.setClassLabelAngle(Math.PI / 4);
-                break;
-            case "down90":
-                chartViewer.setClassLabelAngle(-Math.PI / 2);
-                break;
+            case "standard" -> chartViewer.setClassLabelAngle(0);
+            case "up45" -> chartViewer.setClassLabelAngle(-Math.PI / 4);
+            case "up90" -> chartViewer.setClassLabelAngle(Math.PI / 2);
+            case "down45" -> chartViewer.setClassLabelAngle(Math.PI / 4);
+            case "down90" -> chartViewer.setClassLabelAngle(-Math.PI / 2);
         }
     }
 

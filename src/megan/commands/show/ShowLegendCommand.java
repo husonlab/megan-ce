@@ -63,15 +63,9 @@ public class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
         if (getViewer() instanceof IViewerWithLegend) {
             String legend = ((IViewerWithLegend) getViewer()).getShowLegend();
             switch (legend) {
-                case "none":
-                    executeImmediately("show legend=horizontal;");
-                    break;
-                case "horizontal":
-                    executeImmediately("show legend=vertical;");
-                    break;
-                case "vertical":
-                    executeImmediately("show legend=none;");
-                    break;
+                case "none" -> executeImmediately("show legend=horizontal;");
+                case "horizontal" -> executeImmediately("show legend=vertical;");
+                case "vertical" -> executeImmediately("show legend=none;");
             }
         }
     }

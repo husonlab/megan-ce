@@ -118,16 +118,15 @@ public class IntIntMap {
      *
      * @param key
      * @param value
-     * @return
      */
-    public int put(final int key, final int value) {
+    public void put(final int key, final int value) {
         if (key == FREE_KEY) {
             final int ret = m_freeValue;
             if (!m_hasFreeKey)
                 ++m_size;
             m_hasFreeKey = true;
             m_freeValue = value;
-            return ret;
+            return;
         }
 
         int ptr = (Tools.phiMix(key) & m_mask) << 1;
@@ -140,12 +139,12 @@ public class IntIntMap {
                 rehash(m_data.length * 2); //size is set inside
             else
                 ++m_size;
-            return NO_VALUE;
+            return;
         } else if (k == key) //we check FREE prior to this call
         {
             final int ret = m_data[ptr + 1];
             m_data[ptr + 1] = value;
-            return ret;
+            return;
         }
 
         while (true) {
@@ -158,11 +157,11 @@ public class IntIntMap {
                     rehash(m_data.length * 2); //size is set inside
                 else
                     ++m_size;
-                return NO_VALUE;
+                return;
             } else if (k == key) {
                 final int ret = m_data[ptr + 1];
                 m_data[ptr + 1] = value;
-                return ret;
+                return;
             }
         }
     }
@@ -214,7 +213,7 @@ public class IntIntMap {
         return m_size;
     }
 
-    private int shiftKeys(int pos) {
+    private void shiftKeys(int pos) {
         // Shift entries with the same hash.
         int last, slot;
         int k;
@@ -224,7 +223,7 @@ public class IntIntMap {
             while (true) {
                 if ((k = data[pos]) == FREE_KEY) {
                     data[last] = FREE_KEY;
-                    return last;
+                    return;
                 }
                 slot = (Tools.phiMix(k) & m_mask) << 1; //calculate the starting slot for the current key
                 if (last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos) break;

@@ -35,7 +35,7 @@ public class SelectPositiveAssignedCommand extends CommandBase implements IComma
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

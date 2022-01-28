@@ -70,14 +70,12 @@ public class SplitSystem {
      * add a split
      *
      * @param split
-     * @return index
      */
-    public int addSplit(Split split) {
+    public void addSplit(Split split) {
         nsplits++;
         index2split.put(nsplits, split);
         split2index.put(split, nsplits);
 
-        return nsplits;
     }
 
 
@@ -88,7 +86,7 @@ public class SplitSystem {
      * @return split with given index
      */
     public Split getSplit(int index) {
-        return (Split) index2split.get(index);
+        return index2split.get(index);
     }
 
     /**
@@ -98,7 +96,7 @@ public class SplitSystem {
      * @return index or -1
      */
     public int indexOf(Split split) {
-        Integer index = (Integer) split2index.get(split);
+        Integer index = split2index.get(split);
         return Objects.requireNonNullElse(index, -1);
     }
 
@@ -121,7 +119,7 @@ public class SplitSystem {
         StringBuilder buf = new StringBuilder();
         buf.append("Splits (").append(nsplits).append("):\n");
         for (var it = iterator(); it.hasNext(); ) {
-            Split split = (Split) it.next();
+            Split split = it.next();
             buf.append(split).append("\n");
         }
         return buf.toString();
@@ -186,7 +184,7 @@ public class SplitSystem {
             if (!tree.isReticulatedEdge(f) || reticulateNode2Taxa.get(w) == null)
 				f_taxa = splitsFromTreeRec(w, tree, allTaxa, activeTaxa, reticulateNode2Taxa, splits);
 			else
-				f_taxa = (BitSet) reticulateNode2Taxa.get(w);
+                f_taxa = reticulateNode2Taxa.get(w);
 
 			if (!tree.isReticulatedEdge(f)) {
 				BitSet complement = (BitSet) activeTaxa.clone();
@@ -233,7 +231,7 @@ public class SplitSystem {
             }
             if (edgesToPush.size() == 1) // need to move down tree
             {
-                Edge f = (Edge) edgesToPush.get(0);
+                Edge f = edgesToPush.get(0);
                 v = f.getTarget();
             } else if (edgesToPush.size() > 1) { // more than one subtree contains taxa from the set, time to split
                 Node u = tree.newNode();
@@ -241,14 +239,14 @@ public class SplitSystem {
                 Edge h = tree.newEdge(v, u);
                 tree.setWeight(h, weight);
 
-                for (Object anEdgesToPush1 : edgesToPush) {
-                    Edge f = (Edge) anEdgesToPush1;
+                for (Edge anEdgesToPush1 : edgesToPush) {
+                    Edge f = anEdgesToPush1;
                     Node w = f.getTarget();
                     Edge g = tree.newEdge(u, w);
                     tree.setWeight(g, tree.getWeight(f));
                 }
-                for (Object anEdgesToPush : edgesToPush) {
-                    Edge f = (Edge) anEdgesToPush;
+                for (Edge anEdgesToPush : edgesToPush) {
+                    Edge f = anEdgesToPush;
                     tree.deleteEdge(f);
                 }
                 done = true;
@@ -315,7 +313,7 @@ public class SplitSystem {
         Split[] result = new Split[size()];
         int count = 0;
         for (var it = iterator(); it.hasNext(); ) {
-            result[count++] = (Split) it.next();
+            result[count++] = it.next();
         }
         return result;
     }
@@ -364,7 +362,7 @@ public class SplitSystem {
         BitSet bits = taxa.getBits();
 
         for (var it = iterator(); it.hasNext(); ) {
-            Split split = (Split) it.next();
+            Split split = it.next();
             if (!split.getTaxa().equals(bits))
                 return false;
         }
@@ -423,18 +421,18 @@ public class SplitSystem {
      * @return split set with taxa delated
      */
     public SplitSystem deleteTaxa(List<String> labels, Taxa taxa) {
-        for (Object label1 : labels) {
-            String label = (String) label1;
+        for (String label1 : labels) {
+            String label = label1;
             taxa.remove(label);
         }
         SplitSystem result = new SplitSystem();
 
         for (var it = iterator(); it.hasNext(); ) {
-            Split split = (Split) it.next();
+            Split split = it.next();
             Split induced = split.getInduced(taxa.getBits());
             if (result.contains(induced)) {
                 Split other = result.get(induced);
-                if(other!=null)
+                if (other != null)
                 other.setWeight(other.getWeight() + induced.getWeight());
             } else if (induced.getSplitSize() > 0) // make sure that is a proper split
                 result.addSplit(induced);

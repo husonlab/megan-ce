@@ -169,9 +169,9 @@ public class AlignmentExporter {
                     totalReadsUsed++;
             }
         }
-        System.err.println(String.format("Reads total: %,10d", totalReads));
-        System.err.println(String.format("Reads used:  %,10d ", totalReadsUsed));
-        System.err.println(String.format("References:  %,10d", reference2ReadMatchPairs.keySet().size()));
+        System.err.printf("Reads total: %,10d%n", totalReads);
+        System.err.printf("Reads used:  %,10d %n", totalReadsUsed);
+        System.err.printf("References:  %,10d%n", reference2ReadMatchPairs.keySet().size());
     }
 
     private IReadBlock copy(IReadBlock src, String[] cNames) {
@@ -272,7 +272,7 @@ public class AlignmentExporter {
             if (minCoverage > 0) {
                 final Pair<Double, Double> gcAndCoverage = ComputeAlignmentProperties.computeCGContentAndCoverage(alignment, verbose ? new ProgressCmdLine() : null);
                 if (verbose)
-                    System.err.print(String.format("%s: %s: coverage=%.2f", className, reference, gcAndCoverage.getSecond()));
+                    System.err.printf("%s: %s: coverage=%.2f", className, reference, gcAndCoverage.getSecond());
                 if (gcAndCoverage.getSecond() < minCoverage) {
                     if (verbose) System.err.println(" (coverage too low, skipped)");
                     continue;
@@ -302,13 +302,10 @@ public class AlignmentExporter {
                             int result = JOptionPane.showConfirmDialog(parent, "Some files already exist, overwrite all existing files?", "Overwrite files?", JOptionPane.YES_NO_CANCEL_OPTION,
                                     JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
                             switch (result) {
-                                case JOptionPane.NO_OPTION:
-                                    overwrite = false;
-                                    break;
-                                case JOptionPane.CANCEL_OPTION:
-                                    throw new CanceledException();
-                                default:
-                                    break;
+                                case JOptionPane.NO_OPTION -> overwrite = false;
+                                case JOptionPane.CANCEL_OPTION -> throw new CanceledException();
+                                default -> {
+                                }
                             }
                         }
                         warned = true;
@@ -381,10 +378,9 @@ public class AlignmentExporter {
                 }
             }
         }
-        sorted.clear();
         reference2ReadMatchPairs.clear();
-        System.err.println(String.format("Output reads:%,10d", totalOutputSequences));
-        System.err.println(String.format("Output files:%,10d", totalFilesWritten));
+        System.err.printf("Output reads:%,10d%n", totalOutputSequences);
+        System.err.printf("Output files:%,10d%n", totalFilesWritten);
 
         return new Pair<>(totalOutputSequences, totalFilesWritten);
     }

@@ -27,7 +27,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ComputeSimpsonReciprocalIndexCommand extends CommandBase implements ICommand {
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public boolean isApplicable() {

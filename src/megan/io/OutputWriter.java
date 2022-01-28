@@ -220,9 +220,8 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
      * get position file
      *
      * @return position
-     * @throws IOException
      */
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return position;
     }
 
@@ -274,9 +273,8 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
      * supports seek?
      *
      * @return false
-     * @throws IOException
      */
-    public boolean supportsSeek() throws IOException {
+    public boolean supportsSeek() {
         return false;
     }
 
@@ -294,9 +292,8 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
      * get length of file
      *
      * @return length
-     * @throws IOException
      */
-    public long length() throws IOException {
+    public long length() {
         return position;
     }
 
@@ -311,7 +308,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     }
 
     @Override
-    public int skipBytes(int bytes) throws IOException {
+    public void skipBytes(int bytes) throws IOException {
         throw new IOException("Not implemented");
     }
 

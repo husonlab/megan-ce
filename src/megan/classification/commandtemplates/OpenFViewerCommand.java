@@ -84,11 +84,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
 
             // aim of this is to prevent windowing opening blank:
             if (firstOpen) {
-                final Timer timer = new Timer(600, e -> {
-                    SwingUtilities.invokeLater(() -> {
-                        classificationViewer.getDir().execute("zoom what=fit;", classificationViewer.getCommandManager());
-                    });
-                });
+                final Timer timer = new Timer(600, e -> SwingUtilities.invokeLater(() -> classificationViewer.getDir().execute("zoom what=fit;", classificationViewer.getCommandManager())));
                 timer.setRepeats(false);
                 timer.start();
             }

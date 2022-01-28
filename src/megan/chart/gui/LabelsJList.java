@@ -135,10 +135,10 @@ public class LabelsJList extends JList<String> {
                     if (clicks == 3) {
                         boolean changed = false;
                         int index = getSelectedIndex();
-                        String label = ((DefaultListModel) getModel()).get(index).toString();
+                        String label = ((DefaultListModel<?>) getModel()).get(index).toString();
                         String prefix5 = label.length() > 5 ? label.substring(0, 5) : label;
-                        for (int i = 0; i < ((DefaultListModel) getModel()).size(); i++) {
-                            String item = ((DefaultListModel) getModel()).getElementAt(i).toString();
+                        for (int i = 0; i < ((DefaultListModel<?>) getModel()).size(); i++) {
+                            String item = ((DefaultListModel<?>) getModel()).getElementAt(i).toString();
                             if (!item.startsWith(prefix5)) {
                                 disabledLabels.add(item);
                                 changed = true;
@@ -161,7 +161,7 @@ public class LabelsJList extends JList<String> {
                         boolean hasOneActive = false;
                         boolean hasOneInactive = false;
                         for (int element : indices) {
-                            String label = ((DefaultListModel) getModel()).getElementAt(element).toString();
+                            String label = ((DefaultListModel<?>) getModel()).getElementAt(element).toString();
                             if (disabledLabels.contains(label))
                                 hasOneInactive = true;
                             else
@@ -169,11 +169,9 @@ public class LabelsJList extends JList<String> {
                             if (hasOneActive && hasOneInactive)
                                 break;
                         }
-                        boolean enable = true;
-                        if (hasOneActive && !hasOneInactive)
-                            enable = false;
+                        boolean enable = !hasOneActive || hasOneInactive;
                         for (int element : indices) {
-                            String label = ((DefaultListModel) getModel()).getElementAt(element).toString();
+                            String label = ((DefaultListModel<?>) getModel()).getElementAt(element).toString();
                             if (enable && disabledLabels.contains(label)) {
                                 disabledLabels.remove(label);
                                 changed = true;
@@ -327,7 +325,7 @@ public class LabelsJList extends JList<String> {
                 Runnable runnable = () -> {
                     disabledLabels.clear();
                     if (clearOldOrder)
-                        ((DefaultListModel) getModel()).removeAllElements();
+                        ((DefaultListModel<?>) getModel()).removeAllElements();
 
                     final Set<String> labelsSet = new HashSet<>(labels);
 

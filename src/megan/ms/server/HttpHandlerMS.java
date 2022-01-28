@@ -74,7 +74,7 @@ public class HttpHandlerMS implements HttpHandler {
         return new String[0];
     }
 
-    private String[] getPOSTParameters(HttpExchange httpExchange) throws IOException {
+    private String[] getPOSTParameters(HttpExchange httpExchange) {
         return new String[0]; // not implemented
     }
 

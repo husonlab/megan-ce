@@ -36,7 +36,7 @@ public class SelectSimilarCommand extends CommandBase implements ICommand {
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
 

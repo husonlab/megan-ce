@@ -386,7 +386,7 @@ public class LRInspectorController {
             for (final TableItem item : getSelectedOrAllTableItems()) {
                 javafx.application.Platform.runLater(() -> item.getPane().colorByNormalizedBitScore(colorManager, getService().maxNormalizedBitScoreProperty().get()));
             }
-            javafx.application.Platform.runLater(() -> updateSearcher());
+            javafx.application.Platform.runLater(this::updateSearcher);
         } else {
             usingHeatmap = false;
             final ArrayList<String> selectedCNames = new ArrayList<>();
@@ -398,7 +398,7 @@ public class LRInspectorController {
             for (final TableItem item : getSelectedOrAllTableItems()) {
                 javafx.application.Platform.runLater(() -> item.getPane().colorByClassification(colorManager, selectedCNames, viewer.getClassificationName(), viewer.getClassId(), viewer.getDir().getDocument().getChartColorManager().isColorByPosition()));
             }
-            javafx.application.Platform.runLater(() -> updateSearcher());
+            javafx.application.Platform.runLater(this::updateSearcher);
         }
     }
 

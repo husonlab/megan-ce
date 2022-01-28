@@ -47,12 +47,12 @@ public class RMA6Connector implements IConnector {
     }
 
     @Override
-    public void setFile(String file) throws IOException {
+    public void setFile(String file) {
         this.fileName = file;
     }
 
     @Override
-    public boolean isReadOnly() throws IOException {
+    public boolean isReadOnly() {
         return fileName != null && ((new File(fileName)).canWrite());
     }
 
@@ -198,7 +198,7 @@ public class RMA6Connector implements IConnector {
     }
 
     @Override
-    public void setNumberOfReads(int numberOfReads) throws IOException {
+    public void setNumberOfReads(int numberOfReads) {
     }
 
     @Override

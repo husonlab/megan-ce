@@ -34,36 +34,15 @@ public class ColorSchemeAminoAcidsClustalX extends ColorSchemeBase implements IC
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
         // source: http://www.jalview.org/help/html/colourSchemes/clustal.html
-        switch (ch) {
-            case 'A':
-            case 'C':
-            case 'I':
-            case 'L':
-            case 'M':
-            case 'F':
-            case 'W':
-            case 'V':
-                return getDefinedColor(ch, 0x80A0F0);
-            case 'K':
-            case 'R':
-                return getDefinedColor(ch, 0xF01505);
-            case 'N':
-            case 'Q':
-            case 'S':
-            case 'T':
-                return getDefinedColor(ch, 0x15C015);
-            case 'D':
-            case 'E':
-                return getDefinedColor(ch, 0xC048C0);
-            case 'G':
-                return getDefinedColor(ch, 0xF09048);
-            case 'P':
-                return getDefinedColor(ch, 0xC0C000);
-            case 'H':
-            case 'Y':
-                return getDefinedColor(ch, 0x15A4A4);
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'A', 'C', 'I', 'L', 'M', 'F', 'W', 'V' -> getDefinedColor(ch, 0x80A0F0);
+            case 'K', 'R' -> getDefinedColor(ch, 0xF01505);
+            case 'N', 'Q', 'S', 'T' -> getDefinedColor(ch, 0x15C015);
+            case 'D', 'E' -> getDefinedColor(ch, 0xC048C0);
+            case 'G' -> getDefinedColor(ch, 0xF09048);
+            case 'P' -> getDefinedColor(ch, 0xC0C000);
+            case 'H', 'Y' -> getDefinedColor(ch, 0x15A4A4);
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

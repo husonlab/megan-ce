@@ -209,9 +209,8 @@ data                : <list of lists>, counts of observations by sample
      * write
      *
      * @param writer
-     * @throws IOException
      */
-    public void write(Writer writer) throws IOException {
+    public void write(Writer writer) {
         final Gson gson = new Gson();
         gson.toJson(this, writer);
     }

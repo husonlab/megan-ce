@@ -110,8 +110,7 @@ public class IdMapper {
      */
     public void loadMappingFile(String fileName, MapType mapType, boolean reload, ProgressListener progress) throws IOException {
         switch (mapType) {
-            default:
-            case Accession: {
+            case Accession -> {
                 if (accessionMap == null || reload) {
                     if (accessionMap != null) {
                         closeAccessionMap();
@@ -119,33 +118,29 @@ public class IdMapper {
 
                     this.accessionMap = accessionMapFactory.create(name2IdMap, fileName, progress);
                     loadedMaps.add(mapType);
-                        activeMaps.add(mapType);
-                        map2Filename.put(mapType, fileName);
+                    activeMaps.add(mapType);
+                    map2Filename.put(mapType, fileName);
 
                 }
                 break;
             }
-            case Synonyms: {
+            case Synonyms -> {
                 if (synonymsMap == null || reload) {
                     if (synonymsMap != null) {
-                        try {
-                            synonymsMap.close();
-                        } catch (IOException e) {
-                            Basic.caught(e);
-                        }
+                        synonymsMap.close();
                     }
                     final String2IntegerMap synonymsMap = new String2IntegerMap();
 
-                        synonymsMap.loadFile(name2IdMap, fileName, progress);
-                        this.synonymsMap = synonymsMap;
-                        loadedMaps.add(mapType);
-                        activeMaps.add(mapType);
-                        map2Filename.put(mapType, fileName);
+                    synonymsMap.loadFile(name2IdMap, fileName, progress);
+                    this.synonymsMap = synonymsMap;
+                    loadedMaps.add(mapType);
+                    activeMaps.add(mapType);
+                    map2Filename.put(mapType, fileName);
 
                 }
                 break;
             }
-            case MeganMapDB: {
+            case MeganMapDB -> {
                 if (accessionMap == null || reload) {
                     if (accessionMap != null) {
                         closeAccessionMap();

@@ -80,7 +80,7 @@ public class MinSupportFilter {
         orphans.clear();
 
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         return orphan2AncestorMapping;
     }

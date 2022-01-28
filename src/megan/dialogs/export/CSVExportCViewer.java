@@ -133,7 +133,7 @@ public class CSVExportCViewer {
 
                 final NodeSet selected = cViewer.getSelectedNodes();
                 progressListener.setSubtask(shortName + " to counts");
-                progressListener.setMaximum(2 * selected.size());
+                progressListener.setMaximum(2L * selected.size());
                 progressListener.setProgress(0);
                 int[] total = new int[cViewer.getDocument().getSampleNames().size()];
                 {

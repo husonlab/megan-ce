@@ -46,24 +46,12 @@ public class ColorSchemeAminoAcids implements IColorScheme {
             }
         }
         switch (which) {
-            case CINEMA:
-                colorScheme = new ColorSchemeAminoAcidsCINEMA();
-                break;
-            case ClustalX:
-                colorScheme = new ColorSchemeAminoAcidsClustalX();
-                break;
-            case MAEditor:
-                colorScheme = new ColorSchemeAminoAcidsMAEditor();
-                break;
-            case PDNA:
-                colorScheme = new ColorSchemeAminoAcidsPDNA();
-                break;
-            case Zappo:
-                colorScheme = new ColorSchemeAminoAcidsZappo();
-                break;
-            case Default:
-            default:
-                colorScheme = new ColorSchemeAminoAcidsDefault();
+            case CINEMA -> colorScheme = new ColorSchemeAminoAcidsCINEMA();
+            case ClustalX -> colorScheme = new ColorSchemeAminoAcidsClustalX();
+            case MAEditor -> colorScheme = new ColorSchemeAminoAcidsMAEditor();
+            case PDNA -> colorScheme = new ColorSchemeAminoAcidsPDNA();
+            case Zappo -> colorScheme = new ColorSchemeAminoAcidsZappo();
+            case Default, default -> colorScheme = new ColorSchemeAminoAcidsDefault();
         }
     }
 

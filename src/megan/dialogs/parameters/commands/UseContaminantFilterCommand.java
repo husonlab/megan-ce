@@ -52,10 +52,9 @@ public class UseContaminantFilterCommand extends CommandBase implements ICheckBo
      * parses and applies the command
      *
      * @param np
-     * @throws Exception
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
         ((ParametersDialog) getParent()).setUseContaminantsFilter(!isSelected());
     }
 

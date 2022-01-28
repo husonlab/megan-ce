@@ -37,7 +37,7 @@ public class KeepNonEukaryotesCollapsedCommand extends CommandBase implements IC
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

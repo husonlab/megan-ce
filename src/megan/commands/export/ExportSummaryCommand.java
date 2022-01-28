@@ -38,7 +38,7 @@ public class ExportSummaryCommand extends CommandBase implements ICommand {
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 // no need to implement, never called
     }
 

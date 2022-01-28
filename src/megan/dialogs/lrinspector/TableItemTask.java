@@ -115,7 +115,6 @@ public class TableItemTask extends Task<Integer> {
 
 
             final Set<String> readsToUse; // todo: need to add this to GUI?
-            readsToUse = null;
 
             try (final IReadBlockIterator it = doc.getConnector().getReadsIterator(classificationName, classId, doc.getMinScore(), doc.getMaxExpected(), true, true)) {
                 while (it.hasNext()) {

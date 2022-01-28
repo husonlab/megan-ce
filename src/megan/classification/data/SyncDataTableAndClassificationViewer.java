@@ -56,7 +56,7 @@ public class SyncDataTableAndClassificationViewer {
      * @param table
      * @param classificationViewer
      */
-    public static boolean syncFormattingFromSummary2Viewer(DataTable table, ClassificationViewer classificationViewer) {
+    public static void syncFormattingFromSummary2Viewer(DataTable table, ClassificationViewer classificationViewer) {
         final String classificationName = classificationViewer.getClassName();
         boolean changed = false;
 
@@ -182,7 +182,6 @@ public class SyncDataTableAndClassificationViewer {
                 }
             }
         }
-        return changed;
     }
 
 

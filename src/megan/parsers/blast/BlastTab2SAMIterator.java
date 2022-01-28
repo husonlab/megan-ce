@@ -194,7 +194,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
     /**
      * make a SAM line
      */
-    private String makeSAM(String queryName, String refName, float bitScore, float expect, float percentIdentity, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String line) throws IOException {
+    private String makeSAM(String queryName, String refName, float bitScore, float expect, float percentIdentity, int queryStart, int queryEnd, int referenceStart, int referenceEnd, String line) {
         final StringBuilder buffer = new StringBuilder();
 
         buffer.append(queryName).append("\t");

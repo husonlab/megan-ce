@@ -35,7 +35,7 @@ public class ListAsTextCommand extends ClipboardBase implements ICommand {
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -53,7 +53,7 @@ public class ListAsTextCommand extends ClipboardBase implements ICommand {
         }
         if (builder.toString().length() > 0) {
             Director.showMessageWindow();
-            System.out.println("\n" + builder.toString());
+            System.out.println("\n" + builder);
         }
     }
 

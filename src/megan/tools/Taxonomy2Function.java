@@ -75,9 +75,9 @@ public class Taxonomy2Function {
 
 		options.comment("Options");
 		final var firstClassificationName = options.getOption("-a", "firstClassification", "first classification name", ClassificationManager.getAllSupportedClassifications(), "Taxonomy");
-		final var firstClasses = options.getOption("-ac", "firstClasses", "Class IDs in first classification?", Arrays.asList("all"));
-		final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
-		final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", Arrays.asList("all"));
+        final var firstClasses = options.getOption("-ac", "firstClasses", "Class IDs in first classification?", List.of("all"));
+        final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
+        final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", List.of("all"));
 
 		var formats = new String[]{"name", "id", "path"};
 

@@ -233,12 +233,12 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     }
 
     @Override
-    public int readChar() throws IOException {
+    public int readChar() {
         return 0;
     }
 
     @Override
-    public ByteByteInt readByteByteInt() throws IOException {
+    public ByteByteInt readByteByteInt() {
         return null;
     }
 
@@ -250,8 +250,8 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     }
 
     @Override
-    public int skipBytes(int bytes) throws IOException {
-        return ins.skipBytes(bytes);
+    public void skipBytes(int bytes) throws IOException {
+        ins.skipBytes(bytes);
     }
 
     @Override

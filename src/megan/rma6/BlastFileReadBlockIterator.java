@@ -125,11 +125,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
      */
     @Override
     public boolean hasNext() {
-        try {
-            return iterator.hasNext();
-        } catch (IOException e) {
-            return false;
-        }
+        return iterator.hasNext();
     }
 
     /**

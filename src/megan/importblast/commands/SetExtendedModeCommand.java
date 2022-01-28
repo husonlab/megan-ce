@@ -37,7 +37,7 @@ public class SetExtendedModeCommand extends CommandBase implements ICheckBoxComm
         return !ClassificationManager.isUseFastAccessionMappingMode();
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

@@ -76,7 +76,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
 
     private boolean longReads = false;
 
-    private boolean useReadMagnitudes = false;
+    private final boolean useReadMagnitudes = false;
     private boolean parseTaxonNames = ProgramProperties.get(MeganProperties.PARSE_TAXON_NAMES, true);
 
     private boolean usePercentIdentityFilter = false;
@@ -184,7 +184,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             if (!cName.equals(Classification.Taxonomy) && !ClassificationManager.get(cName, true).getIdMapper().hasActiveAndLoaded())
                 toDelete.add(cName);
         }
-        doc.getActiveViewers().removeAll(toDelete);
+        toDelete.forEach(doc.getActiveViewers()::remove);
 
         setLocationRelativeTo(parent);
         setTitle(title);
@@ -665,7 +665,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         dir.removeViewer(this);
         setVisible(false);
     }

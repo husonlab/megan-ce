@@ -56,7 +56,7 @@ public class DiversityIndex {
      */
     private static double[] computeShannonWeaver(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
 
-        progressListener.setMaximum(2 * viewer.getSelectedNodes().size());
+        progressListener.setMaximum(2L * viewer.getSelectedNodes().size());
         progressListener.setProgress(0);
         int numberOfDatasets = viewer.getDocument().getNumberOfSamples();
         double[] total = new double[numberOfDatasets];
@@ -108,7 +108,7 @@ public class DiversityIndex {
      */
     private static double[] computeSimpsonReciprocal(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
 
-        progressListener.setMaximum(2 * viewer.getSelectedNodes().size());
+        progressListener.setMaximum(2L * viewer.getSelectedNodes().size());
         progressListener.setProgress(0);
         int numberOfDatasets = viewer.getDocument().getNumberOfSamples();
         double[] total = new double[numberOfDatasets];

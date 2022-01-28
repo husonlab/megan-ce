@@ -34,36 +34,15 @@ public class ColorSchemeAminoAcidsZappo extends ColorSchemeBase implements IColo
      */
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
-        switch (ch) {
-            case 'I':
-            case 'L':
-            case 'V':
-            case 'A':
-            case 'M':
-                return getDefinedColor(ch, 0xFFAFAF);
-            case 'F':
-            case 'Y':
-            case 'W':
-                return getDefinedColor(ch, 0xFFC800);
-            case 'H':
-            case 'K':
-            case 'R':
-                return getDefinedColor(ch, 0x6464FF);
-            case 'D':
-            case 'E':
-                return getDefinedColor(ch, 0xFF0000);
-            case 'S':
-            case 'T':
-            case 'N':
-            case 'Q':
-                return getDefinedColor(ch, 0x00FF00);
-            case 'G':
-            case 'P':
-                return getDefinedColor(ch, 0xFFFFFF);
-            case 'C':
-                return getDefinedColor(ch, 0xFFFF00);
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'I', 'L', 'V', 'A', 'M' -> getDefinedColor(ch, 0xFFAFAF);
+            case 'F', 'Y', 'W' -> getDefinedColor(ch, 0xFFC800);
+            case 'H', 'K', 'R' -> getDefinedColor(ch, 0x6464FF);
+            case 'D', 'E' -> getDefinedColor(ch, 0xFF0000);
+            case 'S', 'T', 'N', 'Q' -> getDefinedColor(ch, 0x00FF00);
+            case 'G', 'P' -> getDefinedColor(ch, 0xFFFFFF);
+            case 'C' -> getDefinedColor(ch, 0xFFFF00);
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

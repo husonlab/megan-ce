@@ -20,8 +20,6 @@
 package megan.dialogs.reanalyze;
 
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
@@ -120,11 +118,7 @@ public class ReanalyzeDialog extends ImportBlastDialog {
 			buf.append(";");
 
             setResult(buf.toString());
-            try {
-                destroyView();
-            } catch (CanceledException e) {
-                Basic.caught(e);
-            }
+            destroyView();
         }
     }
 

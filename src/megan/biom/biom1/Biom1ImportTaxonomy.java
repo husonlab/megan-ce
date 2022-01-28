@@ -91,7 +91,7 @@ class Biom1ImportTaxonomy {
         for (Object obj : biom1Data.getColumns()) {
             //System.err.println("Obj: "+obj);
 
-            String label = (String) ((Map) obj).get("id");
+            String label = (String) ((Map<?, ?>) obj).get("id");
             //System.err.println("Series: " + label);
             col2series[colCount++] = label;
         }

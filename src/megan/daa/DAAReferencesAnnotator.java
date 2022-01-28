@@ -249,7 +249,7 @@ class DAAReferencesAnnotator {
 
             DAAModifier.appendBlocks(header, BlockType.megan_ref_annotations, cName2Bytes, cName2Size);
             if (progress instanceof ProgressPercentage) {
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
             }
         } finally {
             service.shutdownNow();

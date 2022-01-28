@@ -23,9 +23,7 @@ import jloda.swing.util.ToolBar;
 
 public class ControlBindings {
     public static void setup(final DecontamDialogController controller, final DecontamDialog viewer, ToolBar toolBar) {
-        controller.getCloseButton().setOnAction(e -> {
-            viewer.getDir().execute("close;", viewer.getCommandManager());
-        });
+        controller.getCloseButton().setOnAction(e -> viewer.getDir().execute("close;", viewer.getCommandManager()));
     }
 
     /**

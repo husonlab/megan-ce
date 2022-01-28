@@ -57,31 +57,30 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
         final PCoATab pCoATab = getViewer().getPcoaTab();
 
         switch (target) {
-            case "axes":
+            case "axes" -> {
                 pCoATab.setAxesColor(color);
                 ProgramProperties.put("PCoAAxesColor", color);
                 pCoATab.setAxesLineWidth(lineWidth);
                 ProgramProperties.put("PCoAAxesLineWidth", lineWidth);
-                break;
-            case "biplot":
+            }
+            case "biplot" -> {
                 pCoATab.setBiPlotColor(color);
                 ProgramProperties.put("PCoABiPlotColor", color);
                 pCoATab.setBiPlotLineWidth(lineWidth);
                 ProgramProperties.put("PCoABiPlotLineWidth", lineWidth);
-                break;
-            case "triplot":
+            }
+            case "triplot" -> {
                 pCoATab.setTriPlotColor(color);
                 ProgramProperties.put("PCoATriPlotColor", color);
                 pCoATab.setTriPlotLineWidth(lineWidth);
                 ProgramProperties.put("PCoATriPlotLineWidth", lineWidth);
-                break;
-            case "groups":
+            }
+            case "groups" -> {
                 pCoATab.setGroupsColor(color);
                 ProgramProperties.put("PCoAGroupColor", color);
                 pCoATab.setGroupLineWidth(lineWidth);
                 ProgramProperties.put("PCoAGroupLineWidth", lineWidth);
-                break;
-
+            }
         }
     }
 

@@ -66,7 +66,7 @@ public class DAAParser {
     /**
      * constructor
      */
-    public DAAParser(final DAAHeader header) throws IOException {
+    public DAAParser(final DAAHeader header) {
         this.header = header;
 
         switch (header.getAlignMode()) {

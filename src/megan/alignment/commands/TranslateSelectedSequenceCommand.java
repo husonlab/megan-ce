@@ -64,7 +64,7 @@ public class TranslateSelectedSequenceCommand extends CommandBase implements ICo
                     w.write("\n");
                 }
             }
-            System.out.println(w.toString());
+            System.out.println(w);
             NotificationsInSwing.showInformation(viewer.getFrame(), w.toString());
         }
     }

@@ -36,7 +36,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,9 +75,8 @@ public class ReferencesAnnotator {
      * @param args
      * @throws UsageException
      * @throws IOException
-     * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Annotates reference sequences");
@@ -209,7 +207,7 @@ public class ReferencesAnnotator {
         }
         // report classification sizes:
         for (int i = 0; i < idMappers.length; i++) {
-            System.err.println(String.format("Class. %-13s%,10d", idMappers[i].getCName() + ":", counts[i]));
+            System.err.printf("Class. %-13s%,10d%n", idMappers[i].getCName() + ":", counts[i]);
         }
     }
 }

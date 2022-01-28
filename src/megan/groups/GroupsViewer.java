@@ -25,7 +25,6 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.clusteranalysis.ClusterViewer;
 import megan.core.Director;
@@ -39,7 +38,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -97,7 +95,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
         groupsPanel = new GroupsPanel(dir.getDocument(), this);
         mainPanel.add(groupsPanel, BorderLayout.CENTER);
 
-        selectionListener = (labels, selected) -> groupsPanel.selectSamples(labels, selected);
+        selectionListener = groupsPanel::selectSamples;
         dir.getDocument().getSampleSelection().addSampleSelectionListener(selectionListener);
         groupsPanel.setGroupsChangedListener(() -> {
             for (IDirectableViewer viewer : dir.getViewers()) {
@@ -173,7 +171,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         dir.getDocument().getSampleSelection().removeSampleSelectionListener(selectionListener);
 
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
@@ -279,7 +277,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
      * @param format     page format
      * @param pagenumber page index
      */
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
 

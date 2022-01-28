@@ -25,7 +25,6 @@ import jloda.util.StringUtils;
 import megan.biom.biom1.QIIMETaxonParser;
 import megan.classification.IdMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ class ImportBiom2Taxonomy {
      *
      * @return map
      */
-    public static Map<Integer, float[]> getClass2Samples2Counts(IHDF5Reader reader, int numberOfSamples, boolean ignorePathAbove) throws IOException {
+    public static Map<Integer, float[]> getClass2Samples2Counts(IHDF5Reader reader, int numberOfSamples, boolean ignorePathAbove) {
         int countLinesImported = 0;
         int countLinesSkipped = 0;
 
@@ -46,7 +45,7 @@ class ImportBiom2Taxonomy {
         int[] dimensions = null;
 
         for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
-			if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
+            if (StringUtils.getIndexIgnoreCase(metaKey, keys) != -1) {
                 pathArray = reader.string().readMDArray("/observation/metadata/" + metaKey);
 				dimensions = pathArray.dimensions();
 				if (dimensions != null && dimensions.length > 0)

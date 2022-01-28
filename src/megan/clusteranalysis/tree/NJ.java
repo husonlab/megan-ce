@@ -72,9 +72,9 @@ public class NJ {
             double[][] h = new double[nbNtax + 1][nbNtax + 1];// distance matix
             double[] b = new double[nbNtax + 1];// the b variable in Neighbor Joining
             int i_min = 0, j_min = 0; // needed for manipulation of h and b
-            double temp, dist_e = 0.0, dist_f = 0.0;//new edge weights
-            StringBuffer tax_old_i; //labels of taxa that are being merged
-            StringBuffer tax_old_j;
+            double temp, dist_e, dist_f;//new edge weights
+            StringBuilder tax_old_i; //labels of taxa that are being merged
+            StringBuilder tax_old_j;
             Node v;
             Edge e, f; //from tax_old to new=merged edge
 
@@ -124,8 +124,8 @@ public class NJ {
                 h[0][j_min] = 0.0;
 
                 // tax taxa rescan:
-                tax_old_i = new StringBuffer(tax[i_min].toString());
-                tax_old_j = new StringBuffer(tax[j_min].toString());
+                tax_old_i = new StringBuilder(tax[i_min].toString());
+                tax_old_j = new StringBuilder(tax[j_min].toString());
                 tax[i_min].insert(0, "(");
                 tax[i_min].append(",");
                 tax[i_min].append(tax[j_min]);
@@ -185,8 +185,8 @@ public class NJ {
                     }
                 }
             }
-            tax_old_i = new StringBuffer(tax[i_min].toString());
-            tax_old_j = new StringBuffer(tax[j_min].toString());
+            tax_old_i = new StringBuilder(tax[i_min].toString());
+            tax_old_j = new StringBuilder(tax[j_min].toString());
 
             tax[i_min].insert(0, "(");
             tax[i_min].append(",");
@@ -207,14 +207,12 @@ public class NJ {
 
     /**
      * compute an embedding of the graph
-     *
-     * @return true, if embedding was computed
      */
-    private boolean computeEmbedding(PhyloTreeView treeView, PhyloTree tree) {
+    private void computeEmbedding(PhyloTreeView treeView, PhyloTree tree) {
         treeView.removeAllInternalPoints();
 
         if (tree.getNumberOfNodes() == 0)
-            return true;
+            return;
         treeView.removeAllInternalPoints();
 
         // don't use setRoot to remember root
@@ -250,7 +248,6 @@ public class NJ {
         treeView.resetViews();
         treeView.fitGraphToWindow();
 
-        return true;
     }
 
     /**

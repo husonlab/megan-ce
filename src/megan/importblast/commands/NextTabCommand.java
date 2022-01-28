@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
  */
 public class NextTabCommand extends CommandBase implements ICommand {
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

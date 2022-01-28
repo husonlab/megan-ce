@@ -164,12 +164,12 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
                     future.cancel(true);
                 }
                 if (isClosable) {
-                    ((ICloseableIterator) iterator).close();
+                    ((ICloseableIterator<?>) iterator).close();
                 }
             }
         } else {
             if (isClosable) {
-                ((ICloseableIterator) iterator).close();
+                ((ICloseableIterator<?>) iterator).close();
             }
         }
     }
@@ -181,7 +181,7 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
      */
     public long getMaximumProgress() {
         if (isClosable)
-            return ((ICloseableIterator) iterator).getMaximumProgress();
+            return ((ICloseableIterator<?>) iterator).getMaximumProgress();
         else
             return -1;
     }
@@ -193,7 +193,7 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
      */
     public long getProgress() {
         if (isClosable)
-            return ((ICloseableIterator) iterator).getProgress();
+            return ((ICloseableIterator<?>) iterator).getProgress();
         else
             return -1;
     }

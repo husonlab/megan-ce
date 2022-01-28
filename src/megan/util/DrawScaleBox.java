@@ -78,21 +78,13 @@ public class DrawScaleBox {
     private static void drawHeatMapScale(Graphics g, int x, int y, ColorGradient colorGradient, ScalingType scalingType, int maxCount) {
         for (int i = 0; i < width; i++) {
             final int value = Math.round((i * maxCount) / (float) width);
-            final Color color;
-            switch (scalingType) {
-                default:
-                case LINEAR:
-                    color = colorGradient.getColor(value);
-                    break;
-                case SQRT:
-                    color = colorGradient.getColorSqrtScale(value);
-                    break;
-                case LOG:
-                    color = colorGradient.getColorLogScale(value);
-                    break;
-            }
+            final Color color = switch (scalingType) {
+                case LINEAR -> colorGradient.getColor(value);
+                case SQRT -> colorGradient.getColorSqrtScale(value);
+                case LOG -> colorGradient.getColorLogScale(value);
+            };
             g.setColor(color);
-            g.drawLine(x + i+1, y, x + i+1, y + height);
+            g.drawLine(x + i + 1, y, x + i + 1, y + height);
         }
     }
 
@@ -100,19 +92,18 @@ public class DrawScaleBox {
         final Function<Float, Integer> map;
         final int nValues;
         switch (scalingType) {
-            case LOG:
+            case LOG -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((height * Math.log(count)) / Math.log(maxCount)));
                 nValues = 18;
-                break;
-            case SQRT:
+            }
+            case SQRT -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((height * Math.sqrt(count)) / Math.sqrt(maxCount)));
                 nValues = 12;
-                break;
-            default:
-            case LINEAR:
+            }
+            case LINEAR -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : Math.round(count * height / (float) maxCount));
                 nValues = 2;
-                break;
+            }
         }
 
         g.setColor(Color.LIGHT_GRAY);
@@ -157,19 +148,18 @@ public class DrawScaleBox {
         final Function<Float, Integer> map;
         final int[] percent;
         switch (scalingType) {
-            case LOG:
+            case LOG -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.log(count)) / Math.log(maxCount)));
                 percent = new int[]{0, 1, 5, 25, 100};
-                break;
-            case SQRT:
+            }
+            case SQRT -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.sqrt(count)) / Math.sqrt(maxCount)));
                 percent = new int[]{0, 25, 50, 75, 100};
-                break;
-            default:
-            case LINEAR:
+            }
+            case LINEAR -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : Math.round(count * maxNodeSize / (float) maxCount));
-                percent=new int[]{0,25,50,75,100};
-                break;
+                percent = new int[]{0, 25, 50, 75, 100};
+            }
         }
 
         for (int i = 1; i <= 4; i++) {

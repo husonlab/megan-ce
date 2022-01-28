@@ -20,8 +20,6 @@ package megan.rma3;
 
 import jloda.util.NumberUtils;
 
-import java.io.IOException;
-
 /**
  * simple tab match
  * Created by huson on 10/16/14.
@@ -44,20 +42,19 @@ public class BlastTabMatch implements IMatch {
      * 0         1       2                 3                 4                     5                       6            7           8             9            10            11
      *
      * @param aLine
-     * @throws IOException
      */
     @Override
-    public void parse(String aLine) throws IOException {
+    public void parse(String aLine) {
         String[] tokens = aLine.split("\t");
         if (tokens.length == 1) {
             clear();
             queryName = tokens[0];
         } else {
-			queryName = tokens[0];
-			refName = tokens[1];
-			bitScore = NumberUtils.parseInt(tokens[11]);
-			expected = NumberUtils.parseFloat(tokens[10]);
-			percentIdentity = NumberUtils.parseInt(tokens[2]);
+            queryName = tokens[0];
+            refName = tokens[1];
+            bitScore = NumberUtils.parseInt(tokens[11]);
+            expected = NumberUtils.parseFloat(tokens[10]);
+            percentIdentity = NumberUtils.parseInt(tokens[2]);
 
 		}
     }

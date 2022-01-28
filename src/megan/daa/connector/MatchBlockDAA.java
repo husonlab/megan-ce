@@ -245,52 +245,52 @@ public class MatchBlockDAA implements IMatchBlock {
         int q = start;
         for (CombinedOperation editOp : matchRecord.getTranscript().gather()) {
             switch (editOp.getEditOperation()) {
-                case op_match: // handling match
-                {
-                    for (int i = 0; i < editOp.getCount(); i++) {
-                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
-                        bufs[0].append(aa);
-                        bufs[1].append(aa);
-                        q += 3;
-                    }
-                    break;
-                }
-                case op_insertion: // handling insertion
-                {
-                    for (int i = 0; i < editOp.getCount(); i++) {
-                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
-                        bufs[0].append(aa);
-                        bufs[1].append('-');
-                        q += 3;
-                    }
-                    break;
-                }
-                case op_deletion: // handling deletion
-                {
-                    char c = (char) queryAlphabet[editOp.getLetter()];
-                    bufs[0].append('-');
-                    bufs[1].append(c);
-                    break;
-                }
-                case op_substitution: // handling substitution
-                {
-                    char c = (char) queryAlphabet[editOp.getLetter()];
-                    if (c == '/') {
-                        bufs[0].append("/");
-                        bufs[1].append("-");
-                        q -= 1;
-                    } else if (c == '\\') {
-                        bufs[0].append("\\");
-                        bufs[1].append("-");
-                        q += 1;
-                    } else {
-                        char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
-                        bufs[0].append(aa);
-                        bufs[1].append(c);
-                        q += 3;
-                    }
-                    break;
-                }
+                case op_match -> // handling match
+                        {
+                            for (int i = 0; i < editOp.getCount(); i++) {
+                                char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                                bufs[0].append(aa);
+                                bufs[1].append(aa);
+                                q += 3;
+                            }
+                            break;
+                        }
+                case op_insertion -> // handling insertion
+                        {
+                            for (int i = 0; i < editOp.getCount(); i++) {
+                                char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                                bufs[0].append(aa);
+                                bufs[1].append('-');
+                                q += 3;
+                            }
+                            break;
+                        }
+                case op_deletion -> // handling deletion
+                        {
+                            char c = (char) queryAlphabet[editOp.getLetter()];
+                            bufs[0].append('-');
+                            bufs[1].append(c);
+                            break;
+                        }
+                case op_substitution -> // handling substitution
+                        {
+                            char c = (char) queryAlphabet[editOp.getLetter()];
+                            if (c == '/') {
+                                bufs[0].append("/");
+                                bufs[1].append("-");
+                                q -= 1;
+                            } else if (c == '\\') {
+                                bufs[0].append("\\");
+                                bufs[1].append("-");
+                                q += 1;
+                            } else {
+                                char aa = (char) daaParser.getAlignmentAlphabet()[Translator.getAminoAcid(querySeq, q)];
+                                bufs[0].append(aa);
+                                bufs[1].append(c);
+                                q += 3;
+                            }
+                            break;
+                        }
             }
         }
 

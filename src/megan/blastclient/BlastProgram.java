@@ -35,7 +35,7 @@ import javafx.stage.Stage;
  */
 public class BlastProgram extends Application {
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         final TextField queryField = new TextField();
         queryField.setFont(Font.font("Courier New"));
         queryField.setPromptText("Query");

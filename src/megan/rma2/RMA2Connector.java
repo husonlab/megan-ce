@@ -48,7 +48,7 @@ public class RMA2Connector implements IConnector {
      *
      * @param filename
      */
-    public void setFile(String filename) throws IOException {
+    public void setFile(String filename) {
         file = new File(filename);
     }
 
@@ -56,9 +56,8 @@ public class RMA2Connector implements IConnector {
      * is connected document readonly?
      *
      * @return true, if read only
-     * @throws java.io.IOException
      */
-    public boolean isReadOnly() throws IOException {
+    public boolean isReadOnly() {
         return file == null || !file.canWrite();
     }
 

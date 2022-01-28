@@ -68,7 +68,7 @@ public class LabelAssignedCommand extends CommandBase implements ICheckBoxComman
      * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

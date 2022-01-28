@@ -223,22 +223,22 @@ abstract public class ViewerBase extends PhyloTreeView {
                 if (!keyEvent.isAltDown() && !keyEvent.isMetaDown() && !keyEvent.isControlDown()) {
                     boolean shift = keyEvent.isShiftDown();
                     switch (keyEvent.getKeyCode()) {
-                        case KeyEvent.VK_RIGHT: {
+                        case KeyEvent.VK_RIGHT -> {
                             JScrollBar bar = getScrollPane().getHorizontalScrollBar();
                             bar.setValue(bar.getValue() + (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
                             break;
                         }
-                        case KeyEvent.VK_LEFT: {
+                        case KeyEvent.VK_LEFT -> {
                             JScrollBar bar = getScrollPane().getHorizontalScrollBar();
                             bar.setValue(bar.getValue() - (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
                             break;
                         }
-                        case KeyEvent.VK_DOWN: {
+                        case KeyEvent.VK_DOWN -> {
                             JScrollBar bar = getScrollPane().getVerticalScrollBar();
                             bar.setValue(bar.getValue() + (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
                             break;
                         }
-                        case KeyEvent.VK_UP: {
+                        case KeyEvent.VK_UP -> {
                             JScrollBar bar = getScrollPane().getVerticalScrollBar();
                             bar.setValue(bar.getValue() - (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
                             break;
@@ -449,9 +449,8 @@ abstract public class ViewerBase extends PhyloTreeView {
      * select nodes by labels
      *
      * @param labels
-     * @return true, if any changes made
      */
-    public boolean selectNodesByLabels(Collection<String> labels, boolean state) {
+    public void selectNodesByLabels(Collection<String> labels, boolean state) {
         boolean changed = false;
         if (labels.size() > 0) {
             for (Node v = getGraph().getFirstNode(); v != null; v = v.getNext()) {
@@ -464,7 +463,6 @@ abstract public class ViewerBase extends PhyloTreeView {
                 }
             }
         }
-        return changed;
     }
 
     /**

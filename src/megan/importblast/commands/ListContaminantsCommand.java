@@ -51,10 +51,9 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
      * parses and applies the command
      *
      * @param np
-     * @throws Exception
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

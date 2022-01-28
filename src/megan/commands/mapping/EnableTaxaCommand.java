@@ -98,7 +98,7 @@ public class EnableTaxaCommand extends CommandBase implements ICommand {
                         buffer.append(", ");
                     buffer.append("'").append(name).append("'");
                 }
-                execute("enable taxa=" + buffer.toString() + ";");
+                execute("enable taxa=" + buffer + ";");
             }
         }
     }

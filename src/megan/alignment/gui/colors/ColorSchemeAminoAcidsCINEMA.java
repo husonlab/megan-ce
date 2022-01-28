@@ -34,36 +34,15 @@ public class ColorSchemeAminoAcidsCINEMA extends ColorSchemeBase implements ICol
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
         // source: http://www.bioinformatics.nl/~berndb/aacolour.html
-        switch (ch) {
-            case 'H':
-            case 'K':
-            case 'R':
-                return getDefinedColor(ch, 0x00FFFF);
-            case 'D':
-            case 'E':
-                return getDefinedColor(ch, 0xFF0000);
-            case 'S':
-            case 'T':
-            case 'N':
-            case 'Q':
-                return getDefinedColor(ch, 0x00FF00);
-            case 'A':
-            case 'V':
-            case 'I':
-            case 'L':
-            case 'M':
-                return getDefinedColor(ch, 0xBBBBBB);
-            case 'F':
-            case 'W':
-            case 'Y':
-                return getDefinedColor(ch, 0xFF00FF);
-            case 'P':
-            case 'G':
-                return getDefinedColor(ch, 0x996600);
-            case 'C':
-                return getDefinedColor(ch, 0xFFFF00);
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'H', 'K', 'R' -> getDefinedColor(ch, 0x00FFFF);
+            case 'D', 'E' -> getDefinedColor(ch, 0xFF0000);
+            case 'S', 'T', 'N', 'Q' -> getDefinedColor(ch, 0x00FF00);
+            case 'A', 'V', 'I', 'L', 'M' -> getDefinedColor(ch, 0xBBBBBB);
+            case 'F', 'W', 'Y' -> getDefinedColor(ch, 0xFF00FF);
+            case 'P', 'G' -> getDefinedColor(ch, 0x996600);
+            case 'C' -> getDefinedColor(ch, 0xFFFF00);
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

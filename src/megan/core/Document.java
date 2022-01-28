@@ -73,17 +73,12 @@ public class Document {
         }
 
         public String getDisplayLabel() {
-            switch (this) {
-                default:
-                case readCount:
-                    return "Number of reads";
-                case readLength:
-                    return "Number of bases";
-                case alignedBases:
-                    return "Number of aligned bases";
-                case readMagnitude:
-                    return "Sum of read magnitudes";
-            }
+            return switch (this) {
+                case readCount -> "Number of reads";
+                case readLength -> "Number of bases";
+                case alignedBases -> "Number of aligned bases";
+                case readMagnitude -> "Sum of read magnitudes";
+            };
         }
     }
 

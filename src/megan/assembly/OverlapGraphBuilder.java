@@ -86,9 +86,9 @@ public class OverlapGraphBuilder {
             progress.setProgress(r);
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
         if (verbose)
-            System.err.println(String.format("Overlaps:   %,10d", countPairs));
+            System.err.printf("Overlaps:   %,10d%n", countPairs);
 
         buildOverlapGraph(readDatas, ref2matches, minOverlap);
     }
@@ -150,9 +150,9 @@ public class OverlapGraphBuilder {
             }
         }
         if (verbose) {
-            System.err.println(String.format("Graph nodes:%,10d", overlapGraph.getNumberOfNodes()));
-            System.err.println(String.format("Graph edges:%,10d", overlapGraph.getNumberOfEdges()));
-            System.err.println(String.format("Cont. reads:%,10d", containedReadIds.cardinality()));
+            System.err.printf("Graph nodes:%,10d%n", overlapGraph.getNumberOfNodes());
+            System.err.printf("Graph edges:%,10d%n", overlapGraph.getNumberOfEdges());
+            System.err.printf("Cont. reads:%,10d%n", containedReadIds.cardinality());
         }
     }
 

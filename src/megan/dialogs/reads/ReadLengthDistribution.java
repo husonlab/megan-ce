@@ -34,7 +34,6 @@ import megan.main.Version;
 import megan.viewer.ClassificationViewer;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +46,7 @@ public class ReadLengthDistribution {
     private final JFrame frame;
     private final ReadLengthDistributionController controller;
 
-    public ReadLengthDistribution(final ClassificationViewer viewer, final int classId) throws IOException {
+    public ReadLengthDistribution(final ClassificationViewer viewer, final int classId) {
         frame = new JFrame("Read length distribution - " + Version.SHORT_DESCRIPTION);
 
         frame.setLocationRelativeTo(viewer.getFrame());

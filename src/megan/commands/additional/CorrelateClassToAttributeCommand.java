@@ -60,7 +60,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
         final int n = sampleNames.length;
 
         for (String label : labels) {
-            final Integer id = (NumberUtils.isInteger(label) ? NumberUtils.parseInt(label) : name2IdMap.get(label));
+            final int id = (NumberUtils.isInteger(label) ? NumberUtils.parseInt(label) : name2IdMap.get(label));
             final String name = (NumberUtils.isInteger(label) ? name2IdMap.get(id) : label);
             if (id != 0) {
                 final Node v = viewer.getANode(id);
@@ -76,7 +76,7 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
                 }
                 System.out.println("Sample\t'" + name + "'\t'" + attribute + "':");
                 for (int i = 0; i < n; i++) {
-                    System.err.println(String.format("%s\t%f\t%f", sampleNames[i], x[i], y[i]));
+                    System.err.printf("%s\t%f\t%f%n", sampleNames[i], x[i], y[i]);
                 }
                 System.err.println("Correlation coefficient: " + computeCorrelationCoefficient(x, y, n));
             }

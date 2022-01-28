@@ -66,7 +66,7 @@ public class DAAQueryMatchesIterator implements ICloseableIterator<Pair<DAAQuery
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         executorService.shutdownNow();
     }
 

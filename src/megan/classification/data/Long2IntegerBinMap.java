@@ -32,7 +32,7 @@ import java.io.*;
 class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     private static final int MAGIC_NUMBER = 666; // write this as first number so that we can recognize file
 
-    private IIntGetter reader = null;
+    private IIntGetter reader;
 
     /**
      * open a bin  file
@@ -71,7 +71,7 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         reader.close();
     }
 

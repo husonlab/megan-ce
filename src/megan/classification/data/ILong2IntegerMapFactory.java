@@ -38,5 +38,5 @@ public interface ILong2IntegerMapFactory {
      * @param progress progress listner
      * @return map or null
      */
-    public ILong2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException;
+    ILong2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException;
 }

@@ -18,19 +18,15 @@
  */
 package megan.dialogs.export;
 
-import jloda.graph.Node;
-import jloda.graph.NodeData;
-import jloda.graph.NodeSet;
 import jloda.util.CanceledException;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import megan.algorithms.ActiveMatches;
 import megan.algorithms.TaxonPathAssignment;
 import megan.classification.Classification;
-import megan.core.ClassificationType;
 import megan.core.Director;
-import megan.core.Document;
-import megan.data.*;
+import megan.data.IMatchBlock;
+import megan.data.IReadBlock;
 import megan.viewer.MainViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
@@ -279,20 +275,18 @@ class CSVExportTaxonomy {
      * @param readName
      * @param readBlock
      * @param w
-     * @return number of matches in output
      * @throws IOException
      */
-    private static int writeMatches(char separator, String readName, IReadBlock readBlock, Writer w) throws IOException {
+    private static void writeMatches(char separator, String readName, IReadBlock readBlock, Writer w) throws IOException {
         int countMatches = 0;
         if (readBlock.getNumberOfAvailableMatchBlocks() == 0)
             w.write(String.format("%s%c\n", readName, separator));
         else {
             for (IMatchBlock matchBlock : readBlock.getMatchBlocks()) {
-                w.write(String.format("%s%c%d%c%d%c%.1f%c%.1f\n", readBlock.getReadName(),separator, matchBlock.getTaxonId(), separator,matchBlock.getLength(),separator, matchBlock.getBitScore(),separator,matchBlock.getPercentIdentity()));
+                w.write(String.format("%s%c%d%c%d%c%.1f%c%.1f\n", readBlock.getReadName(), separator, matchBlock.getTaxonId(), separator, matchBlock.getLength(), separator, matchBlock.getBitScore(), separator, matchBlock.getPercentIdentity()));
                 countMatches++;
             }
         }
-        return countMatches;
     }
     /**
      * export taxon name to read-ids mapping

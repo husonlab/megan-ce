@@ -283,9 +283,8 @@ public class SamplesTableView {
      * pastes lines into table guided by an attribute
      *
      * @param attribute
-     * @throws IOException
      */
-    public void pasteClipboardByAttribute(String attribute) throws IOException {
+    public void pasteClipboardByAttribute(String attribute) {
         if (tableView != null && tableView.getSelectedCells().size() > 0) {
             ensureFXThread(() -> {
                 final Clipboard clipboard = Clipboard.getSystemClipboard();

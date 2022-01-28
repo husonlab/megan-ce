@@ -88,7 +88,7 @@ public enum CigarOperator {
         this.consumesReadBases = consumesReadBases;
         this.consumesReferenceBases = consumesReferenceBases;
         this.character = (byte) character;
-        this.string = new String(new char[]{character}).intern();
+        this.string = String.valueOf(character).intern();
     }
 
     /**
@@ -110,32 +110,20 @@ public enum CigarOperator {
      * @return CigarOperator enum value corresponding to the given character.
      */
     public static CigarOperator characterToEnum(final int b) {
-        switch (b) {
-            case 'M':
-                return M;
-            case 'I':
-                return I;
-            case 'D':
-                return D;
-            case 'N':
-                return N;
-            case 'S':
-                return S;
-            case 'H':
-                return H;
-            case 'P':
-                return P;
-            case '=':
-                return EQ;
-            case 'X':
-                return X;
-            case '/':
-                return FF;
-            case '\\':
-                return FR;
-            default:
-                throw new IllegalArgumentException("Unrecognized CigarOperator: " + (char) b);
-        }
+        return switch (b) {
+            case 'M' -> M;
+            case 'I' -> I;
+            case 'D' -> D;
+            case 'N' -> N;
+            case 'S' -> S;
+            case 'H' -> H;
+            case 'P' -> P;
+            case '=' -> EQ;
+            case 'X' -> X;
+            case '/' -> FF;
+            case '\\' -> FR;
+            default -> throw new IllegalArgumentException("Unrecognized CigarOperator: " + (char) b);
+        };
     }
 
     /**

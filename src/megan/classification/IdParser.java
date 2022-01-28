@@ -298,14 +298,10 @@ public class IdParser {
         } else if (disabled.size() > 0) { // only have disabled ids, return one of them
             if (disabled.size() == 1)
                 return disabled.iterator().next();
-            switch (algorithm) {
-                default:
-                case Majority:
-                case First_Hit:
-                    return disabled.iterator().next();
-                case LCA:
-                    return idMapper.fullTree.getLCA(disabled);
-            }
+            return switch (algorithm) {
+                case Majority, First_Hit -> disabled.iterator().next();
+                case LCA -> idMapper.fullTree.getLCA(disabled);
+            };
         }
         return 0;
     }

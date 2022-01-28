@@ -543,7 +543,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             for (String className : getChartData().getClassNames()) {
                 double value = getChartData().getValueAsDouble(series, className);
                 switch (scalingType) { // modify if not linear scale:
-                    case PERCENT: {
+                    case PERCENT -> {
                         double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
 
                         if (total == 0)
@@ -552,14 +552,14 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                             value *= (100 / total);
                         break;
                     }
-                    case LOG: {
+                    case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
                         break;
                     }
-                    case SQRT: {
+                    case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
                         break;
@@ -689,18 +689,18 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
 
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
-                    case PERCENT: {
+                    case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
                         break;
                     }
-                    case LOG: {
+                    case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
                         break;
                     }
-                    case SQRT: {
+                    case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
                         break;

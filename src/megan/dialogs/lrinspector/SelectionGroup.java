@@ -47,7 +47,7 @@ public class SelectionGroup {
         return false;
     }
 
-    public boolean selectAll(boolean select) {
+    public void selectAll(boolean select) {
         boolean changed = false;
         for (Toggle item : items) {
             if (item.isSelected() != select) {
@@ -55,7 +55,6 @@ public class SelectionGroup {
                 changed = true;
             }
         }
-        return changed;
     }
 
     public ArrayList<Toggle> getSelectedItems() {

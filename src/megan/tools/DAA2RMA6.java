@@ -85,9 +85,8 @@ public class DAA2RMA6 {
      * @param args
      * @throws UsageException
      * @throws IOException
-     * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException, SQLException {
+    private void run(String[] args) throws UsageException, IOException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
@@ -145,7 +144,7 @@ public class DAA2RMA6 {
 
         final String readAssignmentModeDefaultValue;
         if (options.isDoHelp()) {
-            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString() + " else");
+            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS + " else");
         } else if (longReads)
             readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
         else
@@ -332,7 +331,7 @@ public class DAA2RMA6 {
             if (contaminantsFile.length() > 0) {
                 ContaminantManager contaminantManager = new ContaminantManager();
                 contaminantManager.read(contaminantsFile);
-                System.err.println(String.format("Contaminants profile: %,d input, %,d total", contaminantManager.inputSize(), contaminantManager.size()));
+                System.err.printf("Contaminants profile: %,d input, %,d total%n", contaminantManager.inputSize(), contaminantManager.size());
                 doc.getDataTable().setContaminants(contaminantManager.getTaxonIdsString());
                 doc.setUseContaminantFilter(contaminantManager.size() > 0);
             }

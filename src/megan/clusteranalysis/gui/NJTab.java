@@ -59,9 +59,8 @@ public class NJTab extends TreeTabBase implements ITab {
      *
      * @param taxa
      * @param distances
-     * @throws Exception
      */
-    public void compute(Taxa taxa, Distances distances) throws Exception {
+    public void compute(Taxa taxa, Distances distances) {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());
             getGraphView().setAutoLayoutLabels(true);

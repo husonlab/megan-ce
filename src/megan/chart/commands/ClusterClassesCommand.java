@@ -38,7 +38,7 @@ public class ClusterClassesCommand extends CommandBase implements ICheckBoxComma
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

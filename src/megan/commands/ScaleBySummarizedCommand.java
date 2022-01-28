@@ -33,7 +33,7 @@ public class ScaleBySummarizedCommand extends CommandBase implements ICheckBoxCo
         return (viewer != null) && (viewer.getNodeDrawer().getScaleBy() == NodeDrawer.ScaleBy.Summarized);
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public boolean isApplicable() {

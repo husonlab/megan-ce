@@ -65,13 +65,10 @@ public enum ClassificationType {
      * @return short name of type
      */
     public static String getFullName(String shortName) {
-        switch (shortName) {
-            case "TAX":
-                return Taxonomy.toString();
-            case "REF":
-                return REFSEQ.toString();
-            default:
-                return shortName;
-        }
+        return switch (shortName) {
+            case "TAX" -> Taxonomy.toString();
+            case "REF" -> REFSEQ.toString();
+            default -> shortName;
+        };
     }
 }

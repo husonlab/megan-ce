@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * Daniel Huson, 8.2013
  */
 public class PreviousTabCommand extends CommandBase implements ICommand {
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

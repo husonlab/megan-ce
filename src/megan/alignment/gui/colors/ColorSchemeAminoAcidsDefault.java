@@ -33,49 +33,28 @@ public class ColorSchemeAminoAcidsDefault extends ColorSchemeBase implements ICo
      */
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
-        switch (ch) {
-            case 'A':
-                return getDefinedColor(ch, 0xeee9e9);
-            case 'R':
-                return getDefinedColor(ch, 0x145AFF);
-            case 'N':
-                return getDefinedColor(ch, 0x00DCDC);
-            case 'D':
-                return getDefinedColor(ch, 0xE60A0A);
-            case 'C':
-                return getDefinedColor(ch, 0xE6E600);
-            case 'Q':
-                return getDefinedColor(ch, 0x00DCDC);
-            case 'E':
-                return getDefinedColor(ch, 0xE60A0A);
-            case 'G':
-                return getDefinedColor(ch, 0xEBEBEB);
-            case 'H':
-                return getDefinedColor(ch, 0x8282D2);
-            case 'I':
-                return getDefinedColor(ch, 0x0F820F);
-            case 'L':
-                return getDefinedColor(ch, 0x0F820F);
-            case 'K':
-                return getDefinedColor(ch, 0x145AFF);
-            case 'M':
-                return getDefinedColor(ch, 0xE6E600);
-            case 'F':
-                return getDefinedColor(ch, 0x3232AA);
-            case 'P':
-                return getDefinedColor(ch, 0xDC9682);
-            case 'S':
-                return getDefinedColor(ch, 0xFA9600);
-            case 'T':
-                return getDefinedColor(ch, 0xFA9600);
-            case 'W':
-                return getDefinedColor(ch, 0xB45AB4);
-            case 'Y':
-                return getDefinedColor(ch, 0x3232AA);
-            case 'V':
-                return getDefinedColor(ch, 0x0F820F);
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'A' -> getDefinedColor(ch, 0xeee9e9);
+            case 'R' -> getDefinedColor(ch, 0x145AFF);
+            case 'N' -> getDefinedColor(ch, 0x00DCDC);
+            case 'D' -> getDefinedColor(ch, 0xE60A0A);
+            case 'C' -> getDefinedColor(ch, 0xE6E600);
+            case 'Q' -> getDefinedColor(ch, 0x00DCDC);
+            case 'E' -> getDefinedColor(ch, 0xE60A0A);
+            case 'G' -> getDefinedColor(ch, 0xEBEBEB);
+            case 'H' -> getDefinedColor(ch, 0x8282D2);
+            case 'I' -> getDefinedColor(ch, 0x0F820F);
+            case 'L' -> getDefinedColor(ch, 0x0F820F);
+            case 'K' -> getDefinedColor(ch, 0x145AFF);
+            case 'M' -> getDefinedColor(ch, 0xE6E600);
+            case 'F' -> getDefinedColor(ch, 0x3232AA);
+            case 'P' -> getDefinedColor(ch, 0xDC9682);
+            case 'S' -> getDefinedColor(ch, 0xFA9600);
+            case 'T' -> getDefinedColor(ch, 0xFA9600);
+            case 'W' -> getDefinedColor(ch, 0xB45AB4);
+            case 'Y' -> getDefinedColor(ch, 0x3232AA);
+            case 'V' -> getDefinedColor(ch, 0x0F820F);
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

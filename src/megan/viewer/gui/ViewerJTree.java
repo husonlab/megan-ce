@@ -239,7 +239,7 @@ class MyJTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     /**
      * Invoked whenever a node in the tree is about to be collapsed.
      */
-    public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+    public void treeWillCollapse(TreeExpansionEvent event) {
     }
 
     /**

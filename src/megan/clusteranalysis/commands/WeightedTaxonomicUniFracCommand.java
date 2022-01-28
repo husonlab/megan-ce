@@ -98,7 +98,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
     }
 
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 

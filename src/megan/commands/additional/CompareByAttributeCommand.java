@@ -143,9 +143,9 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
                         }
                     }
                 }
-                newDocument.getDataTable().setParameters("mode=" + Comparer.COMPARISON_MODE.RELATIVE.toString() + " normalizedTo=" + newSize);
+                newDocument.getDataTable().setParameters("mode=" + Comparer.COMPARISON_MODE.RELATIVE + " normalizedTo=" + newSize);
             } else
-                newDocument.getDataTable().setParameters("mode=" + Comparer.COMPARISON_MODE.ABSOLUTE.toString());
+                newDocument.getDataTable().setParameters("mode=" + Comparer.COMPARISON_MODE.ABSOLUTE);
 
             newDocument.getSampleAttributeTable().addAttribute(attribute, tarSample2Value, true);
 

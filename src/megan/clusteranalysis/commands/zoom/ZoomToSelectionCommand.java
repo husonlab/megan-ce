@@ -26,7 +26,6 @@ import megan.clusteranalysis.ClusterViewer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     public String getSyntax() {
@@ -66,10 +65,9 @@ public class ZoomToSelectionCommand extends CommandBase implements ICommand {
      * parses the given command and executes it
      *
      * @param np
-     * @throws IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
         execute("zoom what=selected;");
 
     }

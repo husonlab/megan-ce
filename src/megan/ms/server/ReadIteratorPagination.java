@@ -70,7 +70,7 @@ public class ReadIteratorPagination {
             final long time = System.currentTimeMillis();
             final ArrayList<Long> toDelete = new ArrayList<>();
             for (PagingJob job : pageId2Job.values()) {
-                if (!job.iterator.hasNext() || time - job.getLastAccess() > 1000 * timeoutSeconds) {
+                if (!job.iterator.hasNext() || time - job.getLastAccess() > 1000L * timeoutSeconds) {
                     try {
                         job.iterator.close();
                     } catch (IOException ignored) {
@@ -78,7 +78,7 @@ public class ReadIteratorPagination {
                     toDelete.add(job.getJobId());
                 }
             }
-            pageId2Job.keySet().removeAll(toDelete);
+            toDelete.forEach(pageId2Job.keySet()::remove);
         }
     }
 

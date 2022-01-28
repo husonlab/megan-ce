@@ -54,7 +54,7 @@ class PackedSequence {
         int mask = (1 << bits) - 1;
 
         for (byte b : packed) {
-            x |= (b & 0xFF) << n;
+            x |= (long) (b & 0xFF) << n;
             n += 8;
 
             while (n >= bits && l < query_len) {

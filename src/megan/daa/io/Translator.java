@@ -171,11 +171,11 @@ public class Translator {
     }
 
     static public byte getAminoAcid(byte[] dnaSequence, int pos) {
-        return lookup[(int) dnaSequence[pos]][(int) dnaSequence[pos + 1]][(int) dnaSequence[pos + 2]];
+        return lookup[dnaSequence[pos]][dnaSequence[pos + 1]][dnaSequence[pos + 2]];
     }
 
     private static byte getAminoAcidReverse(byte[] dnaSequence, int pos) {
-        return lookupReverse[(int) dnaSequence[pos + 2]][(int) dnaSequence[pos + 1]][(int) dnaSequence[pos]];
+        return lookupReverse[dnaSequence[pos + 2]][dnaSequence[pos + 1]][dnaSequence[pos]];
     }
 
     /**

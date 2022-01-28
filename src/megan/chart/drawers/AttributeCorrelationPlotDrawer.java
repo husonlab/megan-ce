@@ -735,7 +735,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                             //System.err.println("Rotate Classes");
                             classesClusteringTree.rotateSelectedSubTree();
                             final Collection<String> list = classesClusteringTree.getLabelOrder();
-                            classNames = list.toArray(new String[list.size()]);
+                            classNames = list.toArray(new String[0]);
                             updateClassesJList();
                             getJPanel().repaint();
                         } else if (attributesClusteringTree.hasSelectedSubTree()) {
@@ -744,7 +744,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
                             attributesClusteringTree.rotateSelectedSubTree();
                             //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
                             final Collection<String> list = attributesClusteringTree.getLabelOrder();
-                            attributeNames = list.toArray(new String[list.size()]);
+                            attributeNames = list.toArray(new String[0]);
                             updateAttributesJList();
                             getJPanel().repaint();
                         }

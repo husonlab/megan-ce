@@ -51,10 +51,9 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
      * parses and applies the command
      *
      * @param np
-     * @throws Exception
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

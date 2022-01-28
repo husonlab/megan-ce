@@ -156,7 +156,7 @@ public class RarefactionPlot extends ChartViewer {
         final int numberOfPoints = ProgramProperties.get("NumberRareFactionDataPoints", 20);
         final int numberOfReplicates = ProgramProperties.get("NumberRareFactionReplicates", 10);
         progressListener.setTasks(cName + " rarefaction analysis", "Sampling from current leaves");
-        progressListener.setMaximum(numberOfPoints * numberOfReplicates * doc.getNumberOfSamples());
+        progressListener.setMaximum((long) numberOfPoints * numberOfReplicates * doc.getNumberOfSamples());
         progressListener.setProgress(0);
 
         Random rand = new Random(666);

@@ -38,7 +38,7 @@ public class UseContaminantsFilterCommand extends CommandBase implements ICheckB
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

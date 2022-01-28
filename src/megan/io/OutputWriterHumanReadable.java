@@ -102,12 +102,12 @@ public class OutputWriterHumanReadable implements IOutputWriter {
     }
 
     @Override
-    public long length() throws IOException {
+    public long length() {
         return pos;
     }
 
     @Override
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return pos;
     }
 

@@ -142,7 +142,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
         for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
             Point2D pv = ((NodeData) v.getData()).getLocation();
             Integer prevalence = ((NodeData) v.getData()).getPrevalence();
-            double value = 0;
+            double value;
             if (scalingType == ScalingType.PERCENT) {
                 value = prevalence / maxPrevalence;
             } else if (scalingType == ScalingType.LOG) {
@@ -165,7 +165,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             String className = ((NodeData) v.getData()).getLabel();
             Point2D pv = ((NodeData) v.getData()).getLocation();
             Integer prevalence = ((NodeData) v.getData()).getPrevalence();
-            double value = 0;
+            double value;
             if (scalingType == ScalingType.PERCENT) {
                 value = prevalence / maxPrevalence;
             } else if (scalingType == ScalingType.LOG) {
@@ -216,7 +216,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                 String className = ((NodeData) v.getData()).getLabel();
                 Point2D pv = ((NodeData) v.getData()).getLocation();
                 Integer prevalence = ((NodeData) v.getData()).getPrevalence();
-                double value = 0;
+                double value;
                 if (scalingType == ScalingType.PERCENT) {
                     value = prevalence / maxPrevalence;
                 } else if (scalingType == ScalingType.LOG) {
@@ -309,8 +309,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
 
                     final float score;
                     switch (method) {
-                        default:
-                        case Jaccard: {
+                        case Jaccard -> {
                             final Set<String> intersection = new HashSet<>();
                             final Set<String> union = new HashSet<>();
                             for (String series1 : series) {
@@ -340,7 +339,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                                 score = 0;
                             break;
                         }
-                        case PearsonsR: {
+                        case PearsonsR -> {
                             double meanA = 0;
                             double meanB = 0;
                             for (String series1 : series) {
@@ -366,7 +365,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                             score = (float) (valueTop / (valueBottomA * valueBottomB));
                             break;
                         }
-                        case KendallsTau: {
+                        case KendallsTau -> {
                             int countConcordant = 0;
                             int countDiscordant = 0;
 
@@ -397,7 +396,6 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                             //System.err.println(classA+" vs "+classB+": conc: "+countConcordant+" disc: "+countDiscordant+" score: "+score);
 
                         }
-                        break;
                     }
 
 

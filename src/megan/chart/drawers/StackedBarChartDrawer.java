@@ -59,12 +59,10 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
         int y1 = topMargin;
 
         double topY;
-        switch (scalingType) {
-            case PERCENT:
-                topY = 101;
-                break;
-            default:
-                topY = 1.1 * getMaxValue();
+        if (scalingType == ScalingType.PERCENT) {
+            topY = 101;
+        } else {
+            topY = 1.1 * getMaxValue();
         }
 
         double yFactor = (y0 - y1) / topY;

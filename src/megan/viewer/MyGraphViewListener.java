@@ -461,7 +461,7 @@ public class MyGraphViewListener implements IGraphViewListener {
                 Node v = firstHit.getFirstElement();
                 NodeSet secondHit = getHitNodes(me.getX(), me.getY());
 
-                Node w = null;
+                Node w;
                 if (secondHit.size() == 0) {
                     try {
                         Point2D location = viewer.trans.d2w(me.getPoint());
@@ -876,10 +876,8 @@ public class MyGraphViewListener implements IGraphViewListener {
                                 break;
                         } else // shift==true
                         {
-                            if (!viewer.getSelected(v))
-                                viewer.setSelected(v, true);
-                            else //
-                                viewer.setSelected(v, false);
+                            //
+                            viewer.setSelected(v, !viewer.getSelected(v));
                             changed = true;
                         }
                     }
@@ -900,12 +898,10 @@ public class MyGraphViewListener implements IGraphViewListener {
                                 break;
                         } else // shift==true
                         {
-                            if (!viewer.getSelected(e)) {
-                                viewer.setSelected(e, true);
-                                // selectedNodes.insert(tree.source(e));
-                                // selectedNodes.insert(tree.target(e));
-                            } else // selectedEdges.member(e)
-                                viewer.setSelected(e, false);
+                            // selectedNodes.insert(tree.source(e));
+                            // selectedNodes.insert(tree.target(e));
+                            // selectedEdges.member(e)
+                            viewer.setSelected(e, !viewer.getSelected(e));
                             changed = true;
                         }
                     }

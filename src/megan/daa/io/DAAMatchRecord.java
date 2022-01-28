@@ -72,22 +72,20 @@ public class DAAMatchRecord {
         totalSubjectLen = daaHeader.getRefLength(subjectId);
 
         switch (daaHeader.getAlignMode()) {
-            case blastx: {
+            case blastx -> {
                 frame = (flag & (1 << 6)) == 0 ? queryBegin % 3 : 3 + (queryRecord.getSourceSequence().length - 1 - queryBegin) % 3;
                 translatedQueryBegin = getQueryTranslatedBegin(queryBegin, frame, queryRecord.getSourceSequence().length, true);
                 break;
             }
-            case blastp: {
+            case blastp -> {
                 frame = 0;
                 translatedQueryBegin = queryBegin;
                 break;
             }
-            default:
-            case blastn: {
+            case blastn -> {
                 frame = (flag & (1 << 6)) == 0 ? 0 : 1;
                 translatedQueryBegin = getQueryTranslatedBegin(queryBegin, frame, queryRecord.getSourceSequence().length);
             }
-
         }
         parseTranscript(transcript);
     }
@@ -119,14 +117,13 @@ public class DAAMatchRecord {
             len += count;
 
             switch (op.getEditOperation()) {
-                case op_match:
+                case op_match -> {
                     identities += count;
                     translatedQueryLen += count;
                     subjectLen += count;
                     d = 0;
-                    break;
-                case op_substitution:
-
+                }
+                case op_substitution -> {
                     byte c = daaParser.getAlignmentAlphabet()[op.getLetter()];
                     if (c == '/') { // reverse shift
                         frameShiftAdjustmentForBlastXMode -= 4; // minus 1 for frame shift and 3 for translatedQueryLen increment
@@ -137,19 +134,19 @@ public class DAAMatchRecord {
                     translatedQueryLen += count;
                     subjectLen += count;
                     mismatches += count;
-
                     d = 0;
-                    break;
-                case op_insertion:
+                }
+                case op_insertion -> {
                     translatedQueryLen += count;
                     ++gapOpenings;
                     d = 0;
-                    break;
-                case op_deletion:
+                }
+                case op_deletion -> {
                     subjectLen += count;
                     if (d == 0)
                         ++gapOpenings;
                     d += count;
+                }
             }
         }
     }

@@ -115,7 +115,7 @@ public class PCoA {
         // multiple eigenvectors by sqrt of eigenvalues
         progress.setSubtask("Calculating PCoA");
         progress.setProgress(0);
-        progress.setMaximum(2 * rank);
+        progress.setMaximum(2L * rank);
         final Matrix scaledEigenVectors = (Matrix) eigenVectors.clone();
         for (int i = 0; i < rank; i++) {
             for (int j = 0; j < rank; j++) {

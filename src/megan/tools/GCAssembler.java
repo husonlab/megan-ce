@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
@@ -215,7 +214,7 @@ public class GCAssembler {
 								final var progress = (veryVerbose ? new ProgressPercentage() : new ProgressSilent());
 								final var className = classification != null ? classification.getName2IdMap().get(classId) : "none";
 								if (veryVerbose)
-									System.err.println("++++ Assembling class " + +classId + ": " + className + ": ++++");
+									System.err.println("++++ Assembling class " + classId + ": " + className + ": ++++");
 
 								final var outputFile = createOutputFileName(outputFileTemplate, classId, className, classIdsList.size());
 								final var label = classificationName + ". Id: " + classId;

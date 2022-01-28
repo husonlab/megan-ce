@@ -18,6 +18,7 @@
  */
 package megan.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,6 +26,7 @@ import java.io.Serializable;
  * Daniel Huson, 10.2010
  */
 public class Location implements Serializable {
+    @Serial
     private static final long serialVersionUID = -6952597828705416365L; // DHH: changed id because LocationManager removed
     private int fileId;
     private long position;

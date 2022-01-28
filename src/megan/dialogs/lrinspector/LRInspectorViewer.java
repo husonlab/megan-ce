@@ -64,7 +64,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -159,11 +158,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                try {
-                    destroyView();
-                } catch (CanceledException e1) {
-                    Basic.caught(e1);
-                }
+                destroyView();
             }
 
             public void windowActivated(WindowEvent event) {
@@ -263,7 +258,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
         return locked;
     }
 
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         // todo: destroy breaks JavaFX
         if (true) {
             getFrame().setVisible(false);
@@ -351,9 +346,8 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
      * @param format
      * @param pagenumber
      * @return
-     * @throws PrinterException
      */
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
             gc.setFont(getFont());
@@ -614,7 +608,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     }
 
     public void updateEnableState() {
-        Runnable runnable = () -> commandManager.updateEnableState();
+        Runnable runnable = commandManager::updateEnableState;
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
         else
@@ -643,7 +637,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
             for (TableItem tableItem : tableItems) {
                 final ReadLayoutPane pane = tableItem.getPane();
                 if (!pane.getMatchSelection().isEmpty()) {
-                    buf.append("Query=").append(tableItem.toString()).append("\n");
+                    buf.append("Query=").append(tableItem).append("\n");
                     buf.append("# Selected alignments: ").append(pane.getMatchSelection().getSelectedItems().size()).append("\n\n");
                     for (IMatchBlock matchBlock : pane.getMatchSelection().getSelectedItems()) {
                         buf.append(matchBlock.getText()).append("\n");

@@ -122,12 +122,9 @@ public class Database {
         }
 
 		for (var aboutFile : FileUtils.getAllFilesInDirectory(rootDirectory, recursive, "About.txt")) {
-			try {
-				var relativePath = FileUtils.getRelativeFile(aboutFile.getParentFile(), rootDirectory).getPath();
-				file2DescriptionFile.put(relativePath, aboutFile);
-			} catch (IOException ignored) {
-			}
-		}
+            var relativePath = FileUtils.getRelativeFile(aboutFile.getParentFile(), rootDirectory).getPath();
+            file2DescriptionFile.put(relativePath, aboutFile);
+        }
 
         this.fileName2Id.putAll(fileName2IdRebuilt);
         this.id2Record.putAll(id2record);

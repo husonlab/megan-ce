@@ -586,23 +586,23 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
         final String format;
 
         switch (getScalingType()) {
-            case ZSCORE:
+            case ZSCORE -> {
                 gc.drawString("z-score", x0, y - 5);
                 max = zScoreCutoff;
                 min = -zScoreCutoff;
                 step = 1;
                 yStep = boxHeight / (2.0 * zScoreCutoff);
                 format = "%+1.1f";
-                break;
-            case PERCENT:
+            }
+            case PERCENT -> {
                 gc.drawString("%", x0, y - 5);
                 max = 100;
                 min = 0;
                 step = 20;
                 yStep = boxHeight / 5;
                 format = "%.0f";
-                break;
-            case LINEAR: {
+            }
+            case LINEAR -> {
                 double maxValue = 0;
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
@@ -630,7 +630,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 format = "%,.0f";
                 break;
             }
-            case LOG: {
+            case LOG -> {
                 double maxValue = 0;
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
@@ -664,7 +664,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 }
                 return;
             }
-            case SQRT: {
+            case SQRT -> {
                 double maxValue = 0;
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
@@ -698,7 +698,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 }
                 return;
             }
-            default: {
+            default -> {
                 double maxValue = 0;
                 for (String series : getChartData().getSeriesNames()) {
                     maxValue = Math.max(maxValue, getChartData().getRange(series).getSecond().intValue());
@@ -943,7 +943,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         //System.err.println("Rotate Classes");
                         classesClusteringTree.rotateSelectedSubTree();
                         final Collection<String> list = classesClusteringTree.getLabelOrder();
-                        classNames = list.toArray(new String[list.size()]);
+                        classNames = list.toArray(new String[0]);
                         updateClassesJList();
                         getJPanel().repaint();
                     } else if (seriesClusteringTree.hasSelectedSubTree()) {
@@ -952,7 +952,7 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                         seriesClusteringTree.rotateSelectedSubTree();
                         //System.err.println("New order: "+Basic.toString(seriesClusteringTree.getLabelOrder(),","));
                         final Collection<String> list = seriesClusteringTree.getLabelOrder();
-                        seriesNames = list.toArray(new String[list.size()]);
+                        seriesNames = list.toArray(new String[0]);
                         updateSeriesJList();
                         getJPanel().repaint();
                     }

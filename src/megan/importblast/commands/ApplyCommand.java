@@ -37,10 +37,9 @@ public class ApplyCommand extends CommandBase implements ICommand {
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**
@@ -68,12 +67,8 @@ public class ApplyCommand extends CommandBase implements ICommand {
         } catch (IOException ex) {
             Basic.caught(ex);
         } finally {
-            try {
-                if (importBlastDialog != null)
-                    importBlastDialog.destroyView();
-            } catch (CanceledException e) {
-                Basic.caught(e);
-            }
+            if (importBlastDialog != null)
+                importBlastDialog.destroyView();
         }
     }
 

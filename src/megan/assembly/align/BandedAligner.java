@@ -27,15 +27,15 @@ import jloda.util.ReusableByteBuffer;
  * Daniel Huson, 8.2014
  */
 class BandedAligner {
-    private double lambda = 0.625;
-    private double lnK = -0.89159811928378356416921953633132;
+    private double lambda;
+    private double lnK;
     private final static double LN_2 = 0.69314718055994530941723212145818;
     private final static int MINUS_INFINITY = -100000000;
 
     public static int ALIGNMENT_SEGMENT_LENGTH = 60; // length of alignment segment in text format output
     private final static byte[] MID_TRACK_LEADING_SPACES = "                 ".getBytes(); // spaces used in text format output
 
-    private long referenceDatabaseLength = 10000000;
+    private long referenceDatabaseLength;
 
     private byte[] query;
     private int queryLength;
@@ -91,7 +91,7 @@ class BandedAligner {
     private byte[] midTrack = new byte[1000];
     private byte[] referenceTrack = new byte[1000];
 
-    private ReusableByteBuffer alignmentBuffer = new ReusableByteBuffer(10000);
+    private final ReusableByteBuffer alignmentBuffer = new ReusableByteBuffer(10000);
 
     private int queryPos;
     private int refPos;

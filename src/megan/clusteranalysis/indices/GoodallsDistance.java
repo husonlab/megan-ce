@@ -221,7 +221,7 @@ public class GoodallsDistance {
         int len = pairRatioMatrix.get(0).length;
 
         for (int i = 0; i < len; i++) {
-            Double sum = 0.0;
+            double sum = 0.0;
             for (Double[] darray : pairRatioMatrix) {
                 if (!Double.isNaN(darray[i])) sum += Math.log10(darray[i]);
             }

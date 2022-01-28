@@ -207,26 +207,19 @@ public class SAMMatch implements megan.rma3.IMatch {
                 throw new IOException("Failed to parse: " + word);
             final String[] three = new String[]{word.substring(0, pos1), word.substring(pos1 + 1, pos2), word.substring(pos2 + 1)};
 
-            final Object object;
-            switch (three[1].charAt(0)) {
-                case 'A': //character
-                    object = three[2].charAt(0);
-                    break;
-                case 'i': // integer
-                    object = NumberUtils.parseInt(three[2]);
-                    break;
-                case 'f': // float
-                    object = NumberUtils.parseFloat(three[2]);
-                    break;
-                case 'Z': //string
-                    object = three[2];
-                    break;
-                case 'H': // hex string
-                    object = Integer.valueOf(three[2]);
-                    break;
-                default:
-                    throw new IOException("Failed to parse: " + word);
-            }
+            final Object object = switch (three[1].charAt(0)) {
+                case 'A' -> //character
+                        three[2].charAt(0);
+                case 'i' -> // integer
+                        NumberUtils.parseInt(three[2]);
+                case 'f' -> // float
+                        NumberUtils.parseFloat(three[2]);
+                case 'Z' -> //string
+                        three[2];
+                case 'H' -> // hex string
+                        Integer.valueOf(three[2]);
+                default -> throw new IOException("Failed to parse: " + word);
+            };
             optionalFields.put(three[0], object);
         }
 
@@ -353,15 +346,11 @@ public class SAMMatch implements megan.rma3.IMatch {
      * @return blast alignment text
      */
     public String getBlastAlignmentText(final Single<Float> percentIdentity) {
-        switch (mode) {
-            case BlastX:
-                return getBlastXAlignment(percentIdentity);
-            case BlastP:
-                return getBlastPAlignment(percentIdentity);
-            default:
-            case BlastN:
-                return getBlastNAlignment(percentIdentity);
-        }
+        return switch (mode) {
+            case BlastX -> getBlastXAlignment(percentIdentity);
+            case BlastP -> getBlastPAlignment(percentIdentity);
+            case BlastN -> getBlastNAlignment(percentIdentity);
+        };
     }
 
     /**
@@ -416,7 +405,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -515,7 +504,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -624,7 +613,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
+                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));

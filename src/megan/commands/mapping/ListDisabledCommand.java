@@ -38,8 +38,8 @@ public class ListDisabledCommand extends CommandBase implements ICommand {
 
         final Set<Integer> disabledTopLevelTaxa = TaxonomyData.getDisabledInternalTaxa();
 
-        System.out.println(String.format("Total disabled taxa:%,12d", TaxonomyData.getDisabledTaxa().size()));
-        System.out.println(String.format("Disabled top-level taxa:%,8d", TaxonomyData.getDisabledInternalTaxa().size()));
+        System.out.printf("Total disabled taxa:%,12d%n", TaxonomyData.getDisabledTaxa().size());
+        System.out.printf("Disabled top-level taxa:%,8d%n", TaxonomyData.getDisabledInternalTaxa().size());
 
         for (Integer taxId : disabledTopLevelTaxa) {
             String taxName = TaxonomyData.getName2IdMap().get(taxId);

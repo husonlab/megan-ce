@@ -22,7 +22,6 @@ package megan.daa.io;
 
 import megan.io.IOutput;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -97,22 +96,22 @@ public final class ByteOutputStream extends OutputStream implements IOutput {
     }
 
     @Override
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return count;
     }
 
     @Override
-    public long length() throws IOException {
+    public long length() {
         return count;
     }
 
     @Override
-    public boolean supportsSeek() throws IOException {
+    public boolean supportsSeek() {
         return false;
     }
 
     @Override
-    public void seek(long pos) throws IOException {
+    public void seek(long pos) {
 
     }
 }

@@ -113,7 +113,7 @@ public class Reanalyzer {
 
         final String readAssignmentModeDefaultValue;
         if (options.isDoHelp()) {
-            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString() + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString() + " else");
+            readAssignmentModeDefaultValue = (Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS + " in long read mode, " + Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS + " else");
         } else if (longReads)
             readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_LONG_READS.toString();
         else

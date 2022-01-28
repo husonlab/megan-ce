@@ -85,7 +85,7 @@ public class ClientMS {
         try {
             final var request = setupRequest("/list?readCount=true&matchCount=true", false);
             final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofLines());
-            final var list = response.body().collect(Collectors.toList());
+            final var list = response.body().toList();
             if (list.size() > 0 && list.get(0).startsWith(Utilities.SERVER_ERROR)) {
                 System.err.println(list.get(0));
                 throw new IOException(list.get(0));

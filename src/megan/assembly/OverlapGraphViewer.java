@@ -241,7 +241,7 @@ public class OverlapGraphViewer {
         frame.getContentPane().add(graphView.getScrollPane(), BorderLayout.CENTER);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        CommandManager commandManager = new CommandManager(dir, graphView, new String[]{"megan.commands"});
+        CommandManager commandManager = new CommandManager(dir, graphView, "megan.commands");
 
         commandManager.addCommands(this, Collections.singletonList(new SelectFromPreviousWindowCommand()), true);
 
@@ -261,7 +261,7 @@ public class OverlapGraphViewer {
         graphView.centerGraph();
 
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
     }
 
     /**

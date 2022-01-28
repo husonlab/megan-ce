@@ -124,7 +124,7 @@ public class SAMUtilities {
             final CombinedOperation editOpCorrected;
             // compute sequence:
             switch (editOp.getEditOperation()) {
-                case op_match: {
+                case op_match -> {
                     for (int i = 0; i < editOp.getCount(); i++) {
                         byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
                         alignedQueryBuf.write(aa);
@@ -134,7 +134,7 @@ public class SAMUtilities {
                     editOpCorrected = editOp;
                     break;
                 }
-                case op_insertion: {
+                case op_insertion -> {
                     for (int i = 0; i < editOp.getCount(); i++) {
                         byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
                         alignedQueryBuf.write(aa);
@@ -144,16 +144,17 @@ public class SAMUtilities {
                     editOpCorrected = editOp;
                     break;
                 }
-                case op_deletion: {
+                case op_deletion -> {
                     byte c = queryAlphabet[editOp.getLetter()];
                     //alignedQueryBuf.write((byte)'-');
                     //alignedReferenceBuf.write(c);
                     editOpCorrected = editOp;
                     break;
                 }
+
                 // Key idea here: Although a frame shift in the query is really an insertion in the query,
                 // in a DAA file it is represented as a substitution by a / or \ in the reference, due to limitations due to the bit packed transcript encoding
-                case op_substitution: {
+                case op_substitution -> {
                     byte c = queryAlphabet[editOp.getLetter()];
                     if (c == '/') { // reverse shift
                         alignedQueryBuf.write(c);
@@ -174,8 +175,7 @@ public class SAMUtilities {
                     }
                     break;
                 }
-                default:
-                    throw new RuntimeException("this should't happen");
+                default -> throw new RuntimeException("this should't happen");
             }
             // compute cigar:
             if (mapDaaOpCode2CigarOpCode[editOpCorrected.getOpCode()] == previousOp)

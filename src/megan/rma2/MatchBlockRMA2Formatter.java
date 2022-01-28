@@ -73,22 +73,11 @@ public class MatchBlockRMA2Formatter {
             String type = split[1];
             Object[] object = new Object[]{name, type.charAt(0), null};
             switch (type.charAt(0)) {
-                case 'i':
-                case 'f':
-                    numberOfBytes += 4;
-                    break;
-                case 'l':
-                    numberOfBytes += 8;
-                    break;
-                case 'b':
-                    numberOfBytes += 1;
-                    break;
-                case 'B':
-                    numberOfBytes += 6;
-                    break;
-                case 'c':
-                    numberOfBytes += 2;
-                    break;
+                case 'i', 'f' -> numberOfBytes += 4;
+                case 'l' -> numberOfBytes += 8;
+                case 'b' -> numberOfBytes += 1;
+                case 'B' -> numberOfBytes += 6;
+                case 'c' -> numberOfBytes += 2;
             }
             name2data.put(name, object);
             list.add(object);
@@ -116,24 +105,12 @@ public class MatchBlockRMA2Formatter {
     public void read(IInputReader dataIndexReader) throws IOException {
         for (Object[] dataRecord : data) {
             switch ((Character) dataRecord[1]) {
-                case 'i':
-                    dataRecord[2] = dataIndexReader.readInt();
-                    break;
-                case 'f':
-                    dataRecord[2] = dataIndexReader.readFloat();
-                    break;
-                case 'l':
-                    dataRecord[2] = dataIndexReader.readLong();
-                    break;
-                case 'b':
-                    dataRecord[2] = (byte) dataIndexReader.read();
-                    break;
-                case 'B':
-                    dataRecord[2] = dataIndexReader.readByteByteInt();
-                    break;
-                case 'c':
-                    dataRecord[2] = dataIndexReader.readChar();
-                    break;
+                case 'i' -> dataRecord[2] = dataIndexReader.readInt();
+                case 'f' -> dataRecord[2] = dataIndexReader.readFloat();
+                case 'l' -> dataRecord[2] = dataIndexReader.readLong();
+                case 'b' -> dataRecord[2] = (byte) dataIndexReader.read();
+                case 'B' -> dataRecord[2] = dataIndexReader.readByteByteInt();
+                case 'c' -> dataRecord[2] = dataIndexReader.readChar();
             }
             // System.err.println("Read (match): "+ Basic.toString(dataRecord,","));
         }
@@ -148,24 +125,12 @@ public class MatchBlockRMA2Formatter {
     public void write(IOutputWriter indexWriter) throws IOException {
         for (Object[] dataRecord : data) {
             switch ((Character) dataRecord[1]) {
-                case 'i':
-                    indexWriter.writeInt((Integer) dataRecord[2]);
-                    break;
-                case 'f':
-                    indexWriter.writeFloat((Float) dataRecord[2]);
-                    break;
-                case 'l':
-                    indexWriter.writeLong((Long) dataRecord[2]);
-                    break;
-                case 'b':
-                    indexWriter.write((Byte) dataRecord[2]);
-                    break;
-                case 'B':
-                    indexWriter.writeByteByteInt((ByteByteInt) dataRecord[2]);
-                    break;
-                case 'c':
-                    indexWriter.writeChar((Character) dataRecord[2]);
-                    break;
+                case 'i' -> indexWriter.writeInt((Integer) dataRecord[2]);
+                case 'f' -> indexWriter.writeFloat((Float) dataRecord[2]);
+                case 'l' -> indexWriter.writeLong((Long) dataRecord[2]);
+                case 'b' -> indexWriter.write((Byte) dataRecord[2]);
+                case 'B' -> indexWriter.writeByteByteInt((ByteByteInt) dataRecord[2]);
+                case 'c' -> indexWriter.writeChar((Character) dataRecord[2]);
             }
             // System.err.println("Wrote (match): "+ Basic.toString(dataRecord,","));
         }

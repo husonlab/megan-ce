@@ -58,7 +58,7 @@ public interface IData {
 
     Collection<String> getSeriesNames();
 
-    void read(Reader r) throws IOException;
+    void read(Reader r);
 
     void write(Writer w) throws IOException;
 

@@ -49,7 +49,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -334,7 +333,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
             }
 
             if (sorted.size() > 0) {
-                ((DefaultListModel) referenceJList.getModel()).removeElementAt(0);
+                ((DefaultListModel<?>) referenceJList.getModel()).removeElementAt(0);
                 for (ReferenceItem item : sorted) {
                     ((DefaultListModel) referenceJList.getModel()).addElement(item);
                 }
@@ -457,7 +456,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
         return locked;
     }
 
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
 
         ProgramProperties.put("AlignerViewerGeometry", new int[]
@@ -518,19 +517,13 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
             alignmentViewerPanel.setShowReference(false);
 
         alignment.getGapColumnContractor().processAlignment(alignment);
-        try {
-            setAlignmentLayout(getAlignmentLayout(), new ProgressPercentage());
-        } catch (CanceledException ignored) {
-        }
+        setAlignmentLayout(getAlignmentLayout(), new ProgressPercentage());
         if (isShowAsMapping()) {
             alignment.getRowCompressor().update();
         } else {
             alignment.getRowCompressor().clear();
-            try {
-                if (getAlignmentLayout() != AlignmentLayout.ByContigs) // todo: not sure this is ok, but want to avoid doing assembly twice
-                    setAlignmentLayout(getAlignmentLayout(), new ProgressPercentage());
-            } catch (CanceledException ignored) {
-            }
+            if (getAlignmentLayout() != AlignmentLayout.ByContigs) // todo: not sure this is ok, but want to avoid doing assembly twice
+                setAlignmentLayout(getAlignmentLayout(), new ProgressPercentage());
         }
 
         if (!alignment.getReferenceType().equals(alignment.getSequenceType())) {
@@ -556,17 +549,17 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
         consensusPanel.setAlignment(alignment);
 
         switch (alignment.getSequenceType()) {
-            case Alignment.PROTEIN:
+            case Alignment.PROTEIN -> {
                 alignmentPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
                 referencePanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
                 consensusPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
-                break;
-            case Alignment.DNA:
+            }
+            case Alignment.DNA -> {
                 alignmentPanel.setColorScheme(new ColorSchemeNucleotides(nucleotideColoringScheme));
                 referencePanel.setColorScheme(new ColorSchemeNucleotides(nucleotideColoringScheme));
                 consensusPanel.setColorScheme(new ColorSchemeNucleotides(nucleotideColoringScheme));
-                break;
-            case Alignment.cDNA:
+            }
+            case Alignment.cDNA -> {
                 if (alignment.isTranslate()) {
                     alignmentPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
                     consensusPanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
@@ -575,12 +568,12 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
                     consensusPanel.setColorScheme(new ColorSchemeNucleotides(nucleotideColoringScheme));
                 }
                 referencePanel.setColorScheme(new ColorSchemeAminoAcids(aminoAcidColoringScheme));
-                break;
-            default:
+            }
+            default -> {
                 alignmentPanel.setColorScheme(new ColorSchemeText());
                 consensusPanel.setColorScheme(new ColorSchemeText());
                 referencePanel.setColorScheme(new ColorSchemeText());
-                break;
+            }
         }
 
         if (alignment.getNumberOfSequences() < 5000 && alignment.getLength() < 10000)
@@ -605,7 +598,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
      * @param pagenumber page index
      */
 
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
             gc.setFont(getFont());

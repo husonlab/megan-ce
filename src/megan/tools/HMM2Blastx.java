@@ -39,10 +39,8 @@ public class HMM2Blastx {
      * converts the file
      *
      * @param args
-     * @throws jloda.util.UsageException
-     * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("HMM2BlastX");
@@ -93,7 +91,7 @@ public class HMM2Blastx {
                     progress.close();
                 }
             }
-            System.err.println(String.format("Reads:   %,9d", reads.size()));
+            System.err.printf("Reads:   %,9d%n", reads.size());
         }
 
         final Map<String, SortedSet<Pair<Float, String>>> query2alignments = new HashMap<>();
@@ -229,9 +227,9 @@ public class HMM2Blastx {
                 progress.close();
             }
         }
-        System.err.println(String.format("HMMs:    %,9d", countReferences));
-        System.err.println(String.format("Reads:   %,9d", countQueries));
-        System.err.println(String.format("Matches:%,10d", countAlignments));
+        System.err.printf("HMMs:    %,9d%n", countReferences);
+        System.err.printf("Reads:   %,9d%n", countQueries);
+        System.err.printf("Matches:%,10d%n", countAlignments);
 
         final Collection<String> queryNames;
         if (reads.size() > 0)
@@ -262,7 +260,7 @@ public class HMM2Blastx {
             progress.incrementProgress();
         }
         progress.close();
-        System.err.println(String.format("Written:%,10d", countAlignmentsWritten));
+        System.err.printf("Written:%,10d%n", countAlignmentsWritten);
     }
 
     /**

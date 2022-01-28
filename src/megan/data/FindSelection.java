@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
  */
 public class FindSelection {
     public boolean useReadName = false;
-    public boolean useReadHeader = false;
-    public boolean useReadSequence = false;
-    public boolean useMatchText = false;
+    public final boolean useReadHeader = false;
+    public final boolean useReadSequence = false;
+    public final boolean useMatchText = false;
 
     /**
      * does the given readBlock match the given pattern

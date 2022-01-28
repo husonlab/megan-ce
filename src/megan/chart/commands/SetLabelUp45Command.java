@@ -62,10 +62,9 @@ public class SetLabelUp45Command extends CommandBase implements ICheckBoxCommand
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

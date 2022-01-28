@@ -64,7 +64,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         executorService.shutdownNow();
     }
 

@@ -59,7 +59,7 @@ public class MicrobialAttributes {
      *
      * @return instance
      */
-    public static MicrobialAttributes getInstance() throws IOException {
+    public static MicrobialAttributes getInstance() {
         if (instance == null) {
             instance = new MicrobialAttributes();
             String fileName = ProgramProperties.get(MeganProperties.MICROBIALATTRIBUTESFILE);

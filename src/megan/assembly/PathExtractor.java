@@ -52,7 +52,7 @@ public class PathExtractor {
      * The algorithm determines the longest path between any start read and any end read, where the length is given by the total
      * number of pairwise overlapped bases in the path
      */
-    public int apply(ProgressListener progress) throws CanceledException {
+    public void apply(ProgressListener progress) throws CanceledException {
         // make a working copy of the graph. Necessary because we remove stuff from the graph
         final Graph overlapGraphWorkingCopy = new Graph();
         final NodeArray<Node> new2oldNode = new NodeArray<>(overlapGraphWorkingCopy);
@@ -77,7 +77,7 @@ public class PathExtractor {
             }
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         // extract contigs from graph, deleting their nodes
         progress.setSubtask("Extracting paths");
@@ -94,7 +94,7 @@ public class PathExtractor {
             progress.incrementProgress();
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         final List<Node[]> pathsList = new ArrayList<>();
 
@@ -160,7 +160,7 @@ public class PathExtractor {
             progress.setProgress(initialNumberOfEdges - overlapGraphWorkingCopy.getNumberOfEdges());
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         // singleton reads:
         final List<Node> singletonList = new ArrayList<>();
@@ -174,7 +174,6 @@ public class PathExtractor {
         paths = pathsList.toArray(new Node[pathsList.size()][]);
         singletons = singletonList.toArray(new Node[0]);
 
-        return paths.length;
     }
 
     /**

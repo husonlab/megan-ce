@@ -165,7 +165,7 @@ public class ComparisonPlot extends ChartViewer {
      */
     private Map<String, Collection<Pair<Number, Number>>> computeCounts(Document doc, ViewerBase viewer, ProgressListener progressListener) throws CanceledException {
         progressListener.setTasks(cName + " vs " + cName, "Sampling from current leaves");
-        progressListener.setMaximum(11 * doc.getNumberOfSamples());
+        progressListener.setMaximum(11L * doc.getNumberOfSamples());
         progressListener.setProgress(0);
 
         Map<String, Collection<Pair<Number, Number>>> plotName2Counts = new HashMap<>();

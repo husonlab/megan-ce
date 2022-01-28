@@ -53,12 +53,8 @@ public class SelectAllCommand extends CommandBase implements ICommand {
 
         final InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
         switch (what) {
-            case "all":
-                inspectorWindow.getDataTree().setSelectionInterval(0, inspectorWindow.getDataTree().getRowCount());
-                break;
-            case "none":
-                inspectorWindow.getDataTree().clearSelection();
-                break;
+            case "all" -> inspectorWindow.getDataTree().setSelectionInterval(0, inspectorWindow.getDataTree().getRowCount());
+            case "none" -> inspectorWindow.getDataTree().clearSelection();
         }
     }
 

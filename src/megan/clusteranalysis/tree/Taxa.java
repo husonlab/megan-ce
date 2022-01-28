@@ -67,18 +67,17 @@ public class Taxa  {
      * add the named taxon
      *
      * @param name
-     * @return the index of the taxon
      */
-    public int add(String name) {
+    public void add(String name) {
         if (!name2index.containsKey(name)) {
             ntax++;
             bits.set(ntax);
             Integer index = ntax;
             index2name.put(index, name);
             name2index.put(name, index);
-            return ntax;
-        } else
-            return name2index.get(name);
+        } else {
+            name2index.get(name);
+        }
     }
 
     /**
@@ -205,17 +204,18 @@ public class Taxa  {
     }
 
     public  Iterable<Integer> members() {
-        return () -> new Iterator<Integer>() {
-            private int t=bits.nextSetBit(0);
+        return () -> new Iterator<>() {
+            private int t = bits.nextSetBit(0);
+
             @Override
             public boolean hasNext() {
-                return t!=-1;
+                return t != -1;
             }
 
             @Override
             public Integer next() {
-                final int result=t;
-                t= bits.nextSetBit(t+1);
+                final int result = t;
+                t = bits.nextSetBit(t + 1);
                 return result;
             }
         };

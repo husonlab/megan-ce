@@ -34,38 +34,17 @@ public class ColorSchemeAminoAcidsMAEditor extends ColorSchemeBase implements IC
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
         // source: http://www.bioinformatics.nl/~berndb/aacolour.html
-        switch (ch) {
-            case 'A':
-            case 'G':
-                return getDefinedColor(ch, 0x77DD88);
-            case 'C':
-                return getDefinedColor(ch, 0x99EE66);
-            case 'D':
-            case 'E':
-            case 'N':
-            case 'Q':
-                return getDefinedColor(ch, 0x55BB33);
-            case 'I':
-            case 'L':
-            case 'M':
-            case 'V':
-                return getDefinedColor(ch, 0x66BBFF);
-            case 'F':
-            case 'W':
-            case 'Y':
-                return getDefinedColor(ch, 0x9999FF);
-            case 'H':
-                return getDefinedColor(ch, 0x5555FF);
-            case 'K':
-            case 'R':
-                return getDefinedColor(ch, 0xFFCC77);
-            case 'P':
-                return getDefinedColor(ch, 0xEEAAAA);
-            case 'S':
-            case 'T':
-                return getDefinedColor(ch, 0xFF4455);
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'A', 'G' -> getDefinedColor(ch, 0x77DD88);
+            case 'C' -> getDefinedColor(ch, 0x99EE66);
+            case 'D', 'E', 'N', 'Q' -> getDefinedColor(ch, 0x55BB33);
+            case 'I', 'L', 'M', 'V' -> getDefinedColor(ch, 0x66BBFF);
+            case 'F', 'W', 'Y' -> getDefinedColor(ch, 0x9999FF);
+            case 'H' -> getDefinedColor(ch, 0x5555FF);
+            case 'K', 'R' -> getDefinedColor(ch, 0xFFCC77);
+            case 'P' -> getDefinedColor(ch, 0xEEAAAA);
+            case 'S', 'T' -> getDefinedColor(ch, 0xFF4455);
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

@@ -38,7 +38,7 @@ public class SetScaleByZScoreCommand extends CommandBase implements ICheckBoxCom
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

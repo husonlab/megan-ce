@@ -79,43 +79,29 @@ public class ClassificationsFooterRMA3 extends BaseRMA3 {
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             {
                 switch (pair.getFirst()) {
-                    case "ClassificationBlockFormat":
-                        setClassificationBlockFormat(reader.readString());
-                        break;
-                    case "TaxStart":
-                        setStart(ClassificationType.Taxonomy, reader.readLong());
-                        break;
-                    case "TaxEnd":
-                        setEnd(ClassificationType.Taxonomy, reader.readLong());
-                        break;
-                    case "KeggStart":
+                    case "ClassificationBlockFormat" -> setClassificationBlockFormat(reader.readString());
+                    case "TaxStart" -> setStart(ClassificationType.Taxonomy, reader.readLong());
+                    case "TaxEnd" -> setEnd(ClassificationType.Taxonomy, reader.readLong());
+                    case "KeggStart" -> {
                         setStart(ClassificationType.KEGG, reader.readLong());
                         doKegg = true;
-                        break;
-                    case "KeggEnd":
-                        setEnd(ClassificationType.KEGG, reader.readLong());
-                        break;
-                    case "SeedStart":
+                    }
+                    case "KeggEnd" -> setEnd(ClassificationType.KEGG, reader.readLong());
+                    case "SeedStart" -> {
                         setStart(ClassificationType.SEED, reader.readLong());
                         doSeed = true;
-                        break;
-                    case "SeedEnd":
-                        setEnd(ClassificationType.SEED, reader.readLong());
-                        break;
-                    case "CogStart":
+                    }
+                    case "SeedEnd" -> setEnd(ClassificationType.SEED, reader.readLong());
+                    case "CogStart" -> {
                         setStart(ClassificationType.COG, reader.readLong());
                         doCog = true;
-                        break;
-                    case "CogEnd":
-                        setEnd(ClassificationType.COG, reader.readLong());
-                        break;
-                    case "PfamStart":
+                    }
+                    case "CogEnd" -> setEnd(ClassificationType.COG, reader.readLong());
+                    case "PfamStart" -> {
                         setStart(ClassificationType.PFAM, reader.readLong());
                         doPfam = true;
-                        break;
-                    case "PfamEnd":
-                        setEnd(ClassificationType.PFAM, reader.readLong());
-                        break;
+                    }
+                    case "PfamEnd" -> setEnd(ClassificationType.PFAM, reader.readLong());
                 }
             }
         }
@@ -130,39 +116,17 @@ public class ClassificationsFooterRMA3 extends BaseRMA3 {
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             {
                 switch (pair.getFirst()) {
-                    case "ClassificationBlockFormat":
-                        formatDefinition.write(writer, "ClassificationBlockFormat", getClassificationBlockFormat());
-                        break;
-                    case "TaxStart":
-                        formatDefinition.write(writer, "TaxStart", getStart(ClassificationType.Taxonomy));
-                        break;
-                    case "TaxEnd":
-                        formatDefinition.write(writer, "TaxEnd", getEnd(ClassificationType.Taxonomy));
-                        break;
-                    case "KeggStart":
-                        formatDefinition.write(writer, "KeggStart", getStart(ClassificationType.KEGG));
-                        break;
-                    case "KeggEnd":
-                        formatDefinition.write(writer, "KeggEnd", getEnd(ClassificationType.KEGG));
-                        break;
-                    case "SeedStart":
-                        formatDefinition.write(writer, "SeedStart", getStart(ClassificationType.SEED));
-                        break;
-                    case "SeedEnd":
-                        formatDefinition.write(writer, "SeedEnd", getEnd(ClassificationType.SEED));
-                        break;
-                    case "CogStart":
-                        formatDefinition.write(writer, "CogStart", getStart(ClassificationType.COG));
-                        break;
-                    case "CogEnd":
-                        formatDefinition.write(writer, "CogEnd", getEnd(ClassificationType.COG));
-                        break;
-                    case "PfamStart":
-                        formatDefinition.write(writer, "PfamStart", getStart(ClassificationType.PFAM));
-                        break;
-                    case "PfamEnd":
-                        formatDefinition.write(writer, "PfamEnd", getEnd(ClassificationType.PFAM));
-                        break;
+                    case "ClassificationBlockFormat" -> formatDefinition.write(writer, "ClassificationBlockFormat", getClassificationBlockFormat());
+                    case "TaxStart" -> formatDefinition.write(writer, "TaxStart", getStart(ClassificationType.Taxonomy));
+                    case "TaxEnd" -> formatDefinition.write(writer, "TaxEnd", getEnd(ClassificationType.Taxonomy));
+                    case "KeggStart" -> formatDefinition.write(writer, "KeggStart", getStart(ClassificationType.KEGG));
+                    case "KeggEnd" -> formatDefinition.write(writer, "KeggEnd", getEnd(ClassificationType.KEGG));
+                    case "SeedStart" -> formatDefinition.write(writer, "SeedStart", getStart(ClassificationType.SEED));
+                    case "SeedEnd" -> formatDefinition.write(writer, "SeedEnd", getEnd(ClassificationType.SEED));
+                    case "CogStart" -> formatDefinition.write(writer, "CogStart", getStart(ClassificationType.COG));
+                    case "CogEnd" -> formatDefinition.write(writer, "CogEnd", getEnd(ClassificationType.COG));
+                    case "PfamStart" -> formatDefinition.write(writer, "PfamStart", getStart(ClassificationType.PFAM));
+                    case "PfamEnd" -> formatDefinition.write(writer, "PfamEnd", getEnd(ClassificationType.PFAM));
                 }
             }
         }
@@ -239,20 +203,14 @@ public class ClassificationsFooterRMA3 extends BaseRMA3 {
     }
 
     public boolean isDo(ClassificationType classificationType) {
-        switch (classificationType) {
-            case KEGG:
-                return doKegg;
-            case SEED:
-                return doSeed;
-            case COG:
-                return doCog;
-            case PFAM:
-                return doPfam;
-            case Taxonomy:
-                return true;
-            default:
-                return false;
-        }
+        return switch (classificationType) {
+            case KEGG -> doKegg;
+            case SEED -> doSeed;
+            case COG -> doCog;
+            case PFAM -> doPfam;
+            case Taxonomy -> true;
+            default -> false;
+        };
     }
 
     private String getClassificationBlockFormat() {

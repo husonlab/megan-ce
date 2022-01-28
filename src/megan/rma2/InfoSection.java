@@ -37,7 +37,7 @@ public class InfoSection {
     static private final byte VERSION_RMA2_0 = (byte) 255; // original RMA2 format
     static private final byte VERSION_RMA2_1 = (byte) 254; // RMA2 format with READ and MATCH fixed-part formatting
 
-    private byte version = VERSION_RMA2_0;
+    private byte version;
 
     private final byte AUXILIARY_DATA_AS_MAP_BYTE = (byte) 254;
 
@@ -108,12 +108,11 @@ public class InfoSection {
         w.write(TextStoragePolicy.getId(textStoragePolicy));
 
         switch (textStoragePolicy) {
-            case Embed:
+            case Embed -> {
                 w.writeLong(dataDumpSectionStart);
                 w.writeLong(dataDumpSectionEnd);
-                break;
-            case InRMAZ:
-            case Reference:
+            }
+            case InRMAZ, Reference -> {
                 w.writeInt(textFileNames.length);
                 for (String textFileName : textFileNames) {
                     w.writeString(Objects.requireNonNullElse(textFileName, ""));
@@ -126,9 +125,8 @@ public class InfoSection {
                         w.writeLong(Objects.requireNonNullElse(textFileSize, -1L));
                     }
                 }
-                break;
-            default:
-                throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
+            }
+            default -> throw new IOException("Unknown textStoragePolicy: " + textStoragePolicy);
         }
 
         w.writeLong(dataIndexSectionStart);

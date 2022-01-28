@@ -87,8 +87,8 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      */
     public void write(IOutputWriter writer, Map<Integer, ListOfLongs> classId2locations) throws IOException {
         writer.writeInt(id2weight.size());
-        for (Object key : id2weight.keySet()) {
-            writer.writeInt((Integer) key); // class id
+        for (Integer key : id2weight.keySet()) {
+            writer.writeInt(key); // class id
             final Float weight = id2weight.get(key);
             writer.writeInt(Math.round(weight != null ? weight : 0)); //weight
             if (classId2locations != null) {
@@ -105,10 +105,9 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      * reads the named classification block
      *
      * @param reader
-     * @return size
      * @throws IOException
      */
-    public int read(long position, IInputReader reader) throws IOException {
+    public void read(long position, IInputReader reader) throws IOException {
         id2weight.clear();
 
         reader.seek(position);
@@ -121,7 +120,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
             id2weight.put(classId, (float) weight);
             id2count.put(classId, count);
         }
-        return id2weight.size();
+        id2weight.size();
     }
 
     /**
@@ -156,10 +155,9 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
      * @param reader
      * @param classId
      * @param list
-     * @return list of locations
      * @throws IOException
      */
-    public int readLocations(long position, IInputReader reader, int classId, ListOfLongs list) throws IOException {
+    public void readLocations(long position, IInputReader reader, int classId, ListOfLongs list) throws IOException {
         reader.seek(position);
         final int numberOfClasses = reader.readInt();
         for (int i = 0; i < numberOfClasses; i++) {
@@ -174,7 +172,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
                 reader.skipBytes(count * 8); // skip all locations, 8 bytes each
 
         }
-        return list.size();
+        list.size();
     }
 
     /**

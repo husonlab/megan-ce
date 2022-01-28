@@ -41,7 +41,6 @@ public class ColorSchemeNucleotides implements IColorScheme {
         NAMES which = NAMES.Default;
         for (NAMES type : NAMES.values()) {
             if (type.toString().equalsIgnoreCase(name)) {
-                which = type;
                 break;
             }
         }

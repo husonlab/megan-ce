@@ -338,7 +338,7 @@ public class RMA6FromBlastCreator {
         if (pairedReads) { // update paired reads info
             long count = 0;
             if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
             try (InputOutputReaderWriter raf = new InputOutputReaderWriter(rma6File, "rw");
                  IReadBlockIterator it = (new RMA6Connector(rma6File)).getAllReadsIterator(0, 10, false, false)) {
                 progress.setSubtask("Linking paired reads");

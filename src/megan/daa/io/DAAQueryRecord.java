@@ -62,26 +62,27 @@ public class DAAQueryRecord {
         boolean hasN = ((flags & 1) == 1);
 
         switch (daaParser.getHeader().getAlignMode()) {
-            case blastp: { // todo: untested
+            case blastp -> { // todo: untested
                 byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, 5);
                 sourceSequence = context[0] = PackedSequence.getUnpackedSequence(packed, queryLength, 5);
                 break;
             }
-            case blastx: {
+            case blastx -> {
                 byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, hasN ? 3 : 2);
                 sourceSequence = PackedSequence.getUnpackedSequence(packed, queryLength, hasN ? 3 : 2);
                 byte[][] sixFrameTranslation = Translator.getSixFrameTranslations(sourceSequence);
                 System.arraycopy(sixFrameTranslation, 0, context, 0, sixFrameTranslation.length);
                 break;
             }
-            case blastn: { // todo: untested
+            case blastn -> { // todo: untested
                 byte[] packed = PackedSequence.readPackedSequence(buffer, queryLength, hasN ? 3 : 2);
                 sourceSequence = PackedSequence.getUnpackedSequence(packed, queryLength, hasN ? 3 : 2);
                 context[0] = sourceSequence;
                 context[1] = Translator.getReverseComplement(sourceSequence);
                 break;
             }
-            default:
+            default -> {
+            }
         }
     }
 

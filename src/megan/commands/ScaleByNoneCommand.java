@@ -33,7 +33,7 @@ public class ScaleByNoneCommand extends CommandBase implements ICheckBoxCommand 
         return viewer != null && viewer.getNodeDrawer().getScaleBy() == NodeDrawer.ScaleBy.None;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public boolean isApplicable() {

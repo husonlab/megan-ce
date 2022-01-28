@@ -40,10 +40,9 @@ public class LayoutByStartCommand extends CommandBase implements ICheckBoxComman
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**
@@ -63,7 +62,7 @@ public class LayoutByStartCommand extends CommandBase implements ICheckBoxComman
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByStart.toString() + ";expand axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByStart + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "By Start";

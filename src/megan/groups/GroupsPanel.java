@@ -39,7 +39,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 
@@ -608,7 +607,7 @@ public class GroupsPanel extends JPanel {
         }
 
         @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
             Object value;
             if (GROUP_DATA_FLAVOR.equals(flavor)) {
                 value = groups;

@@ -32,25 +32,13 @@ public class ColorSchemeNucleotidesDefault extends ColorSchemeBase implements IC
      * @return color
      */
     public Color getBackground(int ch) {
-        switch (ch) {
-            case 'a':
-            case 'A':
-                return getDefinedColor(ch, 0x64F73F);   // green
-            case 'c':
-            case 'C':
-                return getDefinedColor(ch, 0xFFB340);   // orange
-            case 'g':
-            case 'G':
-                return getDefinedColor(ch, 0xEB413C); // red
-            case 't':
-            case 'T':
-            case 'u':
-            case 'U':
-                return getDefinedColor(ch, 0x3C88EE);  // blue
-            case '-':
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-            default:
-                return Color.LIGHT_GRAY;
-        }
+        return switch (ch) {
+            case 'a', 'A' -> getDefinedColor(ch, 0x64F73F);   // green
+            case 'c', 'C' -> getDefinedColor(ch, 0xFFB340);   // orange
+            case 'g', 'G' -> getDefinedColor(ch, 0xEB413C); // red
+            case 't', 'T', 'u', 'U' -> getDefinedColor(ch, 0x3C88EE);  // blue
+            case '-' -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+            default -> Color.LIGHT_GRAY;
+        };
     }
 }

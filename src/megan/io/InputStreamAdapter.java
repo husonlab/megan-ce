@@ -68,7 +68,7 @@ public class InputStreamAdapter implements IInput {
         return count;
     }
 
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return position;
     }
 

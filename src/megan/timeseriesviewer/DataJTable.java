@@ -269,7 +269,7 @@ public class DataJTable {
     /**
      * table model
      */
-    class MyTableModel extends AbstractTableModel {
+    static class MyTableModel extends AbstractTableModel {
         private DataNode[][] data;
         private String[] columnNames;
 

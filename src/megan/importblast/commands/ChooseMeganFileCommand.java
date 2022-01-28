@@ -37,7 +37,7 @@ import java.io.File;
  * Daniel Huson, 11.2010
  */
 public class ChooseMeganFileCommand extends CommandBase implements ICommand {
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public String getSyntax() {

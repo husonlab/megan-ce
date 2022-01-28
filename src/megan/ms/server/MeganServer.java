@@ -36,7 +36,7 @@ import java.io.File;
  * Daniel Huson, 8.2020
  */
 public class MeganServer {
-    public static String Version = "MeganServer0.1";
+    public static final String Version = "MeganServer0.1";
 
     /**
      * * main

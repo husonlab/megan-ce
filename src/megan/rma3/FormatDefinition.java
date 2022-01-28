@@ -140,26 +140,13 @@ public class FormatDefinition {
         if (current == null || !label.equals(current.getFirst()))
             throw new IOException("write(): Unexpected label: " + label);
         switch (Type.getType(value)) {
-            case Integer:
-                outputWriter.writeInt((Integer) value);
-                break;
-            case Long:
-                outputWriter.writeLong((Long) value);
-                break;
-            case Float:
-                outputWriter.writeFloat((Float) value);
-                break;
-            case String:
-                outputWriter.writeStringNoCompression((String) value);
-                break;
-            case Byte:
-                outputWriter.write((Byte) value);
-                break;
-            case Character:
-                outputWriter.writeChar((Character) value);
-                break;
-            default:
-                throw new IOException("Invalid type: " + value);
+            case Integer -> outputWriter.writeInt((Integer) value);
+            case Long -> outputWriter.writeLong((Long) value);
+            case Float -> outputWriter.writeFloat((Float) value);
+            case String -> outputWriter.writeStringNoCompression((String) value);
+            case Byte -> outputWriter.write((Byte) value);
+            case Character -> outputWriter.writeChar((Character) value);
+            default -> throw new IOException("Invalid type: " + value);
         }
     }
 
@@ -177,6 +164,6 @@ public class FormatDefinition {
 
         FormatDefinition def = FormatDefinition.fromString(test);
 
-        System.err.println("Got: " + def.toString());
+        System.err.println("Got: " + def);
     }
 }

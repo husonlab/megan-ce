@@ -48,7 +48,7 @@ public class Taxon2SpeciesMapping {
         progress.setProgress(0);
         computeTax2SpeciesMapRec(fullTree.getRoot(), 0, taxId2SpeciesId, name2IdMap, progress);
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
     }
 
     /**

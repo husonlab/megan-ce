@@ -57,9 +57,8 @@ public class FileOutputStreamAdapter implements IOutput {
      * get position in file
      *
      * @return position
-     * @throws IOException
      */
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return position;
     }
 
@@ -67,9 +66,8 @@ public class FileOutputStreamAdapter implements IOutput {
      * get current length of file
      *
      * @return length
-     * @throws IOException
      */
-    public long length() throws IOException {
+    public long length() {
         return position;
     }
 

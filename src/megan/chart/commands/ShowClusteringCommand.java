@@ -36,15 +36,12 @@ public class ShowClusteringCommand extends CommandBase implements ICheckBoxComma
         if (!isApplicable())
             return false;
         final ChartViewer chartViewer = (ChartViewer) getViewer();
-        switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
-            case "series":
-                return chartViewer.getSeriesList().isDoClustering();
-            case "classes":
-                return chartViewer.getClassesList().isDoClustering();
-            case "attributes":
-                return chartViewer.getAttributesList().isDoClustering();
-        }
-        return false;
+        return switch (chartViewer.getActiveLabelsJList().getName().toLowerCase()) {
+            case "series" -> chartViewer.getSeriesList().isDoClustering();
+            case "classes" -> chartViewer.getClassesList().isDoClustering();
+            case "attributes" -> chartViewer.getAttributesList().isDoClustering();
+            default -> false;
+        };
     }
 
     public String getSyntax() {

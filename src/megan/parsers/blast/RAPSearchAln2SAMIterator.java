@@ -221,10 +221,9 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
          * parses the header line.
          *
          * @param aLine
-         * @return true, if is hit, false if is no hit
          * @throws IOException
          */
-        boolean parseHeader(String aLine) throws IOException {
+        void parseHeader(String aLine) throws IOException {
             referenceLine = aLine;
             int index = aLine.indexOf(vsString);
             if (index <= 0) {
@@ -236,7 +235,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
             }
             readName = aLine.substring(aLine.charAt(0) == '>' ? 1 : 0, index).trim();
             if (isNoHit)
-                return false;
+                return;
 
             String suffix = aLine.substring(index + vsString.length()).trim();
             index = suffix.indexOf(" ");
@@ -278,7 +277,6 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
                     frame = f - 6;      // 3,4,5-> -3, -2, -1
             } else
                 throw new IOException("Failed to parse '" + frameString + "' in: " + aLine);
-            return true;
         }
 
         /**

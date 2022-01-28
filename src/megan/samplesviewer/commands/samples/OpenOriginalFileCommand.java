@@ -42,9 +42,8 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -55,7 +54,7 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
                 for (String sample : viewer.getSamplesTableView().getSelectedSamples()) {
                     Object source = viewer.getDocument().getSampleAttributeTable().get(sample, SampleAttributeTable.HiddenAttribute.Source.toString());
                     if (source != null) {
-                        buf.append("open file='").append(source.toString()).append("';");
+                        buf.append("open file='").append(source).append("';");
                     }
                 }
                 String command = buf.toString();

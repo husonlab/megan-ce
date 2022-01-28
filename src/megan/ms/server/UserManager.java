@@ -88,7 +88,7 @@ public class UserManager {
             throw new IOException("User exists: " + name);
         user2passwordHash.put(name, Utilities.computeBCryptHash(password.getBytes()));
         user2roles.put(name,new TreeSet<>());
-        final List<String> nonNullRoles=Arrays.stream(roles).filter(Objects::nonNull).map(String::trim).filter(r->r.length()>0).collect(Collectors.toList());;
+        final List<String> nonNullRoles = Arrays.stream(roles).filter(Objects::nonNull).map(String::trim).filter(r -> r.length() > 0).toList();
         if(nonNullRoles.size()>0)
             user2roles.get(name).addAll(nonNullRoles);
         writeFile();
@@ -115,7 +115,7 @@ public class UserManager {
         if(roles.length>0) {
             if(!user2roles.containsKey(user))
                 throw new IOException("No such user: " + user);
-            user2roles.get(user).removeAll(Arrays.asList(roles));
+            Arrays.asList(roles).forEach(user2roles.get(user)::remove);
             writeFile();
         }
     }

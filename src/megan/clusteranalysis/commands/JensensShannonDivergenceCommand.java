@@ -104,7 +104,7 @@ public class JensensShannonDivergenceCommand extends CommandBase implements IChe
     }
 
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 

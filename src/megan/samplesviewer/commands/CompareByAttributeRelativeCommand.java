@@ -43,9 +43,8 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

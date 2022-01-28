@@ -105,24 +105,23 @@ public class ExportAlignedReads2GFF3Format {
 	}
 
 	/**
-	 * export aligned reads in GFF3 format
-	 *
-	 * @param file
-	 * @param classificationToReport
-	 * @param progressListener
-	 * @return reads and genes written
-	 */
-	public static Pair<Long, Long> apply(Document document, final File file, final String classificationToReport, final boolean excludeIncompatible, final boolean excludeDominated, final ProgressListener progressListener) throws IOException {
-		long countReads = 0;
-		long countAlignments = 0;
+     * export aligned reads in GFF3 format
+     *
+     * @param file
+     * @param classificationToReport
+     * @param progressListener
+     */
+    public static void apply(Document document, final File file, final String classificationToReport, final boolean excludeIncompatible, final boolean excludeDominated, final ProgressListener progressListener) throws IOException {
+        long countReads = 0;
+        long countAlignments = 0;
 
-		final IConnector connector = document.getConnector();
+        final IConnector connector = document.getConnector();
 
-		final String[] cNames = connector.getAllClassificationNames();
+        final String[] cNames = connector.getAllClassificationNames();
 
-		System.err.println("Writing file: " + file);
-		try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-			w.write(getHeader());
+        System.err.println("Writing file: " + file);
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+            w.write(getHeader());
 
 			progressListener.setProgress(0);
 			progressListener.setSubtask("taxon mapping");
@@ -181,20 +180,20 @@ public class ExportAlignedReads2GFF3Format {
 										countAlignments += StringUtils.countOccurrences(string, '\n');
 										if (string.length() > 0)
 											countReads++;
-									}
-								}
-							}
-						}
-						progressListener.incrementProgress();
-					}
-					progressListener.reportTaskCompleted();
-				}
-			}
-		}
-		System.err.println("done");
+                                    }
+                                }
+                            }
+                        }
+                        progressListener.incrementProgress();
+                    }
+                    progressListener.reportTaskCompleted();
+                }
+            }
+        }
+        System.err.println("done");
 
-		return new Pair<>(countReads, countAlignments);
-	}
+        new Pair<>(countReads, countAlignments);
+    }
 
 	/**
 	 * export aligned reads in GFF3 format

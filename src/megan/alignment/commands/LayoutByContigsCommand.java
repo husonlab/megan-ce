@@ -40,10 +40,9 @@ public class LayoutByContigsCommand extends CommandBase implements ICheckBoxComm
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**
@@ -63,7 +62,7 @@ public class LayoutByContigsCommand extends CommandBase implements ICheckBoxComm
      */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByContigs.toString() + ";expand axis=both what=fit;");
+        execute("set layout=" + AlignmentViewer.AlignmentLayout.ByContigs + ";expand axis=both what=fit;");
     }
 
     public static final String NAME = "By Contigs";

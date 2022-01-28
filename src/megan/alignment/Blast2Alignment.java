@@ -216,7 +216,7 @@ public class Blast2Alignment {
                     if (reference2ReadMatchPairs.get(reference).size() < minReads)
                         toDelete.add(reference);
                 }
-                reference2ReadMatchPairs.keySet().removeAll(toDelete);
+                toDelete.forEach(reference2ReadMatchPairs.keySet()::remove);
                 System.err.println(toDelete.size());
             }
         }
@@ -304,18 +304,18 @@ public class Blast2Alignment {
 
         // set sequence type
         switch (getBlastType()) {
-            case BLASTX:
+            case BLASTX -> {
                 alignment.setReferenceType(Alignment.PROTEIN);
                 alignment.setSequenceType(Alignment.cDNA);
-                break;
-            case BLASTP:
+            }
+            case BLASTP -> {
                 alignment.setReferenceType(Alignment.PROTEIN);
                 alignment.setSequenceType(Alignment.PROTEIN);
-                break;
-            case BLASTN:
+            }
+            case BLASTN -> {
                 alignment.setReferenceType(Alignment.DNA);
                 alignment.setSequenceType(Alignment.DNA);
-                break;
+            }
         }
 
         int totalReadsIn = 0;
@@ -334,42 +334,36 @@ public class Blast2Alignment {
         Integer which = 0;
 
         for (byte[][] readMatchPair : readMatchPairs) {
-			String readHeader = StringUtils.toString(readMatchPair[0]);
-			String readSequence = StringUtils.toString(readMatchPair[1]);
-			String matchText = StringUtils.toString(readMatchPair[2]);
-			totalReadsIn++;
+            String readHeader = StringUtils.toString(readMatchPair[0]);
+            String readSequence = StringUtils.toString(readMatchPair[1]);
+            String matchText = StringUtils.toString(readMatchPair[2]);
+            totalReadsIn++;
 
-			if (getBlastType().equals(UNKNOWN))
-				setBlastType(BlastParsingUtils.guessBlastType(matchText));
-			// set sequence type
-			switch (getBlastType()) {
-				case BLASTX:
-					alignment.setReferenceType(Alignment.PROTEIN);
-					alignment.setSequenceType(Alignment.cDNA);
-					break;
-                case BLASTP:
+            if (getBlastType().equals(UNKNOWN))
+                setBlastType(BlastParsingUtils.guessBlastType(matchText));
+            // set sequence type
+            switch (getBlastType()) {
+                case BLASTX -> {
+                    alignment.setReferenceType(Alignment.PROTEIN);
+                    alignment.setSequenceType(Alignment.cDNA);
+                }
+                case BLASTP -> {
                     alignment.setReferenceType(Alignment.PROTEIN);
                     alignment.setSequenceType(Alignment.PROTEIN);
-                    break;
-                case BLASTN:
+                }
+                case BLASTN -> {
                     alignment.setReferenceType(Alignment.DNA);
                     alignment.setSequenceType(Alignment.DNA);
-                    break;
+                }
             }
 
             try {
                 Collection<Pair<Integer, String>> insertions = new LinkedList<>();
 
                 switch (getBlastType()) {
-                    case BLASTX:
-                        computeGappedSequenceBlastX(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, originalReferenceSequence, alignment);
-                        break;
-                    case BLASTP:
-                        computeGappedSequenceBlastP(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, alignment);
-                        break;
-                    case BLASTN:
-                        computeGappedSequenceBlastN(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, alignment);
-                        break;
+                    case BLASTX -> computeGappedSequenceBlastX(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, originalReferenceSequence, alignment);
+                    case BLASTP -> computeGappedSequenceBlastP(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, alignment);
+                    case BLASTN -> computeGappedSequenceBlastN(readHeader, readSequence, matchText, insertions, showInsertions, referenceSequence, alignment);
                 }
 
                 totalReadsOut++;
@@ -734,7 +728,7 @@ public class Blast2Alignment {
     private static void computeGappedSequenceBlastN(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
         boolean hasExactLength;
-        Integer length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
+        int length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
         if (length > 0) {
             hasExactLength = true;
         } else {

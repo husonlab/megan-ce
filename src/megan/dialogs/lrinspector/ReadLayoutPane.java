@@ -580,7 +580,7 @@ public class ReadLayoutPane extends Pane {
 
         if (node instanceof GeneArrow) {
             final GeneArrow geneArrow = (GeneArrow) node;
-            System.out.println(geneArrow.toString());
+            System.out.println(geneArrow);
         } else if (node instanceof Label) {
             if (((Label) node).getTooltip() != null)
                 System.out.println(((Label) node).getTooltip().getText());

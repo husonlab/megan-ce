@@ -57,24 +57,23 @@ public class DAA2GFF3 {
 	}
 
 	/**
-	 * run
-	 *
-	 * @param args
-	 * @throws UsageException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
-		final ArgsOptions options = new ArgsOptions(args, this, "Extracts a GFF3 annotation file from a meganized DAA file");
-		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-		options.setAuthors("Daniel H. Huson");
+     * run
+     *
+     * @param args
+     * @throws UsageException
+     * @throws IOException
+     */
+    private void run(String[] args) throws UsageException, IOException, CanceledException {
+        final ArgsOptions options = new ArgsOptions(args, this, "Extracts a GFF3 annotation file from a meganized DAA file");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
-		options.comment("Input and Output");
-		final String daaFile = options.getOptionMandatory("-i", "in", "Input meganized DAA file", "");
-		final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
+        options.comment("Input and Output");
+        final String daaFile = options.getOptionMandatory("-i", "in", "Input meganized DAA file", "");
+        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
-		options.comment("Options");
+        options.comment("Options");
 		final String classificationToReport = options.getOption("-c", "classification", "Name of classification to report, or 'all'", "all");
 		final boolean includeIncompatible = options.getOption("-k", "incompatible", "Include incompatible", false);
 		final boolean includeDominated = options.getOption("-d", "dominated", "Include dominated", false);

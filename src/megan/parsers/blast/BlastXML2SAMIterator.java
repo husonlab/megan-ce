@@ -25,7 +25,6 @@ import megan.parsers.blast.blastxml.MatchesText;
 import megan.util.BlastXMLFileFilter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -52,9 +51,8 @@ public class BlastXML2SAMIterator implements ISAMIterator {
      * constructor
      *
      * @param fileName
-     * @throws IOException
      */
-    public BlastXML2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
+    public BlastXML2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) {
         if (!BlastXMLFileFilter.getInstance().accept(fileName)) {
             NotificationsInSwing.showWarning("Might not be a BLAST file in XML format: " + fileName);
         }
@@ -161,7 +159,7 @@ public class BlastXML2SAMIterator implements ISAMIterator {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
     }
 
     @Override

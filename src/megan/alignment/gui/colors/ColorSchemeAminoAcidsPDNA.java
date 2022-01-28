@@ -34,33 +34,12 @@ public class ColorSchemeAminoAcidsPDNA extends ColorSchemeBase implements IColor
      */
     public Color getBackground(int ch) {
         ch = Character.toUpperCase(ch);
-        switch (ch) {
-            case 'I':
-            case 'L':
-            case 'V':
-            case 'M':
-            case 'C':
-                return getDefinedColor(ch, 0x15C015);   //green
-            case 'A':
-            case 'G':
-            case 'S':
-            case 'T':
-            case 'P':
-                return getDefinedColor(ch, 0xF09048); // orange
-            case 'F':
-            case 'Y':
-            case 'W':
-                return getDefinedColor(ch, 0x80A0F0); // blue
-            case 'R':
-            case 'N':
-            case 'D':
-            case 'Q':
-            case 'E':
-            case 'H':
-            case 'K':
-                return getDefinedColor(ch, 0xF01505); // red
-            default:
-                return getDefinedColor(ch, 0x778899); // Light Slate Gray
-        }
+        return switch (ch) {
+            case 'I', 'L', 'V', 'M', 'C' -> getDefinedColor(ch, 0x15C015);   //green
+            case 'A', 'G', 'S', 'T', 'P' -> getDefinedColor(ch, 0xF09048); // orange
+            case 'F', 'Y', 'W' -> getDefinedColor(ch, 0x80A0F0); // blue
+            case 'R', 'N', 'D', 'Q', 'E', 'H', 'K' -> getDefinedColor(ch, 0xF01505); // red
+            default -> getDefinedColor(ch, 0x778899); // Light Slate Gray
+        };
     }
 }

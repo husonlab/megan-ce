@@ -22,7 +22,6 @@ package megan.daa.io;
 import megan.io.IInput;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * Byte input stream
@@ -51,7 +50,7 @@ public class ByteInputStream extends ByteArrayInputStream implements IInput {
         return this.count;
     }
 
-    public void close() throws IOException {
+    public void close() {
         this.reset();
     }
 
@@ -62,26 +61,26 @@ public class ByteInputStream extends ByteArrayInputStream implements IInput {
     }
 
     @Override
-    public int skipBytes(int bytes) throws IOException {
+    public int skipBytes(int bytes) {
         return (int) this.skip(bytes);
     }
 
     @Override
-    public long getPosition() throws IOException {
+    public long getPosition() {
         return this.count;
     }
 
     @Override
-    public long length() throws IOException {
+    public long length() {
         return this.count;
     }
 
     @Override
-    public boolean supportsSeek() throws IOException {
+    public boolean supportsSeek() {
         return false;
     }
 
     @Override
-    public void seek(long pos) throws IOException {
+    public void seek(long pos) {
     }
 }

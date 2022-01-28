@@ -68,12 +68,7 @@ public class Cigar {
         int length = 0;
         for (final CigarElement element : cigarElements) {
             switch (element.getOperator()) {
-                case M:
-                case D:
-                case N:
-                case EQ:
-                case X:
-                    length += element.getLength();
+                case M, D, N, EQ, X -> length += element.getLength();
             }
         }
         return length;
@@ -86,13 +81,7 @@ public class Cigar {
         int length = 0;
         for (final CigarElement element : cigarElements) {
             switch (element.getOperator()) {
-                case M:
-                case D:
-                case N:
-                case EQ:
-                case X:
-                case P:
-                    length += element.getLength();
+                case M, D, N, EQ, X, P -> length += element.getLength();
             }
         }
         return length;

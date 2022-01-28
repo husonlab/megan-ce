@@ -29,40 +29,28 @@ public enum AlignMode {
 	blastp, blastx, blastn;
 
 	public static byte rank(AlignMode mode) {
-		switch (mode) {
-            case blastp:
-                return 2;
-            case blastx:
-                return 3;
-            case blastn:
-                return 4;
-            default:
-                return -1;
-        }
+        return switch (mode) {
+            case blastp -> 2;
+            case blastx -> 3;
+            case blastn -> 4;
+            default -> -1;
+        };
     }
 
     public static AlignMode value(int rank) {
-        switch (rank) {
-            case 2:
-                return blastp;
-            case 3:
-                return blastx;
-            default:
-            case 4:
-                return blastn;
-        }
+        return switch (rank) {
+            case 2 -> blastp;
+            case 3 -> blastx;
+            case 4 -> blastn;
+        };
     }
 
 	public static BlastMode getBlastMode(int rank) {
-		switch (rank) {
-			case 2:
-				return BlastMode.BlastP;
-			case 3:
-				return BlastMode.BlastX;
-			default:
-			case 4:
-				return BlastMode.BlastN;
-		}
+        return switch (rank) {
+            case 2 -> BlastMode.BlastP;
+            case 3 -> BlastMode.BlastX;
+            case 4 -> BlastMode.BlastN;
+        };
 
     }
 }

@@ -220,17 +220,17 @@ public class ConnectorCombiner implements IConnector {
     }
 
     @Override
-    public void setNumberOfReads(int numberOfReads) throws IOException {
+    public void setNumberOfReads(int numberOfReads) {
         System.err.println("Can't setNumberOfReads() for combined document");
     }
 
     @Override
-    public void putAuxiliaryData(Map<String, byte[]> label2data) throws IOException {
+    public void putAuxiliaryData(Map<String, byte[]> label2data) {
         System.err.println("Can't putAuxiliaryData() for combined document");
     }
 
     @Override
-    public Map<String, byte[]> getAuxiliaryData() throws IOException {
+    public Map<String, byte[]> getAuxiliaryData() {
         System.err.println("Can't auxiliaryData() for combined document");
         return new HashMap<>();
     }

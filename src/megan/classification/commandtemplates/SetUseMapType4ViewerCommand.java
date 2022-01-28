@@ -61,7 +61,7 @@ public class SetUseMapType4ViewerCommand extends CommandBase implements ICheckBo
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

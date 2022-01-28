@@ -33,7 +33,7 @@ public class SortAlphabeticallyBackwardCommand extends CommandBase implements IC
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

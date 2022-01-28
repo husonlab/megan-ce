@@ -56,7 +56,7 @@ public class ExportCSVForAllLevelsCommand extends CommandBase implements IComman
         np.matchIgnoreCase(";");
 
         DataTable table = new DataTable();
-        BufferedReader reader = new BufferedReader(new FileReader(new File(rmaFile)));
+        BufferedReader reader = new BufferedReader(new FileReader(rmaFile));
         table.read(reader, false);
         reader.close();
 

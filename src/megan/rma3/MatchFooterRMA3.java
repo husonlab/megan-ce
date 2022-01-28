@@ -65,33 +65,15 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         FormatDefinition formatDefinition = FormatDefinition.fromString(getFormatDef());
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             switch (pair.getFirst()) {
-                case "TotalReads":
-                    setNumberOfReads(reader.readLong());
-                    break;
-                case "TotalMatches":
-                    setNumberOfMatches(reader.readLong());
-                    break;
-                case "MaxMatchesPerRead":
-                    setMaxMatchesPerRead(reader.readInt());
-                    break;
-                case "UseKegg":
-                    setUseKegg(reader.readInt() != 0);
-                    break;
-                case "UseSeed":
-                    setUseSeed(reader.readInt() != 0);
-                    break;
-                case "UseCog":
-                    setUseCog(reader.readInt() != 0);
-                    break;
-                case "UsePfam":
-                    setUsePfam(reader.readInt() != 0);
-                    break;
-                case "ReadFormat":
-                    setReadFormatDef(reader.readString());
-                    break;
-                case "MatchFormat":
-                    setMatchFormatDef(reader.readString());
-                    break;
+                case "TotalReads" -> setNumberOfReads(reader.readLong());
+                case "TotalMatches" -> setNumberOfMatches(reader.readLong());
+                case "MaxMatchesPerRead" -> setMaxMatchesPerRead(reader.readInt());
+                case "UseKegg" -> setUseKegg(reader.readInt() != 0);
+                case "UseSeed" -> setUseSeed(reader.readInt() != 0);
+                case "UseCog" -> setUseCog(reader.readInt() != 0);
+                case "UsePfam" -> setUsePfam(reader.readInt() != 0);
+                case "ReadFormat" -> setReadFormatDef(reader.readString());
+                case "MatchFormat" -> setMatchFormatDef(reader.readString());
             }
         }
     }
@@ -103,33 +85,15 @@ public class MatchFooterRMA3 extends BaseRMA3 {
         formatDefinition.startWrite();
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             switch (pair.getFirst()) {
-                case "TotalReads":
-                    formatDefinition.write(writer, "TotalReads", getNumberOfReads());
-                    break;
-                case "TotalMatches":
-                    formatDefinition.write(writer, "TotalMatches", getNumberOfMatches());
-                    break;
-                case "MaxMatchesPerRead":
-                    formatDefinition.write(writer, "MaxMatchesPerRead", getMaxMatchesPerRead());
-                    break;
-                case "UseKegg":
-                    formatDefinition.write(writer, "UseKegg", isUseKegg() ? 1 : 0);
-                    break;
-                case "UseSeed":
-                    formatDefinition.write(writer, "UseSeed", isUseSeed() ? 1 : 0);
-                    break;
-                case "UseCog":
-                    formatDefinition.write(writer, "UseCog", isUseCog() ? 1 : 0);
-                    break;
-                case "UsePfam":
-                    formatDefinition.write(writer, "UsePfam", isUsePfam() ? 1 : 0);
-                    break;
-                case "ReadFormat":
-                    formatDefinition.write(writer, "ReadFormat", getReadFormatDef());
-                    break;
-                case "MatchFormat":
-                    formatDefinition.write(writer, "MatchFormat", getMatchFormatDef());
-                    break;
+                case "TotalReads" -> formatDefinition.write(writer, "TotalReads", getNumberOfReads());
+                case "TotalMatches" -> formatDefinition.write(writer, "TotalMatches", getNumberOfMatches());
+                case "MaxMatchesPerRead" -> formatDefinition.write(writer, "MaxMatchesPerRead", getMaxMatchesPerRead());
+                case "UseKegg" -> formatDefinition.write(writer, "UseKegg", isUseKegg() ? 1 : 0);
+                case "UseSeed" -> formatDefinition.write(writer, "UseSeed", isUseSeed() ? 1 : 0);
+                case "UseCog" -> formatDefinition.write(writer, "UseCog", isUseCog() ? 1 : 0);
+                case "UsePfam" -> formatDefinition.write(writer, "UsePfam", isUsePfam() ? 1 : 0);
+                case "ReadFormat" -> formatDefinition.write(writer, "ReadFormat", getReadFormatDef());
+                case "MatchFormat" -> formatDefinition.write(writer, "MatchFormat", getMatchFormatDef());
             }
         }
         formatDefinition.finishWrite();

@@ -42,15 +42,14 @@ public class ExportTree {
      * @param showInternalLabels
      * @param showUnassignedLabels
      * @param simplify
-     * @return number of nodes written
      * @throws IOException
      */
-    public static int apply(ViewerBase viewer, Writer writer, boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
+    public static void apply(ViewerBase viewer, Writer writer, boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
         final PhyloTree tree = viewer.getTree();
         Node root = tree.getRoot();
 
         if (root == null)
-            return 0;
+            return;
 
         NodeSet toUse = null;
         if (viewer.getSelectedNodes().size() > 0) {
@@ -78,7 +77,6 @@ public class ExportTree {
 
         final int countNodes = writeAsTreeRec(viewer, toUse, root, writer, showInternalLabels, showUnassignedLabels, simplify, 0);
         writer.write(";\n");
-        return countNodes;
     }
 
     /**

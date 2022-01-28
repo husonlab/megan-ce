@@ -24,7 +24,6 @@ import jloda.swing.director.ProjectManager;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.CanceledException;
 import jloda.util.FileUtils;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
@@ -42,7 +41,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -75,12 +73,12 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     private int dividerLocation = 360;
     public String selectedTaxon = "No Taxon Selected";
 
-    private JSplitPane splitPane = null;
+    private JSplitPane splitPane;
     private JEditorPane descEditor = null;
     private JEditorPane previewEditor = null;
     private JEditorPane helpEditor = null;
     private StringBuilder helpText = null;
-    private Map<String, String> prop2Explanation = new Hashtable<>();
+    private final Map<String, String> prop2Explanation = new Hashtable<>();
     private final Map<String, Map<String, Number>> attribute2taxa2value;
     //same data like attribute2taxa2value but not sorted by number of reads per taxon
     private final Map<String, Pair> attribute2SortedTaxValPair = new TreeMap<>(); //e.g. <Gram Stain:Positive, sortedPair[Taxa,Value]>
@@ -411,7 +409,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
             }
             Map<String, Number> taxa2values = attribute2taxa2value.get(attribute_kind);
             int nrOfReadsPerKind = 0;
-            int nrOfReadsPerTaxon = 0;
+            int nrOfReadsPerTaxon;
             if (doSortByAlpha) {
                 for (String taxname : taxa2values.keySet()) {
                     nrOfReadsPerTaxon = taxa2values.get(taxname).intValue();
@@ -472,7 +470,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      */
     private void doInsertionSort(String[] names, int[] values) {
         int i, j, t;
-        String temp = "";
+        String temp;
         for (i = 1; i < values.length; i++) {
             j = i;
             t = values[j];
@@ -565,7 +563,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
         frame.dispose();
@@ -670,7 +668,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * @param format     page format
      * @param pagenumber page index
      */
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
 

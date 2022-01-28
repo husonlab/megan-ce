@@ -110,7 +110,7 @@ public class SetDescriptionCommand extends CommandBase implements ICommand {
                 }
             }
             if (buf.length() > 0) {
-                NotificationsInSwing.showInformation(getViewer().getFrame(), "Description:\n" + buf.toString());
+                NotificationsInSwing.showInformation(getViewer().getFrame(), "Description:\n" + buf);
             }
         }
     }

@@ -268,6 +268,6 @@ public class AAdderBuild {
             }
         }
 
-        System.err.println(String.format("Reference sequences with at least one annotation: %,d of %,d", totalRefWithAGene, dnaId2list.size()));
+        System.err.printf("Reference sequences with at least one annotation: %,d of %,d%n", totalRefWithAGene, dnaId2list.size());
     }
 }

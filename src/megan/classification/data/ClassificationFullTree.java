@@ -247,7 +247,7 @@ public class ClassificationFullTree extends PhyloTree {
                 System.err.println("Reticulate node: " + id + " (currently not supported)");
         }
         if (false)
-            System.err.println(String.format("Induced tree has %,d of %,d nodes", +keep.size(), getNumberOfNodes()));
+            System.err.printf("Induced tree has %,d of %,d nodes%n", +keep.size(), getNumberOfNodes());
 
         if (collapsedIds.size() > 0) { // ensure that set of collapsed ids is only as large as necessary for given data
             final Set<Integer> notNeeded = new HashSet<>();
@@ -424,9 +424,8 @@ public class ClassificationFullTree extends PhyloTree {
      * @param numberOfDataSets
      * @param v
      * @param id2counts
-     * @return set of f-ids on or below node v
      */
-    private Set<Integer> computeTaxonomyId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
+    private void computeTaxonomyId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
         int taxonomyId = (Integer) v.getInfo();
 
         // first process all children
@@ -468,7 +467,6 @@ public class ClassificationFullTree extends PhyloTree {
 
         if (total > 0)
             id2data.put(taxonomyId, new NodeData(assigned, summarized));
-        return null;
     }
 
 

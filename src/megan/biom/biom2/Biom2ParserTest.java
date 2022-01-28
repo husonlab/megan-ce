@@ -59,14 +59,14 @@ public class Biom2ParserTest {
 
         try (IHDF5Reader reader = HDF5Factory.openForReading(inputFile)) {
             final TopLevelAttributes topLevelAttributes = new TopLevelAttributes(reader);
-            System.err.println(topLevelAttributes.toString());
+            System.err.println(topLevelAttributes);
 
             final String[] sampleIds = reader.readStringArray("/sample/ids"); // dataset of the sample IDs
 
             final ArrayList<String> classifications = new ArrayList<>();
             final Map<String, MDArray<String>> classification2MDArray = new HashMap<>();
 
-            String taxonomyNameMetadata = null;
+            String taxonomyNameMetadata;
 
             for (final String metaKey : reader.getGroupMembers("/observation/metadata")) {
                 if (metaKey.equalsIgnoreCase("taxonomy") || metaKey.equalsIgnoreCase("organism")) {

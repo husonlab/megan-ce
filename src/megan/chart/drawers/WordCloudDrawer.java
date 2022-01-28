@@ -45,7 +45,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     private static final String NAME = "WordCloud";
 
     private boolean useRectangleShape = false;
-    private int maxFontSize = 128;
+    private int maxFontSize;
     private static final Map<Integer, Font> size2font = new HashMap<>();
     private final Set<String> previousClasses = new HashSet<>();
     private ScalingType previousScalingType = null;
@@ -110,7 +110,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
             Pair<Rectangle2D, Pair<String, Integer>> pair = it.next();
             Rectangle2D rect = pair.getFirst();
             String label = pair.getSecond().getFirst();
-            Integer fontSize = (int) (factor * pair.getSecond().getSecond());
+            int fontSize = (int) (factor * pair.getSecond().getSecond());
             gc.setFont(getFontForSize(fontSize));
             if (fontSize >= 1) {
                 double x = rect.getX();
@@ -266,7 +266,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
             Pair<Rectangle2D, Pair<String, Integer>> pair = it.next();
             Rectangle2D rect = pair.getFirst();
             String label = pair.getSecond().getFirst();
-            Integer fontSize = (int) (factor * pair.getSecond().getSecond());
+            int fontSize = (int) (factor * pair.getSecond().getSecond());
             if (fontSize >= 1) {
                 gc.setFont(getFontForSize(fontSize));
                 Color color = getFontColor(ChartViewer.FontKeys.DrawFont.toString(), null);
@@ -424,18 +424,10 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
                     direction++;
                 for (int j = previous.getSecond(); j <= k; j++) {  // the steps in the direction
                     switch (direction) {
-                        case 0:
-                            x += useRectangleShape ? 8 : 5;
-                            break;
-                        case 1:
-                            y += 5;
-                            break;
-                        case 2:
-                            x -= useRectangleShape ? 8 : 5;
-                            break;
-                        case 3:
-                            y -= 5;
-                            break;
+                        case 0 -> x += useRectangleShape ? 8 : 5;
+                        case 1 -> y += 5;
+                        case 2 -> x -= useRectangleShape ? 8 : 5;
+                        case 3 -> y -= 5;
                     }
                     bbox.setLocation(x - bbox.width / 2, y);
                     if (!rTree.overlaps(bbox)) {

@@ -102,9 +102,8 @@ public class SampleAttributeTable {
      * @param sampleAttributeTable
      * @param allowReplaceSample
      * @param allowAddAttribute
-     * @return true, if anything was added
      */
-    public boolean addTable(SampleAttributeTable sampleAttributeTable, boolean allowReplaceSample, boolean allowAddAttribute) {
+    public void addTable(SampleAttributeTable sampleAttributeTable, boolean allowReplaceSample, boolean allowAddAttribute) {
         boolean changed = false;
         for (String sample : sampleAttributeTable.getSampleSet()) {
             if (allowReplaceSample || !table.rowKeySet().contains(sample)) {
@@ -112,7 +111,6 @@ public class SampleAttributeTable {
                     changed = true;
             }
         }
-        return changed;
     }
 
     /**
@@ -229,9 +227,8 @@ public class SampleAttributeTable {
      * @param sample
      * @param newName
      * @param allowReplaceSample
-     * @return true, if renamed
      */
-    public boolean renameSample(String sample, String newName, boolean allowReplaceSample) {
+    public void renameSample(String sample, String newName, boolean allowReplaceSample) {
         if (allowReplaceSample || !table.rowKeySet().contains(newName) && sampleOrder.contains(sample)) {
             sampleOrder.set(sampleOrder.indexOf(sample), newName);
 
@@ -242,9 +239,7 @@ public class SampleAttributeTable {
                     table.put(newName, key, row.get(key));
                 }
             }
-            return true;
         }
-        return false;
     }
 
     /**
@@ -269,9 +264,8 @@ public class SampleAttributeTable {
      * @param attribute
      * @param value
      * @param allowReplaceAttribute
-     * @return true, if added
      */
-    public boolean addAttribute(String attribute, Object value, boolean allowReplaceAttribute) {
+    public void addAttribute(String attribute, Object value, boolean allowReplaceAttribute) {
         boolean change = false;
         if (allowReplaceAttribute || !table.columnKeySet().contains(attribute)) {
             for (String sample : getSampleOrder()) {
@@ -279,7 +273,6 @@ public class SampleAttributeTable {
             }
             change = true;
         }
-        return change;
     }
 
     /**
@@ -386,10 +379,8 @@ public class SampleAttributeTable {
 
     /**
      * removes all attributes for which no sample has a defined value
-     *
-     * @return true, if at least one attribute was removed
      */
-    private boolean removeUndefinedAttributes() {
+    private void removeUndefinedAttributes() {
         LinkedList<String> undefined = new LinkedList<>();
         for (String attribute : getAttributeSet()) {
             Map<String, Object> sample2values = getSamples2Values(attribute);
@@ -405,7 +396,6 @@ public class SampleAttributeTable {
         }
         if (undefined.size() > 0)
             removeAttributes(undefined);
-        return undefined.size() > 0;
     }
 
     /**
@@ -1011,8 +1001,7 @@ public class SampleAttributeTable {
             if (isSecretAttribute(name) || isHiddenAttribute(name) || name.equals("Size") || hiddenAttributes.contains(name))
                 continue;
             switch (getAttributeType(name)) {
-                case Float:
-                case Integer: {
+                case Float, Integer -> {
                     final float[] array = new float[samples.size()];
                     float maxAbs = Float.MIN_VALUE;
 
@@ -1037,7 +1026,7 @@ public class SampleAttributeTable {
                     result.put(name, array);
                     break;
                 }
-                case String: {
+                case String -> {
                     String firstValue = null;
                     String secondValue = null;
                     for (String sample : samples) {
@@ -1109,22 +1098,16 @@ public class SampleAttributeTable {
             Pair<Object, String>[] array = list.toArray(new Pair[0]);
 
             switch (getAttributeType(attribute)) {
-                case Integer:
-                case Float:
-                    Arrays.sort(array, (p1, p2) -> {
-                        Float a1 = Float.parseFloat(p1.getFirst().toString());
-                        Float a2 = Float.parseFloat(p2.getFirst().toString());
-                        return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
-                    });
-                    break;
-                default:
-                case String:
-                    Arrays.sort(array, (p1, p2) -> {
-                        String a1 = p1.getFirst().toString();
-                        String a2 = p2.getFirst().toString();
-                        return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
-                    });
-                    break;
+                case Integer, Float -> Arrays.sort(array, (p1, p2) -> {
+                    Float a1 = Float.parseFloat(p1.getFirst().toString());
+                    Float a2 = Float.parseFloat(p2.getFirst().toString());
+                    return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
+                });
+                case String -> Arrays.sort(array, (p1, p2) -> {
+                    String a1 = p1.getFirst().toString();
+                    String a2 = p2.getFirst().toString();
+                    return ascending ? a1.compareTo(a2) : -a1.compareTo(a2);
+                });
             }
             getSampleOrder().clear();
             for (Pair<Object, String> pair : array) {

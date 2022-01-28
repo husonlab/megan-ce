@@ -51,9 +51,8 @@ public class DataProcessor {
      * process a dataset
      *
      * @param doc
-     * @throws jloda.util.CanceledException
      */
-    public static int apply(final Document doc) throws CanceledException {
+    public static int apply(final Document doc) {
         final ProgressListener progress = doc.getProgressListener();
         try {
             progress.setTasks("Binning reads", "Initializing...");
@@ -113,17 +112,11 @@ public class DataProcessor {
 
                 if (useLCAForClassification[c]) {
                     switch (doc.getLcaAlgorithm()) {
-                        default:
-                        case naive:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
-                            break;
-                        case weighted:
-                            // we are assuming that taxonomy classification is The taxonomy classification
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(cNames[c], doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
-                            break;
-                        case longReads:
-                            assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(cNames[c], doc);
-                            break;
+                        case naive -> assignmentAlgorithmCreators[c] = new AssignmentUsingLCACreator(cNames[c], doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
+                        case weighted ->
+                                // we are assuming that taxonomy classification is The taxonomy classification
+                                assignmentAlgorithmCreators[c] = new AssignmentUsingWeightedLCACreator(cNames[c], doc, doc.isUseIdentityFilter(), doc.getLcaCoveragePercent());
+                        case longReads -> assignmentAlgorithmCreators[c] = new AssignmentUsingIntervalUnionLCACreator(cNames[c], doc);
                     }
                 } else if (usingLongReadAlgorithm)
                     assignmentAlgorithmCreators[c] = new AssignmentUsingMultiGeneBestHitCreator(cNames[c], doc.getMeganFile().getFileName());
@@ -411,7 +404,7 @@ public class DataProcessor {
             SyncArchiveAndDataTable.syncRecomputedArchive2Summary(doc.getReadAssignmentMode(), doc.getTitle(), "LCA", doc.getBlastMode(), doc.getParameterString(), connector, doc.getDataTable(), (int) doc.getAdditionalReads());
 
             if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
 
             // MeganProperties.addRecentFile(new File(doc.getMeganFile().getFileName()));
             doc.setDirty(false);

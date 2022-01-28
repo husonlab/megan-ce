@@ -33,5 +33,5 @@ public interface ILong2IntegerMap extends Closeable {
      * @param index
      * @return value or 0
      */
-    public int get(long index) throws IOException;
+    int get(long index) throws IOException;
 }

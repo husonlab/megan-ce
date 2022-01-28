@@ -47,7 +47,7 @@ public class BlastService extends Service<String> {
                 updateMessage("Contacting NCBI...");
                 remoteBlastClient.startRemoteSearch(getQueries());
 
-                long estimatedTime = 2000 * remoteBlastClient.getEstimatedTime(); // double...
+                long estimatedTime = 2000L * remoteBlastClient.getEstimatedTime(); // double...
                 final long startTime = System.currentTimeMillis();
                 updateProgress(0, estimatedTime);
                 updateMessage("Request id: " + remoteBlastClient.getRequestId() + "\nEstimated time: " + (estimatedTime / 1100) + "s\nSearching...\n");

@@ -80,19 +80,18 @@ public class Blast2LCA {
      * @param args
      * @throws jloda.util.UsageException
      * @throws java.io.IOException
-     * @throws ClassNotFoundException
      */
-    private void run(String[] args) throws UsageException, IOException, ClassNotFoundException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA alignment to reads and produce a taxonomic classification");
-		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-		options.setAuthors("Daniel H. Huson");
+        options.setVersion(ProgramProperties.getProgramVersion());
+        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setAuthors("Daniel H. Huson");
 
-		options.comment("Input");
+        options.comment("Input");
 
-		String blastFile = options.getOptionMandatory("-i", "input", "Input BLAST file", "foo.blast");
-		String blastFormat = options.getOption("-f", "format", "BLAST format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString());
-		String blastMode = options.getOption("-m", "mode", "BLAST mode", BlastMode.values(), BlastMode.Unknown.toString());
+        String blastFile = options.getOptionMandatory("-i", "input", "Input BLAST file", "foo.blast");
+        String blastFormat = options.getOption("-f", "format", "BLAST format", BlastFileFormat.values(), BlastFileFormat.Unknown.toString());
+        String blastMode = options.getOption("-m", "mode", "BLAST mode", BlastMode.values(), BlastMode.Unknown.toString());
 		options.comment("Output");
 		String outputFile = options.getOption("-o", "output", "Taxonomy output file", FileUtils.getFileBaseName(FileUtils.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-taxonomy.txt");
 		String keggOutputFile = options.getOption("-ko", "keggOutput", "KEGG output file", FileUtils.getFileBaseName(FileUtils.getFileNameWithoutZipOrGZipSuffix(blastFile)) + "-kegg.txt");
@@ -230,8 +229,8 @@ public class Blast2LCA {
                 }
                 progressListener.close();
             }
-            System.err.println(String.format("Reads in: %,11d", totalIn));
-            System.err.println(String.format("Reads out:%,11d", totalOut));
+            System.err.printf("Reads in: %,11d%n", totalIn);
+            System.err.printf("Reads out:%,11d%n", totalOut);
         }
     }
 }

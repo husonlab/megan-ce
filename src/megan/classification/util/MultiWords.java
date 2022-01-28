@@ -106,12 +106,8 @@ public class MultiWords {
                 return -1;
             else if (aLen < bLen)
                 return 1;
-            if (a[0] < b[0])
-                return -1;
-            else if (a[0] > b[0])
-                return 1;
-            else
-                return 0; // have same length and start, must be equalOverShorterOfBoth
+            // have same length and start, must be equalOverShorterOfBoth
+            return Integer.compare(a[0], b[0]);
         });
         return count;
     }

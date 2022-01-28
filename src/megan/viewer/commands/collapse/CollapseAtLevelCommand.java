@@ -46,15 +46,9 @@ public class CollapseAtLevelCommand extends CommandBase implements ICommand {
 
         final Set<Integer> ids2collapse = ClassificationManager.get(classificationViewer.getClassName(), true).getFullTree().getAllAtLevel(level);
         switch (ProgramProperties.get("KeepOthersCollapsed", " none")) {
-            case "prokaryotes":
-                ids2collapse.addAll(TaxonomyData.getNonProkaryotesToCollapse());
-                break;
-            case "eukaryotes":
-                ids2collapse.addAll(TaxonomyData.getNonEukaryotesToCollapse());
-                break;
-            case "viruses":
-                ids2collapse.addAll(TaxonomyData.getNonVirusesToCollapse());
-                break;
+            case "prokaryotes" -> ids2collapse.addAll(TaxonomyData.getNonProkaryotesToCollapse());
+            case "eukaryotes" -> ids2collapse.addAll(TaxonomyData.getNonEukaryotesToCollapse());
+            case "viruses" -> ids2collapse.addAll(TaxonomyData.getNonVirusesToCollapse());
         }
         classificationViewer.setCollapsedIds(ids2collapse);
 

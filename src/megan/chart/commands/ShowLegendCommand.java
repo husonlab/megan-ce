@@ -50,15 +50,9 @@ public class ShowLegendCommand extends CommandBase implements ICheckBoxCommand {
     public void actionPerformed(ActionEvent event) {
         String legend = ((ChartViewer) getViewer()).getShowLegend();
         switch (legend) {
-            case "none":
-                executeImmediately("show chartLegend=horizontal;");
-                break;
-            case "horizontal":
-                executeImmediately("show chartLegend=vertical;");
-                break;
-            case "vertical":
-                executeImmediately("show chartLegend=none;");
-                break;
+            case "none" -> executeImmediately("show chartLegend=horizontal;");
+            case "horizontal" -> executeImmediately("show chartLegend=vertical;");
+            case "vertical" -> executeImmediately("show chartLegend=none;");
         }
     }
 

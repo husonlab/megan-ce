@@ -44,9 +44,8 @@ public interface IConnector {
      * is connected document readonly?
      *
      * @return true, if read only
-     * @throws IOException
      */
-    boolean isReadOnly() throws IOException;
+    boolean isReadOnly();
 
     /**
      * gets the unique identifier for the given filename.

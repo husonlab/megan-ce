@@ -76,11 +76,11 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         map.clear();
     }
 
-    public int get(String accession) throws IOException {
+    public int get(String accession) {
         final Integer result = map.get(accession);
         return Objects.requireNonNullElse(result, 0);
     }

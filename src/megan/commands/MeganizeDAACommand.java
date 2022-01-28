@@ -150,7 +150,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             ProgramProperties.put("minPercentReferenceToCover", minPercentReferenceToCover);
         }
 
-        float minComplexity = 0;
+        float minComplexity;
         if (np.peekMatchIgnoreCase("minComplexity")) {
             np.matchIgnoreCase("minComplexity=");
             minComplexity = (float) np.getDouble(-1.0, 1.0);
@@ -161,10 +161,10 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
         int minReadLength = 0;
         if (np.peekMatchIgnoreCase("minReadLength")) {
             np.matchIgnoreCase("minReadLength=");
-            minReadLength = (int) np.getInt(0,Integer.MAX_VALUE);
+            minReadLength = np.getInt(0, Integer.MAX_VALUE);
         }
 
-        boolean useIdentityFilter = Document.DEFAULT_USE_IDENTITY;
+        boolean useIdentityFilter;
         if (np.peekMatchIgnoreCase("useIdentityFilter")) {
             np.matchIgnoreCase("useIdentityFilter=");
             useIdentityFilter = np.getBoolean();

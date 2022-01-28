@@ -33,7 +33,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * MeganServer request handler for data requests
@@ -439,7 +438,7 @@ public interface RequestHandler {
                 return parameter.substring(0, parameter.indexOf("="));
             else
                 return parameter;
-        }).collect(Collectors.toList());
+        }).toList();
         for (String name : parameterNames) {
             if (!CollectionUtils.contains(known, name))
                 throw new IOException("Unknown parameter: '" + name + "'");
@@ -452,7 +451,7 @@ public interface RequestHandler {
                 return parameter.substring(0, parameter.indexOf("="));
             else
                 return parameter;
-        }).collect(Collectors.toList());
+        }).toList();
         for (String name : required) {
             if (!parameterNames.contains(name))
                 throw new IOException("Missing parameter: '" + name + "'");

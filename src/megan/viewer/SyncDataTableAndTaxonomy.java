@@ -76,7 +76,7 @@ public class SyncDataTableAndTaxonomy {
                         if (ch == ';') {
                             int formatB = pos;
                             if (idA < idB && formatA < formatB) {
-                                Integer taxId = Integer.parseInt(nodeFormats.substring(idA, idB).trim());
+                                int taxId = Integer.parseInt(nodeFormats.substring(idA, idB).trim());
                                 viewer.getDirtyNodeIds().add(taxId);
                                 Node v = viewer.getTaxId2Node(taxId);
                                 if (v != null) {
@@ -139,8 +139,8 @@ public class SyncDataTableAndTaxonomy {
                         if (ch == ';') {
                             int formatB = pos;
                             if (taxId1A < taxId1B && taxId2A < taxId2B && formatA < formatB) {
-                                Integer taxId1 = Integer.parseInt(edgeFormats.substring(taxId1A, taxId1B).trim());
-                                Integer taxId2 = Integer.parseInt(edgeFormats.substring(taxId2A, taxId2B).trim());
+                                int taxId1 = Integer.parseInt(edgeFormats.substring(taxId1A, taxId1B).trim());
+                                int taxId2 = Integer.parseInt(edgeFormats.substring(taxId2A, taxId2B).trim());
 
                                 String format = edgeFormats.substring(formatA, formatB + 1).trim();
                                 // System.err.println("got: <"+taxId1+">+<"+taxId2+">: <"+format+">");

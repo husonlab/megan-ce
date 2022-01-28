@@ -43,13 +43,12 @@ public class NewCommand extends CommandBase implements ICommand {
         makeNewDocument();
     }
 
-    public static Director makeNewDocument(String... commands) {
+    public static void makeNewDocument(String... commands) {
         final Director newDir = Director.newProject();
         newDir.getMainViewer().getFrame().setVisible(true);
         newDir.getMainViewer().setDoReInduce(true);
-		newDir.getMainViewer().setDoReset(true);
-		newDir.execute(StringUtils.toString(commands, "; ") + ";", newDir.getMainViewer().getCommandManager());
-        return newDir;
+        newDir.getMainViewer().setDoReset(true);
+        newDir.execute(StringUtils.toString(commands, "; ") + ";", newDir.getMainViewer().getCommandManager());
     }
 
     public void actionPerformed(ActionEvent event) {

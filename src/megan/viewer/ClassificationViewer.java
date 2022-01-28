@@ -101,8 +101,8 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
 	Classification classification;
 
-	private boolean useReadWeights = false;
-	private boolean showScaleBox =ProgramProperties.get("ShowScaleBox",true);
+	private final boolean useReadWeights = false;
+    private boolean showScaleBox = ProgramProperties.get("ShowScaleBox", true);
 
 	/**
 	 * Classification viewer
@@ -395,38 +395,34 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	 */
 	public void updateView(final String what) {
 		if (what.equals(Director.ALL)) {
-			try {
-				// rescan colors
-				final List<String> samples = doc.getSampleNames();
-				doc.getChartColorManager().setSampleColorPositions(samples);
-				for (int i = 0; i < samples.size(); i++) {
-					doc.setColorByIndex(i,doc.getChartColorManager().getSampleColor(samples.get(i)));
-				}
+            // rescan colors
+            final List<String> samples = doc.getSampleNames();
+            doc.getChartColorManager().setSampleColorPositions(samples);
+            for (int i = 0; i < samples.size(); i++) {
+                doc.setColorByIndex(i, doc.getChartColorManager().getSampleColor(samples.get(i)));
+            }
 
-				setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));
+            setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));
 
-				if (lastRecomputeTimeFromDocument != dir.getDocument().getLastRecomputeTime()) {
-					lastRecomputeTimeFromDocument = dir.getDocument().getLastRecomputeTime();
-					// System.err.println("RECOMPUTING at "+
-					// lastRecomputeTimeFromDocument);
-					updateData();
-					updateTree();
-				}
-				if (hasSyncedFormatFromSummaryToViewer)
-					SyncDataTableAndClassificationViewer.syncFormattingFromViewer2Summary(this, doc.getDataTable());
-			} catch (IOException e) {
-				Basic.caught(e);
-			}
+            if (lastRecomputeTimeFromDocument != dir.getDocument().getLastRecomputeTime()) {
+                lastRecomputeTimeFromDocument = dir.getDocument().getLastRecomputeTime();
+                // System.err.println("RECOMPUTING at "+
+                // lastRecomputeTimeFromDocument);
+                updateData();
+                updateTree();
+            }
+            if (hasSyncedFormatFromSummaryToViewer)
+                SyncDataTableAndClassificationViewer.syncFormattingFromViewer2Summary(this, doc.getDataTable());
 
-			// scroll back to previous nodes of interest
-			if (getPreviousNodeIdsOfInterest() != null) {
-				for (Integer id : getPreviousNodeIdsOfInterest()) {
-					Node v = getANode(id);
-					if (v != null) {
-						setSelected(v, true);
-					}
-				}
-				// trans.setScaleY(1);
+            // scroll back to previous nodes of interest
+            if (getPreviousNodeIdsOfInterest() != null) {
+                for (Integer id : getPreviousNodeIdsOfInterest()) {
+                    Node v = getANode(id);
+                    if (v != null) {
+                        setSelected(v, true);
+                    }
+                }
+                // trans.setScaleY(1);
 				zoomToSelection();
 				setPreviousNodeIdsOfInterest(null);
 			}
@@ -1741,13 +1737,13 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	}
 
 	public void selectNodesPositiveAssigned() {
-		for (Object o : getGraph().nodes()) {
-			final Node v = (Node) o;
-			if (!getSelected(v) && getNodeData(v).getCountAssigned() > 0) {
-				setSelected(v, true);
-			}
-		}
-	}
+        for (Node o : getGraph().nodes()) {
+            final Node v = o;
+            if (!getSelected(v) && getNodeData(v).getCountAssigned() > 0) {
+                setSelected(v, true);
+            }
+        }
+    }
 
 	public boolean isShowScaleBox() {
 		return showScaleBox;

@@ -38,7 +38,7 @@ public class SetPairedReadsCommand extends CommandBase implements ICheckBoxComma
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -50,10 +50,7 @@ public class SetPairedReadsCommand extends CommandBase implements ICheckBoxComma
             if (readsFileName.contains("\n"))
                 readsFileName = readsFileName.substring(0, readsFileName.indexOf("\n"));
             ReadPairingDialog readPairingDialog = new ReadPairingDialog(importBlastDialog, readsFileName);
-            if (readPairingDialog.showDialog()) {
-                importBlastDialog.setUsePairedReads(true);
-            } else
-                importBlastDialog.setUsePairedReads(false);
+            importBlastDialog.setUsePairedReads(readPairingDialog.showDialog());
         }
     }
 

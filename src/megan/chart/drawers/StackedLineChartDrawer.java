@@ -62,20 +62,12 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         int y0 = getHeight() - bottomMargin;
         int y1 = topMargin;
 
-        double topY;
-        switch (scalingType) {
-            case PERCENT:
-                topY = 101;
-                break;
-            case LOG:
-                topY = computeMaxYAxisValueLogScale(getMaxValue());
-                break;
-            case SQRT:
-                topY = Math.sqrt(getMaxValue());
-                break;
-            default:
-                topY = 1.1 * getMaxValue();
-        }
+        double topY = switch (scalingType) {
+            case PERCENT -> 101;
+            case LOG -> computeMaxYAxisValueLogScale(getMaxValue());
+            case SQRT -> Math.sqrt(getMaxValue());
+            default -> 1.1 * getMaxValue();
+        };
 
         double yFactor = (y0 - y1) / topY;
 
@@ -248,24 +240,23 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         final double topY;
         final double[] percentFactor;
         switch (scalingType) {
-            case PERCENT: {
+            case PERCENT -> {
                 final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
                 percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
                 topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
                 break;
             }
-            case LOG: {
+            case LOG -> {
                 topY = computeMaxYAxisValueLogScale(getMaxValue());
                 percentFactor = null;
                 break;
             }
-            case SQRT: {
+            case SQRT -> {
                 topY = Math.sqrt(getMaxValue());
                 percentFactor = null;
                 break;
             }
-            default:
-            case LINEAR: {
+            case LINEAR -> {
                 topY = 1.1 * getMaxValue();
                 percentFactor = null;
             }
@@ -318,11 +309,11 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
 
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
-                    case PERCENT: {
+                    case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
                         break;
                     }
-                    case LOG: {
+                    case LOG -> {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {
                                 value = Math.log10(value);
@@ -334,7 +325,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                             value = 0;
                         break;
                     }
-                    case SQRT: {
+                    case SQRT -> {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {
                                 value = Math.sqrt(value);

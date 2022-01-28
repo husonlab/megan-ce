@@ -61,7 +61,7 @@ public class MyListItem implements Comparator<MyListItem>, Serializable {
         }
         str += name;
         if (readAssignmentMode != null && readAssignmentMode != Document.ReadAssignmentMode.readCount)
-            str += " [" + readAssignmentMode.toString() + "]";
+            str += " [" + readAssignmentMode + "]";
         return str;
     }
 

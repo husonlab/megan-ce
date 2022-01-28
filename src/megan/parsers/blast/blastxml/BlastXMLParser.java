@@ -126,10 +126,9 @@ public class BlastXMLParser extends DefaultHandler {
      * @param localName
      * @param qName
      * @param attributes
-     * @throws SAXException
      */
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
         elementText = new StringBuilder();
 
         switch (qName) {
@@ -367,11 +366,9 @@ public class BlastXMLParser extends DefaultHandler {
      * @param publicId
      * @param systemId
      * @return
-     * @throws IOException
-     * @throws SAXException
      */
     @Override
-    public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+    public InputSource resolveEntity(String publicId, String systemId) {
         return new InputSource(new StringReader(""));
     }
 
@@ -381,10 +378,9 @@ public class BlastXMLParser extends DefaultHandler {
      * @param chars
      * @param start
      * @param length
-     * @throws SAXException
      */
     @Override
-    public void characters(char[] chars, int start, int length) throws SAXException {
+    public void characters(char[] chars, int start, int length) {
         elementText.append(chars, start, length);
     }
 

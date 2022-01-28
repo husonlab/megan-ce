@@ -71,7 +71,7 @@ class ChimericCheck {
                             if (!taxonName2.contains("unclassified")) {
                                 final IntervalList intervals2 = taxa2intervals.get(taxon2);
                                 if (intervals2 != null) {
-                                    final Integer covered2 = intervals2.getCovered();
+                                    final int covered2 = intervals2.getCovered();
                                     double minProportionOfBasesCoveredBothSides = 0.6;
                                     if (readLength == 0 || covered1 + covered2 >= minProportionOfBasesCoveredBothSides * readLength) {
                                         // 0.8;

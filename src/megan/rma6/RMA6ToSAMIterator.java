@@ -101,7 +101,7 @@ public class RMA6ToSAMIterator implements ISAMIterator {
      * @return true, if more data available
      */
     @Override
-    public boolean hasNext() throws IOException {
+    public boolean hasNext() {
         return positionInList < list.size();
     }
 

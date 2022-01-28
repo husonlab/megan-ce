@@ -67,7 +67,7 @@ public class ContigBuilder {
 
         if (paths.length == 0) {
             if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
             return;
         }
 
@@ -160,7 +160,7 @@ public class ContigBuilder {
         service.shutdownNow();
 
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
     }
 
     /**

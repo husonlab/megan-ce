@@ -52,10 +52,9 @@ public class OverlapGraphBuilder {
      *
      * @param alignment
      * @param progress
-     * @return number of nodes
      * @throws CanceledException
      */
-    public int apply(final Alignment alignment, ProgressListener progress) throws CanceledException {
+    public void apply(final Alignment alignment, ProgressListener progress) throws CanceledException {
         // alignment.resetOrder();
 
         if (progress != null) {
@@ -137,7 +136,7 @@ public class OverlapGraphBuilder {
                 visitNodesRec(v, edgeWeights);
             }
         }
-        return overlapGraph.getNumberOfNodes();
+        overlapGraph.getNumberOfNodes();
     }
 
 

@@ -45,17 +45,16 @@ public class ReadAssignmentCalculator {
      */
     public int compute(IReadBlock readBlock, IntervalTree<Object> intervals) {
         switch (mode) {
-            default:
-            case readCount: {
+            case readCount -> {
                 return 1;
             }
-            case readLength: {
+            case readLength -> {
                 return Math.max(1, readBlock.getReadLength());
             }
-            case alignedBases: {
+            case alignedBases -> {
                 return computeCoveredBases(readBlock, intervals);
             }
-            case readMagnitude: {
+            case readMagnitude -> {
                 return ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader(), true);
             }
         }

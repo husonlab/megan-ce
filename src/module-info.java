@@ -13,7 +13,6 @@ module megan {
     requires gson;
     requires commons.math3;
     requires contrasts;
-    requires colt;
     requires java.desktop;
     requires java.net.http;
     requires bcyrpt;

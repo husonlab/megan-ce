@@ -164,21 +164,21 @@ public class DAAHeader {
                 for (int i = 0; i < blockTypeRank.length; i++) {
                     blockTypeRank[i] = (byte) ins.read();
                     switch (BlockType.value(blockTypeRank[i])) {
-                        case ref_names:
+                        case ref_names -> {
                             if (refNamesBlockIndex != -1)
                                 throw new IOException("DAA file contains multiple ref_names blocks, not implemented.");
                             refNamesBlockIndex = i;
-                            break;
-                        case ref_lengths:
+                        }
+                        case ref_lengths -> {
                             if (refLengthsBlockIndex != -1)
                                 throw new IOException("DAA file contains multiple ref_lengths blocks, not implemented.");
                             refLengthsBlockIndex = i;
-                            break;
-                        case alignments:
+                        }
+                        case alignments -> {
                             if (alignmentsBlockIndex != -1)
                                 throw new IOException("DAA file contains multiple alignments blocks, not implemented.");
                             alignmentsBlockIndex = i;
-                            break;
+                        }
                     }
                 }
                 if (refNamesBlockIndex == -1)

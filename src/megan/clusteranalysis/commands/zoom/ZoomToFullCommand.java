@@ -25,7 +25,6 @@ import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 public class ZoomToFullCommand extends CommandBase implements ICommand {
     public String getSyntax() {
@@ -61,10 +60,9 @@ public class ZoomToFullCommand extends CommandBase implements ICommand {
      * parses the given command and executes it
      *
      * @param np
-     * @throws IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 

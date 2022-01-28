@@ -19,7 +19,6 @@
 package megan.ms.clientdialog.service;
 
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -68,9 +67,8 @@ interface IService {
      *
      * @param fileId
      * @return file length
-     * @throws IOException
      */
-    long getFileLength(int fileId) throws IOException;
+    long getFileLength(int fileId);
 
     /**
      * opens the specified file for reading
@@ -78,7 +76,7 @@ interface IService {
      * @param name
      * @return handle id
      */
-    int openFile(String name) throws IOException;
+    int openFile(String name);
 
     /**
      * seek
@@ -86,7 +84,7 @@ interface IService {
      * @param handleId
      * @param pos
      */
-    void seek(int handleId, long pos) throws IOException;
+    void seek(int handleId, long pos);
 
     /**
      * read the specified number of bytes
@@ -97,15 +95,14 @@ interface IService {
      * @param length
      * @return number of bytes read
      */
-    int read(int handleId, byte[] buffer, int offset, int length) throws IOException;
+    int read(int handleId, byte[] buffer, int offset, int length);
 
     /**
      * close the file associated with the given handle
      *
      * @param handleId
-     * @throws IOException
      */
-    void closeFile(int handleId) throws IOException;
+    void closeFile(int handleId);
 
     /**
      * gets the last time that the content of this node was updated
@@ -128,5 +125,5 @@ interface IService {
      * @param handleId
      * @return current position
      */
-    long getPosition(int handleId) throws IOException;
+    long getPosition(int handleId);
 }

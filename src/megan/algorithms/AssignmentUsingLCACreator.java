@@ -38,9 +38,9 @@ public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
         this.usePercentIdentityFilter = usePercentIdentityFilter;
         this.percentToCover = percentToCover;
         if (percentToCover == 100)
-            System.err.println(String.format("Using 'Naive LCA' algorithm for binning: %s", cName));
+            System.err.printf("Using 'Naive LCA' algorithm for binning: %s%n", cName);
         else
-            System.err.println(String.format("Using 'Naive LCA' algorithm (%.1f %%) for binning: %s", percentToCover, cName));
+            System.err.printf("Using 'Naive LCA' algorithm (%.1f %%) for binning: %s%n", percentToCover, cName);
     }
 
     /**

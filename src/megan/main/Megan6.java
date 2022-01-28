@@ -78,7 +78,7 @@ public class Megan6 {
         } catch (Throwable th) {
             //catch any exceptions and the like that propagate up to the top level
             if (!th.getMessage().equals("Help")) {
-                System.err.println("MEGAN fatal error:" + "\n" + th.toString());
+                System.err.println("MEGAN fatal error:" + "\n" + th);
                 Basic.caught(th);
                 System.exit(1);
             }
@@ -87,12 +87,12 @@ public class Megan6 {
         }
     }
 
-    public static String[] processOpenFileArgs(String[] args) throws Exception {
+    public static String[] processOpenFileArgs(String[] args) {
         try {
             if (args.length == 1 && !args[0].startsWith("-")) {// assume this is a single file name or URL
                 String fileName = args[0];
                 if (fileName.startsWith("megan:"))
-					fileName = StringUtils.convertPercentEncoding(fileName.substring("megan:".length()));
+                    fileName = StringUtils.convertPercentEncoding(fileName.substring("megan:".length()));
                 return new String[]{"-f", fileName};
             }
         } catch (Exception ex) {

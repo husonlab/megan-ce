@@ -45,9 +45,9 @@ public class DrawerManager {
             final boolean fillAllSupportedDrawers = (allSupportedChartDrawers.size() == 0);
 
             final Map<String, IChartDrawer> name2DrawerInstance = new HashMap<>();
-            for (Object object : PluginClassLoader.getInstances(IChartDrawer.class, paths)) {
+            for (IChartDrawer object : PluginClassLoader.getInstances(IChartDrawer.class, paths)) {
                 if (object instanceof IChartDrawer) {
-                    final IChartDrawer drawer = (IChartDrawer) object;
+                    final IChartDrawer drawer = object;
                     if (!(drawer instanceof MultiChartDrawer) && drawer.isEnabled()) {
                         name2DrawerInstance.put(drawer.getChartDrawerName(), drawer);
                         if (fillAllSupportedDrawers && !(object instanceof Plot2DDrawer))

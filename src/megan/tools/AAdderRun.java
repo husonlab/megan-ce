@@ -230,12 +230,12 @@ public class AAdderRun {
                     }
                 }
 
-                System.err.println(String.format("Lines:     %,11d", countLines));
-                System.err.println(String.format("Alignments:%,11d", countAlignments));
-                System.err.println(String.format("Annotated: %,11d", countAnnotated));
-                System.err.println(String.format("(Loaded refs:%,9d)", countReferencesLoaded));
+                System.err.printf("Lines:     %,11d%n", countLines);
+                System.err.printf("Alignments:%,11d%n", countAlignments);
+                System.err.printf("Annotated: %,11d%n", countAnnotated);
+                System.err.printf("(Loaded refs:%,9d)%n", countReferencesLoaded);
                 if (refNotFound.size() > 0)
-                    System.err.println(String.format("(Missing refs:%,8d)", refNotFound.size()));
+                    System.err.printf("(Missing refs:%,8d)%n", refNotFound.size());
             }
         }
     }

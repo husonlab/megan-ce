@@ -47,9 +47,8 @@ public class RMA2File {
      * constructor
      *
      * @param file
-     * @throws IOException
      */
-    public RMA2File(File file) throws IOException {
+    public RMA2File(File file) {
         this.file = file;
         infoSection = new InfoSection();
     }

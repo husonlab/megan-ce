@@ -55,7 +55,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -620,7 +619,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         frame.setVisible(false);
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
@@ -967,7 +966,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
      * @param format     page format
      * @param pagenumber page index
      */
-    public int print(Graphics gc0, PageFormat format, int pagenumber) throws PrinterException {
+    public int print(Graphics gc0, PageFormat format, int pagenumber) {
         Component panel = scrollPane.getViewport().getComponent(0);
 
         if (panel != null && pagenumber == 0) {

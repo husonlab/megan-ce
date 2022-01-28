@@ -30,10 +30,7 @@ import megan.daa.connector.MatchBlockDAA;
 import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * computes the assignment for a read, using the Weighted LCA algorithm
@@ -247,7 +244,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         if (origLength == 0)
             return "";
         // sort:
-        Arrays.sort(array, 0, origLength, (a, b) -> a.address.compareTo(b.address));
+        Arrays.sort(array, 0, origLength, Comparator.comparing(a -> a.address));
         // setup links:
         for (int i = 0; i < origLength - 1; i++) {
             array[i].next = array[i + 1];

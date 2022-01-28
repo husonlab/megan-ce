@@ -81,54 +81,22 @@ public class FileFooterRMA3 extends BaseRMA3 {
 
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             switch (pair.getFirst()) {
-                case "Creator":
-                    setCreator(reader.readString());
-                    break;
-                case "CreationDate":
-                    setCreationDate(reader.readLong());
-                    break;
-                case "AlignmentsFile":
-                    setAlignmentFile(reader.readString());
-                    break;
-                case "AlignmentFileFormat":
-                    setAlignmentFileFormat(reader.readString());
-                    break;
-                case "AlignmentFileSize":
-                    setAlignmentFileSize(reader.readLong());
-                    break;
-                case "ReadsFile":
-                    setReadsFile(reader.readString());
-                    break;
-                case "ReadsFileFormat":
-                    setReadsFileFormat(reader.readString());
-                    break;
-                case "ReadsFileSize":
-                    setReadsFileSize(reader.readLong());
-                    break;
-                case "BlastMode":
-                    setBlastMode(reader.readString());
-                    break;
-                case "MatchesStart":
-                    setMatchesStart(reader.readLong());
-                    break;
-                case "MatchesFooter":
-                    setMatchesFooter(reader.readLong());
-                    break;
-                case "ClassificationsStart":
-                    setClassificationsStart(reader.readLong());
-                    break;
-                case "ClassificationsFooter":
-                    setClassificationsFooter(reader.readLong());
-                    break;
-                case "AuxStart":
-                    setAuxStart(reader.readLong());
-                    break;
-                case "AuxFooter":
-                    setAuxFooter(reader.readLong());
-                    break;
-                case "FileFooter":
-                    setFileFooter(reader.readLong());
-                    break;
+                case "Creator" -> setCreator(reader.readString());
+                case "CreationDate" -> setCreationDate(reader.readLong());
+                case "AlignmentsFile" -> setAlignmentFile(reader.readString());
+                case "AlignmentFileFormat" -> setAlignmentFileFormat(reader.readString());
+                case "AlignmentFileSize" -> setAlignmentFileSize(reader.readLong());
+                case "ReadsFile" -> setReadsFile(reader.readString());
+                case "ReadsFileFormat" -> setReadsFileFormat(reader.readString());
+                case "ReadsFileSize" -> setReadsFileSize(reader.readLong());
+                case "BlastMode" -> setBlastMode(reader.readString());
+                case "MatchesStart" -> setMatchesStart(reader.readLong());
+                case "MatchesFooter" -> setMatchesFooter(reader.readLong());
+                case "ClassificationsStart" -> setClassificationsStart(reader.readLong());
+                case "ClassificationsFooter" -> setClassificationsFooter(reader.readLong());
+                case "AuxStart" -> setAuxStart(reader.readLong());
+                case "AuxFooter" -> setAuxFooter(reader.readLong());
+                case "FileFooter" -> setFileFooter(reader.readLong());
             }
         }
     }
@@ -148,54 +116,22 @@ public class FileFooterRMA3 extends BaseRMA3 {
         for (Pair<String, FormatDefinition.Type> pair : formatDefinition.getList()) {
             {
                 switch (pair.getFirst()) {
-                    case "Creator":
-                        formatDefinition.write(writer, "Creator", getCreator());
-                        break;
-                    case "CreationDate":
-                        formatDefinition.write(writer, "CreationDate", getCreationDate());
-                        break;
-                    case "AlignmentsFile":
-                        formatDefinition.write(writer, "AlignmentsFile", getAlignmentFile());
-                        break;
-                    case "AlignmentFileFormat":
-                        formatDefinition.write(writer, "AlignmentFileFormat", getAlignmentFileFormat());
-                        break;
-                    case "AlignmentFileSize":
-                        formatDefinition.write(writer, "AlignmentFileSize", getAlignmentFileSize());
-                        break;
-                    case "ReadsFile":
-                        formatDefinition.write(writer, "ReadsFile", getReadsFile());
-                        break;
-                    case "ReadsFileFormat":
-                        formatDefinition.write(writer, "ReadsFileFormat", getReadsFileFormat());
-                        break;
-                    case "ReadsFileSize":
-                        formatDefinition.write(writer, "ReadsFileSize", getReadsFileSize());
-                        break;
-                    case "BlastMode":
-                        formatDefinition.write(writer, "BlastMode", getBlastMode());
-                        break;
-                    case "MatchesStart":
-                        formatDefinition.write(writer, "MatchesStart", getMatchesStart());
-                        break;
-                    case "MatchesFooter":
-                        formatDefinition.write(writer, "MatchesFooter", getMatchesFooter());
-                        break;
-                    case "ClassificationsStart":
-                        formatDefinition.write(writer, "ClassificationsStart", getClassificationsStart());
-                        break;
-                    case "ClassificationsFooter":
-                        formatDefinition.write(writer, "ClassificationsFooter", getClassificationsFooter());
-                        break;
-                    case "AuxStart":
-                        formatDefinition.write(writer, "AuxStart", getAuxStart());
-                        break;
-                    case "AuxFooter":
-                        formatDefinition.write(writer, "AuxFooter", getAuxFooter());
-                        break;
-                    case "FileFooter":
-                        formatDefinition.write(writer, "FileFooter", getFileFooter());
-                        break;
+                    case "Creator" -> formatDefinition.write(writer, "Creator", getCreator());
+                    case "CreationDate" -> formatDefinition.write(writer, "CreationDate", getCreationDate());
+                    case "AlignmentsFile" -> formatDefinition.write(writer, "AlignmentsFile", getAlignmentFile());
+                    case "AlignmentFileFormat" -> formatDefinition.write(writer, "AlignmentFileFormat", getAlignmentFileFormat());
+                    case "AlignmentFileSize" -> formatDefinition.write(writer, "AlignmentFileSize", getAlignmentFileSize());
+                    case "ReadsFile" -> formatDefinition.write(writer, "ReadsFile", getReadsFile());
+                    case "ReadsFileFormat" -> formatDefinition.write(writer, "ReadsFileFormat", getReadsFileFormat());
+                    case "ReadsFileSize" -> formatDefinition.write(writer, "ReadsFileSize", getReadsFileSize());
+                    case "BlastMode" -> formatDefinition.write(writer, "BlastMode", getBlastMode());
+                    case "MatchesStart" -> formatDefinition.write(writer, "MatchesStart", getMatchesStart());
+                    case "MatchesFooter" -> formatDefinition.write(writer, "MatchesFooter", getMatchesFooter());
+                    case "ClassificationsStart" -> formatDefinition.write(writer, "ClassificationsStart", getClassificationsStart());
+                    case "ClassificationsFooter" -> formatDefinition.write(writer, "ClassificationsFooter", getClassificationsFooter());
+                    case "AuxStart" -> formatDefinition.write(writer, "AuxStart", getAuxStart());
+                    case "AuxFooter" -> formatDefinition.write(writer, "AuxFooter", getAuxFooter());
+                    case "FileFooter" -> formatDefinition.write(writer, "FileFooter", getFileFooter());
                 }
             }
         }

@@ -125,7 +125,7 @@ public class CDS {
             progress.incrementProgress();
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
         return list;
     }
 

@@ -98,7 +98,7 @@ public class UnweightedTaxonomicUniFracCommand extends CommandBase implements IC
     }
 
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 

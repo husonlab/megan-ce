@@ -24,7 +24,6 @@ import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.StatusBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.commands.CloseCommand;
 import megan.core.ClassificationType;
@@ -187,7 +186,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
         return locked;
     }
 
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
         dispose();

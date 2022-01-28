@@ -94,8 +94,8 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
      */
     public void write(IOutputWriter writer, Map<Integer, ListOfLongs> classId2locations) throws IOException {
         writer.writeInt(map.size());
-        for (Object key : map.keySet()) {
-            writer.writeInt((Integer) key); // class id
+        for (Integer key : map.keySet()) {
+            writer.writeInt(key); // class id
             final Integer sum = map.get(key);
             writer.writeInt(sum); // count
             if (classId2locations != null) {
@@ -113,10 +113,9 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
      *
      * @param classificationsFooter
      * @param reader
-     * @return size
      * @throws java.io.IOException
      */
-    public int read(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader) throws IOException {
+    public void read(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader) throws IOException {
         map.clear();
 
         long start = classificationsFooter.getStart(classificationType);
@@ -131,7 +130,7 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
                 map.put(classId, sum);
             }
         }
-        return map.size();
+        map.size();
     }
 
     /**
@@ -168,10 +167,9 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
      * @param reader
      * @param classId
      * @param list
-     * @return list of locations
      * @throws IOException
      */
-    public int readLocations(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader, int classId, ListOfLongs list) throws IOException {
+    public void readLocations(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader, int classId, ListOfLongs list) throws IOException {
         long start = classificationsFooter.getStart(classificationType);
         if (start != 0) {
             reader.seek(start);
@@ -187,7 +185,7 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
                     reader.skipBytes(8 * sum); // skip all locations
             }
         }
-        return list.size();
+        list.size();
     }
 
     /**

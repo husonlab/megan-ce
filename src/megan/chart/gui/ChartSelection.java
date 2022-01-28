@@ -222,15 +222,9 @@ public class ChartSelection {
      */
     public void setSelected(String target, java.util.Collection<String> list, boolean select) {
         switch (target.toLowerCase()) {
-            case "series":
-                setSelectedSeries(list, select);
-                break;
-            case "classes":
-                setSelectedClass(list, select);
-                break;
-            case "attributes":
-                setSelectedAttribute(list, select);
-                break;
+            case "series" -> setSelectedSeries(list, select);
+            case "classes" -> setSelectedClass(list, select);
+            case "attributes" -> setSelectedAttribute(list, select);
         }
     }
 
@@ -241,15 +235,9 @@ public class ChartSelection {
      */
     public void clearSelection(String target) {
         switch (target.toLowerCase()) {
-            case "series":
-                clearSelectionSeries();
-                break;
-            case "classes":
-                clearSelectionClasses();
-                break;
-            case "attributes":
-                clearSelectionAttributes();
-                break;
+            case "series" -> clearSelectionSeries();
+            case "classes" -> clearSelectionClasses();
+            case "attributes" -> clearSelectionAttributes();
         }
     }
 

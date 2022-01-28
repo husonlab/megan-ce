@@ -401,7 +401,7 @@ public class ReadAssembler {
                     }
                 }
 
-                final var pair = new Pair<>("length=" + length + " " + headerBuffer.toString(), sequenceBuffer.toString());
+                final var pair = new Pair<>("length=" + length + " " + headerBuffer, sequenceBuffer.toString());
                 contigs.add(pair);
 
                 if (verboseMerging) {

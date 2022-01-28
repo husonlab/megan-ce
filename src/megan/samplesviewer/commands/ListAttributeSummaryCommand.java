@@ -89,7 +89,7 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                         numbers.add((Number) value);
                 }
                 final Statistics statistics = new Statistics(numbers);
-                System.out.println(String.format("%s: m=%.1f sd=%.1f (%.1f - %.1f)", attribute, statistics.getMean(), statistics.getStdDev(), statistics.getMin(), statistics.getMax()));
+                System.out.printf("%s: m=%.1f sd=%.1f (%.1f - %.1f)%n", attribute, statistics.getMean(), statistics.getStdDev(), statistics.getMin(), statistics.getMax());
             } else {
                 final Map<String, Integer> value2count = new HashMap<>();
                 for (String sample : activeSamples) {
@@ -114,23 +114,23 @@ public class ListAttributeSummaryCommand extends CommandBase implements ICommand
                         else
                             return a.getSecond().compareTo(b.getSecond());
                     });
-                    System.out.println(String.format("%s:", attribute));
+                    System.out.printf("%s:%n", attribute);
 
                     Pair<Integer, String> first = list.get(0);
                     if (first.getFirst() == 1) {
-                        System.out.println(String.format("\t(Singleton: %.1f %%)", 100 * ((double) list.size() / (double) activeSamples.size())));
+                        System.out.printf("\t(Singleton: %.1f %%)%n", 100 * ((double) list.size() / (double) activeSamples.size()));
                         if (list.size() < activeSamples.size())
-                            System.out.println(String.format("\t(Rest: %.1f %%)", 100 * ((double) (activeSamples.size() - list.size()) / (double) activeSamples.size())));
+                            System.out.printf("\t(Rest: %.1f %%)%n", 100 * ((double) (activeSamples.size() - list.size()) / (double) activeSamples.size()));
                     } else {
                         int count = 0;
                         double sum = 0;
                         for (Pair<Integer, String> pair : list) {
                             double percent = Math.max(0, Math.min(100, 100 * ((double) pair.getFirst() / (double) activeSamples.size())));
-                            System.out.println(String.format("\t%s: %.1f %%", pair.getSecond(), percent));
+                            System.out.printf("\t%s: %.1f %%%n", pair.getSecond(), percent);
                             sum += percent;
                             if (++count == 20) {
                                 if (count < list.size())
-                                    System.out.println(String.format("\t(Rest: %d items, %.1f %%)", (list.size() - count), Math.max(0, 100 - sum)));
+                                    System.out.printf("\t(Rest: %d items, %.1f %%)%n", (list.size() - count), Math.max(0, 100 - sum));
                                 break;
                             }
                         }

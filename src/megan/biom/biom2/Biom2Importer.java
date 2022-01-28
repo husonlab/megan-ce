@@ -58,7 +58,7 @@ public class Biom2Importer {
         System.err.println("Importing data from BIOM2 file");
         try (IHDF5Reader reader = HDF5Factory.openForReading(fileName)) {
             final TopLevelAttributes topLevelAttributes = new TopLevelAttributes(reader);
-            System.err.println(topLevelAttributes.toString());
+            System.err.println(topLevelAttributes);
 
             if (topLevelAttributes.getShape().length > 0 && topLevelAttributes.getShape()[0] > 200000)
 				throw new IOException("Too many rows,shape=" + StringUtils.toString(topLevelAttributes.getShape(), ", "));

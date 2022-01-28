@@ -18,13 +18,15 @@
  */
 package megan.assembly.alignment;
 
-import jloda.graph.*;
+import jloda.graph.EdgeArray;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeArray;
 import jloda.graph.io.GraphGML;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
-import jloda.util.progress.ProgressPercentage;
 import megan.alignment.gui.Alignment;
 import megan.assembly.OverlapGraphViewer;
 import megan.assembly.PathExtractor;
@@ -32,7 +34,9 @@ import megan.core.Director;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * assembles from an alignment

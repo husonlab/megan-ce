@@ -80,20 +80,16 @@ public class SelectAllCommand extends CommandBase implements ICommand {
         final SamplesViewer viewer = (SamplesViewer) getViewer();
 
         switch (what) {
-            case "samples": {
+            case "samples" -> {
                 if (samples != null) {
                     viewer.getSamplesTableView().selectSamples(samples, true);
                     System.err.println("Selected " + samples.size() + " rows");
                 }
                 break;
             }
-            case "all":
-                viewer.getSamplesTableView().selectAll(true);
-                break;
-            case "none":
-                viewer.getSamplesTableView().selectAll(false);
-                break;
-            case "commentLike": {
+            case "all" -> viewer.getSamplesTableView().selectAll(true);
+            case "none" -> viewer.getSamplesTableView().selectAll(false);
+            case "commentLike" -> {
                 int count = 0;
                 for (String attribute : viewer.getSamplesTableView().getAttributes()) {
                     int min = Integer.MAX_VALUE;
@@ -117,7 +113,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                     System.err.println("Selected " + count + " columns");
                 break;
             }
-            case "numerical": {
+            case "numerical" -> {
                 int count = 0;
                 final Collection<String> numericalAttributes = viewer.getSampleAttributeTable().getNumericalAttributes();
                 for (String attribute : viewer.getSamplesTableView().getAttributes()) {
@@ -131,7 +127,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                     System.err.println("Selected " + count + " columns");
                 break;
             }
-            case "uninformative": {
+            case "uninformative" -> {
                 int count = 0;
                 for (String attribute : viewer.getSamplesTableView().getAttributes()) {
                     final Set<String> values = new HashSet<>();
@@ -153,10 +149,8 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                     System.err.println("Selected " + count + " columns");
                 break;
             }
-            case "similar":
-                viewer.getSamplesTableView().selectByValue(name, value);
-                break;
-            case "fromPrevious":
+            case "similar" -> viewer.getSamplesTableView().selectByValue(name, value);
+            case "fromPrevious" -> {
                 String row1 = null;
                 for (String sample : viewer.getSamplesTableView().getSamples()) {
                     if (ProjectManager.getPreviouslySelectedNodeLabels().contains(sample)) {
@@ -167,7 +161,6 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                 if (row1 != null) {
                     viewer.getSamplesTableView().scrollToSample(row1);
                 }
-
                 String col1 = null;
                 for (String attribute : viewer.getSamplesTableView().getAttributes()) {
                     if (ProjectManager.getPreviouslySelectedNodeLabels().contains(attribute)) {
@@ -178,6 +171,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                 if (row1 == null && col1 != null) {
                     viewer.getSamplesTableView().scrollToSample(null);
                 }
+            }
         }
     }
 

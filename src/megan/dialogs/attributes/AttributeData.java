@@ -171,8 +171,8 @@ public class AttributeData {
 				String[] fields = aLine.split("\\t");
 				String idString = fields[attribute2index.get("Taxonomy ID")];
 				if (idString != null && NumberUtils.isInteger(idString)) {
-					Integer taxId = NumberUtils.parseInt(idString);
-					String taxName = TaxonomyData.getName2IdMap().get(taxId);
+					int taxId = NumberUtils.parseInt(idString);
+                    String taxName = TaxonomyData.getName2IdMap().get(taxId);
 					if (taxName != null)
 						this.taxaName2AttributesRawData.put(taxName, fields);
 				}
@@ -264,15 +264,9 @@ public class AttributeData {
         String[] propArray = this.attributes2Properties.get(attribute);
         //if a "null" property specifier is found, it is set to Unknown
         switch (prop) {
-            case "":
-                prop = "Unknown";
-                break;
-            case "Moderate halophilic":
-                prop = "Moderate halophile";
-                break;
-            case "Extreme halophilic":
-                prop = "Extreme halophile";
-                break;
+            case "" -> prop = "Unknown";
+            case "Moderate halophilic" -> prop = "Moderate halophile";
+            case "Extreme halophilic" -> prop = "Extreme halophile";
         }
         for (int i = 0; i < propArray.length; i++) {
             if (propArray[i].equals(prop)) {
@@ -343,17 +337,10 @@ public class AttributeData {
                         case "Endospores":
                         case "Motility":
                             switch (parsed) {
-                                case "+":
-                                case "Yes":
-                                    this.updateAttributes2TaxaNames(attribute, 0, taxname);
-                                    break;
-                                case "-":
-                                case "No":
-                                    updateAttributes2TaxaNames(attribute, 1, taxname);
-                                    break;
-                                case "":  //unknown
-                                    this.updateAttributes2TaxaNames(attribute, 2, taxname);
-                                    break;
+                                case "+", "Yes" -> this.updateAttributes2TaxaNames(attribute, 0, taxname);
+                                case "-", "No" -> updateAttributes2TaxaNames(attribute, 1, taxname);
+                                case "" ->  //unknown
+                                        this.updateAttributes2TaxaNames(attribute, 2, taxname);
                             }
                             break;
                         case "Pathogenic":

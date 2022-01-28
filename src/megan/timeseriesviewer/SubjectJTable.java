@@ -128,7 +128,7 @@ public class SubjectJTable {
     /**
      * table model
      */
-    class MyTableModel extends AbstractTableModel {
+    static class MyTableModel extends AbstractTableModel {
         private String columnName = "Subject";
         private DataNode[][] data;
 
@@ -215,7 +215,7 @@ public class SubjectJTable {
         }
     }
 
-    class MyCellRenderer implements TableCellRenderer {
+    static class MyCellRenderer implements TableCellRenderer {
         private JPanel panel;
         private JLabel label;
 

@@ -108,7 +108,7 @@ public class MAFSorter {
                     }
                 }
                 if (progress instanceof ProgressPercentage) {
-                    ((ProgressPercentage) progress).reportTaskCompleted();
+                    progress.reportTaskCompleted();
                 }
                 for (int i = 0; i < nextMaf.size(); i++) {
                     final Pair<String, String[]> pair = nextMaf.get(i);
@@ -222,7 +222,7 @@ public class MAFSorter {
             }
         }
         if (progress instanceof ProgressPercentage) {
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
         }
         return batchStartPositions;
     }

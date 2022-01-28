@@ -43,18 +43,10 @@ public class SelectAllCommand extends CommandBase implements ICommand {
         final LRInspectorViewer viewer = (LRInspectorViewer) getViewer();
         if (viewer.getController() != null) {
             switch (what) {
-                case "all":
-                    viewer.selectAll();
-                    break;
-                case "none":
-                    viewer.selectNone();
-                    break;
-                case "invert":
-                    viewer.invertSelectionAlignments();
-                    break;
-                case "compatible":
-                    viewer.selectAllCompatible(true);
-                    break;
+                case "all" -> viewer.selectAll();
+                case "none" -> viewer.selectNone();
+                case "invert" -> viewer.invertSelectionAlignments();
+                case "compatible" -> viewer.selectAllCompatible(true);
             }
         }
     }

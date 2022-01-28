@@ -162,7 +162,7 @@ public class CSVReadsHitsParser {
             }
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
         final int totalReads = NumberUtils.max(count);
 
@@ -191,7 +191,7 @@ public class CSVReadsHitsParser {
                 progress.incrementProgress();
             }
             if (progress instanceof ProgressPercentage)
-                ((ProgressPercentage) progress).reportTaskCompleted();
+                progress.reportTaskCompleted();
 
             // run the minsupport filter
             if (doc.getMinSupportPercent() > 0 || doc.getMinSupport() > 1) {
@@ -227,12 +227,12 @@ public class CSVReadsHitsParser {
                 }
             }
 
-            System.err.println(String.format("Reads in:%,13d", countInputReadNames));
-            System.err.println(String.format("Reads out:%,12d", countOutputReadNames));
+            System.err.printf("Reads in:%,13d%n", countInputReadNames);
+            System.err.printf("Reads out:%,12d%n", countOutputReadNames);
 
-            System.err.println(String.format("Class names:%,10d", countClassNames));
+            System.err.printf("Class names:%,10d%n", countClassNames);
             if (countUnrecognizedClassNames > 0)
-                System.err.println(String.format("Unrecognized:%,9d", countUnrecognizedClassNames));
+                System.err.printf("Unrecognized:%,9d%n", countUnrecognizedClassNames);
 
             if (countOutputReadNames < countInputReadNames) {
                 float[] unassignedCounts = class2counts.computeIfAbsent(IdMapper.UNASSIGNED_ID, k -> new float[]{0});
@@ -271,7 +271,7 @@ public class CSVReadsHitsParser {
                 }
                 table.getClassification2Class2Counts().put(cNames[i], class2counts);
                 if (progress instanceof ProgressPercentage)
-                    ((ProgressPercentage) progress).reportTaskCompleted();
+                    progress.reportTaskCompleted();
             }
         }
 

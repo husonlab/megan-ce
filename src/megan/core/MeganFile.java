@@ -130,10 +130,10 @@ public class MeganFile {
             throw new IOException("File not readable: " + fileName);
 
         switch (fileType) {
-            case RMA1_FILE: {
+            case RMA1_FILE -> {
                 throw new IOException("RMA version 1 not supported: " + fileName);
             }
-            case RMA2_FILE: {
+            case RMA2_FILE -> {
                 int version = RMA2File.getRMAVersion(file);
                 if (version != 2)
                     throw new IOException("RMA version (" + version + ") not supported: " + fileName);
@@ -141,15 +141,12 @@ public class MeganFile {
                     setReadOnly(true);
                 return;
             }
-            case RMA3_FILE:
-            case RMA6_FILE:
-            case DAA_FILE:
-            case MEGAN_SUMMARY_FILE:
+            case RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE -> {
                 if (!file.canWrite())
                     setReadOnly(true);
                 return;
-            default:
-                throw new IOException("File has unknown type: " + fileName);
+            }
+            default -> throw new IOException("File has unknown type: " + fileName);
         }
     }
 
@@ -285,7 +282,7 @@ public class MeganFile {
                     // else fall through to default:
                 }
                 default:
-                    throw new IOException("File type '" + fileType.toString() + "': not supported");
+                    throw new IOException("File type '" + fileType + "': not supported");
             }
         }
         return connector;
@@ -307,17 +304,14 @@ public class MeganFile {
      * add the unique identify of a file to the set of open files
      *
      * @param uId
-     * @return true, if added, false, if already present
      */
-    public static boolean addUIdToSetOfOpenFiles(String name, long uId) {
+    public static void addUIdToSetOfOpenFiles(String name, long uId) {
         final Pair<String, Long> pair = new Pair<>(name, uId);
         final Integer count = openFiles.get(pair);
         if (count == null) {
             openFiles.put(pair, 1);
-            return true;
         } else {
             openFiles.put(pair, count + 1);
-            return false;
         }
     }
 

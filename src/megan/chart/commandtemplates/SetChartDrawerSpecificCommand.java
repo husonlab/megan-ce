@@ -54,7 +54,7 @@ public class SetChartDrawerSpecificCommand extends CommandBase implements ICheck
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -64,14 +64,11 @@ public class SetChartDrawerSpecificCommand extends CommandBase implements ICheck
     public boolean isApplicable() {
         ChartViewer chartViewer = (ChartViewer) getViewer();
         if (chartViewer != null) {
-            switch (chartDrawerName) {
-                case Plot2DDrawer.NAME:
-                    return (chartViewer.getChartData() instanceof IPlot2DData);
-                case CoOccurrenceDrawer.NAME:
-                    return (chartViewer.getChartData() instanceof IChartData && chartViewer.getChartData().getNumberOfSeries() > 1);
-                default:
-                    return (chartViewer.getChartData() instanceof IChartData);
-            }
+            return switch (chartDrawerName) {
+                case Plot2DDrawer.NAME -> (chartViewer.getChartData() instanceof IPlot2DData);
+                case CoOccurrenceDrawer.NAME -> (chartViewer.getChartData() instanceof IChartData && chartViewer.getChartData().getNumberOfSeries() > 1);
+                default -> (chartViewer.getChartData() instanceof IChartData);
+            };
         }
         return false;
     }

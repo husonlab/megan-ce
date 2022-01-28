@@ -38,7 +38,7 @@ public class SetScaleByLogCommand extends CommandBase implements ICheckBoxComman
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

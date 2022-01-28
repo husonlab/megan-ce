@@ -33,7 +33,7 @@ public interface IInputReaderOutputWriter extends IInputOutput, IInputReader, IO
 
     void write(byte[] bytes, int offset, int length) throws IOException;
 
-    int skipBytes(int bytes) throws IOException;
+    void skipBytes(int bytes) throws IOException;
 
     void setLength(long length) throws IOException;
 }

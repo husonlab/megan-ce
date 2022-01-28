@@ -47,10 +47,9 @@ public class SetPC1vsPC2vsPC3Command extends CommandBase implements ICheckBoxCom
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     /**

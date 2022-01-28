@@ -411,7 +411,7 @@ public class DefaultChartData implements IChartData {
         return max;
     }
 
-    public void read(Reader r) throws IOException {
+    public void read(Reader r) {
         System.err.println("Read data: not implemented");
     }
 

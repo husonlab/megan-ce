@@ -128,10 +128,9 @@ public class DataTable {
      * read a complete file
      *
      * @param r
-     * @return number of lines read
      * @throws IOException
      */
-    public int read(BufferedReader r, boolean headerOnly) throws IOException {
+    public void read(BufferedReader r, boolean headerOnly) throws IOException {
         try {
             Set<String> disabledSamples = new HashSet<>();
 
@@ -316,7 +315,6 @@ public class DataTable {
                     blastModes.add(BlastMode.Unknown);
                 }
             }
-            return lineNumber;
         } catch (IOException ex) {
             Basic.caught(ex);
             throw ex;
@@ -580,16 +578,15 @@ public class DataTable {
      *
      * @param r
      * @param headerOnly
-     * @return number of lines read
      * @throws IOException
      */
-    public int importMEGAN3SummaryFile(String fileName, BufferedReader r, boolean headerOnly) throws IOException {
+    public void importMEGAN3SummaryFile(String fileName, BufferedReader r, boolean headerOnly) throws IOException {
         int lineNumber = 0;
         try (r) {
             String aLine;
-			sampleNames.clear();
-			sampleNames.add(FileUtils.getFileBaseName(fileName));
-			blastModes.clear();
+            sampleNames.clear();
+            sampleNames.add(FileUtils.getFileBaseName(fileName));
+            blastModes.clear();
             contaminants = null;
             while ((aLine = r.readLine()) != null) {
                 lineNumber++;
@@ -661,7 +658,6 @@ public class DataTable {
             if (!headerOnly)
                 determineSizesFromTaxonomyClassification();
         }
-        return lineNumber;
     }
 
     /**

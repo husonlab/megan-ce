@@ -220,7 +220,7 @@ public class FrameShiftCorrectedReadsExporter {
             final Interval<IMatchBlock> interval = sortedIntervals.pollFirst();
             if (interval == null)
                 break;
-            sortedIntervals.removeAll(intervals.getIntervals(interval));
+            intervals.getIntervals(interval).forEach(sortedIntervals::remove);
             computeEdits(interval.getData(), edits);
             progress.checkForCancel();
         }
@@ -247,16 +247,15 @@ public class FrameShiftCorrectedReadsExporter {
             prev = pos;
 
             switch (edit.getType()) {
-                case positiveFrameShift:
+                case positiveFrameShift -> {
                     buf.append("N");
                     countPositiveFrameShifts++;
-                    break;
-                case negativeFrameShift:
+                }
+                case negativeFrameShift -> {
                     buf.append("NN");
                     countNegativeFrameShift++;
-                    break;
-                default:
-                    System.err.println("Illegal edit: " + edit);
+                }
+                default -> System.err.println("Illegal edit: " + edit);
             }
         }
         if (prev < originalSequence.length())

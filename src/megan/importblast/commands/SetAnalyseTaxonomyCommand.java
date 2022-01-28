@@ -34,7 +34,7 @@ public class SetAnalyseTaxonomyCommand extends CommandBase implements ICheckBoxC
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

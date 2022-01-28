@@ -128,7 +128,6 @@ public class NeighborNet {
                 } else {
                     join3way(p, q.nbr, q, joins, mat, netNodes, num_nodes);
                 }
-                num_nodes += 2;
                 break;
             }
 

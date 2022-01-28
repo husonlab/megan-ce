@@ -30,7 +30,6 @@ import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.StatusBar;
 import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.core.Director;
 import megan.core.Document;
@@ -353,10 +352,8 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
 
     /**
      * destroy the view. todo: this does not get called at present
-     *
-     * @throws CanceledException
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         MeganProperties.removePropertiesListListener(menuBar.getRecentFilesListener());
         dir.removeViewer(this);
         searchManager.getFindDialogAsToolBar().close();

@@ -235,7 +235,7 @@ public class OutputWriterLittleEndian implements Closeable {
 			System.err.println(StringUtils.toString(bytes, 0, len));
             ByteInputBuffer buffer = new ByteInputBuffer();
             r.readSizePrefixedBytes(buffer);
-            System.err.println(buffer.toString());
+            System.err.println(buffer);
         }
     }
 }

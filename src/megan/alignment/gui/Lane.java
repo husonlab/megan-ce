@@ -182,11 +182,10 @@ public class Lane {
     }
 
     public String toStringIncludingLeadingAndTrailingGaps() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("-".repeat(Math.max(0, getLeadingGaps())));
-        buf.append(block);
-        buf.append("-".repeat(Math.max(0, getTrailingGaps())));
-        return buf.toString();
+        String buf = "-".repeat(Math.max(0, getLeadingGaps())) +
+                block +
+                "-".repeat(Math.max(0, getTrailingGaps()));
+        return buf;
     }
 
     public String toString() {

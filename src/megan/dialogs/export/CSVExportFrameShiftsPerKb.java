@@ -58,7 +58,7 @@ class CSVExportFrameShiftsPerKb {
             final Collection<Integer> ids = viewer.getSelectedNodeIds();
 
             progress.setSubtask("Reads to FrameShifts per Kb");
-            progress.setMaximum(1000 * ids.size());
+            progress.setMaximum(1000L * ids.size());
             progress.setProgress(0);
 
             final IClassificationBlock classificationBlock = connector.getClassificationBlock(Classification.Taxonomy);

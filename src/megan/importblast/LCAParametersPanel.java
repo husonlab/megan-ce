@@ -91,20 +91,19 @@ public class LCAParametersPanel extends JPanel {
             lcaAlgorithmComboBox.addActionListener(e -> {
                 if (lcaAlgorithmComboBox.getSelectedItem() != null) {
                     switch (Document.LCAAlgorithm.valueOfIgnoreCase(lcaAlgorithmComboBox.getSelectedItem().toString())) {
-                        case naive:
+                        case naive -> {
                             dialog.getLcaCoveragePercentField().setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS);
                             lcaAlgorithmComboBox.setToolTipText("Naive LCA for taxonomic binning: fast algorithm applicable to short reads");
-                            break;
-                        case weighted:
+                        }
+                        case weighted -> {
                             dialog.getLcaCoveragePercentField().setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA);
                             lcaAlgorithmComboBox.setToolTipText("Weighted LCA for taxonomic binning: slower algorithm applicable to short reads, slightly more specific than naive LCA");
-                            break;
-                        case longReads:
+                        }
+                        case longReads -> {
                             dialog.getLcaCoveragePercentField().setText("" + Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS);
                             lcaAlgorithmComboBox.setToolTipText("Long Reads LCA for taxonomic and functional binning of long reads and contigs");
-                            break;
-                        default:
-                            lcaAlgorithmComboBox.setToolTipText("Select LCA algorithm");
+                        }
+                        default -> lcaAlgorithmComboBox.setToolTipText("Select LCA algorithm");
                     }
                 }
 
@@ -143,20 +142,11 @@ public class LCAParametersPanel extends JPanel {
                     ProgramProperties.put("ReadAssignmentModeComboBox", readAssignmentModeComboBox.toString());
                 }
                 switch (Document.ReadAssignmentMode.valueOfIgnoreCase(readAssignmentModeComboBox.getSelectedItem().toString())) {
-                    case readCount:
-                        readAssignmentModeComboBox.setToolTipText("Display read counts as 'assigned reads' in taxonomy viewer");
-                        break;
-                    case readLength:
-                        readAssignmentModeComboBox.setToolTipText("Display sum of read lengths as 'assigned reads' in taxonomy viewer");
-                        break;
-                    case alignedBases:
-                        readAssignmentModeComboBox.setToolTipText("Display number of aligned bases as 'assigned reads' in taxonomy viewer");
-                        break;
-                    case readMagnitude:
-                        readAssignmentModeComboBox.setToolTipText("Display sum of read magnitudes as 'assigned reads' in taxonomy viewer");
-                        break;
-                    default:
-                        readAssignmentModeComboBox.setToolTipText("Select what to display as 'assigned reads' in taxonomy viewer");
+                    case readCount -> readAssignmentModeComboBox.setToolTipText("Display read counts as 'assigned reads' in taxonomy viewer");
+                    case readLength -> readAssignmentModeComboBox.setToolTipText("Display sum of read lengths as 'assigned reads' in taxonomy viewer");
+                    case alignedBases -> readAssignmentModeComboBox.setToolTipText("Display number of aligned bases as 'assigned reads' in taxonomy viewer");
+                    case readMagnitude -> readAssignmentModeComboBox.setToolTipText("Display sum of read magnitudes as 'assigned reads' in taxonomy viewer");
+                    default -> readAssignmentModeComboBox.setToolTipText("Select what to display as 'assigned reads' in taxonomy viewer");
                 }
             });
             centerPanel.add(new JLabel(" "));

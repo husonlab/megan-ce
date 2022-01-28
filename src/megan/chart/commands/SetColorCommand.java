@@ -211,7 +211,7 @@ public class SetColorCommand extends CommandBase implements ICommand {
     }
 
     static class ColorChooser extends JDialog {
-        Color result = null;
+        Color result;
         private boolean applyToAll = false;
 
         /**

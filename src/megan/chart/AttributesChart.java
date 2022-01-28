@@ -35,7 +35,6 @@ import megan.viewer.MainViewer;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -103,32 +102,28 @@ public class AttributesChart extends ChartViewer {
             IChartData chartData = (IChartData) getChartData();
             chartData.clear();
 
-            try {
-                MicrobialAttributes attributes = MicrobialAttributes.getInstance();
+            MicrobialAttributes attributes = MicrobialAttributes.getInstance();
 
-                Document doc = dir.getDocument();
-                MainViewer mainViewer = dir.getMainViewer();
-                int numberOfDatasets = doc.getNumberOfSamples();
+            Document doc = dir.getDocument();
+            MainViewer mainViewer = dir.getMainViewer();
+            int numberOfDatasets = doc.getNumberOfSamples();
 
-                if (numberOfDatasets > 0) {
-                    final Map<String, Map<String, Integer>> dataset2AttributeState2Value = attributes.getDataSet2AttributeState2Value(mainViewer);
+            if (numberOfDatasets > 0) {
+                final Map<String, Map<String, Integer>> dataset2AttributeState2Value = attributes.getDataSet2AttributeState2Value(mainViewer);
 
-                    chartData.setAllSeries(doc.getSampleNames());
-                    SortedSet<String> classNames = new TreeSet<>();
-                    for (String series : dataset2AttributeState2Value.keySet()) {
-                        Map<String, Integer> attributeState2value = dataset2AttributeState2Value.get(series);
-                        for (String attributeState : attributeState2value.keySet()) {
-                            classNames.add(attributeState);
-                            Integer value = attributeState2value.get(attributeState);
-                            if (value == null)
-                                value = 0;
-                            chartData.putValue(series, attributeState, value);
-                        }
+                chartData.setAllSeries(doc.getSampleNames());
+                SortedSet<String> classNames = new TreeSet<>();
+                for (String series : dataset2AttributeState2Value.keySet()) {
+                    Map<String, Integer> attributeState2value = dataset2AttributeState2Value.get(series);
+                    for (String attributeState : attributeState2value.keySet()) {
+                        classNames.add(attributeState);
+                        Integer value = attributeState2value.get(attributeState);
+                        if (value == null)
+                            value = 0;
+                        chartData.putValue(series, attributeState, value);
                     }
-                    chartData.setClassNames(classNames);
                 }
-            } catch (IOException e) {
-                Basic.caught(e);
+                chartData.setClassNames(classNames);
             }
             super.sync();
             inSync = false;

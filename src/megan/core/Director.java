@@ -389,8 +389,8 @@ public class Director implements IDirectableViewer, IDirector {
      * @return viewer of the given class, or null
      */
     public IDirectableViewer getViewerByClass(Class aClass) {
-        for (Object o : getViewers()) {
-            IDirectableViewer viewer = (IDirectableViewer) o;
+        for (IDirectableViewer o : getViewers()) {
+            IDirectableViewer viewer = o;
             if (viewer.getClass().equals(aClass))
                 return viewer;
         }
@@ -404,8 +404,8 @@ public class Director implements IDirectableViewer, IDirector {
      * @return viewer of the given class, or null
      */
     public <T> IDirectableViewer getViewerByAssignableFrom(Class<T> aClass) {
-        for (Object o : getViewers()) {
-            IDirectableViewer viewer = (IDirectableViewer) o;
+        for (IDirectableViewer o : getViewers()) {
+            IDirectableViewer viewer = o;
             if (aClass.isAssignableFrom(viewer.getClass()))
                 return viewer;
         }
@@ -474,7 +474,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
     }
 
     /**

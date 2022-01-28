@@ -28,16 +28,12 @@ public enum TextStoragePolicy {
     Embed, Reference, InRMAZ;
 
     public static String getDescription(TextStoragePolicy policy) {
-        switch (policy) {
-            case Embed:
-                return "Embed matches and reads in MEGAN file";
-            case Reference:
-                return "Save references to original files for lookup of matches and reads";
-            case InRMAZ:
-                return "Save matches and reads in an auxiliary .rmaz file";
-            default:
-                return "Unknown";
-        }
+        return switch (policy) {
+            case Embed -> "Embed matches and reads in MEGAN file";
+            case Reference -> "Save references to original files for lookup of matches and reads";
+            case InRMAZ -> "Save matches and reads in an auxiliary .rmaz file";
+            default -> "Unknown";
+        };
     }
 
     /**
@@ -64,28 +60,20 @@ public enum TextStoragePolicy {
      * @return
      */
     public static int getId(TextStoragePolicy policy) {
-        switch (policy) {
-            case Embed:
-                return 0;
-            case Reference:
-                return 1;
-            case InRMAZ:
-                return 2;
-            default:
-                return -1;
-        }
+        return switch (policy) {
+            case Embed -> 0;
+            case Reference -> 1;
+            case InRMAZ -> 2;
+            default -> -1;
+        };
     }
 
     public static TextStoragePolicy fromId(int id) {
-        switch (id) {
-            case 0:
-                return Embed;
-            case 1:
-                return Reference;
-            case 2:
-                return InRMAZ;
-            default:
-                return null;
-        }
+        return switch (id) {
+            case 0 -> Embed;
+            case 1 -> Reference;
+            case 2 -> InRMAZ;
+            default -> null;
+        };
     }
 }

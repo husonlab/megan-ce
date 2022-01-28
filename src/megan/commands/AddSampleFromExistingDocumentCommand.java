@@ -64,7 +64,7 @@ public class AddSampleFromExistingDocumentCommand extends CommandBase implements
                 }
             }
             if (buf.toString().length() > 0)
-                execute("add " + buf.toString() + ";");
+                execute("add " + buf + ";");
         }
     }
 
@@ -115,10 +115,9 @@ public class AddSampleFromExistingDocumentCommand extends CommandBase implements
      * parses the given command and executes it
      *
      * @param np
-     * @throws java.io.IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     private class Chooser extends JDialog {

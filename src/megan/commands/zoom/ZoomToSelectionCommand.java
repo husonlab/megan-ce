@@ -37,7 +37,7 @@ public class ZoomToSelectionCommand extends CommandBase implements ICommand {
     }
 
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 

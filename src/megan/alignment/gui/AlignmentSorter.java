@@ -114,12 +114,7 @@ public class AlignmentSorter {
                 return -1;
             else if (a1 < a2)
                 return 1;
-            else if (e1.getId() < e2.getId())
-                return -1;
-            else if (e1.getId() > e2.getId())
-                return 1;
-            else
-                return 0;
+            else return Integer.compare(e1.getId(), e2.getId());
         });
         for (int i = 0; i < alignment.getNumberOfSequences(); i++) {
             row2node[i] = graph.newNode();
@@ -278,12 +273,7 @@ public class AlignmentSorter {
                 return -1;
             else if (laneA.getFirstNonGapPosition() > laneB.getFirstNonGapPosition())
                 return 1;
-            else if (nodeA.getId() < nodeB.getId())
-                return -1;
-            else if (nodeA.getId() > nodeB.getId())
-                return 1;
-            else
-                return 0;
+            else return Integer.compare(nodeA.getId(), nodeB.getId());
         });
 
         sorted.addAll(chains);

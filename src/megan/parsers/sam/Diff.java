@@ -56,7 +56,7 @@ public class Diff {
                 posRef++;
             }
             switch (element.type) {
-                case MATCH: {
+                case MATCH -> {
                     for (int i = 0; i < element.count; i++) {
                         while (isGap(gappedReferenceSequenceTemplate.charAt(posRef))) {
                             buffer.append(gappedReferenceSequenceTemplate.charAt(posRef));
@@ -69,22 +69,21 @@ public class Diff {
                     }
                     break;
                 }
-                case REPLACE: {
+                case REPLACE -> {
                     final String what = element.what.toLowerCase();
                     buffer.append(what);
                     posQuery++;
                     posRef++;
                     break;
                 }
-                case INSERT: {
+                case INSERT -> {
                     final String what = element.what.toLowerCase();
                     buffer.append(what);
                     posQuery += what.length();
                     posRef += what.length();
                     break;
                 }
-                default:
-                    System.err.println("Unknown Diff element: " + element);
+                default -> System.err.println("Unknown Diff element: " + element);
             }
         }
         if (differences.size() > 0 && buffer.length() < gappedQuerySequence.length()) { // todo: added this in an attempt to deal with the fact that the cigar and MD fields may not match in length
@@ -122,8 +121,8 @@ public class Diff {
                 int a = pos;
                 while (pos < diff.length() && Character.isDigit(diff.charAt(pos)))
                     pos++;
-				Integer i = NumberUtils.parseInt(diff.substring(a, pos));
-				DiffElement element = new DiffElement();
+                int i = NumberUtils.parseInt(diff.substring(a, pos));
+                DiffElement element = new DiffElement();
                 element.type = Type.MATCH;
                 element.count = i;
                 differences.add(element);

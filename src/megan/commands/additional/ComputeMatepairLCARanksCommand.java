@@ -108,7 +108,7 @@ public class ComputeMatepairLCARanksCommand extends CommandBase implements IComm
                             HashSet<Integer> taxIds = new HashSet<>();
                             taxIds.add(taxId1);
                             taxIds.add(taxId2);
-                            Integer taxId = TaxonomyData.getLCA(taxIds, true);
+                            int taxId = TaxonomyData.getLCA(taxIds, true);
                             if (taxId == taxId1 || taxId == taxId2) {
                                 w.write(readId + "\t" + TaxonomyData.getName2IdMap().get(taxId) + "\t" + TaxonomyData.getName2IdMap().get(taxId) + "\n");
                             } else {

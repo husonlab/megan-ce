@@ -256,18 +256,18 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
 
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
-                    case PERCENT: {
+                    case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
                         break;
                     }
-                    case LOG: {
+                    case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
                         break;
                     }
-                    case SQRT: {
+                    case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
                         break;

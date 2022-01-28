@@ -110,7 +110,7 @@ public class DisableTaxaCommand extends CommandBase implements ICommand {
                             buffer.append(", ");
                         buffer.append("'").append(name).append("'");
                     }
-                    execute("disable taxa=" + buffer.toString() + ";");
+                    execute("disable taxa=" + buffer + ";");
                 }
             }
         }

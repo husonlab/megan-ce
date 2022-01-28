@@ -95,9 +95,9 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
             }
         }
         if (progress instanceof ProgressPercentage)
-            ((ProgressPercentage) progress).reportTaskCompleted();
+            progress.reportTaskCompleted();
 
-        System.err.println(String.format("Entries: %,10d", totalIn));
+        System.err.printf("Entries: %,10d%n", totalIn);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
      * @param key
      * @return id or 0
      */
-    public int get(long key) throws IOException {
+    public int get(long key) {
         if (key <= 0)
             return 0;
 
@@ -128,7 +128,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
     }
 
     /**

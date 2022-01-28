@@ -35,29 +35,30 @@ public class DistancesManager {
      * @param method
      * @param viewer
      * @param distances
-     * @return number of nodes used
      */
-    public static int apply(String method, final ClassificationViewer viewer, final Distances distances) throws CanceledException {
-        if (method.equalsIgnoreCase(UniFrac.UnweightedUniformUniFrac))
-            return UniFrac.applyUnweightedUniformUniFrac((MainViewer) viewer, 1, distances);
-        else if (method.equalsIgnoreCase(UniFrac.WeightedUniformUniFrac))
-            return UniFrac.applyWeightedUniformUniFrac(viewer, distances);
-        else if (method.equalsIgnoreCase(JensenShannonDivergence.NAME))
-            return JensenShannonDivergence.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(PearsonDistance.NAME))
-            return PearsonDistance.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(EuclideanDistance.NAME))
-            return EuclideanDistance.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(KulczynskiDistance.NAME))
-            return KulczynskiDistance.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(ChiSquareDistance.NAME))
-            return ChiSquareDistance.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(HellingerDistance.NAME))
-            return HellingerDistance.apply(viewer, distances);
-        else if (method.equalsIgnoreCase(GoodallsDistance.NAME))
-            return GoodallsDistance.apply(viewer, method, distances);
-        else // Bray-Curtis
-            return BrayCurtisDissimilarity.apply(viewer, distances);
+    public static void apply(String method, final ClassificationViewer viewer, final Distances distances) throws CanceledException {
+        if (method.equalsIgnoreCase(UniFrac.UnweightedUniformUniFrac)) {
+            UniFrac.applyUnweightedUniformUniFrac((MainViewer) viewer, 1, distances);
+        } else if (method.equalsIgnoreCase(UniFrac.WeightedUniformUniFrac)) {
+            UniFrac.applyWeightedUniformUniFrac(viewer, distances);
+        } else if (method.equalsIgnoreCase(JensenShannonDivergence.NAME)) {
+            JensenShannonDivergence.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(PearsonDistance.NAME)) {
+            PearsonDistance.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(EuclideanDistance.NAME)) {
+            EuclideanDistance.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(KulczynskiDistance.NAME)) {
+            KulczynskiDistance.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(ChiSquareDistance.NAME)) {
+            ChiSquareDistance.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(HellingerDistance.NAME)) {
+            HellingerDistance.apply(viewer, distances);
+        } else if (method.equalsIgnoreCase(GoodallsDistance.NAME)) {
+            GoodallsDistance.apply(viewer, method, distances);
+        } else // Bray-Curtis
+        {
+            BrayCurtisDissimilarity.apply(viewer, distances);
+        }
     }
 
     /**

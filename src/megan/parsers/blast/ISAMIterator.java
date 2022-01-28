@@ -37,7 +37,7 @@ public interface ISAMIterator {
      *
      * @return true, if more data available
      */
-    boolean hasNext() throws IOException;
+    boolean hasNext();
 
     /**
      * gets the matches text

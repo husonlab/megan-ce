@@ -36,11 +36,8 @@ import java.util.HashMap;
 public class SortLastMAFAlignmentsByQuery {
     /**
      * sort last MAF alignments
-     *
-     * @throws UsageException
-     * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
             ProgramProperties.setProgramName("SortLastMAFAlignments");
@@ -182,8 +179,8 @@ public class SortLastMAFAlignmentsByQuery {
         if (readsIn != readsOut)
             System.err.println("Reads: in=" + alignmentsIn + ", out=" + alignmentsOut);
 
-        System.err.println(String.format("Alignments: %,10d", alignmentsIn));
-        System.err.println(String.format("Reads      :%,10d", readsIn));
+        System.err.printf("Alignments: %,10d%n", alignmentsIn);
+        System.err.printf("Reads      :%,10d%n", readsIn);
     }
 
     private int parseScoreFromA(byte[] s) {

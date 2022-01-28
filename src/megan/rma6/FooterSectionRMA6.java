@@ -219,9 +219,8 @@ public class FooterSectionRMA6 {
      *
      * @param classificationName
      * @return start or -1
-     * @throws IOException
      */
-    public Long getStartClassification(String classificationName) throws IOException {
+    public Long getStartClassification(String classificationName) {
         return getAvailableClassification2Position().get(classificationName);
     }
 

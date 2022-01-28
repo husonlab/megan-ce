@@ -164,16 +164,10 @@ public class SelectedBlock {
         if (toCol > totalCols)
             toCol = totalCols;
 
-        boolean firstRowBest = false;
-        if (Math.abs(toRow - firstRow) < Math.abs(toRow - lastRow)) {
-            firstRowBest = true;
-        }
+        boolean firstRowBest = Math.abs(toRow - firstRow) < Math.abs(toRow - lastRow);
         int bestRowScore = Math.min(Math.abs(toRow - firstRow), Math.abs(toRow - lastRow));
 
-        boolean firstColBest = false;
-        if (Math.abs(toCol - firstCol) < Math.abs(toCol - lastCol)) {
-            firstColBest = true;
-        }
+        boolean firstColBest = Math.abs(toCol - firstCol) < Math.abs(toCol - lastCol);
         int bestColScore = Math.min(Math.abs(toCol - firstCol), Math.abs(toCol - lastCol));
 
         if (toRow != -1 && (toCol == -1 || bestRowScore < bestColScore)) {

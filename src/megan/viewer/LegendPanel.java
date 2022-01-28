@@ -135,9 +135,7 @@ public class LegendPanel extends JPanel {
                 }
                 if (doDraw) {
                     switch (style) {
-                        case PieChart:
-                        case BarChart:
-                        case CoxComb: {
+                        case PieChart, BarChart, CoxComb -> {
                             Color color = doc.getSampleAttributeTable().getSampleColor(sampleName);
                             if (color == null)
                                 color = doc.getChartColorManager().getSampleColor(sampleName);
@@ -148,12 +146,12 @@ public class LegendPanel extends JPanel {
                             gc.drawRect(x, y - boxSize, boxSize, boxSize);
                             break;
                         }
-                        case Circle: {
+                        case Circle -> {
                             gc.setColor(Color.DARK_GRAY);
                             gc.drawRect(x, y - boxSize, boxSize, boxSize);
                             break;
                         }
-                        case HeatMap: {
+                        case HeatMap -> {
                             break;
                         }
                     }

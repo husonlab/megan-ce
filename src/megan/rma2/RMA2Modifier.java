@@ -144,7 +144,6 @@ public class RMA2Modifier {
                     if (r.read(buffer, 0, remainder) < remainder)
                         throw new IOException("Buffer underflow");
                     io.write(buffer, 0, remainder);
-                    total += remainder;
                 }
                 //System.err.println("Copied: " + total);
 

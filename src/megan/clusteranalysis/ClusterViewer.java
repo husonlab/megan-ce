@@ -37,7 +37,6 @@ import jloda.swing.util.ToolBar;
 import jloda.swing.window.MenuBar;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -583,7 +582,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         searchManager.getFindDialogAsToolBar().close();
         setVisible(false);
         doc.getSampleSelection().removeSampleSelectionListener(selectionListener);

@@ -37,7 +37,7 @@ public class ZoomToFitCommand extends CommandBase implements ICommand {
     }
 
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

@@ -209,7 +209,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
     /**
      * move to the next MAF match
      */
-    private boolean moveToNextMAFMatch() {
+    private void moveToNextMAFMatch() {
         mafMatch[0] = getNextLineStartsWith("a ");
         if (mafMatch[0] != null) {
             mafMatch[1] = getNextLineStartsWith("s ");
@@ -219,9 +219,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
 
         if (mafMatch[0] == null || mafMatch[1] == null || mafMatch[2] == null) {
             mafMatch[0] = mafMatch[1] = mafMatch[2] = null;
-            return false;
         }
-        return true;
     }
 
     /**

@@ -128,7 +128,7 @@ public class UniFrac {
         final ProgressListener progress = viewer.getDocument().getProgressListener();
         progress.setTasks("Computing", "Weighted uniform UniFrac");
         progress.setProgress(0);
-        progress.setMaximum(2 * inducedNodes.size());
+        progress.setMaximum(2L * inducedNodes.size());
 
         final Node root = removeRootNodeAndNodesOnPathLeadingToIt(tree.getRoot(), inducedNodes);
 

@@ -46,10 +46,9 @@ public class Outline {
      * @param cycle0
      * @param taxa
      * @param splits
-     * @throws Exception
      */
-    public void createNetwork(int[] cycle0, Taxa taxa, SplitSystem splits, PhyloTreeView view) throws Exception {
-        final boolean useWeights=true;
+    public void createNetwork(int[] cycle0, Taxa taxa, SplitSystem splits, PhyloTreeView view) {
+        final boolean useWeights = true;
 
         ntax = taxa.getBits().cardinality();
 

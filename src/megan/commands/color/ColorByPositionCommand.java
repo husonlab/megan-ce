@@ -36,7 +36,7 @@ public class ColorByPositionCommand extends CommandBase implements ICheckBoxComm
         return null;
     }
 
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
     }
 
     public void actionPerformed(ActionEvent event) {

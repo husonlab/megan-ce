@@ -52,26 +52,26 @@ public class CircSpiral extends JPanel {
 
             for (int i = 0; i < 5; i++) {
                 switch (i) {
-                    case 0:
+                    case 0 -> {
                         x[i] = centerX;
                         y[i] = minY + 0.5f * factor * values[i] * nodeHeight;
-                        break;
-                    case 1:
+                    }
+                    case 1 -> {
                         x[i] = maxX - 0.5f * factor * values[i] * nodeWidth;
                         y[i] = centerY;
-                        break;
-                    case 2:
+                    }
+                    case 2 -> {
                         x[i] = centerX;
                         y[i] = maxY - 0.5f * factor * values[i] * nodeHeight;
-                        break;
-                    case 3:
+                    }
+                    case 3 -> {
                         x[i] = minX + 0.5f * factor * values[i] * nodeWidth;
                         y[i] = centerY;
-                        break;
-                    case 4:
+                    }
+                    case 4 -> {
                         x[i] = centerX;
                         y[i] = minY + factor * values[i] * nodeHeight;
-                        break;
+                    }
                 }
             }
             GeneralPath.Float gp = new GeneralPath.Float();

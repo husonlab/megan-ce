@@ -25,7 +25,6 @@ import megan.viewer.ViewerBase;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 /**
  * draw as rectangular cladogram
@@ -106,10 +105,9 @@ public class SetRectangularPhylogramCommand extends CommandBase implements IChec
      * parses the given command and executes it
      *
      * @param np
-     * @throws IOException
      */
     @Override
-    public void apply(NexusStreamParser np) throws Exception {
+    public void apply(NexusStreamParser np) {
 
     }
 }

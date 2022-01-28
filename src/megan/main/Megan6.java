@@ -156,7 +156,8 @@ public class Megan6 {
 
         final String treeFile = ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE);
 
-        About.setAbout("megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE);
+        About.setVersionStringOffset(205,140);
+        About.setAbout("megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE,0.25f);
         About.getAbout().showAbout();
 
         SwingUtilities.invokeLater(() -> {

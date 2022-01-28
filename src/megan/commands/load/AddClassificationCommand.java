@@ -1,5 +1,5 @@
 /*
- * AddClassificationCommand.java Copyright (C) 2021. Daniel H. Huson
+ * AddClassificationCommand.java Copyright (C) 2022. Daniel H. Huson
  *
  *  No usage, copying or distribution without explicit permission.
  *

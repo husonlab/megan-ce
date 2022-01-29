@@ -706,7 +706,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
         return alignmentLayout;
     }
 
-    public void setAlignmentLayout(AlignmentLayout alignmentLayout, final ProgressListener progressListener) throws CanceledException {
+    public void setAlignmentLayout(AlignmentLayout alignmentLayout, final ProgressListener progressListener) {
         this.alignmentLayout = alignmentLayout;
         ProgramProperties.put("AlignmentViewLayout", alignmentLayout.toString());
 

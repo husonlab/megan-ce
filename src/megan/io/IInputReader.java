@@ -43,7 +43,7 @@ public interface IInputReader extends Closeable {
 
     String readString() throws IOException;
 
-    void skipBytes(int bytes) throws IOException;
+    int skipBytes(int bytes) throws IOException;
 
     long length() throws IOException;
 

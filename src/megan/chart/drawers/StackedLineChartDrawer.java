@@ -256,7 +256,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                 percentFactor = null;
                 break;
             }
-            case LINEAR -> {
+            default /* case LINEAR */ -> {
                 topY = 1.1 * getMaxValue();
                 percentFactor = null;
             }

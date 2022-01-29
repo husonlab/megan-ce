@@ -350,6 +350,7 @@ public class SAMMatch implements megan.rma3.IMatch {
             case BlastX -> getBlastXAlignment(percentIdentity);
             case BlastP -> getBlastPAlignment(percentIdentity);
             case BlastN -> getBlastNAlignment(percentIdentity);
+            default -> "";
         };
     }
 

@@ -309,17 +309,17 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
 
                     final float score;
                     switch (method) {
-                        case Jaccard -> {
-                            final Set<String> intersection = new HashSet<>();
-                            final Set<String> union = new HashSet<>();
-                            for (String series1 : series) {
-                                double total = getChartData().getTotalForSeries(series1);
-                                double percentage1 = 100.0 * getChartData().getValue(series1, classA).doubleValue() / total;
-                                double percentage2 = 100.0 * getChartData().getValue(series1, classB).doubleValue() / total;
-                                if (percentage1 >= getMinThreshold() || percentage2 >= getMinThreshold()) {
-                                    union.add(series1);
-                                }
-                                if (percentage1 > getMinThreshold() && percentage2 >= getMinThreshold()) {
+                       default /*  case Jaccard  */ -> {
+                           final Set<String> intersection = new HashSet<>();
+                           final Set<String> union = new HashSet<>();
+                           for (String series1 : series) {
+                               double total = getChartData().getTotalForSeries(series1);
+                               double percentage1 = 100.0 * getChartData().getValue(series1, classA).doubleValue() / total;
+                               double percentage2 = 100.0 * getChartData().getValue(series1, classB).doubleValue() / total;
+                               if (percentage1 >= getMinThreshold() || percentage2 >= getMinThreshold()) {
+                                   union.add(series1);
+                               }
+                               if (percentage1 > getMinThreshold() && percentage2 >= getMinThreshold()) {
                                     intersection.add(series1);
                                 }
                             }

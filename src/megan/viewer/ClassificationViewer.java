@@ -461,21 +461,21 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	}
 
 	/**
-	 * rescan the data in the FViewer
-	 *
-	 * @throws java.io.IOException
-	 */
-	private void updateData() throws IOException {
-		ProgressListener progress = doc.getProgressListener();
-		boolean saveCancelable = false;
+     * rescan the data in the FViewer
+     *
+     * @throws java.io.IOException
+     */
+    private void updateData() {
+        ProgressListener progress = doc.getProgressListener();
+        boolean saveCancelable = false;
 
-		if (progress != null) {
-			saveCancelable = progress.isCancelable();
-			progress.setSubtask("updating viewer");
-			progress.setCancelable(false);
-			try {
-				progress.setProgress(-1);
-			} catch (CanceledException ignored) {
+        if (progress != null) {
+            saveCancelable = progress.isCancelable();
+            progress.setSubtask("updating viewer");
+            progress.setCancelable(false);
+            try {
+                progress.setProgress(-1);
+            } catch (CanceledException ignored) {
 			}
 		}
 

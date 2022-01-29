@@ -998,7 +998,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
         return switch (name.toLowerCase()) {
             case "attributes" -> getAttributesList();
             case "classes" -> getClassesList();
-            case "series" -> getSeriesList();
+            default /* case "series" */ -> getSeriesList();
         };
     }
 

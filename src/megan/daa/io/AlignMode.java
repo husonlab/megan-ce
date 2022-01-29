@@ -40,7 +40,7 @@ public enum AlignMode {
     public static AlignMode value(int rank) {
         return switch (rank) {
             case 2 -> blastp;
-            case 3 -> blastx;
+            default /* case 3 */ -> blastx;
             case 4 -> blastn;
         };
     }
@@ -48,7 +48,7 @@ public enum AlignMode {
 	public static BlastMode getBlastMode(int rank) {
         return switch (rank) {
             case 2 -> BlastMode.BlastP;
-            case 3 -> BlastMode.BlastX;
+            default /* case 3 */ -> BlastMode.BlastX;
             case 4 -> BlastMode.BlastN;
         };
 

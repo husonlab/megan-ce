@@ -79,7 +79,7 @@ public class DrawScaleBox {
         for (int i = 0; i < width; i++) {
             final int value = Math.round((i * maxCount) / (float) width);
             final Color color = switch (scalingType) {
-                case LINEAR -> colorGradient.getColor(value);
+                default /* case LINEAR */ -> colorGradient.getColor(value);
                 case SQRT -> colorGradient.getColorSqrtScale(value);
                 case LOG -> colorGradient.getColorLogScale(value);
             };
@@ -100,7 +100,7 @@ public class DrawScaleBox {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((height * Math.sqrt(count)) / Math.sqrt(maxCount)));
                 nValues = 12;
             }
-            case LINEAR -> {
+            default /* case LINEAR */ -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : Math.round(count * height / (float) maxCount));
                 nValues = 2;
             }
@@ -156,7 +156,7 @@ public class DrawScaleBox {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : (int) Math.round((maxNodeSize * Math.sqrt(count)) / Math.sqrt(maxCount)));
                 percent = new int[]{0, 25, 50, 75, 100};
             }
-            case LINEAR -> {
+            default /* case LINEAR */ -> {
                 map = count -> (count == 0 || maxCount == 0 ? 0 : Math.round(count * maxNodeSize / (float) maxCount));
                 percent = new int[]{0, 25, 50, 75, 100};
             }

@@ -51,7 +51,7 @@ public class ColorSchemeAminoAcids implements IColorScheme {
             case MAEditor -> colorScheme = new ColorSchemeAminoAcidsMAEditor();
             case PDNA -> colorScheme = new ColorSchemeAminoAcidsPDNA();
             case Zappo -> colorScheme = new ColorSchemeAminoAcidsZappo();
-            case Default, default -> colorScheme = new ColorSchemeAminoAcidsDefault();
+            default /*case Default */ -> colorScheme = new ColorSchemeAminoAcidsDefault();
         }
     }
 

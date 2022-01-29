@@ -44,20 +44,12 @@ public class ReadAssignmentCalculator {
      * @return assignment value
      */
     public int compute(IReadBlock readBlock, IntervalTree<Object> intervals) {
-        switch (mode) {
-            case readCount -> {
-                return 1;
-            }
-            case readLength -> {
-                return Math.max(1, readBlock.getReadLength());
-            }
-            case alignedBases -> {
-                return computeCoveredBases(readBlock, intervals);
-            }
-            case readMagnitude -> {
-                return ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader(), true);
-            }
-        }
+        return switch (mode) {
+            default /* case readCount */ -> 1;
+            case readLength -> Math.max(1, readBlock.getReadLength());
+            case alignedBases -> computeCoveredBases(readBlock, intervals);
+            case readMagnitude -> ReadMagnitudeParser.parseMagnitude(readBlock.getReadHeader(), true);
+        };
     }
 
     /**

@@ -201,10 +201,11 @@ public class InputReader implements IInputReader {
      * skip some bytes
      *
      * @param bytes
+     * @return number of bytes skipped
      * @throws java.io.IOException
      */
-    public void skipBytes(int bytes) throws IOException {
-        in.skipBytes(bytes);
+    public int skipBytes(int bytes) throws IOException {
+        return in.skipBytes(bytes);
     }
 
     public boolean supportsSeek() throws IOException {

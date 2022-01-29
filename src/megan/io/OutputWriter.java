@@ -308,7 +308,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     }
 
     @Override
-    public void skipBytes(int bytes) throws IOException {
+    public int skipBytes(int bytes) throws IOException {
         throw new IOException("Not implemented");
     }
 

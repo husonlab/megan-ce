@@ -192,7 +192,7 @@ public class NodeDrawer implements INodeDrawer {
         if (value > maxValue)
             value = maxValue;
         return switch (scalingType) {
-            case LINEAR -> value * linearFactor;
+            default /* case LINEAR */ -> value * linearFactor;
             case SQRT -> Math.sqrt(value) * sqrtFactor;
             case LOG -> Math.log(value) * logFactor;
         };
@@ -617,7 +617,7 @@ public class NodeDrawer implements INodeDrawer {
         if (v.getOutDegree() == 0 || count > 0) {
             for (int i = 0; i < array.length; i++) {
                 Color color = switch (scalingType) {
-                    case LINEAR -> doc.getChartColorManager().getHeatMapTable().getColor((int) array[i], (int) maxValue);
+                    default /* case LINEAR */ -> doc.getChartColorManager().getHeatMapTable().getColor((int) array[i], (int) maxValue);
                     case SQRT -> doc.getChartColorManager().getHeatMapTable().getColorSqrtScale((int) array[i], inverseSqrtMaxCount);
                     case LOG -> doc.getChartColorManager().getHeatMapTable().getColorLogScale((int) array[i], inverseLogMaxCount);
                 };

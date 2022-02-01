@@ -296,7 +296,6 @@ public class CreateAccessionMappingDatabase {
         return count;
     }
 
-
     /**
      * adds a new column
      *
@@ -307,10 +306,25 @@ public class CreateAccessionMappingDatabase {
      * @throws IOException
      */
     public void addNewColumn(String classificationName, String inputFile, String description) throws SQLException, IOException {
+        addNewColumn(classificationName, inputFile, 0, description, '\t');
+    }
+
+    /**
+     * adds a new column
+     *
+     * @param classificationName
+     * @param inputFile
+     * @param description
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void addNewColumn(String classificationName, String inputFile, int column, String description, char separator) throws SQLException, IOException {
         if (classificationName == null) {
             throw new NullPointerException("classificationName");
         }
         var count = 0;
+
+        var tokenPos = column + 1;
 
         try (var connection = createConnection(); var statement = connection.createStatement()) {
             statement.execute("ALTER TABLE mappings ADD COLUMN " + classificationName + " INTEGER;");
@@ -319,14 +333,17 @@ public class CreateAccessionMappingDatabase {
             try (var insert = connection.prepareStatement("UPDATE mappings SET " + classificationName + "=? WHERE Accession=?")) {
                 try (var it = new FileLineIterator(inputFile, true)) {
                     while (it.hasNext()) {
-                        var tokens = it.next().split("\t");
-                        var accession = tokens[0];
-                        var value = NumberUtils.parseInt(tokens[1]);
-                        if (value != 0) {
-                            insert.setString(2, accession);
-                            insert.setInt(1, value);
-                            insert.execute();
-                            count++;
+                        var line = it.next();
+                        var tokens = StringUtils.split(line, separator);
+                        if (tokens.length > tokenPos) {
+                            var accession = tokens[0];
+                            var value = NumberUtils.parseInt(tokens[tokenPos]);
+                            if (value != 0) {
+                                insert.setString(2, accession);
+                                insert.setInt(1, value);
+                                insert.execute();
+                                count++;
+                            }
                         }
                     }
                 }

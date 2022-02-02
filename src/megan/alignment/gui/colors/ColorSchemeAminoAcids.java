@@ -35,8 +35,7 @@ public class ColorSchemeAminoAcids implements IColorScheme {
     /**
      * constructor:
      *
-     * @param name
-     */
+	 */
     public ColorSchemeAminoAcids(String name) {
         NAMES which = NAMES.Default;
         for (NAMES type : NAMES.values()) {
@@ -58,7 +57,6 @@ public class ColorSchemeAminoAcids implements IColorScheme {
     /**
      * get the forground color
      *
-     * @param ch
      * @return color
      */
     public Color getColor(int ch) {
@@ -68,7 +66,6 @@ public class ColorSchemeAminoAcids implements IColorScheme {
     /**
      * get the background color
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

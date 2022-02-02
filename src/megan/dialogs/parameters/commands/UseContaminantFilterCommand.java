@@ -51,8 +51,7 @@ public class UseContaminantFilterCommand extends CommandBase implements ICheckBo
     /**
      * parses and applies the command
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
         ((ParametersDialog) getParent()).setUseContaminantsFilter(!isSelected());
@@ -61,8 +60,7 @@ public class UseContaminantFilterCommand extends CommandBase implements ICheckBo
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
 
     }

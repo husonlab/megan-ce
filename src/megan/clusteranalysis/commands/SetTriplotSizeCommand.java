@@ -36,9 +36,7 @@ public class SetTriplotSizeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         final ClusterViewer viewer = getViewer();
@@ -122,8 +120,7 @@ public class SetTriplotSizeCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
 		final ClusterViewer viewer = getViewer();
 		int max = viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(null).size();

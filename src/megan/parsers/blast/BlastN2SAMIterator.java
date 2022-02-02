@@ -62,9 +62,7 @@ public class BlastN2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public BlastN2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!BlastNTextFileFilter.getInstance().accept(fileName)) {

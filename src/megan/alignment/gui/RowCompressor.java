@@ -34,8 +34,7 @@ public class RowCompressor {
     /**
      * constructor
      *
-     * @param alignment
-     */
+	 */
     public RowCompressor(Alignment alignment) {
         this.alignment = alignment;
     }
@@ -102,7 +101,6 @@ public class RowCompressor {
     /**
      * maps a row to all its reads
      *
-     * @param compressedRow
      * @return reads
      */
     public List<Integer> getCompressedRow2Reads(int compressedRow) {
@@ -115,8 +113,6 @@ public class RowCompressor {
     /**
      * gets the original row of the alignment. Is simply the row, in the alignment view, else a read
      *
-     * @param row
-     * @param col
      * @return row if alignment, else read
      */
     public int getRead(int row, int col) {
@@ -138,7 +134,6 @@ public class RowCompressor {
     /**
      * gets the row for a given read
      *
-     * @param readId
      * @return row
      */
     public int getRow(int readId) {
@@ -160,8 +155,6 @@ public class RowCompressor {
     /**
      * move selected rows up
      *
-     * @param firstRow
-     * @param lastRow
      * @return true, if moved up
      */
     public boolean moveUp(int firstRow, int lastRow) {
@@ -185,8 +178,6 @@ public class RowCompressor {
     /**
      * move the selected rows of sequences down one
      *
-     * @param firstRow
-     * @param lastRow
      * @return true, if moved
      */
     public boolean moveDown(int firstRow, int lastRow) {

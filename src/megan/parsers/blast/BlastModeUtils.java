@@ -38,7 +38,6 @@ public class BlastModeUtils {
 	/**
 	 * gets the value of a label ignoring case
 	 *
-	 * @param label
 	 * @return value or null
 	 */
 	private static BlastMode valueOfIgnoreCase(String label) {
@@ -51,7 +50,6 @@ public class BlastModeUtils {
 	/**
 	 * gets the blast mode for a given file
 	 *
-	 * @param fileName
 	 * @return blast mode or null
 	 */
 	public static BlastMode getBlastMode(String fileName) {
@@ -90,11 +88,7 @@ public class BlastModeUtils {
 	/**
 	 * Determine the alignment mode
 	 *
-	 * @param owner
-	 * @param filename
-	 * @param ask
 	 * @return file format or null
-	 * @throws IOException
 	 */
 	public static BlastMode detectMode(Component owner, String filename, boolean ask) throws IOException {
 		BlastMode mode = getBlastMode(filename);
@@ -111,9 +105,7 @@ public class BlastModeUtils {
 	/**
 	 * determine blast mode of a SAM file
 	 *
-	 * @param samFile
 	 * @return blast mode
-	 * @throws java.io.IOException
 	 */
 	public static BlastMode determineBlastModeSAMFile(String samFile) {
 		try (final FileLineIterator it = new FileLineIterator(samFile)) {
@@ -150,7 +142,6 @@ public class BlastModeUtils {
 	/**
 	 * determine the blast mode for an XML file
 	 *
-	 * @param xmlFile
 	 * @return blast mode
 	 */
 	private static BlastMode determineBlastModeXMLFile(String xmlFile) {
@@ -177,7 +168,6 @@ public class BlastModeUtils {
 	/**
 	 * gets the value ignoring case
 	 *
-	 * @param formatName
 	 * @return value or null
 	 */
 	public static BlastMode valueOfIgnoringCase(String formatName) {
@@ -193,7 +183,6 @@ public class BlastModeUtils {
 	/**
 	 * set of all values except 'Unknown'
 	 *
-	 * @return
 	 */
 	public static BlastMode[] valuesExceptUnknown() {
 		BlastMode[] array = new BlastMode[BlastMode.values().length - 1];

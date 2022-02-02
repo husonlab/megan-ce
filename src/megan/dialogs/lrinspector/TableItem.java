@@ -38,13 +38,7 @@ public class TableItem {
     /**
      * constructor
      *
-     * @param readName
-     * @param classId
-     * @param className
-     * @param hits
-     * @param percentCoverage
-     * @param pane
-     */
+	 */
     public TableItem(String readName, int readLength, String readSequence, String className, int classId, int hits, int percentCoverage, ReadLayoutPane pane) {
         setReadName(readName);
         setReadSequence(readSequence);

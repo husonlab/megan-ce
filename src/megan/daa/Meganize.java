@@ -47,19 +47,6 @@ public class Meganize {
     /**
      * meganizes a DAA file
      *
-     * @param daaFile
-     * @param metaDataFile
-     * @param cNames
-     * @param minScore
-     * @param maxExpected
-	 * @param topPercent
-	 * @param minSupportPercent
-	 * @param minSupport
-	 * @param pairedReads
-	 * @param pairedReadsSuffixLength
-	 * @param lcaAlgorithm
-	 * @throws IOException
-	 * @throws CanceledException
 	 */
 	public static void apply(final ProgressListener progress, final String daaFile, final String metaDataFile,
 							 final ArrayList<String> cNames, float minScore, float maxExpected, float minPercentIdentity, float topPercent, float minSupportPercent,

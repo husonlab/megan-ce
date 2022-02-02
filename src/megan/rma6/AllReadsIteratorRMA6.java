@@ -36,9 +36,7 @@ public class AllReadsIteratorRMA6 implements IReadBlockIterator {
     /**
      * constructor
      *
-     * @param wantMatches
-     * @param file
-     */
+	 */
     public AllReadsIteratorRMA6(boolean wantReadSequence, boolean wantMatches, RMA6File file, float minScore, float maxExpected) throws IOException {
         readBlockGetter = new ReadBlockGetterRMA6(file, wantReadSequence, wantMatches, minScore, maxExpected, true, false);
     }

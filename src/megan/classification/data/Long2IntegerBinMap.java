@@ -37,10 +37,7 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     /**
      * open a bin  file
      *
-     * @param fileName
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public Long2IntegerBinMap(String fileName) throws IOException, CanceledException {
         final File file = new File(fileName);
         if (!file.exists())
@@ -60,7 +57,6 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     /**
      * lookup an id from a gi
      *
-     * @param key
      * @return id or 0
      */
     public int get(long key) throws IOException {
@@ -78,7 +74,6 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
     /**
      * does this look like a valid bin file?
      *
-     * @param fileName
      * @return true, if this looks like a valid bin file
      */
     public static boolean isBinFile(String fileName) {

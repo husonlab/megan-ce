@@ -42,10 +42,8 @@ public class Biom2ParserTest {
     /**
      * parse a file in biom2 format.
      *
-     * @param inputFile
      * @return Document
-     * @throws IOException
-     */
+	 */
     private static Document apply(String inputFile, boolean preservePaths) throws IOException {
 		Writer dumpWriter = new BufferedWriter(new FileWriter(FileUtils.replaceFileSuffix(inputFile, (preservePaths ? "+p" : "-p") + "-dmp.txt")));
 

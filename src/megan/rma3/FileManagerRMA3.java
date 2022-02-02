@@ -57,7 +57,6 @@ public class FileManagerRMA3 {
     /**
      * get the sam file associated with a RMA3 file, asking to locate it, if missing
      *
-     * @param rma3File
      * @return file or null
      */
     public File getSAMFile(String rma3File) throws IOException {
@@ -73,7 +72,6 @@ public class FileManagerRMA3 {
     /**
      * get the fasta file associated with a RMA3 file, asking to locate it, if missing
      *
-     * @param rma3File
      * @return file
      */
     public File getFASTAFile(String rma3File) throws IOException {
@@ -89,7 +87,6 @@ public class FileManagerRMA3 {
     /**
      * gets a file, asking to decompress it, if it is gzipped and asking to locate it, if missing
      *
-     * @param rma3File
      * @return file
      */
     private File getFile(String rma3File, String fileName, String suffix, String type, boolean alignmentFile) throws IOException {

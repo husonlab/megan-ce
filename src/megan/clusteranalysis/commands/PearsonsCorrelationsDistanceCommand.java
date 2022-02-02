@@ -79,8 +79,7 @@ public class PearsonsCorrelationsDistanceCommand extends EcologicalIndexCommand 
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + PearsonDistance.NAME + ";");
     }

@@ -32,10 +32,7 @@ public class BlastP2SAMIterator extends BlastX2SAMIterator implements ISAMIterat
     /**
      * constructor
      *
-     * @param fileName
-     * @param maxNumberOfMatchesPerRead
-     * @throws IOException
-     */
+	 */
     public BlastP2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead, true);
         if (!BlastPTextFileFilter.getInstance().accept(fileName)) {

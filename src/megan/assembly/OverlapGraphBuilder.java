@@ -52,10 +52,7 @@ public class OverlapGraphBuilder {
     /**
      * apply
      *
-     * @param readData
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public void apply(final List<ReadData> readData, final ProgressListener progress) throws CanceledException {
         readDatas = readData.toArray(new ReadData[0]);
         // collect all matches for each reference:
@@ -97,9 +94,7 @@ public class OverlapGraphBuilder {
     /**
      * build the overlap graph
      *
-     * @param reads
-     * @param ref2matches
-     */
+	 */
     private void buildOverlapGraph(ReadData[] reads, Map<String, SortedSet<MatchData>> ref2matches, int minOverlap) {
         final Node[] nodes = new Node[reads.length];
 
@@ -159,8 +154,6 @@ public class OverlapGraphBuilder {
     /**
      * computess the number of matching letters, else returns 0
      *
-     * @param iMatch
-     * @param jMatch
      * @return number of matching letters or 0
      */
     private int computePerfectOverlapLength(MatchData iMatch, MatchData jMatch) {

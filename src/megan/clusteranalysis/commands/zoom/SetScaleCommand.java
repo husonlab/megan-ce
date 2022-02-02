@@ -51,9 +51,7 @@ public class SetScaleCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set scaleFactor=");
@@ -110,8 +108,7 @@ public class SetScaleCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final ClusterViewer viewer = (ClusterViewer) getViewer();
         if (viewer.getSelectedComponent() instanceof ITab) {

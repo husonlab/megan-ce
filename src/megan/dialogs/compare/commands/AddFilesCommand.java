@@ -34,7 +34,6 @@ import megan.util.MeganizedDAAFileFilter;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -51,8 +50,7 @@ public class AddFilesCommand extends CommandBase implements ICommand {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public AddFilesCommand(IDirector dir) {
         setDir(dir);
     }
@@ -98,9 +96,7 @@ public class AddFilesCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("add file=");
@@ -114,8 +110,7 @@ public class AddFilesCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
 

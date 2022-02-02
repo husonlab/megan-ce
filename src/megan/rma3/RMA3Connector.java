@@ -40,9 +40,7 @@ public class RMA3Connector implements IConnector {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public RMA3Connector(String fileName) throws IOException {
         setFile(fileName);
     }
@@ -127,12 +125,7 @@ public class RMA3Connector implements IConnector {
     /**
      * rescan classifications after running the data processor
      *
-     * @param names
-     * @param updateItemList
-     * @param progressListener
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     @Override
     public void updateClassifications(String[] names, List<UpdateItem> updateItemList, ProgressListener progressListener) throws IOException, CanceledException {
         final UpdateItemList updateItems = (UpdateItemList) updateItemList;

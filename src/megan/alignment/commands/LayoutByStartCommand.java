@@ -39,8 +39,7 @@ public class LayoutByStartCommand extends CommandBase implements ICheckBoxComman
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -58,8 +57,7 @@ public class LayoutByStartCommand extends CommandBase implements ICheckBoxComman
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set layout=" + AlignmentViewer.AlignmentLayout.ByStart + ";expand axis=both what=fit;");

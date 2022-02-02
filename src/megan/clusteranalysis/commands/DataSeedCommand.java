@@ -45,8 +45,7 @@ public class DataSeedCommand extends DataCommand implements ICheckBoxCommand {
     /**
      * set the selected status of this command
      *
-     * @param selected
-     */
+	 */
     public void setSelected(boolean selected) {
         ClusterViewer viewer = getViewer();
         viewer.setDataType("SEED");
@@ -91,8 +90,7 @@ public class DataSeedCommand extends DataCommand implements ICheckBoxCommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set networkdata=" + ClassificationType.SEED + ";");
     }

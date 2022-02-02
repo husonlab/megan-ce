@@ -237,8 +237,7 @@ public class CreateAccessionMappingDatabase {
      * get all tables already included in the mappings table (at this point renamed to temp)
      *
      * @return tables
-     * @throws SQLException
-     */
+	 */
     private String getTablesAlreadyIncluded() throws SQLException {
         var buf = new StringBuilder();
         try (var connection = createConnection();
@@ -299,11 +298,6 @@ public class CreateAccessionMappingDatabase {
     /**
      * adds a new column
      *
-     * @param classificationName
-     * @param inputFile
-     * @param description
-     * @throws SQLException
-     * @throws IOException
      */
     public void addNewColumn(String classificationName, String inputFile, String description) throws SQLException, IOException {
         addNewColumn(classificationName, inputFile, 0, description, '\t');
@@ -312,11 +306,6 @@ public class CreateAccessionMappingDatabase {
     /**
      * adds a new column
      *
-     * @param classificationName
-     * @param inputFile
-     * @param description
-     * @throws SQLException
-     * @throws IOException
      */
     public void addNewColumn(String classificationName, String inputFile, int column, String description, char separator) throws SQLException, IOException {
         if (classificationName == null) {

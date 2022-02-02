@@ -80,8 +80,7 @@ public class EcologicalIndexEuclideanCommand extends CommandBase implements IChe
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + EuclideanDistance.NAME + ";");
     }
@@ -117,8 +116,7 @@ public class EcologicalIndexEuclideanCommand extends CommandBase implements IChe
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

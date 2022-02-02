@@ -46,12 +46,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     /**
      * constructor
      *
-     * @param label2id
-     * @param fileName
-     * @param progress
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public Long2IntegerFileBasedMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException, CanceledException {
         maps = new IntIntMap[SIZE];
         for (int i = 0; i < maps.length; i++) {
@@ -103,9 +98,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     /**
      * add a value to the map maintained in memory
      *
-     * @param key
-     * @param value
-     */
+	 */
     private void put(long key, int value) {
         maps[(int) (key & MASK)].put((int) (key >>> BITS), value);
     }
@@ -113,7 +106,6 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     /**
      * lookup an id from a gi
      *
-     * @param key
      * @return id or 0
      */
     public int get(long key) {
@@ -134,10 +126,7 @@ public class Long2IntegerFileBasedMap implements ILong2IntegerMap, Closeable {
     /**
      * converts the named dmp file to a bin file
      *
-     * @param dmpFile
-     * @param binFile
-     * @throws IOException
-     */
+	 */
     public static void writeToBinFile(File dmpFile, File binFile) throws IOException {
         System.err.println("Converting " + dmpFile.getName() + " to " + binFile.getName() + "...");
 

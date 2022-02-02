@@ -22,7 +22,6 @@ import jloda.graph.Node;
 import megan.clusteranalysis.tree.Distances;
 import megan.viewer.ClassificationViewer;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Vector;
 
@@ -36,12 +35,7 @@ public class GoodallsDistance {
     /**
      * apply the named computation
      *
-     * @param viewer
-     * @param method
-     * @param distances
-     * @return
-     * @throws IOException
-     */
+	 */
     public static int apply(ClassificationViewer viewer, String method, Distances distances) {
         System.err.println("Computing " + method + " distances");
         // setup input data:
@@ -280,8 +274,6 @@ public class GoodallsDistance {
     /**
      * computes Goodall's distance
      *
-     * @param numbers
-     * @param normalized
      * @return Goodall's
      */
     private static Vector<Vector<Double>> getGoodallsDistance(Vector<Double[]> numbers, boolean normalized) {

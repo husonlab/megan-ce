@@ -49,11 +49,7 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * export all matches in file
      *
-     * @param connector
-     * @param fileName
-     * @param progress
-     * @throws IOException
-     */
+	 */
     public static int exportAll(IConnector connector, String fileName, ProgressListener progress) throws IOException {
         int total = 0;
         try {
@@ -79,14 +75,7 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * export all reads for given set of classids in the given classification
      *
-     * @param classificationName
-     * @param classIds
-     * @param connector
-     * @param fileName
-     * @param progress
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static int export(String classificationName, Collection<Integer> classIds, IConnector connector, String fileName, ProgressListener progress) throws IOException {
         int total = 0;
         try {
@@ -167,11 +156,7 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * correct and write a read
      *
-     * @param readBlock
-     * @param w
-     * @return number of reads written
-     * @throws IOException
-     */
+	 */
     private static void correctAndWrite(ProgressListener progress, IReadBlock readBlock, Writer w) throws IOException {
         final Pair<String, String> headerAndSequence = correctFrameShiftsInSequence(progress, readBlock);
         if (headerAndSequence != null) {
@@ -186,7 +171,6 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * computes the corrected sequence, greedily using frame-shift alignments
      *
-     * @param readBlock
      * @return corrected sequence or null
      */
     private static Pair<String, String> correctFrameShiftsInSequence(ProgressListener progress, IReadBlock readBlock) throws CanceledException {
@@ -274,9 +258,7 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * computes the edits implied by a match
      *
-     * @param matchBlock
-     * @param edits
-     */
+	 */
     private static void computeEdits(IMatchBlock matchBlock, ArrayList<Edit> edits) {
 
         final Triplet<String, Integer, Integer> queryStartEnd = getQuery(matchBlock.getText());
@@ -313,7 +295,6 @@ public class FrameShiftCorrectedReadsExporter {
     /**
      * parses the match text to extract the query alignment string and start and end positions
      *
-     * @param matchText
      * @return query string, nucleotide start and end positions
      */
     private static Triplet<String, Integer, Integer> getQuery(String matchText) {

@@ -86,10 +86,6 @@ public class CorrelateClassToAttributeCommand extends CommandBase implements ICo
     /**
      * computes the correlation coefficient
      *
-     * @param x
-     * @param y
-     * @param n
-     * @return
      */
     private double computeCorrelationCoefficient(float[] x, double[] y, int n) {
         double sumX = 0;

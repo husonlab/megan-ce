@@ -76,8 +76,7 @@ public class DrawCirclesCommand extends CommandBase implements ICheckBoxCommand 
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

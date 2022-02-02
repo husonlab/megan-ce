@@ -69,9 +69,7 @@ public class TaxonomicSegmentation {
     /**
      * computes the segmentation
      *
-     * @param readBlock
-     * @return
-     */
+	 */
     public ArrayList<Segment> computeTaxonomicSegmentation(ProgressListener progress, IReadBlock readBlock) throws CanceledException {
         final String originalSequence = readBlock.getReadSequence();
         if (originalSequence == null)
@@ -219,8 +217,6 @@ public class TaxonomicSegmentation {
     /**
      * compute the columns for the DP
      *
-     * @param intervals
-     * @param positions
      * @return DP data points
      */
     private ArrayList<DPColumn> computeDPColumns(IntervalTree<IMatchBlock> intervals, TreeSet<Integer> positions) {
@@ -256,8 +252,6 @@ public class TaxonomicSegmentation {
     /**
      * determine the best scores seen
      *
-     * @param scoreMatrix
-     * @param topProportion
      * @return best scores and taxa seen
      */
     private List<Pair<Float, Integer>> computeBestScores(Set<Integer> taxa, Map<Integer, Integer> tax2row, float[][] scoreMatrix, double topProportion) {
@@ -339,7 +333,6 @@ public class TaxonomicSegmentation {
     /**
      * gets the ancestor tax id at the set rank or 0
      *
-     * @param taxonId
      * @return ancestor or 0
      */
     private Integer getTaxonAtRank(Integer taxonId) {

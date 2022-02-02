@@ -55,8 +55,7 @@ public class ModeCBox extends JComboBox<String> {
     /**
      * set the selected format
      *
-     * @param name
-     */
+	 */
     public void setSelectedMode(String name) {
         for (int i = 0; i < getItemCount(); i++) {
             final String item = getItemAt(i);

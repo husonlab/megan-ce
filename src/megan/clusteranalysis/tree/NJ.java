@@ -48,10 +48,7 @@ public class NJ {
     /**
      * run the UPGMA algorithm
      *
-     * @param taxa
-     * @param dist
-     * @param tree
-     */
+	 */
     private void computeNJ(Taxa taxa, Distances dist, PhyloTree tree) {
         tree.clear();
         try {

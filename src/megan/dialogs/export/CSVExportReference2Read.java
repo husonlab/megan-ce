@@ -44,13 +44,7 @@ class CSVExportReference2Read {
     /**
      * export reference sequence to reads mapping
      *
-     * @param viewer
-     * @param file
-     * @param separator
-     * @param progressListener
-     * @return
-     * @throws IOException
-     */
+	 */
     public static int exportReference2ReadName(MainViewer viewer, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {

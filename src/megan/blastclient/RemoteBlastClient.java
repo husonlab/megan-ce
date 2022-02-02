@@ -76,8 +76,7 @@ public class RemoteBlastClient {
     /**
      * launch the search
      *
-     * @param queries
-     */
+	 */
     public void startRemoteSearch(Collection<Pair<String, String>> queries) throws IOException {
         if (queries.size() == 0)
             return;
@@ -178,7 +177,6 @@ public class RemoteBlastClient {
     /**
      * set the blast program
      *
-     * @param program
      */
     public void setProgram(BlastProgram program) {
         this.program = program;
@@ -196,7 +194,6 @@ public class RemoteBlastClient {
     /**
      * set the database
      *
-     * @param database
      */
     public void setDatabase(String database) {
         this.database = database;
@@ -222,7 +219,6 @@ public class RemoteBlastClient {
     /**
      * get the request id from a response text
      *
-     * @param response
      * @return request id or null
      */
     private static String parseRequestId(String response) {
@@ -238,7 +234,6 @@ public class RemoteBlastClient {
     /**
      * get the estimated time
      *
-     * @param response
      * @return time or -1
      */
     private static Integer parseEstimatedTime(String response) {
@@ -254,7 +249,6 @@ public class RemoteBlastClient {
     /**
      * get a delimited set of lines
      *
-     * @param text
      * @param afterLineEndingOnThis      start reporting lines after seeing a line ending on this, or from beginning, if null
      * @param beforeLineStartingWithThis stop reporting lines upon seeing a line starting on this, or a the end, if null
      * @return delimited text
@@ -283,9 +277,7 @@ public class RemoteBlastClient {
     /**
      * get request
      *
-     * @param parameters
      * @return response
-     * @throws IOException
      */
     private static String getRequest(String baseURL, Map<String, Object> parameters) throws IOException {
         final StringBuilder urlString = new StringBuilder();
@@ -329,9 +321,7 @@ public class RemoteBlastClient {
     /**
      * post request
      *
-     * @param parameters
      * @return response
-     * @throws IOException
      */
     private static String postRequest(String baseURL, Map<String, Object> parameters) throws IOException {
         final StringBuilder postData = new StringBuilder();

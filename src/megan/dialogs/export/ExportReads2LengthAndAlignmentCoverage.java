@@ -45,8 +45,6 @@ public class ExportReads2LengthAndAlignmentCoverage {
     /**
      * export read names to lengths and  amount of sequence covered
      *
-     * @param file
-     * @param progressListener
      * @return lines written
      */
     public static int apply(ClassificationViewer cViewer, File file, ProgressListener progressListener) throws IOException {
@@ -109,7 +107,6 @@ public class ExportReads2LengthAndAlignmentCoverage {
     /**
      * create a line of the report
      *
-     * @param readBlock
      * @return line
      */
     private static String createReportLine(IReadBlock readBlock) {

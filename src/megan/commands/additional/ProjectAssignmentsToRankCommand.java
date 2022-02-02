@@ -151,7 +151,6 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
     /**
      * compute the size of the classification
      *
-     * @param integerMap
      * @return size
      */
     private float computeSize(Map<Integer, float[]> integerMap) {
@@ -165,8 +164,6 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
     /**
      * split into single sample tables
      *
-     * @param numberOfSamples
-     * @param taxonMap
      * @return single sample tables
      */
     private Map<Integer, float[]>[] sortBySample(int numberOfSamples, Map<Integer, float[]> taxonMap) {

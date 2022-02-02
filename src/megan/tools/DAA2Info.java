@@ -41,10 +41,7 @@ public class DAA2Info {
     /**
      * DAA 2 info
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -64,10 +61,7 @@ public class DAA2Info {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());

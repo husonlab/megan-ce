@@ -47,10 +47,7 @@ public class ExtractBiome {
     /**
      * extracts a biome from a comparison file
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -72,11 +69,7 @@ public class ExtractBiome {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Extracts the total, core or rare biome from a MEGAN comparison file");
         options.setVersion(ProgramProperties.getProgramVersion());

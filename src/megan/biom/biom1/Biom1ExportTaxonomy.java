@@ -47,9 +47,6 @@ public class Biom1ExportTaxonomy {
     /**
      * export taxon name to counts mapping
      *
-     * @param dir
-     * @param file
-     * @param progressListener
      * @return lines written
      */
     public static int apply(Director dir, File file, boolean officialRanksOnly, ProgressListener progressListener) throws IOException {
@@ -109,13 +106,7 @@ public class Biom1ExportTaxonomy {
     /**
      * recursively visit all the selected leaves
      *
-     * @param viewer
-     * @param v
-     * @param selected
-     * @param path
-     * @param rowList
-     * @param dataList
-     */
+	 */
     private static void visitSelectedLeavesRec(MainViewer viewer, Node v, NodeSet selected, Vector<String> path,
                                                LinkedList<Map> rowList, LinkedList<float[]> dataList, boolean officialRanksOnly, ProgressListener progressListener) throws CanceledException {
 

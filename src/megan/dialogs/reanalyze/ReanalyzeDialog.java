@@ -42,9 +42,7 @@ public class ReanalyzeDialog extends ImportBlastDialog {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public ReanalyzeDialog(Component parent, Director dir) {
         super(parent, dir, "Reanlyze DAA and RMA Files - MEGAN");
     }

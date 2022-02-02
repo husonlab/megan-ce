@@ -35,11 +35,8 @@ public class PearsonDistance {
     /**
      * apply the PearsonDistance computation to the given classification
      *
-     * @param viewer
-     * @param distances
      * @return number of nodes used to compute value
-     * @throws java.io.IOException
-     */
+	 */
     public static int apply(final ClassificationViewer viewer, final Distances distances) {
         System.err.println("Computing " + NAME + " distances");
 
@@ -87,10 +84,7 @@ public class PearsonDistance {
     /**
      * computes the pearson distances
      *
-     * @param rank
-     * @param vectors
-     * @param distances
-     */
+	 */
     private static void computeCorrelationMatrix(int rank, double[][] vectors, Distances distances) {
         // compute mean for each row
         double[] mean = new double[rank];
@@ -128,8 +122,7 @@ public class PearsonDistance {
     /**
      * convert correlations into distances by subtracting from 1 and dividing by 2
      *
-     * @param distances
-     */
+	 */
     private static void convertCorrelationsToDistances(Distances distances) {
         for (int i = 1; i <= distances.getNtax(); i++) {
             for (int j = i + 1; j <= distances.getNtax(); j++) {

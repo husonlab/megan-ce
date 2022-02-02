@@ -35,8 +35,6 @@ public class Diff {
     /**
      * reconstruct the reference string from the query, a template of the ref and the diff
      *
-     * @param diff
-     * @param gappedQuerySequence
      * @param gappedReferenceSequenceTemplate aligned reference sequence with ?'s for unknown bases
      * @return reference
      */
@@ -67,22 +65,19 @@ public class Diff {
                         posQuery++;
                         posRef++;
                     }
-                    break;
-                }
+				}
                 case REPLACE -> {
                     final String what = element.what.toLowerCase();
                     buffer.append(what);
                     posQuery++;
                     posRef++;
-                    break;
-                }
+				}
                 case INSERT -> {
                     final String what = element.what.toLowerCase();
                     buffer.append(what);
                     posQuery += what.length();
                     posRef += what.length();
-                    break;
-                }
+				}
                 default -> System.err.println("Unknown Diff element: " + element);
             }
         }
@@ -101,7 +96,6 @@ public class Diff {
     /**
      * decode a string of differences
      *
-     * @param diff
      * @return list of difference elements
      */
     private static List<DiffElement> decode(final String diff) {

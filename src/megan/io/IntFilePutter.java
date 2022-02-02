@@ -31,9 +31,7 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * constructor  to read and write values from an existing file
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public IntFilePutter(File file) throws IOException {
         super(file, 0, Mode.READ_WRITE);
     }
@@ -41,10 +39,8 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * constructs a int file putter using the given file and limit. (Is not in-memory)
      *
-     * @param file
      * @param limit length of array
-     * @throws java.io.IOException
-     */
+	 */
     public IntFilePutter(File file, long limit) throws IOException {
         this(file, limit, false);
     }
@@ -52,11 +48,9 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * constructs a int file putter using the given file and limit
      *
-     * @param file
      * @param limit    length of array
      * @param inMemory create in memory and then save on close? This uses more memory, but may be faster
-     * @throws java.io.IOException
-     */
+	 */
     public IntFilePutter(File file, long limit, boolean inMemory) throws IOException {
         super(file, 4 * limit, inMemory ? Mode.CREATE_READ_WRITE_IN_MEMORY : Mode.CREATE_READ_WRITE);
     }
@@ -64,7 +58,6 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     public int get(long index) {
@@ -81,9 +74,7 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * puts value for given index
      *
-     * @param index
-     * @param value
-     */
+	 */
     @Override
     public void put(long index, int value) {
         index <<= 2; // convert to file position
@@ -103,8 +94,7 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
      * length of array (file length / 4)
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return fileLength >>> 2;
@@ -113,10 +103,7 @@ public class IntFilePutter extends BaseFileGetterPutter implements IIntPutter, I
     /**
      * set a new limit for a file
      *
-     * @param file
-     * @param newLimit
-     * @throws IOException
-     */
+	 */
     public static void setLimit(File file, long newLimit) throws IOException {
         System.err.println("new limit: " + newLimit);
 

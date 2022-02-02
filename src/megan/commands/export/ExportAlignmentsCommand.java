@@ -418,8 +418,6 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
     /**
      * choose the directory for export of files
      *
-     * @param event
-     * @param fileName
      * @return directory
      */
     private File chooseDirectory(ActionEvent event, String fileName) {

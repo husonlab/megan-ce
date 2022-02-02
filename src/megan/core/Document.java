@@ -197,8 +197,7 @@ public class Document {
     /**
      * setup the chart color manager
      *
-     * @param useProgramColorTable
-     */
+	 */
     public void setupChartColorManager(boolean useProgramColorTable) {
         ChartColorManager.initialize();
         if (!useProgramColorTable) {
@@ -221,9 +220,7 @@ public class Document {
     /**
      * load data from the set file
      *
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
+	 */
     public void loadMeganFile() throws IOException {
         clearReads();
         //getProgressListener().setTasks("Loading MEGAN File", getMeganFile().getName());
@@ -242,8 +239,7 @@ public class Document {
     /**
      * reload from connector
      *
-     * @throws IOException
-     */
+	 */
     private void reloadFromConnector(String parametersOverride) throws IOException {
         if (getMeganFile().isMeganServerFile() && getMeganFile().isMeganSummaryFile()) {
             final MSConnector msConnector = new MSConnector(getMeganFile().getFileName());
@@ -290,8 +286,7 @@ public class Document {
     /**
      * parse an algorithm parameter string
      *
-     * @param parameters
-     */
+	 */
     public void parseParameterString(String parameters) {
         if (parameters != null && parameters.length() > 0) {
             try {
@@ -486,8 +481,7 @@ public class Document {
     /**
      * set the progress listener
      *
-     * @param progressListener
-     */
+	 */
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
@@ -578,8 +572,7 @@ public class Document {
     /**
      * writes auxiliary data to archive
      *
-     * @throws IOException
-     */
+	 */
     public void saveAuxiliaryData() throws IOException {
         if (getMeganFile().hasDataConnector() && !getMeganFile().isReadOnly()) {
             if (dir != null) {
@@ -630,8 +623,7 @@ public class Document {
     /**
      * set the minimal number of reads required to hit a givent taxon
      *
-     * @param minSupport
-     */
+	 */
     public void setMinSupport(int minSupport) {
         this.minSupport = minSupport;
     }
@@ -649,8 +641,7 @@ public class Document {
     /**
      * gets the min support percentage
      *
-     * @param minSupportPercent
-     */
+	 */
     public void setMinSupportPercent(float minSupportPercent) {
         this.minSupportPercent = minSupportPercent;
     }
@@ -667,8 +658,7 @@ public class Document {
     /**
      * set the minimum complexity for a read
      *
-     * @param minComplexity
-     */
+	 */
     public void setMinComplexity(float minComplexity) {
         this.minComplexity = minComplexity;
     }
@@ -725,8 +715,7 @@ public class Document {
     /**
      * set the dirty state
      *
-     * @param dirty
-     */
+	 */
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -743,8 +732,7 @@ public class Document {
     /**
      * set the number of reads
      *
-     * @param numberReads
-     */
+	 */
     public void setNumberReads(long numberReads) {
         this.numberReads = numberReads;
         getDataTable().setTotalReads(numberReads);
@@ -762,8 +750,7 @@ public class Document {
     /**
      * set the additional of reads
      *
-     * @param additionalReads
-     */
+	 */
     public void setAdditionalReads(long additionalReads) {
         this.additionalReads = additionalReads;
         getDataTable().setAdditionalReads(additionalReads);
@@ -809,8 +796,7 @@ public class Document {
     /**
      * gets data for taxon chart. Used by the attributes chart
      *
-     * @param label2series2value
-     */
+	 */
     public void getTaxonName2DataSet2SummaryCount(Map<String, Map<String, Number>> label2series2value) {
         final List<String> samples = getSampleNames();
         final String[] id2sample = new String[samples.size()];
@@ -837,8 +823,7 @@ public class Document {
     /**
      * load the version of some file. Assumes the file ends on .info
      *
-     * @param fileName
-     */
+	 */
     static public void loadVersionInfo(String name, String fileName) {
         try {
 			fileName = FileUtils.replaceFileSuffix(fileName, ".info");
@@ -1042,9 +1027,7 @@ public class Document {
     /**
      * extract named samples from the given document
      *
-     * @param samples
-     * @param srcDoc
-     */
+	 */
     public void extractSamples(Collection<String> samples, Document srcDoc) {
         getDataTable().clear();
         srcDoc.getDataTable().extractSamplesTo(samples, getDataTable());
@@ -1061,9 +1044,7 @@ public class Document {
     /**
      * add named sample to given document
      *
-     * @param sample
-     * @param docToAdd
-     */
+	 */
     public void addSample(String sample, Document docToAdd) {
         getDataTable().addSample(sample, docToAdd.getDataTable());
         Set<String> samples = new HashSet<>();
@@ -1074,9 +1055,7 @@ public class Document {
     /**
      * add named sample to given document
      *
-     * @param sample
-     * @param classification2class2counts
-     */
+	 */
     public void addSample(String sample, float sampleSize, int srcId, BlastMode blastMode, Map<String, Map<Integer, float[]>> classification2class2counts) {
         getDataTable().addSample(sample, sampleSize, blastMode, srcId, classification2class2counts);
         activeViewers.addAll(classification2class2counts.keySet());

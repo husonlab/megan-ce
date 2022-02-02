@@ -33,8 +33,7 @@ public class AssignmentUsingIntervalUnionLCACreator implements IAssignmentAlgori
     /**
      * constructor
      *
-     * @param document
-     */
+	 */
     public AssignmentUsingIntervalUnionLCACreator(String cName, Document document) {
         this.cName = cName;
         this.document = document;

@@ -41,11 +41,8 @@ public class MAFSorter {
     /**
      * apply the sorter
      *
-     * @param readsFile
-     * @param mafFile
      * @return name of temporary file containing all sorted alignments
-     * @throws IOException
-     */
+	 */
     private static String apply(File readsFile, File mafFile, ProgressListener progress) throws IOException, CanceledException {
         if (isUnsorted(mafFile)) {
             String header = getHeaderLines(mafFile);
@@ -57,13 +54,8 @@ public class MAFSorter {
     /**
      * create a sorted file
      *
-     * @param fileHeader
-     * @param readsFile
-     * @param mafFile
-     * @param progress
      * @return original file or new sorted file
-     * @throws IOException
-     */
+	 */
     private static String createSortedFile(String fileHeader, File readsFile, File mafFile, ProgressListener progress) throws IOException, CanceledException {
 
         final ArrayList<Long> batchPositions = getBatchStartPositions(mafFile, progress);
@@ -137,9 +129,7 @@ public class MAFSorter {
      * s HISEQ:457:C5366ACXX:2:1101:2641:2226  1 99 + 100 TAEANENERHWNDDKIERKNQDPTNHYDKSRMR
      * *
      *
-     * @param r
-     * @return
-     */
+	 */
     private static Pair<String, String[]> readNextMafRecord(BufferedReader r) throws IOException {
         String aLine;
         while ((aLine = r.readLine()) != null) {
@@ -157,10 +147,8 @@ public class MAFSorter {
     /**
      * get the header lines from a maf file
      *
-     * @param mafFile
      * @return header lines
-     * @throws IOException
-     */
+	 */
     private static String getHeaderLines(File mafFile) throws IOException {
         final StringBuilder buf = new StringBuilder();
         try (FileLineIterator it = new FileLineIterator(mafFile)) {
@@ -180,10 +168,8 @@ public class MAFSorter {
     /**
      * determines whether this is an unsorted file
      *
-     * @param mafFile
      * @return true, if not sorted
-     * @throws IOException
-     */
+	 */
     private static boolean isUnsorted(File mafFile) throws IOException {
         try (FileLineIterator it = new FileLineIterator(mafFile)) {
             while (it.hasNext()) {
@@ -203,10 +189,7 @@ public class MAFSorter {
     /**
      * locate all batch start positions
      *
-     * @param mafFile
-     * @return
-     * @throws IOException
-     */
+	 */
     private static ArrayList<Long> getBatchStartPositions(File mafFile, ProgressListener progress) throws IOException, CanceledException {
         progress.setSubtask("Determining batches in MAF file");
         final ArrayList<Long> batchStartPositions = new ArrayList<>();
@@ -230,11 +213,8 @@ public class MAFSorter {
     /**
      * get a reader for each given position
      *
-     * @param mafFile
-     * @param positions
      * @return readers
-     * @throws IOException
-     */
+	 */
     private static ArrayList<BufferedReader> getReaders(File mafFile, ArrayList<Long> positions) throws IOException {
         final ArrayList<BufferedReader> readers = new ArrayList<>(positions.size());
 

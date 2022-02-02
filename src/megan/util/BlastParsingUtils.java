@@ -35,8 +35,6 @@ public class BlastParsingUtils {
     /**
      * removes all of string from the second occurrence of the given word onward
      *
-     * @param text
-     * @param word
      * @return truncated string
      */
     public static String truncateBeforeSecondOccurrence(String text, String word) {
@@ -53,10 +51,8 @@ public class BlastParsingUtils {
     /**
      * grab the total query string
      *
-     * @param text
      * @return query string
-     * @throws java.io.IOException
-     */
+	 */
     public static String grabQueryString(String text) throws IOException {
         BufferedReader r = new BufferedReader(new StringReader(text));
         String aLine;
@@ -81,10 +77,8 @@ public class BlastParsingUtils {
     /**
      * grab the total subject string
      *
-     * @param text
      * @return subject string
-     * @throws IOException
-     */
+	 */
     public static String grabSubjectString(String text) throws IOException {
         BufferedReader r = new BufferedReader(new StringReader(text));
         String aLine;
@@ -109,8 +103,6 @@ public class BlastParsingUtils {
     /**
      * grab the next  token after the one in key
      *
-     * @param text
-     * @param key
      * @return next token
      */
     public static String grabNext(String text, String key, String key2) {
@@ -129,8 +121,6 @@ public class BlastParsingUtils {
     /**
      * grab the next three tokens after the one in key
      *
-     * @param text
-     * @param key
      * @return next token
      */
     public static String[] grabNext3(String text, String key, String key2) {
@@ -158,8 +148,6 @@ public class BlastParsingUtils {
     /**
      * grab the last token of the last line that contains the given key and is passed the first occurrence of "Score"
      *
-     * @param text
-     * @param key
      * @return token
      */
     public static String grabLastInLinePassedScore(String text, String key) throws IOException {
@@ -192,7 +180,6 @@ public class BlastParsingUtils {
     /**
      * guesses the blast type
      *
-     * @param blastText
      * @return blast type
      */
     public static String guessBlastType(String blastText) {
@@ -208,7 +195,6 @@ public class BlastParsingUtils {
     /**
      * remove the header from a blast text (but keeping Length statement, if present)
      *
-     * @param blastText
      * @return headerless blastText
      */
     public static String removeReferenceHeaderFromBlastMatch(String blastText) {

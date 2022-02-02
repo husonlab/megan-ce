@@ -54,8 +54,7 @@ public class CommandManagerFX extends CommandManager {
     /**
      * construct a parser
      *
-     * @param dir
-     */
+	 */
     public CommandManagerFX(IDirector dir, List<ICommand> commands) {
         super(dir, commands);
     }
@@ -151,7 +150,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * get a menu item for the named command
      *
-     * @param commandName
      * @return menu item
      */
     public MenuItem getMenuItemFX(String commandName) {
@@ -165,8 +163,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * get a menu item for the named command
      *
-     * @param commandName
-     * @param enabled
      * @return menu item
      */
     public MenuItem getMenuItemFX(String commandName, boolean enabled) {
@@ -180,7 +176,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * creates a menu item for the given command
      *
-     * @param command
      * @return menu item
      */
     public MenuItem getMenuItemFX(final ICommand command) {
@@ -242,7 +237,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * creates a button for the command
      *
-     * @param commandName
      * @return button
      */
     public javafx.scene.control.ButtonBase getButtonFX(String commandName) {
@@ -254,8 +248,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * creates a button for the command
      *
-     * @param commandName
-     * @param enabled
      * @return button
      */
     private javafx.scene.control.ButtonBase getButtonFX(String commandName, boolean enabled) {
@@ -278,7 +270,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * creates a button for the command
      *
-     * @param command
      * @return button
      */
     private javafx.scene.control.ButtonBase getButtonFX(final ICommand command) {
@@ -331,7 +322,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * creates a button for the command
      *
-     * @param command
      * @return button
      */
     public javafx.scene.control.RadioButton getRadioButtonFX(final ICommand command) {
@@ -368,8 +358,7 @@ public class CommandManagerFX extends CommandManager {
     /**
      * get the director
      *
-     * @return
-     */
+	 */
     public IDirector getDir() {
         return dir;
     }
@@ -377,7 +366,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * convert AWT imageIcon to JavaFX image
      *
-     * @param imageIcon
      * @return javaFX image
      */
     public static ImageView asImageViewFX(ImageIcon imageIcon) {
@@ -400,7 +388,6 @@ public class CommandManagerFX extends CommandManager {
     /**
      * converts a swing accelerator key to a JavaFX key combination
      *
-     * @param acceleratorKey
      * @return key combination
      */
     private static KeyCombination translateAccelerator(KeyStroke acceleratorKey) {

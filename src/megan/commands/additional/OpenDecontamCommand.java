@@ -42,9 +42,7 @@ public class OpenDecontamCommand extends CommandBase implements ICommand {
     /**
      * apply the command
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 

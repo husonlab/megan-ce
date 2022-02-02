@@ -38,11 +38,7 @@ public class Lane {
     /**
      * constructor
      *
-     * @param name
-     * @param text
-     * @param toolTip
-     * @param sequence
-     */
+	 */
     public Lane(Alignment alignment, String name, String text, String toolTip, String sequence) {
         this(alignment, name, text, toolTip, "", sequence, "");
     }
@@ -50,11 +46,7 @@ public class Lane {
     /**
      * constructor
      *
-     * @param name
-     * @param text
-     * @param toolTip
-     * @param sequence
-     */
+	 */
     public Lane(Alignment alignment, String name, String text, String toolTip, String unalignedPrefix, String sequence, String unalignedSuffix) {
         this.alignment = alignment;
         this.name = name;
@@ -86,14 +78,10 @@ public class Lane {
     /**
      * constructor
      *
-     * @param text
-     * @param toolTip
-     * @param unalignedPrefix
      * @param leadingGaps     number of leading gaps
      * @param block           - block from first to last non-gap symbols
      * @param trailingGaps    number of trailing gaps
-     * @param unalignedSuffix
-     */
+	 */
     protected Lane(Alignment alignment, String name, String text, String toolTip, String unalignedPrefix, int leadingGaps, String block, int trailingGaps, String unalignedSuffix) {
         this.alignment = alignment;
         this.name = name;
@@ -161,7 +149,6 @@ public class Lane {
     /**
      * get the character at the given position
      *
-     * @param pos
      * @return char at position
      */
     public char charAt(int pos) {
@@ -205,7 +192,6 @@ public class Lane {
     /**
      * is there an unaligned character at this position?
      *
-     * @param col
      * @return true, if unaligned char available for this position
      */
     public boolean hasUnalignedCharAt(int col) {
@@ -222,7 +208,6 @@ public class Lane {
     /**
      * get the unaligned char at the given position
      *
-     * @param col
      * @return unaligned char
      */
     public char getUnalignedCharAt(int col) {

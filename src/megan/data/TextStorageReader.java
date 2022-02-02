@@ -44,8 +44,7 @@ public class TextStorageReader {
     /**
      * constructor
      *
-     * @param locationManager
-     */
+	 */
     public TextStorageReader(LocationManager locationManager) {
         this.locationManager = locationManager;
         int maxId = 0;
@@ -71,10 +70,8 @@ public class TextStorageReader {
     /**
      * gets the text stored at the named location
      *
-     * @param location
      * @return text
-     * @throws IOException
-     */
+	 */
     public String getText(Location location) throws IOException {
         int fileId = location.getFileId();
         if (fileId < 0 || fileId >= fileId2raf.length)
@@ -133,10 +130,8 @@ public class TextStorageReader {
     /**
      * gets the header and sequence for a read
      *
-     * @param location
      * @return header and sequence
-     * @throws IOException
-     */
+	 */
     public Pair<String, String> getHeaderAndSequence(Location location) throws IOException {
         Pair<String, String> headerAndSequence = new Pair<>();
         getHeaderAndSequence(location, headerAndSequence);
@@ -146,10 +141,7 @@ public class TextStorageReader {
     /**
      * gets the header and sequence for a read
      *
-     * @param location
-     * @return header and sequence
-     * @throws IOException
-     */
+	 */
     private void getHeaderAndSequence(Location location, Pair<String, String> headerAndSequence) throws IOException {
         String string = getText(location);
 

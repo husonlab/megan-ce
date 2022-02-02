@@ -31,9 +31,7 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public ByteFileGetterMappedMemory(File file) throws IOException {
         super(file); // need 4 overlap to allow reading of integers
     }
@@ -42,8 +40,7 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
      * gets value for given index
      *
      * @return integer
-     * @throws java.io.IOException
-     */
+	 */
     public int get(long index) {
         // note that index equals filePos and so no conversion from index to filePos necessary
         if (index < limit()) {
@@ -55,12 +52,8 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
     /**
      * bulk get
      *
-     * @param bytes
-     * @param offset
-     * @param len
      * @return number of bytes that we obtained
-     * @throws IOException
-     */
+	 */
     @Override
     public int get(long index, byte[] bytes, int offset, int len) {
         // note that index equals filePos and so no conversion from index to filePos necessary
@@ -83,8 +76,7 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
      * gets integer represented by four bytes starting at given index
      *
      * @return integer
-     * @throws IOException
-     */
+	 */
     @Override
     public int getInt(long index) {
         if (index < limit()) {
@@ -122,7 +114,6 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     public long getLong(long index) {
@@ -183,8 +174,7 @@ public class ByteFileGetterMappedMemory extends BaseFileGetterPutter implements 
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return fileLength;

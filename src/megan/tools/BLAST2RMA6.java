@@ -58,10 +58,7 @@ public class BLAST2RMA6 {
     /**
      * merge RMA files
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -82,11 +79,7 @@ public class BLAST2RMA6 {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
@@ -377,18 +370,7 @@ public class BLAST2RMA6 {
     /**
      * create an RMA6 file from a BLAST file
      *
-     * @param creator
-     * @param blastFile
-     * @param format
-     * @param queryFile
-     * @param rma6FileName
-     * @param useCompression
-     * @param doc
-     * @param maxMatchesPerRead
-     * @param progressListener
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     private static void createRMA6FileFromBLAST(String creator, String blastFile, BlastFileFormat format, String queryFile, String rma6FileName, boolean useCompression, Document doc,
                                                 int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
         final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile}, new String[]{queryFile}, rma6FileName, useCompression, doc, maxMatchesPerRead);
@@ -398,20 +380,7 @@ public class BLAST2RMA6 {
     /**
      * create an RMA6 file from a pair of BLAST files
      *
-     * @param creator
-     * @param blastFile1
-     * @param blastFile2
-     * @param format
-     * @param queryFile1
-     * @param queryFile2
-     * @param rma6FileName
-     * @param useCompression
-     * @param doc
-     * @param maxMatchesPerRead
-     * @param progressListener
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     private static void createRMA6FileFromBLASTPair(String creator, String blastFile1, String blastFile2, BlastFileFormat format, String queryFile1, String queryFile2, String rma6FileName, boolean useCompression, Document doc,
                                                     int maxMatchesPerRead, ProgressListener progressListener) throws IOException, CanceledException, SQLException {
         final RMA6FromBlastCreator rma6Creator = new RMA6FromBlastCreator(creator, format, doc.getBlastMode(), new String[]{blastFile1, blastFile2}, new String[]{queryFile1, queryFile2}, rma6FileName, useCompression, doc, maxMatchesPerRead);

@@ -92,9 +92,7 @@ public class ParametersDialog extends JDialog {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public ParametersDialog(Component parent, Director dir) {
         super();
 
@@ -809,8 +807,7 @@ public class ParametersDialog extends JDialog {
     /**
      * set the name of a new contaminants file to parse and use
      *
-     * @param fileName
-     */
+	 */
     public void setContaminantsFileName(String fileName) {
         contaminantsFileName = fileName;
     }

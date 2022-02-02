@@ -55,8 +55,7 @@ public class FormatCBox extends JComboBox<String> {
     /**
      * set the selected format
      *
-     * @param name
-     */
+	 */
     public void setSelectedFormat(String name) {
         for (int i = 0; i < getItemCount(); i++) {
             final String item = getItemAt(i);

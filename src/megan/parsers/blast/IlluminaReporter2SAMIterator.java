@@ -46,9 +46,7 @@ public class IlluminaReporter2SAMIterator extends SAMIteratorBase implements ISA
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public IlluminaReporter2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!IlluminaReporterFileFilter.getInstance().accept(fileName)) {

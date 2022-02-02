@@ -46,12 +46,7 @@ public class Ellipse {
     /**
      * constructor
      *
-     * @param centerX
-     * @param centerY
-     * @param lengthA
-     * @param lengthB
-     * @param angleInRadians
-     */
+	 */
     public Ellipse(double centerX, double centerY, double lengthA, double lengthB, double angleInRadians) {
         this.centerX = centerX;
         this.centerY = centerY;
@@ -63,8 +58,7 @@ public class Ellipse {
     /**
      * paint the ellipse
      *
-     * @param g
-     */
+	 */
     public void paint(Graphics g) {
         final Graphics2D g2d = (Graphics2D) g;
         final AffineTransform old = g2d.getTransform();
@@ -79,8 +73,7 @@ public class Ellipse {
     /**
      * paint the ellipse
      *
-     * @param g
-     */
+	 */
     public void paint(Graphics g, Transform trans) {
         final Graphics2D g2d = (Graphics2D) g;
         if (color != null)

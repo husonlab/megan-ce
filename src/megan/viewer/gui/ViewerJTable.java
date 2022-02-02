@@ -58,8 +58,7 @@ public class ViewerJTable extends JTable {
     /**
      * constructor
      *
-     * @param classificationViewer
-     */
+	 */
     public ViewerJTable(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;
 
@@ -135,9 +134,7 @@ public class ViewerJTable extends JTable {
     /**
      * recursively build the table
      *
-     * @param v
-     * @return total count so far
-     */
+	 */
     private void buildHeatMapRec(Node v, HashSet<Integer> seen) {
         if (v.getOutDegree() == 0) {
             NodeData data = classificationViewer.getNodeData(v);
@@ -182,8 +179,6 @@ public class ViewerJTable extends JTable {
     /**
      * don't allow editing of anything
      *
-     * @param row
-     * @param column
      * @return false
      */
     public boolean isCellEditable(int row, int column) {
@@ -197,8 +192,7 @@ public class ViewerJTable extends JTable {
     /**
      * select nodes by their ids
      *
-     * @param ids
-     */
+	 */
     public void setSelected(Collection<Integer> ids, boolean select) {
         if (!inSelection) {
             inSelection = true;

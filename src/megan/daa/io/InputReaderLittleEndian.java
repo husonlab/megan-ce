@@ -40,8 +40,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * constructor
      *
-     * @param ins
-     */
+	 */
     public InputReaderLittleEndian(IInput ins) {
         this.ins = ins;
     }
@@ -50,8 +49,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * read byte
      *
      * @return byte
-     * @throws IOException
-     */
+	 */
     public int read() throws IOException {
         return ins.read();
     }
@@ -86,8 +84,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * read int little endian
      *
      * @return int
-     * @throws IOException
-     */
+	 */
     public int readInt() throws IOException {
         if (ins.read(bytes, 0, 4) < 4)
             throw new IOException("buffer underflow at file pos: " + ins.getPosition());
@@ -98,8 +95,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * read long, little endian
      *
      * @return long
-     * @throws IOException
-     */
+	 */
     public long readLong() throws IOException {
         if (ins.read(bytes, 0, 8) < 8)
             throw new IOException("buffer underflow");
@@ -117,8 +113,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * read float, little endian
      *
      * @return float
-     * @throws IOException
-     */
+	 */
     public float readFloat() throws IOException {
         read(bytes, 0, 4);
         for (int i = 0; i < 4; i++)
@@ -130,8 +125,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * read double, little endian
      *
      * @return double
-     * @throws IOException
-     */
+	 */
     public double readDouble() throws IOException {
         read(bytes, 0, 8);
         for (int i = 0; i < 8; i++)
@@ -142,10 +136,8 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * reads a null-terminated string
      *
-     * @param bytes
      * @return length
-     * @throws IOException
-     */
+	 */
     public int readNullTerminatedBytes(byte[] bytes) throws IOException {
         int i = 0;
         while (true) {
@@ -161,8 +153,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * reads a null-terminated string
      *
      * @return length
-     * @throws IOException
-     */
+	 */
     public String readNullTerminatedBytes() throws IOException {
         StringBuilder buf = new StringBuilder();
         while (true) {
@@ -180,8 +171,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * skip a null-terminated string
      *
-     * @throws IOException
-     */
+	 */
     public void skipNullTerminatedBytes() throws IOException {
         int letter = 1;
         while (letter != 0) {
@@ -194,9 +184,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * reads size-prefixed bytes
      *
-     * @param buffer
-     * @throws IOException
-     */
+	 */
     public void readSizePrefixedBytes(ByteInputBuffer buffer) throws IOException {
         buffer.setSize(readInt());
         read(buffer.getBytes(), 0, buffer.size());
@@ -206,9 +194,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * skip n bytes
      *
-     * @param n
-     * @throws IOException
-     */
+	 */
     public void skip(long n) throws IOException {
         seek(getPosition() + n);
     }
@@ -217,8 +203,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
      * get current position
      *
      * @return position
-     * @throws IOException
-     */
+	 */
     public long getPosition() throws IOException {
         return ins.getPosition();
     }
@@ -226,8 +211,7 @@ public class InputReaderLittleEndian implements Closeable, IInputReader {
     /**
      * close
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         ins.close();
     }

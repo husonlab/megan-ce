@@ -43,8 +43,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
     /**
      * commandline syntax
      *
-     * @return
-     */
+	 */
     @Override
     public String getSyntax() {
 		return "load mapFile=<filename> mapType=<" + StringUtils.toString(IdMapper.MapType.values(), "|") + "> cName=<" + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), "|") + "> [parseTaxonNames={false|true}];";
@@ -53,9 +52,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("load mapFile=");
@@ -99,8 +96,7 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
     }
 

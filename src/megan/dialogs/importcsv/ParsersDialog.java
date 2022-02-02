@@ -36,9 +36,7 @@ public class ParsersDialog extends ImportBlastDialog {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public ParsersDialog(Component parent, Director dir, Collection<String> fNames) {
         super(parent, dir, fNames, "Setup Accession Parsing - MEGAN");
     }

@@ -41,8 +41,6 @@ public class FormatterUtils {
     /**
      * gets the formatter for the given viewer and director
      *
-     * @param viewer
-     * @param dir
      * @return formatter
      */
     public static Formatter getFormatter(final INodeEdgeFormatable viewer, final IDirector dir) {

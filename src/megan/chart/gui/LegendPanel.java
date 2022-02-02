@@ -38,8 +38,7 @@ public class LegendPanel extends JPanel {
     /**
      * constructor
      *
-     * @param chartViewer
-     */
+	 */
     public LegendPanel(ChartViewer chartViewer) {
         this.chartViewer = chartViewer;
         addMouseListener(new MouseAdapter() {
@@ -62,8 +61,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw the legend
      *
-     * @param gc0
-     */
+	 */
     public void paint(Graphics gc0) {
         Graphics2D gc = (Graphics2D) gc0;
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
@@ -89,9 +87,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw the legend
      *
-     * @param gc
-     * @param size
-     */
+	 */
     void draw(Graphics2D gc, Dimension size) {
         if (!chartViewer.isTranspose())
             drawLegend(gc, size);
@@ -102,8 +98,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw a legend for class colors
      *
-     * @param gc
-     */
+	 */
     private void drawLegend(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         boolean doDraw = (size == null);
@@ -209,8 +204,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw a legend for dataset colors
      *
-     * @param gc
-     */
+	 */
     private void drawLegendTransposed(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 

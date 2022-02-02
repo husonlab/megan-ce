@@ -30,9 +30,7 @@ public class RMA2Formatter {
     /**
      * Constructor
      *
-     * @param readBlockFormatString
-     * @param matchBlockFormatString
-     */
+	 */
     public RMA2Formatter(String readBlockFormatString, String matchBlockFormatString) {
         readBlockFormatter = new ReadBlockRMA2Formatter(readBlockFormatString);
         matchBlockFormatter = new MatchBlockRMA2Formatter(matchBlockFormatString);

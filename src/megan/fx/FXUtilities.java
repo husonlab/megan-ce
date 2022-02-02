@@ -36,10 +36,7 @@ public class FXUtilities {
     /**
      * bidirectionally bind scroll bars of two nodes
      *
-     * @param node1
-     * @param node2
-     * @param orientation
-     */
+	 */
     public static void bidirectionallyBindScrollBars(final Node node1, final Node node2, Orientation orientation) {
         final ScrollBar scrollBar1 = findScrollBar(node1, orientation);
         final ScrollBar scrollBar2 = findScrollBar(node2, orientation);
@@ -72,9 +69,7 @@ public class FXUtilities {
     /**
      * Find the scrollbar of the given table.
      *
-     * @param node
-     * @return
-     */
+	 */
     public static ScrollBar findScrollBar(Node node, Orientation orientation) {
         Set<Node> below = node.lookupAll(".scroll-bar");
         for (final Node nodeBelow : below) {
@@ -91,8 +86,6 @@ public class FXUtilities {
     /**
      * changes opacity, if paint is a color
      *
-     * @param paint
-     * @param opacity
      * @return paint
      */
     public static Paint changeOpacity(Paint paint, double opacity) {

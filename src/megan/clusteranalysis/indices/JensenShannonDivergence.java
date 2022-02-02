@@ -35,11 +35,8 @@ public class JensenShannonDivergence {
     /**
      * apply the named computation to the taxonomy
      *
-     * @param viewer
-     * @param distances
      * @return number of nodes used to compute value
-     * @throws java.io.IOException
-     */
+	 */
     public static int apply(final ViewerBase viewer, final Distances distances) {
 		System.err.println("Computing " + StringUtils.fromCamelCase(NAME) + " distances");
 
@@ -61,10 +58,7 @@ public class JensenShannonDivergence {
     /**
      * compute the Jensen-Shannon divergence
      *
-     * @param px
-     * @param py
-     * @return
-     */
+	 */
     private static double computeJSD(double[] px, double[] py) {
         double[] m = computeMean(px, py);
 
@@ -74,9 +68,7 @@ public class JensenShannonDivergence {
     /**
      * compute the  Kullback-Leibler divergence
      *
-     * @param px
-     * @param py
-     */
+	 */
     private static double computeKLD(double[] px, double[] py) {
         double result = 0;
         for (int i = 0; i < px.length; i++) {
@@ -90,8 +82,6 @@ public class JensenShannonDivergence {
     /**
      * return mean of two profiles
      *
-     * @param px
-     * @param py
      * @return mean
      */
     private static double[] computeMean(double[] px, double[] py) {
@@ -104,7 +94,6 @@ public class JensenShannonDivergence {
     /**
      * compute profiles for  analysis
      *
-     * @param doc
      * @return profiles. First index is sample, second is class
      */
     private static double[][] computeProfiles(Document doc, ViewerBase graphView) {

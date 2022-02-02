@@ -30,7 +30,6 @@ public interface IString2IntegerMap extends Closeable {
     /**
      * get a value
      *
-     * @param key
      * @return value or 0
      */
     int get(String key) throws IOException;

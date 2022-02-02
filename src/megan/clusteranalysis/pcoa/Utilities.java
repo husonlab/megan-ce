@@ -30,7 +30,6 @@ public class Utilities {
     /**
      * compute centered inner product matrix
      *
-     * @param matrix
      * @return new matrix
      */
     public static Matrix computeDoubleCenteringOfSquaredMatrix(Matrix matrix) {
@@ -68,7 +67,6 @@ public class Utilities {
      * Scale means: divide each column by square root of (sum-of-squares of column / (number of columns -1))
      * See http://docs.tibco.com/pub/enterprise-runtime-for-R/1.1.0-november-2012/TERR_1.1.0_LanguageRef/base/scale.html
      *
-     * @param matrix
      * @return new matrix
      */
     public static double[][] centerAndScale(double[][] matrix) {
@@ -111,7 +109,6 @@ public class Utilities {
     /**
      * sort indices by values
      *
-     * @param m
      * @return sorted indices
      * todo: replace by proper sorting
      */
@@ -141,8 +138,6 @@ public class Utilities {
     /**
      * compute the covariance between the columns of two matrices
      *
-     * @param x
-     * @param y
      * @param biasCorrected (if true, multiples values by (nRows/(nRows-1))
      * @return convariance
      */
@@ -190,8 +185,6 @@ public class Utilities {
     /**
      * matrix multiplication
      *
-     * @param x
-     * @param y
      * @return x*y
      */
     public static double[][] multiply(double[][] x, double[][] y) {
@@ -220,7 +213,6 @@ public class Utilities {
     /**
      * creates a  matrix whose diagonal contains the given values and all other entries are 0
      *
-     * @param values
      * @return matrix
      */
     public static double[][] diag(double[] values) {
@@ -259,8 +251,6 @@ public class Utilities {
     /**
      * copy only first nCols of matrix
      *
-     * @param matrix
-     * @param nCols
      * @return copy with first nCols
      */
     public static double[][] truncateRows(double[][] matrix, int nCols) {
@@ -275,7 +265,6 @@ public class Utilities {
     /**
      * gets squared length of a vector
      *
-     * @param vector
      * @return squared length
      */
     public static double getSquaredLength(double[] vector) {

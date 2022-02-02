@@ -232,10 +232,7 @@ public class MyGraphViewListener implements IGraphViewListener {
     /**
      * find out what we have hit
      *
-     * @param x
-     * @param y
-     * @param onlyOne
-     */
+	 */
     private void getHits(int x, int y, boolean onlyOne) {
         hitNodes.clear();
         hitNodeLabels.clear();
@@ -258,11 +255,6 @@ public class MyGraphViewListener implements IGraphViewListener {
     /**
      * recursively go down tree to find hits
      *
-     * @param x
-     * @param y
-     * @param v
-     * @param e0
-     * @param onlyOne
      * @return has hit something
      */
     private boolean getHitsRec(int x, int y, Node v, Edge e0, boolean onlyOne) {
@@ -337,8 +329,7 @@ public class MyGraphViewListener implements IGraphViewListener {
     /**
      * find out what we have hit
      *
-     * @param rect
-     */
+	 */
     private void getHits(Rectangle rect) {
         hitNodes.clear();
         hitNodeLabels.clear();
@@ -359,9 +350,6 @@ public class MyGraphViewListener implements IGraphViewListener {
     /**
      * recursively go down tree to find hits
      *
-     * @param rect
-     * @param v
-     * @param e0
      * @return has hit something
      */
     private boolean getHitsRec(Rectangle rect, Node v, Edge e0) {
@@ -1126,8 +1114,7 @@ public class MyGraphViewListener implements IGraphViewListener {
     /**
      * react to a mouse wheel event
      *
-     * @param e
-     */
+	 */
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
             boolean doScaleVertical = !e.isMetaDown() && !e.isAltDown() && !e.isShiftDown();

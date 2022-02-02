@@ -381,8 +381,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     /**
      * add a remote file service
      *
-     * @param service
-     */
+	 */
     public void addService(final IRemoteService service) {
         final ServicePanel servicePanel = new ServicePanel(service, this);
         servicePanel.setToolTipText(service.getServerURL());
@@ -395,7 +394,6 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     /**
      * abbreviate name
      *
-     * @param name
      * @return name of length <=18
      */
     private String abbreviateName(String name) {
@@ -500,7 +498,6 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     /**
      * close the named service
      *
-     * @param url
      * @return true, if service found and closed
      */
     public boolean closeRemoteService(String url) {
@@ -533,8 +530,7 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
     /**
      * select the given service tab, if present
      *
-     * @param url
-     */
+	 */
     public boolean selectServiceTab(String url) {
         url = url.replaceAll(".*://", "");
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {

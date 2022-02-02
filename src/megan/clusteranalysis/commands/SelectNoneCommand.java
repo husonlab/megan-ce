@@ -80,8 +80,7 @@ public class SelectNoneCommand extends SelectCommand implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         executeImmediately("select=none;");
 

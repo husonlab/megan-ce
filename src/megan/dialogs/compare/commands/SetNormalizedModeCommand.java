@@ -42,8 +42,7 @@ public class SetNormalizedModeCommand extends CommandBase implements ICheckBoxCo
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -61,8 +60,7 @@ public class SetNormalizedModeCommand extends CommandBase implements ICheckBoxCo
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         executeImmediately("set mode=" + (Comparer.COMPARISON_MODE.RELATIVE) + ";");

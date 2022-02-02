@@ -40,8 +40,7 @@ public class PathExtractor {
     /**
      * constructor
      *
-     * @param overlapGraph
-     */
+	 */
     public PathExtractor(Graph overlapGraph, List<Integer>[] readId2ContainedReads) {
         this.overlapGraph = overlapGraph;
         this.readId2ContainedReads = readId2ContainedReads;
@@ -180,7 +179,6 @@ public class PathExtractor {
      * recursively visit all nodes and set edge weights
      * The weight of an edge e is the maximum sum of overlaps on any outgoing path from e
      *
-     * @param v
      * @return path length
      */
     private int visitNodesRec(Node v, EdgeArray<Integer> edgeWeights) {

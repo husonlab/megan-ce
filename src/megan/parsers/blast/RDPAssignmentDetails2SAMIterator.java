@@ -39,9 +39,7 @@ public class RDPAssignmentDetails2SAMIterator extends SAMIteratorBase implements
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RDPAssignmentDetails2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RDPAssignmentDetailsFileFilter.getInstance().accept(fileName)) {

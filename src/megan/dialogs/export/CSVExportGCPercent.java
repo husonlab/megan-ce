@@ -46,12 +46,7 @@ class CSVExportGCPercent {
     /**
      * apply
      *
-     * @param viewer
-     * @param file
-     * @param separator
-     * @param progress
-     * @return
-     */
+	 */
     public static int apply(MainViewer viewer, File file, char separator, ProgressListener progress) throws IOException {
         final Document doc = viewer.getDocument();
         int totalLines = 0;
@@ -103,7 +98,6 @@ class CSVExportGCPercent {
     /**
      * compute the CG percentage
      *
-     * @param readSequence
      * @return cg Percerntage
      */
     private static double computeCGPercent(String readSequence) {

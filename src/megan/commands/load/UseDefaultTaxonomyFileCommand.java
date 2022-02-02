@@ -72,8 +72,7 @@ public class UseDefaultTaxonomyFileCommand extends CommandBase implements IComma
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -81,8 +80,7 @@ public class UseDefaultTaxonomyFileCommand extends CommandBase implements IComma
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("load taxonomyFile=ncbi.tre mapfile=ncbi.map;collapse level=2;");
     }

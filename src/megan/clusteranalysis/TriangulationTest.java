@@ -32,8 +32,6 @@ public class TriangulationTest {
     /**
      * performs the triangulation test described in Huson et al, A statistical test for detecting taxonomic inhomogeneity in replicated metagenomic samples
      *
-     * @param clusterViewer
-     * @param attributeThatDefinesBiologicalSamples
      * @return true, if the H0 "all samples from same taxon distribution" is rejected, false else
      * @throws IllegalArgumentException if sample doesn't have attribute value
      */
@@ -175,7 +173,6 @@ public class TriangulationTest {
     /**
      * computes the minimum number of non-conflicted triangles required to reject H0 with alpha=0.05
      *
-     * @param totalTriangles
      * @return max triangles allowed to be in conflict
      */
     private int computeMinNumberOfNonConflictedTrianglesRequired(int totalTriangles) {
@@ -191,8 +188,6 @@ public class TriangulationTest {
     /**
      * binomial
      *
-     * @param n
-     * @param k
      * @return n choose k
      */
     private static long binomial(int n, int k) {
@@ -207,8 +202,6 @@ public class TriangulationTest {
     /**
      * test whether there are at least two samples for each attribute value
      *
-     * @param sampleAttributeTable
-     * @param attribute
      * @return true, if ok
      */
     public static boolean isSuitableAttribute(SampleAttributeTable sampleAttributeTable, String attribute) {

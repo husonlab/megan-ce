@@ -42,9 +42,7 @@ public class MeganizeDAADialog extends ImportBlastDialog {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public MeganizeDAADialog(Component parent, Director dir) {
         super(parent, dir, "Meganize Diamond DAA files - MEGAN");
     }

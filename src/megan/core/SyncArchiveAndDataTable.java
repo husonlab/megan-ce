@@ -42,13 +42,7 @@ public class SyncArchiveAndDataTable {
     /**
      * synchronizes recomputed data from an archive to a summary and also parameters
      *
-     * @param dataSetName
-     * @param algorithmName
-     * @param parameters
-     * @param connector
-     * @param table
-     * @throws IOException
-     */
+	 */
     static public void syncRecomputedArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String dataSetName, String algorithmName, BlastMode blastMode, String parameters, IConnector connector, DataTable table, int additionalReads) throws IOException {
         final String[] classifications = connector.getAllClassificationNames();
         table.clear();
@@ -72,9 +66,7 @@ public class SyncArchiveAndDataTable {
      * classifications are obtained from the classification blocks
      *
      * @param readAssignmentMode if null, first determines this from user state table
-     * @param connector
-     * @param table
-     */
+	 */
     public static void syncArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
         table.clear();
         Map<String, byte[]> label2data = connector.getAuxiliaryData();
@@ -119,10 +111,7 @@ public class SyncArchiveAndDataTable {
     /**
      * sync classification block to the summary
      *
-     * @param dataSetId
-     * @param classificationBlock
-     * @param table
-     */
+	 */
     private static void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
         boolean useWeights = (readAssignmentMode != Document.ReadAssignmentMode.readCount);
 
@@ -145,10 +134,7 @@ public class SyncArchiveAndDataTable {
     /**
      * sync bytes from aux block to summary
      *
-     * @param bytes
-     * @param table
-     * @throws IOException
-     */
+	 */
     static private void syncAux2Summary(String fileName, byte[] bytes, DataTable table) throws IOException {
         if (bytes != null) {
 			String string = StringUtils.toString(bytes);

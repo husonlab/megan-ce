@@ -44,10 +44,8 @@ public class RemoteServiceManager {
     /**
      * create a new node
      *
-     * @param remoteURL
      * @return node or null
-     * @throws IOException
-     */
+	 */
     public static IRemoteService createService(String remoteURL, String user, String password) throws IOException {
         final IRemoteService clientNode;
         if (remoteURL.startsWith(LOCAL)) {
@@ -65,8 +63,7 @@ public class RemoteServiceManager {
     /**
      * remove the node
      *
-     * @param url
-     */
+	 */
     public static void removeNode(String url) {
         url2node.remove(url);
     }
@@ -74,7 +71,6 @@ public class RemoteServiceManager {
     /**
      * does  node for this URL exist
      *
-     * @param url
      * @return true, if node for URL exists
      */
     public static boolean hasNode(String url) {
@@ -84,7 +80,6 @@ public class RemoteServiceManager {
     /**
      * get the client node
      *
-     * @param url
      * @return node
      */
     public static IRemoteService get(String url) {
@@ -107,7 +102,6 @@ public class RemoteServiceManager {
     /**
      * get the remote file path
      *
-     * @param serverFileName
      * @return remote file path
      */
     public static String getFilePath(String serverFileName) {
@@ -121,7 +115,6 @@ public class RemoteServiceManager {
     /**
      * get the remote user
      *
-     * @param serviceName
      * @return remote user
      */
     public static String getUser(String serviceName) {
@@ -135,7 +128,6 @@ public class RemoteServiceManager {
     /**
      * get remote password
      *
-     * @param serviceName
      * @return password
      */
     public static String getPasswordHash(String serviceName) {
@@ -149,7 +141,6 @@ public class RemoteServiceManager {
     /**
      * does this file name have the syntax of a remote file?
      *
-     * @param fileName
      * @return true, if local name of a remote file
      */
     private static boolean isRemoteFile(String fileName) {
@@ -159,7 +150,6 @@ public class RemoteServiceManager {
     /**
      * get credentials for given server, if known
      *
-     * @param serviceName
      * @return credentials
      */
     public static Pair<String, String> getCredentials(String serviceName) {
@@ -169,10 +159,7 @@ public class RemoteServiceManager {
     /**
      * save credentials for given server
      *
-     * @param serviceName
-     * @param user
-     * @param passwordHash
-     */
+	 */
     public static void saveCredentials(String serviceName, String user, String passwordHash) {
         server2Credentials.put(serviceName, new Pair<>(user, passwordHash));
         saveCredentialsToProperties();
@@ -213,8 +200,7 @@ public class RemoteServiceManager {
     /**
      * remove credentials for given URL
      *
-     * @param url
-     */
+	 */
     public static void removeCredentials(String url) {
         server2Credentials.remove(url);
     }

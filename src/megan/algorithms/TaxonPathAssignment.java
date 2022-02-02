@@ -27,7 +27,6 @@ import megan.data.IReadBlock;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -38,7 +37,6 @@ public class TaxonPathAssignment {
     /**
      * determine the taxon id of a read from its matches
      *
-     * @param readBlock
      * @return id
      */
     private static List<Pair<Integer, Float>> computeTaxPath(IReadBlock readBlock, BitSet activeMatches) {
@@ -127,14 +125,7 @@ public class TaxonPathAssignment {
     /**
      * report the taxonomic path and percent
      *
-     * @param readBlock
-     * @param activeMatchesForTaxa
-     * @param showTaxonIds
-     * @param showRank
-     * @param useOfficialRanksOnly
-     * @param showPercent
-     * @throws IOException
-     */
+	 */
     public static String getPathAndPercent(IReadBlock readBlock, BitSet activeMatchesForTaxa, boolean showTaxonIds, boolean showRank, boolean useOfficialRanksOnly, boolean showPercent) {
         final StringBuilder buf = new StringBuilder();
         final List<Pair<Integer, Float>> path = TaxonPathAssignment.computeTaxPath(readBlock, activeMatchesForTaxa);

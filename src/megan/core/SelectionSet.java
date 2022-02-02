@@ -35,9 +35,7 @@ public class SelectionSet {
     /**
      * set the selection state of the label
      *
-     * @param label
-     * @param selected
-     */
+	 */
     public void setSelected(String label, boolean selected) {
         if (!selectionIsChanging) {
             selectionIsChanging = true;
@@ -59,9 +57,7 @@ public class SelectionSet {
     /**
      * sets the selection state of a collection of labels
      *
-     * @param labels
-     * @param selected
-     */
+	 */
     public void setSelected(java.util.Collection<String> labels, boolean selected) {
         if (!selectionIsChanging) {
             selectionIsChanging = true;
@@ -82,7 +78,6 @@ public class SelectionSet {
     /**
      * is label selected?
      *
-     * @param label
      * @return true, if selected
      */
     public boolean isSelected(String label) {

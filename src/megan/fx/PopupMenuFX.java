@@ -37,9 +37,7 @@ public class PopupMenuFX extends ContextMenu {
     /**
      * constructor
      *
-     * @param configuration
-     * @param commandManager
-     */
+	 */
     public PopupMenuFX(String configuration, CommandManagerFX commandManager) {
         this(configuration, commandManager, false);
     }
@@ -47,9 +45,7 @@ public class PopupMenuFX extends ContextMenu {
     /**
      * constructor
      *
-     * @param configuration
-     * @param commandManager
-     */
+	 */
     public PopupMenuFX(String configuration, CommandManagerFX commandManager, boolean showApplicableOnly) {
         super();
         if (configuration != null && configuration.length() > 0) {

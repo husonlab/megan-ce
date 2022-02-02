@@ -37,9 +37,7 @@ public class SyncDataTableAndClassificationViewer {
     /**
      * sync collapsed nodes
      *
-     * @param table
-     * @param classificationViewer
-     */
+	 */
     public static void syncCollapsedFromSummary2Viewer(final DataTable table, final ClassificationViewer classificationViewer) {
         final String classificationName = classificationViewer.getClassName();
 
@@ -53,9 +51,7 @@ public class SyncDataTableAndClassificationViewer {
     /**
      * sync the formatting (and collapsed nodes) from the summary to the fviewer viewer
      *
-     * @param table
-     * @param classificationViewer
-     */
+	 */
     public static void syncFormattingFromSummary2Viewer(DataTable table, ClassificationViewer classificationViewer) {
         final String classificationName = classificationViewer.getClassName();
         boolean changed = false;
@@ -188,9 +184,7 @@ public class SyncDataTableAndClassificationViewer {
     /**
      * sync formatting (and collapsed nodes)  from fviewer viewer to summary
      *
-     * @param classificationViewer
-     * @param table
-     */
+	 */
     static public void syncFormattingFromViewer2Summary(ClassificationViewer classificationViewer, DataTable table) {
         final String classificationName = classificationViewer.getClassName();
         if (classificationViewer.getDirtyNodeIds().size() > 0) {

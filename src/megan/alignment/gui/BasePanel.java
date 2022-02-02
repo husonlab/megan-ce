@@ -93,9 +93,7 @@ abstract public class BasePanel extends JPanel implements Scrollable {
     /**
      * sets the scale
      *
-     * @param hScale
-     * @param vScale
-     */
+	 */
     public void setScale(double hScale, double vScale) {
         double fontSize;
         if (hScale > 0 && vScale == 0)
@@ -117,9 +115,7 @@ abstract public class BasePanel extends JPanel implements Scrollable {
     /**
      * makes a font of the correct apparent size
      *
-     * @param fontSize
-     * @return
-     */
+	 */
     private Font makeFont(int fontSize) {
         FontMetrics seqMetrics = getFontMetrics(new Font(Font.MONOSPACED, Font.PLAIN, fontSize));
         int fontHeight = seqMetrics.getAscent();

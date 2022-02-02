@@ -85,9 +85,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
      * reads an archived string
      *
      * @return string
-     * @throws IOException
-     * @throws java.util.zip.DataFormatException
-     */
+	 */
     public String readString() throws IOException {
         int size = readInt();
         if (Math.abs(size) > 100000000)
@@ -112,9 +110,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * skip some bytes
      *
-     * @param bytes
-     * @throws IOException
-     */
+	 */
     public int skipBytes(int bytes) throws IOException {
         return io.skipBytes(bytes);
     }
@@ -130,9 +126,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write an int
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeInt(int a) throws IOException {
         io.write((byte) (a >> 24));
         io.write((byte) (a >> 16));
@@ -143,9 +137,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a char
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeChar(char a) throws IOException {
         io.write((byte) (a >> 8));
         io.write((byte) (a));
@@ -154,9 +146,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a long
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeLong(long a) throws IOException {
         io.write((byte) (a >> 56));
         io.write((byte) (a >> 48));
@@ -171,9 +161,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a float
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeFloat(float a) throws IOException {
         writeInt(Float.floatToIntBits(a));
     }
@@ -181,9 +169,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a byte-byte-int
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeByteByteInt(ByteByteInt a) throws IOException {
         io.write(a.getByte1());
         io.write(a.getByte2());
@@ -193,9 +179,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a string
      *
-     * @param str
-     * @throws IOException
-     */
+	 */
     public void writeString(String str) throws IOException {
         if (str == null)
             writeInt(0);
@@ -215,11 +199,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * write a string, compressed, if long enough
      *
-     * @param str
-     * @param offset
-     * @param length
-     * @throws IOException
-     */
+	 */
     @Override
     public void writeString(byte[] str, int offset, int length) throws IOException {
         if (str == null)
@@ -242,9 +222,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * Write a string without compression
      *
-     * @param str
-     * @throws IOException
-     */
+	 */
     public void writeStringNoCompression(String str) throws IOException {
         if (str == null) {
             writeInt(0);
@@ -292,8 +270,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * compress strings?
      *
-     * @param useCompression
-     */
+	 */
     public void setUseCompression(boolean useCompression) {
         this.useCompression = useCompression;
     }
@@ -314,8 +291,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
     /**
      * set offset that is applied to all seek() calls
      *
-     * @param offset
-     */
+	 */
     public void setOffset(long offset) {
         this.offset = offset;
     }

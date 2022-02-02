@@ -48,8 +48,7 @@ public class XIntArray {
     /**
      * constructs a new array of the given size
      *
-     * @throws java.io.IOException
-     */
+	 */
     public XIntArray(long size) {
         this((byte) (Math.min(30, 1 + Math.max(10, (int) (Math.log(size) / Math.log(2))))));
         int segment = (int) (size >>> SEGMENT_BITS);
@@ -59,9 +58,7 @@ public class XIntArray {
     /**
      * constructs a new array using the given number of bits as segmentation key (in the range 10 to 30)
      *
-     * @param bits
-     * @throws java.io.IOException
-     */
+	 */
     public XIntArray(byte bits) {
         segments = new int[0][];
         SEGMENT_BITS = bits;
@@ -89,9 +86,7 @@ public class XIntArray {
     /**
      * put a value
      *
-     * @param index
-     * @param value
-     */
+	 */
     public void put(long index, int value) {
         final int segment = (int) (index >>> SEGMENT_BITS);
         final int position = (int) (index & SEGMENT_MASK);
@@ -113,9 +108,7 @@ public class XIntArray {
     /**
      * put a value, If the index is larger than current maxIndex(), increases length of array
      *
-     * @param index
-     * @param value
-     */
+	 */
     public void putAndEnsureCapacity(long index, int value) {
         int segment = (int) (index >>> SEGMENT_BITS);
         int position = (int) (index & SEGMENT_MASK);
@@ -143,7 +136,6 @@ public class XIntArray {
     /**
      * get a value, no checks, assumes that all entries have been set
      *
-     * @param index
      * @return value
      */
     private int get(long index) {
@@ -157,7 +149,6 @@ public class XIntArray {
     /**
      * gets a value, returns 0 if too big
      *
-     * @param index
      * @return value or 0
      */
     public int getEvenIfTooBig(long index) {
@@ -187,7 +178,6 @@ public class XIntArray {
     /**
      * returns the first n values
      *
-     * @param n
      * @return first n values as string
      */
 
@@ -214,8 +204,7 @@ public class XIntArray {
     /**
      * write to stream in binary
      *
-     * @param outs
-     */
+	 */
     public void write(OutputWriter outs) throws IOException {
         for (long index = 0; index < maxIndex; index++) {
             outs.writeInt(get(index));

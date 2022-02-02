@@ -71,9 +71,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
     /**
      * read from an RMA3 file
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     public void read(IInputReader reader, long startPos) throws IOException {
         reader.seek(startPos);
         setFormatDef(reader.readString());
@@ -104,10 +102,7 @@ public class FileFooterRMA3 extends BaseRMA3 {
     /**
      * write to an RMA3 file
      *
-     * @param writer
-     * @return location of fileFooter in file
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer) throws IOException {
         writer.writeString(getFormatDef());
 

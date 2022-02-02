@@ -34,8 +34,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * constructor
      *
-     * @param numberOfClassifications
-     */
+	 */
     @SuppressWarnings("unchecked")
     public UpdateItemList(int numberOfClassifications) {
         super();
@@ -53,9 +52,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * add an item
      *
-     * @param readUid
-     * @param classIds
-     */
+	 */
     public void addItem(final long readUid, float readWeight, final int[] classIds) throws IOException {
         if (classIds.length != numberOfClassifications)
             throw new IOException("classIds has wrong length: " + classIds.length + ", should be: " + numberOfClassifications);
@@ -90,8 +87,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * get the weighted size of a class for a given classification
      *
-     * @param classificationId
-     * @param classId
      * @return size of class
      */
     public float getWeight(int classificationId, int classId) {
@@ -106,7 +101,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * gets the mapping of class ids to sizes for a given classification
      *
-     * @param classificationId
      * @return class-id to size map
      */
     public Map<Integer, Float> getClassIdToWeightMap(int classificationId) {
@@ -116,8 +110,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * get the first UpdateItem for a given classification and class
      *
-     * @param classificationId
-     * @param classId
      * @return first
      */
     public UpdateItem getFirst(int classificationId, int classId) {
@@ -127,10 +119,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * set  the first UpdateItem for a given classification and class
      *
-     * @param classificationId
-     * @param classId
-     * @param item
-     */
+	 */
     private void setFirst(int classificationId, int classId, UpdateItem item) {
         first[classificationId].put(classId, item);
     }
@@ -138,8 +127,6 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * get the last UpdateItem for a given classification and class
      *
-     * @param classificationId
-     * @param classId
      * @return first
      */
     private UpdateItem getLast(int classificationId, int classId) {
@@ -150,10 +137,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * set the last UpdateItem for a given classification and class
      *
-     * @param classificationId
-     * @param classId
-     * @param item
-     */
+	 */
     private void setLast(int classificationId, int classId, UpdateItem item) {
         last[classificationId].put(classId, item);
     }
@@ -161,9 +145,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * gets the set of class ids defined for a given classification
      *
-     * @param classificationId
-     * @return
-     */
+	 */
     public Set<Integer> getClassIds(int classificationId) {
         return first[classificationId].keySet();
     }
@@ -171,9 +153,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * remove the given class from the given classification
      *
-     * @param classificationId
-     * @param classId
-     */
+	 */
     private void removeClass(int classificationId, int classId) {
         first[classificationId].put(classId, null);
         first[classificationId].remove(classId);
@@ -186,10 +166,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
     /**
      * append the src class to the target class
      *
-     * @param classificationId
-     * @param srcClassId
-     * @param tarClassId
-     */
+	 */
     public void appendClass(int classificationId, int srcClassId, int tarClassId) {
         float newSize = getWeight(classificationId, srcClassId) + getWeight(classificationId, tarClassId);
 
@@ -233,9 +210,7 @@ public class UpdateItemList extends LinkedList<UpdateItem> {
      * which the reads occur in the file, for a given classId.
      * This is useful for when we extract all reads for a given classId, as then we go through the file sequentially
      *
-     * @param classificationId
-     * @param classId
-     */
+	 */
     private void sortChain(int classificationId, int classId) {
         // sort all UpdateItems by readUid:
         final ArrayList<UpdateItem> sorted = new ArrayList<>(100000);

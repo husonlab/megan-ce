@@ -29,9 +29,6 @@ class PackedSequence {
     /**
      * read packed sequence from buffer
      *
-     * @param buffer
-     * @param query_len
-     * @param bits
      * @return packed sequence
      */
     public static byte[] readPackedSequence(ByteInputBuffer buffer, int query_len, int bits) {

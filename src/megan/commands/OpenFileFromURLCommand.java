@@ -37,8 +37,7 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -56,8 +55,7 @@ public class OpenFileFromURLCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         String result = JOptionPane.showInputDialog((getViewer() != null ? getViewer().getFrame() : null), "Paste MeganServer file URL:");

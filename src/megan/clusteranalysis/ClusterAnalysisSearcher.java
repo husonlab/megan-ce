@@ -57,8 +57,7 @@ public class ClusterAnalysisSearcher implements IObjectSearcher {
     /**
      * setup the  searcher
      *
-     * @param clusterViewer
-     */
+	 */
     private void setup(ClusterViewer clusterViewer) {
         this.clusterViewer = clusterViewer;
         updateCurrent();

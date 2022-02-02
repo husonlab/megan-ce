@@ -38,9 +38,7 @@ public class ConnectorCombiner implements IConnector {
     /**
      * constructor
      *
-     * @param fileNames
-     * @throws IOException
-     */
+	 */
     public ConnectorCombiner(ArrayList<String> fileNames) throws IOException {
         System.err.println("Using experimental comparison data access");
         final ArrayList<IConnector> list = new ArrayList<>();

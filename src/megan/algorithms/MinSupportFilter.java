@@ -46,10 +46,7 @@ public class MinSupportFilter {
     /**
      * constructor
      *
-     * @param id2weight
-     * @param minSupport
-     * @param progress
-     */
+	 */
     public MinSupportFilter(String cName, Map<Integer, Float> id2weight, int minSupport, final ProgressListener progress) {
         this.id2weight = id2weight;
         this.minSupport = minSupport;
@@ -88,8 +85,6 @@ public class MinSupportFilter {
     /**
      * recursively move all reads that land on taxa with too little support or on a disabled taxon to higher level nodes
      *
-     * @param v
-     * @param orphan2AncestorMapping
      * @param orphans                nodes that have too few reads
      * @return reads on or below this node
      */

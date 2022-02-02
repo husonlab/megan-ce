@@ -170,8 +170,7 @@ public class CompareCommand extends CommandBase implements ICommand {
     /**
      * display the dialog and then execute the command entered, if any
      *
-     * @param event
-     */
+	 */
     public void actionPerformed(ActionEvent event) {
         final Director newDir = Director.newProject();
 

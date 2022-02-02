@@ -48,10 +48,7 @@ public class ReferencesAnnotator {
     /**
      * merge RMA files
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -72,10 +69,7 @@ public class ReferencesAnnotator {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 

@@ -93,7 +93,6 @@ public class MeganProperties {
     /**
      * sets the program properties
      *
-     * @param propertiesFile
      */
     public static void initializeProperties(String propertiesFile) {
         ProgramProperties.setPropertiesFileName(propertiesFile);
@@ -158,7 +157,6 @@ public class MeganProperties {
     /**
      * add a file to the recent files list
      *
-     * @param pathName
      */
     public static void addRecentFile(String pathName) {
         int maxRecentFiles = ProgramProperties.get(MAXRECENTFILES, 20);
@@ -215,7 +213,6 @@ public class MeganProperties {
     /**
      * add recent file listener
      *
-     * @param listener
      */
     public static void addPropertiesListListener(PropertiesListListener listener) {
         if (!propertieslistListeners.contains(listener)) {
@@ -228,7 +225,6 @@ public class MeganProperties {
     /**
      * remove recent file listener
      *
-     * @param listener
      */
     public static void removePropertiesListListener(PropertiesListListener listener) {
         synchronized (propertieslistListeners) {

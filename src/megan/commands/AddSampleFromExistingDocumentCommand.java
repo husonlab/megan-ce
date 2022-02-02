@@ -114,8 +114,7 @@ public class AddSampleFromExistingDocumentCommand extends CommandBase implements
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

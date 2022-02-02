@@ -52,8 +52,7 @@ public class SubjectJTable {
     /**
      * Constructor
      *
-     * @param viewer
-     */
+	 */
     public SubjectJTable(TimeSeriesViewer viewer) {
         this.viewer = viewer;
         this.dir = viewer.getDirector();

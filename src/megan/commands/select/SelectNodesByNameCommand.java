@@ -60,8 +60,7 @@ public class SelectNodesByNameCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         String result = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter name", "Select Node", JOptionPane.QUESTION_MESSAGE);

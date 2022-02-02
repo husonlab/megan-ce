@@ -55,8 +55,7 @@ public class ReadBlockRMA2Formatter {
     /**
      * constructs an instance and sets to the given format
      *
-     * @param format
-     */
+	 */
     public ReadBlockRMA2Formatter(String format) {
         this.format = format;
         decode(format);
@@ -95,9 +94,7 @@ public class ReadBlockRMA2Formatter {
     /**
      * read the fixed part of the reads block
      *
-     * @param dataIndexReader
-     * @throws java.io.IOException
-     */
+	 */
     public void read(IInputReader dataIndexReader) throws IOException {
         for (Object[] dataRecord : data) {
             switch ((Character) dataRecord[1]) {
@@ -115,9 +112,7 @@ public class ReadBlockRMA2Formatter {
     /**
      * write the fixed part of the reads block
      *
-     * @param indexWriter
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter indexWriter) throws IOException {
         for (Object[] dataRecord : data) {
             switch ((Character) dataRecord[1]) {
@@ -135,7 +130,6 @@ public class ReadBlockRMA2Formatter {
     /**
      * get the value for a name
      *
-     * @param name
      * @return value
      */
     public Object get(String name) {
@@ -145,9 +139,7 @@ public class ReadBlockRMA2Formatter {
     /**
      * set the value for a name. Does not check that value is of correct type!
      *
-     * @param name
-     * @param value
-     */
+	 */
     public void put(String name, Object value) {
         name2data.get(name)[2] = value;
     }

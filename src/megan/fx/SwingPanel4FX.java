@@ -114,8 +114,7 @@ public class SwingPanel4FX<C> {
     /**
      * schedule to be run in swing thread once initialization is complete
      *
-     * @param runnable
-     */
+	 */
     public void runLaterInSwing(Runnable runnable) {
         lock.lock();
         try {

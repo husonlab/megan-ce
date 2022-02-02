@@ -97,8 +97,7 @@ public class DAAHeader {
     /**
      * constructor
      *
-     * @param fileName
-     */
+	 */
     public DAAHeader(String fileName) {
         this.fileName = fileName;
     }
@@ -106,8 +105,7 @@ public class DAAHeader {
     /**
      * constructor
      *
-     * @param fileName
-     */
+	 */
     public DAAHeader(String fileName, boolean load) throws IOException {
         this.fileName = fileName;
         if (load)
@@ -117,8 +115,7 @@ public class DAAHeader {
     /**
      * read the header of a DAA file and all reference names
      *
-     * @throws IOException
-     */
+	 */
     public void load() throws IOException {
         if (magicNumber == 0) {
             //System.err.println("Loading DAA header...");
@@ -200,8 +197,7 @@ public class DAAHeader {
     /**
      * load all references from file (if not already loaded)
      *
-     * @throws IOException
-     */
+	 */
     public void loadReferences(boolean loadOnDemand) throws IOException {
         if (references == null) {
             //System.err.println("Loading DAA references...");
@@ -239,11 +235,8 @@ public class DAAHeader {
     /**
      * get a reference header
      *
-     * @param i
-     * @param ins
      * @return reference header
-     * @throws IOException
-     */
+	 */
     public byte[] getReference(final int i, final InputReaderLittleEndian ins) throws IOException {
         if (references[i] != null)
             return references[i];
@@ -270,8 +263,7 @@ public class DAAHeader {
     /**
      * load all reference annotations from file
      *
-     * @throws IOException
-     */
+	 */
     public void loadRefAnnotations() throws IOException {
         numberOfRefAnnotations = 0;
         refAnnotationIndexForTaxonomy = -1;
@@ -471,7 +463,6 @@ public class DAAHeader {
     /**
      * get the first index for the given blockType, or -1, if not found
      *
-     * @param blockType
      * @return index or -1
      */
     public int getIndexForBlockType(BlockType blockType) {
@@ -517,7 +508,6 @@ public class DAAHeader {
     /**
      * gets the index assigned to a named reference annotation
      *
-     * @param cName
      * @return index
      */
     public int getRefAnnotationIndex(String cName) {
@@ -535,8 +525,6 @@ public class DAAHeader {
     /**
      * returns the reference annotation for a given reference annotation index and a given refNumber
      *
-     * @param refAnnotationIndex
-     * @param refNumber
      * @return reference annotation
      */
     public int getRefAnnotation(int refAnnotationIndex, int refNumber) {
@@ -573,8 +561,7 @@ public class DAAHeader {
     /**
      * read the header of a DAA file and all reference names
      *
-     * @throws IOException
-     */
+	 */
     public void save() throws IOException {
         try (OutputWriterLittleEndian outs = new OutputWriterLittleEndian(new FileRandomAccessReadWriteAdapter(fileName, "rw"))) {
             outs.writeLong(magicNumber);
@@ -621,7 +608,6 @@ public class DAAHeader {
     /**
      * compute the bit score from a raw score
      *
-     * @param rawScore
      * @return bitscore
      */
     public float computeAlignmentBitScore(int rawScore) {
@@ -631,8 +617,6 @@ public class DAAHeader {
     /**
      * compute expected value
      *
-     * @param queryLength
-     * @param rawScore
      * @return expected
      */
     public float computeAlignmentExpected(int queryLength, int rawScore) {

@@ -50,8 +50,7 @@ public class TaxonomyData {
     /**
      * set the taxonomy classification
      *
-     * @param taxonomyClassification
-     */
+	 */
     public static void setTaxonomyClassification(Classification taxonomyClassification) {
         TaxonomyData.taxonomyClassification = taxonomyClassification;
     }
@@ -86,7 +85,6 @@ public class TaxonomyData {
     /**
      * is this taxon, or one of its ancestors, disabled? Taxa that are disabled are ignored by LCA algorithm
      *
-     * @param taxonId
      * @return true, if disabled
      */
     public static boolean isTaxonDisabled(String cName, Integer taxonId) {
@@ -96,7 +94,6 @@ public class TaxonomyData {
     /**
      * is this taxon, or one of its ancestors, disabled? Taxa that are disabled are ignored by LCA algorithm
      *
-     * @param taxonId
      * @return true, if disabled
      */
     public static boolean isTaxonDisabled(Integer taxonId) {
@@ -126,7 +123,6 @@ public class TaxonomyData {
     /**
      * gets the closest ancestor that has a major rank
      *
-     * @param id
      * @return rank of this node, if is major, otherwise of closest ancestor
      */
     public static int getLowestAncestorWithMajorRank(Integer id) {
@@ -167,8 +163,6 @@ public class TaxonomyData {
     /**
      * returns the LCA of a set of taxon ids
      *
-     * @param taxonIds
-     * @param removeAncestors
      * @return id
      */
     public static int getLCA(Set<Integer> taxonIds, boolean removeAncestors) {
@@ -203,7 +197,6 @@ public class TaxonomyData {
     /**
      * get the path string associated with a taxon
      *
-     * @param taxId
      * @return path string or null
      */
     public static String getPath(int taxId, boolean majorRanksOnly) {
@@ -265,7 +258,6 @@ public class TaxonomyData {
     /**
      * gets the path, or id, if path not found
      *
-     * @param taxId
      * @return path or id
      */
     public static String getPathOrId(int taxId, boolean majorRanksOnly) {
@@ -277,8 +269,7 @@ public class TaxonomyData {
      * set total set of disabled nodes from a set of disabled nodes. This is used to set all disabled node from
      * the representation saved in the preferrences file
      *
-     * @param internal
-     */
+	 */
     public static void setDisabledInternalTaxa(Set<Integer> internal) {
         final Node root = taxonomyClassification.getFullTree().getRoot();
         if (root != null)
@@ -288,10 +279,7 @@ public class TaxonomyData {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param internalDisabledIds
-     * @param disable
-     */
+	 */
     private static void setDisabledInternalTaxaRec(final Node v, final Set<Integer> internalDisabledIds, boolean disable) {
         final int id = (int) v.getInfo();
 
@@ -324,9 +312,7 @@ public class TaxonomyData {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param internalDisabledIds
-     */
+	 */
     private static void getDisabledFromInternalTaxaRec(Node v, Set<Integer> internalDisabledIds) {
         final int id = (int) v.getInfo();
 

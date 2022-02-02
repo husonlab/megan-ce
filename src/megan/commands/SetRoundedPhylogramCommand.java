@@ -48,8 +48,7 @@ public class SetRoundedPhylogramCommand extends CommandBase implements ICheckBox
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set drawer=" + ViewerBase.DiagramType.RoundedPhylogram + ";");
@@ -104,8 +103,7 @@ public class SetRoundedPhylogramCommand extends CommandBase implements ICheckBox
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
 

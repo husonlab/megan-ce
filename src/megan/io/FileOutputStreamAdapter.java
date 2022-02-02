@@ -32,9 +32,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * constructor
      *
-     * @param file
-     * @throws FileNotFoundException
-     */
+	 */
     public FileOutputStreamAdapter(File file) throws FileNotFoundException {
         outs = new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE);
         position = 0;
@@ -43,10 +41,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * constructor
      *
-     * @param file
-     * @param append
-     * @throws FileNotFoundException
-     */
+	 */
     public FileOutputStreamAdapter(File file, boolean append) throws FileNotFoundException {
         outs = new BufferedOutputStream(new FileOutputStream(file, append), BUFFER_SIZE);
         if (append)
@@ -74,8 +69,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * seek, not supported
      *
-     * @param pos
-     */
+	 */
     public void seek(long pos) {
     }
 
@@ -91,9 +85,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * write a byte
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void write(int a) throws IOException {
         outs.write(a);
         position++;
@@ -102,11 +94,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * write bytes
      *
-     * @param bytes
-     * @param offset
-     * @param length
-     * @throws IOException
-     */
+	 */
     public void write(byte[] bytes, int offset, int length) throws IOException {
         outs.write(bytes, offset, length);
         position += length;
@@ -115,8 +103,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * close this stream
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         outs.close();
     }
@@ -124,8 +111,7 @@ public class FileOutputStreamAdapter implements IOutput {
     /**
      * flush the current stream
      *
-     * @throws IOException
-     */
+	 */
     public void flush() throws IOException {
         outs.flush();
     }

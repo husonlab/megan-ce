@@ -49,8 +49,7 @@ public class GapColumnContractor {
     /**
      * compute gap columns for alignment
      *
-     * @param alignment
-     */
+	 */
     public void processAlignment(Alignment alignment) {
         clear();
 
@@ -155,8 +154,7 @@ public class GapColumnContractor {
     /**
      * gets the last original column. Usually larger than the last layout column because of collapsed gaps
      *
-     * @return
-     */
+	 */
     public int getLastOriginalColumn() {
         return originalColumns;
     }
@@ -164,7 +162,6 @@ public class GapColumnContractor {
     /**
      * given an original column (0..length), returns the number of gaps to jump, if any
      *
-     * @param origColumn
      * @return number of gaps to jump, or 0
      */
     public int getJumpBeforeOriginalColumn(int origColumn) {
@@ -178,7 +175,6 @@ public class GapColumnContractor {
     /**
      * given layout column, returns the number of gaps that are jumped, if any
      *
-     * @param layoutCol
      * @return number of gaps jumped, or 0
      */
     public int getJumpBeforeLayoutColumn(int layoutCol) {
@@ -192,7 +188,6 @@ public class GapColumnContractor {
     /**
      * given layout column, returns the number of gaps that are jumped, if any
      *
-     * @param layoutCol
      * @return number of gaps jumped, or 0
      */
     public int getTotalJumpBeforeLayoutColumn(int layoutCol) {

@@ -25,7 +25,6 @@ public interface IClassificationBlock {
     /**
      * get the number associated with a key
      *
-     * @param key
      * @return number
      */
     int getSum(Integer key);
@@ -33,15 +32,12 @@ public interface IClassificationBlock {
     /**
      * set the number associated with a key -> just set not write to disk
      *
-     * @param key
-     * @param num
-     */
+	 */
     void setSum(Integer key, int num);
 
     /**
      * get the weighted number associated with a key
      *
-     * @param key
      * @return number
      */
     float getWeightedSum(Integer key);
@@ -49,9 +45,7 @@ public interface IClassificationBlock {
     /**
      * set the weighted sum
      *
-     * @param key
-     * @param num
-     */
+	 */
     void setWeightedSum(Integer key, float num);
 
     /**
@@ -64,8 +58,7 @@ public interface IClassificationBlock {
     /**
      * set the name of this classification
      *
-     * @param name
-     */
+	 */
     void setName(String name);
 
     /**

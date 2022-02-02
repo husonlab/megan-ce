@@ -30,8 +30,7 @@ public class AssignmentUsingBestHitCreator implements IAssignmentAlgorithmCreato
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public AssignmentUsingBestHitCreator(String cName, String fileName) {
         this.cName = cName;
         this.fileName = fileName;

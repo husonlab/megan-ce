@@ -47,11 +47,6 @@ public class SimpleAligner4DNA {
     /**
      * compute a semi-global alignment between the query and the reference
      *
-     * @param query
-     * @param reference
-     * @param queryPos
-     * @param refPos
-     * @param seedLength
      * @return true, if alignment found
      */
     private boolean computeAlignment(byte[] query, byte[] reference, int queryPos, int refPos, int seedLength) {
@@ -62,11 +57,7 @@ public class SimpleAligner4DNA {
     /**
      * set the parameters
      *
-     * @param matchScore
-     * @param mismatchScore
-     * @param gapOpenPenality
-     * @param gapExtensionPenality
-     */
+	 */
     public void setAlignmentParameters(int matchScore, int mismatchScore, int gapOpenPenality, int gapExtensionPenality) {
         alignerOptions.setScoringMatrix(new DNAScoringMatrix(matchScore, mismatchScore));
         alignerOptions.setGapOpenPenalty(gapOpenPenality);
@@ -76,8 +67,7 @@ public class SimpleAligner4DNA {
     /**
      * get the min score to be attained
      *
-     * @return
-     */
+	 */
     public int getMinRawScore() {
         return minRawScore;
     }
@@ -85,8 +75,7 @@ public class SimpleAligner4DNA {
     /**
      * set the min raw score
      *
-     * @param minRawScore
-     */
+	 */
     public void setMinRawScore(int minRawScore) {
         this.minRawScore = minRawScore;
     }
@@ -94,8 +83,7 @@ public class SimpleAligner4DNA {
     /**
      * get the min percent identity
      *
-     * @return
-     */
+	 */
     private float getMinPercentIdentity() {
         return minPercentIdentity;
     }
@@ -103,8 +91,7 @@ public class SimpleAligner4DNA {
     /**
      * set the min identity
      *
-     * @param minPercentIdentity
-     */
+	 */
     public void setMinPercentIdentity(float minPercentIdentity) {
         this.minPercentIdentity = minPercentIdentity;
     }
@@ -112,9 +99,6 @@ public class SimpleAligner4DNA {
     /**
      * gets a position of the query in the reference, or reference.length if not contained
      *
-     * @param query
-     * @param reference
-     * @param queryMustBeContained
      * @return pos or reference.length
      */
     private int getPositionInReference(byte[] query, byte[] reference, boolean queryMustBeContained) {
@@ -153,8 +137,6 @@ public class SimpleAligner4DNA {
     /**
      * gets the overlap type of the query in the reference
      *
-     * @param query
-     * @param reference
      * @param overlap   length
      * @return type
      */

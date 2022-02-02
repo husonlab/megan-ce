@@ -40,9 +40,7 @@ public class SortReadsAlphabeticallyCommand extends CommandBase implements IChec
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set sortreads=");
@@ -67,8 +65,7 @@ public class SortReadsAlphabeticallyCommand extends CommandBase implements IChec
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         executeImmediately("set sortreads=" + (isSelected() ? "no" : "alphabetically") + ";");

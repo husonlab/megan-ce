@@ -55,8 +55,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * constructor
      *
-     * @param name2IdMap
-     */
+	 */
     public ClassificationFullTree(String cName, Name2IdMap name2IdMap) {
         this.name2IdMap = name2IdMap;
         this.setName(cName);
@@ -75,9 +74,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * load the tree from a file
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public void loadFromFile(String fileName) throws IOException {
         clear();
 
@@ -197,9 +194,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * save to file
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public void saveToFile(String fileName) throws IOException {
         System.err.println("Saving tree to file: " + fileName);
         try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName))) {
@@ -212,10 +207,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * extract the induced tree
      *
-     * @param id2data
-     * @param collapsedIds
-     * @param targetTree
-     */
+	 */
     public void extractInducedTree(Map<Integer, NodeData> id2data, Set<Integer> collapsedIds, PhyloTree targetTree, Map<Integer, Set<Node>> targetId2Nodes) {
         final Map<Integer, Float> id2count = new HashMap<>();
         for (Integer id : id2data.keySet()) {
@@ -265,9 +257,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * label all nodes in tree that we must keep in induced tree
      *
-     * @param v
-     * @param ids
-     * @param keep
      * @return true, if node v is to be kept
      */
     private boolean labelToKeepRec(Node v, Set<Integer> ids, NodeSet keep) {
@@ -290,12 +279,8 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * induce the tree
      *
-     * @param v
-     * @param vCpy
-     * @param keep
      * @param stopIds   don't induce below these ids
-     * @param node2copy
-     */
+	 */
     private void induceRec(Node v, Node vCpy, PhyloTree treeCpy, NodeSet keep, Set<Integer> stopIds, Map<Integer, NodeData> id2data, Map<Node, Node> node2copy) {
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             Node w = e.getTarget();
@@ -328,9 +313,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * modify the given set of collapsedIds so that the toUncollapse ids are uncollapsed
      *
-     * @param toUncollapse
-     * @param collapsedIds
-     */
+	 */
     public void uncollapse(Set<Integer> toUncollapse, Set<Integer> collapsedIds) {
         Set<Integer> newCollapsed = new HashSet<>();
 
@@ -350,8 +333,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * computes the id2data map
      *
-     * @param id2counts
-     */
+	 */
     public void computeId2Data(int numberOfDatasets, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
         id2data.clear();
         if (id2counts != null) {
@@ -366,10 +348,6 @@ public class ClassificationFullTree extends PhyloTree {
      * recursively computes the classification-id 2 assigned and classification-id 2 summarized maps.
      * Use this when classification contains same leaves more than once
      *
-     * @param numberOfDataSets
-     * @param v
-     * @param id2counts
-     * @param id2idsBelow
      * @return set of classification-ids on or below node v
      */
     private Set<Integer> computeId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, Set<Integer>> id2idsBelow, Map<Integer, NodeData> id2data) {
@@ -421,10 +399,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * recursively computes the taxon-id 2 assigned and taxon-id 2 summarized maps
      *
-     * @param numberOfDataSets
-     * @param v
-     * @param id2counts
-     */
+	 */
     private void computeTaxonomyId2DataRec(int numberOfDataSets, Node v, Map<Integer, float[]> id2counts, Map<Integer, NodeData> id2data) {
         int taxonomyId = (Integer) v.getInfo();
 
@@ -473,7 +448,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * get all descendants of a id (including the id itself
      *
-     * @param id
      * @return all descendant ids
      */
     public Set<Integer> getAllDescendants(int id) {
@@ -485,7 +459,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * does the node contain this id
      *
-     * @param id
      * @return true, if id is contained
      */
     private boolean containsId(int id) {
@@ -495,7 +468,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * get all descendants of a set of f ids (including the ids themselves
      *
-     * @param ids
      * @return ids and all descendants
      */
     public Set<Integer> getAllDescendants(Set<Integer> ids) {
@@ -507,10 +479,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * recursively add all descendants to a set
      *
-     * @param v
-     * @param add
-     * @param set
-     */
+	 */
     private void getAllDescendantsRec(Node v, boolean add, Set<Integer> set) {
         if (!add && set.contains(v.getInfo()))
             add = true;
@@ -524,7 +493,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * get all parents for a given id. There can be more than one parent because an id can appear on more than one node
      *
-     * @param classId
      * @return all ids of all parents
      */
     public Set<Integer> getAllParents(int classId) {
@@ -541,8 +509,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * returns the child of classV that is above classW
      *
-     * @param classV
-     * @param classW
      * @return child of classV that is above classW, or 0, if not found
      */
     public int getChildAbove(int classV, int classW) {
@@ -568,7 +534,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * gets all nodes associated with a given f id
      *
-     * @param id
      * @return nodes
      */
     public Set<Node> getNodes(int id) {
@@ -587,7 +552,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * get a node associated with this id
      *
-     * @param id
      * @return a node
      */
     public Node getANode(int id) {
@@ -614,7 +578,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * gets the LCA of a set of ids
      *
-     * @param ids
      * @return LCA
      */
     public Integer getLCA(Set<Integer> ids) {
@@ -631,8 +594,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * is the class below a descendant of the class above?
      *
-     * @param idAbove
-     * @param idBelow
      * @return true, if idAbove an ancestor of idBelow
      */
     public boolean isDescendant(Integer idAbove, Integer idBelow) {
@@ -661,7 +622,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * gets the address for an id
      *
-     * @param id
      * @return address
      */
     public String getAddress(int id) {
@@ -671,7 +631,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * gets the id for an address
      *
-     * @param address
      * @return id
      */
     public int getAddress2Id(String address) {
@@ -682,7 +641,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * get all nodes at the given level (i.e. distance from root)
      *
-     * @param level
      * @return set of nodes
      */
     public Set<Integer> getAllAtLevel(int level) {
@@ -694,12 +652,7 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param current
-     * @param level
-     * @param result
-     * @return number added
-     */
+	 */
     private void getAllAtLevelRec(Node v, int current, int level, Set<Integer> result) {
         if (current == level) {
             result.add((Integer) v.getInfo());
@@ -713,7 +666,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * gets all nodes of given rank
      *
-     * @param rank
      * @param closure if true, compute closure
      * @return result
      */
@@ -726,10 +678,6 @@ public class ClassificationFullTree extends PhyloTree {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param rank
-     * @param result
-     * @param closure
      * @return true, if node found below
      */
     private boolean getNodesAtGivenRankRec(final Node v, final Integer rank, final Set<Integer> result, final boolean closure) {

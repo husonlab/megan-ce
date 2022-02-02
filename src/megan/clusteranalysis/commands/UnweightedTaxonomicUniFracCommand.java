@@ -82,8 +82,7 @@ public class UnweightedTaxonomicUniFracCommand extends CommandBase implements IC
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + UniFrac.UnweightedUniformUniFrac + ";");
     }

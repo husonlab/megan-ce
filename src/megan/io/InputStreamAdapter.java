@@ -43,10 +43,8 @@ public class InputStreamAdapter implements IInput {
     /**
      * skip some bytes
      *
-     * @param bytes
      * @return number of bytes skipped
-     * @throws java.io.IOException
-     */
+	 */
     public int skipBytes(int bytes) throws IOException {
         int skipped = (int) ins.skip(bytes);
         position += skipped;
@@ -56,12 +54,8 @@ public class InputStreamAdapter implements IInput {
     /**
      * read some bytes
      *
-     * @param bytes
-     * @param offset
-     * @param len
      * @return number of bytes read
-     * @throws IOException
-     */
+	 */
     public int read(byte[] bytes, int offset, int len) throws IOException {
         int count = ins.read(bytes, offset, len);
         position += count;

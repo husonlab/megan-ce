@@ -59,8 +59,7 @@ public class AxisPanel extends BasePanel {
     /**
      * paint
      *
-     * @param g
-     */
+	 */
     public void paint(Graphics g) {
         super.paint(g);
         paintAxis(g);
@@ -166,8 +165,7 @@ public class AxisPanel extends BasePanel {
     /**
      * paint the selection rectangle
      *
-     * @param g0
-     */
+	 */
     private void paintSelection(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         SelectedBlock selectedBlock = getSelectedBlock();

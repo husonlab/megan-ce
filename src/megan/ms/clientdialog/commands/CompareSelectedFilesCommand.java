@@ -42,9 +42,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
@@ -81,8 +79,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute(getSyntax());
@@ -91,9 +88,7 @@ public class CompareSelectedFilesCommand extends CommandBase implements ICommand
     /**
      * get id of open file
      *
-     * @param fileName
-     * @return
-     */
+	 */
     private int getPID(String fileName) {
         for (final IDirector iDir : ProjectManager.getProjects()) {
             Director dir = (Director) iDir;

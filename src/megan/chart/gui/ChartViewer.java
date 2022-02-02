@@ -125,12 +125,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * constructor
      *
-     * @param parentViewer
-     * @param dir
-     * @param seriesLabelGetter
-     * @param chartData
-     * @param useGUI
-     */
+	 */
     public ChartViewer(IDirectableViewer parentViewer, final Director dir, final ILabelGetter seriesLabelGetter, IData chartData, boolean useGUI) {
         this.parentViewer = parentViewer;
         this.dir = dir;
@@ -459,9 +454,6 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * performs selection in legend panel
      *
-     * @param legendPanel
-     * @param point
-     * @param chartSelection
      * @return true if something changed
      */
     private boolean selectByMouseInLegendPanel(LegendPanel legendPanel, Point point, ChartSelection chartSelection) {
@@ -496,10 +488,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * zoom in or out (making panel larger or smaller)
      *
-     * @param factorX
-     * @param factorY
-     * @param center
-     */
+	 */
     public void zoom(float factorX, float factorY, Point center) {
         if (getChartDrawer().isXYLocked()) {
             if (factorX == 1)
@@ -530,8 +519,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * update scroll pane after zoom to keep centered on mouse position
      *
-     * @return true, if ok to paint
-     */
+	 */
     private void updateScrollPane() {
         if (chartDrawer.getScrollBackReferenceRect() != null) {
             chartDrawer.computeScrollBackReferenceRect();
@@ -762,8 +750,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         isUptoDate = flag;
     }
@@ -1126,8 +1113,7 @@ public class ChartViewer extends JFrame implements IDirectableViewer, IViewerWit
     /**
      * show the legend horizontal, vertical or none
      *
-     * @param showLegend
-     */
+	 */
     public void setShowLegend(String showLegend) {
         this.showLegend = showLegend;
         if (showLegend.equalsIgnoreCase("horizontal")) {

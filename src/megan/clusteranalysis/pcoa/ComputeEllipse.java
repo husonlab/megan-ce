@@ -124,7 +124,6 @@ public class ComputeEllipse {
     /**
      * compute the mean coordinate of a set of points
      *
-     * @param points
      * @return mean
      */
     private static double[] getMean(final double[][] points) {
@@ -147,7 +146,6 @@ public class ComputeEllipse {
      * converts variable description of ellipse to dimensions
      * Based on http://mathworld.wolfram.com/Ellipse.html
      *
-     * @param variables
      * @return dimensions centerX,centerY,lengthAxisA,lengthAxisB,angle
      */
     private static double[] convertVariablesToDimension(final double[] variables) {
@@ -183,7 +181,6 @@ public class ComputeEllipse {
     /**
      * compute an ellipse
      *
-     * @param points
      * @return ellipse
      */
     public static Ellipse computeEllipse(ArrayList<Point2D> points) {
@@ -201,7 +198,6 @@ public class ComputeEllipse {
     /**
      * compute an ellipse
      *
-     * @param points
      * @return ellipse
      */
     public static javafx.scene.shape.Ellipse computeEllipseFX(ArrayList<APoint2D> points) {

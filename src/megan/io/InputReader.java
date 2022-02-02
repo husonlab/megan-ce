@@ -54,9 +54,7 @@ public class InputReader implements IInputReader {
     /**
      * constructor
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public InputReader(File file) throws IOException {
         this(file, null, null, true);
     }
@@ -68,8 +66,7 @@ public class InputReader implements IInputReader {
      * @param start                    start position in file or null
      * @param end                      end position in file or null
      * @param useAbsoluteFilePositions use absolute positions in file rather than relative to start
-     * @throws IOException
-     */
+	 */
     public InputReader(File file, Long start, Long end, boolean useAbsoluteFilePositions) throws IOException {
         if (start == null)
             start = 0L;
@@ -122,9 +119,7 @@ public class InputReader implements IInputReader {
     /**
      * read bytes until next end of line
      *
-     * @return
-     * @throws IOException
-     */
+	 */
     public String readLine() throws IOException {
         StringBuilder buf = new StringBuilder();
         byte b = (byte) read();
@@ -145,9 +140,7 @@ public class InputReader implements IInputReader {
      * reads an archived string
      *
      * @return string
-     * @throws java.io.IOException
-     * @throws java.util.zip.DataFormatException
-     */
+	 */
     public String readString() throws IOException {
         int size = readInt();
         if (Math.abs(size) > 100000000)
@@ -173,9 +166,7 @@ public class InputReader implements IInputReader {
      * reads an archived string
      *
      * @return string
-     * @throws java.io.IOException
-     * @throws java.util.zip.DataFormatException
-     */
+	 */
     public int readString(byte[] tmp, byte[] target) throws IOException {
         int size = readInt();
         if (size > 0) {
@@ -200,10 +191,8 @@ public class InputReader implements IInputReader {
     /**
      * skip some bytes
      *
-     * @param bytes
      * @return number of bytes skipped
-     * @throws java.io.IOException
-     */
+	 */
     public int skipBytes(int bytes) throws IOException {
         return in.skipBytes(bytes);
     }

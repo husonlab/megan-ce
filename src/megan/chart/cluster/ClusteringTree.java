@@ -90,8 +90,7 @@ public class ClusteringTree {
     /**
      * update clustering
      *
-     * @param seriesAndClass2Value
-     */
+	 */
     public void updateClustering(Table<String, String, Double> seriesAndClass2Value) {
         if (!inUpdate) {
             try {
@@ -116,8 +115,7 @@ public class ClusteringTree {
                                 distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenSeries(series[i], series[j], seriesAndClass2Value));
                             }
                         }
-                        break;
-                    }
+					}
                     case CLASSES -> {
                         final String[] classes = seriesAndClass2Value.columnKeySet().toArray(new String[0]);
 
@@ -131,8 +129,7 @@ public class ClusteringTree {
                                 distances.set(i + 1, j + 1, computeCorrelationDistanceBetweenClasses(classes[i], classes[j], seriesAndClass2Value));
                             }
                         }
-                        break;
-                    }
+					}
                     default -> throw new RuntimeException("Invalid case: " + type);
                 }
 
@@ -151,9 +148,7 @@ public class ClusteringTree {
     /**
      * update clustering
      *
-     * @param labels
-     * @param matrix
-     */
+	 */
     public void updateClustering(String[] labels, Table<String, String, Float> matrix) {
         if (!inUpdate) {
             try {
@@ -213,7 +208,6 @@ public class ClusteringTree {
     /**
      * compute order of labels
      *
-     * @param treeView
      * @return labels as ordered in tree
      */
     private static ArrayList<String> getLabelOrder(PhyloTreeView treeView) {
@@ -239,9 +233,6 @@ public class ClusteringTree {
     /**
      * compute correlation distance between two series
      *
-     * @param seriesA
-     * @param seriesB
-     * @param seriesAndClass2Value
      * @return distance
      */
     private static double computeCorrelationDistanceBetweenSeries(String seriesA, String seriesB, Table<String, String, Double> seriesAndClass2Value) {
@@ -259,8 +250,6 @@ public class ClusteringTree {
     /**
      * compute correlation distance between two series
      *
-     * @param seriesA
-     * @param seriesB
      * @return distance
      */
     private static double computeCorrelationDistances(int n, float[] seriesA, float[] seriesB) {
@@ -270,9 +259,6 @@ public class ClusteringTree {
     /**
      * compute correlation distance between two classes
      *
-     * @param classA
-     * @param classB
-     * @param seriesAndClass2Value
      * @return distance
      */
     private static double computeCorrelationDistanceBetweenClasses(String classA, String classB, Table<String, String, Double> seriesAndClass2Value) {
@@ -299,9 +285,7 @@ public class ClusteringTree {
     /**
      * paint the tree
      *
-     * @param gc
-     * @param rect
-     */
+	 */
     public void paint(Graphics2D gc, Rectangle rect) {
         try {
             if (gc instanceof SelectionGraphics) {
@@ -318,9 +302,7 @@ public class ClusteringTree {
     /**
      * paint the tree
      *
-     * @param gc
-     * @param rect
-     */
+	 */
     private void doPaint(Graphics2D gc, Rectangle rect) {
         if (!(gc instanceof SelectionGraphics))
             selectEdgesAbove();
@@ -374,8 +356,7 @@ public class ClusteringTree {
     /**
      * select series or classes
      *
-     * @param rect
-     */
+	 */
     private void select(Rectangle rect, Rectangle selectionRect, int mouseClicks) {
         if (selectionRect == null || chartSelection == null || mouseClicks != 1)
             return;
@@ -461,9 +442,7 @@ public class ClusteringTree {
     /**
      * flip coordinates so as to fit the specified root side
      *
-     * @param treeView
-     * @param rootSide
-     */
+	 */
     private static void flipCoordinates(final PhyloTreeView treeView, final SIDE rootSide) {
         final PhyloTree tree = treeView.getPhyloTree();
         for (Node v = tree.getFirstNode(); v != null; v = tree.getNextNode(v)) {
@@ -488,9 +467,7 @@ public class ClusteringTree {
     /**
      * fit coordinates into rect
      *
-     * @param treeView
-     * @param rect
-     */
+	 */
     private static void fitToRectangle(final PhyloTreeView treeView, final Rectangle rect) {
         final PhyloTree tree = treeView.getPhyloTree();
 

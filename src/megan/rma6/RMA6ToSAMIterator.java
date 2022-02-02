@@ -49,11 +49,7 @@ public class RMA6ToSAMIterator implements ISAMIterator {
     /**
      * constructor
      *
-     * @param classificationName
-     * @param classIds
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RMA6ToSAMIterator(String classificationName, Collection<Integer> classIds, String fileName) throws IOException {
         rma6File = new RMA6File(fileName, "r");
         reader = rma6File.getReader();

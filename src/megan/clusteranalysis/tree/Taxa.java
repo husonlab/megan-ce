@@ -43,7 +43,6 @@ public class Taxa  {
     /**
      * get the t-th taxon (numbered 1-size)
      *
-     * @param t
      * @return name of t-th taxon
      */
     public String getLabel(int t) {
@@ -54,7 +53,6 @@ public class Taxa  {
     /**
      * index of the named taxon, or -1
      *
-     * @param name
      * @return index or -1
      */
     public int indexOf(String name) {
@@ -66,8 +64,7 @@ public class Taxa  {
     /**
      * add the named taxon
      *
-     * @param name
-     */
+	 */
     public void add(String name) {
         if (!name2index.containsKey(name)) {
             ntax++;
@@ -83,7 +80,6 @@ public class Taxa  {
     /**
      * does this taxa object contain the named taxon?
      *
-     * @param name
      * @return true, if contained
      */
     public boolean contains(String name) {
@@ -128,7 +124,6 @@ public class Taxa  {
     /**
      * gets the complement to bit set A
      *
-     * @param A
      * @return complement
      */
     public BitSet getComplement(BitSet A) {
@@ -145,9 +140,7 @@ public class Taxa  {
     /**
      * add all taxa.
      *
-     * @param taxa
-     * @return set of indices
-     */
+	 */
     public void addAll(Taxa taxa) {
         for (Iterator it = taxa.iterator(); it.hasNext(); ) {
             String name = (String) it.next();
@@ -191,8 +184,7 @@ public class Taxa  {
     /**
      * remove this taxon
      *
-     * @param name
-     */
+	 */
     public void remove(String name) {
         Integer tt = name2index.get(name);
         if (tt != null) {

@@ -37,8 +37,7 @@ public class LocationManager {
     /**
      * constructor
      *
-     * @param textStoragePolicy
-     */
+	 */
     public LocationManager(TextStoragePolicy textStoragePolicy) {
         this.textStoragePolicy = textStoragePolicy;
     }
@@ -46,7 +45,6 @@ public class LocationManager {
     /**
      * constructor
      *
-     * @param textStoragePolicy
      * @param fileName          file to add
      */
     public LocationManager(TextStoragePolicy textStoragePolicy, String fileName) {
@@ -58,7 +56,6 @@ public class LocationManager {
     /**
      * gets the id of the file, adds it if not already present
      *
-     * @param file
      * @return id
      */
     public int getFileId(File file) {
@@ -76,8 +73,7 @@ public class LocationManager {
     /**
      * add a file, if not already present
      *
-     * @param file
-     */
+	 */
     public void addFile(File file) {
         getFileId(file);
     }
@@ -85,9 +81,7 @@ public class LocationManager {
     /**
      * add a file, if not already present and explicitly set its size
      *
-     * @param file
-     * @param fileSize
-     */
+	 */
     public void addFile(File file, Long fileSize) {
         int fileId = getFileId(file);
         if (fileSize != null)
@@ -97,9 +91,7 @@ public class LocationManager {
     /**
      * get the file associated with the given id
      *
-     * @param fileId
-     * @return
-     */
+	 */
     public File getFile(int fileId) {
         return files.get(fileId);
     }

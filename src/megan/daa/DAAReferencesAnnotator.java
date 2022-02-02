@@ -49,8 +49,7 @@ class DAAReferencesAnnotator {
     /**
      * add reference annotations to a DAA file
      *
-     * @throws IOException
-     */
+	 */
     public static void apply(String daaFile, boolean doTaxonomy, Collection<String> cNames0, final ProgressListener progress) throws IOException {
         DAAModifier.removeAllMEGANData(daaFile);
 

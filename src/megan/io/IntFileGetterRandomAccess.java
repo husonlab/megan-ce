@@ -33,9 +33,7 @@ public class IntFileGetterRandomAccess extends RandomAccessFile implements IIntG
     /**
      * constructor
      *
-     * @param file
-     * @throws FileNotFoundException
-     */
+	 */
     public IntFileGetterRandomAccess(File file) throws FileNotFoundException {
         super(file, "r");
     }
@@ -43,7 +41,6 @@ public class IntFileGetterRandomAccess extends RandomAccessFile implements IIntG
     /**
      * get an int from the given location
      *
-     * @param index
      * @return int
      */
     @Override
@@ -68,8 +65,7 @@ public class IntFileGetterRandomAccess extends RandomAccessFile implements IIntG
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         try {

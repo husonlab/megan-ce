@@ -28,7 +28,6 @@ public interface IByteGetter extends AutoCloseable {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     int get(long index) throws IOException;
@@ -36,18 +35,12 @@ public interface IByteGetter extends AutoCloseable {
     /**
      * bulk get
      *
-     * @param index
-     * @param bytes
-     * @param offset
-     * @param len
-     * @return
-     */
+	 */
     int get(long index, byte[] bytes, int offset, int len) throws IOException;
 
     /**
      * gets next four bytes as a single integer
      *
-     * @param index
      * @return integer
      */
     int getInt(long index) throws IOException;
@@ -56,8 +49,7 @@ public interface IByteGetter extends AutoCloseable {
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     long limit();
 
     /**

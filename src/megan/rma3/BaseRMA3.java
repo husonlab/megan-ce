@@ -35,8 +35,7 @@ public abstract class BaseRMA3 {
     /**
      * constructor
      *
-     * @param formatDef
-     */
+	 */
     public BaseRMA3(String formatDef) {
         setFormatDef(formatDef);
     }

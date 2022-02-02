@@ -37,8 +37,7 @@ public class NNetTab extends TreeTabBase implements ITab {
     /**
      * constructor
      *
-     * @param clusterViewer
-     */
+	 */
     public NNetTab(final ClusterViewer clusterViewer) {
         super(clusterViewer);
 
@@ -59,10 +58,7 @@ public class NNetTab extends TreeTabBase implements ITab {
     /**
      * sync
      *
-     * @param taxa
-     * @param distances
-     * @throws Exception
-     */
+	 */
     public void compute(Taxa taxa, Distances distances) throws Exception {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());

@@ -45,8 +45,7 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * constructor
      *
-     * @param baseDrawer
-     */
+	 */
     public MultiChartDrawer(IMultiChartDrawable baseDrawer) {
         super();
         this.baseDrawer = baseDrawer;
@@ -62,8 +61,7 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw chart in which colors are by series
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         //if(sgc!=null) lastDown=(Rectangle)sgc.getSelectionRectangle().clone();
@@ -164,8 +162,7 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw chart with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         int numberOfPanels = getChartData().getNumberOfClasses();
@@ -261,16 +258,14 @@ public class MultiChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     protected void drawXAxis(Graphics2D gc) {
     }
 
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
     }
 

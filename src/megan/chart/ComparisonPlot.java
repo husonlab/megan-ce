@@ -58,10 +58,7 @@ public class ComparisonPlot extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     * @param parent
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public ComparisonPlot(final Director dir, ClassificationViewer parent) throws CanceledException {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultPlot2DData(), ProgramProperties.isUseGUI());
         viewer = parent;
@@ -159,10 +156,8 @@ public class ComparisonPlot extends ChartViewer {
     /**
      * compute sample vs sample data
      *
-     * @param progressListener
      * @return values for 10-100 percent, for each dataset in the document
-     * @throws jloda.util.CanceledException
-     */
+	 */
     private Map<String, Collection<Pair<Number, Number>>> computeCounts(Document doc, ViewerBase viewer, ProgressListener progressListener) throws CanceledException {
         progressListener.setTasks(cName + " vs " + cName, "Sampling from current leaves");
         progressListener.setMaximum(11L * doc.getNumberOfSamples());
@@ -192,7 +187,6 @@ public class ComparisonPlot extends ChartViewer {
     /**
      * computes the Pearson's correlation for a list of pairs
      *
-     * @param pairs
      * @return r
      */
     private static double computePearsonsCorrelation(Collection<Pair<Number, Number>> pairs) {

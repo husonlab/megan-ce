@@ -44,9 +44,7 @@ public class Split implements Comparable, Comparator {
     /**
      * constructor
      *
-     * @param A
-     * @param B
-     */
+	 */
     public Split(BitSet A, BitSet B) {
         this(A, B, 1, 1);
     }
@@ -54,10 +52,7 @@ public class Split implements Comparable, Comparator {
     /**
      * constructor
      *
-     * @param A
-     * @param B
-     * @param weight
-     */
+	 */
     public Split(BitSet A, BitSet B, double weight) {
         this(A, B, weight, 1);
     }
@@ -65,10 +60,7 @@ public class Split implements Comparable, Comparator {
     /**
      * constructor
      *
-     * @param A
-     * @param B
-     * @param weight
-     */
+	 */
     public Split(BitSet A, BitSet B, double weight, double confidence) {
         this.A = (A != null ? (BitSet) A.clone() : new BitSet());
         this.B = (B != null ? (BitSet) B.clone() : new BitSet());
@@ -91,8 +83,7 @@ public class Split implements Comparable, Comparator {
     /**
      * copy a split
      *
-     * @param split
-     */
+	 */
     private void copy(Split split) {
         setA(split.getA());
         setB(split.getB());
@@ -121,7 +112,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does A part contain taxon?
      *
-     * @param taxon
      * @return true if contains taxon
      */
     public boolean isAcontains(int taxon) {
@@ -131,7 +121,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does B part containt taxon?
      *
-     * @param taxon
      * @return true if contains taxon
      */
     public boolean isBcontains(int taxon) {
@@ -141,7 +130,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does A part contain set H?
      *
-     * @param H
      * @return true if contains H
      */
     public boolean isAcontains(BitSet H) {
@@ -153,7 +141,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does B part contain set H?
      *
-     * @param H
      * @return true if contains H
      */
     public boolean isBcontains(BitSet H) {
@@ -165,7 +152,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does A part intersect set H?
      *
-     * @param H
      * @return true if intersects H
      */
     public boolean isAintersects(BitSet H) {
@@ -175,7 +161,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does B part intersect set H?
      *
-     * @param H
      * @return true if intersects H
      */
     public boolean isBintersects(BitSet H) {
@@ -185,7 +170,6 @@ public class Split implements Comparable, Comparator {
     /**
      * gets the split part containing taxon
      *
-     * @param taxon
      * @return split part containing taxon, or null
      */
     public BitSet getPartContaining(int taxon) {
@@ -200,7 +184,6 @@ public class Split implements Comparable, Comparator {
     /**
      * gets  the first split part not containing taxon
      *
-     * @param taxon
      * @return split part containing taxon, or null
      */
     public BitSet getPartNotContaining(int taxon) {
@@ -215,7 +198,6 @@ public class Split implements Comparable, Comparator {
     /**
      * does the split split the given taxa?
      *
-     * @param taxa
      * @return true, if both A and B intersects taxa
      */
     public boolean splitsTaxa(BitSet taxa) {
@@ -225,8 +207,6 @@ public class Split implements Comparable, Comparator {
     /**
      * returns true, if split separates taxa a and b
      *
-     * @param a
-     * @param b
      * @return true, if separates
      */
     public boolean separates(int a, int b) {
@@ -236,7 +216,6 @@ public class Split implements Comparable, Comparator {
     /**
      * returns true, if split separates the given set of taxa
      *
-     * @param H
      * @return true, if separates
      */
     public boolean separates(BitSet H) {
@@ -255,8 +234,7 @@ public class Split implements Comparable, Comparator {
     /**
      * set the weight
      *
-     * @param weight
-     */
+	 */
     public void setWeight(double weight) {
         this.weight = weight;
     }
@@ -264,8 +242,7 @@ public class Split implements Comparable, Comparator {
     /**
      * sets the A part of the split
      *
-     * @param A
-     */
+	 */
     private void setA(BitSet A) {
         this.A.clear();
         this.A.or(A);
@@ -274,8 +251,7 @@ public class Split implements Comparable, Comparator {
     /**
      * sets the B part of the split
      *
-     * @param B
-     */
+	 */
     private void setB(BitSet B) {
         this.B.clear();
         this.B.or(B);
@@ -284,9 +260,7 @@ public class Split implements Comparable, Comparator {
     /**
      * sets the split to A | B   with weight 1
      *
-     * @param A
-     * @param B
-     */
+	 */
     public void set(BitSet A, BitSet B) {
         set(A, B, 1);
     }
@@ -294,10 +268,7 @@ public class Split implements Comparable, Comparator {
     /**
      * sets the split to A |B with given weight
      *
-     * @param A
-     * @param B
-     * @param weight
-     */
+	 */
     private void set(BitSet A, BitSet B, double weight) {
         this.A.clear();
         this.A.or(A);
@@ -309,7 +280,6 @@ public class Split implements Comparable, Comparator {
     /**
      * are the two splits equalOverShorterOfBoth as set bipartitionings (ignoring weights)
      *
-     * @param object
      * @return true, if equalOverShorterOfBoth
      */
     public boolean equals(Object object) {
@@ -319,7 +289,6 @@ public class Split implements Comparable, Comparator {
     /**
      * are the two splits equalOverShorterOfBoth as set bipartitionings (ignoring weights)
      *
-     * @param split
      * @return true, if equalOverShorterOfBoth
      */
     private boolean equals(Split split) {
@@ -329,7 +298,6 @@ public class Split implements Comparable, Comparator {
     /**
      * compare to a split object
      *
-     * @param o
      * @return -1, 0 or 1, depending on relation
      */
     public int compareTo(Object o) {
@@ -371,8 +339,6 @@ public class Split implements Comparable, Comparator {
     /**
      * compares two splits
      *
-     * @param o1
-     * @param o2
      * @return comparison
      */
     public int compare(Object o1, Object o2) {
@@ -447,8 +413,7 @@ public class Split implements Comparable, Comparator {
     /**
      * add weight to list of weights
      *
-     * @param weight
-     */
+	 */
     public void addToWeightList(double weight) {
         weightList.add(weight);
     }
@@ -487,7 +452,6 @@ public class Split implements Comparable, Comparator {
     /**
      * is this split compatible with the given one?
      *
-     * @param split
      * @return true, if compatible
      */
     public boolean isCompatible(Split split) {
@@ -527,7 +491,6 @@ public class Split implements Comparable, Comparator {
     /**
      * gets the split induced by the given taxa set, or null, if result is not a proper split
      *
-     * @param taxa
      * @return split or null
      */
     public Split getInduced(BitSet taxa) {
@@ -561,7 +524,6 @@ public class Split implements Comparable, Comparator {
     /**
      * get the A side (i=0) or B side (else) of the split
      *
-     * @param i
      * @return A or B side of split
      */
     public BitSet getSide(int i) {
@@ -574,10 +536,7 @@ public class Split implements Comparable, Comparator {
     /**
      * set the split to A vs complement of A
      *
-     * @param A
-     * @param ntax
-     * @param weight
-     */
+	 */
     public void set(BitSet A, int ntax, double weight) {
         BitSet B = new BitSet();
         for (int i = 1; i <= ntax; i++)

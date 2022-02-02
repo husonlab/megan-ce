@@ -19,7 +19,6 @@
 package megan.io.experimental;
 
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import megan.io.IIntGetter;
 import megan.io.IntFileGetterMappedMemory;
 
@@ -46,10 +45,7 @@ public class IntFileGetterPagedMemory implements IIntGetter {
     /**
      * long file getter in memory
      *
-     * @param file
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public IntFileGetterPagedMemory(File file) throws IOException {
         this.file = file;
         limit = file.length() / 4;
@@ -64,7 +60,6 @@ public class IntFileGetterPagedMemory implements IIntGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -101,8 +96,7 @@ public class IntFileGetterPagedMemory implements IIntGetter {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;

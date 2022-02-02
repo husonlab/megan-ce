@@ -64,8 +64,6 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * compute taxonId id
      *
-     * @param activeMatches
-     * @param readBlock
      * @return taxonId id
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
@@ -96,10 +94,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * computes the taxon to segments map. On each segment, we apply the top-percent filter
      *
-     * @param activeMatches
-     * @param readBlock
-     * @param taxa2intervals
-     */
+	 */
     private void computeTaxaToSegmentsMap(BitSet activeMatches, IReadBlock readBlock, HashMap<Integer, IntervalList> taxa2intervals) {
         // determine all start and stop events:
         int numberOfEvents = 0;
@@ -187,8 +182,6 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * computes the set of all nodes that lie between the given taxa and their LCA
      *
-     * @param taxa2intervals
-     * @param allNodes
      * @return root node
      */
     private Node computeInducedTree(HashMap<Integer, IntervalList> taxa2intervals, Set<Node> allNodes) {
@@ -224,10 +217,7 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * computes the number of bases that each taxon is covered by. Side effect is to change all taxa2intervals intervals.
      *
-     * @param v
-     * @param allNodes
-     * @param taxa2intervals
-     */
+	 */
     private IntervalList computeCoveredBasesRec(final Node v, final HashSet<Node> allNodes, final HashMap<Integer, IntervalList> taxa2intervals, final Map<Node, Integer> node2covered) {
         final int taxId = (Integer) v.getInfo();
 
@@ -254,10 +244,6 @@ public class AssignmentUsingIntervalUnionLCA implements IAssignmentAlgorithm {
     /**
      * computes the node that is above all nodes whose coverage meets the threshold
      *
-     * @param v
-     * @param allNodes
-     * @param node2covered
-     * @param threshold
      * @return LCA of all nodes that meet the threshold
      */
     private int getLCA(Node v, HashSet<Node> allNodes, Map<Node, Integer> node2covered, double threshold) {

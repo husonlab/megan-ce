@@ -132,8 +132,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * creates a new network viewer
      *
-     * @param dir
-     */
+	 */
     public ClusterViewer(final Director dir, ClassificationViewer parentViewer, String dataType) {
         this.dataType = dataType;
         this.parentViewer = parentViewer;
@@ -521,7 +520,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * get the graph viewer for the given id
      *
-     * @param tabId
      * @return GraphView or null
      */
     private GraphView getGraphViewForTabId(int tabId) {
@@ -563,8 +561,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * set the cursor for all tabs
      *
-     * @param cursor
-     */
+	 */
     public void setCursor(Cursor cursor) {
         super.setCursor(cursor);
         if (getPcoaTab() != null)
@@ -594,8 +591,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         uptodate = flag;
     }
@@ -615,8 +611,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * add node and edge formatting
      *
-     * @param graphView
-     */
+	 */
     public void addFormatting(GraphView graphView) {
         try {
             final PhyloTree graph = ((PhyloTree) graphView.getGraph());
@@ -929,8 +924,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * show the legend horizontal, vertical or none
      *
-     * @param showLegend
-     */
+	 */
     public void setShowLegend(String showLegend) {
         this.showLegend = showLegend;
         if (showLegend.equalsIgnoreCase("horizontal")) {
@@ -982,7 +976,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
     /**
      * add a tab at the indicated position
      *
-     * @param index
      * @param tab   must be instance of JPanel
      */
     public void addTab(int index, ITab tab) {

@@ -45,8 +45,7 @@ public class MatchFooterRMA3 extends BaseRMA3 {
     /**
      * constructor
      *
-     * @param formatDef
-     */
+	 */
     public MatchFooterRMA3(String formatDef) {
         super(formatDef);
     }

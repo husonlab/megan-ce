@@ -81,10 +81,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     /**
      * write to file
      *
-     * @param writer
-     * @param classId2locations
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer, Map<Integer, ListOfLongs> classId2locations) throws IOException {
         writer.writeInt(id2weight.size());
         for (Integer key : id2weight.keySet()) {
@@ -104,9 +101,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     /**
      * reads the named classification block
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     public void read(long position, IInputReader reader) throws IOException {
         id2weight.clear();
 
@@ -126,10 +121,8 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     /**
      * reads the named classification block
      *
-     * @param reader
      * @return size
-     * @throws IOException
-     */
+	 */
     public int read(long position, InputReader reader, int classId) throws IOException {
         reader.seek(position);
         id2weight.clear();
@@ -152,11 +145,7 @@ public class ClassificationBlockRMA6 implements IClassificationBlock {
     /**
      * read all locations for a given class and adds them to list
      *
-     * @param reader
-     * @param classId
-     * @param list
-     * @throws IOException
-     */
+	 */
     public void readLocations(long position, IInputReader reader, int classId, ListOfLongs list) throws IOException {
         reader.seek(position);
         final int numberOfClasses = reader.readInt();

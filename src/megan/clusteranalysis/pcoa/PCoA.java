@@ -50,9 +50,7 @@ public class PCoA {
     /**
      * constructor
      *
-     * @param samples
-     * @param distances
-     */
+	 */
     public PCoA(Taxa samples, Distances distances) {
         this.samples = samples;
         rank = samples.size();
@@ -180,10 +178,6 @@ public class PCoA {
     /**
      * given i-th, j-th and k-th coordinates for given name
      *
-     * @param i
-     * @param j
-     * @param k
-     * @param sampleName
      * @return (i, j, k)
      */
     public double[] getProjection(int i, int j, int k, String sampleName) {
@@ -212,9 +206,7 @@ public class PCoA {
     /**
      * computes the loading vectors as used in biplot
      *
-     * @param numberOfSamples
-     * @param class2counts
-     */
+	 */
     public void computeLoadingVectorsBiPlot(final int numberOfSamples, final Map<String, float[]> class2counts) {
         loadingVectorsBiPlot.clear();
 
@@ -284,8 +276,7 @@ public class PCoA {
     /**
      * computes the loading vectors as used in biplot
      *
-     * @param numberOfSamples
-     */
+	 */
     public void computeLoadingVectorsTriPlot(final int numberOfSamples, final Map<String, float[]> attribute2counts) {
         loadingVectorsTriPlot.clear();
 
@@ -363,7 +354,6 @@ public class PCoA {
     /**
      * get percent explained for the given PC
      *
-     * @param pc
      * @return percent explained
      */
     public double getPercentExplained(int pc) {

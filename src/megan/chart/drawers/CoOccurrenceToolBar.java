@@ -50,8 +50,7 @@ public class CoOccurrenceToolBar extends JToolBar {
     /**
      * constructor
      *
-     * @param coOccurrenceDrawer
-     */
+	 */
     public CoOccurrenceToolBar(final ChartViewer chartViewer, final CoOccurrenceDrawer coOccurrenceDrawer) {
         setFloatable(false);
         setBorder(BorderFactory.createEtchedBorder());

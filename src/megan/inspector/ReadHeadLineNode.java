@@ -32,8 +32,7 @@ public class ReadHeadLineNode extends NodeBase {
     /**
      * constructor
      *
-     * @param readBlock
-     */
+	 */
     public ReadHeadLineNode(IReadBlock readBlock) {
         super(readBlock.getReadName());
         this.readHeader = readBlock.getReadHeader();

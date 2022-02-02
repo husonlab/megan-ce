@@ -41,8 +41,7 @@ public class LegendPanel extends JPanel {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public LegendPanel(ClusterViewer viewer) {
         this.viewer = viewer;
         doc = viewer.getDir().getDocument();
@@ -67,8 +66,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw the legend
      *
-     * @param graphics
-     */
+	 */
     public void paint(Graphics graphics) {
         super.paint(graphics);
         Graphics2D gc = (Graphics2D) graphics;
@@ -94,8 +92,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw a legend for sample colors
      *
-     * @param gc
-     */
+	 */
     public void draw(Graphics2D gc, Dimension size) {
         if (doc.getNumberOfSamples() > 1) {
             boolean vertical = viewer.getShowLegend().equals("vertical");

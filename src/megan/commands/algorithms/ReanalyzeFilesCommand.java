@@ -135,7 +135,6 @@ public class ReanalyzeFilesCommand extends CommandBase implements ICommand {
     /**
      * get directory if this file is currently open
      *
-     * @param daaFile
      * @return directory
      */
     private Director findOpenDirector(String daaFile) {

@@ -37,11 +37,7 @@ public class DrawableValue {
     /**
      * constructor
      *
-     * @param label
-     * @param x
-     * @param y
-     * @param selected
-     */
+	 */
     public DrawableValue(String label, int x, int y, boolean selected) {
         this.label = label;
         this.x = x;
@@ -88,8 +84,7 @@ public class DrawableValue {
     /**
      * draw the label
      *
-     * @param gc
-     */
+	 */
     private void draw(Graphics2D gc, boolean centerLabelWidth, boolean centerLabelHeight) {
         if (centerLabelWidth || centerLabelHeight) {
             Dimension labelSize = BasicSwing.getStringSize(gc, label, gc.getFont()).getSize();
@@ -101,11 +96,7 @@ public class DrawableValue {
     /**
      * draw all values
      *
-     * @param gc
-     * @param valuesList
-     * @param centerLabelWidth
-     * @param centerLabelHeight
-     */
+	 */
     public static void drawValues(Graphics2D gc, LinkedList<DrawableValue> valuesList, boolean centerLabelWidth, boolean centerLabelHeight) {
         gc.setColor(Color.LIGHT_GRAY);
         for (DrawableValue value : valuesList) {

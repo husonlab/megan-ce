@@ -56,8 +56,7 @@ public class TaxaChart extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public TaxaChart(final Director dir) {
         super(dir.getMainViewer(), dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
         this.mainViewer = dir.getMainViewer();

@@ -50,8 +50,7 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
     /**
      * parses and applies the command
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -59,8 +58,7 @@ public class ChooseContaminantsFileCommand extends CommandBase implements IComma
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         if (getViewer() instanceof ImportBlastDialog) {
             File lastOpenFile = ProgramProperties.getFile(MeganProperties.CONTAMINANT_FILE);

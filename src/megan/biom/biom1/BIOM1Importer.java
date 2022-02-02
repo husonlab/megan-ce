@@ -44,10 +44,7 @@ public class BIOM1Importer {
     /**
      * apply the importer parser to the named file.
      *
-     * @param fileName
-     * @param doc
-     * @param type
-     */
+	 */
     static public void apply(String fileName, Document doc, String type, boolean taxonomyIgnorePath) throws IOException {
         doc.getMeganFile().setFileType(MeganFile.Type.MEGAN_SUMMARY_FILE);
 
@@ -134,9 +131,6 @@ public class BIOM1Importer {
     /**
      * get the entry, if it exists, otherwise create it and initialize to zeros
      *
-     * @param map
-     * @param id
-     * @param size
      * @return entry
      */
     private static Integer[] getOrCreate(Map<Integer, Integer[]> map, Integer id, int size) {
@@ -146,9 +140,7 @@ public class BIOM1Importer {
     /**
      * add all values to sum
      *
-     * @param sum
-     * @param add
-     */
+	 */
     private static void addToArray(Integer[] sum, int[] add) {
         for (int i = 0; i < add.length; i++) {
             sum[i] += add[i];
@@ -158,7 +150,6 @@ public class BIOM1Importer {
     /**
      * create new array with zero entries
      *
-     * @param size
      * @return new array
      */
     private static Integer[] newZeroedIntegerArray(int size) {

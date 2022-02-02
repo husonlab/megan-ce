@@ -64,7 +64,6 @@ public class ClassificationManager {
      * gets the named classification, loading  the tree and mapping, if necessary
      * There is one static classification object per name
      *
-     * @param name
      * @param load - create standard file names and load the files
      * @return classification
      */
@@ -103,9 +102,6 @@ public class ClassificationManager {
     /**
      * loads the named files and setups up the given classification (if not already present)
      *
-     * @param name
-     * @param treeFile
-     * @param mapFile
      * @return classification
      */
     public static Classification load(String name, String treeFile, String mapFile, ProgressListener progress) {
@@ -123,8 +119,7 @@ public class ClassificationManager {
     /**
      * ensure that the tree and mapping for the named classification are loaded
      *
-     * @param name
-     */
+	 */
     public static void ensureTreeIsLoaded(String name) {
         get(name, true);
     }
@@ -165,7 +160,6 @@ public class ClassificationManager {
     /**
      * is the named parsing method loaded
      *
-     * @param mapType
      * @return true, if loaded
      */
     public static boolean isLoaded(String name, IdMapper.MapType mapType) {

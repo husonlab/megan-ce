@@ -48,8 +48,7 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
     /**
      * default constructor
      *
-     * @param it
-     */
+	 */
     public ThreadedIterator(Iterator<T> it) {
         this(it, 10000);
     }
@@ -57,7 +56,6 @@ public class ThreadedIterator<T> implements ICloseableIterator<T> {
     /**
      * constructor
      *
-     * @param it
      * @param bufferSize maximum number of read ahead by getLetterCodeIterator
      */
     public ThreadedIterator(Iterator<T> it, int bufferSize) {

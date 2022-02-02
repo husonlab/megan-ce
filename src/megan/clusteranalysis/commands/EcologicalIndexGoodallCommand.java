@@ -80,8 +80,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + GoodallsDistance.NAME + ";");
     }
@@ -117,8 +116,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

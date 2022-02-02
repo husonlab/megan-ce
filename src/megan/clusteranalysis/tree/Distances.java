@@ -47,8 +47,7 @@ public class Distances {
      *
      * @param i     between 1 and ntax
      * @param j     between 1 and ntax
-     * @param value
-     */
+	 */
     public void set(int i, int j, double value) {
         matrix[i - 1][j - 1] = matrix[j - 1][i - 1] = value;
     }
@@ -56,9 +55,7 @@ public class Distances {
     /**
      * increment the count
      *
-     * @param i
-     * @param j
-     */
+	 */
     public void increment(int i, int j) {
         matrix[i - 1][j - 1]++;
         matrix[j - 1][i - 1]++;
@@ -76,8 +73,7 @@ public class Distances {
     /**
      * sets the distances from an upper triangle representation of distances
      *
-     * @param upperTriangle
-     */
+	 */
     public void setFromUpperTriangle(Vector<Vector<Double>> upperTriangle) {
         for (int i = 0; i < upperTriangle.size(); i++) {
             matrix[i][i] = 0;

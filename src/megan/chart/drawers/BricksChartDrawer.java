@@ -46,8 +46,7 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
     /**
      * draw bricks with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -213,8 +212,7 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
     /**
      * draw bricks in which colors are by sample
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -381,10 +379,7 @@ public class BricksChartDrawer extends BubbleChartDrawer implements IChartDrawer
     /**
      * draw scale
      *
-     * @param gc
-     * @param drawWidth
-     * @param boxValue
-     */
+	 */
     private void drawScale(Graphics2D gc, double drawWidth, int boxValue) {
         int x = 20;
         int y = topMargin - 30;

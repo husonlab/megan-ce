@@ -114,12 +114,7 @@ public class ChartDrawerBase extends JPanel {
     /**
      * draw a string at the given anchor point at the given angle (in radiant)
      *
-     * @param gc
-     * @param label
-     * @param x
-     * @param y
-     * @param labelAngle
-     */
+	 */
     public static void drawString(Graphics2D gc, String label, double x, double y, double labelAngle) {
         labelAngle = Geometry.moduloTwoPI(labelAngle);
         Point2D apt = new Point2D.Float((float) x, (float) y);
@@ -148,10 +143,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * draw string centered
      *
-     * @param gc
-     * @param label
-     * @param x
-     * @param y
      * @param addHeight if true, y is used as bottom coordinate, not top
      */
     public static void drawStringCentered(Graphics gc, String label, double x, double y, boolean addHeight) {
@@ -162,13 +153,7 @@ public class ChartDrawerBase extends JPanel {
     /**
      * draw a rectangle at the given anchor point at the given angle (in radiant)
      *
-     * @param gc
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param labelAngle
-     */
+	 */
     public static void drawRect(Graphics2D gc, double x, double y, double width, double height, double labelAngle) {
         Dimension theSize = new Dimension((int) Math.round(width), (int) Math.round(height));
         Point2D apt = new Point2D.Float((float) x, (float) y);
@@ -190,13 +175,7 @@ public class ChartDrawerBase extends JPanel {
     /**
      * draw a rectangle at the given anchor point at the given angle (in radiant)
      *
-     * @param gc
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param labelAngle
-     */
+	 */
     public static void fillAndDrawRect(Graphics2D gc, double x, double y, double width, double height, double labelAngle, Color fillColor, Color drawColor) {
         Dimension theSize = new Dimension((int) Math.round(width), (int) Math.round(height));
         Point2D apt = new Point2D.Float((float) x, (float) y);
@@ -348,7 +327,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * compute the maximum value on a log scale
      *
-     * @param maxValue
      * @return max value on a log scale
      */
     protected double computeMaxYAxisValueLogScale(double maxValue) {
@@ -418,7 +396,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * converts a point from window coordinates to reference coordinates
      *
-     * @param apt
      * @return reference coordinates
      */
     public Point2D convertWindowToReference(Point2D apt) {
@@ -432,7 +409,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * converts a point from reference coordinates to window coordinates
      *
-     * @param refPoint
      * @return window coordinates
      */
     public Point2D convertReferenceToWindow(Point2D refPoint) {
@@ -493,8 +469,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * select series and classes that contain given location
      *
-     * @param mouseEvent
-     * @param chartSelection
      * @return true if something selected
      */
     public boolean selectOnMouseDown(MouseEvent mouseEvent, ChartSelection chartSelection) {
@@ -505,8 +479,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * select all classes and  series that intersection given rectangle
      *
-     * @param rectangle
-     * @param chartSelection
      * @return true if something selected
      */
 
@@ -569,8 +541,6 @@ public class ChartDrawerBase extends JPanel {
     /**
      * get item below mouse
      *
-     * @param mouseEvent
-     * @param chartSelection
      * @return label for item below mouse
      */
 

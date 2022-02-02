@@ -40,7 +40,6 @@ public class ReadDataCollector {
     /**
      * collect all read data associated with the given iterator
      *
-     * @param progress
      * @return list of contig names and contigs
      */
     public static List<ReadData> apply(final IReadBlockIterator iterator, final ProgressListener progress) throws IOException, CanceledException {
@@ -66,10 +65,8 @@ public class ReadDataCollector {
     /**
      * creates the data object associated with a given read and its matches
      *
-     * @param readBlock
      * @return read data
-     * @throws IOException
-     */
+	 */
     private static ReadData createReadData(int id, IReadBlock readBlock) throws IOException {
         var readData = new ReadData(id, readBlock.getReadName());
 
@@ -108,10 +105,8 @@ public class ReadDataCollector {
     /**
      * get start and end query coordinates of a match
      *
-     * @param matchBlock
      * @return query coordinates, 1-based
-     * @throws IOException
-     */
+	 */
     private static int[] getQueryCoordinates(IMatchBlock matchBlock) {
         var start = matchBlock.getAlignedQueryStart();
         var end = matchBlock.getAlignedQueryEnd();
@@ -121,10 +116,8 @@ public class ReadDataCollector {
     /**
      * get start and end reference coordinates of a match
      *
-     * @param matchBlock
      * @return reference coordinates 1-based
-     * @throws IOException
-     */
+	 */
     private static int[] getReferenceCoordinates(IMatchBlock matchBlock) throws IOException {
         var tokensFirst = getLineTokens("Sbjct:", matchBlock.getText(), false);
         var tokensLast = getLineTokens("Sbjct:", matchBlock.getText(), true);
@@ -143,8 +136,6 @@ public class ReadDataCollector {
     /**
      * get all tokens on the first line that begin with start
      *
-     * @param start
-     * @param text
      * @param last  if true, returns last such line rather than first
      * @return tokens
      */

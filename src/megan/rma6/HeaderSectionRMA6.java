@@ -38,8 +38,7 @@ public class HeaderSectionRMA6 {
     /**
      * read the header
      *
-     * @throws java.io.IOException
-     */
+	 */
     public void read(IInputReader reader) throws IOException {
         final int magicNumber = reader.readInt();
         if (magicNumber != RMA6File.MAGIC_NUMBER) {
@@ -63,9 +62,7 @@ public class HeaderSectionRMA6 {
     /**
      * writer the header
      *
-     * @param writer
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer) throws IOException {
         writer.writeInt(RMA6File.MAGIC_NUMBER);
         writer.writeInt(RMA6File.VERSION);

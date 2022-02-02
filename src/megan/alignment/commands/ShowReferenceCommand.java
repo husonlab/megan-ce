@@ -41,9 +41,7 @@ public class ShowReferenceCommand extends CommandBase implements ICheckBoxComman
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set show-reference=");
@@ -68,8 +66,7 @@ public class ShowReferenceCommand extends CommandBase implements ICheckBoxComman
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set show-reference=" + !isSelected() + ";");

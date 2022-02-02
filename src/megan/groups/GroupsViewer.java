@@ -64,8 +64,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public GroupsViewer(final Director dir, JFrame parent) {
         this.dir = dir;
         commandManager = new CommandManager(dir, this,
@@ -191,8 +190,7 @@ public class GroupsViewer implements IDirectableViewer, Printable {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         this.uptodate = flag;
     }

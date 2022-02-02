@@ -52,8 +52,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
     /**
      * draw bars with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
@@ -225,8 +224,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
     /**
      * draw bars in which colors are by dataset
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
@@ -244,18 +242,15 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                 final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
                 percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
                 topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
-                break;
-            }
+			}
             case LOG -> {
                 topY = computeMaxYAxisValueLogScale(getMaxValue());
                 percentFactor = null;
-                break;
-            }
+			}
             case SQRT -> {
                 topY = Math.sqrt(getMaxValue());
                 percentFactor = null;
-                break;
-            }
+			}
             default /* case LINEAR */ -> {
                 topY = 1.1 * getMaxValue();
                 percentFactor = null;
@@ -311,8 +306,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
-                        break;
-                    }
+					}
                     case LOG -> {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {
@@ -323,8 +317,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                             currentValueForLog += getChartData().getValueAsDouble(seriesName, className);
                         } else // no change in height
                             value = 0;
-                        break;
-                    }
+					}
                     case SQRT -> {
                         if (value >= 1) {
                             if (currentValueForLog <= 1) {
@@ -335,8 +328,7 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
                             currentValueForLog += getChartData().getValueAsDouble(seriesName, className);
                         } else // no change in height
                             value = 0;
-                        break;
-                    }
+					}
                 }
 
                 final double xBar = x0 + bigSpace + c * bigSpace + c * xStep;

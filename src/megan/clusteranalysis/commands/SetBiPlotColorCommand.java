@@ -37,8 +37,7 @@ public class SetBiPlotColorCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 
@@ -109,8 +108,7 @@ public class SetBiPlotColorCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final PCoATab pCoATab = getViewer().getPcoaTab();
         final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose bi-plot line-width and color", pCoATab.getBiPlotLineWidth(), pCoATab.getBiPlotColor());

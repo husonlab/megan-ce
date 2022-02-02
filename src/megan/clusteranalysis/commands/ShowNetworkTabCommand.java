@@ -76,8 +76,7 @@ public class ShowNetworkTabCommand extends CommandBase implements ICheckBoxComma
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -113,8 +112,7 @@ public class ShowNetworkTabCommand extends CommandBase implements ICheckBoxComma
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         getViewer().selectComponent(getViewer().getNnetTab());

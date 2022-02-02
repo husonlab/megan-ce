@@ -64,8 +64,7 @@ public class ServicePanel extends JPanel {
     /**
      * constructor
      *
-     * @param service
-     */
+	 */
     public ServicePanel(IRemoteService service, final RemoteServiceBrowser remoteServiceBrowser) {
         this.remoteServiceBrowser = remoteServiceBrowser;
         this.service = service;
@@ -242,8 +241,7 @@ public class ServicePanel extends JPanel {
     /**
      * expand the given node
      *
-     * @param v
-     */
+	 */
 
     public void expand(DefaultMutableTreeNode v) {
         if (v == null)
@@ -258,8 +256,7 @@ public class ServicePanel extends JPanel {
     /**
      * expand an array of paths
      *
-     * @param paths
-     */
+	 */
     public void expand(TreePath[] paths) {
         for (TreePath path : paths) {
             expand((DefaultMutableTreeNode) path.getLastPathComponent());
@@ -269,8 +266,7 @@ public class ServicePanel extends JPanel {
     /**
      * collapse the given node   or root
      *
-     * @param v
-     */
+	 */
     public void collapse(DefaultMutableTreeNode v) {
         if (v == null)
             v = (DefaultMutableTreeNode) fileTree.getModel().getRoot();
@@ -284,8 +280,7 @@ public class ServicePanel extends JPanel {
     /**
      * collapse an array of paths
      *
-     * @param paths
-     */
+	 */
     public void collapse(TreePath[] paths) {
         for (TreePath path : paths) {
             collapse((DefaultMutableTreeNode) path.getLastPathComponent());

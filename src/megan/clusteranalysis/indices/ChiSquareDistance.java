@@ -34,8 +34,6 @@ public class ChiSquareDistance {
     /**
      * compute the ChiSquare metric between any two samples
      *
-     * @param viewer
-     * @param distances
      * @return number of nodes used to compute value
      */
     public static int apply(final ClassificationViewer viewer, final Distances distances) {

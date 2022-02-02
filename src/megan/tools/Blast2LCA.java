@@ -53,10 +53,7 @@ public class Blast2LCA {
     /**
      * prepare DNA protein for pDNA
      *
-     * @param args
-     * @throws jloda.util.UsageException
-     * @throws java.io.IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -77,10 +74,7 @@ public class Blast2LCA {
     /**
      * run
      *
-     * @param args
-     * @throws jloda.util.UsageException
-     * @throws java.io.IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA alignment to reads and produce a taxonomic classification");
         options.setVersion(ProgramProperties.getProgramVersion());

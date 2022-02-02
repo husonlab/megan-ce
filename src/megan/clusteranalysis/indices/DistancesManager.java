@@ -32,10 +32,7 @@ public class DistancesManager {
     /**
      * apply the named method
      *
-     * @param method
-     * @param viewer
-     * @param distances
-     */
+	 */
     public static void apply(String method, final ClassificationViewer viewer, final Distances distances) throws CanceledException {
         if (method.equalsIgnoreCase(UniFrac.UnweightedUniformUniFrac)) {
             UniFrac.applyUnweightedUniformUniFrac((MainViewer) viewer, 1, distances);

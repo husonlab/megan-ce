@@ -47,10 +47,7 @@ public class Database {
     /**
      * constructor
      *
-     * @param rootDirectory
-     * @param fileExtensions
-     * @throws IOException
-     */
+	 */
     public Database(File rootDirectory, String[] fileExtensions, boolean recursive) throws IOException {
         if (!rootDirectory.isDirectory())
             throw new IOException("Not a directory: " + rootDirectory);

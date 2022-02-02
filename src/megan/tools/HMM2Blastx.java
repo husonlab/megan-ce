@@ -38,8 +38,7 @@ public class HMM2Blastx {
     /**
      * converts the file
      *
-     * @param args
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -59,8 +58,7 @@ public class HMM2Blastx {
     /**
      * run the program
      *
-     * @param args
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Converts HMM output to BLASTX");
         options.setVersion(ProgramProperties.getProgramVersion());
@@ -266,17 +264,6 @@ public class HMM2Blastx {
     /**
      * make a blast match text
      *
-     * @param referenceName
-     * @param score
-     * @param expected
-     * @param queryAligned
-     * @param midAligned
-     * @param refAligned
-     * @param queryStart
-     * @param queryEnd
-     * @param refStart
-     * @param refEnd
-     * @param frame
      * @return blast match text
      */
     private String makeBlastXAlignment(String referenceName, float score, float expected, String queryAligned, String midAligned, String refAligned, int queryStart, int queryEnd, int refStart, int refEnd, int frame, Integer queryLength) throws IOException {
@@ -367,7 +354,6 @@ public class HMM2Blastx {
     /**
      * get the frame, or -1, if not defined
      *
-     * @param query
      * @return frame 1-6 or -1
      */
     private int getFrameFromSuffix(String query) {
@@ -381,7 +367,6 @@ public class HMM2Blastx {
     /**
      * remove frame suffix
      *
-     * @param query
      * @return query without frame suffix
      */
     private String removeFrameSuffix(String query) {

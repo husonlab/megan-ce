@@ -47,11 +47,7 @@ public class TableItemService extends Service<Integer> {
     /**
      * configure the task
      *
-     * @param doc
-     * @param cNames
-     * @param classIds
-     * @param tableView
-     */
+	 */
     public void configure(Document doc, String[] cNames, String classificationName, Set<Integer> classIds, IntegerProperty maxReadLength, TableView<TableItem> tableView, ReadOnlyDoubleProperty panelWidth) {
         this.cNames = cNames;
         this.doc = doc;

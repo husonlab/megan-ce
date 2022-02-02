@@ -36,12 +36,8 @@ public class NeighborNet {
     /**
      * run neighbor-net
      *
-     * @param progressListener
-     * @param taxa
-     * @param distances
      * @return splits
-     * @throws CanceledException
-     */
+	 */
     public SplitSystem apply(ProgressListener progressListener, Taxa taxa, Distances distances) throws CanceledException {
         progressListener.setTasks("Computing clustering", "Neighbor-Net");
         System.err.println("Bryant and Moulton (2004)");

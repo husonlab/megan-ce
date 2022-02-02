@@ -45,8 +45,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public OpenFViewerCommand(String cName) {
         this.cName = cName;
     }
@@ -54,9 +53,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
@@ -104,8 +101,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute(getSyntax());
@@ -152,8 +148,7 @@ public class OpenFViewerCommand extends CommandBase implements ICommand {
         /**
          * construct icon
          *
-         * @param label
-         */
+		 */
         MyImageIcon(String label) {
             final BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = image.createGraphics();

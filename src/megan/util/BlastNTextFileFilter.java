@@ -58,8 +58,6 @@ public class BlastNTextFileFilter extends FileFilterBase implements FilenameFilt
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

@@ -49,8 +49,7 @@ public class FViewerChart extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public FViewerChart(final Director dir, ClassificationViewer parent) {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
         viewer = parent;

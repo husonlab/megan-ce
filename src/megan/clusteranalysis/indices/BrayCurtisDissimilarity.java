@@ -34,8 +34,6 @@ public class BrayCurtisDissimilarity {
     /**
      * compute the Bray Curtis dissimilarity
      *
-     * @param viewer
-     * @param distances
      * @return number of nodes used to compute value
      */
     public static int apply(final ClassificationViewer viewer, final Distances distances) {

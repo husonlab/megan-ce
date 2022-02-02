@@ -46,8 +46,7 @@ public class ReadLayoutPaneSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param readLayoutPane
-     */
+	 */
     public ReadLayoutPaneSearcher(Component parent, ReadLayoutPane readLayoutPane, AMultipleSelectionModel<IMatchBlock> matchBlockSelectionModel) {
         this.parent = parent;
         this.readLayoutPane = readLayoutPane;

@@ -46,13 +46,7 @@ public class ReadBlockGetterRMA2 implements IReadBlockGetter {
     /**
      * constructor
      *
-     * @param file
-     * @param minScore
-     * @param wantReadText
-     * @param wantMatchData
-     * @param wantMatchText
-     * @throws IOException
-     */
+	 */
     public ReadBlockGetterRMA2(File file, float minScore, float maxExpected, boolean wantReadText, boolean wantMatchData, boolean wantMatchText) throws IOException {
         this.minScore = minScore;
         this.maxExpected = maxExpected;
@@ -77,10 +71,8 @@ public class ReadBlockGetterRMA2 implements IReadBlockGetter {
     /**
      * gets the read block associated with the given uid
      *
-     * @param uid
      * @return read block or null
-     * @throws java.io.IOException
-     */
+	 */
     public IReadBlock getReadBlock(long uid) throws IOException {
         return ReadBlockRMA2.read(rma2Formatter, uid, wantReadText, wantMatchData, wantMatchText, minScore, maxExpected, textStorageReader, dataIndexReader);
     }
@@ -88,8 +80,7 @@ public class ReadBlockGetterRMA2 implements IReadBlockGetter {
     /**
      * closes the accessor
      *
-     * @throws java.io.IOException
-     */
+	 */
     public void close() {
         if (textStorageReader != null)
             textStorageReader.closeAllFiles();

@@ -53,8 +53,7 @@ public class ReadPairingDialog {
     /**
      * constructor
      *
-     * @param parent
-     */
+	 */
     public ReadPairingDialog(ImportBlastDialog parent, String readsFile) {
         this.importBlastDialog = parent;
         dialog.setModal(true);
@@ -215,7 +214,6 @@ public class ReadPairingDialog {
     /**
      * try to guess the appropriate patterns
      *
-     * @param readsFile
      * @return patterns
      */
     private String[] guessPairedSuffixes(String readsFile) {

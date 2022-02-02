@@ -113,9 +113,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public ImportBlastDialog(Component parent, Director dir, final String title) {
         this(parent, dir, ClassificationManager.getAllSupportedClassifications(), title);
     }
@@ -123,11 +121,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     * @param cNames0
-     * @param title
-     */
+	 */
     public ImportBlastDialog(Component parent, Director dir, Collection<String> cNames0, final String title) {
         this.dir = dir;
         final boolean showTaxonomyPane;
@@ -673,8 +667,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         isUpToDate = flag;
     }

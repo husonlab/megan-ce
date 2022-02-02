@@ -52,8 +52,7 @@ public class MetadataChart extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public MetadataChart(final Director dir, MainViewer parent) {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
         cName = "MetaData";
@@ -182,7 +181,6 @@ public class MetadataChart extends ChartViewer {
     /**
      * get the top five attributes
      *
-     * @param attributeValue2count
      * @return top five
      */
     private Set<String> getTopFive(Map<String, Integer> attributeValue2count) {

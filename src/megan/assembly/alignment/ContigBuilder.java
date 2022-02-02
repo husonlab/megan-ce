@@ -49,9 +49,7 @@ public class ContigBuilder {
     /**
      * constructor
      *
-     * @param paths
-     * @param singles
-     */
+	 */
     public ContigBuilder(Node[][] paths, Node[] singles, List<Integer>[] readId2ContainedReads) {
         this.paths = paths;
         this.singles = singles;
@@ -62,10 +60,7 @@ public class ContigBuilder {
     /**
      * apply the algorith
      *
-     * @param minReads
-     * @param minCoverage
-     * @param minLength
-     */
+	 */
     public void apply(int alignmentNumber, Alignment alignment, int minReads, double minCoverage, int minLength, boolean sortAlignmentByContigs, ProgressListener progress) throws CanceledException {
         progress.setSubtask("Building contigs");
         progress.setMaximum(paths.length);
@@ -162,8 +157,7 @@ public class ContigBuilder {
     /**
      * sorts the alignment by contigs
      *
-     * @param alignment
-     */
+	 */
     private void sortAlignmentByContigs(final Alignment alignment) {
         Arrays.sort(paths, (a, b) -> {
             Integer posA = alignment.getLane((Integer) a[0].getInfo()).getFirstNonGapPosition();

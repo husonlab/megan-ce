@@ -54,9 +54,6 @@ public class GCAssembler {
 	/**
 	 * performs gene-centric assemblies
 	 *
-	 * @param args
-	 * @throws UsageException
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		try {
@@ -78,10 +75,6 @@ public class GCAssembler {
 	/**
 	 * parse arguments the program
 	 *
-	 * @param args
-	 * @throws UsageException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
 	 */
 	private void run(String[] args) throws UsageException, IOException {
 		CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
@@ -273,10 +266,6 @@ public class GCAssembler {
 	/**
 	 * create the output file name
 	 *
-	 * @param outputFileTemplate
-	 * @param classId
-	 * @param className
-	 * @param numberOfIds
 	 * @return output file name
 	 */
 	private String createOutputFileName(String outputFileTemplate, int classId, String className, int numberOfIds) {
@@ -295,11 +284,7 @@ public class GCAssembler {
 	/**
 	 * get the iterator. It will be an interator over all reads in a given class, if classificationName and classId given, otherwise, over all reads
 	 *
-	 * @param connector
-	 * @param classificationName
-	 * @param classId
 	 * @return iterator
-	 * @throws IOException
 	 */
 	private IReadBlockIterator getIterator(IConnector connector, String classificationName, int classId) throws IOException {
 		if (classificationName.equalsIgnoreCase("none"))

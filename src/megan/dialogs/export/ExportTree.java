@@ -37,13 +37,7 @@ public class ExportTree {
     /**
      * export the tree
      *
-     * @param viewer
-     * @param writer
-     * @param showInternalLabels
-     * @param showUnassignedLabels
-     * @param simplify
-     * @throws IOException
-     */
+	 */
     public static void apply(ViewerBase viewer, Writer writer, boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
         final PhyloTree tree = viewer.getTree();
         Node root = tree.getRoot();
@@ -82,9 +76,6 @@ public class ExportTree {
     /**
      * recursively visit all nodes that we need to use due to user selection
      *
-     * @param viewer
-     * @param v
-     * @param toUse
      * @return true, if v to be used
      */
     private static boolean visitNodesToUseRec(ViewerBase viewer, Node v, NodeSet toUse) {
@@ -101,14 +92,8 @@ public class ExportTree {
     /**
      * recursively write the tree
      *
-     * @param v
-     * @param writer
-     * @param showInternalLabels
-     * @param showUnassignedNodes
-     * @param count
      * @return number of labeled nodes
-     * @throws IOException
-     */
+	 */
     private static int writeAsTreeRec(ViewerBase viewer, NodeSet toUse, Node v, Writer writer, boolean showInternalLabels, boolean showUnassignedNodes, boolean simplify, int count) throws IOException {
         if (v.getOutDegree() == 0) {
 			writer.write(StringUtils.toCleanName(viewer.getLabel(v)));

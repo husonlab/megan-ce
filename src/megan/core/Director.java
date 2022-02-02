@@ -66,8 +66,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * create a new director
      *
-     * @param doc
-     */
+	 */
     public Director(Document doc) {
         this.doc = doc;
     }
@@ -75,8 +74,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * add a viewer to this doc
      *
-     * @param viewer
-     */
+	 */
     public IDirectableViewer addViewer(IDirectableViewer viewer) {
         if (viewer instanceof MainViewer)
             this.viewer = (MainViewer) viewer;
@@ -90,8 +88,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * remove a viewer from this doc
      *
-     * @param viewer
-     */
+	 */
     public void removeViewer(IDirectableViewer viewer) {
         viewers.remove(viewer);
         directorListeners.remove(viewer);
@@ -248,8 +245,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * execute a command within the swing thread
      *
-     * @param command
-     */
+	 */
     public boolean executeImmediately(final String command) {
         throw new RuntimeException("Internal error: OLD executeImmediately()");
     }
@@ -257,8 +253,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * execute a command. Lock all viewer input, then request to doc to execute command
      *
-     * @param command
-     */
+	 */
     public void execute(final String command) {
         throw new RuntimeException("Internal error: OLD execute()");
     }
@@ -266,8 +261,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * execute a command within the swing thread
      *
-     * @param command
-     */
+	 */
     public boolean executeImmediately(final String command, CommandManager commandManager) {
         System.err.println("Executing: " + command);
         try {
@@ -300,8 +294,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * execute a command. Lock all viewer input, then request to doc to execute command
      *
-     * @param command
-     */
+	 */
     public void execute(final String command, final CommandManager commandManager) {
         if (ProgramProperties.isUseGUI()) {
             Component parentComponent;
@@ -320,8 +313,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * execute a command. Lock all viewer input, then request to doc to execute command
      *
-     * @param command
-     */
+	 */
     public void execute(final String command, final CommandManager commandManager, final Component parent) {
         if (ProgramProperties.isUseGUI()) {
             if (command.length() > 1)
@@ -385,7 +377,6 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * returns a viewer of the given class
      *
-     * @param aClass
      * @return viewer of the given class, or null
      */
     public IDirectableViewer getViewerByClass(Class aClass) {
@@ -400,7 +391,6 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * returns a viewer of the given class
      *
-     * @param aClass
      * @return viewer of the given class, or null
      */
     public <T> IDirectableViewer getViewerByAssignableFrom(Class<T> aClass) {
@@ -415,7 +405,6 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * returns a viewer by class name
      *
-     * @param className
      * @return viewer that has the given className
      */
     public IDirectableViewer getViewerByClassName(String className) {
@@ -480,8 +469,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
     }
 
@@ -534,10 +522,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * open all necessary files at startup
      *
-     * @param taxonomyFileName
-     * @param meganFiles
-     * @param initCommand
-     */
+	 */
     public void executeOpen(final String taxonomyFileName, final String[] meganFiles, final String initCommand) {
         System.err.println("Opening startup files");
 
@@ -619,8 +604,7 @@ public class Director implements IDirectableViewer, IDirector {
     /**
      * set the dirty flag
      *
-     * @param dirty
-     */
+	 */
     public void setDirty(boolean dirty) {
         getDocument().setDirty(dirty);
     }

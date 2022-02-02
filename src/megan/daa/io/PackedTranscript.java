@@ -36,8 +36,7 @@ public class PackedTranscript {
     /**
      * read a packed transcript from a buffer
      *
-     * @param buffer
-     */
+	 */
     public void read(ByteInputBuffer buffer) {
         size = 0;
         for (PackedOperation op = new PackedOperation(buffer.read()); !op.equals(PackedOperation.terminator()); op = new PackedOperation(buffer.read())) {

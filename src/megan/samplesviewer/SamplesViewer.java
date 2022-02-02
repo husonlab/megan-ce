@@ -82,8 +82,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public SamplesViewer(final Director dir) {
         this.dir = dir;
         this.doc = dir.getDocument();
@@ -337,8 +336,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         uptodate = flag;
     }
@@ -417,8 +415,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     /**
      * execute a command
      *
-     * @param command
-     */
+	 */
     public void execute(String command) {
         dir.execute(command, getCommandManager());
     }
@@ -426,8 +423,7 @@ public class SamplesViewer implements IDirectableViewer, IViewerWithFindToolBar 
     /**
      * execute a command
      *
-     * @param command
-     */
+	 */
     public void executeImmediately(String command) {
         dir.executeImmediately(command, getCommandManager());
     }

@@ -63,9 +63,7 @@ public class AlignmentExporter {
     /**
      * constructor
      *
-     * @param doc
-     * @param parent
-     */
+	 */
     public AlignmentExporter(Document doc, JFrame parent) {
         this.doc = doc;
         this.parent = parent;
@@ -74,8 +72,7 @@ public class AlignmentExporter {
     /**
      * load data for complete dataset
      *
-     * @param progressListener
-     */
+	 */
     public void loadData(ProgressListener progressListener) throws CanceledException, IOException {
         className = "Total sample";
 
@@ -122,10 +119,7 @@ public class AlignmentExporter {
     /**
      * load data for given class
      *
-     * @param classificationName
-     * @param classId
-     * @param progressListener
-     */
+	 */
     public void loadData(String classificationName, Integer classId, String name, boolean refSeqOnly, ProgressListener progressListener) throws CanceledException, IOException {
         this.classificationName = classificationName;
         this.classId = classId;
@@ -204,19 +198,8 @@ public class AlignmentExporter {
     /**
      * export all loaded alignments to individual files
      *
-     * @param totalFilesWritten
-     * @param fileNameTemplate
-     * @param useAnyReadOnlyOnce
-     * @param blastXAsProtein
-     * @param asConsensus
-     * @param minReads
-     * @param minLength
-     * @param minCoverage
-     * @param progressListener
      * @return the number of reads and files
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public Pair<Integer, Integer> exportToFiles(int totalFilesWritten, final String fileNameTemplate,
                                                 final boolean useAnyReadOnlyOnce, final boolean blastXAsProtein, final boolean asConsensus,
                                                 int minReads, int minLength, final double minCoverage,
@@ -388,9 +371,7 @@ public class AlignmentExporter {
     /**
      * remove all reads used in current alignment from the remaining ones in the sorte dset. Reinserts modified alignments so that the sorted set stays sorted
      *
-     * @param sorted
-     * @param current
-     */
+	 */
 
     private void removeReadsFromSets(SortedSet<Pair<String, List<Pair<IReadBlock, IMatchBlock>>>> sorted, Pair<String, List<Pair<IReadBlock, IMatchBlock>>> current) {
         // determine set of matches that have just been used

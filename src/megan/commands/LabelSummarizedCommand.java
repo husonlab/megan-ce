@@ -72,8 +72,7 @@ public class LabelSummarizedCommand extends CommandBase implements ICheckBoxComm
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

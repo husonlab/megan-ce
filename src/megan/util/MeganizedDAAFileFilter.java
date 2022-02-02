@@ -55,8 +55,6 @@ public class MeganizedDAAFileFilter extends FileFilterBase implements FilenameFi
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

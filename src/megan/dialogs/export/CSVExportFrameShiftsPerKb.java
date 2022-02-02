@@ -45,9 +45,7 @@ class CSVExportFrameShiftsPerKb {
     /**
      * export mapping of read names to frame-shifts per kilo-base
      *
-     * @param file
-     * @param progress
-     */
+	 */
     public static int apply(final MainViewer viewer, final File file, final char separator, final boolean excludeDominated, final ProgressListener progress) throws IOException {
         final Document doc = viewer.getDocument();
         int totalLines = 0;
@@ -129,7 +127,6 @@ class CSVExportFrameShiftsPerKb {
     /**
      * computes the number of frame shifts per KB for all matches associated with a read
      *
-     * @param readBlock
      * @return frame shifts per KB
      */
     private static float computeFrameShiftsPerKb(IReadBlock readBlock, boolean excludeDominated) {

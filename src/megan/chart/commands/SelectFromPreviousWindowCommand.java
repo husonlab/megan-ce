@@ -36,8 +36,7 @@ public class SelectFromPreviousWindowCommand extends CommandBase implements ICom
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -55,8 +54,7 @@ public class SelectFromPreviousWindowCommand extends CommandBase implements ICom
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("select what=previous;");

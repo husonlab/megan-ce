@@ -40,7 +40,6 @@ public class ReadAssignmentCalculator {
     /**
      * compute the assignment value for this read
      *
-     * @param readBlock
      * @return assignment value
      */
     public int compute(IReadBlock readBlock, IntervalTree<Object> intervals) {
@@ -55,8 +54,6 @@ public class ReadAssignmentCalculator {
     /**
      * computes the number of bases covered by any alignments
      *
-     * @param readBlock
-     * @param intervals
      * @return covered bases
      */
     private static int computeCoveredBases(IReadBlock readBlock, IntervalTree<Object> intervals) {

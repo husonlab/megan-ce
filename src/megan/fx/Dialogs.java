@@ -37,11 +37,7 @@ public class Dialogs {
     /**
      * show a confirmation dialog
      *
-     * @param swingParent
-     * @param title
-     * @param message
-     * @return
-     */
+	 */
     public static boolean showConfirmation(final Component swingParent, final String title, final String message) {
         final Single<Boolean> confirmed = new Single<>(false);
 
@@ -71,12 +67,7 @@ public class Dialogs {
     /**
      * show an input dialog
      *
-     * @param swingParent
-     * @param title
-     * @param message
-     * @param initialValue
-     * @return
-     */
+	 */
     private static String showInput(final Component swingParent, final String title, final String message, final String initialValue) {
         final Single<String> input = new Single<>(null);
 

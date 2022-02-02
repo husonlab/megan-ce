@@ -23,7 +23,6 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
-import jloda.util.UsageException;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
@@ -31,7 +30,6 @@ import megan.core.Document;
 import megan.main.MeganProperties;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -42,10 +40,7 @@ public class Reanalyzer {
     /**
      * Reanalyze DAA and RMA files
      *
-     * @param args
-     * @throws UsageException
-     * @throws FileNotFoundException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -65,8 +60,7 @@ public class Reanalyzer {
     /**
      * run the program
      *
-     * @param args
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Reanalyze DAA and RMA files");
         options.setVersion(ProgramProperties.getProgramVersion());

@@ -77,8 +77,7 @@ public class AssignmentUsingWeightedLCACreator implements IAssignmentAlgorithmCr
     /**
      * compute all the reference weights
      *
-     * @param doc
-     */
+	 */
     private void computeWeights(final Document doc) throws IOException, CanceledException {
         final IConnector connector = doc.getConnector();
         if (connector instanceof DAAConnector) {

@@ -49,8 +49,7 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw bubbles with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
@@ -183,7 +182,6 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw bubbles in which colors are by dataset
      *
-     * @param gc
      */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
@@ -317,7 +315,6 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
      */
     protected void drawXAxis(Graphics2D gc) {
     }
@@ -325,7 +322,6 @@ public class BubbleChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the y-axis
      *
-     * @param gc
      */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);

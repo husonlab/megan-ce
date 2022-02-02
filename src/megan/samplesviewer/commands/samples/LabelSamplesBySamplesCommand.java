@@ -39,8 +39,7 @@ public class LabelSamplesBySamplesCommand extends CommandBase implements IComman
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

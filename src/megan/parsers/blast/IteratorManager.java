@@ -31,13 +31,8 @@ public class IteratorManager {
     /**
      * gets the iterator for the given file, format and blastMode
      *
-     * @param blastFile
-     * @param format
-     * @param blastMode
-     * @param maxMatchesPerRead
      * @return iterator
-     * @throws IOException
-     */
+	 */
     public static ISAMIterator getIterator(String blastFile, BlastFileFormat format, BlastMode blastMode, int maxMatchesPerRead, boolean longReads) throws IOException {
         final ISAMIterator iterator;
         if (format == BlastFileFormat.SAM)

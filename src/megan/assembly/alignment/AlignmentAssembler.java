@@ -59,12 +59,7 @@ public class AlignmentAssembler {
     /**
      * compute the overlap graph
      *
-     * @param minOverlap
-     * @param alignment
-     * @param progress
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public void computeOverlapGraph(int minOverlap, final Alignment alignment, ProgressListener progress) throws IOException {
         this.alignment = alignment;
         var overlapGraphBuilder = new OverlapGraphBuilder(minOverlap);
@@ -77,10 +72,7 @@ public class AlignmentAssembler {
     /**
      * show the overlap graph
      *
-     * @param dir
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public void showOverlapGraph(Director dir, ProgressListener progress) throws CanceledException {
         final var overlapGraphViewer = new OverlapGraphViewer(dir, overlapGraph, node2readName, paths);
         overlapGraphViewer.apply(progress);
@@ -89,11 +81,7 @@ public class AlignmentAssembler {
     /**
      * write the overlap graph
      *
-     * @param writer
-     * @return
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public Pair<Integer, Integer> writeOverlapGraph(Writer writer) throws IOException {
         try(NodeArray<String> nodeNameMap = new NodeArray<>(overlapGraph);
         NodeArray<String> nodeSequenceMap = new NodeArray<>(overlapGraph);
@@ -123,14 +111,7 @@ public class AlignmentAssembler {
     /**
      * compute contigs. Also sorts alignment by contigs
      *
-     * @param alignmentNumber
-     * @param minReads
-     * @param minCoverage
-     * @param minLength
-     * @param progress
-     * @return
-     * @throws CanceledException
-     */
+	 */
     public int computeContigs(int alignmentNumber, int minReads, double minCoverage, int minLength, boolean sortAlignmentByContigs, ProgressListener progress) throws CanceledException {
         final var pathExtractor = new PathExtractor(overlapGraph, readId2ContainedReads);
         pathExtractor.apply(progress);
@@ -151,11 +132,7 @@ public class AlignmentAssembler {
     /**
      * write contigs
      *
-     * @param w
-     * @param progress
-     * @throws CanceledException
-     * @throws IOException
-     */
+	 */
     public void writeContigs(Writer w, ProgressListener progress) throws IOException {
         progress.setSubtask("Writing contigs");
         progress.setMaximum(contigs.size());

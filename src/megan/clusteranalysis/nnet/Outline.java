@@ -43,10 +43,7 @@ public class Outline {
     /**
      * computes the graph and graph view
      *
-     * @param cycle0
-     * @param taxa
-     * @param splits
-     */
+	 */
     public void createNetwork(int[] cycle0, Taxa taxa, SplitSystem splits, PhyloTreeView view) {
         final boolean useWeights = true;
 
@@ -174,7 +171,6 @@ public class Outline {
     /**
      * normalizes cycle so that cycle[1]=1
      *
-     * @param cycle
      * @return normalized cycle
      */
     private int[] normalizeCycle(int[] cycle) {
@@ -201,9 +197,7 @@ public class Outline {
     /**
      * assigns angles to all edges in the graph
      *
-     * @param splits
-     * @param cycle
-     */
+	 */
     public static double[] assignAnglesToSplits(int ntaxa, SplitSystem splits, int[] cycle, double totalAngle) {
         //We create the list of angles representing the positions on a circle.
         double[] angles = new double[ntaxa + 1];
@@ -220,8 +214,6 @@ public class Outline {
      * assigns angles to the splits in the graph, considering that they are located exactly "in the middle" of two taxa
      * so we fill split2angle using TaxaAngles.
      *
-     * @param splits
-     * @param cycle
      * @param angles      for each taxa, its angle
      * @param split2angle for each split, its angle
      */

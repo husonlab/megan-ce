@@ -43,11 +43,8 @@ public class ComputeCoreBiome {
     /**
      * computes core biome for a given threshold
      *
-     * @param srcDoc
      * @param asUpperBound                   if true, keep rare taxa in which the sample threshold is an upper bound
      * @param samplesThreshold               number of samples that must contain a taxon so that it appears in the output, or max, if asUpperBound is true
-     * @param tarClassification2class2counts
-     * @param progress
      * @return sampleSize
      */
     public static int apply(Document srcDoc, Collection<String> samplesToUse, boolean asUpperBound, int samplesThreshold,
@@ -107,9 +104,6 @@ public class ComputeCoreBiome {
     /**
      * determines the number of counts necessary for a taxon to be considered detected, for each sample
      *
-     * @param numberOfSamples
-     * @param srcClass2counts
-     * @param detectionThresholdPercent
      * @return thresholds
      */
     private static int[] computeDetectionThreshold(String classificationName, int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
@@ -143,12 +137,7 @@ public class ComputeCoreBiome {
     /**
      * recursively compute the core biome
      *
-     * @param samplesThreshold
-     * @param detectionThreshold
-     * @param v
-     * @param srcClass2counts
-     * @param tarClass2counts
-     */
+	 */
     private static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold,
                                                Node v, Map<Integer, float[]> srcClass2counts, Map<Integer, float[]> tarClass2counts, ProgressListener progress) throws CanceledException {
         final float[] summarized = new float[numberOfSamples];

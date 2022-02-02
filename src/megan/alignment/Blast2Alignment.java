@@ -60,10 +60,7 @@ public class Blast2Alignment {
     /**
      * create an aligner for
      *
-     * @param doc
-     * @throws java.io.IOException
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public Blast2Alignment(Document doc) {
         this.doc = doc;
     }
@@ -79,11 +76,7 @@ public class Blast2Alignment {
     /**
      * loads data for aligning. This also determines the type of blast data
      *
-     * @param classificationName
-     * @param classIds
-     * @throws java.io.IOException
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public void loadData(String classificationName, Set<Integer> classIds, String name, ProgressListener progressListener) throws IOException, CanceledException {
         this.classificationName = classificationName;
         this.className = name;
@@ -232,11 +225,7 @@ public class Blast2Alignment {
     /**
      * load some existing data. Used by alignment exporter
      *
-     * @param classificationName
-     * @param classId
-     * @param name
-     * @param readMatchPairs
-     */
+	 */
     public void loadData(String classificationName, Integer classId, String name, String key, List<Pair<IReadBlock, IMatchBlock>> readMatchPairs) {
         this.classificationName = classificationName;
         this.className = name;
@@ -286,8 +275,7 @@ public class Blast2Alignment {
     /**
      * returns the total number of reads
      *
-     * @return
-     */
+	 */
     public int getTotalNumberOfReads() {
         return totalNumberOfReads;
     }
@@ -295,9 +283,7 @@ public class Blast2Alignment {
     /**
      * builds an alignment for the given reference string
      *
-     * @param matchRefLine
-     * @param alignment
-     */
+	 */
     public void makeAlignment(String matchRefLine, Alignment alignment, boolean showInsertions, ProgressListener progressListener) throws IOException, CanceledException {
         alignment.clear();
         alignment.setName(className);
@@ -419,9 +405,7 @@ public class Blast2Alignment {
     /**
      * add the given insertions to the alignment
      *
-     * @param pos2Insertions
-     * @param alignment
-     */
+	 */
     private void addInsertionsToAlignment(SortedMap<Integer, Collection<Pair<Integer, String>>> pos2Insertions, Alignment alignment, ProgressListener progressListener) throws CanceledException {
         // insertions into reference sequence:
         if (alignment.getReference().getLength() > 0) {
@@ -503,7 +487,6 @@ public class Blast2Alignment {
     /**
      * get string of n gaps
      *
-     * @param n
      * @return string of n gaps
      */
     private String gaps(int n) {
@@ -517,12 +500,7 @@ public class Blast2Alignment {
     /**
      * compute the aligned read sequence
      *
-     * @param readSequence
-     * @param text
-     * @param originalReferenceSequence
-     * @return aligned read sequence
-     * @throws java.io.IOException
-     */
+	 */
     private static void computeGappedSequenceBlastX(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Single<char[]> originalReferenceSequence, Alignment alignment) throws IOException {
         int length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
@@ -635,11 +613,7 @@ public class Blast2Alignment {
     /**
      * compute the aligned read sequence
      *
-     * @param readSequence
-     * @param text
-     * @return aligned read sequence
-     * @throws java.io.IOException
-     */
+	 */
     private static void computeGappedSequenceBlastP(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions, boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
 
         int length = NumberUtils.parseInt(BlastParsingUtils.grabNext(text, "Length =", "Length="));
@@ -697,7 +671,7 @@ public class Blast2Alignment {
                         insertion = new Pair<>(alignPos - 1, queryString.substring(mPos, mPos + 1));
                         insertions.add(insertion);
                     } else {
-                        insertion.setSecond(insertion.getSecond() + readSequence.substring(mPos, mPos + 1));
+						insertion.setSecond(insertion.getSecond() + readSequence.charAt(mPos));
                     }
                 }
                 alignPos += 1;
@@ -720,11 +694,7 @@ public class Blast2Alignment {
     /**
      * compute the aligned read sequence
      *
-     * @param readSequence
-     * @param text
-     * @return aligned read sequence
-     * @throws java.io.IOException
-     */
+	 */
     private static void computeGappedSequenceBlastN(String readName, String readSequence, String text, Collection<Pair<Integer, String>> insertions,
                                                     boolean showInsertions, Single<char[]> referenceSequence, Alignment alignment) throws IOException {
         boolean hasExactLength;
@@ -832,7 +802,7 @@ public class Blast2Alignment {
                         insertion = new Pair<>(alignPos - 1, queryString.substring(mPos, mPos + 1));
                         insertions.add(insertion);
                     } else {
-                        insertion.setSecond(insertion.getSecond() + queryString.substring(mPos, mPos + 1));
+						insertion.setSecond(insertion.getSecond() + queryString.charAt(mPos));
                     }
                 }
                 alignPos += 1;

@@ -35,8 +35,7 @@ public class AttributeReporter {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public AttributeReporter(Director dir) {
         this.dir = dir;
     }
@@ -44,7 +43,6 @@ public class AttributeReporter {
     /**
      * gets the microbial attributes for a taxon
      *
-     * @param taxonId
      * @return microbial attributes or null
      */
     public String apply(Integer taxonId) {

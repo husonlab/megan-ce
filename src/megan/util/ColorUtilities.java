@@ -31,8 +31,6 @@ class ColorUtilities {
      * interpolate colors
      * Source: http://stackoverflow.com/questions/340209/generate-colors-between-red-and-green-for-a-power-meter
      *
-     * @param start
-     * @param end
      * @param p     number between 0 and 1
      * @return color
      */

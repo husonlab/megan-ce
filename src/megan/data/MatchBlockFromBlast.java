@@ -45,8 +45,7 @@ public class MatchBlockFromBlast extends MatchBlockRMA2 implements IMatchBlock, 
     /**
      * sets the location of the  text
      *
-     * @param location
-     */
+	 */
     public void setTextLocation(Location location) {
         this.location = location;
     }

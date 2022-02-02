@@ -28,7 +28,6 @@ public interface IIntGetter extends AutoCloseable {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     int get(long index) throws IOException;
@@ -37,8 +36,7 @@ public interface IIntGetter extends AutoCloseable {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     long limit();
 
     /**

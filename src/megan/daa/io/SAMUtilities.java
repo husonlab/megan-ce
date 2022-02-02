@@ -42,8 +42,6 @@ public class SAMUtilities {
     /**
      * create a sam line
      *
-     * @param matchRecord
-     * @param buffer
      */
     public static void createSAM(DAAParser daaParser, DAAMatchRecord matchRecord, ByteOutputBuffer buffer, byte[] queryAlphabet) {
         buffer.write(matchRecord.getQueryRecord().getQueryName());
@@ -100,9 +98,6 @@ public class SAMUtilities {
     /**
      * compute the aligned query string, cigar and MD string
      *
-     * @param queryDNA
-     * @param queryAlphabet
-     * @param editTranscript
      * @return alignment, cigar and MD string
      */
     private static byte[][] computeCigarAndAlignedQueryAndMD(byte[] queryDNA, int start, byte[] queryAlphabet, PackedTranscript editTranscript) {
@@ -132,8 +127,7 @@ public class SAMUtilities {
                         queryPosition += 3;
                     }
                     editOpCorrected = editOp;
-                    break;
-                }
+				}
                 case op_insertion -> {
                     for (int i = 0; i < editOp.getCount(); i++) {
                         byte aa = queryAlphabet[Translator.getAminoAcid(queryDNA, queryPosition)];
@@ -142,15 +136,13 @@ public class SAMUtilities {
                         queryPosition += 3;
                     }
                     editOpCorrected = editOp;
-                    break;
-                }
+				}
                 case op_deletion -> {
                     byte c = queryAlphabet[editOp.getLetter()];
                     //alignedQueryBuf.write((byte)'-');
                     //alignedReferenceBuf.write(c);
                     editOpCorrected = editOp;
-                    break;
-                }
+				}
 
                 // Key idea here: Although a frame shift in the query is really an insertion in the query,
                 // in a DAA file it is represented as a substitution by a / or \ in the reference, due to limitations due to the bit packed transcript encoding
@@ -173,8 +165,7 @@ public class SAMUtilities {
                         queryPosition += 3;
                         editOpCorrected = editOp;
                     }
-                    break;
-                }
+				}
                 default -> throw new RuntimeException("this should't happen");
             }
             // compute cigar:
@@ -228,8 +219,6 @@ public class SAMUtilities {
     /**
      * write the cigar string
      *
-     * @param match
-     * @param buffer
      */
     private static void writeCigar(DAAMatchRecord match, ByteOutputBuffer buffer) {
         int previousCount = 0, previousOp = 0;
@@ -256,9 +245,6 @@ public class SAMUtilities {
     /**
      * write the MD string
      *
-     * @param match
-     * @param buffer
-     * @param queryAlphabet
      */
     private static void writeMD(DAAMatchRecord match, ByteOutputBuffer buffer, byte[] queryAlphabet) {
         {

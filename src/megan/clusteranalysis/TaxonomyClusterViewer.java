@@ -30,8 +30,7 @@ public class TaxonomyClusterViewer extends ClusterViewer {
     /**
      * creates a new network viewer
      *
-     * @param viewer
-     */
+	 */
     public TaxonomyClusterViewer(final MainViewer viewer) {
         super(viewer.getDir(), viewer, ClassificationType.Taxonomy.toString());
     }

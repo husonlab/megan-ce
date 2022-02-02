@@ -81,8 +81,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public NodeDrawer(Document doc, GraphView viewer) {
         this.viewer = viewer;
         this.doc = doc;
@@ -91,9 +90,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * setup data
      *
-     * @param graphView
-     * @param gc
-     */
+	 */
     public void setup(GraphView graphView, Graphics2D gc) {
         this.gc = gc;
     }
@@ -110,8 +107,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * set the node style
      *
-     * @param style
-     */
+	 */
     public void setStyle(Style style) {
         this.style = style;
 
@@ -153,8 +149,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * set the max single account and max total node count
      *
-     * @param maxSingleCountAndMaxTotalCount
-     */
+	 */
     public void setCounts(double[] maxSingleCountAndMaxTotalCount) {
         this.maxSingleCount = maxSingleCountAndMaxTotalCount[0];
         this.maxTotalCount = maxSingleCountAndMaxTotalCount[1];
@@ -185,7 +180,6 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * gets size at which the value should be drawn
      *
-     * @param value
      * @return scaled size
      */
     public double getScaledSize(double value) {
@@ -201,8 +195,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw the node
      *
-     * @param selected
-     */
+	 */
     public void draw(Node v, boolean selected) {
         final NodeView nv = viewer.getNV(v);
         final NodeData data = (NodeData) v.getData();
@@ -229,8 +222,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * hilite the node
      *
-     * @param v
-     */
+	 */
     private void hilite(Node v) {
         NodeView nv = viewer.getNV(v);
 
@@ -269,8 +261,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * hilite the node label
      *
-     * @param v
-     */
+	 */
     private void hiliteLabel(Node v, NodeData data) {
         NodeView nv = viewer.getNV(v);
 
@@ -337,8 +328,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw the label of the node
      *
-     * @param selected
-     */
+	 */
     public void drawLabel(Node v, boolean selected) {
         viewer.getNV(v).drawLabel(gc, viewer.trans, viewer.getFont(), selected);
 
@@ -349,8 +339,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw the node and the label
      *
-     * @param selected
-     */
+	 */
     public void drawNodeAndLabel(Node v, boolean selected) {
         draw(v, selected);
         drawLabel(v, selected);
@@ -359,10 +348,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw node as a scaled circle
      *
-     * @param v
-     * @param nv
-     * @param data
-     */
+	 */
     private void drawAsCircle(Node v, NodeView nv, NodeData data) {
         Point2D location = nv.getLocation();
 
@@ -415,10 +401,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw as Cox comb
      *
-     * @param v
-     * @param nv
-     * @param data
-     */
+	 */
     private void drawAsCoxComb(Node v, NodeView nv, NodeData data) {
         Point2D location = nv.getLocation();
 
@@ -473,10 +456,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw as a pie chart
      *
-     * @param v
-     * @param nv
-     * @param data
-     */
+	 */
     private void drawAsPieChart(Node v, NodeView nv, NodeData data) {
         Point2D location = nv.getLocation();
 
@@ -549,10 +529,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw as a heat map
      *
-     * @param v
-     * @param nv
-     * @param data
-     */
+	 */
     private void drawAsHeatMap(Node v, NodeView nv, NodeData data) {
         final double count;
         final float[] array;
@@ -643,10 +620,7 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * draw as meters
      *
-     * @param v
-     * @param nv
-     * @param data
-     */
+	 */
     private void drawAsBarChart(Node v, NodeView nv, NodeData data) {
         final double count;
         final float[] array;
@@ -736,7 +710,6 @@ public class NodeDrawer implements INodeDrawer {
     /**
      * convert a pvalue into a line width
      *
-     * @param pvalue
      * @return line width
      */
     private static int getWidthForPValue(double pvalue) {

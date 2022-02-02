@@ -46,8 +46,7 @@ public class RMA2File {
     /**
      * constructor
      *
-     * @param file
-     */
+	 */
     public RMA2File(File file) {
         this.file = file;
         infoSection = new InfoSection();
@@ -56,7 +55,6 @@ public class RMA2File {
     /**
      * gets the version of the RMA file
      *
-     * @param file
      * @return RMA version number or 0, if not an RMA file
      */
     static public int getRMAVersion(File file) {
@@ -85,8 +83,7 @@ public class RMA2File {
     /**
      * load the info section
      *
-     * @throws IOException
-     */
+	 */
     public InfoSection loadInfoSection() throws IOException {
         try (InputReader reader = new InputReader(getFile(), null, null, true)) {
             readHeader(reader);
@@ -99,8 +96,7 @@ public class RMA2File {
     /**
      * store the infosection
      *
-     * @throws IOException
-     */
+	 */
     private void storeInfoSection() throws IOException {
         try (InputOutputReaderWriter io = new InputOutputReaderWriter(file, "rw")) {
             if (infoSection.getInfoSectionStart() <= 0)
@@ -114,9 +110,7 @@ public class RMA2File {
     /**
      * opens a writer to the main file
      *
-     * @return
-     * @throws IOException
-     */
+	 */
     public OutputWriter getFileWriter() throws IOException {
         OutputWriter w = new OutputWriter(file);
         writeHeader(w);
@@ -126,10 +120,8 @@ public class RMA2File {
     /**
      * opens a writer to the named dump file
      *
-     * @param file
      * @return writer
-     * @throws IOException
-     */
+	 */
     public OutputWriter getDataDumpWriter(File file) throws IOException {
         OutputWriter w = new OutputWriter(file);
         writeHeader(w);
@@ -139,9 +131,7 @@ public class RMA2File {
     /**
      * gets a append for the
      *
-     * @return
-     * @throws IOException
-     */
+	 */
     public InputOutputReaderWriter getFileAppender() throws IOException {
         InputOutputReaderWriter io = new InputOutputReaderWriter(getFile(), "rw");
         io.seek(io.length());
@@ -152,8 +142,7 @@ public class RMA2File {
      * get the data index readerWriter
      *
      * @return data index readerWriter
-     * @throws IOException
-     */
+	 */
     public InputReader getDataIndexReader() throws IOException {
         loadInfoSection();
         boolean useRelativeFilePositions = (infoSection.getTextStoragePolicy() == TextStoragePolicy.Embed);
@@ -170,8 +159,7 @@ public class RMA2File {
      * get data index readerWriter-writer. Use only to modify existing index, not to create a new one
      *
      * @return readerWriter-writer
-     * @throws IOException
-     */
+	 */
     public InputOutputReaderWriter getDataIndexModifier() throws IOException {
         loadInfoSection();
         InputOutputReaderWriter io = new InputOutputReaderWriter(getFile(), "rw");
@@ -201,9 +189,7 @@ public class RMA2File {
     /**
      * gets the temporary readerWriter
      *
-     * @return
-     * @throws IOException
-     */
+	 */
     public OutputWriter getTmpIndexFileWriter() throws IOException {
         OutputWriter w = new OutputWriter(getIndexTmpFile());
         w.write(CHECK_BYTE);
@@ -237,10 +223,7 @@ public class RMA2File {
     /**
      * check whether value read is the same as the value expected
      *
-     * @param got
-     * @param expected
-     * @throws IOException
-     */
+	 */
     static public void check(long got, long expected) throws IOException {
         if (expected != got)
             throw new IOException("RMA2 file corrupt? Expected: " + expected + ", got: " + got);
@@ -266,8 +249,7 @@ public class RMA2File {
      * gets the creation date of this dataset
      *
      * @return date
-     * @throws IOException
-     */
+	 */
     public long getCreationDate() throws IOException {
         loadInfoSection();
         return infoSection.getCreationDate();
@@ -277,8 +259,7 @@ public class RMA2File {
      * gets the list of classification names
      *
      * @return names
-     * @throws IOException
-     */
+	 */
     public String[] getClassificationNames() throws IOException {
         loadInfoSection();
         return infoSection.getClassificationNames();
@@ -298,8 +279,7 @@ public class RMA2File {
      * gets the number of reads
      *
      * @return reads
-     * @throws IOException
-     */
+	 */
     public int getNumberOfReads() throws IOException {
         loadInfoSection();
         return infoSection.getNumberOfReads();
@@ -310,8 +290,7 @@ public class RMA2File {
      * gets the number of matches
      *
      * @return matches
-     * @throws IOException
-     */
+	 */
     public int getNumberOfMatches() throws IOException {
         loadInfoSection();
         return infoSection.getNumberOfMatches();
@@ -333,9 +312,7 @@ public class RMA2File {
     /**
      * replace the auxiliary data associated with the dataset
      *
-     * @param label2data
-     * @throws IOException
-     */
+	 */
     public void replaceAuxiliaryData(Map<String, byte[]> label2data) throws IOException {
         loadInfoSection();
 
@@ -365,9 +342,7 @@ public class RMA2File {
     /**
      * gets the summary section of the file
      *
-     * @return
-     * @throws IOException
-     */
+	 */
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
         loadInfoSection();
 
@@ -424,10 +399,7 @@ public class RMA2File {
     /**
      * gets a classification block
      *
-     * @param classificationName
-     * @return
-     * @throws IOException
-     */
+	 */
     public ClassificationBlockRMA2 getClassificationBlock(String classificationName) throws IOException {
         ClassificationBlockRMA2 classificationBlock = new ClassificationBlockRMA2(classificationName);
         classificationBlock.load(getClassificationIndexReader(classificationName));
@@ -438,8 +410,7 @@ public class RMA2File {
      * get the location manager associated with this file
      *
      * @return locationManager
-     * @throws IOException
-     */
+	 */
     public LocationManager getLocationManager() throws IOException {
         InfoSection infoSection = loadInfoSection();
         return infoSection.getLocationManager(getFile());
@@ -448,9 +419,7 @@ public class RMA2File {
     /**
      * replace the location manager by a new one
      *
-     * @param locationManager
-     * @throws IOException
-     */
+	 */
     public void replaceLocationManager(LocationManager locationManager) throws IOException {
         InfoSection infoSection = loadInfoSection();
         infoSection.syncLocationManager2InfoSection(locationManager);

@@ -228,8 +228,7 @@ public class CompareWindow extends JDialog {
     /**
      * set the comparison mode
      *
-     * @param mode
-     */
+	 */
     public void setMode(Comparer.COMPARISON_MODE mode) {
         this.mode = mode;
     }
@@ -310,7 +309,6 @@ public class CompareWindow extends JDialog {
     /**
      * returns the most often mentioned read assignment mode
      *
-     * @param list
      * @return most mentioned mode
      */
     private static Document.ReadAssignmentMode computeMajorityReadAssignmentMode(List<MyListItem> list) {
@@ -330,8 +328,7 @@ public class CompareWindow extends JDialog {
     /**
      * add a file to the viewer
      *
-     * @param fileName
-     */
+	 */
     public void addFile(final String fileName) {
         boolean ok = true;
         for (int i = 0; ok && i < listModel.getSize(); i++) {

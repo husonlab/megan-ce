@@ -55,8 +55,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * paints the chart
      *
-     * @param gc0
-     */
+	 */
     public void paint(Graphics gc0) {
         super.paint(gc0);
         leftMargin = 90;
@@ -125,8 +124,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
      * draw the title of the chart.
      * If size!=null, sets the size only, does not draw
      *
-     * @param gc
-     */
+	 */
     private void drawTitle(Graphics2D gc, Dimension size) {
         gc.setFont(getFont(ChartViewer.FontKeys.TitleFont.toString()));
         if (chartTitle != null) {
@@ -161,8 +159,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     protected void drawXAxis(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
         gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
@@ -177,8 +174,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -278,8 +274,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the y-axis  on a log scale
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxisLog(Graphics2D gc, Dimension size) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -364,8 +359,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the y-axis  on a sqrt scale
      *
-     * @param gc
-     */
+	 */
     private void drawYAxisSqrt(Graphics2D gc, Dimension size) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -478,8 +472,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw chart
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         // if(sgc!=null) lastDown=(Rectangle)sgc.getSelectionRectangle().clone();
@@ -550,19 +543,16 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                             value = 0;
                         else
                             value *= (100 / total);
-                        break;
                     }
                     case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
-                        break;
                     }
                     case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
-                        break;
                     }
                 }
 
@@ -617,8 +607,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw bars in which colors are by dataset
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         // if(sgc!=null) lastDown=(Rectangle)sgc.getSelectionRectangle().clone();
@@ -691,19 +680,16 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
-                        break;
                     }
                     case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
-                        break;
                     }
                     case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
-                        break;
                     }
                 }
 
@@ -759,8 +745,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * use this to set the max displayed y value
      *
-     * @param maxDisplayedYValue
-     */
+	 */
     public void setMaxDisplayedYValue(Double maxDisplayedYValue) {
         this.maxDisplayedYValue = maxDisplayedYValue;
     }
@@ -794,8 +779,6 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * gets factor used to compute percentage for a series in a transposed chart
      *
-     * @param chartData
-     * @param series
      * @return factors
      */
     public double[] computePercentFactorPerSampleForTransposedChart(DefaultChartData chartData, String[] series) {
@@ -811,9 +794,6 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * gets the max value for a given class in a transposed chart when using percentages
      *
-     * @param chartData
-     * @param series
-     * @param percentFactorPerSeries
      * @return max sum seen for any of the classes
      */
     public double computeMaxClassValueUsingPercentFactorPerSeries(DefaultChartData chartData, String[] series, double[] percentFactorPerSeries) {

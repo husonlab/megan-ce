@@ -28,7 +28,6 @@ public class ColorSchemeAminoAcidsDefault extends ColorSchemeBase implements ICo
     /**
      * gets the background color for the amino-acid
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

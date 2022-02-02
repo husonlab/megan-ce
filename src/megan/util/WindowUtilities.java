@@ -29,8 +29,7 @@ public class WindowUtilities {
     /**
      * bring to the front (using the swing thread)
      *
-     * @param window
-     */
+	 */
     public static void toFront(final Window window) {
         if (window != null) {
             Runnable runnable = () -> {
@@ -47,8 +46,7 @@ public class WindowUtilities {
     /**
      * bring to the front (using the swing thread)
      *
-     * @param frame
-     */
+	 */
     public static void toFront(final JFrame frame) {
         // if (SwingUtilities.isEventDispatchThread())
         //    System.err.println("HellO!");

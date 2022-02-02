@@ -38,9 +38,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("setColor target=");
         final String target = np.getWordMatchesIgnoringCase("axes biplot triplot groups");
@@ -151,8 +149,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final PCoATab pCoATab = getViewer().getPcoaTab();
         final Pair<Integer, Color> pair = ChooseColorLineWidthDialog.showDialog(getViewer().getFrame(), "Choose axes line-width and color", pCoATab.getAxesLineWidth(), pCoATab.getAxesColor());

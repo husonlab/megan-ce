@@ -61,8 +61,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * draw a Radial Chart
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         colorByClasses = true;
         colorBySeries = false;
@@ -72,8 +71,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * draw a transposed Radial Chart
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         colorByClasses = false;
         colorBySeries = true;
@@ -83,8 +81,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * draw both chart and transposed chart
      *
-     * @param gc
-     */
+	 */
     private void doDraw(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         if (sgc != null)
@@ -166,17 +163,7 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * recursively draw the graph
      *
-     * @param gc
-     * @param center
-     * @param radiusFactor
-     * @param v
-     * @param level
-     * @param maxLevel
-     * @param angleV
-     * @param extentV
-     * @param barFactor
-     * @param maxValue
-     */
+	 */
     private void drawRec(DrawWhat what, Graphics2D gc, PhyloTree tree, Point2D center, double radiusFactor, Node v, double level, double maxLevel, double angleV, double extentV, double barFactor, double maxValue) {
         if (v.getOutDegree() > 0) {
             // recursively visit all nodes below:
@@ -454,7 +441,6 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * determine the max levels of the tree
      *
-     * @param tree
      * @return max levels
      */
     private int determineMaxLevel(PhyloTree tree) {
@@ -464,8 +450,6 @@ public class RadialSpaceFillingTreeDrawer extends BarChartDrawer implements ICha
     /**
      * recursively does the work
      *
-     * @param level
-     * @param v
      * @return level
      */
     private int determineMaxLevelRec(int level, Node v) {

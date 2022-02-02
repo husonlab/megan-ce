@@ -260,10 +260,7 @@ public class AAdderRun {
     /**
      * read and verify a magic number from a stream
      *
-     * @param ins
-     * @param expectedMagicNumber
-     * @throws java.io.IOException
-     */
+	 */
     public static void readAndVerifyMagicNumber(IInputReader ins, byte[] expectedMagicNumber) throws IOException {
         byte[] magicNumber = new byte[expectedMagicNumber.length];
         if (ins.read(magicNumber, 0, magicNumber.length) != expectedMagicNumber.length || !Basic.equal(magicNumber, expectedMagicNumber)) {

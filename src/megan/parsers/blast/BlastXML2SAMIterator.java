@@ -50,8 +50,7 @@ public class BlastXML2SAMIterator implements ISAMIterator {
     /**
      * constructor
      *
-     * @param fileName
-     */
+	 */
     public BlastXML2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) {
         if (!BlastXMLFileFilter.getInstance().accept(fileName)) {
             NotificationsInSwing.showWarning("Might not be a BLAST file in XML format: " + fileName);

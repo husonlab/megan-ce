@@ -48,9 +48,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
     /**
      * constructor
      *
-     * @param classificationViewer
-     * @param id2NodesInInducedTree
-     */
+	 */
     public MyJTreeCellRender(ClassificationViewer classificationViewer, Map<Integer, Set<Node>> id2NodesInInducedTree) {
         this.classificationViewer = classificationViewer;
         this.id2NodesInInducedTree = id2NodesInInducedTree;

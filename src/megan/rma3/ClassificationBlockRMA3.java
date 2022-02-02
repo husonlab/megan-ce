@@ -88,10 +88,7 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     /**
      * write to file
      *
-     * @param writer
-     * @param classId2locations
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer, Map<Integer, ListOfLongs> classId2locations) throws IOException {
         writer.writeInt(map.size());
         for (Integer key : map.keySet()) {
@@ -111,10 +108,7 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     /**
      * reads the named classification block
      *
-     * @param classificationsFooter
-     * @param reader
-     * @throws java.io.IOException
-     */
+	 */
     public void read(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader) throws IOException {
         map.clear();
 
@@ -136,11 +130,8 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     /**
      * reads the named classification block
      *
-     * @param classificationsFooter
-     * @param reader
      * @return size
-     * @throws java.io.IOException
-     */
+	 */
     public int read(ClassificationsFooterRMA3 classificationsFooter, InputReader reader, int classId) throws IOException {
         map.clear();
 
@@ -163,12 +154,7 @@ public class ClassificationBlockRMA3 implements IClassificationBlock {
     /**
      * read all locations for a given class and adds the to list
      *
-     * @param classificationsFooter
-     * @param reader
-     * @param classId
-     * @param list
-     * @throws IOException
-     */
+	 */
     public void readLocations(ClassificationsFooterRMA3 classificationsFooter, IInputReader reader, int classId, ListOfLongs list) throws IOException {
         long start = classificationsFooter.getStart(classificationType);
         if (start != 0) {

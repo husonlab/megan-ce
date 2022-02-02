@@ -37,8 +37,6 @@ public class DNAScoringMatrix implements IScoringMatrix {
     /**
      * get score for letters a and b
      *
-     * @param a
-     * @param b
      * @return score
      */
     public int getScore(byte a, byte b) {

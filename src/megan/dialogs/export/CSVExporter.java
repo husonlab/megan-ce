@@ -40,16 +40,15 @@ public class CSVExporter {
     /**
      * constructor
      *
-     * @param classificationName
-     */
+	 */
     public static List<String> getFormats(String classificationName, Document doc) {
         final List<String> formats = new LinkedList<>();
 
         final String shortName;
-        if (classificationName.toLowerCase().equals("taxonomy"))
-            shortName = "taxon";
-        else
-            shortName = classificationName.toLowerCase();
+		if (classificationName.equalsIgnoreCase("taxonomy"))
+			shortName = "taxon";
+		else
+			shortName = classificationName.toLowerCase();
 
         formats.add(shortName + "Name_to_count");
         if (shortName.equals("taxon")) {
@@ -135,10 +134,7 @@ public class CSVExporter {
     /**
      * apply the desired exporter
      *
-     * @param dir
-     * @param file
-     * @param format
-     */
+	 */
     public static int apply(Director dir, ProgressListener progressListener, File file, String format, char separator, boolean reportSummarized) throws IOException {
         progressListener.setTasks("Export in CSV format", "Initializing");
 

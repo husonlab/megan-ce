@@ -64,8 +64,7 @@ public class ReadBlockWithLocationAdapter implements IReadBlockWithLocation {
     /**
      * set the weight of a read
      *
-     * @param weight
-     */
+	 */
     public void setReadWeight(int weight) {
         readBlock.setReadWeight(weight);
     }

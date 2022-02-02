@@ -46,11 +46,7 @@ public class RemoteBlastDialog {
     /**
      * displays a configuration screen and sets up the command string
      *
-     * @param viewer
-     * @param dir
-     * @param readsProvider
      * @param providedReadsFile if not null, we use this file and ignore the readsProvider
-     * @param queryName
      * @return command string or null
      */
     public static String apply(final IDirectableViewer viewer, Director dir, final IReadsProvider readsProvider, final String providedReadsFile, String queryName) {

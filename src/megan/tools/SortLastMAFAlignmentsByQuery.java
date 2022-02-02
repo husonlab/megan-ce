@@ -57,8 +57,7 @@ public class SortLastMAFAlignmentsByQuery {
     /**
      * run the program
      *
-     * @param args
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Sorts alignments in an MAF file by query");
         options.setVersion(ProgramProperties.getProgramVersion());

@@ -353,8 +353,7 @@ public class AlignmentViewerPanel extends JPanel {
     /**
      * connect or disconnect scrollbar of name panel with that of alignment panel
      *
-     * @param connect
-     */
+	 */
     private void connectNamePanel2AlignmentPane(boolean connect) {
         if (connect)
             namesScrollPane.getVerticalScrollBar().setModel(alignmentScrollPane.getVerticalScrollBar().getModel());
@@ -374,8 +373,7 @@ public class AlignmentViewerPanel extends JPanel {
     /**
      * set the alignment for this viewer
      *
-     * @param alignment
-     */
+	 */
     public void setAlignment(Alignment alignment) {
         alignment.getGapColumnContractor().processAlignment(alignment);
         if (isShowAsMapping()) {
@@ -568,8 +566,7 @@ public class AlignmentViewerPanel extends JPanel {
      *
      * @param axis        vertical, horizontal or both
      * @param what        in, out, reset or a number
-     * @param centerPoint
-     */
+	 */
     public void zoom(String axis, String what, Point centerPoint) {
         final JScrollPane alignmentScrollPane = getAlignmentScrollPane();
         final AlignmentPanel alignmentPanel = getAlignmentPanel();

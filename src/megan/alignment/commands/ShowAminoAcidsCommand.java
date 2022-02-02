@@ -41,9 +41,7 @@ public class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxComma
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set showAminoAcids=");
@@ -68,8 +66,7 @@ public class ShowAminoAcidsCommand extends CommandBase implements ICheckBoxComma
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set showAminoAcids=true;");

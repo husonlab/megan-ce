@@ -29,7 +29,6 @@ public class ColorSchemeAminoAcidsZappo extends ColorSchemeBase implements IColo
      * gets the background color for the amino-acid
      * http://www.jalview.org/help.html
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

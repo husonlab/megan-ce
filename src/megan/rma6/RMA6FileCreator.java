@@ -43,8 +43,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * constructor
      *
-     * @param fileName
-     */
+	 */
     public RMA6FileCreator(String fileName, boolean useCompression) {
         super();
         this.useCompression = useCompression;
@@ -54,12 +53,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * setup and write the header
      *
-     * @param creator
-     * @param blastMode
-     * @param matchClassificationNames
-     * @param isPairedReads
-     * @throws IOException
-     */
+	 */
     public void writeHeader(String creator, BlastMode blastMode, String[] matchClassificationNames, boolean isPairedReads) throws IOException {
         // setup header:
         final HeaderSectionRMA6 headerSection = getHeaderSectionRMA6();
@@ -87,8 +81,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * Start adding queries and writing them to a file. Assumes that the header section has been set appropriately
      *
-     * @throws IOException
-     */
+	 */
     public void startAddingQueries() throws IOException {
         totalNumberOfReads = 0;
         totalNumberOfMatches = 0;
@@ -99,14 +92,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * add a query and its matches to the file
      *
-     * @param queryText
-     * @param queryTextLength
-     * @param numberOfMatches
-     * @param matchesText
-     * @param matchesTextLength
-     * @param match2Classification2Id
-     * @throws IOException
-     */
+	 */
     public void addQuery(byte[] queryText, int queryTextLength, int numberOfMatches, byte[] matchesText, int matchesTextLength, int[][] match2Classification2Id, long mateLocation) throws IOException {
         final long location = readerWriter.getPosition();
 
@@ -134,8 +120,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * finish creating the file. Assumes that the footer section has been set appropriately
      *
-     * @throws IOException
-     */
+	 */
     public void endAddingQueries() throws IOException {
         getFooterSectionRMA6().setEndReadsSection(readerWriter.getPosition());
 
@@ -146,11 +131,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * writes the classifications
      *
-     * @param cNames
-     * @param fName2Location
-     * @param fName2weight
-     * @throws IOException
-     */
+	 */
     public void writeClassifications(String[] cNames, Map<Integer, ListOfLongs>[] fName2Location, Map<Integer, Integer>[] fName2weight) throws IOException {
         getFooterSectionRMA6().setStartClassificationsSection(readerWriter.getPosition());
         getFooterSectionRMA6().getAvailableClassification2Position().clear();
@@ -174,8 +155,7 @@ public class RMA6FileCreator extends RMA6File {
     /**
      * finish creating the file. Assumes that the footer section has been set appropriately
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         getFooterSectionRMA6().setStartFooterSection(readerWriter.getPosition());
         getFooterSectionRMA6().write(readerWriter);

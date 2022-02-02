@@ -43,9 +43,7 @@ public class SetSampleColorCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         final Document doc = ((Director) getDir()).getDocument();
 
@@ -138,8 +136,7 @@ public class SetSampleColorCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final SamplesViewer viewer = (SamplesViewer) getViewer();
 

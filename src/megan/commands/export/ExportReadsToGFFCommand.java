@@ -55,9 +55,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=GFF file=");
@@ -134,7 +132,6 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
     /**
      * gets options from user
      *
-     * @param frame
      * @return options
      */
     private Triplet<Boolean, Boolean, String> getOptions(JFrame frame, boolean canExport, boolean canExcludeIncompatible) {

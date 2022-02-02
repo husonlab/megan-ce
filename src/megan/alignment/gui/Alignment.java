@@ -174,9 +174,6 @@ public class Alignment {
     /**
      * adds a sequence to the alignment
      *
-     * @param name
-     * @param text
-     * @param toolTip
      * @param unalignedPrefix unaligned prefix of sequence
      * @param leadingGaps     number of gaps before alignment starts
      * @param block           core of alignment
@@ -190,10 +187,6 @@ public class Alignment {
     /**
      * get string representation of block in alignment
      *
-     * @param includeUnalignedChars
-     * @param minRow
-     * @param minLayoutCol
-     * @param maxRow
      * @param maxLayoutCol          @return string
      */
     public String toFastA(boolean includeUnalignedChars, int minRow, int minLayoutCol, int maxRow, int maxLayoutCol) {
@@ -301,8 +294,7 @@ public class Alignment {
     /**
      * return a fastA representation in string
      *
-     * @return
-     */
+	 */
     public String toFastA() {
         return toFastA(false, 0, 0, getNumberOfSequences() - 1, getLength());
     }
@@ -310,7 +302,6 @@ public class Alignment {
     /**
      * get the position of the row in the row ordering
      *
-     * @param row
      * @return ordered position
      */
     public int getOrder(int row) {
@@ -479,8 +470,6 @@ public class Alignment {
     /**
      * get string representation of segment of consensus
      *
-     * @param minLayoutCol
-     * @param maxLayoutCol
      * @return string
      */
     public String getConsensusString(int minLayoutCol, int maxLayoutCol) {
@@ -515,8 +504,6 @@ public class Alignment {
     /**
      * get string representation of segment of reference
      *
-     * @param minLayoutCol
-     * @param maxLayoutCol
      * @return string
      */
     public String getReferenceString(int minLayoutCol, int maxLayoutCol) {
@@ -576,8 +563,6 @@ public class Alignment {
     /**
      * get the read that is displayed at the given row and column
      *
-     * @param row
-     * @param col
      * @return read or -1
      */
     public int getHitRead(int row, int col) {

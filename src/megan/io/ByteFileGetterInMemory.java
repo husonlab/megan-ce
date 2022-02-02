@@ -36,10 +36,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * int file getter in memory
      *
-     * @param file
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public ByteFileGetterInMemory(File file) throws IOException, CanceledException {
         limit = file.length();
 
@@ -67,7 +64,6 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -78,12 +74,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * bulk get
      *
-     * @param index
-     * @param bytes
-     * @param offset
-     * @param len
-     * @return
-     */
+	 */
     @Override
     public int get(long index, byte[] bytes, int offset, int len) {
         for (int i = 0; i < len; i++) {
@@ -97,7 +88,6 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * gets next four bytes as a single integer
      *
-     * @param index
      * @return integer
      */
     @Override
@@ -113,8 +103,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;
@@ -130,7 +119,6 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * get current array
      *
-     * @param index
      * @return array index
      * @deprecated
      */
@@ -142,7 +130,6 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * get position in current array
      *
-     * @param index
      * @return pos
      * @deprecated
      */
@@ -154,9 +141,7 @@ public class ByteFileGetterInMemory implements IByteGetter {
     /**
      * test indexing
      *
-     * @param args
-     * @throws Exception
-     */
+	 */
     public static void main(String[] args) throws Exception {
         ByteFileGetterInMemory byteFileGetterInMemory = new ByteFileGetterInMemory(new File("/dev/null"));
         int length0 = (1 << byteFileGetterInMemory.BITS);

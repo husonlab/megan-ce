@@ -50,9 +50,6 @@ public class ExportAlignedReads2GFF3Format {
 	/**
 	 * export aligned reads in GFF3 format
 	 *
-	 * @param file
-	 * @param classificationToReport
-	 * @param progressListener
 	 * @return reads and genes written
 	 */
 	public static Pair<Long, Long> apply(final ClassificationViewer cViewer, final File file, final String classificationToReport, final boolean excludeIncompatible, final boolean excludeDominated, final ProgressListener progressListener) throws IOException {
@@ -107,10 +104,7 @@ public class ExportAlignedReads2GFF3Format {
 	/**
      * export aligned reads in GFF3 format
      *
-     * @param file
-     * @param classificationToReport
-     * @param progressListener
-     */
+	 */
     public static void apply(Document document, final File file, final String classificationToReport, final boolean excludeIncompatible, final boolean excludeDominated, final ProgressListener progressListener) throws IOException {
         long countReads = 0;
         long countAlignments = 0;
@@ -198,15 +192,6 @@ public class ExportAlignedReads2GFF3Format {
 	/**
 	 * export aligned reads in GFF3 format
 	 *
-	 * @param viewer
-	 * @param file
-	 * @param classificationToReport
-	 * @param excludeIncompatible
-	 * @param excludeDominated
-	 * @param progressListener
-	 * @return
-	 * @throws IOException
-	 * @throws CanceledException
 	 */
 	public static Pair<Long, Long> apply(final LRInspectorViewer viewer, File file, final String classificationToReport, final boolean excludeIncompatible, final boolean excludeDominated, final ProgressListener progressListener) throws IOException, CanceledException {
 		long countReads = 0;
@@ -245,10 +230,6 @@ public class ExportAlignedReads2GFF3Format {
 	/**
 	 * create a GFF line for a read
 	 *
-	 * @param blastMode
-	 * @param readBlock
-	 * @param cNames
-	 * @return
 	 */
 	private static String createGFFLines(final BlastMode blastMode, final IReadBlock readBlock, final String[] cNames, final String classificationToReport, final int taxonId, boolean excludeIncompatible, boolean excludeDominated) throws CanceledException {
 		final IntervalTree<IMatchBlock> intervals;
@@ -259,10 +240,6 @@ public class ExportAlignedReads2GFF3Format {
 	/**
 	 * create all GFF entries for a read
 	 *
-	 * @param blastMode
-	 * @param readName
-	 * @param cNames
-	 * @param intervals
 	 * @return GFF line
 	 */
 	private static String createGFFLines(final BlastMode blastMode, final String readName, final int readLength, final String[] cNames, final String classificationToReport,
@@ -281,7 +258,7 @@ public class ExportAlignedReads2GFF3Format {
 
 		buf.append(String.format("##sequence-region %s %d %d\n", readName, 1, readLength));
 		if (readTaxonId > 0) {
-			buf.append(String.format("##species http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%d\n", readTaxonId));
+			buf.append(String.format("##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=%d\n", readTaxonId));
 			buf.append(String.format("# Taxon for %s: id=%d name=%s\n", readName, readTaxonId, TaxonomyData.getName2IdMap().get(readTaxonId)));
 		}
 
@@ -393,7 +370,6 @@ public class ExportAlignedReads2GFF3Format {
 	/**
 	 * get the classification short name
 	 *
-	 * @param cName
 	 * @return short name
 	 */
 	public static String getShortName(String cName) {

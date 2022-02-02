@@ -61,11 +61,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      *
-     * @param cName
-     * @param refId2Weight
-     * @param ref2weight
-     * @param percentToCover
-     */
+	 */
     public AssignmentUsingWeightedLCA(final String cName, final int[] refId2Weight, final Map<String, Integer> ref2weight, final Taxon2SpeciesMapping taxon2SpeciesMapping, final float percentToCover, final boolean useIdentityFilter) {
         this.cName = cName;
         this.useIdentityFilter = useIdentityFilter;
@@ -84,8 +80,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * determine the taxon id of a read from its matches
      *
-     * @param activeMatches
-     * @param readBlock
      * @return taxon id
      */
     public int computeId(final BitSet activeMatches, final IReadBlock readBlock) {
@@ -195,8 +189,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * get the LCA of two ids
      *
-     * @param id1
-     * @param id2
      * @return LCA of id1 and id2, not ignoring the case that one may be the lca of the other
      */
     @Override
@@ -212,8 +204,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * compute the weight LCA for a set of taxa and weights
      *
-     * @param percentToCover
-     * @param taxon2weight
      * @return LCA address
      */
     public String computeWeightedLCA(final float percentToCover, final Map<Integer, Integer> taxon2weight) {
@@ -235,9 +225,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * compute the address of the weighted LCA
      *
-     * @param percentToCover
-     * @param array
-     * @param origLength
      * @return address or ""
      */
     private String computeWeightedLCA(final float percentToCover, final WeightedAddress[] array, final int origLength) {
@@ -320,7 +307,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * merge identical entries, using max weight for identical taxa. After running this, still have start=0
      *
-     * @param length
      * @return new length
      */
     private static int mergeIdentical(final WeightedAddress headPtr, int length) {
@@ -341,7 +327,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * compute total weight.
      *
-     * @param head
      * @return sum of weights
      */
     private static int getTotalWeight(final WeightedAddress head) {
@@ -355,7 +340,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * converts an address to numbers of easier display
      *
-     * @param address
      * @return as numbers
      */
     private static String toNumbers(String address) {
@@ -368,8 +352,6 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
     /**
      * utility for resizing an array of weighted addresses
      *
-     * @param array
-     * @param size
      * @return new array
      */
     private static WeightedAddress[] resizeArray(WeightedAddress[] array, int size) {
@@ -413,9 +395,7 @@ public class AssignmentUsingWeightedLCA implements IAssignmentAlgorithm {
         /**
          * constructor
          *
-         * @param address
-         * @param weight
-         */
+		 */
         public WeightedAddress(String address, int weight) {
             this.address = address;
             this.weight = weight;

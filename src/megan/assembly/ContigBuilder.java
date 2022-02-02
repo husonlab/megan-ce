@@ -45,8 +45,7 @@ public class ContigBuilder {
     /**
      * constructor
      *
-     * @param paths
-     */
+	 */
     public ContigBuilder(Node[][] paths, List<Integer>[] readId2ContainedReads) {
         this.paths = paths;
         this.readId2ContainedReads = readId2ContainedReads;
@@ -56,10 +55,7 @@ public class ContigBuilder {
     /**
      * apply the algorith
      *
-     * @param minReads
-     * @param minAvCoverage
-     * @param minLength
-     */
+	 */
     public void apply(final ReadData[] reads, final int minReads, final double minAvCoverage, final int minLength, final ProgressListener progress) throws CanceledException {
         progress.setSubtask("Building contigs");
         progress.setMaximum(paths.length);

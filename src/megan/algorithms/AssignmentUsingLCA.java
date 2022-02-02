@@ -55,10 +55,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      *
-     * @param cName
-     * @param useIdentityFilter
-     * @param percentToCover
-     */
+	 */
     public AssignmentUsingLCA(String cName, boolean useIdentityFilter, float percentToCover) {
         this(cName, useIdentityFilter, percentToCover, true);
     }
@@ -66,11 +63,7 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * constructor
      *
-     * @param cName
-     * @param useIdentityFilter
-     * @param percentToCover
-     * @param ignoreAncestralTaxa
-     */
+	 */
     public AssignmentUsingLCA(String cName, boolean useIdentityFilter, float percentToCover, boolean ignoreAncestralTaxa) {
         this.cName = cName;
         fullTree = ClassificationManager.get(cName, false).getFullTree();
@@ -89,8 +82,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * determine the taxon id of a read from its matches
      *
-     * @param activeMatches
-     * @param readBlock
      * @return taxon id
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
@@ -171,7 +162,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * returns the LCA of a set of taxon ids
      *
-     * @param taxonIds
      * @return id
      */
     public int computeNaiveLCA(Collection<Integer> taxonIds) {
@@ -207,8 +197,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * get the LCA of two ids, not ignoring the case that one may be the lca of the other
      *
-     * @param id1
-     * @param id2
      * @return LCA of id1 and id2
      */
     @Override
@@ -224,10 +212,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * moves reads to higher taxa if the percent identity that they have is not high enough for the given taxonomic rank
      *
-     * @param taxId
-     * @param activeMatches
-     * @param readBlock
-     * @param tree
      * @return original or modified taxId
      */
     public static int adjustByPercentIdentity(int taxId, BitSet activeMatches, IReadBlock readBlock, ClassificationFullTree tree, Name2IdMap name2IdMap) {
@@ -293,7 +277,6 @@ public class AssignmentUsingLCA implements IAssignmentAlgorithm {
     /**
      * given a set of addresses, returns the longest prefix that equals or exceeds  the given weight threshold
      *
-     * @param addresses
      * @return prefix
      */
     private String getPrefixCoveringWeight(int weightToCover, String[] addresses, int length) {

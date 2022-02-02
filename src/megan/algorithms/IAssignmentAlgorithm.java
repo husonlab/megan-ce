@@ -31,8 +31,6 @@ public interface IAssignmentAlgorithm {
     /**
      * compute the id for a set of active matches
      *
-     * @param activeMatches
-     * @param readBlock
      * @return id
      */
     int computeId(BitSet activeMatches, IReadBlock readBlock);

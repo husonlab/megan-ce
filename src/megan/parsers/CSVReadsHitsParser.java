@@ -48,9 +48,7 @@ public class CSVReadsHitsParser {
      * apply the importer parser to the named file.
      * Format should be:   readname,taxon,score
      *
-     * @param fileName
-     * @param doc
-     */
+	 */
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator) throws IOException, CanceledException {
         final char separator = (tabSeparator ? '\t' : ',');
 
@@ -303,8 +301,6 @@ public class CSVReadsHitsParser {
     /**
      * compute the taxon id for a read using the LCA algorithm
      *
-     * @param doc
-     * @param taxonIdAndScore
      * @return taxonId
      */
     private static int computeTaxonId(Document doc, List<Pair<Integer, Float>> taxonIdAndScore) {

@@ -33,10 +33,7 @@ public class LCAAddressing {
     /**
      * compute node addresses used to compute LCA
      *
-     * @param tree
-     * @param id2address
-     * @param address2id
-     */
+	 */
     public static void computeAddresses(PhyloTree tree, Map<Integer, String> id2address, Map<String, Integer> address2id) {
         Node root = tree.getRoot();
         if (root != null)
@@ -46,9 +43,7 @@ public class LCAAddressing {
     /**
      * computes the id to address mapping
      *
-     * @param v
-     * @param path
-     */
+	 */
     private static void buildId2AddressRec(Node v, String path, Map<Integer, String> id2address, Map<String, Integer> address2id) {
         int id = (Integer) v.getInfo();
         id2address.put(id, path);
@@ -76,7 +71,6 @@ public class LCAAddressing {
     /**
      * given a set of addresses, returns the common prefix.
      *
-     * @param addresses
      * @param ignoreAncestors ignore ancestors, i.e. ignore prefixes of longer addresses
      * @return prefix
      */
@@ -116,7 +110,6 @@ public class LCAAddressing {
     /**
      * given an array of addresses, returns the common prefix
      *
-     * @param addresses
      * @param ignorePrefixes ignore prefixes of longer addresses
      * @return prefix
      */

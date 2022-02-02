@@ -66,9 +66,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("meganize daaFile=");
@@ -296,7 +294,6 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
     /**
      * get directory if this file is currently open
      *
-     * @param daaFile
      * @return directory
      */
     private Director findOpenDirector(String daaFile) {
@@ -314,8 +311,7 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
     }

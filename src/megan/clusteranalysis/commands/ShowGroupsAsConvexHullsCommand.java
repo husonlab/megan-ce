@@ -43,8 +43,7 @@ public class ShowGroupsAsConvexHullsCommand extends CommandBase implements IChec
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -116,8 +115,7 @@ public class ShowGroupsAsConvexHullsCommand extends CommandBase implements IChec
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         executeImmediately("set showGroups=" + (!isSelected()) + " style=convexHulls;");
     }

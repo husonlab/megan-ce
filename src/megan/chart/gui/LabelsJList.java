@@ -55,9 +55,7 @@ public class LabelsJList extends JList<String> {
     /**
      * constructor
      *
-     * @param viewer
-     * @param popupMenu
-     */
+	 */
     public LabelsJList(final IDirectableViewer viewer, final SyncListener syncListener, final JPopupMenu popupMenu) {
         super(new DefaultListModel<>());
         this.viewer = viewer;
@@ -220,8 +218,7 @@ public class LabelsJList extends JList<String> {
     /**
      * get searcher
      *
-     * @return
-     */
+	 */
     public JListSearcher getSearcher() {
         return searcher;
     }
@@ -286,8 +283,7 @@ public class LabelsJList extends JList<String> {
     /**
      * set the disabled labels
      *
-     * @param labels
-     */
+	 */
     public void setDisabledLabels(Collection<String> labels) {
         disabledLabels.clear();
         disabledLabels.addAll(labels);
@@ -296,8 +292,7 @@ public class LabelsJList extends JList<String> {
     /**
      * disable the named labels
      *
-     * @param labels
-     */
+	 */
     public void disableLabels(Collection<String> labels) {
         disabledLabels.addAll(labels);
     }
@@ -306,8 +301,7 @@ public class LabelsJList extends JList<String> {
     /**
      * enable the named labels
      *
-     * @param labels
-     */
+	 */
     public void enableLabels(Collection<String> labels) {
         disabledLabels.removeAll(labels);
     }
@@ -315,8 +309,7 @@ public class LabelsJList extends JList<String> {
     /**
      * sync to the given list of labels
      *
-     * @param labels
-     */
+	 */
     public void sync(final Collection<String> labels, final Map<String, String> label2toolTip, final boolean clearOldOrder) {
         if (!inSelection && !inSync) {
             inSync = true;

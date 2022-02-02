@@ -37,8 +37,7 @@ public class ReadBlockFromBlast extends ReadBlockRMA2 implements IReadBlock, IRe
     /**
      * set read sequence. Overloaded to also compute complexity and read length
      *
-     * @param readSequence
-     */
+	 */
     public void setReadSequence(String readSequence) {
         super.setReadSequence(readSequence);
         if (readSequence != null) {
@@ -59,8 +58,7 @@ public class ReadBlockFromBlast extends ReadBlockRMA2 implements IReadBlock, IRe
     /**
      * sets the location of the  text
      *
-     * @param location
-     */
+	 */
     public void setTextLocation(Location location) {
         this.location = location;
     }
@@ -68,7 +66,6 @@ public class ReadBlockFromBlast extends ReadBlockRMA2 implements IReadBlock, IRe
     /**
      * get the i-th match block
      *
-     * @param i
      * @return match block
      */
     public IMatchBlockWithLocation getMatchBlock(int i) {

@@ -36,8 +36,7 @@ public class ClassesList extends LabelsJList {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public ClassesList(final ChartViewer viewer) {
         super(viewer, createSyncListenerClassesList(viewer), createPopupMenu(viewer));
         this.chartSelection = viewer.getChartSelection();

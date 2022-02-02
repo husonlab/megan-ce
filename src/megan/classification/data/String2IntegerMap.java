@@ -39,9 +39,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
     /**
      * load a file of synonyms
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public void loadFile(IName2IdMap label2id, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         System.err.println("Loading map from file: " + fileName);
 
@@ -80,9 +78,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
     /**
      * save to a file
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public void save(String fileName) throws IOException {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(fileName), 1000000)) {
             for (String key : keySet()) {
@@ -96,8 +92,7 @@ public class String2IntegerMap extends HashMap<String, Integer> implements Close
     /**
      * has the table been loaded
      *
-     * @return
-     */
+	 */
     public boolean isLoaded() {
         return size() > 0;
     }

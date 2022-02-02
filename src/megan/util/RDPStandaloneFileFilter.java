@@ -56,8 +56,6 @@ public class RDPStandaloneFileFilter extends FileFilterBase implements FilenameF
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

@@ -58,7 +58,6 @@ public class SampleAttributeTable {
         /**
          * hidden attributes start with @
          *
-         * @return
          */
         public String toString() {
             return getPrefix() + super.toString();
@@ -67,7 +66,6 @@ public class SampleAttributeTable {
         /**
          * get the value for the given label
          *
-         * @param label
          * @return attribute
          */
         public HiddenAttribute getEnum(String label) {
@@ -99,9 +97,6 @@ public class SampleAttributeTable {
     /**
      * add a metadata table
      *
-     * @param sampleAttributeTable
-     * @param allowReplaceSample
-     * @param allowAddAttribute
      */
     public void addTable(SampleAttributeTable sampleAttributeTable, boolean allowReplaceSample, boolean allowAddAttribute) {
         boolean changed = false;
@@ -116,7 +111,6 @@ public class SampleAttributeTable {
     /**
      * extract a metadata table containing the named samples
      *
-     * @param samples
      * @return the new table
      */
     public SampleAttributeTable extractTable(Collection<String> samples) {
@@ -139,7 +133,6 @@ public class SampleAttributeTable {
     /**
      * merges a set of samples and produces a new sample
      *
-     * @param samples
      * @return true, if merged
      */
     public SampleAttributeTable mergeSamples(Collection<String> samples, String newName) {
@@ -173,10 +166,6 @@ public class SampleAttributeTable {
     /**
      * add a sample to the table
      *
-     * @param sample
-     * @param attribute2value
-     * @param allowReplaceSample
-     * @param allowAddAttribute
      * @return true, if added
      */
     public boolean addSample(String sample, Map<String, Object> attribute2value, boolean allowReplaceSample, boolean allowAddAttribute) {
@@ -197,7 +186,6 @@ public class SampleAttributeTable {
     /**
      * set the sample order
      *
-     * @param sampleNames
      */
     public void setSampleOrder(List<String> sampleNames) {
         sampleOrder.clear();
@@ -211,7 +199,6 @@ public class SampleAttributeTable {
     /**
      * remove a sample from the table
      *
-     * @param name
      */
 
     public void removeSample(String name) {
@@ -224,9 +211,6 @@ public class SampleAttributeTable {
     /**
      * rename a sample
      *
-     * @param sample
-     * @param newName
-     * @param allowReplaceSample
      */
     public void renameSample(String sample, String newName, boolean allowReplaceSample) {
         if (allowReplaceSample || !table.rowKeySet().contains(newName) && sampleOrder.contains(sample)) {
@@ -245,9 +229,6 @@ public class SampleAttributeTable {
     /**
      * duplicate an existing sample
      *
-     * @param sample
-     * @param newName
-     * @param allowReplaceSample
      * @return true, if duplicated
      */
     public boolean duplicateSample(String sample, String newName, boolean allowReplaceSample) {
@@ -261,9 +242,6 @@ public class SampleAttributeTable {
     /**
      * add an attribute with same value to all samples
      *
-     * @param attribute
-     * @param value
-     * @param allowReplaceAttribute
      */
     public void addAttribute(String attribute, Object value, boolean allowReplaceAttribute) {
         boolean change = false;
@@ -278,10 +256,6 @@ public class SampleAttributeTable {
     /**
      * add an attribute
      *
-     * @param attribute
-     * @param sample2value
-     * @param allowReplaceAttribute
-     * @param allowAddSample
      * @return true, if added
      */
     public boolean addAttribute(String attribute, Map<String, Object> sample2value, boolean allowReplaceAttribute, boolean allowAddSample) {
@@ -304,7 +278,6 @@ public class SampleAttributeTable {
     /**
      * remove an attribute
      *
-     * @param attribute
      */
     public void removeAttribute(String attribute) {
         attributeOrder.remove(attribute);
@@ -315,7 +288,6 @@ public class SampleAttributeTable {
     /**
      * remove a collection of attributes
      *
-     * @param attributes
      */
     private void removeAttributes(Collection<String> attributes) {
         attributeOrder.removeAll(attributes);
@@ -328,9 +300,6 @@ public class SampleAttributeTable {
     /**
      * duplicate an existing attribute
      *
-     * @param attribute
-     * @param newName
-     * @param allowReplaceSample
      * @return true, if duplicated
      */
     public boolean duplicateAttribute(String attribute, String newName, boolean allowReplaceSample) {
@@ -347,7 +316,6 @@ public class SampleAttributeTable {
     /**
      * expands an existing attribute
      *
-     * @param attribute
      * @return number of columns added
      */
     public int expandAttribute(String attribute, boolean allowReplaceAttribute) {
@@ -401,7 +369,6 @@ public class SampleAttributeTable {
     /**
      * gets the set type of an attribute
      *
-     * @param attribute
      * @return type
      */
     public Type getAttributeType(String attribute) {
@@ -441,7 +408,6 @@ public class SampleAttributeTable {
     /**
      * gets attribute to values mapping for named sample
      *
-     * @param sample
      * @return map
      */
     public Map<String, Object> getAttributesToValues(String sample) {
@@ -451,7 +417,6 @@ public class SampleAttributeTable {
     /**
      * gets sample to values mapping for named attribute
      *
-     * @param attribute
      * @return map
      */
     public Map<String, Object> getSamples2Values(String attribute) {
@@ -486,8 +451,6 @@ public class SampleAttributeTable {
     /**
      * get the value for a given sample and attribute
      *
-     * @param sample
-     * @param attribute
      * @return value or null
      */
     public Object get(String sample, String attribute) {
@@ -500,8 +463,6 @@ public class SampleAttributeTable {
     /**
      * get the value for a given sample and attribute
      *
-     * @param sample
-     * @param attribute
      * @return value or null
      */
     private Object get(String sample, HiddenAttribute attribute) {
@@ -511,9 +472,6 @@ public class SampleAttributeTable {
     /**
      * put a value in the table
      *
-     * @param sample
-     * @param attribute
-     * @param value
      */
     public void put(String sample, String attribute, Object value) {
         if (!sampleOrder.contains(sample))
@@ -526,9 +484,6 @@ public class SampleAttributeTable {
     /**
      * put a value in the table
      *
-     * @param sample
-     * @param attribute
-     * @param value
      */
     public void put(String sample, HiddenAttribute attribute, Object value) {
         put(sample, attribute.toString(), value);
@@ -538,7 +493,6 @@ public class SampleAttributeTable {
     /**
      * gets the color of a sample
      *
-     * @param sampleName
      * @return sample color
      */
     public Color getSampleColor(String sampleName) {
@@ -552,7 +506,6 @@ public class SampleAttributeTable {
     /**
      * set the color associated with a sample
      *
-     * @param sampleName
      * @param color      or null
      */
     public void putSampleColor(String sampleName, Color color) {
@@ -575,8 +528,6 @@ public class SampleAttributeTable {
     /**
      * set the shape associated with a sample
      *
-     * @param sampleName
-     * @param shape
      */
     public void putSampleShape(String sampleName, String shape) {
         put(sampleName, HiddenAttribute.Shape, shape);
@@ -585,7 +536,6 @@ public class SampleAttributeTable {
     /**
      * get the shape associated with a sample
      *
-     * @param sampleName
      * @return shape
      */
     public String getSampleShape(String sampleName) {
@@ -599,7 +549,6 @@ public class SampleAttributeTable {
     /**
      * get the sample label
      *
-     * @param sampleName
      * @return label
      */
     public String getSampleLabel(String sampleName) {
@@ -613,8 +562,6 @@ public class SampleAttributeTable {
     /**
      * set the group id associated with a sample
      *
-     * @param sampleName
-     * @param id
      */
     public void putGroupId(String sampleName, String id) {
         put(sampleName, HiddenAttribute.GroupId, id);
@@ -623,7 +570,6 @@ public class SampleAttributeTable {
     /**
      * get the group id associated with a sample
      *
-     * @param sampleName
      * @return join label
      */
     public String getGroupId(String sampleName) {
@@ -650,8 +596,6 @@ public class SampleAttributeTable {
     /**
      * put the label to be used for the sample
      *
-     * @param sampleName
-     * @param label
      */
     public void putSampleLabel(String sampleName, String label) {
         put(sampleName, SampleAttributeTable.HiddenAttribute.Label, label);
@@ -660,7 +604,6 @@ public class SampleAttributeTable {
     /**
      * look at all values for a given attribute and set its type
      *
-     * @param attribute
      */
     private void setAttributeTypeFromValues(String attribute) {
         boolean isFloat = true;
@@ -755,8 +698,6 @@ public class SampleAttributeTable {
     /**
      * write the table to a file in QIIME-based format
      *
-     * @param w
-     * @throws IOException
      */
     public void write(Writer w, boolean ensureQIIMECompatible, boolean includeSecret) throws IOException {
         final Set<String> attributes = getAttributeSet();
@@ -782,7 +723,7 @@ public class SampleAttributeTable {
         w.write("\n");
 
         if (description != null && description.length() > 0)
-            w.write((description.startsWith("#") ? description : description) + "\n");
+            w.write((description.startsWith("#") ? description : "#" + description) + "\n");
 
         for (String sample : getSampleOrder()) {
             w.write(sample);
@@ -852,8 +793,6 @@ public class SampleAttributeTable {
     /**
      * reads metadata from a readerWriter
      *
-     * @param reader
-     * @param knownSamples
      * @param clear        @throws IOException
      */
     public void read(Reader reader, Collection<String> knownSamples, boolean clear) throws IOException {
@@ -1024,7 +963,6 @@ public class SampleAttributeTable {
                     }
 
                     result.put(name, array);
-                    break;
                 }
                 case String -> {
                     String firstValue = null;
@@ -1065,7 +1003,6 @@ public class SampleAttributeTable {
                         }
                         result.put(name, array);
                     }
-                    break;
                 }
             }
         }
@@ -1075,7 +1012,6 @@ public class SampleAttributeTable {
     /**
      * sort the samples by the values of the given attribute
      *
-     * @param attribute
      * @param ascending, if true, otherwise descending
      * @return true, if order is changed
      */
@@ -1126,7 +1062,6 @@ public class SampleAttributeTable {
     /**
      * is this a secret attribute (such as color etc)
      *
-     * @param attribute
      * @return true, if secret
      */
     public boolean isSecretAttribute(String attribute) {
@@ -1136,7 +1071,6 @@ public class SampleAttributeTable {
     /**
      * is this a hidden attribute (such as color etc)
      *
-     * @param attribute
      * @return true, if secret
      */
     public boolean isHiddenAttribute(String attribute) {
@@ -1162,8 +1096,6 @@ public class SampleAttributeTable {
     /**
      * move set of sample up or down one position
      *
-     * @param up
-     * @param samples
      */
     public void moveSamples(boolean up, Collection<String> samples) {
 		samples = StringUtils.sortSubsetAsContainingSet(sampleOrder, samples);

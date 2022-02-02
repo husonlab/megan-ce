@@ -36,9 +36,7 @@ public class RMA2Connector implements IConnector {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public RMA2Connector(String fileName) throws IOException {
         setFile(fileName);
     }
@@ -46,8 +44,7 @@ public class RMA2Connector implements IConnector {
     /**
      * set the file name of interest. Only one file can be used.
      *
-     * @param filename
-     */
+	 */
     public void setFile(String filename) {
         file = new File(filename);
     }
@@ -74,11 +71,9 @@ public class RMA2Connector implements IConnector {
     /**
      * get all reads with specified matches.
      *
-     * @param minScore
      * @param wantReadSequence @param wantMatches specifies what data to return  in ReadBlock
      * @return getLetterCodeIterator over all reads
-     * @throws java.io.IOException
-     */
+	 */
     public IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         return new AllReadsIterator(getReadBlockGetter(minScore, maxExpected, wantReadSequence, wantMatches));
     }
@@ -86,13 +81,9 @@ public class RMA2Connector implements IConnector {
     /**
      * get getLetterCodeIterator over all reads for given classification and classId.
      *
-     * @param classification
-     * @param classId
-     * @param minScore
      * @param wantReadSequence @param wantMatches  specifies what data to return  in ReadBlock
      * @return getLetterCodeIterator over reads in class
-     * @throws java.io.IOException
-     */
+	 */
     public IReadBlockIterator getReadsIterator(String classification, int classId, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         return getReadsIteratorForListOfClassIds(classification, Collections.singletonList(classId), minScore, maxExpected, wantReadSequence, wantMatches);
     }
@@ -100,13 +91,9 @@ public class RMA2Connector implements IConnector {
     /**
      * get getLetterCodeIterator over all reads for given classification and a collection of classids. If minScore=0  no filtering
      *
-     * @param classification
-     * @param classIds
-     * @param minScore
      * @param wantReadSequence @param wantMatches
      * @return getLetterCodeIterator over reads filtered by given parameters
-     * @throws IOException
-     */
+	 */
 
     public IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore,
                                                                 float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
@@ -118,8 +105,7 @@ public class RMA2Connector implements IConnector {
      *
      * @param wantReadSequence @param wantMatches
      * @return read block accessor
-     * @throws java.io.IOException
-     */
+	 */
     public IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
         return new ReadBlockGetterRMA2(file, minScore, maxExpected, wantReadSequence, wantMatches, wantMatches);
     }
@@ -136,10 +122,8 @@ public class RMA2Connector implements IConnector {
     /**
      * gets the number of classes in the named classification
      *
-     * @param classificationName
      * @return number of classes
-     * @throws java.io.IOException
-     */
+	 */
     public int getClassificationSize(String classificationName) throws IOException {
         return (new RMA2File(file)).getClassificationSize(classificationName);
     }
@@ -147,11 +131,8 @@ public class RMA2Connector implements IConnector {
     /**
      * gets the number of reads in a given class
      *
-     * @param classificationName
-     * @param classId
      * @return number of reads
-     * @throws java.io.IOException
-     */
+	 */
     public int getClassSize(String classificationName, int classId) throws IOException {
         ClassificationBlockRMA2 classificationBlock = (new RMA2File(file)).getClassificationBlock(classificationName);
         // todo: this is very wasteful, better to read in the block once and then keep it...
@@ -161,10 +142,8 @@ public class RMA2Connector implements IConnector {
     /**
      * gets the named classification block
      *
-     * @param classificationName
      * @return classification block
-     * @throws java.io.IOException
-     */
+	 */
     public IClassificationBlock getClassificationBlock(String classificationName) throws IOException {
         return (new RMA2File(file)).getClassificationBlock(classificationName);
     }
@@ -174,8 +153,7 @@ public class RMA2Connector implements IConnector {
      *
      * @param names          names of classifications in the order that their values will appear in
      * @param updateItemList list of rescan items
-     * @throws java.io.IOException
-     */
+	 */
     public void updateClassifications(String[] names, List<UpdateItem> updateItemList, ProgressListener progressListener) throws IOException {
         UpdateItemList updateItems = (UpdateItemList) updateItemList;
 
@@ -212,12 +190,9 @@ public class RMA2Connector implements IConnector {
     /**
      * get all reads that match the given expression
      *
-     * @param regEx
      * @param findSelection where to search for matches
-     * @param canceled
      * @return getLetterCodeIterator over reads that match
-     * @throws java.io.IOException
-     */
+	 */
     public IReadBlockIterator getFindAllReadsIterator(String regEx, FindSelection findSelection, Single<Boolean> canceled) throws IOException {
         return new FindAllReadsIterator(regEx, findSelection, getAllReadsIterator(0, 10, true, true), canceled);
     }
@@ -226,8 +201,7 @@ public class RMA2Connector implements IConnector {
      * gets the number of reads
      *
      * @return number of reads
-     * @throws java.io.IOException
-     */
+	 */
     public int getNumberOfReads() throws IOException {
         return (new RMA2File(file)).getNumberOfReads();
     }
@@ -245,9 +219,7 @@ public class RMA2Connector implements IConnector {
      * sets the number of reads. Note that the logical number of reads may differ from
      * the actual number of reads stored, so this needs to be stored explicitly
      *
-     * @param numberOfReads
-     * @throws java.io.IOException
-     */
+	 */
     public void setNumberOfReads(int numberOfReads) throws IOException {
         (new RMA2File(file)).setNumberOfReads(numberOfReads);
     }
@@ -255,9 +227,7 @@ public class RMA2Connector implements IConnector {
     /**
      * puts the MEGAN auxiliary data associated with the dataset
      *
-     * @param label2data
-     * @throws java.io.IOException
-     */
+	 */
     public void putAuxiliaryData(Map<String, byte[]> label2data) throws IOException {
         (new RMA2File(file)).replaceAuxiliaryData(label2data);
     }
@@ -266,8 +236,7 @@ public class RMA2Connector implements IConnector {
      * gets the MEGAN auxiliary data associated with the dataset
      *
      * @return auxiliaryData
-     * @throws java.io.IOException
-     */
+	 */
     public Map<String, byte[]> getAuxiliaryData() throws IOException {
         return (new RMA2File(file)).getAuxiliaryData();
     }

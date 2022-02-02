@@ -30,9 +30,7 @@ class SyncDataTableAndNetwork {
     /**
      * sync network formatting to summary
      *
-     * @param clusterViewer
-     * @param megan4Table
-     */
+	 */
     public static void syncNetworkFormatting2Summary(ClusterViewer clusterViewer, DataTable megan4Table) {
         System.err.println("syncNetworkFormatting2Summary(): not implemented");
     }
@@ -40,9 +38,7 @@ class SyncDataTableAndNetwork {
     /**
      * sync summary to network formatting
      *
-     * @param clusterViewer
-     * @param megan4Table
-     */
+	 */
     public static void syncSummary2NetworkFormatting(DataTable megan4Table, ClusterViewer clusterViewer) {
         System.err.println("syncSummary2NetworkFormatting(): not implemented");
     }

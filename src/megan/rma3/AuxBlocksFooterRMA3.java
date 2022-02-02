@@ -71,10 +71,7 @@ public class AuxBlocksFooterRMA3 extends BaseRMA3 {
     /**
      * auxiliary method that can be used to write auxblocks to RMA3 file
      *
-     * @param writer
-     * @param name2AuxData
-     * @throws IOException
-     */
+	 */
     public void writeAuxBlocks(IOutputWriter writer, Map<String, byte[]> name2AuxData) throws IOException {
         setCount(name2AuxData.size());
         for (String name : name2AuxData.keySet()) {
@@ -88,11 +85,7 @@ public class AuxBlocksFooterRMA3 extends BaseRMA3 {
     /**
      * read the aux blocks from a file
      *
-     * @param fileFooter
-     * @param reader
-     * @param name2AuxBlock
-     * @throws IOException
-     */
+	 */
     public void readAuxBlocks(FileFooterRMA3 fileFooter, IInputReader reader, Map<String, byte[]> name2AuxBlock) throws IOException {
         reader.seek(fileFooter.getAuxStart());
         for (int i = 0; i < count && reader.getPosition() < fileFooter.getAuxFooter(); i++) {

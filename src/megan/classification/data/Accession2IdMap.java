@@ -41,9 +41,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public Accession2IdMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException {
         map = new HashMap<>();
         try (FileLineIterator it = new FileLineIterator(fileName)) {

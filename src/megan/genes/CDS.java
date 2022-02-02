@@ -94,7 +94,6 @@ public class CDS {
     /**
      * parse GFF files to extract CDS
      *
-     * @param inputFiles
      * @return list of CDS items
      * @throws IOException, CanceledException
      */
@@ -132,7 +131,6 @@ public class CDS {
     /**
      * parse one line GFF3 format
      *
-     * @param iterator
      * @return annotations
      */
     private static Collection<CDS> parseGFF3forCDS(Iterator<String> iterator) {
@@ -166,8 +164,6 @@ public class CDS {
     /**
      * parse multi-line simple GFF format
      *
-     * @param it
-     * @param dnaAccession
      * @return annotations
      */
     private static Collection<CDS> parseSimpleGFFforCDS(Iterator<String> it, String dnaAccession) {
@@ -217,8 +213,6 @@ public class CDS {
     /**
      * gets the first tagged accession
      *
-     * @param reference
-     * @param tags
      * @return first tagged accession
      */
     private static String getFirstTaggedAccession(String reference, String... tags) {

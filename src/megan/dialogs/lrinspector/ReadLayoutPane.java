@@ -90,12 +90,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * creates the visualization pane
      *
-     * @param cNames
-     * @param readLength
-     * @param intervalTree
-     * @param maxReadLength
-     * @return
-     */
+	 */
     public ReadLayoutPane(final String[] cNames, final int readLength, IntervalTree<IMatchBlock> intervalTree, final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty layoutWidth) {
         this.intervals = intervalTree;
         this.cNames = cNames;
@@ -257,9 +252,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * show or hide the gene labels for the given classification
      *
-     * @param selectedCNames
-     * @param show
-     */
+	 */
     private void showLabels(Collection<String> selectedCNames, boolean show) {
         if (show) {
             if (selectedCNames.size() > 0 && classificationLabelsShowing.size() == 0) {
@@ -401,8 +394,6 @@ public class ReadLayoutPane extends Pane {
     /**
      * grow the array of matches by one entry
      *
-     * @param array
-     * @param matchBlock
      * @return extended array
      */
     private IMatchBlock[] extendByOne(IMatchBlock[] array, IMatchBlock matchBlock) {
@@ -419,11 +410,6 @@ public class ReadLayoutPane extends Pane {
     /**
      * process a label
      *
-     * @param j
-     * @param lastJ
-     * @param yPos
-     * @param interval
-     * @param intervalTree
      * @return true, if label used
      */
     private static Label processLabel(int j, int lastJ, double xPos, double yPos, Interval<Label> interval, IntervalTree<Label> intervalTree, Group geneLabels) {
@@ -448,9 +434,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * color arrows by bit score
      *
-     * @param colorManager
-     * @param maxScore
-     */
+	 */
     public void colorByBitScore(ChartColorManager colorManager, float maxScore) {
         setPrefHeight(preferredHeightUnlabeled.get());
         showLabels(Arrays.asList(cNames), false);
@@ -463,9 +447,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * scolor arrows by normalized bit score
      *
-     * @param colorManager
-     * @param maxNormalizedScore
-     */
+	 */
     public void colorByNormalizedBitScore(ChartColorManager colorManager, float maxNormalizedScore) {
         setPrefHeight(preferredHeightUnlabeled.get());
         showLabels(Arrays.asList(cNames), false);
@@ -478,9 +460,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * color gene arrows by class
      *
-     * @param colorManager
-     * @param activeClassifications
-     */
+	 */
     public void colorByClassification(ChartColorManager colorManager, Collection<String> activeClassifications, String keyClassification, int keyClassId, boolean colorByPosition) {
 
         if (/*activeClassifications.contains(keyClassification) && */ keyClassId > 0) {
@@ -615,9 +595,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * shows the label context menu
      *
-     * @param screenX
-     * @param screenY
-     */
+	 */
     private void showLabelContextMenu(final Label label, double screenX, double screenY) {
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem selectAllSimilar = new MenuItem("Select Similar");
@@ -718,7 +696,6 @@ public class ReadLayoutPane extends Pane {
     /**
      * creates a label
      *
-     * @param text
      * @return label
      */
     private Label createLabel(String text, String fullText, Map<String, ArrayList<Label>> text2oldLabels) {
@@ -750,8 +727,6 @@ public class ReadLayoutPane extends Pane {
     /**
      * get a class name
      *
-     * @param classificationId
-     * @param classId
      * @return non-null class name
      */
     private String getClassName(int classificationId, int classId) {
@@ -793,8 +768,7 @@ public class ReadLayoutPane extends Pane {
     /**
      * select all matches that are not an ancestor of the taxon to which this read is assigned
      *
-     * @param classId
-     */
+	 */
     public void selectAllCompatibleTaxa(boolean compatible, String classificationName, int classId) {
         if (classId > 0) {
             if (classificationName.equals(Classification.Taxonomy)) {

@@ -37,15 +37,8 @@ public class ExtractToNewDocumentRMA6 {
     /**
      * extract all named classes in the given classsification to a new RMA6 file
      *
-     * @param sourceRMA6FileName
-     * @param sourceClassification
-     * @param sourceClassIds
-     * @param targetRMA6FileName
-     * @param progressListener
      * @param totalReads           return the total reads extracted here
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static void apply(String sourceRMA6FileName, String sourceClassification, Collection<Integer> sourceClassIds, String targetRMA6FileName,
                              ProgressListener progressListener, Single<Long> totalReads) throws IOException, CanceledException {
 

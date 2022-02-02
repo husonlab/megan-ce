@@ -154,9 +154,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * gets the node data
      *
-     * @param v
-     * @return
-     */
+	 */
     public NodeData getNodeData(Node v) {
         return (NodeData) v.getData();
     }
@@ -226,23 +224,19 @@ abstract public class ViewerBase extends PhyloTreeView {
                         case KeyEvent.VK_RIGHT -> {
                             JScrollBar bar = getScrollPane().getHorizontalScrollBar();
                             bar.setValue(bar.getValue() + (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
-                            break;
-                        }
+						}
                         case KeyEvent.VK_LEFT -> {
                             JScrollBar bar = getScrollPane().getHorizontalScrollBar();
                             bar.setValue(bar.getValue() - (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
-                            break;
-                        }
+						}
                         case KeyEvent.VK_DOWN -> {
                             JScrollBar bar = getScrollPane().getVerticalScrollBar();
                             bar.setValue(bar.getValue() + (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
-                            break;
-                        }
+						}
                         case KeyEvent.VK_UP -> {
                             JScrollBar bar = getScrollPane().getVerticalScrollBar();
                             bar.setValue(bar.getValue() - (shift ? bar.getBlockIncrement(1) : bar.getUnitIncrement(1)));
-                            break;
-                        }
+						}
                     }
                 }
             }
@@ -261,8 +255,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * display full names rather than ids?
      *
-     * @param nodeLabelNames
-     */
+	 */
     public void setNodeLabelNames(boolean nodeLabelNames) {
         this.nodeLabelNames = nodeLabelNames;
     }
@@ -270,8 +263,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * set all node labels visible or invisible
      *
-     * @param show
-     */
+	 */
     public void showNodeLabels(boolean show) {
         for (Node v = getGraph().getFirstNode(); v != null; v = v.getNext()) {
             setLabelVisible(v, show);
@@ -299,9 +291,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param selected
-     */
+	 */
     private void selectSubTreeNodesRec(final Node v, final NodeSet selected) {
         selected.add(v);
         for (Edge f : v.outEdges()) {
@@ -365,9 +355,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param visited
-     */
+	 */
     private void selectSubTreeLeavesRec(final Node v, final NodeSet visited, final NodeSet selected) {
         visited.add(v);
         if (v.getOutDegree() == 0)
@@ -426,8 +414,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * show intermediate labels?
      *
-     * @param show
-     */
+	 */
     public void setShowIntermediateLabels(boolean show) {
         showIntermediateLabels = show;
         showLabels(getDegree2Nodes(), show);
@@ -448,8 +435,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * select nodes by labels
      *
-     * @param labels
-     */
+	 */
     public void selectNodesByLabels(Collection<String> labels, boolean state) {
         boolean changed = false;
         if (labels.size() > 0) {
@@ -468,7 +454,6 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * gets the set of selected node labels
      *
-     * @param inOrder
      * @return selected node labels
      */
     public List<String> getSelectedNodeLabels(boolean inOrder) {
@@ -594,8 +579,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * show the legend horizontal, vertical or none
      *
-     * @param showLegend
-     */
+	 */
     public void setShowLegend(String showLegend) {
         this.showLegend = showLegend;
         if (showLegend.equalsIgnoreCase("horizontal")) {
@@ -678,10 +662,7 @@ abstract public class ViewerBase extends PhyloTreeView {
     /**
      * recursively print a summary
      *
-     * @param selectedNodes
-     * @param v
-     * @param indent
-     */
+	 */
     public void listSummaryRec(NodeSet selectedNodes, Node v, int indent, Writer outs) throws IOException {
         System.err.println("Not implemented");
     }

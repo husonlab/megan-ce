@@ -85,7 +85,6 @@ public class OverlapAvoider<T> {
     /**
      * if rectangle does not overlap any rectangle already contained, then add it
      *
-     * @param pair
      * @return true if added, false if overlaps a rectangle already present
      */
     public boolean addIfDoesNotOverlap(Pair<Rectangle2D, T> pair) {
@@ -184,8 +183,7 @@ public class OverlapAvoider<T> {
     /**
      * get the bounding box
      *
-     * @param rect
-     */
+	 */
     public void getBoundingBox(Rectangle rect) {
         rect.setRect((int) Math.round(bbox.getX()), (int) Math.round(bbox.getY()), (int) Math.round(bbox.getWidth()), (int) Math.round(bbox.getHeight()));
     }

@@ -39,9 +39,7 @@ public class RDPStandalone2SAMIterator extends SAMIteratorBase implements ISAMIt
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RDPStandalone2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RDPStandaloneFileFilter.getInstance().accept(fileName)) {

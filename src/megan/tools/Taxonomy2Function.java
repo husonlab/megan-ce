@@ -40,9 +40,6 @@ public class Taxonomy2Function {
 	/**
 	 * taxonomy-by-function classification
 	 *
-	 * @param args
-	 * @throws UsageException
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		try {

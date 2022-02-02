@@ -31,7 +31,6 @@ public class Label2LabelMapper {
     /**
      * get mapped label for label
      *
-     * @param label
      * @return replacement label
      */
     public String get(String label) {
@@ -45,9 +44,7 @@ public class Label2LabelMapper {
     /**
      * set a label 2 label map
      *
-     * @param label
-     * @param newLabel
-     */
+	 */
     public void put(String label, String newLabel) {
         label2label.put(label, newLabel);
     }

@@ -58,10 +58,7 @@ public class DAA2RMA6 {
     /**
      * merge RMA files
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -82,10 +79,7 @@ public class DAA2RMA6 {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException, SQLException {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
@@ -366,9 +360,6 @@ public class DAA2RMA6 {
     /**
      * create an RMA6 file from a DAA file
      *
-     * @param daaFile
-     * @param rma6FileName
-     * @param maxMatchesPerRead
      * @param progressListener  @throws CanceledException
      */
     private static void createRMA6FileFromDAA(String creator, String daaFile, String rma6FileName, boolean useCompression, Document doc,
@@ -380,10 +371,6 @@ public class DAA2RMA6 {
     /**
      * create an RMA6 file from a pair of DAA files
      *
-     * @param daaFile1
-     * @param daaFile2
-     * @param rma6FileName
-     * @param maxMatchesPerRead
      * @param progressListener  @throws CanceledException
      */
     private static void createRMA6FileFromDAAPair(String creator, String daaFile1, String daaFile2, String rma6FileName, boolean useCompression, Document doc,

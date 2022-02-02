@@ -29,8 +29,7 @@ public class AssignmentUsingMultiGeneBestHitCreator implements IAssignmentAlgori
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public AssignmentUsingMultiGeneBestHitCreator(String cName, String fileName) {
         this.cName = cName;
         System.err.println("Using Multi-Gene Best-Hit algorithm for binning: " + cName);

@@ -32,8 +32,7 @@ public class RedGradient {
     /**
      * setup the green gradient
      *
-     * @param maxCount
-     */
+	 */
     public RedGradient(int maxCount) {
         this.maxCount = maxCount;
         factor = maxCount / Math.log(maxCount);
@@ -42,7 +41,6 @@ public class RedGradient {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     private Color getColor(int count) {
@@ -60,7 +58,6 @@ public class RedGradient {
     /**
      * get color on log scale
      *
-     * @param count
      * @return color
      */
     public Color getLogColor(int count) {
@@ -91,8 +88,6 @@ public class RedGradient {
     /**
      * this is used in the node drawer of the main viewer
      *
-     * @param count
-     * @param inverseLogMaxReads
      * @return color on a log scale
      */
     public static Color getColorLogScale(int count, double inverseLogMaxReads) {
@@ -105,8 +100,6 @@ public class RedGradient {
     /**
      * this is used in the node drawer of the main viewer
      *
-     * @param count
-     * @param inverseSqrtMaxReads
      * @return color on a log scale
      */
     public static Color getColorSqrtScale(int count, double inverseSqrtMaxReads) {
@@ -119,7 +112,6 @@ public class RedGradient {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     public static Color getColor(int count, int maxCount) {

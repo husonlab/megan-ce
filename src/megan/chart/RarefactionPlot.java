@@ -58,10 +58,7 @@ public class RarefactionPlot extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     * @param parent
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public RarefactionPlot(final Director dir, ClassificationViewer parent) throws CanceledException {
         super(parent, dir, dir.getDocument().getSampleLabelGetter(), new DefaultPlot2DData(), ProgramProperties.isUseGUI());
         viewer = parent;
@@ -145,12 +142,8 @@ public class RarefactionPlot extends ChartViewer {
     /**
      * do rarefaction analysis for parent
      *
-     * @param threshold
-     * @param viewer
-     * @param progressListener
      * @return values for 10-100 percent, for each dataset in the document
-     * @throws jloda.util.CanceledException
-     */
+	 */
     private static Map<String, Collection<Pair<Number, Number>>> computeCounts(Document doc, int threshold, ClassificationViewer viewer, ProgressListener progressListener) throws CanceledException {
         final String cName = viewer.getClassName();
         final int numberOfPoints = ProgramProperties.get("NumberRareFactionDataPoints", 20);
@@ -213,9 +206,6 @@ public class RarefactionPlot extends ChartViewer {
     /**
      * each node is numbered by the count of reads that come before it
      *
-     * @param v
-     * @param top
-     * @param numbering
      * @return count for node
      */
     private static int computeCountRec(int pid, Node v, ClassificationViewer viewer, int top, NodeIntArray numbering) {
@@ -235,11 +225,7 @@ public class RarefactionPlot extends ChartViewer {
     /**
      * gets the node hit
      *
-     * @param v
-     * @param which
-     * @param counts
-     * @return
-     */
+	 */
     private static Node getIdRec(Node v, int which, NodeIntArray counts) {
         for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
             Node w = e.getTarget();

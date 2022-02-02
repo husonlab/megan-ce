@@ -29,7 +29,6 @@ public class ColorSchemeAminoAcidsPDNA extends ColorSchemeBase implements IColor
      * gets the background color for the amino-acid
      * PDNA groups: LVIMC AGSTP FYW EDNQKRH
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

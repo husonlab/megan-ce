@@ -77,9 +77,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     /**
      * read
      *
-     * @param reader
-     * @throws java.io.IOException
-     */
+	 */
     public void read(IInputReader reader, long position) throws IOException {
         reader.seek(position);
         read(reader);
@@ -88,9 +86,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     /**
      * read
      *
-     * @param reader
-     * @throws java.io.IOException
-     */
+	 */
     public void read(IInputReader reader) throws IOException {
         // todo: for efficiency, we assume that the format of match lines is always as follows:
         expected = reader.readFloat();
@@ -116,9 +112,7 @@ public class MatchLineRMA3 extends BaseRMA3 {
     /**
      * write
      *
-     * @param writer
-     * @throws java.io.IOException
-     */
+	 */
     public void write(IOutputWriter writer) throws IOException {
         // todo: for efficiency, we assume that the format of match lines is always as follows:
         writer.writeFloat(expected);

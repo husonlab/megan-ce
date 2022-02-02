@@ -68,14 +68,7 @@ public class RMA6FromBlastCreator {
     /**
      * construct a new creator to create an RMA6 file from a set of BLAST files
      *
-     * @param format
-     * @param blastMode
-     * @param blastFiles
-     * @param readsFiles
-     * @param maxMatchesPerRead
-     * @param doc
-     * @throws IOException
-     */
+	 */
     public RMA6FromBlastCreator(String creator, BlastFileFormat format, BlastMode blastMode, String[] blastFiles, String[] readsFiles, String rma6File, boolean useCompression,
                                 Document doc, int maxMatchesPerRead) throws IOException {
         this.format = format;
@@ -125,10 +118,7 @@ public class RMA6FromBlastCreator {
     /**
      * parse the files
      *
-     * @param progress
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public void parseFiles(final ProgressListener progress) throws IOException, CanceledException, SQLException {
         progress.setTasks("Generating RMA6 file", "Parsing matches");
 
@@ -372,8 +362,7 @@ public class RMA6FromBlastCreator {
     /**
      * set contaminants
      *
-     * @param contaminantTaxonIdsString
-     */
+	 */
     public void setContaminants(String contaminantTaxonIdsString) {
         doc.getDataTable().setContaminants(contaminantTaxonIdsString);
     }

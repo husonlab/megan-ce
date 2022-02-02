@@ -37,9 +37,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
     /**
      * construct an RMA6 modifier and read in RMA6 data
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RMA6FileModifier(String fileName) throws IOException {
         super(fileName, READ_WRITE);
         super.close(); // have read the file, now close the readerWriter
@@ -48,11 +46,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
     /**
      * update the classifications
      *
-     * @param cNames
-     * @param fName2ClassId2Location
-     * @param fName2ClassId2Weight
-     * @throws IOException
-     */
+	 */
     public void updateClassifications(String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Float>[] fName2ClassId2Weight) throws IOException {
         io = new InputOutputReaderWriter(new File(fileName), READ_WRITE);
 
@@ -88,8 +82,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
     /**
      * close the readerWriter/writer, if it is open
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         if (io != null) {
             try {
@@ -103,9 +96,7 @@ public class RMA6FileModifier extends RMA6File implements Closeable {
     /**
      * save the aux data to the rma6 file
      *
-     * @param label2data
-     * @throws IOException
-     */
+	 */
     public void saveAuxData(Map<String, byte[]> label2data) throws IOException {
         final long location = footerSectionRMA6.getStartAuxDataSection();
 

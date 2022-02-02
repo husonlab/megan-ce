@@ -49,8 +49,7 @@ public class AttributesChart extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public AttributesChart(final Director dir) {
         super(dir.getMainViewer(), dir, dir.getDocument().getSampleLabelGetter(), new DefaultChartData(), ProgramProperties.isUseGUI());
         MeganProperties.addPropertiesListListener(getJMenuBar().getRecentFilesListener());

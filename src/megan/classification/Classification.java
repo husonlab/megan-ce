@@ -48,8 +48,7 @@ public class Classification {
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public Classification(String cName) {
         this.cName = cName;
 
@@ -66,10 +65,7 @@ public class Classification {
     /**
      * load the data
      *
-     * @param treeFile
-     * @param mapFile
-     * @param progress
-     */
+	 */
     public void load(String treeFile, String mapFile, ProgressListener progress) {
         progress.setCancelable(false);
 
@@ -111,8 +107,7 @@ public class Classification {
     /**
      * get mapper
      *
-     * @return
-     */
+	 */
     public IdMapper getIdMapper() {
         return idMapper;
     }
@@ -136,7 +131,6 @@ public class Classification {
     /**
      * create short tag for writing header line
      *
-     * @param cName
      * @return short tag
      */
     public static String createShortTag(String cName) {

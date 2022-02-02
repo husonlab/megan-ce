@@ -53,8 +53,7 @@ public class TreeTabBase extends JPanel {
     /**
      * constructor
      *
-     * @param clusterViewer
-     */
+	 */
     public TreeTabBase(final ClusterViewer clusterViewer) {
         this.clusterViewer = clusterViewer;
 

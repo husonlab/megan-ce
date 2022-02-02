@@ -44,10 +44,6 @@ public class CSVExportCViewer {
     /**
      * export name to counts
      *
-     * @param cViewer
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportName2Counts(String format, ViewerBase cViewer, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
@@ -107,17 +103,13 @@ public class CSVExportCViewer {
     /**
      * export name to percentages
      *
-     * @param cViewer
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportName2Percent(String format, ViewerBase cViewer, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
             final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+			final String shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 final List<String> names = cViewer.getDocument().getSampleNames();
@@ -185,9 +177,6 @@ public class CSVExportCViewer {
     /**
      * export names
      *
-     * @param cViewer
-     * @param file
-     * @param progressListener
      * @return lines written
      */
     public static int exportNames(String format, ViewerBase cViewer, File file, ProgressListener progressListener) throws IOException {
@@ -222,16 +211,13 @@ public class CSVExportCViewer {
     /**
      * export name to read length mapping
      *
-     * @param cViewer
-     * @param file
-     * @param separator
      * @param progressListener @return lines written
      */
     public static int exportName2TotalLength(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
         int totalLines = 0;
         try {
-            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+			final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
+			final String shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
@@ -282,10 +268,6 @@ public class CSVExportCViewer {
     /**
      * export name to count per KB of reference sequence
      *
-     * @param cViewer
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportName2CountPerKB(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
@@ -293,8 +275,8 @@ public class CSVExportCViewer {
         try {
             final int lengthFactor = (cViewer.getDocument().getBlastMode().equals(BlastMode.BlastX) ? 3 : 1);
 
-            final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final String shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+			final Classification classification = ClassificationManager.get(cViewer.getClassName(), true);
+			final String shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 IConnector connector = cViewer.getDocument().getConnector();
@@ -348,17 +330,13 @@ public class CSVExportCViewer {
     /**
      * export read to  names mapping
      *
-     * @param cViewer
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportReadName2Name(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
         var totalLines = 0;
         try {
-            final var classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+			final var classification = ClassificationManager.get(cViewer.getClassName(), true);
+			final var shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (var w = new BufferedWriter(new FileWriter(file))) {
                 var connector = cViewer.getDocument().getConnector();
@@ -405,16 +383,13 @@ public class CSVExportCViewer {
     /**
      * export name to read-ids mapping
      *
-     * @param cViewer
-     * @param file
-     * @param separator
      * @param progressListener @return lines written
      */
     public static int exportName2ReadNames(String format, ViewerBase cViewer, File file, char separator, ProgressListener progressListener) throws IOException {
         var totalLines = 0;
         try {
-            final var classification = ClassificationManager.get(cViewer.getClassName(), true);
-            final var shortName = (cViewer.getClassName().toLowerCase().equals("taxonomy") ? "Taxon" : cViewer.getClassName());
+			final var classification = ClassificationManager.get(cViewer.getClassName(), true);
+			final var shortName = (cViewer.getClassName().equalsIgnoreCase("taxonomy") ? "Taxon" : cViewer.getClassName());
 
             try (var w = new BufferedWriter(new FileWriter(file))) {
                 var connector = cViewer.getDocument().getConnector();
@@ -465,8 +440,6 @@ public class CSVExportCViewer {
     /**
      * get the desired label
      *
-     * @param format
-     * @param v
      * @return label
      */
     private static String getLabelSource(String cName, Classification classification, String format, Node v) {
@@ -481,8 +454,6 @@ public class CSVExportCViewer {
     /**
      * get the desired class label
      *
-     * @param format
-     * @param v
      * @return class label
      */
     private static String getLabelTarget(Classification classification, String format, Node v) {
@@ -498,7 +469,6 @@ public class CSVExportCViewer {
     /**
      * get the path label of a node
      *
-     * @param v
      * @return path label
      */
     public static String getPath(Classification classification, Node v) {

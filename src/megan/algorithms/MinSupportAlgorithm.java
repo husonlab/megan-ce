@@ -45,10 +45,7 @@ public class MinSupportAlgorithm {
     /**
      * applies the min-support algorithm to the given taxonomic analysis
      *
-     * @param tax2count
-     * @param minSupport
-     * @param progressListener
-     */
+	 */
     public static void apply(Map<Integer, Integer> tax2count, int minSupport, final ProgressListener progressListener) {
         MinSupportAlgorithm algorithm = new MinSupportAlgorithm(tax2count, minSupport, progressListener);
         try {
@@ -70,10 +67,7 @@ public class MinSupportAlgorithm {
     /**
      * constructor
      *
-     * @param taxId2count
-     * @param minSupport
-     * @param progressListener
-     */
+	 */
     public MinSupportAlgorithm(Map<Integer, Integer> taxId2count, int minSupport, final ProgressListener progressListener) {
         this.taxId2count = taxId2count;
         this.minSupport = minSupport;
@@ -105,8 +99,6 @@ public class MinSupportAlgorithm {
     /**
      * recursively move all reads that land on taxa with too little support to higher level nodes
      *
-     * @param v
-     * @param orphan2AncestorMapping
      * @param orphans                nodes that have too few reads
      * @return reads on or below this node
      */

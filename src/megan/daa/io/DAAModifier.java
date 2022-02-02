@@ -88,12 +88,7 @@ public class DAAModifier {
     /**
      * replace a block
      *
-     * @param header
-     * @param blockType
-     * @param bytes
-     * @param size
-     * @throws IOException
-     */
+	 */
     public static void replaceBlock(DAAHeader header, BlockType blockType, byte[] bytes, int size) throws IOException {
         int index = header.getIndexForBlockType(blockType);
 
@@ -124,10 +119,7 @@ public class DAAModifier {
     /**
      * add new blocks
      *
-     * @param blocks
-     * @param sizes
-     * @throws IOException
-     */
+	 */
     public static void appendBlocks(DAAHeader header, BlockType[] types, byte[][] blocks, int[] sizes) throws IOException {
         try (OutputStream outs = new BufferedOutputStream(new FileOutputStream(header.getFileName(), true))) { // append to file...
             for (int i = 0; i < blocks.length; i++) {
@@ -145,10 +137,7 @@ public class DAAModifier {
     /**
      * append new blocks
      *
-     * @param blocks
-     * @param sizes
-     * @throws IOException
-     */
+	 */
     public static void appendBlocks(DAAHeader header, BlockType type, byte[][] blocks, int[] sizes) throws IOException {
         BlockType[] types = new BlockType[blocks.length];
         Arrays.fill(types, type);

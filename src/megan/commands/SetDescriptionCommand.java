@@ -72,9 +72,7 @@ public class SetDescriptionCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set description=");
@@ -88,8 +86,7 @@ public class SetDescriptionCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         Document doc = getDoc();
         if ((doc.getMeganFile().isRMA2File() || doc.getMeganFile().isRMA3File()) && !doc.getMeganFile().isReadOnly()) {

@@ -42,9 +42,7 @@ public class ShowUnalignedSequenceCommand extends CommandBase implements ICheckB
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set show-unaligned=");
@@ -69,8 +67,7 @@ public class ShowUnalignedSequenceCommand extends CommandBase implements ICheckB
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set show-unaligned=" + !isSelected() + ";");

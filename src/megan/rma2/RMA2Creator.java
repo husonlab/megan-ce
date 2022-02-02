@@ -52,10 +52,7 @@ public class RMA2Creator {
     /**
      * open the file for creation
      *
-     * @param file
-     * @param textStoragePolicy
-     * @throws IOException
-     */
+	 */
     public RMA2Creator(File file, TextStoragePolicy textStoragePolicy, LocationManager locationManager) throws IOException {
         rma2File = new RMA2File(file);
         this.textStoragePolicy = textStoragePolicy;
@@ -103,9 +100,7 @@ public class RMA2Creator {
     /**
      * write a read block to the file
      *
-     * @param readBlock
-     * @throws IOException
-     */
+	 */
     public void writeReadBlock(IReadBlockWithLocation readBlock) throws IOException {
         numberOfReads++;
         numberOfMatches += readBlock.getNumberOfMatches();
@@ -120,8 +115,7 @@ public class RMA2Creator {
     /**
      * close the file.
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         infoSection.syncLocationManager2InfoSection(locationManager);
 
@@ -194,8 +188,7 @@ public class RMA2Creator {
     /**
      * adds all locations of the source files, if necessary
      *
-     * @param locationManager
-     */
+	 */
     public void setLocations(LocationManager locationManager) {
         infoSection.setTextFileNames(locationManager.getFileNames());
     }
@@ -204,8 +197,7 @@ public class RMA2Creator {
      * get current position of file writer (This is not necessarily the position at which the read gets written)
      *
      * @return file writer position
-     * @throws IOException
-     */
+	 */
     public long getFileWriterPosition() throws IOException {
         return fileWriter.getPosition();
     }

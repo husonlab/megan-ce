@@ -41,9 +41,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * constructor
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public OutputWriter(File file) throws IOException {
         this.outs = new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE);
         position = 0;
@@ -52,10 +50,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * constructor
      *
-     * @param file
-     * @param append
-     * @throws IOException
-     */
+	 */
     public OutputWriter(File file, boolean append) throws IOException {
         this.outs = new BufferedOutputStream(new FileOutputStream(file, append), BUFFER_SIZE);
         position = file.length();
@@ -64,9 +59,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write an int
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeInt(int a) throws IOException {
         outs.write((byte) (a >> 24));
         outs.write((byte) (a >> 16));
@@ -78,9 +71,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a char
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeChar(char a) throws IOException {
         outs.write((byte) (a >> 8));
         outs.write((byte) (a));
@@ -90,9 +81,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a long
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeLong(long a) throws IOException {
         outs.write((byte) (a >> 56));
         outs.write((byte) (a >> 48));
@@ -108,9 +97,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a float
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeFloat(float a) throws IOException {
         writeInt(Float.floatToIntBits(a));
     }
@@ -118,9 +105,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a byte-byte-int
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void writeByteByteInt(ByteByteInt a) throws IOException {
         outs.write(a.getByte1());
         outs.write(a.getByte2());
@@ -131,9 +116,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a string, compressed, if long enough
      *
-     * @param str
-     * @throws IOException
-     */
+	 */
     public void writeString(String str) throws IOException {
         if (str == null)
             writeInt(0);
@@ -156,11 +139,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a string, compressed, if long enough
      *
-     * @param str
-     * @param offset
-     * @param length
-     * @throws IOException
-     */
+	 */
     public void writeString(byte[] str, int offset, int length) throws IOException {
         if (str == null)
             writeInt(0);
@@ -183,9 +162,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * Write a string without compression
      *
-     * @param str
-     * @throws IOException
-     */
+	 */
     public void writeStringNoCompression(String str) throws IOException {
         if (str == null) {
             writeInt(0);
@@ -210,8 +187,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * compress strings?
      *
-     * @param useCompression
-     */
+	 */
     public void setUseCompression(boolean useCompression) {
         this.useCompression = useCompression;
     }
@@ -228,11 +204,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write bytes
      *
-     * @param bytes
-     * @param offset
-     * @param length
-     * @throws IOException
-     */
+	 */
     public void write(byte[] bytes, int offset, int length) throws IOException {
         outs.write(bytes, offset, length);
         position += length;
@@ -241,9 +213,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * writes bytes
      *
-     * @param bytes
-     * @throws IOException
-     */
+	 */
     public void write(byte[] bytes) throws IOException {
         outs.write(bytes);
         position += bytes.length;
@@ -252,9 +222,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * write a single byte
      *
-     * @param a
-     * @throws IOException
-     */
+	 */
     public void write(int a) throws IOException {
         outs.write(a);
         position++;
@@ -263,8 +231,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * close
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         outs.close();
     }
@@ -281,9 +248,7 @@ public class OutputWriter implements IOutputWriter, IInputReaderOutputWriter {
     /**
      * seek to the given position
      *
-     * @param pos
-     * @throws IOException
-     */
+	 */
     public void seek(long pos) throws IOException {
         throw new IOException("seek(" + pos + "): not supported");
     }

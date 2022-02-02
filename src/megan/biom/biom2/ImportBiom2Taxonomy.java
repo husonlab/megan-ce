@@ -103,7 +103,6 @@ class ImportBiom2Taxonomy {
     /**
      * determines whether taxonomy metadata is present
      *
-     * @param reader
      * @return true, if present
      */
     public static boolean hasTaxonomyMetadata(IHDF5Reader reader) {

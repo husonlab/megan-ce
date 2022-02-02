@@ -82,10 +82,8 @@ public class FileInputStreamAdapter implements IInput {
     /**
      * skip n bytes
      *
-     * @param n
      * @return number of bytes skipped
-     * @throws IOException
-     */
+	 */
     public int skipBytes(int n) throws IOException {
         int remaining = n;
         while (remaining > 0) {

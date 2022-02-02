@@ -45,9 +45,6 @@ class CSVExportHeaders {
     /**
      * export readname to refseq id naming
      *
-     * @param viewer
-     * @param file
-     * @param separator
      * @param progressListener @return lines written
      */
     public static int exportReadName2Headers(MainViewer viewer, File file, char separator, ProgressListener progressListener) throws IOException {

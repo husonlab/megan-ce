@@ -105,7 +105,6 @@ public class FormatDefinition {
     /**
      * create a format definition from a defining string
      *
-     * @param string
      * @return format definition
      */
     public static FormatDefinition fromString(String string) {
@@ -129,10 +128,7 @@ public class FormatDefinition {
      * write an item to the output writer. Throws an exception of doesn't make the
      * defined format
      *
-     * @param outputWriter
-     * @param label
-     * @param value
-     */
+	 */
     public void write(IOutputWriter outputWriter, String label, Object value) throws IOException {
         if (writerIterator == null)
             writerIterator = list.iterator();

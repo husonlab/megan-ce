@@ -40,9 +40,7 @@ public class ComputeWordCountAnalysisCommand extends CommandBase implements ICom
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute wordCount kmer=");
@@ -80,8 +78,7 @@ public class ComputeWordCountAnalysisCommand extends CommandBase implements ICom
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("compute wordCount kmer=25 step=25 mindepth=10;");

@@ -51,10 +51,7 @@ public class GeneItemAccessor {
     /**
      * construct the gene table from the gene-table index file
      *
-     * @param indexFile
-     * @param dbFile
-     * @throws IOException
-     */
+	 */
     public GeneItemAccessor(File indexFile, File dbFile) throws IOException {
         // create the synchronization objects
         for (int i = 0; i < (syncBits + 1); i++) {
@@ -96,10 +93,8 @@ public class GeneItemAccessor {
     /**
      * get intervals for a given ref index
      *
-     * @param refIndex
      * @return intervals or null
-     * @throws IOException
-     */
+	 */
     private IntervalTree<GeneItem> getIntervals(int refIndex) {
         synchronized (syncObjects[refIndex & syncBits]) {
             if (refIndex < refIndex2Intervals.length && refIndex2Intervals[refIndex] == null && refIndex2FilePos[refIndex] != 0) {
@@ -138,10 +133,6 @@ public class GeneItemAccessor {
     /**
      * adds annotations to reference header
      *
-     * @param referenceHeader
-     * @param refIndex
-     * @param alignStart
-     * @param alignEnd
      * @return annotated reference header
      */
     public String annotateRefString(String referenceHeader, Integer refIndex, int alignStart, int alignEnd) {

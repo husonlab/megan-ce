@@ -136,8 +136,7 @@ data                : <list of lists>, counts of observations by sample
     /**
      * constructor to be used when generating new biome files
      *
-     * @param id
-     */
+	 */
     public Biom1Data(String id) {
         this.id = id;
         format = "Biological Observation Matrix 1.0.0";
@@ -152,8 +151,7 @@ data                : <list of lists>, counts of observations by sample
     /**
      * check whether data is acceptable
      *
-     * @throws IOException
-     */
+	 */
     private void check() throws IOException {
         boolean ok = false;
         if (type != null) {
@@ -195,9 +193,7 @@ data                : <list of lists>, counts of observations by sample
     /**
      * read
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     public static Biom1Data fromReader(Reader reader) throws IOException {
         Gson gson = new Gson();
         Biom1Data biom1Data = gson.fromJson(reader, Biom1Data.class);
@@ -208,8 +204,7 @@ data                : <list of lists>, counts of observations by sample
     /**
      * write
      *
-     * @param writer
-     */
+	 */
     public void write(Writer writer) {
         final Gson gson = new Gson();
         gson.toJson(this, writer);

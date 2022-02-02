@@ -31,9 +31,7 @@ public class LongFileGetterMappedMemory extends BaseFileGetterPutter implements 
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public LongFileGetterMappedMemory(File file) throws IOException {
         super(file);
     }
@@ -41,7 +39,6 @@ public class LongFileGetterMappedMemory extends BaseFileGetterPutter implements 
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     public long get(long index) {
@@ -60,8 +57,7 @@ public class LongFileGetterMappedMemory extends BaseFileGetterPutter implements 
      * length of array (file length / 8)
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return fileLength >>> 3;

@@ -64,8 +64,7 @@ public class WebBrowserConnection implements Runnable {
     /**
      * test program. Enter the following in browser: http://localhost:16358/start?hello_world4
      *
-     * @param args
-     */
+	 */
     public static void main(String[] args) {
         Thread thread = new Thread(new WebBrowserConnection());
         thread.start();

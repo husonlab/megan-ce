@@ -43,8 +43,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -62,8 +61,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param event
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent event) {
         final ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();
@@ -115,10 +113,7 @@ public class ChooseBlastFileCommand extends CommandBase implements ICommand {
     /**
      * make a new MEGAN file name
      *
-     * @param directory
-     * @param fileName
-     * @return
-     */
+	 */
     private File makeNewRMAFile(File directory, String fileName) {
         int count = 0;
         while (true) {

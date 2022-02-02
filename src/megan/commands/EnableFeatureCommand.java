@@ -69,8 +69,7 @@ public class EnableFeatureCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -78,8 +77,7 @@ public class EnableFeatureCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         var feature = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter feature:", "");
         if (feature != null) {

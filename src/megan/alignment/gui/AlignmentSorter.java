@@ -32,8 +32,7 @@ public class AlignmentSorter {
     /**
      * sort by original order
      *
-     * @param alignment
-     */
+	 */
     public static void sortByOriginalOrder(final Alignment alignment) {
         alignment.resetOrder();
     }
@@ -41,8 +40,7 @@ public class AlignmentSorter {
     /**
      * sort rows alphabetically by name
      *
-     * @param alignment
-     */
+	 */
     public static void sortByName(final Alignment alignment, final boolean descending) {
         Integer[] array = new Integer[alignment.getNumberOfSequences()];
         for (int i = 0; i < alignment.getNumberOfSequences(); i++)
@@ -59,8 +57,7 @@ public class AlignmentSorter {
     /**
      * sort rows by start
      *
-     * @param alignment
-     */
+	 */
     public static void sortByStart(final Alignment alignment, final boolean descending) {
         Integer[] array = new Integer[alignment.getNumberOfSequences()];
         for (int i = 0; i < alignment.getNumberOfSequences(); i++)
@@ -78,8 +75,7 @@ public class AlignmentSorter {
     /**
      * sort rows by similarity
      *
-     * @param alignment
-     */
+	 */
     public static void sortBySimilarity(final Alignment alignment, final boolean descending) {
         alignment.resetOrder();
 
@@ -179,11 +175,7 @@ public class AlignmentSorter {
     /**
      * extract chain of nodes
      *
-     * @param v
-     * @param e
-     * @param used
-     * @param order
-     */
+	 */
     private static void extractChainRec(Node v, Edge e, NodeSet used, List<Node> order, EdgeSet selectedEdges) {
         if (!used.contains(v)) {
             used.add(v);
@@ -199,8 +191,6 @@ public class AlignmentSorter {
     /**
      * get number of adjacent nodes that are selected
      *
-     * @param v
-     * @param selectedEdges
      * @return selected adjacent
      */
     private static int getNumberOfAdjacentSelected(Node v, EdgeSet selectedEdges) {
@@ -217,8 +207,6 @@ public class AlignmentSorter {
     /**
      * computes the similarity of two sequences
      *
-     * @param a
-     * @param b
      * @return distance
      */
     private static float computeSimilarity(Lane a, Lane b) {
@@ -245,9 +233,7 @@ public class AlignmentSorter {
     /**
      * sort chains from left to right
      *
-     * @param chains
-     * @param array
-     */
+	 */
     private static void sortChains(final Alignment alignment, List<List<Node>> chains, final Integer[] array) {
         // first reverse any chains so that left most sequence occurs first
         for (List<Node> chain : chains) {
@@ -284,8 +270,6 @@ public class AlignmentSorter {
     /**
      * move the selected interval of sequences up one
      *
-     * @param firstRow
-     * @param lastRow
      * @return true, if moved
      */
     public static boolean moveUp(Alignment alignment, int firstRow, int lastRow) {
@@ -307,8 +291,6 @@ public class AlignmentSorter {
     /**
      * move the selected interval of sequences down one
      *
-     * @param firstRow
-     * @param lastRow
      * @return true, if moved
      */
     public static boolean moveDown(Alignment alignment, int firstRow, int lastRow) {

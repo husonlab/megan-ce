@@ -42,10 +42,6 @@ class CSVExportTaxonomy {
     /**
      * export taxon name to counts mapping
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportTaxon2TotalLength(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
@@ -91,10 +87,6 @@ class CSVExportTaxonomy {
     /**
      * export taxon name to counts mapping
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportTaxon2Counts(String format, Director dir, File file, char separator, boolean reportSummarized, ProgressListener progressListener) throws IOException {
@@ -149,10 +141,6 @@ class CSVExportTaxonomy {
     /**
      * export readid to taxon names mapping
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportReadName2Taxon(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
@@ -202,10 +190,6 @@ class CSVExportTaxonomy {
     /**
      * export readid to matches mapping
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportReadName2Matches(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
@@ -271,12 +255,7 @@ class CSVExportTaxonomy {
     /**
      * write readname and matches to taxa
      *
-     * @param separator
-     * @param readName
-     * @param readBlock
-     * @param w
-     * @throws IOException
-     */
+	 */
     private static void writeMatches(char separator, String readName, IReadBlock readBlock, Writer w) throws IOException {
         int countMatches = 0;
         if (readBlock.getNumberOfAvailableMatchBlocks() == 0)
@@ -291,10 +270,6 @@ class CSVExportTaxonomy {
     /**
      * export taxon name to read-ids mapping
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
      */
     public static int exportTaxon2ReadNames(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
@@ -340,13 +315,8 @@ class CSVExportTaxonomy {
     /**
      * export taxon-path to number of reads assigned
      *
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
      * @return lines written
-     * @throws IOException
-     */
+	 */
     public static int exportTaxon2ReadIds(String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         var totalLines = 0;
         final var viewer = dir.getMainViewer();
@@ -390,7 +360,6 @@ class CSVExportTaxonomy {
     /**
      * determines which type of label is desired
      *
-     * @param format
      * @return label type
      */
     private static String getTaxonLabelSource(String format, int taxonId) {
@@ -413,7 +382,6 @@ class CSVExportTaxonomy {
     /**
      * determines which type of label is desired
      *
-     * @param format
      * @return label type
      */
     private static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
@@ -432,9 +400,7 @@ class CSVExportTaxonomy {
     /**
      * gets the full path to the named taxon
      *
-     * @param taxonId
-     * @return
-     */
+	 */
     private static String getPath(int taxonId, boolean majorRanksWithPrefixes) {
         final var path = new LinkedList<String>();
         var v = TaxonomyData.getTree().getANode(taxonId);
@@ -466,8 +432,6 @@ class CSVExportTaxonomy {
     /**
      * gets the full path to the named taxon with percent
      *
-     * @param dir
-     * @param readBlock
      * @return path
      * @deprecated
      */

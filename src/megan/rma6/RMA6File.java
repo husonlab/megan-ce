@@ -65,10 +65,7 @@ public class RMA6File implements Closeable {
     /**
      * load an existing file
      *
-     * @param fileName
-     * @param mode
-     * @throws IOException
-     */
+	 */
     private void load(String fileName, String mode) throws IOException {
         this.fileName = fileName;
 
@@ -81,8 +78,7 @@ public class RMA6File implements Closeable {
     /**
      * close the file
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         if (readerWriter != null) {
             readerWriter.close();
@@ -106,8 +102,7 @@ public class RMA6File implements Closeable {
      * reads the aux blocks
      *
      * @return aux blocks
-     * @throws IOException
-     */
+	 */
     public Map<String, byte[]> readAuxBlocks() throws IOException {
         final Map<String, byte[]> label2data = new HashMap<>();
         readerWriter.seek(footerSectionRMA6.getStartAuxDataSection());
@@ -125,8 +120,7 @@ public class RMA6File implements Closeable {
     /**
      * write aux blocks
      *
-     * @throws IOException
-     */
+	 */
     public void writeAuxBlocks(Map<String, byte[]> label2data) throws IOException {
         getFooterSectionRMA6().setStartAuxDataSection(readerWriter.getPosition());
         if (label2data == null)

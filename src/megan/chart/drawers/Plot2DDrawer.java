@@ -66,8 +66,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * paints the chart
      *
-     * @param gc0
-     */
+	 */
     public void paint(Graphics gc0) {
         super.paint(gc0);
         final Graphics2D gc = (Graphics2D) gc0;
@@ -108,8 +107,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the title of the chart
      *
-     * @param gc
-     */
+	 */
     private void drawTitle(Graphics2D gc) {
         if (chartTitle != null) {
             Dimension labelSize = BasicSwing.getStringSize(gc, chartTitle, gc.getFont()).getSize();
@@ -138,8 +136,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     private void drawXAxis(Graphics2D gc) {
         int x0 = leftMargin;
         int x1 = getWidth() - rightMargin;
@@ -168,8 +165,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the ticks along the X axis
      *
-     * @param gc
-     */
+	 */
     private void drawXAxisTicks(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
 
@@ -239,8 +235,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     private void drawYAxis(Graphics2D gc) {
 
         int x0 = leftMargin;
@@ -273,8 +268,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the ticks along the Y axis
      *
-     * @param gc
-     */
+	 */
     private void drawYAxisTicks(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -344,8 +338,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the ticks along the Y axis
      *
-     * @param gc
-     */
+	 */
     private void drawYAxisTicksSqrt(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -399,8 +392,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw the ticks along the Y axis
      *
-     * @param gc
-     */
+	 */
     private void drawYAxisTicksLog(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
 
@@ -449,8 +441,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * draw bars in which colors are by dataset
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
@@ -616,8 +607,7 @@ public class Plot2DDrawer extends ChartDrawerBase implements IChartDrawer {
     /**
      * use this to set the max displayed y value
      *
-     * @param maxDisplayedYValue
-     */
+	 */
     public void setMaxDisplayedYValue(Double maxDisplayedYValue) {
         this.maxDisplayedYValue = maxDisplayedYValue;
     }

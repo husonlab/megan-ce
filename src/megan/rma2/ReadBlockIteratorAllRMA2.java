@@ -48,13 +48,7 @@ public class ReadBlockIteratorAllRMA2 implements IReadBlockIterator {
     /**
      * constructor
      *
-     * @param wantReadText
-     * @param wantMatchData
-     * @param wantMatchText
-     * @param minScore
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public ReadBlockIteratorAllRMA2(boolean wantReadText, boolean wantMatchData, boolean wantMatchText, float minScore, float maxExpected, File file) throws IOException {
         this.wantReadText = wantReadText;
         this.wantMatchData = wantMatchData;

@@ -56,9 +56,7 @@ public class MatrixTab extends JPanel {
     /**
      * set the data
      *
-     * @param taxa
-     * @param distances
-     */
+	 */
     public void setData(Taxa taxa, Distances distances) {
         contentPanel.removeAll();
         if (taxa != null && distances != null)

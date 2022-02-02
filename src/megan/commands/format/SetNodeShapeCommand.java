@@ -54,9 +54,7 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         final Document doc = ((Director) getDir()).getDocument();
 
@@ -85,8 +83,7 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final Icon[] icons = new Icon[NodeShape.values().length];
         for (int i = 0; i < NodeShape.values().length; i++) {

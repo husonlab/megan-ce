@@ -45,9 +45,7 @@ public class RMA2Modifier {
     /**
      * construct a new RMA2Modifier that can be used to rewrite all classifications. The summary section ist lost
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public RMA2Modifier(File file) throws IOException {
         rma2File = new RMA2File(file);
         infoSection = rma2File.loadInfoSection();
@@ -67,9 +65,7 @@ public class RMA2Modifier {
     /**
      * start a new classification
      *
-     * @param name
-     * @throws IOException
-     */
+	 */
     public void startClassificationSection(String name) throws IOException {
         currentName = name;
         dumpStart = io.getPosition();
@@ -80,11 +76,7 @@ public class RMA2Modifier {
     /**
      * add an entry to the classification
      *
-     * @param classId
-     * @param weight
-     * @param positions
-     * @throws IOException
-     */
+	 */
     public void addToClassification(Integer classId, float weight, List<Long> positions) throws IOException {
         numberOfClasses++;
         classificationIndexTmpFileWriter.writeInt(classId);
@@ -111,8 +103,7 @@ public class RMA2Modifier {
     /**
      * finish a classification. The temporary file is closed, appended to the main file and then deleted
      *
-     * @throws IOException
-     */
+	 */
     public void finishClassificationSection() throws IOException {
         long dumpEnd = io.getPosition();
 
@@ -160,8 +151,7 @@ public class RMA2Modifier {
     /**
      * append the info section to the main file and then close it
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         infoSection.updateModificationDate();
         infoSection.write(io);

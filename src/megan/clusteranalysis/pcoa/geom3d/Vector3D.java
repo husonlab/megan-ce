@@ -35,10 +35,7 @@ public class Vector3D extends VectorN {
     /**
      * constructor
      *
-     * @param x
-     * @param y
-     * @param z
-     */
+	 */
     public Vector3D(double x, double y, double z) {
         super(4);
         set(x, y, z);
@@ -47,11 +44,7 @@ public class Vector3D extends VectorN {
     /**
      * constructor
      *
-     * @param x
-     * @param y
-     * @param z
-     * @param w
-     */
+	 */
     public Vector3D(double x, double y, double z, double w) {
         super(4);
         set(x, y, z, w);
@@ -60,8 +53,7 @@ public class Vector3D extends VectorN {
     /**
      * constructor
      *
-     * @param vector
-     */
+	 */
     public Vector3D(Vector3D vector) {
         super(vector);
     }
@@ -69,11 +61,7 @@ public class Vector3D extends VectorN {
     /**
      * set values
      *
-     * @param x
-     * @param y
-     * @param z
-     * @param w
-     */
+	 */
     private void set(double x, double y, double z, double w) {
         set(0, x);
         set(1, y);
@@ -84,10 +72,7 @@ public class Vector3D extends VectorN {
     /**
      * set values
      *
-     * @param x
-     * @param y
-     * @param z
-     */
+	 */
     private void set(double x, double y, double z) {
         set(x, y, z, 1);
     }

@@ -65,10 +65,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
     /**
      * constructor
      *
-     * @param dir
-     * @param visible
-     * @throws Exception
-     */
+	 */
     public MainViewer(final Director dir, boolean visible) {
         super(dir, ClassificationManager.get(Classification.Taxonomy, false), visible);
 

@@ -98,7 +98,6 @@ public class Translator {
     /**
      * get reversed-complemented DNA
      *
-     * @param dna
      * @return reverse component
      */
     public static byte[] getReverseComplement(byte[] dna) {
@@ -114,7 +113,6 @@ public class Translator {
     /**
      * get reversed-complemented DNA
      *
-     * @param dna
      * @return reverse component
      */
     public static byte[] getReverseComplement(byte[] dna, int offset, int length) {
@@ -130,7 +128,6 @@ public class Translator {
     /**
      * get six frame translations
      *
-     * @param dnaSequence
      * @return six frame translations
      */
     public static byte[][] getSixFrameTranslations(byte[] dnaSequence) {
@@ -181,8 +178,6 @@ public class Translator {
     /**
      * decode sequence to nucleotides or amino acids
      *
-     * @param sequence
-     * @param alphabet
      * @return decoded sequence
      */
     public static byte[] translate(byte[] sequence, byte[] alphabet, int offset, int length) {
@@ -195,8 +190,6 @@ public class Translator {
     /**
      * decode sequence to nucleotides or amino acids
      *
-     * @param sequence
-     * @param alphabet
      * @return decoded sequence
      */
     public static byte[] translate(byte[] sequence, byte[] alphabet) {

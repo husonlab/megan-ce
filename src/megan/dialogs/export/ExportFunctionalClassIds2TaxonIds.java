@@ -54,15 +54,7 @@ class ExportFunctionalClassIds2TaxonIds {
     /**
      * export a table of functional classification ids to taxa
      *
-     * @param classificationName
-     * @param format
-     * @param dir
-     * @param file
-     * @param separator
-     * @param progressListener
-     * @return
-     * @throws IOException
-     */
+	 */
     public static int export(String classificationName, String format, Director dir, File file, char separator, ProgressListener progressListener) throws IOException {
         final boolean useClassId = format.contains("Id_to");
         final boolean useTaxonId = format.endsWith("Id");

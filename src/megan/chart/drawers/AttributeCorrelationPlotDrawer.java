@@ -65,8 +65,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     /**
      * draw correlation plot chart
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -199,8 +198,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     /**
      * draw correlation plot chart
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -334,8 +332,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
         if (inUpdateCoordinates)
             return;
@@ -406,8 +403,7 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxisTransposed(Graphics2D gc, Dimension size) {
         final int numberOfClasses = (classNames == null ? 0 : classNames.length);
         if (numberOfClasses > 0) {
@@ -667,8 +663,6 @@ public class AttributeCorrelationPlotDrawer extends CorrelationPlotDrawer implem
     /**
      * return Pearson's correlation coefficient
      *
-     * @param classNameX
-     * @param attributeNameY
      * @return Pearson's correlation coefficient
      */
     private float computeCorrelationCoefficent(String classNameX, String attributeNameY) {

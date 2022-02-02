@@ -120,7 +120,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * constructor
      *
-     * @param parent
      */
     public PCoATab(final ClusterViewer parent) {
         this.clusterViewer = parent;
@@ -395,7 +394,6 @@ public class PCoATab extends JPanel implements ITab {
             /**
              * Invoked when a key has been pressed.
              *
-             * @param e
              */
             @Override
             public void keyPressed(KeyEvent e) {
@@ -419,8 +417,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * compute the plot and set the data
      *
-     * @param samples
-     * @param distances
      */
     public void setData(Taxa samples, Distances distances) {
         graphView.setFont(ProgramProperties.get(ProgramProperties.DEFAULT_FONT, getFont()));
@@ -523,7 +519,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * run the MDS code
      *
-     * @return items
      */
     private void runPCoA(final PCoA pcoa) throws CanceledException {
         ProgressListener progressListener = clusterViewer.getDir().getDocument().getProgressListener();
@@ -696,8 +691,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * compute the scale factor to be used when drawing loadings
      *
-     * @param vector
-     * @return
      */
     private double computeLoadingsScaleFactor(double[] vector) {
         if (vector.length >= 2) {
@@ -713,7 +706,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * computes the convex hulls and ellipses of all groups of nodes
      *
-     * @param group2Nodes
      */
     public void computeConvexHullsAndEllipsesForGroups(final Map<String, LinkedList<Node>> group2Nodes) {
         synchronized (convexHullEdges) {
@@ -807,7 +799,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * computes the center for a set of points
      *
-     * @param points
      * @return center
      */
     private Point2D computeCenter(ArrayList<APoint2D> points) {
@@ -968,7 +959,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * apply 3d transformation matrix. If draw3D==true, modify colors etc to look 3D
      *
-     * @param draw3D
      */
     public void updateTransform(boolean draw3D) {
         if (draw3D) {
@@ -1231,8 +1221,6 @@ public class PCoATab extends JPanel implements ITab {
     /**
      * sync
      *
-     * @param taxa
-     * @param distances
      */
     public void compute(Taxa taxa, Distances distances) {
         if (graph.getNumberOfNodes() == 0) {

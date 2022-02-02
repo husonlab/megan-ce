@@ -37,9 +37,7 @@ public class DAA2SAMIterator implements ISAMIterator {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public DAA2SAMIterator(String fileName, int maxMatchesPerRead, boolean parseLongReads) throws IOException {
         this.daa2QuerySAMIterator = new DAA2QuerySAMIterator(fileName, maxMatchesPerRead, parseLongReads);
     }

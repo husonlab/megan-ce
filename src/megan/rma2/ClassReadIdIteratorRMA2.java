@@ -44,9 +44,7 @@ public class ClassReadIdIteratorRMA2 implements Iterator<Pair<Integer, List<Long
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public ClassReadIdIteratorRMA2(String classification, File file) throws IOException {
         RMA2File rma2File = new RMA2File(file);
 

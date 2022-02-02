@@ -38,7 +38,6 @@ public class DiversityIndex {
     /**
      * compute the Shannon-Weaver diversity index in bits
      *
-     * @param progressListener
      * @return index in bits
      */
     public static String computeShannonWeaver(ViewerBase viewer, ProgressListener progressListener) throws IOException {
@@ -51,7 +50,6 @@ public class DiversityIndex {
     /**
      * compute the Shannon-Weaver diversity index in bits
      *
-     * @param progressListener
      * @return index in bits
      */
     private static double[] computeShannonWeaver(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
@@ -90,7 +88,6 @@ public class DiversityIndex {
     /**
      * compute the Shannon-Weaver diversity index in bits
      *
-     * @param progressListener
      * @return index in bits
      */
     public static String computeSimpsonReciprocal(ViewerBase viewer, ProgressListener progressListener) throws IOException {
@@ -103,7 +100,6 @@ public class DiversityIndex {
     /**
      * compute the Shannon-Weaver diversity index in bits
      *
-     * @param progressListener
      * @return index in bits
      */
     private static double[] computeSimpsonReciprocal(ClassificationViewer viewer, ProgressListener progressListener) throws IOException {
@@ -136,7 +132,6 @@ public class DiversityIndex {
     /**
      * write numbers as string
      *
-     * @param values
      * @return string
      */
     private static String toString(String[] sampleNames, double[] values) {

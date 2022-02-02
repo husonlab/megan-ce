@@ -32,9 +32,7 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * constructor  to read and write values from an existing file
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public LongFilePutter(File file) throws IOException {
         super(file, 0, Mode.READ_WRITE);
     }
@@ -42,10 +40,8 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * constructs a long file putter using the given file and limit
      *
-     * @param file
      * @param limit length of array
-     * @throws java.io.IOException
-     */
+	 */
     public LongFilePutter(File file, long limit) throws IOException {
         this(file, limit, false);
     }
@@ -53,10 +49,8 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * constructs a long file putter using the given file and limit
      *
-     * @param file
      * @param limit length of array
-     * @throws java.io.IOException
-     */
+	 */
     public LongFilePutter(File file, long limit, boolean inMemory) throws IOException {
         super(file, 8 * limit, (inMemory ? Mode.CREATE_READ_WRITE_IN_MEMORY : Mode.CREATE_READ_WRITE));
     }
@@ -64,7 +58,6 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     public long get(long index) {
@@ -82,9 +75,7 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * puts value for given index
      *
-     * @param index
-     * @param value
-     */
+	 */
     @Override
     public ILongPutter put(long index, long value) {
         if (index < limit()) {
@@ -109,8 +100,7 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
      * length of array (file length / 8)
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return fileLength >>> 3;
@@ -119,10 +109,7 @@ public class LongFilePutter extends BaseFileGetterPutter implements ILongPutter,
     /**
      * set a new limit for a file
      *
-     * @param file
-     * @param newLimit
-     * @throws IOException
-     */
+	 */
     public static void setLimit(File file, long newLimit) throws IOException {
         resize(file, 8 * (newLimit + 1));
     }

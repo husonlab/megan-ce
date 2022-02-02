@@ -60,8 +60,7 @@ public class ExtractReadsViewer extends JFrame implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public ExtractReadsViewer(JFrame parent, final Director dir) {
         this.dir = dir;
 

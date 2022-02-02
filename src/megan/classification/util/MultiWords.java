@@ -43,7 +43,6 @@ public class MultiWords {
      * gets all the sets of one or more consecutive words, in decreasing order of length.
      * Assumes minimum length is 2 and maximum length is 80
      *
-     * @param str
      * @return sets of one or more consecutive words
      */
     public int compute(String str) {
@@ -53,9 +52,6 @@ public class MultiWords {
     /**
      * gets all the sets of one or more consecutive words, in decreasing order of length
      *
-     * @param line
-     * @param minLength
-     * @param maxLength
      * @return sets of one or more consecutive words
      */
 
@@ -115,7 +111,6 @@ public class MultiWords {
     /**
      * get the i-th pair
      *
-     * @param i
      * @return pair
      */
     public int[] getPair(int i) {
@@ -125,7 +120,6 @@ public class MultiWords {
     /**
      * get the i-th word
      *
-     * @param i
      * @return word
      */
     public String getWord(int i) {

@@ -42,9 +42,7 @@ public class FindAllReadsIterator implements IReadBlockIterator {
     /**
      * constructor
      *
-     * @param allReadsIterator
-     * @param canceled
-     */
+	 */
     public FindAllReadsIterator(String regularExpression, FindSelection findSelector, IReadBlockIterator allReadsIterator, Single<Boolean> canceled) {
         this.findSelector = findSelector;
         this.canceled = canceled;

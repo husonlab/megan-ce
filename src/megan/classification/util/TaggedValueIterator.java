@@ -44,10 +44,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
      * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
      * Value consists of letters, digits or underscore
      *
-     * @param attemptFirstWord
-     * @param tags
-     * @return iterator
-     */
+	 */
     public TaggedValueIterator(final boolean attemptFirstWord, final boolean enabled, final String... tags) {
         this(null, attemptFirstWord, enabled, tags);
     }
@@ -57,11 +54,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
      * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
      * Value consists of letters, digits or underscore
      *
-     * @param aLine
      * @param attemptFirstWord if true, attempts to parse the first word in a fasta header string as a value
-     * @param tags
-     * @return iterator
-     */
+	 */
     public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final String... tags) {
         this(aLine, attemptFirstWord, true, tags);
     }
@@ -72,12 +66,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
      * Example: aLine= gi|4444|gi|5555  and tag=gi|  with return 4444 and then 5555
      * Value consists of letters, digits or underscore
      *
-     * @param aLine
      * @param attemptFirstWord if true, attempts to parse the first word in a fasta header string as a value
-     * @param enabled
-     * @param tags
-     * @return iterator
-     */
+	 */
     public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final boolean enabled, final String... tags) {
         this.attemptFirstWord = attemptFirstWord;
         this.enabled = enabled;
@@ -93,8 +83,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     /**
      * restart the iterator with a new string
      *
-     * @param aLine
-     */
+	 */
     public TaggedValueIterator restart(String aLine) {
         this.aLine = aLine;
         tagPos = 0;
@@ -176,9 +165,6 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     /**
      * does the query match the string starting at the offset
      *
-     * @param string
-     * @param offset
-     * @param query
      * @return true, if string starts with query at offset
      */
     private static boolean match(final String string, final int offset, final String query) {

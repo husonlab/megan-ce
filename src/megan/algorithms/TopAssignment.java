@@ -33,8 +33,6 @@ public class TopAssignment {
     /**
      * computes the top KEGG assignments for a read
      *
-     * @param classificationName
-     * @param readBlock
      * @return top assignments
      */
     public static String compute(String classificationName, BitSet activeMatches, IReadBlock readBlock, int ranksToReport) {
@@ -97,8 +95,6 @@ public class TopAssignment {
      * compute the class id for a read from its matches
      * matches
      *
-     * @param minScore
-     * @param readBlock
      * @return id or 0
      */
     public static int computeId(String cName, float minScore, float maxExpected, float minPercentIdentity, IReadBlock readBlock) {

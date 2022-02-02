@@ -42,8 +42,7 @@ public class LegendPanel extends JPanel {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public LegendPanel(ViewerBase viewer) {
         this.viewer = viewer;
         doc = viewer.getDocument();
@@ -68,8 +67,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw the legend
      *
-     * @param graphics
-     */
+	 */
     public void paint(Graphics graphics) {
         super.paint(graphics);
         Graphics2D gc = (Graphics2D) graphics;
@@ -93,8 +91,7 @@ public class LegendPanel extends JPanel {
     /**
      * draw a legend for dataset colors
      *
-     * @param gc
-     */
+	 */
     void draw(Graphics2D gc, Dimension size) {
         if (gc != null && doc.getNumberOfSamples() > 1) {
             boolean vertical = viewer.getShowLegend().equals("vertical");
@@ -144,16 +141,13 @@ public class LegendPanel extends JPanel {
                             gc.fillRect(x, y - boxSize, boxSize, boxSize);
                             gc.setColor(color.darker());
                             gc.drawRect(x, y - boxSize, boxSize, boxSize);
-                            break;
-                        }
+						}
                         case Circle -> {
                             gc.setColor(Color.DARK_GRAY);
                             gc.drawRect(x, y - boxSize, boxSize, boxSize);
-                            break;
-                        }
+						}
                         case HeatMap -> {
-                            break;
-                        }
+						}
                     }
                     gc.setColor(getFontColor());
                     gc.drawString(label, x + boxSize + 2, y);

@@ -91,9 +91,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * constructor
      *
-     * @param pairedReadSuffix1
-     * @param pairedReadSuffix2
-     */
+	 */
     public SAMMatch(BlastMode mode, String pairedReadSuffix1, String pairedReadSuffix2) {
         this.mode = mode;
         this.pairedReadSuffix1 = pairedReadSuffix1;
@@ -125,9 +123,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * parse a line of SAM format
      *
-     * @param aLine
-     * @return matchBlock
-     */
+	 */
     public void parse(byte[] aLine, int length) throws IOException {
         int numberOfTokens = 0;
         int start = 0;
@@ -149,9 +145,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * parse a line of SAM format
      *
-     * @param aLine
-     * @return matchBlock
-     */
+	 */
     @Override
     public void parse(String aLine) throws IOException {
         String[] tokens = aLine.trim().split("\t");
@@ -178,9 +172,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * parse a line of SAM format
      *
-     * @param tokens
-     * @return matchBlock
-     */
+	 */
     public void parse(String[] tokens, int numberOfTokens) throws IOException {
         if (numberOfTokens < 11) {
             throw new IOException("Too few tokens in line: " + numberOfTokens);
@@ -314,7 +306,6 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * gets the type code for a value
      *
-     * @param value
      * @return type
      */
     private char getType(Object value) {
@@ -357,8 +348,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * return a BlastNText alignment
      *
-     * @return
-     */
+	 */
     private String getBlastNAlignment(final Single<Float> percentIdentity) {
         final int editDistance = getEditDistance();
         final String query = getSequence();
@@ -406,7 +396,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
+				buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -462,8 +452,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * return a BlastPText alignment
      *
-     * @return
-     */
+	 */
     private String getBlastPAlignment(final Single<Float> percentIdentity) {
         final int editDistance = getEditDistance();
         final String query = getSequence();
@@ -505,7 +494,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
+				buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -559,8 +548,7 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * return a BlastText alignment
      *
-     * @return
-     */
+	 */
     private String getBlastXAlignment(final Single<Float> percentIdentity) {
         final int editDistance = getEditDistance();
         final String query = getSequence();
@@ -614,7 +602,7 @@ public class SAMMatch implements megan.rma3.IMatch {
                 else
                     buffer.append(String.format(" Score = %d bits (%d), Expect = %.1g\n", bitScore, rawScore, expect));
             } else {
-                buffer.append(String.format(" Score = %d\n", (int) optionalFields.get("AS")));
+				buffer.append(String.format(" Score = %d\n", optionalFields.get("AS")));
             }
         } else
             buffer.append(String.format("MapQuality = %d  EditDistance=%d\n", getMapQuality(), editDistance));
@@ -748,7 +736,6 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * get the ungapped length of a gapped string
      *
-     * @param s
      * @return ungapped length
      */
     private int getUngappedLength(String s) {
@@ -808,7 +795,6 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * count the number of gaps ('-', '.', '*') in a sequence
      *
-     * @param sequence
      * @return number of gaps
      */
     private static int countGapsDashDotStar(String sequence) {
@@ -824,7 +810,6 @@ public class SAMMatch implements megan.rma3.IMatch {
     /**
      * count the number of gaps ('-', '.') in a sequence
      *
-     * @param sequence
      * @return number of gaps
      */
     private static int countGapsDashDot(String sequence) {

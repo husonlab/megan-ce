@@ -23,7 +23,10 @@ import jloda.thirdparty.MurmurHash3;
 import jloda.util.StringUtils;
 import megan.io.ByteFileGetterMappedMemory;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * a disk-based string-to-int hash table
@@ -51,9 +54,7 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * constructor
      *
-     * @param fileName
-     * @throws FileNotFoundException
-     */
+	 */
     public String2IntegerFileBasedABinMap(String fileName) throws IOException {
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "r")) {
             {
@@ -95,7 +96,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * is this an appropriate file?
      *
-     * @param fileName
      * @return true, if is table file
      */
     public static boolean isTableFile(String fileName) {
@@ -113,7 +113,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * is this an appropriate file?
      *
-     * @param fileName
      * @return true, if is table file
      */
     public static boolean isIncompatibleTableFile(String fileName) {
@@ -178,8 +177,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * equal keys?
      *
-     * @param key1
-     * @param key2
      * @return true if the same
      */
     private boolean equal(byte[] key1, byte[] key2) {
@@ -202,8 +199,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * compute the hash value for a given key
      *
-     * @param key
-     * @param mask
      * @return hash
      */
     public static int computeHash(byte[] key, int mask) {
@@ -213,7 +208,6 @@ public class String2IntegerFileBasedABinMap implements IString2IntegerMap, Close
     /**
      * read and compare 0-terminated bytes,
      *
-     * @param byteBuffer
      * @return number of bytes read excluding termining 0, if match, or -number of bytes read, if no match
      */
     private int readAndCompareBytes0Terminated(byte[] key, int keyLength, long pos, ByteFileGetterMappedMemory byteBuffer) {

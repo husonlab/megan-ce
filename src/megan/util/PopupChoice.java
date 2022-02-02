@@ -31,11 +31,7 @@ public class PopupChoice<T> extends JPopupMenu {
     /**
      * add choices to an existing menu
      *
-     * @param popupMenu
-     * @param choices
-     * @param initialChoice
-     * @param callBack
-     */
+	 */
     public static <T> void addToJMenu(JPopupMenu popupMenu, T[] choices, T initialChoice, final CallBack<T> callBack) {
         add(popupMenu, choices, initialChoice, null, callBack);
     }
@@ -43,11 +39,7 @@ public class PopupChoice<T> extends JPopupMenu {
     /**
      * add choices to an existing menu
      *
-     * @param popupMenu
-     * @param choices
-     * @param initialChoice
-     * @param callBack
-     */
+	 */
     public static <T> void addToJMenu(JPopupMenu popupMenu, T[] choices, Icon[] icons, T initialChoice, final CallBack<T> callBack) {
         add(popupMenu, choices, initialChoice, icons, callBack);
     }
@@ -75,10 +67,7 @@ public class PopupChoice<T> extends JPopupMenu {
     /**
      * add choices
      *
-     * @param choices
-     * @param initialChoice
-     * @param callBack
-     */
+	 */
     private static <T> void add(JPopupMenu menu, T[] choices, T initialChoice, Icon[] icons, final CallBack<T> callBack) {
         for (int i = 0; i < choices.length; i++) {
             final T obj = choices[i];
@@ -103,8 +92,7 @@ public class PopupChoice<T> extends JPopupMenu {
     /**
      * show
      *
-     * @param frame
-     */
+	 */
     public void showAtCurrentMouseLocation(JFrame frame) {
         final Point location = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(location, frame);

@@ -50,11 +50,6 @@ public class PostProcessMatches {
     /**
      * post process set of parsed matches
      *
-     * @param queryName
-     * @param matchesTextAndLength
-     * @param parseLongReads
-     * @param matchesIntervalTree
-     * @param matches
      * @return number of matches returned
      */
     public int apply(String queryName, Pair<byte[], Integer> matchesTextAndLength, boolean parseLongReads, IntervalTree<Match> matchesIntervalTree, Set<Match> matches, List<Match> listOfMatches) {

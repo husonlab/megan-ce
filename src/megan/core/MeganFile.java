@@ -56,9 +56,7 @@ public class MeganFile {
     /**
      * set the megan file from an existing file
      *
-     * @param fileName
-     * @param readOnly
-     */
+	 */
     public void setFileFromExistingFile(String fileName, boolean readOnly) {
         if (!fileName.equals(this.fileName))
             connector = null;
@@ -105,9 +103,7 @@ public class MeganFile {
     /**
      * set new file of given type
      *
-     * @param fileName
-     * @param fileType
-     */
+	 */
     public void setFile(String fileName, Type fileType) {
         if (fileName == null || !fileName.equals(this.fileName))
             connector = null;
@@ -119,8 +115,7 @@ public class MeganFile {
     /**
      * is the set file ok to read?
      *
-     * @return true, if file exists and of correct type
-     */
+	 */
     public void checkFileOkToRead() throws IOException {
         if (isMeganServerFile())
             return;
@@ -130,21 +125,17 @@ public class MeganFile {
             throw new IOException("File not readable: " + fileName);
 
         switch (fileType) {
-            case RMA1_FILE -> {
-                throw new IOException("RMA version 1 not supported: " + fileName);
-            }
-            case RMA2_FILE -> {
-                int version = RMA2File.getRMAVersion(file);
-                if (version != 2)
-                    throw new IOException("RMA version (" + version + ") not supported: " + fileName);
-                if (!file.canWrite())
-                    setReadOnly(true);
-                return;
-            }
+			case RMA1_FILE -> throw new IOException("RMA version 1 not supported: " + fileName);
+			case RMA2_FILE -> {
+				int version = RMA2File.getRMAVersion(file);
+				if (version != 2)
+					throw new IOException("RMA version (" + version + ") not supported: " + fileName);
+				if (!file.canWrite())
+					setReadOnly(true);
+			}
             case RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE -> {
                 if (!file.canWrite())
                     setReadOnly(true);
-                return;
             }
             default -> throw new IOException("File has unknown type: " + fileName);
         }
@@ -235,8 +226,7 @@ public class MeganFile {
      * get the data connector associated with the file
      *
      * @return data connector
-     * @throws IOException
-     */
+	 */
     public IConnector getConnector() throws IOException {
         return getConnector(true);
     }
@@ -245,8 +235,7 @@ public class MeganFile {
      * get the data connector associated with the file
      *
      * @return data connector
-     * @throws IOException
-     */
+	 */
     IConnector getConnector(boolean openDAAFileOnlyIfMeganized) throws IOException {
         if (connector == null) {
             if (isMeganServerFile()) {
@@ -303,23 +292,16 @@ public class MeganFile {
     /**
      * add the unique identify of a file to the set of open files
      *
-     * @param uId
-     */
+	 */
     public static void addUIdToSetOfOpenFiles(String name, long uId) {
         final Pair<String, Long> pair = new Pair<>(name, uId);
-        final Integer count = openFiles.get(pair);
-        if (count == null) {
-            openFiles.put(pair, 1);
-        } else {
-            openFiles.put(pair, count + 1);
-        }
+		openFiles.merge(pair, 1, Integer::sum);
     }
 
     /**
      * removes the UID of a file from the set of open files
      *
-     * @param uId
-     */
+	 */
     public static void removeUIdFromSetOfOpenFiles(String name, long uId) {
         final Pair<String, Long> pair = new Pair<>(name, uId);
         Integer count = openFiles.get(pair);
@@ -332,7 +314,6 @@ public class MeganFile {
     /**
      * determines whether UID of file is present in the set of all open files
      *
-     * @param uId
      * @return true, if present
      */
     public static boolean isUIdContainedInSetOfOpenFiles(String name, long uId) {
@@ -344,7 +325,6 @@ public class MeganFile {
     /**
      * gets the names of all source files embedded in a comparison file
      *
-     * @param fileName
      * @return embedded source files
      */
     private static ArrayList<String> determineEmbeddedSourceFiles(String fileName) {
@@ -370,8 +350,7 @@ public class MeganFile {
     /**
      * set the embedded source files
      *
-     * @param embeddedSourceFiles
-     */
+	 */
     public void setEmbeddedSourceFiles(ArrayList<String> embeddedSourceFiles) {
         this.embeddedSourceFiles.clear();
 

@@ -40,11 +40,7 @@ public class MatchesExporter {
     /**
      * export all matches in file
      *
-     * @param connector
-     * @param fileName
-     * @param progressListener
-     * @throws IOException
-     */
+	 */
     public static long exportAll(BlastMode blastMode, IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
         progressListener.setTasks("Export", "Writing all matches");
 
@@ -69,13 +65,7 @@ public class MatchesExporter {
     /**
      * export all matches for given set of classids in the given classification
      *
-     * @param classification
-     * @param classIds
-     * @param connector
-     * @param fileName
-     * @param progressListener
-     * @throws IOException
-     */
+	 */
     public static long export(String classification, Collection<Integer> classIds, BlastMode blastMode, IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
         long countMatches = 0;
         try {
@@ -111,11 +101,8 @@ public class MatchesExporter {
     /**
      * write all matches associated with the given read
      *
-     * @param readBlock
-     * @param w
      * @return number of matches written
-     * @throws IOException
-     */
+	 */
     private static int writeMatches(IReadBlock readBlock, Writer w) throws IOException {
         int countMatches = 0;
         String readHeader = readBlock.getReadHeader();

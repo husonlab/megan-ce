@@ -45,8 +45,7 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public AssignmentUsingBestHit(String cName, String fileName) {
         this.cName = cName;
 
@@ -59,8 +58,6 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
      * computes the id for a read from its matches
      * matches
      *
-     * @param activeMatches
-     * @param readBlock
      * @return id or 0
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
@@ -88,8 +85,6 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     /**
      * get the LCA of two ids
      *
-     * @param id1
-     * @param id2
      * @return LCA of id1 and id2
      */
     @Override
@@ -101,8 +96,6 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
     /**
      * load all assignment files
      *
-     * @param cName
-     * @param fileName
      * @return all read to id assignments
      */
     private Map<String, Integer> loadAssignmentFiles(String cName, String fileName) {

@@ -18,8 +18,6 @@
  */
 package megan.data;
 
-import java.io.IOException;
-
 /**
  * matchblock interface
  * Daniel Huson, 4.2010
@@ -38,8 +36,7 @@ public interface IMatchBlock {
     /**
      * get the taxon id of the match
      *
-     * @return
-     */
+	 */
     int getTaxonId();
 
     void setTaxonId(int taxonId);
@@ -47,8 +44,7 @@ public interface IMatchBlock {
     /**
      * get the score of the match
      *
-     * @return
-     */
+	 */
     float getBitScore();
 
     void setBitScore(float bitScore);
@@ -56,8 +52,7 @@ public interface IMatchBlock {
     /**
      * get percent identity
      *
-     * @return
-     */
+	 */
     float getPercentIdentity();
 
     void setPercentIdentity(float percentIdentity);
@@ -65,8 +60,7 @@ public interface IMatchBlock {
     /**
      * get the refseq id
      *
-     * @return
-     */
+	 */
     String getRefSeqId();
 
     void setRefSeqId(String refSeqId);
@@ -74,9 +68,7 @@ public interface IMatchBlock {
     /**
      * gets the E-value
      *
-     * @param expected
-     * @throws IOException
-     */
+	 */
     void setExpected(float expected);
 
     float getExpected();
@@ -84,9 +76,7 @@ public interface IMatchBlock {
     /**
      * gets the match length
      *
-     * @param length
-     * @throws IOException
-     */
+	 */
     void setLength(int length);
 
     int getLength();
@@ -94,8 +84,7 @@ public interface IMatchBlock {
     /**
      * get the ignore status
      *
-     * @return
-     */
+	 */
     boolean isIgnore();
 
     void setIgnore(boolean ignore);
@@ -103,22 +92,19 @@ public interface IMatchBlock {
     /**
      * get the text
      *
-     * @return
-     */
+	 */
     String getText();
 
     /**
      * get the first word of the text
      *
-     * @return
-     */
+	 */
     String getTextFirstWord();
 
     /**
      * set the text
      *
-     * @param text
-     */
+	 */
     void setText(String text);
 
     int getId(String cName);

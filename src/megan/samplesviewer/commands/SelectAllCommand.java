@@ -47,9 +47,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     public void apply(final NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select");
         final String what = np.getWordMatchesIgnoringCase(legalOptions);
@@ -85,8 +83,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                     viewer.getSamplesTableView().selectSamples(samples, true);
                     System.err.println("Selected " + samples.size() + " rows");
                 }
-                break;
-            }
+			}
             case "all" -> viewer.getSamplesTableView().selectAll(true);
             case "none" -> viewer.getSamplesTableView().selectAll(false);
             case "commentLike" -> {
@@ -111,8 +108,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                 }
                 if (count > 0)
                     System.err.println("Selected " + count + " columns");
-                break;
-            }
+			}
             case "numerical" -> {
                 int count = 0;
                 final Collection<String> numericalAttributes = viewer.getSampleAttributeTable().getNumericalAttributes();
@@ -125,8 +121,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                 }
                 if (count > 0)
                     System.err.println("Selected " + count + " columns");
-                break;
-            }
+			}
             case "uninformative" -> {
                 int count = 0;
                 for (String attribute : viewer.getSamplesTableView().getAttributes()) {
@@ -147,8 +142,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
                 }
                 if (count > 0)
                     System.err.println("Selected " + count + " columns");
-                break;
-            }
+			}
             case "similar" -> viewer.getSamplesTableView().selectByValue(name, value);
             case "fromPrevious" -> {
                 String row1 = null;

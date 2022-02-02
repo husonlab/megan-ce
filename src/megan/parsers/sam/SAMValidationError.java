@@ -280,8 +280,6 @@ public class SAMValidationError {
     /**
      * Construct a SAMValidationError with unknown record number.
      *
-     * @param type
-     * @param message
      * @param readName May be null if readName is not known.
      */
     public SAMValidationError(final Type type, final String message, final String readName) {
@@ -293,8 +291,6 @@ public class SAMValidationError {
     /**
      * Construct a SAMValidationError with possibly-known record number.
      *
-     * @param type
-     * @param message
      * @param readName     May be null if readName is not known.
      * @param recordNumber Position of the record in the SAM file it has been read from.  -1 if not known.
      */

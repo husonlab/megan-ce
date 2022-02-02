@@ -54,8 +54,7 @@ public class InputDialog extends JFrame implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public InputDialog(IDirector dir0, IDirectableViewer viewer) {
         this.viewer = viewer;
         this.dir = dir0;

@@ -67,9 +67,7 @@ public class IntIntMap {
     /**
      * constructor
      *
-     * @param size
-     * @param fillFactor
-     */
+	 */
     public IntIntMap(final int size, final float fillFactor) {
         if (fillFactor <= 0 || fillFactor >= 1)
             throw new IllegalArgumentException("FillFactor must be in (0, 1)");
@@ -87,7 +85,6 @@ public class IntIntMap {
     /**
      * get value
      *
-     * @param key
      * @return get value
      */
     public int get(final int key) {
@@ -116,9 +113,7 @@ public class IntIntMap {
     /**
      * put value
      *
-     * @param key
-     * @param value
-     */
+	 */
     public void put(final int key, final int value) {
         if (key == FREE_KEY) {
             final int ret = m_freeValue;
@@ -169,9 +164,7 @@ public class IntIntMap {
     /**
      * remove a key
      *
-     * @param key
-     * @return
-     */
+	 */
     public int remove(final int key) {
         if (key == FREE_KEY) {
             if (!m_hasFreeKey)
@@ -260,8 +253,7 @@ public class IntIntMap {
     /**
      * construct from input stream
      *
-     * @param inputStream
-     */
+	 */
     public IntIntMap(InputStream inputStream) throws IOException {
         try (DataInputStream ins = new DataInputStream(inputStream)) {
             int magicNumber = ins.readInt();
@@ -287,9 +279,7 @@ public class IntIntMap {
     /**
      * save to file
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public void save(File file, boolean append) throws IOException {
         try (DataOutputStream outs = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file, append)))) {
             outs.writeInt(MAGIC_NUMBER);

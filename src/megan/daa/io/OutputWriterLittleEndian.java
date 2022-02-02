@@ -42,8 +42,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * constructor
      *
-     * @param outs
-     */
+	 */
     public OutputWriterLittleEndian(IOutput outs) {
         this.outs = outs;
     }
@@ -51,9 +50,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write a byte
      *
-     * @return byte
-     * @throws IOException
-     */
+	 */
     public void write(int b) throws IOException {
         outs.write(b);
     }
@@ -61,12 +58,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write bytes
      *
-     * @param bytes
-     * @param offset
-     * @param len
-     * @return bytes
-     * @throws IOException
-     */
+	 */
     public void write(byte[] bytes, int offset, int len) throws IOException {
         outs.write(bytes, offset, len);
     }
@@ -74,9 +66,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write char, little endian
      *
-     * @return int
-     * @throws IOException
-     */
+	 */
     public void writeChar(char a) throws IOException {
         outs.write((byte) (a));
         outs.write((byte) (a >> 8));
@@ -85,9 +75,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write int, little endian
      *
-     * @return int
-     * @throws IOException
-     */
+	 */
     public void writeInt(int a) throws IOException {
         outs.write((byte) (a));
         outs.write((byte) (a >> 8));
@@ -98,9 +86,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write long, little endian
      *
-     * @return long
-     * @throws IOException
-     */
+	 */
     public void writeLong(long a) throws IOException {
         outs.write((byte) (a));
         outs.write((byte) (a >> 8));
@@ -115,8 +101,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write float, little endian
      *
-     * @throws IOException
-     */
+	 */
     public void writeFloat(float a) throws IOException {
         byteBuffer.putFloat(0, a);
         byteBuffer.rewind();
@@ -128,9 +113,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write double, little endian
      *
-     * @return double
-     * @throws IOException
-     */
+	 */
     public void writeDouble(double a) throws IOException {
         byteBuffer.putDouble(0, a);
         byteBuffer.rewind();
@@ -142,9 +125,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * swap order of bytes
      *
-     * @param bytes
-     * @param len
-     */
+	 */
     private void swap(byte[] bytes, int len) {
         int top = len / 2;
         int j = len - 1;
@@ -158,10 +139,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write bytes as a null-terminated string
      *
-     * @param bytes
-     * @return length
-     * @throws IOException
-     */
+	 */
     public void writeNullTerminatedString(byte[] bytes) throws IOException {
         int pos = 0;
         while (pos < bytes.length) {
@@ -177,8 +155,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write size-prefixed bytes
      *
-     * @throws IOException
-     */
+	 */
     public void writeSizedPrefixedBytes(byte[] bytes) throws IOException {
         writeSizedPrefixedBytes(bytes, 0, bytes.length);
     }
@@ -186,8 +163,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * write size-prefixed bytes
      *
-     * @throws IOException
-     */
+	 */
     private void writeSizedPrefixedBytes(byte[] bytes, int offset, int length) throws IOException {
         writeInt(length);
         write(bytes, offset, length);
@@ -197,8 +173,7 @@ public class OutputWriterLittleEndian implements Closeable {
      * get current position
      *
      * @return position
-     * @throws IOException
-     */
+	 */
     public long getPosition() throws IOException {
         return outs.getPosition();
     }
@@ -206,8 +181,7 @@ public class OutputWriterLittleEndian implements Closeable {
     /**
      * close
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         outs.close();
     }

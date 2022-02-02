@@ -101,8 +101,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw correlation plot chart
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -228,8 +227,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw correlation plot chart
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -360,10 +358,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw cell
      *
-     * @param gc
-     * @param boundingBox
-     * @param correlationCoefficent
-     */
+	 */
     void drawCell(Graphics2D gc, double[] boundingBox, double correlationCoefficent) {
         double centerX = boundingBox[0] + boundingBox[2] / 2; // center x
         double centerY = boundingBox[1] + boundingBox[3] / 2; // center y
@@ -396,8 +391,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                     gc.drawOval(x, y, (int) Math.round(width), (int) Math.round(height));
                     gc.rotate(Geometry.deg2rad(45), centerX, centerY);
                 }
-                break;
-            }
+			}
             case Circles -> {
                 double width = Math.min(boundingBox[2], boundingBox[3]);
                 double height = Math.min(boundingBox[2], boundingBox[3]);
@@ -408,8 +402,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 gc.fillOval(x, y, (int) Math.round(radius), (int) Math.round(radius));
                 gc.setColor(color.darker());
                 gc.drawOval(x, y, (int) Math.round(radius), (int) Math.round(radius));
-                break;
-            }
+			}
             case Squares -> {
                 double width = Math.min(boundingBox[2], boundingBox[3]) * Math.abs(correlationCoefficent);
                 double height = Math.min(boundingBox[2], boundingBox[3]) * Math.abs(correlationCoefficent);
@@ -419,8 +412,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                 gc.fillRect(x, y, (int) Math.round(width), (int) Math.round(height));
                 gc.setColor(color.darker());
                 gc.drawRect(x, y, (int) Math.round(width), (int) Math.round(height));
-                break;
-            }
+			}
             case Colors -> {
                 final double width = boundingBox[2];
                 final double height = boundingBox[3];
@@ -438,8 +430,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
                         gc.draw(rect);
                     }
                 }
-                break;
-            }
+			}
             case Numbers -> {
                 gc.setFont(getFont(ChartViewer.FontKeys.DrawFont.toString()));
                 String label = String.format("%.3f", correlationCoefficent);
@@ -480,8 +471,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     protected void drawXAxis(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
         gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
@@ -495,8 +485,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
         if (inUpdateCoordinates)
             return;
@@ -566,8 +555,7 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     void drawYAxisTransposed(Graphics2D gc, Dimension size) {
         final int numberOfSeries = (seriesNames == null ? 0 : seriesNames.length);
         if (numberOfSeries > 0) {
@@ -801,8 +789,6 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * return Pearson's correlation coefficient
      *
-     * @param classNameX
-     * @param classNameY
      * @return Pearson's correlation coefficient
      */
     private float computeCorrelationCoefficent(String classNameX, String classNameY) {
@@ -819,8 +805,6 @@ public class CorrelationPlotDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * return Pearson's correlation coefficient
      *
-     * @param seriesNameX
-     * @param seriesNameY
      * @return Pearson's correlation coefficient
      */
     private float computeCorrelationCoefficentTransposed(String seriesNameX, String seriesNameY) {

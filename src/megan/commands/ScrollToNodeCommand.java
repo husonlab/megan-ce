@@ -72,9 +72,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("scrollTo node=");
@@ -132,8 +130,7 @@ public class ScrollToNodeCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         String input = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter label of node to scroll to", "None");

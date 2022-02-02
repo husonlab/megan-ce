@@ -51,8 +51,7 @@ public class SetPCIvsPCJvsPCkCommand extends CommandBase implements ICheckBoxCom
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -125,8 +124,7 @@ public class SetPCIvsPCJvsPCkCommand extends CommandBase implements ICheckBoxCom
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         PCoATab tab = getViewer().getPcoaTab();
         PCoA PCoA = tab.getPCoA();

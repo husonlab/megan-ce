@@ -37,7 +37,6 @@ public class ReadMagnitudeParser {
     /**
      * attempt to parse the weight from the info line of a read
      *
-     * @param aLine
      * @return weight or 1
      */
     public static int parseMagnitude(String aLine) {

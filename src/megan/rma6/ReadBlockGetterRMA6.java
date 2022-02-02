@@ -46,12 +46,7 @@ public class ReadBlockGetterRMA6 implements IReadBlockGetter {
     /**
      * constructor
      *
-     * @param rma6File
-     * @param wantReadSequence
-     * @param streamOnly
-     * @param reuseReadBlockObject
-     * @throws IOException
-     */
+	 */
     public ReadBlockGetterRMA6(RMA6File rma6File, boolean wantReadSequence, boolean wantMatches, float minScore, float maxExpected, boolean streamOnly, boolean reuseReadBlockObject) throws IOException {
         this.rma6File = rma6File;
         this.wantReadSequence = wantReadSequence;
@@ -77,8 +72,7 @@ public class ReadBlockGetterRMA6 implements IReadBlockGetter {
      *
      * @param uid or -1, if in streaming mode
      * @return read block or null
-     * @throws IOException
-     */
+	 */
     @Override
     public IReadBlock getReadBlock(long uid) throws IOException {
         if (uid == -1) {
@@ -104,8 +98,7 @@ public class ReadBlockGetterRMA6 implements IReadBlockGetter {
     /**
      * closes the accessor
      *
-     * @throws IOException
-     */
+	 */
     @Override
     public void close() {
         try {

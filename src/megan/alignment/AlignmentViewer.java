@@ -106,8 +106,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public AlignmentViewer(final Director dir) {
         this.dir = dir;
         blast2Alignment = new Blast2Alignment(dir.getDocument());
@@ -499,9 +498,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
     /**
      * set the alignment for this viewer
      *
-     * @param alignment
-     * @param updateInfoString
-     */
+	 */
     public void setAlignment(Alignment alignment, boolean updateInfoString) {
         lockUserInput();
 
@@ -640,8 +637,7 @@ public class AlignmentViewer extends JFrame implements IDirectableViewer, IViewe
     /**
      * show amino acids in alignment
      *
-     * @param showAminoAcids
-     */
+	 */
     public void setShowAminoAcids(boolean showAminoAcids) {
         this.showAminoAcids = showAminoAcids;
 

@@ -66,8 +66,7 @@ public class IdParser {
     /**
      * constructor
      *
-     * @param idMapper
-     */
+	 */
     public IdParser(IdMapper idMapper) {
         this.idMapper = idMapper;
         this.useTextParsing = idMapper.isUseTextParsing();
@@ -85,7 +84,6 @@ public class IdParser {
     /**
      * Attempt to determine Id from header line.
      *
-     * @param headerString
      * @return ID or 0
      */
     public int getIdFromHeaderLine(String headerString) throws IOException {

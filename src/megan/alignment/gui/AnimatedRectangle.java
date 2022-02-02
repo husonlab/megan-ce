@@ -53,8 +53,7 @@ public class AnimatedRectangle {
     private boolean even;
 
     /**
-     * @param panel
-     */
+	 */
     public AnimatedRectangle(JPanel panel) {
         this.panel = panel;
         if (scheduler == null) {
@@ -87,8 +86,7 @@ public class AnimatedRectangle {
     /**
      * turn blinking on or off
      *
-     * @param animate
-     */
+	 */
     public void setAnimate(boolean animate) {
         this.animate = animate;
     }
@@ -105,8 +103,7 @@ public class AnimatedRectangle {
     /**
      * set rectangle in panel coordinates
      *
-     * @param rectangle
-     */
+	 */
     public void setRectangle(JPanel panel, Rectangle2D rectangle) {
         this.panel = panel;
         this.rectangle = (Rectangle2D) rectangle.clone();

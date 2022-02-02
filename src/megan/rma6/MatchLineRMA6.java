@@ -32,8 +32,7 @@ public class MatchLineRMA6 {
     /**
      * constructor
      *
-     * @param numberOfFNames
-     */
+	 */
     public MatchLineRMA6(int numberOfFNames, int taxonomyIndex) {
         fIds = new int[numberOfFNames];
         this.taxonomyIndex = taxonomyIndex;
@@ -42,9 +41,7 @@ public class MatchLineRMA6 {
     /**
      * parse SAM match that starts at given offset (ignoring any further matches that come after a newline)
      *
-     * @param matchesText
-     * @param offset
-     */
+	 */
     public void parse(byte[] matchesText, int offset) {
         bitScore = 0;
         expected = 0;
@@ -70,9 +67,6 @@ public class MatchLineRMA6 {
     /**
      * skip a given count of tabs
      *
-     * @param text
-     * @param offset
-     * @param n
      * @return position of n-th tab after offset
      */
     private static int skipTabs(byte[] text, int offset, int n) {

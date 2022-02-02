@@ -63,9 +63,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
     /**
      * apply the command
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("remoteBlastNCBI readsFile=");
         final File readsFile = new File(np.getWordFileNamePunctuation());

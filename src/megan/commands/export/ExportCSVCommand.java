@@ -146,8 +146,6 @@ public class ExportCSVCommand extends CommandBase implements ICommand {
     /**
      * show the choices dialog
      *
-     * @param parent
-     * @param classification
      * @return choices or null
      */
     private static String[] showChoices(Component parent, Document doc, String classification) {

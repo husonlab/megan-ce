@@ -92,9 +92,7 @@ public class GeneItem {
     /**
      * write
      *
-     * @param outs
-     * @throws java.io.IOException
-     */
+	 */
     public void write(OutputWriter outs) throws IOException {
         if (proteinId == null || proteinId.length == 0)
             outs.writeInt(0);
@@ -111,9 +109,7 @@ public class GeneItem {
     /**
      * read
      *
-     * @param ins
-     * @throws IOException
-     */
+	 */
     public void read(RandomAccessFile ins) throws IOException {
         int length = ins.readInt();
         if (length == 0)
@@ -132,9 +128,7 @@ public class GeneItem {
     /**
      * read
      *
-     * @param ins
-     * @throws IOException
-     */
+	 */
     public void read(InputReader ins) throws IOException {
         int length = ins.readInt();
         if (length == 0)
@@ -153,7 +147,6 @@ public class GeneItem {
     /**
      * get the annotation string
      *
-     * @param refInterval
      * @return annotation string
      */
     public String getAnnotation(Interval<GeneItem> refInterval) {

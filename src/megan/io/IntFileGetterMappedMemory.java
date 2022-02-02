@@ -31,9 +31,7 @@ public class IntFileGetterMappedMemory extends BaseFileGetterPutter implements I
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public IntFileGetterMappedMemory(File file) throws IOException {
         super(file);
     }
@@ -42,8 +40,7 @@ public class IntFileGetterMappedMemory extends BaseFileGetterPutter implements I
      * gets value for given index
      *
      * @return integer
-     * @throws IOException
-     */
+	 */
     public int get(long index) {
         if (index < limit()) {
             index <<= 2; // convert to file position
@@ -59,8 +56,7 @@ public class IntFileGetterMappedMemory extends BaseFileGetterPutter implements I
      * length of array (file length/4)
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return fileLength >>> 2;

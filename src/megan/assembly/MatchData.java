@@ -51,10 +51,7 @@ public class MatchData implements Comparator<MatchData> {
     /**
      * sort by ascending start position and descending end position
      *
-     * @param o1
-     * @param o2
-     * @return
-     */
+	 */
     public int compare(MatchData o1, MatchData o2) {
         if (o1.firstPosInRef < o2.firstPosInRef)
             return -1;

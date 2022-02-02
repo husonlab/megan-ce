@@ -45,9 +45,7 @@ public class ListTaxonNamesCommand extends CommandBase implements ICommand {
     /**
      * parses and applies the command
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("list taxa=");
@@ -74,8 +72,7 @@ public class ListTaxonNamesCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
     }
 

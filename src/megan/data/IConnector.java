@@ -36,8 +36,7 @@ public interface IConnector {
     /**
      * set the file name of interest. Only one file can be used.
      *
-     * @param filename
-     */
+	 */
     void setFile(String filename) throws IOException;
 
     /**
@@ -60,36 +59,22 @@ public interface IConnector {
      *
      * @param minScore         ignore
      * @param maxExpected      ignore
-     * @param wantReadSequence
-     * @param wantMatches
-     * @return
-     * @throws IOException
-     */
+	 */
     IReadBlockIterator getAllReadsIterator(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException;
 
     /**
      * get getLetterCodeIterator over all reads for given classification and classId. If minScore=0 and topPercent=0, no filtering
      *
-     * @param classification
-     * @param classId
      * @param minScore         ignore
      * @param maxExpected      ignore
-     * @param wantReadSequence
-     * @param wantMatches
-     * @return
-     * @throws IOException
-     */
+	 */
     IReadBlockIterator getReadsIterator(String classification, int classId, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException;
 
     /**
      * get getLetterCodeIterator over all reads for given classification and a collection of classids. If minScore=0 and topPercent=0, no filtering
      *
-     * @param classification
-     * @param classIds
-     * @param minScore
      * @return getLetterCodeIterator over reads filtered by given parameters
-     * @throws IOException
-     */
+	 */
     IReadBlockIterator getReadsIteratorForListOfClassIds(String classification, Collection<Integer> classIds, float minScore,
                                                          float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException;
 
@@ -98,11 +83,7 @@ public interface IConnector {
      *
      * @param minScore         ignored
      * @param maxExpected      ignored
-     * @param wantReadSequence
-     * @param wantMatches
-     * @return
-     * @throws IOException
-     */
+	 */
     IReadBlockGetter getReadBlockGetter(float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException;
 
     /**
@@ -115,29 +96,22 @@ public interface IConnector {
     /**
      * gets the number of classes in the named classification
      *
-     * @param classificationName
      * @return number of classes
-     * @throws java.io.IOException
-     */
+	 */
     int getClassificationSize(String classificationName) throws IOException;
 
     /**
      * gets the number of reads in a given class
      *
-     * @param classificationName
-     * @param classId
      * @return number of reads
-     * @throws IOException
-     */
+	 */
     int getClassSize(String classificationName, int classId) throws IOException;
 
     /**
      * gets the named classification block
      *
-     * @param classificationName
      * @return classification block
-     * @throws IOException
-     */
+	 */
     IClassificationBlock getClassificationBlock(String classificationName) throws IOException;
 
     /**
@@ -145,27 +119,22 @@ public interface IConnector {
      *
      * @param classificationNames names of classifications in the order that their values will appear in
      * @param updateItems         list of rescan items
-     * @throws IOException
-     */
+	 */
     void updateClassifications(final String[] classificationNames, final List<UpdateItem> updateItems, ProgressListener progressListener) throws IOException;
 
     /**
      * get all reads that match the given expression
      *
-     * @param regEx
      * @param findSelection where to search for matches
-     * @param canceled
      * @return getLetterCodeIterator over reads that match
-     * @throws IOException
-     */
+	 */
     IReadBlockIterator getFindAllReadsIterator(String regEx, FindSelection findSelection, Single<Boolean> canceled) throws IOException;
 
     /**
      * gets the number of reads
      *
      * @return number of reads
-     * @throws IOException
-     */
+	 */
     int getNumberOfReads() throws IOException;
 
     /**
@@ -179,17 +148,13 @@ public interface IConnector {
      * sets the number of reads. Note that the logical number of reads may differ from
      * the actual number of reads stored, so this needs to be stored explicitly
      *
-     * @param numberOfReads
-     * @throws IOException
-     */
+	 */
     void setNumberOfReads(int numberOfReads) throws IOException;
 
     /**
      * puts the MEGAN auxiliary data associated with the dataset
      *
-     * @param label2data
-     * @throws IOException
-     */
+	 */
     void putAuxiliaryData(Map<String, byte[]> label2data) throws IOException;
 
     /**
@@ -197,7 +162,6 @@ public interface IConnector {
      * (Old style data should be returned with label USER_STATE)
      *
      * @return auxiliaryData
-     * @throws IOException
-     */
+	 */
     Map<String, byte[]> getAuxiliaryData() throws IOException;
 }

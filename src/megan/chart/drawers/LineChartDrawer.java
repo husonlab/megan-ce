@@ -47,8 +47,7 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw bars with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -186,8 +185,7 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw bars in which colors are by dataset
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -258,20 +256,17 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT -> {
                         value *= Objects.requireNonNull(percentFactor)[i];
-                        break;
-                    }
+					}
                     case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
                         else if (value > 0)
                             value = Math.log10(value);
-                        break;
-                    }
+					}
                     case SQRT -> {
                         if (value > 0)
                             value = Math.sqrt(value);
-                        break;
-                    }
+					}
                 }
 
                 final double xBar = x0 + bigSpace + c * bigSpace + c * xStep;

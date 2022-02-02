@@ -49,9 +49,7 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     protected SAM2SAMIterator(String fileName, int maxNumberOfMatchesPerRead, BlastMode blastMode) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         samMatch = new SAMMatch(blastMode);
@@ -177,8 +175,6 @@ public class SAM2SAMIterator extends SAMIteratorBase implements ISAMIterator {
     /**
      * do these two SAM lines refer to the same query sequence?
      *
-     * @param samA
-     * @param samB
      * @return true, if same query
      */
     private boolean sameQuery(String samA, String samB) {

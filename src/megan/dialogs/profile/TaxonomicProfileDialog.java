@@ -56,8 +56,7 @@ public class TaxonomicProfileDialog extends JDialog {
     /**
      * setup and display the compare dialog
      *
-     * @param dir
-     */
+	 */
     public TaxonomicProfileDialog(JFrame parent, IDirector dir) {
         super(parent);
         setIconImages(ProgramProperties.getProgramIconImages());

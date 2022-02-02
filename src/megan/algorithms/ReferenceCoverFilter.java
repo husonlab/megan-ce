@@ -54,8 +54,7 @@ public class ReferenceCoverFilter {
     /**
      * Constructor
      *
-     * @param percentToCover
-     */
+	 */
     public ReferenceCoverFilter(float percentToCover) {
         Arrays.fill(sync, new Object());
         setPercentToCover(percentToCover);
@@ -64,12 +63,7 @@ public class ReferenceCoverFilter {
     /**
      * apply the filter
      *
-     * @param connector
-     * @param minScore
-     * @param topPercent
-     * @param maxExpected
-     * @param minPercentIdentity
-     */
+	 */
     public void compute(ProgressListener progress, final IConnector connector, final float minScore, final float topPercent, final float maxExpected, final float minPercentIdentity) throws CanceledException, IOException {
         isActive = false;
         referencesToUse.clear();
@@ -203,9 +197,7 @@ public class ReferenceCoverFilter {
     /**
      * apply the filter to the set of active matches
      *
-     * @param readBlock
-     * @param activeMatches
-     */
+	 */
     public void applyFilter(IReadBlock readBlock, BitSet activeMatches) {
         if (isActive) {
             for (int m = activeMatches.nextSetBit(0); m != -1; m = activeMatches.nextSetBit(m + 1)) {

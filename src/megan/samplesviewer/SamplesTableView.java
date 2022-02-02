@@ -189,8 +189,7 @@ public class SamplesTableView {
     /**
      * initialize JavaFX
      *
-     * @param jfxPanel
-     */
+	 */
     private void initFxLater(JFXPanel jfxPanel) {
         if (!initialized) {
             if (Thread.getDefaultUncaughtExceptionHandler() != fxExceptionHandler)
@@ -238,8 +237,7 @@ public class SamplesTableView {
     /**
      * pastes lines into table
      *
-     * @param lines
-     */
+	 */
     private void paste(String[] lines) {
         if (tableView != null) {
             ensureFXThread(() -> {
@@ -282,8 +280,7 @@ public class SamplesTableView {
     /**
      * pastes lines into table guided by an attribute
      *
-     * @param attribute
-     */
+	 */
     public void pasteClipboardByAttribute(String attribute) {
         if (tableView != null && tableView.getSelectedCells().size() > 0) {
             ensureFXThread(() -> {
@@ -328,8 +325,7 @@ public class SamplesTableView {
     /**
      * add a new column
      *
-     * @param index
-     */
+	 */
     public void addNewColumn(final int index, String name) {
         ensureFXThread(() -> tableView.addCol(index, name));
     }
@@ -349,9 +345,7 @@ public class SamplesTableView {
     /**
      * select cells for an attribute and value
      *
-     * @param attribute
-     * @param value
-     */
+	 */
     public void selectCellsByValue(final String attribute, final String value) {
         if (tableView != null)
             ensureFXThread(() -> tableView.selectByValue(attribute, value));

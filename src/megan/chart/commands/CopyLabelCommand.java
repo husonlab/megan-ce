@@ -38,8 +38,7 @@ public class CopyLabelCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -97,8 +96,7 @@ public class CopyLabelCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         ChartViewer chartViewer = (ChartViewer) getViewer();

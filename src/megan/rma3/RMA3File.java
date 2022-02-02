@@ -47,9 +47,7 @@ public class RMA3File implements Closeable {
     /**
      * construct an RMA3 object and open the named file in it
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RMA3File(String fileName, String mode) throws IOException {
         this.fileName = fileName;
 
@@ -84,8 +82,7 @@ public class RMA3File implements Closeable {
     /**
      * close this file
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         reader.close();
     }

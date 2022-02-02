@@ -42,8 +42,7 @@ public class Loader {
     /**
      * constructor
      *
-     * @param inspectorWindow
-     */
+	 */
     public Loader(InspectorWindow inspectorWindow) {
         this.inspectorWindow = inspectorWindow;
     }
@@ -51,8 +50,7 @@ public class Loader {
     /**
      * execute a loader task. Either immediately, if nothing is running, or later
      *
-     * @param task
-     */
+	 */
     public void execute(final LoaderTask task) {
         tasks.add(task);
         processQueue();

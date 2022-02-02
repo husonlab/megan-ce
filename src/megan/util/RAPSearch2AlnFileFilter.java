@@ -55,8 +55,6 @@ public class RAPSearch2AlnFileFilter extends FileFilterBase implements FilenameF
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

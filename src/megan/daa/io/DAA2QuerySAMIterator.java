@@ -43,9 +43,7 @@ public class DAA2QuerySAMIterator implements ICloseableIterator<Pair<byte[], byt
     /**
      * constructor
      *
-     * @param daaFile
-     * @throws IOException
-     */
+	 */
     public DAA2QuerySAMIterator(String daaFile, final int maxMatchesPerRead, final boolean parseLongReads) throws IOException {
         this.daaParser = new DAAParser(daaFile);
         daaParser.getHeader().loadReferences(true);

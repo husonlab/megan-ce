@@ -127,9 +127,7 @@ public class DataTable {
     /**
      * read a complete file
      *
-     * @param r
-     * @throws IOException
-     */
+	 */
     public void read(BufferedReader r, boolean headerOnly) throws IOException {
         try {
             Set<String> disabledSamples = new HashSet<>();
@@ -328,8 +326,7 @@ public class DataTable {
      * returns the user state as bytes (for saving to auxiliary data in RMA file)
      *
      * @return bytes of auxiliary data
-     * @throws IOException
-     */
+	 */
     public byte[] getUserStateAsBytes() throws IOException {
         StringWriter w = new StringWriter();
         w.write(MEGAN4_SUMMARY_TAG + "\n");
@@ -340,9 +337,7 @@ public class DataTable {
     /**
      * write the datatable
      *
-     * @param w
-     * @throws IOException
-     */
+	 */
     public void write(Writer w) throws IOException {
         boolean useOriginal = (originalData != null && disabledSamples.size() > 0);
         write(w, useOriginal);
@@ -352,10 +347,8 @@ public class DataTable {
     /**
      * write data to writer
      *
-     * @param w
      * @param useOriginal use original data, if set
-     * @throws IOException
-     */
+	 */
     private void write(Writer w, boolean useOriginal) throws IOException {
         if (useOriginal) {
             originalData.disabledSamples.addAll(disabledSamples);
@@ -387,9 +380,7 @@ public class DataTable {
     /**
      * write the header to a writer
      *
-     * @param w
-     * @throws IOException
-     */
+	 */
     private void writeHeader(Writer w) throws IOException {
 		w.write(String.format("%s\t%s\n", CREATOR, (creator != null ? creator : ProgramProperties.getProgramName())));
 		w.write(String.format("%s\t%s\n", CREATION_DATE, (creationDate != null ? creationDate : ((new Date()).toString()))));
@@ -461,8 +452,7 @@ public class DataTable {
      * get the header in pretty print (HTML)
      *
      * @return header
-     * @throws IOException
-     */
+	 */
     public String getHeaderPrettyPrint() throws IOException {
         Writer w = new StringWriter();
 
@@ -524,8 +514,7 @@ public class DataTable {
      * get summary
      *
      * @return header
-     * @throws IOException
-     */
+	 */
     public String getSummary() throws IOException {
 		Writer w = new StringWriter();
 
@@ -576,10 +565,7 @@ public class DataTable {
     /**
      * imports a MEGAN3-summary file
      *
-     * @param r
-     * @param headerOnly
-     * @throws IOException
-     */
+	 */
     public void importMEGAN3SummaryFile(String fileName, BufferedReader r, boolean headerOnly) throws IOException {
         int lineNumber = 0;
         try (r) {
@@ -711,11 +697,7 @@ public class DataTable {
     /**
      * set the classification2class2count value for a given classification, classId, datasetid and count
      *
-     * @param classification
-     * @param classId
-     * @param sampleId
-     * @param count
-     */
+	 */
     public void setClassification2Class2Count(String classification, int classId, int sampleId, float count) {
         Map<Integer, float[]> class2count = classification2class2counts.get(classification);
         if (class2count == null)
@@ -778,11 +760,7 @@ public class DataTable {
     /**
      * set basic stuff about samples
      *
-     * @param names
-     * @param uids
-     * @param sizes
-     * @param modes
-     */
+	 */
     public void setSamples(String[] names, Long[] uids, float[] sizes, BlastMode[] modes) {
         sampleNames.clear();
         if (names != null)
@@ -822,7 +800,6 @@ public class DataTable {
     /**
      * get the algorithm string for a classification
      *
-     * @param classification
      * @return algorithm string
      */
     public String getAlgorithm(String classification) {
@@ -832,9 +809,7 @@ public class DataTable {
     /**
      * set the algorithm string for a classification
      *
-     * @param classification
-     * @param algorithm
-     */
+	 */
     public void setAlgorithm(String classification, String algorithm) {
         classification2algorithm.put(classification, algorithm);
     }
@@ -851,8 +826,7 @@ public class DataTable {
     /**
      * set the parameters string
      *
-     * @param parameters
-     */
+	 */
     public void setParameters(String parameters) {
         this.parameters = parameters;
     }
@@ -869,8 +843,7 @@ public class DataTable {
     /**
      * set the contaminants string or null
      *
-     * @param contaminants
-     */
+	 */
     public void setContaminants(String contaminants) {
         this.contaminants = contaminants;
     }
@@ -882,9 +855,7 @@ public class DataTable {
     /**
      * set the formatting string for a classification
      *
-     * @param classification
-     * @param format
-     */
+	 */
     public void setNodeFormats(String classification, String format) {
         if (format == null || format.length() == 0)
             classification2NodeFormats.put(classification, null);
@@ -895,7 +866,6 @@ public class DataTable {
     /**
      * get the node type string for a classification
      *
-     * @param classification
      * @return formatting string
      */
     public String getNodeStyle(String classification) {
@@ -905,7 +875,6 @@ public class DataTable {
     /**
      * get the node type string for a classification
      *
-     * @param classification
      * @return formatting string
      */
     public String getNodeStyle(String classification, String defaultValue) {
@@ -919,7 +888,6 @@ public class DataTable {
     /**
      * set the node type string for a classification
      *
-     * @param classification
      * @param nodeStyle      Possible values: circle, heatmap, heatmap2, barchart, coxcombs, piechart
      */
     public void setNodeStyle(String classification, String nodeStyle) {
@@ -932,7 +900,6 @@ public class DataTable {
     /**
      * get the formatting string for a classification
      *
-     * @param classification
      * @return formatting string
      */
     public String getNodeFormats(String classification) {
@@ -942,9 +909,7 @@ public class DataTable {
     /**
      * set the formatting string for a classification
      *
-     * @param classification
-     * @param format
-     */
+	 */
     public void setEdgeFormats(String classification, String format) {
         if (format == null || format.length() == 0)
             classification2EdgeFormats.put(classification, null);
@@ -955,7 +920,6 @@ public class DataTable {
     /**
      * get the formatting string for a classification
      *
-     * @param classification
      * @return formatting string
      */
     public String getEdgeFormats(String classification) {
@@ -965,7 +929,6 @@ public class DataTable {
     /**
      * get the collapsed ids for the named classification
      *
-     * @param classification
      * @return set of collapsed ids
      */
     public Set<Integer> getCollapsed(String classification) {
@@ -975,9 +938,7 @@ public class DataTable {
     /**
      * sets the set of collapsed ids for a classification
      *
-     * @param classification
-     * @param collapsedIds
-     */
+	 */
     public void setCollapsed(String classification, Set<Integer> collapsedIds) {
         classification2collapsedIds.put(classification, collapsedIds);
     }
@@ -985,8 +946,7 @@ public class DataTable {
     /**
      * gets the content type
      *
-     * @return
-     */
+	 */
     private String getContentType() {
         return contentType;
     }
@@ -994,8 +954,7 @@ public class DataTable {
     /**
      * sets the content type
      *
-     * @param contentType
-     */
+	 */
     private void setContentType(String contentType) {
         this.contentType = contentType;
     }
@@ -1048,8 +1007,7 @@ public class DataTable {
     /**
      * copy the given Megan4Summary
      *
-     * @param megan4Table
-     */
+	 */
     private void copy(DataTable megan4Table) {
         clear();
         StringWriter sw = new StringWriter();
@@ -1074,9 +1032,7 @@ public class DataTable {
     /**
      * replace an existing sample name
      *
-     * @param pid
-     * @param newName
-     */
+	 */
     public void changeSampleName(Integer pid, String newName) {
         sampleNames.set(pid, newName);
     }
@@ -1084,8 +1040,7 @@ public class DataTable {
     /**
      * removes samples
      *
-     * @param toDelete
-     */
+	 */
     private void removeSamples(Collection<String> toDelete) {
         Set<Integer> dead = new HashSet<>();
         for (String name : toDelete) {
@@ -1161,9 +1116,7 @@ public class DataTable {
     /**
      * add the named sample from the given source
      *
-     * @param sample
-     * @param source
-     */
+	 */
     public void addSample(String sample, DataTable source) {
         DataTable target = this;
 
@@ -1200,9 +1153,7 @@ public class DataTable {
     /**
      * add the named sample
      *
-     * @param sample
-     * @param sourceClassification2class2counts
-     */
+	 */
     public void addSample(String sample, float sampleSize, BlastMode mode, int srcId, Map<String, Map<Integer, float[]>> sourceClassification2class2counts) {
         if (!Arrays.asList(this.getSampleNamesArray()).contains(sample)) {
             this.sampleSizes.add(sampleSize);
@@ -1235,10 +1186,7 @@ public class DataTable {
     /**
      * extract a set of samples to the given target
      *
-     * @param samples
-     * @param target
-     * @return set of samples
-     */
+	 */
     public void extractSamplesTo(Collection<String> samples, DataTable target) {
         Set<String> toDelete = new HashSet<>(sampleNames);
         toDelete.removeAll(samples);
@@ -1250,8 +1198,7 @@ public class DataTable {
     /**
      * merge the named samples
      *
-     * @param samples
-     */
+	 */
     public void mergeSamples(Collection<String> samples, String newName) {
         if (sampleNames.contains(newName))
             return;
@@ -1306,9 +1253,7 @@ public class DataTable {
     /**
      * reorder samples
      *
-     * @param newOrder
-     * @throws IOException
-     */
+	 */
     public void reorderSamples(Collection<String> newOrder) throws IOException {
         final Integer[] order = new Integer[newOrder.size()];
 
@@ -1343,8 +1288,6 @@ public class DataTable {
     /**
      * modify an array according to the given order
      *
-     * @param order
-     * @param array
      * @return modified array, possibly with changed length
      */
     private static String[] modify(Integer[] order, String[] array) {
@@ -1361,8 +1304,6 @@ public class DataTable {
     /**
      * modify an array according to the given order
      *
-     * @param order
-     * @param array
      * @return modified array, possibly with changed length
      */
     private static float[] modify(Integer[] order, float[] array) {
@@ -1378,8 +1319,6 @@ public class DataTable {
     /**
      * modify an array according to the given order
      *
-     * @param order
-     * @param array
      * @return modified array, possibly with changed length
      */
     private static Long[] modify(Integer[] order, Long[] array) {
@@ -1396,8 +1335,6 @@ public class DataTable {
     /**
      * modify an array according to the given order
      *
-     * @param order
-     * @param array
      * @return modified array, possibly with changed length
      */
     private static BlastMode[] modify(Integer[] order, BlastMode[] array) {
@@ -1414,8 +1351,7 @@ public class DataTable {
     /**
      * disable some of the samples
      *
-     * @param sampleNames
-     */
+	 */
     private void disableSamples(Collection<String> sampleNames) {
         int size = disabledSamples.size();
         Set<String> newDisabled = new HashSet<>();
@@ -1435,7 +1371,6 @@ public class DataTable {
     /**
      * enable the given set of samples
      *
-     * @param names
      * @return true, if changed
      */
     public boolean setEnabledSamples(Collection<String> names) {
@@ -1459,8 +1394,7 @@ public class DataTable {
     /**
      * enable a set of samples
      *
-     * @param sampleNames
-     */
+	 */
     public void enableSamples(Collection<String> sampleNames) {
         int size = disabledSamples.size();
         disabledSamples.removeAll(sampleNames);
@@ -1477,9 +1411,7 @@ public class DataTable {
     /**
      * copy the enabled samples from the original data
      *
-     * @param disabledSamples
-     * @param originalData
-     */
+	 */
     private void copyEnabled(Set<String> disabledSamples, DataTable originalData) {
         clear();
 
@@ -1548,7 +1480,6 @@ public class DataTable {
     /**
      * gets the indices of the given samples
      *
-     * @param samples
      * @return ids
      */
     public BitSet getSampleIds(Collection<String> samples) {

@@ -27,18 +27,18 @@ import jloda.util.ReusableByteBuffer;
  * Daniel Huson, 8.2014
  */
 class BandedAligner {
-    private double lambda;
-    private double lnK;
-    private final static double LN_2 = 0.69314718055994530941723212145818;
-    private final static int MINUS_INFINITY = -100000000;
+	private final double lambda;
+	private final double lnK;
+	private final static double LN_2 = 0.69314718055994530941723212145818;
+	private final static int MINUS_INFINITY = -100000000;
 
-    public static int ALIGNMENT_SEGMENT_LENGTH = 60; // length of alignment segment in text format output
-    private final static byte[] MID_TRACK_LEADING_SPACES = "                 ".getBytes(); // spaces used in text format output
+	public static int ALIGNMENT_SEGMENT_LENGTH = 60; // length of alignment segment in text format output
+	private final static byte[] MID_TRACK_LEADING_SPACES = "                 ".getBytes(); // spaces used in text format output
 
-    private long referenceDatabaseLength;
+	private long referenceDatabaseLength;
 
-    private byte[] query;
-    private int queryLength;
+	private byte[] query;
+	private int queryLength;
     private byte[] reference;
     private int referenceLength;
 
@@ -108,8 +108,7 @@ class BandedAligner {
     /**
      * constructor
      *
-     * @param alignerOptions
-     */
+	 */
     public BandedAligner(final AlignerOptions alignerOptions, final BlastMode mode) {
         this.scoringMatrix = alignerOptions.getScoringMatrix().getMatrix();
         this.isDNAAlignment = (mode == BlastMode.BlastN);
@@ -144,13 +143,7 @@ class BandedAligner {
      * Computes a banded local or semiGlobal alignment.
      * The raw score is computed.
      *
-     * @param query
-     * @param queryLength
-     * @param reference
-     * @param referenceLength
-     * @param queryPos
-     * @param refPos
-     */
+	 */
     public void computeAlignment(byte[] query, int queryLength, byte[] reference, int referenceLength, int queryPos, int refPos, int seedLength) {
         this.query = query;
         this.queryLength = queryLength;
@@ -675,8 +668,7 @@ class BandedAligner {
     /**
      * gets the alignment. Also sets the number of matches, mismatches and gaps
      *
-     * @return alignment
-     */
+	 */
     private void computeAlignmentByTraceBack() {
         if (rawScore <= 0) {
             alignment = null;
@@ -1046,9 +1038,7 @@ class BandedAligner {
     /**
      * reverse bytes
      *
-     * @param array
-     * @return reversed bytes
-     */
+	 */
     private void reverseInPlace(byte[] array, int length) {
         int top = length / 2;
         for (int i = 0; i < top; i++) {
@@ -1062,7 +1052,6 @@ class BandedAligner {
     /**
      * grow an array
      *
-     * @param a
      * @return larger array containing values
      */
     private byte[] grow(byte[] a) {
@@ -1074,8 +1063,6 @@ class BandedAligner {
     /**
      * return a copy
      *
-     * @param array
-     * @param length
      * @return copy
      */
     private byte[] copy(byte[] array, int length) {
@@ -1087,8 +1074,6 @@ class BandedAligner {
     /**
      * return a reverse copy
      *
-     * @param array
-     * @param length
      * @return copy
      */
     public byte[] copyReverse(byte[] array, int length) {
@@ -1101,9 +1086,7 @@ class BandedAligner {
     /**
      * to string
      *
-     * @param colRowMatrix
-     * @return
-     */
+	 */
     private String toString(int[][] colRowMatrix, int firstCol, int cols, byte[] query) {
         StringBuilder buf = new StringBuilder();
 
@@ -1149,7 +1132,6 @@ class BandedAligner {
     /**
      * maps a bit score to a raw score
      *
-     * @param bitScore
      * @return raw score
      */
     public int getRawScoreForBitScore(double bitScore) {
@@ -1162,10 +1144,6 @@ class BandedAligner {
     /**
      * heuristically check whether there is going to be a good alignment
      *
-     * @param query
-     * @param reference
-     * @param queryPos
-     * @param refPos
      * @return true, if good alignment is likely
      */
     public boolean quickCheck(final byte[] query, final int queryLength, final byte[] reference, final int referenceLength, final int queryPos, final int refPos) {

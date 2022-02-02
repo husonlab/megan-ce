@@ -40,10 +40,7 @@ public class ByteByteInt {
     /**
      * constructor
      *
-     * @param byte1
-     * @param byte2
-     * @param value
-     */
+	 */
     public ByteByteInt(byte byte1, byte byte2, int value) {
         this.byte1 = byte1;
         this.byte2 = byte2;
@@ -54,8 +51,7 @@ public class ByteByteInt {
      * construct a ByteByteInt object from a string.
      * E.g. XP_12345.1 will be parsed as byte1=X, byte2=P and value=12345
      *
-     * @param string
-     */
+	 */
     public ByteByteInt(String string) {
         if (string != null && string.length() >= 2) {
             byte[] bytes = string.substring(0, 2).getBytes(StandardCharsets.UTF_8);
@@ -139,7 +135,6 @@ public class ByteByteInt {
     /**
      * get the RefSeq id in a string
      *
-     * @param aLine
      * @param pos   of current "ref|" tag
      * @return refSeq id or null
      */

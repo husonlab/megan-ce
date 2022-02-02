@@ -38,9 +38,7 @@ public class ViewerPanel extends JPanel {
     /**
      * construct the  panel
      *
-     * @param commandManager
-     * @param cName
-     */
+	 */
     public ViewerPanel(CommandManager commandManager, String cName) {
         setLayout(new BorderLayout());
 

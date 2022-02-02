@@ -39,9 +39,7 @@ public class Mothur2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public Mothur2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!MothurFileFilter.getInstance().accept(fileName)) {

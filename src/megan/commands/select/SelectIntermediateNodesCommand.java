@@ -37,8 +37,7 @@ public class SelectIntermediateNodesCommand extends CommandBase implements IComm
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

@@ -29,8 +29,7 @@ public class MatrixN {
     /**
      * constructor
      *
-     * @param n
-     */
+	 */
     public MatrixN(int n) {
         v = new VectorN[n];
         for (int i = 0; i < n; i++)
@@ -49,10 +48,7 @@ public class MatrixN {
     /**
      * get component (i,j)
      *
-     * @param i
-     * @param j
-     * @return
-     */
+	 */
     public double get(int i, int j) {
         return get(i).get(j);
     }
@@ -60,10 +56,7 @@ public class MatrixN {
     /**
      * set component (i,j)
      *
-     * @param i
-     * @param j
-     * @param f
-     */
+	 */
     void set(int i, int j, double f) {
         v[i].set(j, f);
     }
@@ -71,9 +64,7 @@ public class MatrixN {
     /**
      * get one row
      *
-     * @param i
-     * @return
-     */
+	 */
     private VectorN get(int i) {
         return v[i];
     }
@@ -106,8 +97,7 @@ public class MatrixN {
     /**
      * pre multiple mat x this
      *
-     * @param mat
-     */
+	 */
     void preMultiply(MatrixN mat) {
         final MatrixN tmp = new MatrixN(size());
         for (int j = 0; j < size(); j++)
@@ -123,8 +113,7 @@ public class MatrixN {
     /**
      * post multiple this x mat
      *
-     * @param mat
-     */
+	 */
     public void postMultiply(MatrixN mat) {
         final MatrixN tmp = new MatrixN(size());
         for (int j = 0; j < size(); j++)

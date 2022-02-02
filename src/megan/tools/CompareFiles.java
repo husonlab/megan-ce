@@ -41,10 +41,7 @@ public class CompareFiles {
     /**
      * ComputeComparison
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -65,11 +62,7 @@ public class CompareFiles {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Computes the comparison of multiple megan, RMA or meganized DAA files");
         options.setVersion(ProgramProperties.getProgramVersion());

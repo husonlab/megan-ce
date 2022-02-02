@@ -28,7 +28,6 @@ public class ColorSchemeAminoAcidsMAEditor extends ColorSchemeBase implements IC
     /**
      * gets the background color for the amino-acid
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

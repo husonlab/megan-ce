@@ -32,14 +32,12 @@ public enum TextStoragePolicy {
             case Embed -> "Embed matches and reads in MEGAN file";
             case Reference -> "Save references to original files for lookup of matches and reads";
             case InRMAZ -> "Save matches and reads in an auxiliary .rmaz file";
-            default -> "Unknown";
         };
     }
 
     /**
      * get value of label ignoring case
      *
-     * @param label
      * @return value
      */
     public static TextStoragePolicy valueOfIgnoreCase(String label) {
@@ -56,15 +54,12 @@ public enum TextStoragePolicy {
     /**
      * gets an id
      *
-     * @param policy
-     * @return
-     */
+	 */
     public static int getId(TextStoragePolicy policy) {
         return switch (policy) {
             case Embed -> 0;
             case Reference -> 1;
             case InRMAZ -> 2;
-            default -> -1;
         };
     }
 

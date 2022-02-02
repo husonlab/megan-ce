@@ -117,9 +117,7 @@ public class LRInspectorController {
     /**
      * setup the controls
      *
-     * @param viewer
-     * @param toolBar
-     */
+	 */
     public void setupControls(final LRInspectorViewer viewer, ToolBar toolBar) throws IOException {
         this.viewer = viewer;
         colorManager = viewer.getDir().getDocument().getChartColorManager();
@@ -321,8 +319,7 @@ public class LRInspectorController {
     /**
      * update the scene
      *
-     * @param viewer
-     */
+	 */
     public void updateScene(LRInspectorViewer viewer) {
         tableView.getItems().clear();
 
@@ -333,7 +330,6 @@ public class LRInspectorController {
     /**
      * create a horizontal axis
      *
-     * @param maxReadLength
      * @return axis
      */
     private static Pane createAxis(final ReadOnlyIntegerProperty maxReadLength, final ReadOnlyDoubleProperty widthProperty) {

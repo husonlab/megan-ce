@@ -54,10 +54,7 @@ public class Taxon2SpeciesMapping {
     /**
      * recursively compute the taxon-id to species-id map
      *
-     * @param v
-     * @param taxId2SpeciesId
-     * @return taxa below species
-     */
+	 */
     private void computeTax2SpeciesMapRec(final Node v, int speciesId, final IntIntMap taxId2SpeciesId, Name2IdMap name2IdMap, final ProgressListener progress) throws CanceledException {
         final int taxId = (Integer) v.getInfo();
 
@@ -78,7 +75,6 @@ public class Taxon2SpeciesMapping {
     /**
      * gets the species, if defined, or 0
      *
-     * @param taxonId
      * @return species id or 0
      */
     public int getSpecies(int taxonId) {
@@ -88,7 +84,6 @@ public class Taxon2SpeciesMapping {
     /**
      * gets the species id, if defined, or returns taxonId
      *
-     * @param taxonId
      * @return species id or taxonId
      */
     public int getSpeciesOrReturnTaxonId(int taxonId) {

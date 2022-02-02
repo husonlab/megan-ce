@@ -39,8 +39,6 @@ public class NaiveProjectionProfile {
     /**
      * compute a taxonomic profile at a given taxonomic rank using naive projection
      *
-     * @param viewer
-     * @param rankName
      * @return mapping of each taxon to a count
      * todo: needs fixing
      */
@@ -157,12 +155,7 @@ public class NaiveProjectionProfile {
     /**
      * recursively compute profile
      *
-     * @param v
-     * @param countFromAbove
-     * @param profile
-     * @param H
-     * @param numberOfSamples
-     */
+	 */
     private static void computeRec(Node v, float[] countFromAbove, Map<Integer, float[]> profile, Set<Integer> H, int numberOfSamples) {
         final int taxId = (Integer) v.getInfo();
         final NodeData vData = (NodeData) v.getData();

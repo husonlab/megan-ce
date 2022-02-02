@@ -29,17 +29,14 @@ public interface IReadBlockGetter extends Closeable {
     /**
      * gets the read block associated with the given uid
      *
-     * @param uid
      * @return read block or null
-     * @throws IOException
-     */
+	 */
     IReadBlock getReadBlock(long uid) throws IOException;
 
     /**
      * closes the accessor
      *
-     * @throws IOException
-     */
+	 */
     void close();
 
     /**

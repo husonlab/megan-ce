@@ -34,9 +34,7 @@ abstract class EcologicalIndexCommand extends CommandBase {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set index=");
         String method = np.getWordMatchesIgnoringCase(DistancesManager.getAllNames());
@@ -59,8 +57,7 @@ abstract class EcologicalIndexCommand extends CommandBase {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final ClusterViewer viewer = getViewer();
 

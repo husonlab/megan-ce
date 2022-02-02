@@ -37,9 +37,7 @@ public class ColorGradient {
     /**
      * constructor
      *
-     * @param colorTable
-     * @param maxCount
-     */
+	 */
     public ColorGradient(ColorTable colorTable, int maxCount) {
         this.colorTable = colorTable;
         this.maxCount = maxCount;
@@ -53,7 +51,6 @@ public class ColorGradient {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     public Color getColor(int count) {
@@ -65,7 +62,6 @@ public class ColorGradient {
     /**
      * get sqrt scale color
      *
-     * @param count
      * @return color
      */
     public Color getColorSqrtScale(int count) {
@@ -77,7 +73,6 @@ public class ColorGradient {
     /**
      * get color on log scale
      *
-     * @param count
      * @return color
      */
     public Color getColorLogScale(int count) {

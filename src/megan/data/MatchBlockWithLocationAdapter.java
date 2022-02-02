@@ -60,7 +60,6 @@ public class MatchBlockWithLocationAdapter implements IMatchBlock, IMatchBlockWi
     /**
      * gets all defined ids
      *
-     * @param cNames
      * @return ids
      */
     public int[] getIds(String[] cNames) {

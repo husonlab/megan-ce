@@ -37,8 +37,7 @@ public class FilesPanel extends JPanel {
     /**
      * make the files panel
      *
-     * @return files panel
-     */
+	 */
     public FilesPanel(final ReanalyzeDialog dialog) {
         final CommandManager commandManager = dialog.getCommandManager();
 

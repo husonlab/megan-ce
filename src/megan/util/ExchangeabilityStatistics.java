@@ -28,10 +28,7 @@ class ExchangeabilityStatistics {
      * Example:   A A A A | B B B B
      * What is that probability that exactly a alignments to taxon A are then followed by b alignments to taxon B
      *
-     * @param a
-     * @param b
-     * @return
-     */
+	 */
     public static double getProbability(int a, int b) {
         return 2.0 / binomialCoefficient(a + b, b);
     }
@@ -39,10 +36,7 @@ class ExchangeabilityStatistics {
     /**
      * compute a binomial coefficient
      *
-     * @param n
-     * @param k
-     * @return
-     */
+	 */
     private static long binomialCoefficient(int n, int k) {
         double result = 1;
 

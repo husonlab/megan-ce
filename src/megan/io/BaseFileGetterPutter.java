@@ -51,9 +51,7 @@ public abstract class BaseFileGetterPutter {
     /**
      * opens the named file as READ_ONLY
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     protected BaseFileGetterPutter(File file) throws IOException {
         this(file, 0, Mode.READ_ONLY);
     }
@@ -61,10 +59,8 @@ public abstract class BaseFileGetterPutter {
     /**
      * constructor
      *
-     * @param file
      * @param fileLength length of file to be created when mode==CREATE_READ_WRITE, otherwise ignored
-     * @throws java.io.IOException
-     */
+	 */
     protected BaseFileGetterPutter(File file, long fileLength, Mode mode) throws IOException {
         System.err.println("Opening file: " + file);
 
@@ -152,8 +148,7 @@ public abstract class BaseFileGetterPutter {
     /**
      * close the file
      *
-     * @throws java.io.IOException
-     */
+	 */
     public void close() {
         try {
             if (inMemory) {
@@ -208,17 +203,13 @@ public abstract class BaseFileGetterPutter {
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     abstract public long limit();
 
     /**
      * resize a file and fill new bytes with zeros
      *
-     * @param file
-     * @param newLength
-     * @throws java.io.IOException
-     */
+	 */
     static void resize(File file, long newLength) throws IOException {
         final long oldLength;
         {

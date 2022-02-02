@@ -22,7 +22,6 @@ import megan.data.IMatchBlock;
 import megan.data.IReadBlock;
 import megan.viewer.TaxonomyData;
 
-import java.io.IOException;
 import java.util.BitSet;
 
 /**
@@ -34,13 +33,7 @@ public class ActiveMatches {
     /**
      * get the set of matches active for the given read
      *
-     * @param minScore
-     * @param topPercent
-     * @param maxExpected
-     * @param readBlock
-     * @param activeMatchesForClassification
-     * @throws IOException
-     */
+	 */
     public static void compute(double minScore, double topPercent, double maxExpected, float minPercentIdentity, IReadBlock readBlock, String cName, BitSet activeMatchesForClassification) {
         activeMatchesForClassification.clear();
         // the set of matches that we will consider:
@@ -67,7 +60,6 @@ public class ActiveMatches {
     /**
      * applies the top percent filter to a set of active matches
      *
-     * @param topPercent
      * @param bestScore     if 0, which compute this from data
      * @param readBlock     current read block
      * @param activeMatches current set of active matches

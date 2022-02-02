@@ -58,8 +58,7 @@ public class SelectionGraphics<T> extends Graphics2D {
     /**
      * constructor
      *
-     * @param gc
-     */
+	 */
     public SelectionGraphics(Graphics gc) {
         this.gc = (Graphics2D) gc;
     }
@@ -82,8 +81,7 @@ public class SelectionGraphics<T> extends Graphics2D {
     /**
      * set the current label. If anything is hit while this is set, get selection will return it
      *
-     * @param currentItem
-     */
+	 */
     public void setCurrentItem(T currentItem) {
         this.currentItem = currentItem;
     }
@@ -91,8 +89,7 @@ public class SelectionGraphics<T> extends Graphics2D {
     /**
      * get the current label or null
      *
-     * @return
-     */
+	 */
     public T getCurrentItem() {
         return currentItem;
     }
@@ -174,8 +171,7 @@ public class SelectionGraphics<T> extends Graphics2D {
     /**
      * set which to be used
      *
-     * @param useWhich
-     */
+	 */
     public void setUseWhich(Which useWhich) {
         this.useWhich = useWhich;
     }

@@ -63,8 +63,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param viewer
-     */
+	 */
     public ClassificationViewerSearcher(Frame frame, String name, ClassificationViewer viewer) {
         this.frame = frame;
         this.name = name;
@@ -174,8 +173,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (currentId != null) {
             if (select)
@@ -197,8 +195,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         classificationViewer.selectAllNodes(select);
         classificationViewer.repaint();
@@ -222,8 +219,7 @@ public class ClassificationViewerSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
         // not implemented
     }

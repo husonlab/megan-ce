@@ -39,9 +39,7 @@ public class SyncDataTableAndTaxonomy {
     /**
      * sync taxonomy formatting (and collapsed nodes) from summary to document
      *
-     * @param table
-     * @param viewer
-     */
+	 */
     public static void syncFormattingFromSummary2Viewer(DataTable table, MainViewer viewer) {
         Document doc = viewer.getDir().getDocument();
         // can't use nexus parser here because it swallows the ' quotes
@@ -170,9 +168,7 @@ public class SyncDataTableAndTaxonomy {
     /**
      * sync collapsed nodes from summary to main viewer
      *
-     * @param table
-     * @param mainViewer
-     */
+	 */
     public static void syncCollapsedFromSummaryToTaxonomyViewer(DataTable table, MainViewer mainViewer) {
         Document doc = mainViewer.getDir().getDocument();
         // Sync collapsed nodes:
@@ -184,9 +180,7 @@ public class SyncDataTableAndTaxonomy {
     /**
      * sync formatting of taxonomy nodes and edges (and also set of collapsed nodes)    to summary
      *
-     * @param viewer
-     * @param table
-     */
+	 */
     static public void syncFormattingFromViewer2Summary(MainViewer viewer, DataTable table) {
         Document doc = viewer.getDir().getDocument();
         if (viewer.getDirtyNodeIds().size() > 0) {

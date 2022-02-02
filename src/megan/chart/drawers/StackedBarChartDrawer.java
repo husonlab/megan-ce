@@ -49,8 +49,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw bars with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -146,8 +145,7 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
     /**
      * draw bars in which colors are by dataset
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));

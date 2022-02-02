@@ -19,7 +19,6 @@
 package megan.classification;
 
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
@@ -74,8 +73,7 @@ public class IdMapper {
     /**
      * constructor
      *
-     * @param name2IdMap
-     */
+	 */
     public IdMapper(String name, ClassificationFullTree fullTree, Name2IdMap name2IdMap) {
         this.cName = name;
         this.fullTree = fullTree;
@@ -87,7 +85,6 @@ public class IdMapper {
     /**
      * create tags for parsing header line
      *
-     * @param cName
      * @return short tag
      */
     public static String[] createTags(String cName) {
@@ -102,12 +99,7 @@ public class IdMapper {
     /**
      * load the named file of the given map type
      *
-     * @param fileName
-     * @param mapType
-     * @param reload
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public void loadMappingFile(String fileName, MapType mapType, boolean reload, ProgressListener progress) throws IOException {
         switch (mapType) {
             case Accession -> {
@@ -122,8 +114,7 @@ public class IdMapper {
                     map2Filename.put(mapType, fileName);
 
                 }
-                break;
-            }
+			}
             case Synonyms -> {
                 if (synonymsMap == null || reload) {
                     if (synonymsMap != null) {
@@ -138,8 +129,7 @@ public class IdMapper {
                     map2Filename.put(mapType, fileName);
 
                 }
-                break;
-            }
+			}
             case MeganMapDB -> {
                 if (accessionMap == null || reload) {
                     if (accessionMap != null) {
@@ -154,15 +144,13 @@ public class IdMapper {
                         throw new IOException(e);
                     }
                 }
-                break;
-            }
+			}
         }
     }
 
     /**
      * is the named parsing method loaded
      *
-     * @param mapType
      * @return true, if loaded
      */
     public boolean isLoaded(MapType mapType) {
@@ -191,8 +179,7 @@ public class IdMapper {
     /**
      * creates a new id parser for this mapper
      *
-     * @return
-     */
+	 */
     public IdParser createIdParser() {
         // the follow code ensures that we use multiple accesses to the sqlite mapping database
         if (accessionMap instanceof AccessAccessionAdapter) {
@@ -218,7 +205,6 @@ public class IdMapper {
     /**
      * get a  id from an accession
      *
-     * @param accession
      * @return KO id or null
      */
     public Integer getIdFromAccession(String accession) throws IOException {

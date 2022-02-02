@@ -68,8 +68,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public TimeSeriesViewer(JFrame parent, final Director dir) {
         this.dir = dir;
 
@@ -328,9 +327,7 @@ public class TimeSeriesViewer extends JFrame implements IDirectableViewer {
     /**
      * sets up the table based on the chosen series attribute and time point attribute
      *
-     * @param seriesAttribute
-     * @param timePointAttribute
-     */
+	 */
     private void setupTable(String seriesAttribute, String timePointAttribute) {
         final Table<String, String, java.util.List<String>> seriesAndTimePoint2Samples = new Table<>();
 

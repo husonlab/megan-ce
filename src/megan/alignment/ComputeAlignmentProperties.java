@@ -37,10 +37,6 @@ public class ComputeAlignmentProperties {
     /**
      * computes the k-mer based diversity index
      *
-     * @param alignment
-     * @param kmer
-     * @param step
-     * @param minDepth
      * @return k/n
      */
     public static Pair<Double, Double> computeSequenceDiversityRatio(Alignment alignment, int kmer, int step, int minDepth, ProgressListener progressListener) throws CanceledException {
@@ -98,7 +94,6 @@ public class ComputeAlignmentProperties {
     /**
      * computes the CG content and coverage
      *
-     * @param alignment
      * @return CG content (in percent) and coverage
      */
     public static Pair<Double, Double> computeCGContentAndCoverage(Alignment alignment, ProgressListener progressListener) throws CanceledException {

@@ -32,8 +32,7 @@ public class Black2RedGradient {
     /**
      * setup the green gradient
      *
-     * @param maxCount
-     */
+	 */
     public Black2RedGradient(int maxCount) {
         this.maxCount = maxCount;
         factor = maxCount / Math.log(maxCount);
@@ -42,7 +41,6 @@ public class Black2RedGradient {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     private Color getColor(int count) {
@@ -60,7 +58,6 @@ public class Black2RedGradient {
     /**
      * get color on log scale
      *
-     * @param count
      * @return color
      */
     public Color getLogColor(int count) {
@@ -91,9 +88,6 @@ public class Black2RedGradient {
     /**
      * this is used in the node drawer of the main viewer
      *
-     * @param count
-     * @param maxReads
-     * @param inverLogMaxReads
      * @return color on a log scale
      */
     public static Color getColorLogScale(int count, double maxReads, double inverLogMaxReads) {
@@ -108,7 +102,6 @@ public class Black2RedGradient {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     public static Color getColor(int count, int maxCount) {

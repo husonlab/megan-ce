@@ -80,8 +80,7 @@ public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICh
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + KulczynskiDistance.NAME + ";");
     }
@@ -117,8 +116,7 @@ public class EcologicalIndexKulczynskiCommand extends CommandBase implements ICh
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

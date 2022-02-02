@@ -190,8 +190,6 @@ public class BlosumMatrix {
     /**
      * get the score for two letters
      *
-     * @param a
-     * @param b
      * @return score, or -20, if matrix not defined for (a,b)
      */
     public int getScore(byte a, byte b) {
@@ -300,9 +298,7 @@ public class BlosumMatrix {
     /**
      * load a matrix
      *
-     * @param r0
-     * @throws IOException
-     */
+	 */
     private void load(Reader r0) throws IOException {
         BufferedReader r = new BufferedReader(r0);
 

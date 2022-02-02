@@ -39,8 +39,7 @@ public class UpdateItem {
     /**
      * constructor
      *
-     * @param numberClassifications
-     */
+	 */
     public UpdateItem(int numberClassifications) {
         nextInClass = new UpdateItem[numberClassifications];
         classId = new int[numberClassifications];
@@ -49,8 +48,7 @@ public class UpdateItem {
     /**
      * Get classIds
      *
-     * @return
-     */
+	 */
     public int[] getClassIds() {
         return classId;
     }

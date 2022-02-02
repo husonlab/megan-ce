@@ -33,11 +33,7 @@ public class ModifyClassificationsDAA {
     /**
      * update the classifications
      *
-     * @param cNames
-     * @param fName2ClassId2Location
-     * @param fName2ClassId2Weight
-     * @throws IOException
-     */
+	 */
     public static void saveClassifications(DAAHeader header, String[] cNames, Map<Integer, ListOfLongs>[] fName2ClassId2Location, Map<Integer, Float>[] fName2ClassId2Weight) throws IOException {
         DAAModifier.removeMEGANClassificationData(header);
 

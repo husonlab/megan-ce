@@ -130,7 +130,6 @@ public class RemoteService implements IRemoteService {
     /**
      * gets the server and file name
      *
-     * @param file
      * @return server and file
      */
     @Override
@@ -155,7 +154,6 @@ public class RemoteService implements IRemoteService {
     /**
      * get the description associated with a given file name
      *
-     * @param fileName
      * @return description
      */
     public String getDescription(String fileName) {

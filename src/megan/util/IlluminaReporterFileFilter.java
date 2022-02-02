@@ -56,8 +56,6 @@ public class IlluminaReporterFileFilter extends FileFilterBase implements Filena
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

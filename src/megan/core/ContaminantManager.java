@@ -47,9 +47,7 @@ public class ContaminantManager {
     /**
      * read the internal nodes definition. Does not prepare for use
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public void read(String file) throws IOException {
         contaminants.clear();
         contaminantsAndDescendants.clear();
@@ -93,11 +91,7 @@ public class ContaminantManager {
     /**
      * recursively set the all nodes set
      *
-     * @param v
-     * @param mustAddToAll
-     * @param internalNodes
-     * @param allNodes
-     */
+	 */
     private void setAllDescendentsRec(Node v, boolean mustAddToAll, Set<Integer> internalNodes, Set<Integer> allNodes) {
         if (!mustAddToAll && internalNodes.contains((Integer) v.getInfo()))
             mustAddToAll = true;
@@ -122,8 +116,7 @@ public class ContaminantManager {
     /**
      * parse a string of ids and prepare for use
      *
-     * @param taxonIdString
-     */
+	 */
     public void parseTaxonIdsString(String taxonIdString) {
         contaminants.clear();
         contaminantsAndDescendants.clear();
@@ -141,8 +134,6 @@ public class ContaminantManager {
     /**
      * determines whether a short read is a contaminant based on whether it has a good alignment against a contaminant
      *
-     * @param readBlock
-     * @param activeMatches
      * @return true if contaminant
      */
     public boolean isContaminantShortRead(IReadBlock readBlock, BitSet activeMatches) {
@@ -156,9 +147,7 @@ public class ContaminantManager {
     /**
      * determines whether a long read is a contaminant based on its assigned taxon
      *
-     * @param assignedTaxon
-     * @return
-     */
+	 */
     public boolean isContaminantLongRead(int assignedTaxon) {
         return contaminantsAndDescendants.contains(assignedTaxon);
     }

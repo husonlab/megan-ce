@@ -60,8 +60,7 @@ public class ChartColorManager {
     /**
      * constructor
      *
-     * @param colorTable
-     */
+	 */
     public ChartColorManager(ColorTable colorTable) {
         this.colorTable = colorTable;
         setColorByPosition(ProgramProperties.get("ColorByPosition", false));
@@ -90,7 +89,6 @@ public class ChartColorManager {
     /**
      * get color for data set
      *
-     * @param sample
      * @return color
      */
     public Color getSampleColor(String sample) {
@@ -121,7 +119,6 @@ public class ChartColorManager {
     /**
      * get color for data set
      *
-     * @param sample
      * @return color
      */
     public Color getSampleColorWithAlpha(String sample, int alpha) {
@@ -138,9 +135,7 @@ public class ChartColorManager {
     /**
      * set the color for a sample
      *
-     * @param sample
-     * @param color
-     */
+	 */
     public void setSampleColor(String sample, Color color) {
         setAttributeStateColor(SAMPLE_ID, sample, color);
     }
@@ -157,7 +152,6 @@ public class ChartColorManager {
     /**
      * get the color fo a specific chart and class
      *
-     * @param className
      * @return color
      */
     public Color getClassColor(String className) {
@@ -184,7 +178,6 @@ public class ChartColorManager {
     /**
      * get the color fo a specific chart and class
      *
-     * @param className
      * @return color
      */
     public Color getClassColor(String className, int alpha) {
@@ -200,9 +193,7 @@ public class ChartColorManager {
     /**
      * set the color for a class
      *
-     * @param className
-     * @param color
-     */
+	 */
     public void setClassColor(String className, Color color) {
         class2color.put(className, color);
     }
@@ -229,7 +220,6 @@ public class ChartColorManager {
     /**
      * get the color fo a specific chart and attribute
      *
-     * @param attributeName
      * @return color
      */
     public Color getAttributeStateColor(String attributeName, Object state) {
@@ -262,9 +252,7 @@ public class ChartColorManager {
     /**
      * set the color for an attribute
      *
-     * @param attributeName
-     * @param color
-     */
+	 */
     public void setAttributeStateColor(String attributeName, String state, Color color) {
         attributeState2color.put(attributeName + "::" + state, color);
     }
@@ -289,8 +277,7 @@ public class ChartColorManager {
     /**
      * load color edits
      *
-     * @param colorEdits
-     */
+	 */
     public void loadColorEdits(String colorEdits) {
         if (colorEdits != null && colorEdits.length() > 0) {
             read(colorEdits.split(";"));
@@ -309,9 +296,7 @@ public class ChartColorManager {
     /**
      * write color table
      *
-     * @param w
-     * @throws java.io.IOException
-     */
+	 */
     public void write(Writer w) throws IOException {
         write(w, "\n");
     }
@@ -319,9 +304,7 @@ public class ChartColorManager {
     /**
      * write color table
      *
-     * @param w
-     * @throws java.io.IOException
-     */
+	 */
     private void write(Writer w, String separator) throws IOException {
         for (Map.Entry<String, Color> entry : class2color.entrySet()) {
             Color color = entry.getValue();
@@ -338,9 +321,7 @@ public class ChartColorManager {
     /**
      * read color table
      *
-     * @param r0
-     * @throws IOException
-     */
+	 */
     public void read(Reader r0) throws IOException {
         String[] tokens = Basic.getLines(r0);
         read(tokens);
@@ -349,9 +330,7 @@ public class ChartColorManager {
     /**
      * read color table
      *
-     * @param lines
-     * @throws IOException
-     */
+	 */
     private void read(String[] lines) {
         for (String aLine : lines) {
             aLine = aLine.trim();
@@ -367,8 +346,7 @@ public class ChartColorManager {
                                 color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
                             }
                             class2color.put(className, color);
-                            break;
-                        }
+						}
                         case "A" -> {
                             String attribute = tokens[1];
                             Color color = new Color(Integer.parseInt(tokens[2]));
@@ -377,8 +355,7 @@ public class ChartColorManager {
                                 color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
                             }
                             attributeState2color.put(attribute, color);
-                            break;
-                        }
+						}
                     }
                 }
             }
@@ -397,8 +374,7 @@ public class ChartColorManager {
     /**
      * sets a series color getter that overrides MEGAN-wide colors. Is used to implement document-specific colors
      *
-     * @param seriesOverrideColorGetter
-     */
+	 */
     public void setSeriesOverrideColorGetter(ColorGetter seriesOverrideColorGetter) {
         this.seriesOverrideColorGetter = seriesOverrideColorGetter;
     }

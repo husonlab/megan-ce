@@ -67,11 +67,7 @@ public class TableItemTask extends Task<Integer> {
     /**
      * constructor
      *
-     * @param doc
-     * @param cNames
-     * @param classificationName
-     * @param tableView
-     */
+	 */
     public TableItemTask(Document doc, String[] cNames, String classificationName, Set<Integer> classIds, TableView<TableItem> tableView, FloatProperty maxBitScore, FloatProperty maxNormalizedBitScore, IntegerProperty maxReadLength, ReadOnlyDoubleProperty layoutWidth) {
         this.doc = doc;
         this.cNames = cNames;
@@ -185,8 +181,7 @@ public class TableItemTask extends Task<Integer> {
     /**
      * flush the TableItem buffer by adding all the buffered TableItems to the table
      *
-     * @param buffer
-     */
+	 */
     private void flushBuffer(Collection<TableItem> buffer) {
         final TableItem[] items = buffer.toArray(new TableItem[0]);
         buffer.clear();

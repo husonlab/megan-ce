@@ -39,8 +39,7 @@ public class LayoutByMappingCommand extends CommandBase implements ICheckBoxComm
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -58,8 +57,7 @@ public class LayoutByMappingCommand extends CommandBase implements ICheckBoxComm
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set layout=" + AlignmentViewer.AlignmentLayout.Mapping + ";expand axis=both what=fit;");

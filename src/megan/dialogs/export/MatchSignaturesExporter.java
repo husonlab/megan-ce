@@ -45,12 +45,7 @@ public class MatchSignaturesExporter {
     /**
      * export all matches in file
      *
-     * @param connector
-     * @param fileName
-     * @param progressListener
-     * @throws java.io.IOException
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public static void export(IConnector connector, int taxonId, String rank, float minScore, float maxExpected, float minPercentIdentity, float topPercent, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         final String name = TaxonomyData.getName2IdMap().get(taxonId);
 
@@ -153,8 +148,6 @@ public class MatchSignaturesExporter {
     /**
      * makes the given taxon to the ancestor taxon of the given rank
      *
-     * @param rank
-     * @param taxonId
      * @return ancestor taxon of specified rank or 0
      */
     private static int mapToRank(String rank, int taxonId) {

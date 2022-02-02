@@ -61,8 +61,7 @@ public class SetLabelDown45Command extends CommandBase implements ICheckBoxComma
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

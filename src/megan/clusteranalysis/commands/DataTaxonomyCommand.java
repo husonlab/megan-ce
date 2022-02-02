@@ -44,8 +44,7 @@ public class DataTaxonomyCommand extends DataCommand implements ICheckBoxCommand
     /**
      * set the selected status of this command
      *
-     * @param selected
-     */
+	 */
     public void setSelected(boolean selected) {
         ClusterViewer viewer = getViewer();
         viewer.setDataType(ClassificationType.Taxonomy.toString());
@@ -90,8 +89,7 @@ public class DataTaxonomyCommand extends DataCommand implements ICheckBoxCommand
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set networkdata=" + ClassificationType.Taxonomy + ";");
     }

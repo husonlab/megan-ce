@@ -41,8 +41,6 @@ public class ChartSelection {
      * is series selected and  isSelectedBasedOnSeries==true or className selected and isSelectedBasedOnSeries==false?
      * Logic is flipped if transposed is set
      *
-     * @param series
-     * @param className
      * @return true, if either condition holds
      */
     public boolean isSelected(String series, String className) {
@@ -217,9 +215,7 @@ public class ChartSelection {
      * set selected
      *
      * @param target series, classes or attributes
-     * @param list
-     * @param select
-     */
+	 */
     public void setSelected(String target, java.util.Collection<String> list, boolean select) {
         switch (target.toLowerCase()) {
             case "series" -> setSelectedSeries(list, select);

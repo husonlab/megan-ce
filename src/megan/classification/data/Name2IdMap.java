@@ -74,7 +74,6 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * get the id for a name
      *
-     * @param name
      * @return id or 0
      */
     public int get(String name) {
@@ -92,7 +91,6 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * get name for id
      *
-     * @param id
      * @return name or null
      */
     public String get(int id) {
@@ -102,8 +100,7 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * remove an id from the map
      *
-     * @param id
-     */
+	 */
     public void remove(int id) {
         String name = id2name.get(id);
         if (name != null)
@@ -114,9 +111,7 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * put a name and id
      *
-     * @param name
-     * @param id
-     */
+	 */
     public void put(String name, int id) {
         name2id.put(name, id);
         id2name.put(id, name);
@@ -194,9 +189,7 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * save mapping to file
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public void saveMappingToFile(String fileName) throws IOException {
         System.err.println("Writing name2id map to file: " + fileName);
         try (Writer w = new FileWriter(fileName)) {
@@ -208,8 +201,7 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * write the new mapping
      *
-     * @param w
-     */
+	 */
     public void writeMapping(Writer w) throws IOException {
         w.write("# Mapping file, generated " + (new Date()) + "\n");
         for (Integer key : id2name.keySet()) {
@@ -220,7 +212,6 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * get the rank of an item
      *
-     * @param id
      * @return rank
      */
     public int getRank(int id) {
@@ -231,9 +222,7 @@ public class Name2IdMap implements IName2IdMap {
     /**
      * put the rank of an id
      *
-     * @param id
-     * @param rank
-     */
+	 */
     public void setRank(int id, int rank) {
         id2rank.put(id, rank);
     }

@@ -41,10 +41,7 @@ public class Location implements Serializable {
     /**
      * constructor
      *
-     * @param fileId
-     * @param position
-     * @param size
-     */
+	 */
     public Location(int fileId, long position, int size) {
         this.fileId = fileId;
         this.position = position;

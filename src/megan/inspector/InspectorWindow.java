@@ -95,8 +95,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public InspectorWindow(final Director dir) {
         this.dir = dir;
 
@@ -219,9 +218,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add a top-level node.
      *
-     * @param name2Count2Ids
-     * @param classificationName
-     */
+	 */
     public void addTopLevelNode(final LinkedList<Triplet<String, Float, Collection<Integer>>> name2Count2Ids, final String classificationName) {
         final NodeBase classificationRoot = classification2RootNode.get(classificationName);
         if (classificationRoot == null)
@@ -289,10 +286,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add a top-level node.
      *
-     * @param name
-     * @param key
-     * @param classificationName
-     */
+	 */
     public void addTopLevelNode(final String name, final Object key, final String classificationName) {
         final NodeBase classificationRoot = classification2RootNode.get(classificationName);
         if (classificationRoot == null)
@@ -334,8 +328,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * adds a list of reads below the root
      *
-     * @param readBlock
-     */
+	 */
     public void addTopLevelReadNode(final IReadBlock readBlock, String classificationName) {
         final NodeBase classificationRoot = classification2RootNode.get(classificationName);
         if (classificationRoot == null)
@@ -363,8 +356,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add all read level nodes below a top-level node
      *
-     * @param parent
-     */
+	 */
     public void addChildren(final TopLevelNode parent) {
         loader.execute(progressListener -> {
             long lastRefreshTime = System.currentTimeMillis();
@@ -424,8 +416,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add all match level nodes below a read-level node
      *
-     * @param parent
-     */
+	 */
     public void addChildren(final ReadHeadLineNode parent, final String classificationName) {
         loader.execute(progressListener -> {
             boolean needsFinalRefresh = true; // true, because we add data node before entering loop
@@ -527,8 +518,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add children to read level data node
      *
-     * @param parent
-     */
+	 */
     public void addChildren(final ReadDataHeadLineNode parent) {
         parent.add(new ReadDataTextNode(parent.getData()));
     }
@@ -536,8 +526,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * add all read level nodes below a match-level node
      *
-     * @param parent
-     */
+	 */
     public void addChildren(final MatchHeadLineNode parent) {
         loader.execute(progressListener -> {
             progressListener.setMaximum(-1);
@@ -552,8 +541,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * sort all children of a node by rank
      *
-     * @param node
-     */
+	 */
     private void sortChildrenByRank(NodeBase node) {
         SortedSet<NodeBase> children = new TreeSet<>();
         for (int i = 0; i < node.getChildCount(); i++) {
@@ -569,8 +557,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * sort all children of a node by rank
      *
-     * @param node
-     */
+	 */
     private void sortChildrenAlphabetically(NodeBase node) {
         SortedSet<NodeBase> children = new TreeSet<>((n1, n2) -> {
             int value = n1.getName().compareTo(n2.getName());
@@ -645,8 +632,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         uptodate = flag;
     }
@@ -729,8 +715,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * expand the given node
      *
-     * @param v
-     */
+	 */
     public void expand(NodeBase v) {
         if (v != null) {
             for (Enumeration descendants = v.breadthFirstEnumeration(); descendants.hasMoreElements(); ) {
@@ -744,8 +729,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * expand an array of paths
      *
-     * @param paths
-     */
+	 */
     public void expand(TreePath[] paths) {
         boolean first = true;
         for (TreePath path : paths) {
@@ -763,8 +747,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * collapse the given node   or root
      *
-     * @param v
-     */
+	 */
     public void collapse(NodeBase v) {
         if (v != null) {
             for (Enumeration descendants = v.depthFirstEnumeration(); descendants.hasMoreElements(); ) {
@@ -777,8 +760,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * collapse an array of paths
      *
-     * @param paths
-     */
+	 */
     public void collapse(TreePath[] paths) {
         for (TreePath path : paths) {
             collapse((NodeBase) path.getLastPathComponent());
@@ -808,7 +790,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * returns the read head node in a path
      *
-     * @param path
      * @return read head node or null
      */
     private ReadHeadLineNode getReadHeadLineNodeFromPath(TreePath path) {
@@ -823,7 +804,6 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
     /**
      * returns the match head node in a path
      *
-     * @param path
      * @return read head node or null
      */
     private MatchHeadLineNode getMatchHeadLineNodeFromPath(TreePath path) {

@@ -46,10 +46,7 @@ public class Biom2Importer {
     /**
      * apply the biom2 importer to the given file
      *
-     * @param fileName
-     * @param doc
-     * @param type
-     */
+	 */
     static public void apply(String fileName, Document doc, String type, boolean ignorePathAbove) throws IOException {
         if (!BiomFileFilter.isBiom2File(fileName)) {
             throw new IOException("File not in BIOM2 format (or incorrect file suffix?)");
@@ -123,8 +120,6 @@ public class Biom2Importer {
     /**
      * determines the total sample sizes
      *
-     * @param numberOfSamples
-     * @param class2sample2count
      * @return sample sizes
      */
     private static float[] computeSizes(int numberOfSamples, Map<Integer, float[]> class2sample2count) {
@@ -140,9 +135,6 @@ public class Biom2Importer {
     /**
      * get the entry, if it exists, otherwise create it and initialize to zeros
      *
-     * @param map
-     * @param id
-     * @param size
      * @return entry
      */
     private static Integer[] getOrCreate(Map<Integer, Integer[]> map, Integer id, int size) {
@@ -152,9 +144,7 @@ public class Biom2Importer {
     /**
      * add all values to sum
      *
-     * @param sum
-     * @param add
-     */
+	 */
     private static void addToArray(Integer[] sum, int[] add) {
         for (int i = 0; i < add.length; i++) {
             sum[i] += add[i];
@@ -164,7 +154,6 @@ public class Biom2Importer {
     /**
      * create new array with zero entries
      *
-     * @param size
      * @return new array
      */
     private static Integer[] newZeroedIntegerArray(int size) {

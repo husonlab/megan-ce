@@ -77,9 +77,7 @@ public class MicrobialAttributes {
     /**
      * read the attribute data from a stream
      *
-     * @param ins
-     * @throws IOException
-     */
+	 */
     private void readData(InputStream ins) throws IOException {
         Set<String> attributesOfInterest = new HashSet<>(Arrays.asList(knownAttributes));
 
@@ -230,7 +228,6 @@ public class MicrobialAttributes {
     /**
      * compute the values for attribute-state pairs
      *
-     * @param mainViewer
      * @return dataset to attribute-states to values
      */
     public Map<String, Map<String, Integer>> getDataSet2AttributeState2Value(MainViewer mainViewer) {

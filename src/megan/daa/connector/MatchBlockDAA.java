@@ -91,8 +91,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * get the taxon id of the match
      *
-     * @return
-     */
+	 */
     public int getTaxonId() {
         return taxonId;
     }
@@ -109,7 +108,6 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * gets all defined ids
      *
-     * @param cNames
      * @return ids
      */
     public int[] getIds(String[] cNames) {
@@ -127,8 +125,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * get the score of the match
      *
-     * @return
-     */
+	 */
     public float getBitScore() {
         return Math.round(daaParser.getHeader().computeAlignmentBitScore(matchRecord.getScore()));
         // we round because otherwise there is a small difference between RMA and DAA files
@@ -141,8 +138,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * get the percent identity
      *
-     * @return
-     */
+	 */
     public float getPercentIdentity() {
         return Utilities.computePercentIdentity(matchRecord);
     }
@@ -154,8 +150,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * get the refseq id
      *
-     * @return
-     */
+	 */
     public String getRefSeqId() {
         return getText() != null ? parseRefSeqId(getText()) : null;
     }
@@ -167,9 +162,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * gets the E-value
      *
-     * @param expected
-     * @throws java.io.IOException
-     */
+	 */
     public void setExpected(float expected) {
         System.err.println("Not implemented");
     }
@@ -181,9 +174,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * gets the match length
      *
-     * @param length
-     * @throws java.io.IOException
-     */
+	 */
     public void setLength(int length) {
         System.err.println("Not implemented");
     }
@@ -211,8 +202,7 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * get the text
      *
-     * @return
-     */
+	 */
     public String getText() {
         try { // todo: do this directly and more efficently
             ByteOutputBuffer buffer = new ByteOutputBuffer();
@@ -229,8 +219,6 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * this is experimental code that is used to verify that DAA with frame-shifts is handled ok
      *
-     * @param matchRecord
-     * @param queryAlphabet
      * @return two alignment tracks
      */
     private String[] computeAlignmentBlastX(DAAMatchRecord matchRecord, byte[] queryAlphabet) {
@@ -253,8 +241,7 @@ public class MatchBlockDAA implements IMatchBlock {
                                 bufs[1].append(aa);
                                 q += 3;
                             }
-                            break;
-                        }
+						}
                 case op_insertion -> // handling insertion
                         {
                             for (int i = 0; i < editOp.getCount(); i++) {
@@ -263,15 +250,13 @@ public class MatchBlockDAA implements IMatchBlock {
                                 bufs[1].append('-');
                                 q += 3;
                             }
-                            break;
-                        }
+						}
                 case op_deletion -> // handling deletion
                         {
                             char c = (char) queryAlphabet[editOp.getLetter()];
                             bufs[0].append('-');
                             bufs[1].append(c);
-                            break;
-                        }
+						}
                 case op_substitution -> // handling substitution
                         {
                             char c = (char) queryAlphabet[editOp.getLetter()];
@@ -289,8 +274,7 @@ public class MatchBlockDAA implements IMatchBlock {
                                 bufs[1].append(c);
                                 q += 3;
                             }
-                            break;
-                        }
+						}
             }
         }
 
@@ -330,7 +314,6 @@ public class MatchBlockDAA implements IMatchBlock {
     /**
      * parses a Accession id
      *
-     * @param aLine
      * @return refseq id
      */
     private static String parseRefSeqId(String aLine) {

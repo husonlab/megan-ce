@@ -59,8 +59,7 @@ public class OverlapGraphViewer {
     /**
      * constructor
      *
-     * @param overlapGraph
-     */
+	 */
     public OverlapGraphViewer(Director dir, final Graph overlapGraph, final NodeArray<String> node2ReadNameMap, Node[][] paths) {
         this.dir = dir;
         this.overlapGraph = overlapGraph;
@@ -192,8 +191,7 @@ public class OverlapGraphViewer {
     /**
      * build a graph view for the overlap graph
      *
-     * @return graphView
-     */
+	 */
     public void apply(ProgressListener progress) throws CanceledException {
         progress.setSubtask("Computing graph layout");
         progress.setMaximum(-1);

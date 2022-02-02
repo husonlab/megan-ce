@@ -49,8 +49,7 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
     /**
      * parses and applies the command
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -58,8 +57,7 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         if (getParent() instanceof ParametersDialog) {
             final ParametersDialog parametersDialog = (ParametersDialog) getParent();

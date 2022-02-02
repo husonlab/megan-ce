@@ -207,8 +207,7 @@ public class ExportImageCommand extends CommandBase implements ICommand {
     /**
      * if width or height unreasonably big (>100000) or small (<=0), sets to 1000
      *
-     * @param panel
-     */
+	 */
     private static void ensureReasonableBounds(JPanel panel) {
         panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));
     }
@@ -216,8 +215,7 @@ public class ExportImageCommand extends CommandBase implements ICommand {
     /**
      * if width or height unreasonably big or small, sets to 1000
      *
-     * @param panel
-     */
+	 */
     private void ensureReasonableBounds(JScrollPane panel) {
         if (panel != null) {
             panel.setSize(new Dimension((panel.getWidth() <= 0 || panel.getWidth() > 100000 ? 1000 : panel.getWidth()), (panel.getHeight() <= 0 || panel.getHeight() > 100000 ? 1000 : panel.getHeight())));

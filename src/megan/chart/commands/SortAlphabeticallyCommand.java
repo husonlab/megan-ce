@@ -89,15 +89,13 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                     }
                     list.sync(labels, list.getLabel2ToolTips(), true);
                 }
-                break;
-            }
+			}
             case "alphabetically", "alphabackward" -> {
                 final int direction = (which.equalsIgnoreCase("alphabetically") ? 1 : -1);
                 final SortedSet<String> sorted = new TreeSet<>((s, s1) -> direction * s.compareToIgnoreCase(s1));
                 sorted.addAll(list.getAllLabels());
                 list.sync(sorted, list.getLabel2ToolTips(), true);
-                break;
-            }
+			}
             case "enabled" -> {
                 final String[] array = list.getAllLabels().toArray(new String[0]);
                 final Set<String> disabledSet = new HashSet<>(disabled);
@@ -110,8 +108,7 @@ public class SortAlphabeticallyCommand extends CommandBase implements ICommand {
                         return 0;
                 });
                 list.sync(Arrays.asList(array), list.getLabel2ToolTips(), true);
-                break;
-            }
+			}
         }
         list.disableLabels(disabled);
         list.fireSyncToViewer();

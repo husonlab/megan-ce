@@ -45,8 +45,7 @@ public class ProjectChooser extends JDialog {
     /**
      * constructor
      *
-     * @param parent
-     */
+	 */
     public ProjectChooser(Component parent) {
         super();
         setLocationRelativeTo(parent);

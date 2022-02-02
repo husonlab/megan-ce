@@ -56,8 +56,7 @@ public class ViewerJTree extends JTree {
     /**
      * constructor
      *
-     * @param classificationViewer
-     */
+	 */
     public ViewerJTree(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;
 
@@ -103,8 +102,7 @@ public class ViewerJTree extends JTree {
     /**
      * add all children of a given node
      *
-     * @param node
-     */
+	 */
     public void addChildren(MyJTreeNode node) {
         final Node v = node.getV();
         final DefaultTreeModel model = (DefaultTreeModel) getModel();
@@ -128,8 +126,7 @@ public class ViewerJTree extends JTree {
     /**
      * select a node by id
      *
-     * @param id
-     */
+	 */
     public void setSelected(int id, boolean select) {
         if (!inSelection) {
             inSelection = true;
@@ -150,8 +147,7 @@ public class ViewerJTree extends JTree {
     /**
      * select nodes by their ids
      *
-     * @param ids
-     */
+	 */
     public void setSelected(Collection<Integer> ids, boolean select) {
         if (!inSelection) {
             inSelection = true;
@@ -229,8 +225,7 @@ class MyJTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     /**
      * constructor
      *
-     * @param classificationViewer
-     */
+	 */
     MyJTreeListener(ViewerJTree jTree, ClassificationViewer classificationViewer, Map<Integer, ViewerJTree.MyJTreeNode> id2node) {
         this.jTree = jTree;
         this.classificationViewer = classificationViewer;

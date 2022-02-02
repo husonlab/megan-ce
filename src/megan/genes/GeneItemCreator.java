@@ -43,8 +43,7 @@ public class GeneItemCreator {
     /**
      * constructor
      *
-     * @param cNames
-     */
+	 */
     public GeneItemCreator(String[] cNames, IdMapper[] idMappers) {
         this.cNames = cNames.clone();
         this.idMappers = idMappers;
@@ -63,8 +62,7 @@ public class GeneItemCreator {
     /**
      * constructor
      *
-     * @param cNames
-     */
+	 */
     public GeneItemCreator(String[] cNames, AccessAccessionMappingDatabase database) {
         this.cNames = cNames.clone();
         this.database = database;
@@ -104,10 +102,7 @@ public class GeneItemCreator {
     /**
      * map the given accession to ids using the id mappers
      *
-     * @param accession
-     * @param ids
-     * @throws IOException
-     */
+	 */
     public void map(String accession, int[] ids) throws IOException, SQLException {
         if (idMappers != null)
             for (int i = 0; i < idMappers.length; i++) {

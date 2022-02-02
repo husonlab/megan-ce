@@ -60,8 +60,7 @@ public class DataJTable {
     /**
      * Constructor
      *
-     * @param viewer
-     */
+	 */
     public DataJTable(TimeSeriesViewer viewer) {
         this.viewer = viewer;
         this.dir = viewer.getDirector();

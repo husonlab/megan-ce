@@ -32,7 +32,6 @@ abstract class ColorSchemeBase {
     /**
      * get the foreground color
      *
-     * @param ch
      * @return black
      */
     public Color getColor(int ch) {
@@ -42,7 +41,6 @@ abstract class ColorSchemeBase {
     /**
      * get the background color for a character
      *
-     * @param ch
      * @return color
      */
     abstract public Color getBackground(int ch);
@@ -51,7 +49,6 @@ abstract class ColorSchemeBase {
     /**
      * gets the amino acid color for a character
      *
-     * @param ch
      * @param rgb the color to use for this amino acid
      * @return amino acid color
      */

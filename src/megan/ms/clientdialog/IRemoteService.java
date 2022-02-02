@@ -37,8 +37,7 @@ public interface IRemoteService {
     /**
      * is service available
      *
-     * @return
-     */
+	 */
     boolean isAvailable();
 
     /**
@@ -51,7 +50,6 @@ public interface IRemoteService {
      /**
      * gets the server and file name
      *
-     * @param file
      * @return server and file
      */
     String getServerAndFileName(String file);
@@ -66,7 +64,6 @@ public interface IRemoteService {
     /**
      * get the description associated with a given file name
      *
-     * @param fileName
      * @return description
      */
     String getDescription(String fileName);

@@ -98,7 +98,6 @@ public class TaxonomicLevels {
     /**
      * is this a major KPCOFGS rank?
      *
-     * @param rank
      * @return true, if major
      */
     public static boolean isMajorRank(int rank) {
@@ -108,7 +107,6 @@ public class TaxonomicLevels {
     /**
      * get the next major rank
      *
-     * @param rank
      * @return next major rank
      */
     public static int getNextRank(int rank) {
@@ -124,7 +122,6 @@ public class TaxonomicLevels {
     /**
      * get rank from one letter code
      *
-     * @param oneLetterLabel
      * @return level
      */
     public static int getRankForOneLetterCode(String oneLetterLabel) {
@@ -143,7 +140,6 @@ public class TaxonomicLevels {
     /**
      * get one letter code for rank, or null
      *
-     * @param rank
      * @return code or null
      */
     public static String getOneLetterCodeFromRank(int rank) {
@@ -168,7 +164,6 @@ public class TaxonomicLevels {
     /**
      * given a level name, returns the id
      *
-     * @param name
      * @return level id     or null
      */
     public static Integer getId(String name) {
@@ -179,7 +174,6 @@ public class TaxonomicLevels {
     /**
      * given a level id, returns its name
      *
-     * @param id
      * @return name
      */
     public static String getName(int id) {

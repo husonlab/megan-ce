@@ -50,8 +50,7 @@ public class DAAMeganizer {
     /**
      * meganizes a DAA file
      *
-     * @param args
-      */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -73,11 +72,7 @@ public class DAAMeganizer {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
+	 */
     private void run(String[] args) throws Exception {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 

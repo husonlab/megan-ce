@@ -38,8 +38,7 @@ public class SetRectangularCladogramCommand extends CommandBase implements IChec
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -57,8 +56,7 @@ public class SetRectangularCladogramCommand extends CommandBase implements IChec
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set drawer=" + ViewerBase.DiagramType.RectangularCladogram + ";");

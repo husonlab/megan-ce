@@ -27,8 +27,6 @@ public interface IScoringMatrix {
     /**
      * gets the score for aligning letters a and b
      *
-     * @param a
-     * @param b
      * @return score
      */
     int getScore(byte a, byte b);

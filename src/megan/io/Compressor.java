@@ -60,7 +60,6 @@ public class Compressor {
     /**
      * gets a deflated string
      *
-     * @param inputString
      * @return deflated string
      */
     public byte[] deflateString2ByteArray(String inputString) {
@@ -74,7 +73,6 @@ public class Compressor {
     /**
      * compresses a string to an array of bytes
      *
-     * @param inputString
      * @param bytes       array to write bytes to
      * @return number of bytes written  (negative number, if bytes are not deflated)
      */
@@ -87,9 +85,6 @@ public class Compressor {
     /**
      * compresses a string to an array of bytes
      *
-     * @param input
-     * @param inputOffset
-     * @param inputLength
      * @param bytes       array to write bytes to
      * @return number of bytes written  (negative number, if bytes are not deflated)
      */
@@ -110,11 +105,8 @@ public class Compressor {
     /**
      * decompresses an array of bytes to a string
      *
-     * @param numberOfBytes
-     * @param bytes
      * @return decoded string
-     * @throws DataFormatException
-     */
+	 */
     public String inflateByteArray2String(int numberOfBytes, byte[] bytes) throws DataFormatException {
         /*
         StringBuilder buf = new StringBuilder();
@@ -146,8 +138,7 @@ public class Compressor {
      * @param source        input
      * @param target        output
      * @return number of bytes
-     * @throws DataFormatException
-     */
+	 */
     public int inflateByteArray(int numberOfBytes, byte[] source, byte[] target) throws DataFormatException {
         /*
         StringBuilder buf = new StringBuilder();
@@ -171,10 +162,7 @@ public class Compressor {
     /**
      * interactively test deflation and inflation
      *
-     * @param args
-     * @throws IOException
-     * @throws DataFormatException
-     */
+	 */
     public static void main(String[] args) throws IOException, DataFormatException {
 
         Compressor compression = new Compressor();
@@ -232,8 +220,7 @@ public class Compressor {
     /**
      * set enabled state. Has no effect
      *
-     * @param enabled
-     */
+	 */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -241,8 +228,6 @@ public class Compressor {
     /**
      * * convert an uncompressed array of bytes to a string
      *
-     * @param size
-     * @param bytes
      * @return string
      */
     static public String convertUncompressedByteArray2String(int size, byte[] bytes) {

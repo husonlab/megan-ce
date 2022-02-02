@@ -56,7 +56,6 @@ public class IntFileGetterHashMap implements IIntGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -70,8 +69,7 @@ public class IntFileGetterHashMap implements IIntGetter {
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;

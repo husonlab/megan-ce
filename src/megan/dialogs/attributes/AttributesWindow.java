@@ -73,8 +73,8 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     private int dividerLocation = 360;
     public String selectedTaxon = "No Taxon Selected";
 
-    private JSplitPane splitPane;
-    private JEditorPane descEditor = null;
+    private final JSplitPane splitPane;
+	private JEditorPane descEditor = null;
     private JEditorPane previewEditor = null;
     private JEditorPane helpEditor = null;
     private StringBuilder helpText = null;
@@ -86,8 +86,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public AttributesWindow(Director dir, JFrame parent) {
         this.dir = dir;
         commandManager = new CommandManager(dir, this,
@@ -240,7 +239,6 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * Depending of the given node label a preview of its children
      * is displayed
      *
-     * @param label
      * @param node  parent node
      * @return the preview panel
      */
@@ -292,7 +290,6 @@ public class AttributesWindow implements IDirectableViewer, Printable {
      * Removes the last part of a label,
      * e.g. E.coli [100 Reads] -> E.coli
      *
-     * @param label
      * @return the label withou the read info
      */
     private String removeSizeInfo(String label) {
@@ -489,8 +486,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * collapse the given node   or root
      *
-     * @param v
-     */
+	 */
     private void collapse(DefaultMutableTreeNode v) {
         if (v == null)
             v = this.root;
@@ -504,8 +500,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * collapse an array of paths
      *
-     * @param paths
-     */
+	 */
     public void collapse(TreePath[] paths) {
         for (TreePath path : paths) {
             this.collapse((DefaultMutableTreeNode) path.getLastPathComponent());
@@ -515,8 +510,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * expand the given node
      *
-     * @param v
-     */
+	 */
     private void expand(DefaultMutableTreeNode v) {
         if (v == null)
             v = this.root;
@@ -530,8 +524,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * expand an array of paths
      *
-     * @param paths
-     */
+	 */
     public void expand(TreePath[] paths) {
         for (TreePath path : paths) {
             this.expand((DefaultMutableTreeNode) path.getLastPathComponent());
@@ -580,8 +573,7 @@ public class AttributesWindow implements IDirectableViewer, Printable {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         this.uptodate = flag;
     }

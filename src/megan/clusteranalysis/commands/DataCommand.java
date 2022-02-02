@@ -71,9 +71,7 @@ public class DataCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set networkData=");
@@ -87,8 +85,7 @@ public class DataCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         String[] methods = new String[]{ClassificationType.Taxonomy.toString(), "SEED", "KEGG"};
 

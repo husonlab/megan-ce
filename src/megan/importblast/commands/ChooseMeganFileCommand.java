@@ -47,8 +47,7 @@ public class ChooseMeganFileCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param event
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent event) {
         ImportBlastDialog importBlastDialog = (ImportBlastDialog) getParent();

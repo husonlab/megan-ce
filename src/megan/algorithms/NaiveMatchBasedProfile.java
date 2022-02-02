@@ -41,8 +41,6 @@ class NaiveMatchBasedProfile {
     /**
      * compute a taxonomic profile at a given taxonomic rank using naive projection
      *
-     * @param viewer
-     * @param level
      * @return mapping of each taxon to a count
      * todo: needs fixing
      */
@@ -140,8 +138,6 @@ class NaiveMatchBasedProfile {
     /**
      * gets the ancestor taxon id at given rank or 0
      *
-     * @param targetLevel
-     * @param taxonId
      * @return ancestor or 0
      */
     private static Integer getAncestorAtRank(int targetLevel, Integer taxonId) {

@@ -45,13 +45,7 @@ public class SegmentationOfReadsExporter {
     /**
      * Compute segmentation of long reads for given set of classids in the given classification
      *
-     * @param classificationName
-     * @param classIds
-     * @param connector
-     * @param fileName
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static int export(ProgressListener progress, String classificationName, Collection<Integer> classIds, int rank, IConnector connector, String fileName, TaxonomicSegmentation taxonomicSegmentation) throws IOException {
         int total = 0;
         try {
@@ -145,7 +139,6 @@ public class SegmentationOfReadsExporter {
     /**
      * get the rank of the class id (or next above)
      *
-     * @param classId
      * @return rank id
      */
     private static int getRank(Integer classId) {
@@ -166,11 +159,7 @@ public class SegmentationOfReadsExporter {
     /**
      * segment and write a read
      *
-     * @param readBlock
-     * @param w
-     * @return number of reads written
-     * @throws IOException
-     */
+	 */
     private static void segmentAndWrite(ProgressListener progress, IReadBlock readBlock, TaxonomicSegmentation taxonomicSegmentation, Writer w) throws IOException, CanceledException {
         final ArrayList<TaxonomicSegmentation.Segment> segmentation = taxonomicSegmentation.computeTaxonomicSegmentation(progress, readBlock);
 

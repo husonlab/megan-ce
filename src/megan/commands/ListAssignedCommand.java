@@ -99,10 +99,7 @@ public class ListAssignedCommand extends CommandBase implements ICommand {
     /**
      * recursively print a summary
      *
-     * @param selectedNodes
-     * @param v
-     * @param indent
-     */
+	 */
     private void listAssignedRec(ViewerBase viewer, Classification classification, NodeSet selectedNodes, Node v, int indent, Writer outs, final Single<Integer> countLines, ProgressListener progress) throws IOException, CanceledException {
         progress.incrementProgress();
 

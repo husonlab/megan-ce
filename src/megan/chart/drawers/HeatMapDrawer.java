@@ -85,7 +85,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw heat map with colors representing classes
      *
-     * @param gc
      */
     public void drawChart(Graphics2D gc) {
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
@@ -248,7 +247,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw heat map with colors representing series
      *
-     * @param gc
      */
     public void drawChartTransposed(Graphics2D gc) {
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
@@ -407,7 +405,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
      */
     protected void drawXAxis(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
@@ -425,7 +422,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the y-axis
      *
-     * @param gc
      */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
@@ -553,11 +549,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw scale bar
      *
-     * @param gc
-     * @param x
-     * @param width
-     * @param y
-     * @param height
      */
     private void drawScaleBar(Graphics2D gc, final int x, final int width, final int y, final int height) {
         final int x0 = x + Math.max(10, width - 25);
@@ -628,7 +619,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                     yStep = boxHeight / (2 * factor);
                 }
                 format = "%,.0f";
-                break;
             }
             case LOG -> {
                 double maxValue = 0;
@@ -719,7 +709,6 @@ public class HeatMapDrawer extends BarChartDrawer implements IChartDrawer {
                 step = max;
                 yStep = boxHeight;
                 format = "%,.0f";
-                break;
             }
         }
         gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));

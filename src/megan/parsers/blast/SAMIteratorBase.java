@@ -39,10 +39,7 @@ public class SAMIteratorBase {
     /**
      * constructor
      *
-     * @param fileName
-     * @param maxNumberOfMatchesPerRead
-     * @throws IOException
-     */
+	 */
     public SAMIteratorBase(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         iterator = new FileLineIterator(fileName);
         this.maxNumberOfMatchesPerRead = maxNumberOfMatchesPerRead;
@@ -52,10 +49,7 @@ public class SAMIteratorBase {
     /**
      * does string start with the given tag (allowing spaces inside tag to be missing in string)
      *
-     * @param string
-     * @param tag
-     * @return
-     */
+	 */
     static boolean startsWith(String string, String tag) {
         return string.startsWith(tag) || (tag.contains(" ") && string.startsWith(tag.replaceAll(" ", "")));
     }
@@ -63,8 +57,6 @@ public class SAMIteratorBase {
     /**
      * gets the next token following tag in aLine. Treats spaces in tag as match 0 or 1 spaces...
      *
-     * @param aLine
-     * @param tag
      * @return next token after tag
      */
     static String getNextToken(String aLine, String tag) {
@@ -83,8 +75,6 @@ public class SAMIteratorBase {
     /**
      * gets the next token following tag1 and then tag2 in aLine. Treats spaces in tag as match 0 or 1 spaces...
      *
-     * @param aLine
-     * @param tag1
      * @return next token after tag
      */
     static String getNextToken(String aLine, String tag1, String tag2) {
@@ -104,8 +94,6 @@ public class SAMIteratorBase {
     /**
      * gets the next token consisting only of letters, following tag1 and then tag2 in aLine. Treats spaces in tag as match 0 or 1 spaces...
      *
-     * @param aLine
-     * @param tag1
      * @return next token after tag
      */
     static String getNextLetters(String aLine, String tag1, String tag2) {
@@ -125,8 +113,6 @@ public class SAMIteratorBase {
     /**
      * matches tag to string (allowing spaces inside tag to be missing in string)
      *
-     * @param string
-     * @param tag
      * @return position after match and all trailing white space, or -1
      */
     private static int endOfTagMatch(String string, String tag) {
@@ -137,9 +123,7 @@ public class SAMIteratorBase {
     /**
      * matches tag to string (allowing spaces inside tag to be missing in string)
      *
-     * @param string
      * @param fromIndex starting index in string
-     * @param tag
      * @return position after match and all trailing white space, or -1
      */
     private static int endOfTagMatch(String string, int fromIndex, String tag) {
@@ -172,8 +156,7 @@ public class SAMIteratorBase {
     /**
      * close the iterator
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         iterator.close();
     }
@@ -204,7 +187,6 @@ public class SAMIteratorBase {
     /**
      * move to next line that starts with the given prefix
      *
-     * @param prefix
      * @return line or null
      */
     String getNextLineStartsWith(String prefix) {
@@ -219,7 +201,6 @@ public class SAMIteratorBase {
     /**
      * move to next line that contains given infix
      *
-     * @param infix
      * @return line or null
      */
     String getNextLineContains(String infix) {
@@ -264,8 +245,7 @@ public class SAMIteratorBase {
     /**
      * push back a line
      *
-     * @param line
-     */
+	 */
     void pushBackLine(String line) {
         if (pushedBackLine != null)
             System.err.println("Error: Push back line, but buffer not empty");
@@ -295,8 +275,7 @@ public class SAMIteratorBase {
     /**
      * skip lines starting with #?
      *
-     * @param skip
-     */
+	 */
     public void setSkipCommentLines(boolean skip) {
         iterator.setSkipCommentLines(skip);
     }
@@ -304,8 +283,7 @@ public class SAMIteratorBase {
     /**
      * skip lines starting with #?
      *
-     * @return
-     */
+	 */
     public boolean isSkipCommentLines() {
         return iterator.isSkipCommentLines();
     }

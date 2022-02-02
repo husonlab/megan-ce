@@ -58,12 +58,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
     /**
      * constructor
      *
-     * @param daaHeader
-     * @param wantMatches
-     * @param streamOnly
-     * @param reuseReadBlockObject
-     * @throws IOException
-     */
+	 */
     public ReadBlockGetterDAA(DAAHeader daaHeader, boolean wantReadSequences, boolean wantMatches, float minScore, float maxExpected, boolean streamOnly, boolean reuseReadBlockObject, boolean longReads) throws IOException {
         this.daaParser = new DAAParser(daaHeader);
         if (daaHeader.getNumberOfReferences() == 0)
@@ -102,8 +97,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
      *
      * @param uid or -1, if in streaming mode
      * @return read block or null
-     * @throws IOException
-     */
+	 */
     @Override
     public IReadBlock getReadBlock(long uid) throws IOException {
         if (uid == -1) {
@@ -131,8 +125,7 @@ public class ReadBlockGetterDAA implements IReadBlockGetter {
     /**
      * closes the accessor
      *
-     * @throws IOException
-     */
+	 */
     @Override
     public void close() {
         try {

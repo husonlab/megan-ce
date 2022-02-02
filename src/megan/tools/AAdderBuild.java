@@ -128,10 +128,7 @@ public class AAdderBuild {
     /**
      * setup the GFF files
      *
-     * @param gffFiles
-     * @param lookInside
-     * @throws IOException
-     */
+	 */
     public static void setupGFFFiles(List<String> gffFiles, boolean lookInside) throws IOException {
         if (gffFiles.size() == 1) {
             final File file = new File(gffFiles.get(0));
@@ -162,11 +159,8 @@ public class AAdderBuild {
     /**
      * setup the gene item creator
      *
-     * @param acc2TaxaFile
-     * @param class2AccessionFile
      * @return gene item creator
-     * @throws CanceledException
-     */
+	 */
     public static GeneItemCreator setupCreator(String acc2TaxaFile, Map<String, String> class2AccessionFile) throws IOException {
         final String[] cNames;
         {
@@ -195,12 +189,7 @@ public class AAdderBuild {
     /**
      * compute annotations
      *
-     * @param creator
-     * @param gffFiles
-     * @return
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static Map<String, ArrayList<Interval<GeneItem>>> computeAnnotations(GeneItemCreator creator, Collection<String> gffFiles) throws IOException, CanceledException {
         Map<String, ArrayList<Interval<GeneItem>>> dnaId2list = new HashMap<>();
 
@@ -223,11 +212,7 @@ public class AAdderBuild {
     /**
      * save the index
      *
-     * @param creator
-     * @param indexDirectory
-     * @param dnaId2list
-     * @throws IOException
-     */
+	 */
     public static void saveIndex(String indexCreator, GeneItemCreator creator, String indexDirectory, Map<String, ArrayList<Interval<GeneItem>>> dnaId2list, Iterable<String> dnaIdOrder) throws IOException {
         // writes the index file:
         long totalRefWithAGene = 0;

@@ -44,10 +44,7 @@ public class FileHeaderRMA3 extends BaseRMA3 {
     /**
      * write the current header data
      *
-     * @param writer
-     * @return position of beginning of block
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer) throws IOException {
         writer.writeInt(RMA2File.MAGIC_NUMBER);
         writer.writeInt(3);
@@ -67,9 +64,7 @@ public class FileHeaderRMA3 extends BaseRMA3 {
     /**
      * read the header from a file
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     public void read(IInputReader reader, long startPos) throws IOException {
         reader.seek(startPos);
 

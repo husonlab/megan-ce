@@ -64,8 +64,7 @@ public interface ISAMIterator {
     /**
      * are we parsing long reads?
      *
-     * @param longReads
-     */
+	 */
     void setParseLongReads(boolean longReads);
 
     boolean isParseLongReads();

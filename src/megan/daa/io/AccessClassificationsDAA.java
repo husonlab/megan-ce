@@ -36,10 +36,7 @@ public class AccessClassificationsDAA {
     /**
      * load all query locations for a given classification and class ids
      *
-     * @param daaHeader
-     * @param classificationName
-     * @throws IOException
-     */
+	 */
     public static ListOfLongs loadQueryLocations(DAAHeader daaHeader, String classificationName, Collection<Integer> classIds) throws IOException {
         for (int i = 0; i < daaHeader.getBlockTypeRankArrayLength() - 1; i++) {
             final int j = i + 1;
@@ -83,11 +80,8 @@ public class AccessClassificationsDAA {
     /**
      * load a named classification block
      *
-     * @param daaHeader
-     * @param classificationName
      * @return classification
-     * @throws IOException
-     */
+	 */
     public static IClassificationBlock loadClassification(DAAHeader daaHeader, String classificationName) throws IOException {
         for (int i = 0; i < daaHeader.getBlockTypeRankArrayLength() - 1; i++) {
             if (daaHeader.getBlockType(i) == BlockType.megan_classification_key_block) {

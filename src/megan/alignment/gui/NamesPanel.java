@@ -60,8 +60,7 @@ public class NamesPanel extends BasePanel {
     /**
      * paint
      *
-     * @param g
-     */
+	 */
     public void paint(Graphics g) {
         try {
             super.paint(g);
@@ -115,8 +114,7 @@ public class NamesPanel extends BasePanel {
     /**
      * paint the selection rectangle
      *
-     * @param g0
-     */
+	 */
     private void paintSelection(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
         SelectedBlock selectedBlock = getSelectedBlock();

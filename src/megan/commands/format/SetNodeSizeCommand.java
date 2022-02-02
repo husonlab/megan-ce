@@ -73,9 +73,7 @@ public class SetNodeSizeCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeSize=");
@@ -99,8 +97,7 @@ public class SetNodeSizeCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         Integer[] choices = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 40};
 

@@ -69,8 +69,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * draw clouds in which words are datasets
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         int x0 = 2;
         int x1 = getWidth() - 2;
@@ -227,8 +226,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * draw clouds in which words are classes
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         int x0 = 2;
         int x1 = getWidth() - 2;
@@ -375,7 +373,6 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * gets a font of the given size
      *
-     * @param fontSize
      * @return font
      */
     private Font getFontForSize(Integer fontSize) {
@@ -391,11 +388,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * compute coordinates for word cloud
      *
-     * @param center
-     * @param label
-     * @param font
-     * @return words
-     */
+	 */
     private void computeCoordinates(Graphics gc, Point center, String label, Font font, Triplet<Integer, Integer, Dimension> previous) {
         int x = center.x;
         int y = center.y;
@@ -532,8 +525,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * create a new instance of the given type of drawer, sharing internal data structures
      *
-     * @return
-     */
+	 */
     public WordCloudDrawer createInstance() {
         final WordCloudDrawer drawer = new WordCloudDrawer();
         drawer.setViewer(viewer);
@@ -603,8 +595,7 @@ public class WordCloudDrawer extends BarChartDrawer implements IChartDrawer, IMu
     /**
      * copy all user parameters from the given base drawer
      *
-     * @param baseDrawer
-     */
+	 */
     @Override
     public void setValues(IMultiChartDrawable baseDrawer) {
         setMaxFontSize(((WordCloudDrawer) baseDrawer).getMaxFontSize());

@@ -87,9 +87,7 @@ public class InfoSection {
     /**
      * write to end of file
      *
-     * @param w
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter w) throws IOException {
         infoSectionStart = w.getPosition();
         w.write(version);
@@ -155,9 +153,7 @@ public class InfoSection {
     /**
      * read from end of file
      *
-     * @param r
-     * @throws IOException
-     */
+	 */
     public void read(IInputReader r) throws IOException {
         r.seek(r.length() - 9);
         RMA2File.check((byte) r.read(), RMA2File.CHECK_BYTE);
@@ -498,7 +494,6 @@ public class InfoSection {
     /**
      * gets the index of the given classification
      *
-     * @param classificationName
      * @return index or -1
      */
     public int getClassificationNumber(String classificationName) {
@@ -511,13 +506,7 @@ public class InfoSection {
     /**
      * add a new classification
      *
-     * @param name
-     * @param size
-     * @param dumpStart
-     * @param dumpEnd
-     * @param indexStart
-     * @param indexEnd
-     */
+	 */
     public void addClassification(String name, int size, long dumpStart, long dumpEnd, long indexStart, long indexEnd) {
         classificationNames = extend(classificationNames, name);
         classificationSizes = extend(classificationSizes, size);
@@ -571,8 +560,7 @@ public class InfoSection {
     /**
      * set the location manager
      *
-     * @param locationManager
-     */
+	 */
     public void syncLocationManager2InfoSection(LocationManager locationManager) throws IOException {
         if (textStoragePolicy != locationManager.getTextStoragePolicy())
             throw new IOException("setLocationManager(): attempting to change textStoragePolicy from " +

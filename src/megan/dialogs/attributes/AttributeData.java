@@ -71,8 +71,7 @@ public class AttributeData {
     /**
      * Constructor
      *
-     * @param filename
-     */
+	 */
     private AttributeData(String filename) {
         try {
             System.err.println("Loading microbial attributes: ");
@@ -93,8 +92,7 @@ public class AttributeData {
     /**
      * load the id 2 name mapping
      *
-     * @param fileName
-     */
+	 */
     private void loadAttributeData(String fileName) throws IOException {
         InputStream ins = ResourceManager.getFileAsStream(fileName);
         loadAttributeData(ins);
@@ -256,7 +254,6 @@ public class AttributeData {
     /**
      * Returns the index of a property of a certain attribute.
      *
-     * @param attribute
      * @param prop      the property to find
      * @return index
      */
@@ -365,10 +362,7 @@ public class AttributeData {
     /**
      * For each attribute and for its properties, the taxa names are stored in a hashtable.
      *
-     * @param attribute
-     * @param propertyIndex
-     * @param taxname
-     */
+	 */
     private void updateAttributes2TaxaNames(String attribute, int propertyIndex, String taxname) {
         String property = this.attributes2Properties.get(attribute)[propertyIndex];
         if (this.attribute2kind2taxaNames.containsKey(attribute)) {
@@ -393,10 +387,7 @@ public class AttributeData {
     /**
      * give an attribute 2 series 2 values mapping for taxa, computes one for microbial attributes
      *
-     * @param attribute2series2valueForTaxa
-     * @param attribute2series2value
-     * @param orderedLabels
-     */
+	 */
     public static void getAttributes2DataSet2Values(Map<String, Map<String, Number>> attribute2series2valueForTaxa, Map<String, Map<String, Number>> attribute2series2value, List<String> orderedLabels) {
         getInstance().computeAttributes2DataSet2Values(attribute2series2valueForTaxa, attribute2series2value, orderedLabels);
     }
@@ -404,9 +395,7 @@ public class AttributeData {
     /**
      * give an attribute 2 series 2 values mapping for taxa, computes one for microbial attributes tree window
      *
-     * @param attribute2series2valueForTaxa
-     * @param attribute2taxa2value
-     */
+	 */
     public static void getAttributes2Taxa2Values(Map<String, Map<String, Number>> attribute2series2valueForTaxa,
                                                  Map<String, Map<String, Number>> attribute2taxa2value) {
         getInstance().computeAttributes2Taxa2Values(attribute2series2valueForTaxa, attribute2taxa2value);
@@ -415,10 +404,7 @@ public class AttributeData {
     /**
      * give an attribute 2 series 2 values mapping for taxa, computes one for microbial attributes
      *
-     * @param attribute2series2valueForTaxa
-     * @param attribute2series2value
-     * @param orderedLabels
-     */
+	 */
     private void computeAttributes2DataSet2Values(Map<String, Map<String, Number>> attribute2series2valueForTaxa, Map<String, Map<String, Number>> attribute2series2value, List<String> orderedLabels) {
         orderedLabels.clear();
         attribute2series2value.clear();
@@ -461,9 +447,7 @@ public class AttributeData {
     /**
      * give an attribute 2 series 2 values mapping for taxa, computes one for microbial attributes tree window
      *
-     * @param taxa2dataset2value
-     * @param attribute2taxa2value
-     */
+	 */
     private void computeAttributes2Taxa2Values(Map<String, Map<String, Number>> taxa2dataset2value,
                                                Map<String, Map<String, Number>> attribute2taxa2value) {
         attribute2taxa2value.clear();

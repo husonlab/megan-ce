@@ -51,8 +51,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * Constructor
      *
-     * @param blastMode
-     */
+	 */
     public ReadBlockRMA6(BlastMode blastMode, boolean pairedReads, String[] cNames) {
         this.blastMode = blastMode;
         this.pairedReads = pairedReads;
@@ -138,8 +137,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * set the read length
      *
-     * @param readLength
-     */
+	 */
     public void setReadLength(int readLength) {
         this.readLength = readLength;
     }
@@ -151,8 +149,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * get the complexity
      *
-     * @param readComplexity
-     */
+	 */
     public void setComplexity(float readComplexity) {
         this.readComplexity = readComplexity;
     }
@@ -164,8 +161,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * set the weight of a read
      *
-     * @param readWeight
-     */
+	 */
 
     public void setReadWeight(int readWeight) {
         this.readWeight = readWeight;
@@ -197,8 +193,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * gets the current number of matches available
      *
-     * @return
-     */
+	 */
     public int getNumberOfAvailableMatchBlocks() {
         return matchBlocks != null ? matchBlocks.length : 0;
     }
@@ -219,7 +214,6 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * get the i-th match block
      *
-     * @param i
      * @return match block
      */
     public IMatchBlock getMatchBlock(int i) {
@@ -229,10 +223,7 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * reads a read block
      *
-     * @param reader
-     * @param wantReadSequence
-     * @param wantMatches
-     */
+	 */
     public void read(IInputReader reader, boolean wantReadSequence, boolean wantMatches, float minScore, float maxExpected) throws IOException {
         setUId(reader.getPosition());
         if (pairedReads)
@@ -357,7 +348,6 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * gets the leading hard clip
      *
-     * @param cigar
      * @return leading hard clip or 0
      */
     private static int parseLeadingHardClip(String cigar) {
@@ -376,8 +366,6 @@ public class ReadBlockRMA6 implements IReadBlock {
     /**
      * inserts the given number of 0 characters
      *
-     * @param sequence
-     * @param numberOfLeading0Characters
      * @return extended string
      */
     private static String insertLeading0Characters(String sequence, int numberOfLeading0Characters) {

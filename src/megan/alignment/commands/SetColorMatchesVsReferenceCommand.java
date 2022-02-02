@@ -41,9 +41,7 @@ public class SetColorMatchesVsReferenceCommand extends CommandBase implements IC
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set colorMatchesVsReference=");
@@ -68,8 +66,7 @@ public class SetColorMatchesVsReferenceCommand extends CommandBase implements IC
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("set colorMatchesVsReference=" + (!isSelected()) + ";");

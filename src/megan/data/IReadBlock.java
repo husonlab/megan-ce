@@ -82,7 +82,6 @@ public interface IReadBlock extends Serializable {
     /**
      * get mate type
      *
-     * @param type
      * @deprecated
      */
     @Deprecated
@@ -91,8 +90,7 @@ public interface IReadBlock extends Serializable {
     /**
      * set the read length
      *
-     * @param readLength
-     */
+	 */
     void setReadLength(int readLength);
 
     int getReadLength();
@@ -100,8 +98,7 @@ public interface IReadBlock extends Serializable {
     /**
      * get the complexity
      *
-     * @param complexity
-     */
+	 */
     void setComplexity(float complexity);
 
     float getComplexity();
@@ -109,8 +106,7 @@ public interface IReadBlock extends Serializable {
     /**
      * set the weight of a read
      *
-     * @param weight
-     */
+	 */
     void setReadWeight(int weight);
 
     /**
@@ -132,15 +128,13 @@ public interface IReadBlock extends Serializable {
     /**
      * gets the current number of matches available
      *
-     * @return
-     */
+	 */
     int getNumberOfAvailableMatchBlocks();
 
     /**
      * get the matches. May be less than the original number of matches (when filtering matches)
      *
-     * @return
-     */
+	 */
     IMatchBlock[] getMatchBlocks();
 
     void setMatchBlocks(IMatchBlock[] matchBlocks);
@@ -148,7 +142,6 @@ public interface IReadBlock extends Serializable {
     /**
      * get the i-th match block
      *
-     * @param i
      * @return match block
      */
     IMatchBlock getMatchBlock(int i);

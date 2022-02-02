@@ -42,16 +42,13 @@ public interface ITab {
     /**
      * compute the graphics
      *
-     * @param taxa
-     * @param distances
-     */
+	 */
     void compute(Taxa taxa, Distances distances) throws Exception;
 
     /**
      * get the label
      *
-     * @return
-     */
+	 */
     String getLabel();
 
     /**
@@ -64,8 +61,7 @@ public interface ITab {
     /**
      * update the view
      *
-     * @param what
-     */
+	 */
     void updateView(String what);
 
     /**

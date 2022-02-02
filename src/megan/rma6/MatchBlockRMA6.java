@@ -53,8 +53,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * set match data from a SAM match
      *
-     * @param samMatch
-     */
+	 */
     public void setFromSAM(SAMMatch samMatch) {
         text = null;
         percentIdentity = 0;
@@ -94,8 +93,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * get the taxon id of the match
      *
-     * @return
-     */
+	 */
     public int getTaxonId() {
         return getId(Classification.Taxonomy);
     }
@@ -112,7 +110,6 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * gets all defined ids
      *
-     * @param cNames
      * @return ids
      */
     public int[] getIds(String[] cNames) {
@@ -130,8 +127,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * get the score of the match
      *
-     * @return
-     */
+	 */
     public float getBitScore() {
         if (samMatch == null)
             System.err.println("null");
@@ -145,8 +141,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * get the percent identity
      *
-     * @return
-     */
+	 */
     public float getPercentIdentity() {
         if (text == null)
             getText(); // percent identity is calculated while creating text
@@ -160,8 +155,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * get the refseq id
      *
-     * @return
-     */
+	 */
     public String getRefSeqId() {
         return getText() != null ? parseRefSeqId(getText()) : null;
     }
@@ -172,9 +166,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * gets the E-value
      *
-     * @param expected
-     * @throws java.io.IOException
-     */
+	 */
     public void setExpected(float expected) {
         throw new RuntimeException("Not implemented");
     }
@@ -186,9 +178,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * gets the match length
      *
-     * @param length
-     * @throws java.io.IOException
-     */
+	 */
     public void setLength(int length) {
         throw new RuntimeException("Not implemented");
     }
@@ -215,8 +205,7 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * get the text
      *
-     * @return
-     */
+	 */
     public String getText() {
         if (text == null) {
             final Single<Float> value = new Single<>(0f);
@@ -258,7 +247,6 @@ public class MatchBlockRMA6 implements IMatchBlock {
     /**
      * parses a Accession id
      *
-     * @param aLine
      * @return refseq id
      */
     private static String parseRefSeqId(String aLine) {

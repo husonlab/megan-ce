@@ -104,8 +104,7 @@ public class Megan6 {
     /**
      * parse command line arguments and launch program
      *
-     * @throws Exception
-     */
+	 */
     private void parseArguments(String[] args) throws Exception {
         Basic.startCollectionStdErr();
         args = processOpenFileArgs(args);

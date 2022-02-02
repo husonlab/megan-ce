@@ -141,7 +141,6 @@ class Biom1ImportTaxonomy {
     /**
      * creates an int array from an object, if possible
      *
-     * @param obj
      * @return array or null
      */
     public static int[] createIntArray(Object obj) {

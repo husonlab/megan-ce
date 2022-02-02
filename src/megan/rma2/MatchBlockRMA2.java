@@ -83,7 +83,6 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * gets the id for the named classification
      *
-     * @param name
      * @return id
      */
     public int getId(String name) {
@@ -94,9 +93,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * set the id for the named classification
      *
-     * @param name
-     * @param id
-     */
+	 */
     public void setId(String name, Integer id) {
         cName2id.put(name, id);
     }
@@ -104,7 +101,6 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * gets all defined ids
      *
-     * @param cNames
      * @return ids
      */
     public int[] getIds(String[] cNames) {
@@ -118,8 +114,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the taxon id of the match
      *
-     * @return
-     */
+	 */
     public int getTaxonId() {
         return getId(TAXONOMY);
     }
@@ -132,8 +127,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the score of the match
      *
-     * @return
-     */
+	 */
     public float getBitScore() {
         return bitScore;
     }
@@ -145,8 +139,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the percent identity
      *
-     * @return
-     */
+	 */
     public float getPercentIdentity() {
         return percentIdentity;
     }
@@ -158,8 +151,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the refseq id
      *
-     * @return
-     */
+	 */
     public String getRefSeqId() {
         return refSeqId;
     }
@@ -171,9 +163,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * gets the E-value
      *
-     * @param expected
-     * @throws java.io.IOException
-     */
+	 */
     public void setExpected(float expected) {
         this.expected = expected;
     }
@@ -185,9 +175,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * gets the match length
      *
-     * @param length
-     * @throws java.io.IOException
-     */
+	 */
     public void setLength(int length) {
         this.length = length;
     }
@@ -199,8 +187,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the ignore status
      *
-     * @return
-     */
+	 */
     public boolean isIgnore() {
         return ignore;
     }
@@ -212,8 +199,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the text
      *
-     * @return
-     */
+	 */
     public String getText() {
         return text;
     }
@@ -230,15 +216,8 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * read a match block
      *
-     * @param rma2Formatter
-     * @param uid
-     * @param wantMatchData
-     * @param wantMatchText
-     * @param textReader
-     * @param dataIndexReader
      * @return matchBlock
-     * @throws java.io.IOException
-     */
+	 */
     public static MatchBlockRMA2 read(RMA2Formatter rma2Formatter, long uid, boolean wantMatchData, boolean wantMatchText,
                                       float minScore, float maxExpected, TextStorageReader textReader, IInputReader dataIndexReader) throws IOException {
         MatchBlockRMA2 matchBlock = rma2Formatter.isWantLocationData() ? new MatchBlockFromBlast() : new MatchBlockRMA2();
@@ -301,7 +280,6 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the size of a match block in the index file
      *
-     * @param matchBlockRMA2Formatter
      * @return number of bytes in match block
      */
     public static int getBytesInIndexFile(MatchBlockRMA2Formatter matchBlockRMA2Formatter) {
@@ -311,9 +289,6 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * writes a match to the RMA file
      *
-     * @param rma2Formatter
-     * @param matchBlock
-     * @param dumpWriter
      * @param indexWriter   @throws java.io.IOException
      */
     public static void write(RMA2Formatter rma2Formatter, IMatchBlockWithLocation matchBlock, IOutputWriter dumpWriter, IOutputWriter indexWriter) throws IOException {
@@ -405,8 +380,7 @@ public class MatchBlockRMA2 implements IMatchBlock {
     /**
      * get the end position of the alignment in the query
      *
-     * @return
-     */
+	 */
     @Override
     public int getAlignedQueryEnd() {
         return 0;

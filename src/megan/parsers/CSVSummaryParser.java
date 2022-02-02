@@ -47,10 +47,7 @@ public class CSVSummaryParser {
      * Format should be:   taxid,count[,count,...]
      * If the first line contains non-number tokens, then these are interpreted as the names of the datasets
      *
-     * @param fileName
-     * @param doc
-     * @param multiplier
-     */
+	 */
     static public void apply(String fileName, Document doc, String[] cNames, boolean tabSeparator, long multiplier) throws IOException {
         String separator = (tabSeparator ? "\t" : ",");
 		System.err.println("Importing summary of " + StringUtils.toString(cNames, ", ") + " assignments from CSV file");
@@ -251,9 +248,6 @@ public class CSVSummaryParser {
     /**
      * get the entry, if it exists, otherwise create it and initialize to zeros
      *
-     * @param map
-     * @param id
-     * @param size
      * @return entry
      */
     private static float[] getOrCreate(Map<Integer, float[]> map, Integer id, int size) {
@@ -264,9 +258,7 @@ public class CSVSummaryParser {
     /**
      * add all values to sum
      *
-     * @param sum
-     * @param add
-     */
+	 */
     private static void addToArray(float[] sum, int[] add) {
         for (int i = 0; i < add.length; i++) {
             sum[i] += add[i];
@@ -276,7 +268,6 @@ public class CSVSummaryParser {
     /**
      * get the number of tokens per line in the file
      *
-     * @param file
      * @return tokens per line or 0
      */
     public static int getTokensPerLine(File file, String separator) {
@@ -305,7 +296,6 @@ public class CSVSummaryParser {
     /**
      * guess whether the given file uses tab as the separator
      *
-     * @param file
      * @return true, if first line contains tabs
      */
     public static boolean guessTabSeparator(File file) {

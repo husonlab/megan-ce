@@ -59,9 +59,7 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("list assignmentsToLevels");
@@ -126,11 +124,7 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
     /**
      * recursively collects the numbers
      *
-     * @param tree
-     * @param v
-     * @param level
-     * @param level2count
-     */
+	 */
     private void listAssignmentsRec(PhyloTree tree, Node v, int level, SortedMap<Integer, Float> level2count, Map<String, Float> rank2count) {
         int taxonId = (Integer) (tree.getInfo(v));
         if (taxonId == IdMapper.UNASSIGNED_ID || taxonId == IdMapper.NOHITS_ID || taxonId == IdMapper.LOW_COMPLEXITY_ID) {
@@ -220,8 +214,7 @@ public class ListAssignmentsToLevelsCommand extends CommandBase implements IComm
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         executeImmediately("show window=message;");

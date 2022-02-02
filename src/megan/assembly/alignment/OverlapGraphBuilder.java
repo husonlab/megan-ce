@@ -41,8 +41,7 @@ public class OverlapGraphBuilder {
     /**
      * constructor
      *
-     * @param minOverlap
-     */
+	 */
     public OverlapGraphBuilder(int minOverlap) {
         this.minOverlap = minOverlap;
     }
@@ -50,10 +49,7 @@ public class OverlapGraphBuilder {
     /**
      * build the overlap graph
      *
-     * @param alignment
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public void apply(final Alignment alignment, ProgressListener progress) throws CanceledException {
         // alignment.resetOrder();
 
@@ -161,7 +157,6 @@ public class OverlapGraphBuilder {
     /**
      * count number of letters in sequence
      *
-     * @param lane
      * @return number of letters
      */
     private int countLetters(Lane lane) {
@@ -176,7 +171,6 @@ public class OverlapGraphBuilder {
     /**
      * recursively visit all nodes and set edge weights
      *
-     * @param v
      * @return path length
      */
     private int visitNodesRec(Node v, EdgeArray<Integer> edgeWeight) {
@@ -193,8 +187,6 @@ public class OverlapGraphBuilder {
     /**
      * count the number of letters in the overlap between two lanes.
      *
-     * @param iLane
-     * @param jLane
      * @return number of letters in percent overlap, or 0, if mismatch encountered
      */
     private int computeNumberOfLettersInPerfectOverlap(Lane iLane, Lane jLane) {

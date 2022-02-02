@@ -62,8 +62,7 @@ public class DrawCoxCombsCommand extends CommandBase implements ICheckBoxCommand
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

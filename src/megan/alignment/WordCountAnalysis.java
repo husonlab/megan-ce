@@ -35,11 +35,7 @@ public class WordCountAnalysis {
     /**
      * runs the word count analysis
      *
-     * @param alignment
-     * @param wordSize
-     * @param step
-     * @return mapping of alignment-depth (n) to number of different sequences in alignment (k)
-     */
+	 */
     public static void apply(Alignment alignment, int wordSize, int step, int minDepth,
                              ProgressListener progressListener, Collection<Pair<Number, Number>> depthVsDifferences, SortedMap<Number, Number> rank2percentage) throws CanceledException {
         if (!alignment.getSequenceType().equalsIgnoreCase(Alignment.DNA)
@@ -113,7 +109,6 @@ public class WordCountAnalysis {
     /**
      * compute the Menten kinetics for a list of values, see http://en.wikipedia.org/wiki/Michaelis-Menten_kinetics
      *
-     * @param depthVsDifferences
      * @return points to be plotted
      */
     public static LinkedList<Pair<Number, Number>> computeMentenKinetics(Collection<Pair<Number, Number>> depthVsDifferences, Single<Integer> extrapolatedCount) {
@@ -189,7 +184,6 @@ public class WordCountAnalysis {
     /**
      * compute the average k and N values
      *
-     * @param values
      * @return average N and K values
      */
     public static Pair<Float, Float> computeAverageNandK(LinkedList<Pair<Number, Number>> values) {

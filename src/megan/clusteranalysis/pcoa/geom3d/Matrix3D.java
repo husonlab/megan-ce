@@ -35,8 +35,7 @@ public class Matrix3D extends MatrixN {
     /**
      * rotate transformation about the X axis
      *
-     * @param theta
-     */
+	 */
     public void rotateX(double theta) {
 
         Matrix3D tmp = new Matrix3D();
@@ -54,8 +53,7 @@ public class Matrix3D extends MatrixN {
     /**
      * rotate transformation about the X axis
      *
-     * @param theta
-     */
+	 */
     public void rotateY(double theta) {
 
         Matrix3D tmp = new Matrix3D();
@@ -73,8 +71,7 @@ public class Matrix3D extends MatrixN {
     /**
      * rotate transformation about the Z axis
      *
-     * @param theta
-     */
+	 */
     public void rotateZ(double theta) {
 
         Matrix3D tmp = new Matrix3D();
@@ -92,10 +89,7 @@ public class Matrix3D extends MatrixN {
     /**
      * translate
      *
-     * @param a
-     * @param b
-     * @param c
-     */
+	 */
     private void translate(double a, double b, double c) {
 
         Matrix3D tmp = new Matrix3D();
@@ -114,8 +108,7 @@ public class Matrix3D extends MatrixN {
     /**
      * scale uniformly
      *
-     * @param s
-     */
+	 */
     void scale(double s) {
 
         Matrix3D tmp = new Matrix3D();
@@ -130,10 +123,7 @@ public class Matrix3D extends MatrixN {
     /**
      * scale non-uniformly
      *
-     * @param r
-     * @param s
-     * @param t
-     */
+	 */
     private void scale(double r, double s, double t) {
 
         Matrix3D tmp = new Matrix3D();
@@ -148,8 +138,7 @@ public class Matrix3D extends MatrixN {
     /**
      * scale non-uniformly
      *
-     * @param v
-     */
+	 */
     public void scale(Vector3D v) {
         scale(v.get(0), v.get(1), v.get(2));
     }

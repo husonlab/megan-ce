@@ -66,9 +66,7 @@ public class DecontamDialog extends JFrame implements IDirectableViewer, IViewer
     /**
      * constructor
      *
-     * @param parent
-     * @param dir
-     */
+	 */
     public DecontamDialog(JFrame parent, final Director dir) {
         this.dir = dir;
         this.frame = this;

@@ -57,12 +57,7 @@ public class ReadAssembler {
     /**
      * build the overlap graph
      *
-     * @param minOverlap
-     * @param readData
-     * @param progress
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public void computeOverlapGraph(String label, int minOverlap, List<ReadData> readData, ProgressListener progress) throws IOException, CanceledException {
         this.label = label;
         final OverlapGraphBuilder overlapGraphBuilder = new OverlapGraphBuilder(minOverlap, verbose);
@@ -89,10 +84,7 @@ public class ReadAssembler {
     /**
      * show the overlap graph
      *
-     * @param dir
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public void showOverlapGraph(Director dir, ProgressListener progress) throws CanceledException {
         final var overlapGraphViewer = new OverlapGraphViewer(dir, overlapGraph, node2ReadNameMap, paths);
         overlapGraphViewer.apply(progress);
@@ -102,11 +94,7 @@ public class ReadAssembler {
     /**
      * write the overlap graph
      *
-     * @param w
-     * @return
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public Pair<Integer, Integer> writeOverlapGraph(Writer w) throws IOException, CanceledException {
         final NodeArray<String> names = new NodeArray<>(overlapGraph);
         final NodeArray<String> sequences = new NodeArray<>(overlapGraph);
@@ -136,10 +124,6 @@ public class ReadAssembler {
     /**
      * assemble all reads provided by the iterator using perfect overlaps of the given minimum length
      *
-     * @param minReads
-     * @param minCoverage
-     * @param minLength
-     * @param progress
      * @return number of contigs and singletons
      */
     public int computeContigs(int minReads, double minCoverage, int minLength, ProgressListener progress) throws IOException, CanceledException {
@@ -156,11 +140,7 @@ public class ReadAssembler {
     /**
      * write contigs
      *
-     * @param w
-     * @param progress
-     * @throws CanceledException
-     * @throws IOException
-     */
+	 */
     public void writeContigs(Writer w, ProgressListener progress) throws CanceledException, IOException {
         progress.setSubtask("Writing contigs");
         progress.setMaximum(contigs.size());
@@ -203,14 +183,9 @@ public class ReadAssembler {
     /**
      * computes all pairwise overlaps between contigs and then merges contigs
      *
-     * @param maxNumberOfThreads
-     * @param progress
-     * @param minPercentIdentityToMergeContigs
-     * @param minOverlap
      * @param contigs                          input list of contigs and output list of merged contigs
      * @return number of resulting
-     * @throws CanceledException
-     */
+	 */
     public static int mergeOverlappingContigs(int maxNumberOfThreads, final ProgressListener progress, final float minPercentIdentityToMergeContigs, final int minOverlap, final ArrayList<Pair<String, String>> contigs, final boolean verbose) throws CanceledException {
         progress.setSubtask("Overlapping contigs");
 

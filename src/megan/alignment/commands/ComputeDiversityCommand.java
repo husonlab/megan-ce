@@ -38,9 +38,7 @@ public class ComputeDiversityCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute diversityRatio kmer=");
@@ -71,8 +69,7 @@ public class ComputeDiversityCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("compute diversityRatio kmer=25 step=25 mindepth=10;");

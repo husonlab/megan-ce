@@ -41,8 +41,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * constructor
      *
-     * @param classificationName
-     */
+	 */
     public ClassificationBlockRMA2(String classificationName) {
         this.classificationName = classificationName;
     }
@@ -51,7 +50,6 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * get the number associated with a key
      *
-     * @param key
      * @return number
      */
     public int getSum(Integer key) {
@@ -65,7 +63,6 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * get the number associated with a key
      *
-     * @param key
      * @return number
      */
     public float getWeightedSum(Integer key) {
@@ -76,9 +73,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * set the weighted sum
      *
-     * @param key
-     * @param sum
-     */
+	 */
     public void setWeightedSum(Integer key, float sum) {
         //throw new RuntimeException("Not implemented");
     }
@@ -86,9 +81,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * set the number associated with a key -> just set not written to disk
      *
-     * @param key
-     * @param sum
-     */
+	 */
     public void setSum(Integer key, int sum) {
         Pair<Integer, Long> pair = id2SumAndPos.get(key);
         if (pair == null) {
@@ -132,8 +125,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * set the name of this classification
      *
-     * @param name
-     */
+	 */
     public void setName(String name) {
     }
 
@@ -145,8 +137,7 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * read in the classification block from a file
      *
-     * @throws java.io.IOException
-     */
+	 */
     public void load(IInputReader r) throws IOException {
         id2SumAndPos.clear();
         try (r) {
@@ -180,12 +171,8 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * gets the count and pos for the given class in the given classification
      *
-     * @param rma2File
-     * @param classification
-     * @param classId
      * @return (count, pos) or null
-     * @throws java.io.IOException
-     */
+	 */
     public static Pair<Integer, Long> getCountAndPos(RMA2File rma2File, String classification, int classId) throws IOException {
 
         try (IInputReader r = rma2File.getClassificationIndexReader(classification)) {
@@ -207,11 +194,8 @@ public class ClassificationBlockRMA2 implements IClassificationBlock {
     /**
      * gets the count and pos map for the classification
      *
-     * @param rma2File
-     * @param classification
      * @return (count, pos) or null
-     * @throws java.io.IOException
-     */
+	 */
     public static Map<Integer, Pair<Integer, Long>> getCountAndPos(RMA2File rma2File, String classification) throws IOException {
 
         Map<Integer, Pair<Integer, Long>> map = new HashMap<>();

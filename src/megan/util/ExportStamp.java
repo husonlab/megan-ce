@@ -58,15 +58,8 @@ public class ExportStamp {
     /**
      * apply the exporter
      *
-     * @param dir
-     * @param cName
-     * @param file
-     * @param allLevels
-     * @param progressListener
      * @return lines exported
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static int apply(Director dir, String cName, File file, boolean allLevels, ProgressListener progressListener) throws IOException, CanceledException {
         final ClassificationViewer viewer = (ClassificationViewer) dir.getViewerByClassName(cName);
         final boolean taxonomy = cName.equalsIgnoreCase(Classification.Taxonomy);
@@ -149,8 +142,6 @@ public class ExportStamp {
     /**
      * get all ranks above, or null, if incomplete
      *
-     * @param v
-     * @param rankIndex
      * @return all ranks or null
      */
     private static String makePath(final Node v, int rankIndex) {
@@ -217,7 +208,6 @@ public class ExportStamp {
     /**
      * determine the max taxonomic rank index
      *
-     * @param selectedNodes
      * @return max taxonomic level
      */
     private static int determineMaxTaxonomicRankIndex(NodeSet selectedNodes) {
@@ -237,7 +227,6 @@ public class ExportStamp {
     /**
      * determine the number of levels
      *
-     * @param selectedNodes
      * @return number of levels
      */
     private static int determineMaxFunctionalIndex(NodeSet selectedNodes) {
@@ -259,9 +248,6 @@ public class ExportStamp {
     /**
      * make a functional path
      *
-     * @param viewer
-     * @param v
-     * @param maxRankIndex
      * @return path
      */
     private static String makeFunctionalPath(ClassificationViewer viewer, Node v, int maxRankIndex) {

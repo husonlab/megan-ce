@@ -44,9 +44,7 @@ public class BlastTab2SAMIterator extends SAMIteratorBase implements ISAMIterato
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public BlastTab2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         setSkipCommentLines(true);

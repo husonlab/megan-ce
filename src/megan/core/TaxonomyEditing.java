@@ -39,9 +39,7 @@ class TaxonomyEditing {
     /**
      * applies all edit operations to given tree
      *
-     * @param tree
-     * @param taxId2Node
-     */
+	 */
     public void apply(PhyloTree tree, Map<Integer, Node> taxId2Node) {
         for (Edit edit : list) {
             switch (edit.type) {
@@ -92,9 +90,7 @@ class TaxonomyEditing {
     /**
      * apply the edits to the tax mapping
      *
-     * @param taxId2TaxName
-     * @param taxName2TaxId
-     */
+	 */
     public void apply(Map<Integer, String> taxId2TaxName, Map<String, Integer> taxName2TaxId) {
         for (Edit edit : list) {
             switch (edit.type) {
@@ -220,8 +216,7 @@ class Edit {
     /**
      * write the edit
      *
-     * @return
-     */
+	 */
     public String toString() {
         return switch (type) {
             case APPEND -> "A " + parentId + " " + taxId + " '" + taxName + "'";
@@ -235,10 +230,8 @@ class Edit {
     /**
      * attempts to parse an edit string
      *
-     * @param string
      * @return edit or null
-     * @throws IOException
-     */
+	 */
     public static Edit fromString(String string) throws IOException {
         return parse(new NexusStreamParser(new StringReader(string)));
     }
@@ -246,10 +239,8 @@ class Edit {
     /**
      * parse an edit object
      *
-     * @param np
      * @return edit object
-     * @throws IOException
-     */
+	 */
     public static Edit parse(NexusStreamParser np) throws IOException {
         if (np.peekMatchIgnoreCase("A")) {
             np.matchIgnoreCase("A");

@@ -29,12 +29,11 @@ public enum AlignMode {
 	blastp, blastx, blastn;
 
 	public static byte rank(AlignMode mode) {
-        return switch (mode) {
-            case blastp -> 2;
-            case blastx -> 3;
-            case blastn -> 4;
-            default -> -1;
-        };
+        return (byte) switch (mode) {
+			case blastp -> 2;
+			case blastx -> 3;
+			case blastn -> 4;
+		};
     }
 
     public static AlignMode value(int rank) {

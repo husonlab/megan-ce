@@ -32,9 +32,6 @@ class Utilities {
     /**
      * find the query in the reads file. When found, FileLineBytesIterator is pointing to location of query in file
      *
-     * @param queryName
-     * @param it
-     * @param isFastA
      * @return true, if found
      */
     public static boolean findQuery(byte[] queryName, int queryNameLength, FileLineBytesIterator it, boolean isFastA) {
@@ -79,8 +76,6 @@ class Utilities {
     /**
      * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
      *
-     * @param it
-     * @param isFastA
      * @return string
      */
     public static String getFastAText(FileLineBytesIterator it, boolean isFastA) {
@@ -119,9 +114,7 @@ class Utilities {
     /**
      * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, writes the full text of the match
      *
-     * @param it
-     * @param isFastA
-     */
+	 */
     public static void skipFastAText(FileLineBytesIterator it, boolean isFastA) {
         if (isFastA) {
             while (it.hasNext() && it.peekNextByte() != '>') {
@@ -145,8 +138,6 @@ class Utilities {
     /**
      * assuming that the FileLineBytesIterator has just returned the header line of a fastA or fastQ record, copies the full text of the match
      *
-     * @param it
-     * @param isFastA
      * @return size
      */
     public static int getFastAText(FileLineBytesIterator it, boolean isFastA, Single<byte[]> result) { // todo: has not been tested!
@@ -206,9 +197,6 @@ class Utilities {
     /**
      * match header line with query name
      *
-     * @param queryName
-     * @param line
-     * @param lineLength
      * @return true, if name matches name in line
      */
     private static boolean matchName(byte[] queryName, int queryNameLength, byte[] line, int lineLength) {
@@ -235,8 +223,6 @@ class Utilities {
     /**
      * returns a fastA or fastQ record as FastA
      *
-     * @param reader
-     * @param position
      * @return fastA record at current position
      */
     public static String getFastAText(InputReader reader, long position) throws IOException {
@@ -279,7 +265,6 @@ class Utilities {
     /**
      * get the header from a fastA record
      *
-     * @param fastAText
      * @return header
      */
     public static String getFastAHeader(String fastAText) {
@@ -293,7 +278,6 @@ class Utilities {
     /**
      * get the seqiemce from a fastA record
      *
-     * @param fastAText
      * @return header
      */
     public static String getFastASequence(String fastAText) {
@@ -307,15 +291,14 @@ class Utilities {
     /**
      * is the given file a MALT or Diamond -generated SAM file?
      *
-     * @param file
      * @return true, if file is MALT or Diamond generated SAM file
      */
     public static boolean IsMaltOrDiamondSAMFile(File file) {
 		String suffix = FileUtils.getFileSuffix(FileUtils.getFileNameWithoutZipOrGZipSuffix(file.getName()));
-        if (suffix == null)
-            return false;
-        if (!suffix.toLowerCase().equals(".sam"))
-            return false;
+		if (suffix == null)
+			return false;
+		if (!suffix.equalsIgnoreCase(".sam"))
+			return false;
         try {
             try (FileLineIterator it = new FileLineIterator(file.getPath())) {
                 while (it.hasNext()) {
@@ -337,8 +320,6 @@ class Utilities {
      * gets the specified token from a tab separated text
      *
      * @param n      which token (starting at 0)
-     * @param text
-     * @param offset
      * @return n-th token
      */
     public static String getToken(int n, byte[] text, int offset) {
@@ -358,8 +339,6 @@ class Utilities {
     /**
      * gets the position of the next newline character
      *
-     * @param text
-     * @param offset
      * @return next new line
      */
     public static int nextNewLine(byte[] text, int offset) {
@@ -375,10 +354,6 @@ class Utilities {
     /**
      * split a given text into strings
      *
-     * @param text
-     * @param offset
-     * @param end
-     * @param splitChar
      * @return strings
      */
     public static String[] split(byte[] text, int offset, int end, byte splitChar) {

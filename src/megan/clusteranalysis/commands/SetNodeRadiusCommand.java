@@ -37,9 +37,7 @@ public class SetNodeRadiusCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeRadius=");
@@ -122,8 +120,7 @@ public class SetNodeRadiusCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         String radius = "" + getViewer().getNodeRadius();
         radius = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter node radius (0-100)", radius);

@@ -38,8 +38,7 @@ public class ChooseDirectoryCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -57,8 +56,7 @@ public class ChooseDirectoryCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param event
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent event) {
         File file = null;
@@ -103,7 +101,6 @@ public class ChooseDirectoryCommand extends CommandBase implements ICommand {
     /**
      * gets the longest common prefix or null
      *
-     * @param files
      * @return lcp
      */
     private String getLongestCommonPrefix(File[] files) {

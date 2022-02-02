@@ -78,8 +78,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw heat map with colors representing classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         final SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
 
@@ -256,8 +255,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw heat map with colors representing series
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
     }
@@ -337,8 +335,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                                     score = -((float) (union.size() - intersection.size()) / (float) union.size());
                             } else
                                 score = 0;
-                            break;
-                        }
+					   }
                         case PearsonsR -> {
                             double meanA = 0;
                             double meanB = 0;
@@ -363,8 +360,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                             valueBottomA = Math.sqrt(valueBottomA);
                             valueBottomB = Math.sqrt(valueBottomB);
                             score = (float) (valueTop / (valueBottomA * valueBottomB));
-                            break;
-                        }
+						}
                         case KendallsTau -> {
                             int countConcordant = 0;
                             int countDiscordant = 0;
@@ -442,16 +438,14 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     protected void drawXAxis(Graphics2D gc) {
     }
 
     /**
      * draw the y-axis
      *
-     * @param gc
-     */
+	 */
     protected void drawYAxis(Graphics2D gc, Dimension size) {
     }
 
@@ -562,8 +556,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * must x and y coordinates by zoomed together?
      *
-     * @return
-     */
+	 */
     @Override
     public boolean isXYLocked() {
         return true;
@@ -572,7 +565,6 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * selects all nodes in the connected component hit by the mouse
      *
-     * @param event
      * @return true if anything selected
      */
     public boolean selectComponent(MouseEvent event) {
@@ -627,9 +619,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * recursively select all nodes in the same component
      *
-     * @param v
-     * @param selected
-     */
+	 */
     private void selectRec(Node v, Set<String> selected) {
         for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
             Node w = e.getOpposite(v);

@@ -43,9 +43,7 @@ public class IntervalTree4Matches {
     /**
      * selects the matches to keep for a given read and puts them into an interval tree
      *
-     * @param readBlock
      * @param task      can be null
-     * @param progress
      * @return interval tree
      */
     public static IntervalTree<IMatchBlock> computeIntervalTree(IReadBlock readBlock, Task task, ProgressListener progress) throws CanceledException {

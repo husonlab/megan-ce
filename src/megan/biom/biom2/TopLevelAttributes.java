@@ -77,9 +77,7 @@ public class TopLevelAttributes {
     /**
      * construct from reader
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     public TopLevelAttributes(IHDF5Reader reader) throws IOException {
         read(reader);
     }
@@ -87,9 +85,7 @@ public class TopLevelAttributes {
     /**
      * read top-level properties from biom2.1 file
      *
-     * @param reader
-     * @throws IOException
-     */
+	 */
     private void read(IHDF5Reader reader) throws IOException {
         try {
             id = reader.string().getAttr("/", "id");

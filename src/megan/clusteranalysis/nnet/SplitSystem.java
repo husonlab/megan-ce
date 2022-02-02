@@ -49,9 +49,7 @@ public class SplitSystem {
     /**
      * constructs a set of splits from a tree
      *
-     * @param allTaxa
-     * @param tree
-     */
+	 */
     public SplitSystem(Taxa allTaxa, PhyloTree tree) {
         this();
         splitsFromTreeRec(tree.getRoot(), tree, allTaxa, allTaxa.getBits(), new NodeArray<>(tree), this);
@@ -69,8 +67,7 @@ public class SplitSystem {
     /**
      * add a split
      *
-     * @param split
-     */
+	 */
     public void addSplit(Split split) {
         nsplits++;
         index2split.put(nsplits, split);
@@ -82,7 +79,6 @@ public class SplitSystem {
     /**
      * gets a split
      *
-     * @param index
      * @return split with given index
      */
     public Split getSplit(int index) {
@@ -92,7 +88,6 @@ public class SplitSystem {
     /**
      * gets the index of the split, if present, otherwise -1
      *
-     * @param split
      * @return index or -1
      */
     public int indexOf(Split split) {
@@ -103,7 +98,6 @@ public class SplitSystem {
     /**
      * determines whether given split is already contained in the system
      *
-     * @param split
      * @return true, if contained
      */
     private boolean contains(Split split) {
@@ -148,9 +142,6 @@ public class SplitSystem {
      * given a phylogenetic tree and a set of taxa, returns all splits found in the tree.
      * Assumes the last taxon is an outgroup
      *
-     * @param allTaxa
-     * @param activeTaxa
-     * @param tree
      * @return splits
      */
     public static SplitSystem getSplitsFromTree(Taxa allTaxa, BitSet activeTaxa, PhyloTree tree) {
@@ -163,11 +154,6 @@ public class SplitSystem {
     /**
      * recursively extract splits from tree. Also works for cluster networks.
      *
-     * @param v
-     * @param tree
-     * @param allTaxa
-     * @param reticulateNode2Taxa
-     * @param splits
      * @return taxa
      */
     private static BitSet splitsFromTreeRec(Node v, PhyloTree tree,
@@ -210,11 +196,7 @@ public class SplitSystem {
     /**
      * inserts a split into a tree
      *
-     * @param v
-     * @param node2taxa
-     * @param split
-     * @param tree
-     */
+	 */
     private void processSplit(Node v, NodeArray<BitSet> node2taxa, int outGroupTaxonId, Split split, PhyloTree tree) {
         BitSet partB = split.getPartNotContaining(outGroupTaxonId);
         double weight = split.getWeight();
@@ -259,7 +241,6 @@ public class SplitSystem {
     /**
      * returns a trivial split separating index from all other taxa, if it exists
      *
-     * @param taxonIndex
      * @return trivial split, if it exists
      */
     private Split getTrivial(int taxonIndex) {
@@ -276,7 +257,6 @@ public class SplitSystem {
     /**
      * add all given splits that are not already present (as splits, ignoring weights etc)
      *
-     * @param splits
      * @return number actually added
      */
     public int addAll(SplitSystem splits) {
@@ -322,7 +302,6 @@ public class SplitSystem {
      * if the given split A|B is contained in this split system, return it.
      * This is useful because A|B might have a weight etc in the split system
      *
-     * @param split
      * @return split
      */
     private Split get(Split split) {
@@ -337,8 +316,7 @@ public class SplitSystem {
     /**
      * determines whether these splits contains a pair with all four intersections
      *
-     * @return
-     */
+	 */
     public boolean containsPairWithAllFourIntersections() {
         for (int s = 1; s <= size(); s++) {
             Split S = getSplit(s);
@@ -355,7 +333,6 @@ public class SplitSystem {
     /**
      * returns true, if all splits contain all taxa
      *
-     * @param taxa
      * @return true, if full splits
      */
     public boolean isFullSplitSystem(Taxa taxa) {
@@ -372,7 +349,6 @@ public class SplitSystem {
     /**
      * gets the splits as binary sequences in fastA format
      *
-     * @param taxa
      * @return splits in fastA format
      */
     public String toStringAsBinarySequences(Taxa taxa) {
@@ -416,7 +392,6 @@ public class SplitSystem {
     /**
      * delete all taxa listed
      *
-     * @param labels
      * @param taxa   taxa are removed from here
      * @return split set with taxa delated
      */

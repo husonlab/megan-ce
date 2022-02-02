@@ -26,10 +26,7 @@ public class Utilities {
     /**
      * append the cigar string
      *
-     * @param alignedQuery
-     * @param alignedReference
-     * @param buffer
-     */
+	 */
     public static void appendCigar(String alignedQuery, String alignedReference, StringBuilder buffer) {
         char cigarState = 'M'; // M in match, D deletion, I insertion
         int count = 0;
@@ -68,10 +65,7 @@ public class Utilities {
     /**
      * append the MD string
      *
-     * @param alignedQuery
-     * @param alignedReference
-     * @param buffer
-     */
+	 */
     public static void appendMDString(final String alignedQuery, final String alignedReference, final StringBuilder buffer) {
         buffer.append("MD:Z:");
         int countMatches = 0;
@@ -116,8 +110,6 @@ public class Utilities {
     /**
      * compute edit distance from alignment
      *
-     * @param alignedQuery
-     * @param alignedReference
      * @return edit distance
      */
     public static int computeEditDistance(String alignedQuery, String alignedReference) {

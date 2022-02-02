@@ -31,8 +31,7 @@ public class AssignmentUsingLCACreator implements IAssignmentAlgorithmCreator {
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public AssignmentUsingLCACreator(String cName, boolean usePercentIdentityFilter, float percentToCover) {
         this.cName = cName;
         this.usePercentIdentityFilter = usePercentIdentityFilter;

@@ -37,10 +37,7 @@ public class UPGMA {
     /**
      * apply the UPGMA algorithm
      *
-     * @param taxa
-     * @param distances
-     * @param treeView
-     */
+	 */
     public static void apply(Taxa taxa, Distances distances, PhyloTreeView treeView) {
         if (instance == null)
             instance = new UPGMA();
@@ -51,10 +48,7 @@ public class UPGMA {
     /**
      * run the UPGMA algorithm
      *
-     * @param taxa
-     * @param dist
-     * @param tree
-     */
+	 */
     private void computeUPMATree(Taxa taxa, Distances dist, PhyloTree tree) {
         tree.clear();
 
@@ -163,8 +157,7 @@ public class UPGMA {
     /**
      * embed the tree
      *
-     * @param treeView
-     */
+	 */
     public static void embedTree(PhyloTreeView treeView) {
         treeView.removeAllInternalPoints();
 
@@ -184,11 +177,8 @@ public class UPGMA {
     /**
      * recursively compute the embedding
      *
-     * @param v
-     * @param e
      * @param hDistToRoot horizontal distance from node to root
      * @param leafNumber  rank of leaf in vertical ordering
-     * @param toScale
      * @return index of last leaf
      */
     private static int computeEmbeddingRec(PhyloTreeView view, Node v, Edge e, double hDistToRoot, int leafNumber, boolean toScale) {

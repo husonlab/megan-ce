@@ -41,8 +41,7 @@ public class BlastTabMatch implements IMatch {
      * query id, ref id, percent identity, alignment length, number of mismatches, number of gap openings, query start, query end, subject start, subject end, Expect value, HSP bit score.
      * 0         1       2                 3                 4                     5                       6            7           8             9            10            11
      *
-     * @param aLine
-     */
+	 */
     @Override
     public void parse(String aLine) {
         String[] tokens = aLine.split("\t");

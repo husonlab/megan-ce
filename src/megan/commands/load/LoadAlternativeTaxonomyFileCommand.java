@@ -78,8 +78,7 @@ public class LoadAlternativeTaxonomyFileCommand extends CommandBase implements I
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -87,8 +86,7 @@ public class LoadAlternativeTaxonomyFileCommand extends CommandBase implements I
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         File lastOpenFile = ProgramProperties.getFile(MeganProperties.TAXONOMYFILE);
 

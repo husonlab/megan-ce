@@ -38,7 +38,6 @@ public abstract class ClipboardBase extends CommandBase {
     /**
      * find the action
      *
-     * @param name
      * @return action
      */
     static protected Action findAction(String name) {

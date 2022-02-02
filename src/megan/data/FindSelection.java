@@ -34,8 +34,6 @@ public class FindSelection {
     /**
      * does the given readBlock match the given pattern
      *
-     * @param readBlock
-     * @param pattern
      * @return true, if match
      */
     static public boolean doesMatch(FindSelection findSelection, IReadBlock readBlock, Pattern pattern) {
@@ -60,8 +58,6 @@ public class FindSelection {
     /**
      * does label match pattern?
      *
-     * @param pattern
-     * @param label
      * @return true, if match
      */
     private static boolean matches(Pattern pattern, String label) {

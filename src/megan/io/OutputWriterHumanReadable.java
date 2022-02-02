@@ -34,8 +34,7 @@ public class OutputWriterHumanReadable implements IOutputWriter {
     /**
      * constructor
      *
-     * @param w
-     */
+	 */
     public OutputWriterHumanReadable(Writer w) {
         this.w = w;
     }

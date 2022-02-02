@@ -82,8 +82,7 @@ public class WeightedTaxonomicUniFracCommand extends CommandBase implements IChe
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set index=" + UniFrac.WeightedUniformUniFrac + ";");
     }

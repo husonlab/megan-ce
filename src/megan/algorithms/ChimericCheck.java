@@ -35,11 +35,7 @@ class ChimericCheck {
     /**
      * report any long reads that look like they may be chimeric
      *
-     * @param readName
-     * @param v
-     * @param taxa2intervals
-     * @param totalCovered
-     */
+	 */
     public static void apply(String readName, Node v, HashMap<Integer, IntervalList> taxa2intervals, int totalCovered, int readLength) {
         final int ancestorRank = TaxonomyData.getTaxonomicRank(TaxonomyData.getLowestAncestorWithMajorRank((int) v.getInfo()));
         if (v.getInDegree() > 0 && v.getFirstInEdge().getSource().getInDegree() > 0 // keep root and top level nodes

@@ -51,9 +51,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     protected LastMAF2SAMIterator(String fileName, int maxNumberOfMatchesPerRead, BlastMode blastMode) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         this.blastMode = blastMode;

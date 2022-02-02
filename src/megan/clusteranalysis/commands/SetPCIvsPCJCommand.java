@@ -55,9 +55,7 @@ public class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand 
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         final ClusterViewer viewer = getViewer();
@@ -166,8 +164,7 @@ public class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand 
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         PCoATab tab = getViewer().getPcoaTab();
         PCoA PCoA = tab.getPCoA();

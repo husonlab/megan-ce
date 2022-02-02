@@ -35,8 +35,7 @@ public class ColorSchemeNucleotides implements IColorScheme {
     /**
      * constructor:
      *
-     * @param name
-     */
+	 */
     public ColorSchemeNucleotides(String name) {
         NAMES which = NAMES.Default;
         for (NAMES type : NAMES.values()) {
@@ -50,7 +49,6 @@ public class ColorSchemeNucleotides implements IColorScheme {
     /**
      * get the foreground color
      *
-     * @param ch
      * @return color
      */
     public Color getColor(int ch) {
@@ -60,7 +58,6 @@ public class ColorSchemeNucleotides implements IColorScheme {
     /**
      * get the background color
      *
-     * @param ch
      * @return color
      */
     public Color getBackground(int ch) {

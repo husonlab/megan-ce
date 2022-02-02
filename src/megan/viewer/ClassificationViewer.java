@@ -108,8 +108,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	 * Classification viewer
 	 *
 	 * @param dir     the director
-	 * @param visible
-	 * @throws Exception
 	 */
 	public ClassificationViewer(final Director dir, final Classification classification, boolean visible) {
 		super(dir, new PhyloTree(), false);
@@ -377,7 +375,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * gets the summarized array for a fid
 	 *
-	 * @param fId
 	 * @return summarized
 	 */
 	public float[] getSummarized(int fId) {
@@ -463,8 +460,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
      * rescan the data in the FViewer
      *
-     * @throws java.io.IOException
-     */
+	 */
     private void updateData() {
         ProgressListener progress = doc.getProgressListener();
         boolean saveCancelable = false;
@@ -630,7 +626,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * gets the getFrame()
 	 *
-	 * @return
 	 */
 	public JFrame getFrame() {
 		// Basic.caught(new Exception());
@@ -753,7 +748,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * gets the nodes associated with the given f id
 	 *
-	 * @param fId
 	 * @return nodes or null
 	 * todo: modify to use all nodes associated with this id
 	 */
@@ -768,7 +762,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * get a node associated with the given fId
 	 *
-	 * @param fId
 	 * @return a node or null
 	 */
 	public Node getANode(int fId) {
@@ -782,7 +775,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * is node with this f id selected?
 	 *
-	 * @param fId
 	 * @return selected?
 	 */
 	public boolean isSelected(int fId) {
@@ -797,7 +789,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * embeds a tree is a phylogram from the given root, using the given h- and v-spacing
 	 *
-	 * @param root
 	 */
 	private void embedTree(Node root) {
 		removeAllInternalPoints();
@@ -848,7 +839,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * recursively does the work
 	 *
-	 * @param v
 	 * @param hLevel // 0: leaf, max-value: root
 	 * @param leavesPlaced leaves placed
 	 * @return bounding box of subtree
@@ -911,9 +901,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * recursively does the work
 	 *
-	 * @param v
-	 * @param e
-	 * @param level
 	 * @return bbounding box of subtree
 	 */
 	private Rectangle embedPhylogramRec(Node v, Edge e, int level, Counter numberOfLeaves) {
@@ -1074,7 +1061,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * draws the powered by logo
 	 *
-	 * @param gc
 	 */
 	protected void drawPoweredBy(Graphics2D gc, Rectangle rect) {
 		if (getPOWEREDBY() != null && getPOWEREDBY().length() > 2) {
@@ -1091,9 +1077,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * recursively draw the tree
 	 *
-	 * @param gc
-	 * @param v
-	 * @param enabled
 	 */
 	private void paintRec(Graphics2D gc, Node v, List<Node> drawableNodeLabels, boolean enabled) {
 		Rectangle bbox = node2BoundingBox.get(v);
@@ -1203,8 +1186,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * we first collect all node labels to be drawn and then draw them here.
 	 *
-	 * @param gc
-	 * @param drawableNodeLabels
 	 */
 	private void drawNodeLabels(Graphics2D gc, List<Node> drawableNodeLabels) {
 
@@ -1409,7 +1390,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * setup the node labels
 	 *
-	 * @param resetLabelPositions
 	 */
 	public void setupNodeLabels(boolean resetLabelPositions) {
 		for (Node v = getTree().getFirstNode(); v != null; v = v.getNext()) {
@@ -1499,8 +1479,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * select all nodes associated with the given f ids
 	 *
-	 * @param fIds
-	 * @param state
 	 */
 	public void setSelectedIds(Collection<Integer> fIds, boolean state) {
 		NodeSet nodesToSelect = new NodeSet(getTree());
@@ -1519,7 +1497,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * set the tool tip to the given node
 	 *
-	 * @param v
 	 */
 	public void setToolTipText(Node v) {
 		final StringWriter writer = new StringWriter();
@@ -1600,9 +1577,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * recursively print a summary
 	 *
-	 * @param selectedNodes
-	 * @param v
-	 * @param indent
 	 */
 	@Override
 	public void listSummaryRec(NodeSet selectedNodes, Node v, int indent, Writer outs) throws IOException {
@@ -1756,7 +1730,6 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	/**
 	 * gets max distance from this node to any leaf
 	 *
-	 * @param v
 	 * @return depth
 	 */
 	private static int getMaxDistanceFromNodeToAnyLeaf(Node v) {

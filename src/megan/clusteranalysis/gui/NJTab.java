@@ -34,8 +34,7 @@ public class NJTab extends TreeTabBase implements ITab {
     /**
      * constructor
      *
-     * @param clusterViewer
-     */
+	 */
     public NJTab(final ClusterViewer clusterViewer) {
         super(clusterViewer);
 
@@ -57,9 +56,7 @@ public class NJTab extends TreeTabBase implements ITab {
     /**
      * sync
      *
-     * @param taxa
-     * @param distances
-     */
+	 */
     public void compute(Taxa taxa, Distances distances) {
         if (getGraphView().getGraph().getNumberOfNodes() == 0) {
             System.err.println("Computing " + getLabel());

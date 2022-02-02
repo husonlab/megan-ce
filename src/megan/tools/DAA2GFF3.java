@@ -36,9 +36,6 @@ public class DAA2GFF3 {
 	/**
 	 * computes GFF3 file from DAA file
 	 *
-	 * @param args
-	 * @throws UsageException
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		try {
@@ -59,10 +56,7 @@ public class DAA2GFF3 {
 	/**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Extracts a GFF3 annotation file from a meganized DAA file");
         options.setVersion(ProgramProperties.getProgramVersion());

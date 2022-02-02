@@ -52,8 +52,7 @@ public class TableViewSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param table
-     */
+	 */
     public TableViewSearcher(MyTableView table) {
         this(null, SEARCHER_NAME, table);
     }
@@ -61,9 +60,7 @@ public class TableViewSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param frame
-     * @param table
-     */
+	 */
     public TableViewSearcher(Frame frame, MyTableView table) {
         this(frame, SEARCHER_NAME, table);
     }
@@ -72,8 +69,7 @@ public class TableViewSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param table
-     */
+	 */
     public TableViewSearcher(Frame frame, String name, MyTableView table) {
         this.frame = frame;
         this.name = name;
@@ -166,8 +162,7 @@ public class TableViewSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (select)
             toSelect.add(new Pair<>(current.getFirst(), current.getSecond()));
@@ -178,8 +173,7 @@ public class TableViewSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         if (select) {
             table.getSelectionModel().selectAll();
@@ -206,8 +200,7 @@ public class TableViewSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(final String newLabel) {
         final Pair<Integer, Integer> cell = new Pair<>(current.getFirst(), current.getSecond());
 

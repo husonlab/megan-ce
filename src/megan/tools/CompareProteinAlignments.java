@@ -37,10 +37,7 @@ public class CompareProteinAlignments {
     /**
      * compares protein alignments
      *
-     * @param args
-     * @throws jloda.util.UsageException
-     * @throws java.io.FileNotFoundException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -61,8 +58,7 @@ public class CompareProteinAlignments {
     /**
      * run the program
      *
-     * @param args
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Compares protein alignments for different analyses of the same sequences");
         options.setVersion(ProgramProperties.getProgramVersion());
@@ -200,8 +196,6 @@ public class CompareProteinAlignments {
     /**
      * computes the number of matches not present in the tree
      *
-     * @param matches
-     * @param tree
      * @return number of alignments and bases
      */
     private static int[] computeOnlyInFirst(ArrayList<IMatchBlock> matches, IntervalTree<IMatchBlock> tree) {
@@ -220,8 +214,6 @@ public class CompareProteinAlignments {
     /**
      * get the number of matches longer than in the tree
      *
-     * @param matches
-     * @param tree
      * @return number of alignments and bases
      */
     private static int[] computeLongerInFirst(ArrayList<IMatchBlock> matches, IntervalTree<IMatchBlock> tree) {
@@ -246,8 +238,6 @@ public class CompareProteinAlignments {
     /**
      * get the number of matches same  in the tree
      *
-     * @param matches
-     * @param tree
      * @return number of alignments and bases
      */
     private static int[] computeSameInBoth(ArrayList<IMatchBlock> matches, IntervalTree<IMatchBlock> tree) {
@@ -271,7 +261,6 @@ public class CompareProteinAlignments {
     /**
      * compute the interval tree for a set of matches
      *
-     * @param matches
      * @return interval tree
      */
     private static IntervalTree<IMatchBlock> computeIntervalTreeOnReference(ArrayList<IMatchBlock> matches) {
@@ -285,7 +274,6 @@ public class CompareProteinAlignments {
     /**
      * compute the interval tree for a set of matches
      *
-     * @param matches
      * @return interval tree
      */
     private static IntervalTree<IMatchBlock> computeIntervalTreeOnQuery(ArrayList<IMatchBlock> matches) {
@@ -299,9 +287,7 @@ public class CompareProteinAlignments {
     /**
      * compute the number of aligned bases in this list of matches
      *
-     * @param matches
-     * @return
-     */
+	 */
     private static int computeAlignedBases(ArrayList<IMatchBlock> matches) {
         int count = 0;
         for (IMatchBlock matchBlock : matches) {
@@ -313,7 +299,6 @@ public class CompareProteinAlignments {
     /**
      * get the subject start
      *
-     * @param matchBlock
      * @return start 0 0
      */
     private static int getSubjStart(IMatchBlock matchBlock) {
@@ -325,7 +310,6 @@ public class CompareProteinAlignments {
     /**
      * get the subject end
      *
-     * @param matchBlock
      * @return end or 0
      */
     private static int getSubjEnd(IMatchBlock matchBlock) {
@@ -348,7 +332,6 @@ public class CompareProteinAlignments {
     /**
      * compute accession to matches mapping
      *
-     * @param readBlock
      * @return mapping
      */
     private static Map<String, ArrayList<IMatchBlock>> computeAccession2Matches(IReadBlock readBlock) {
@@ -365,11 +348,8 @@ public class CompareProteinAlignments {
     /**
      * computes a  name to Uid
      *
-     * @param connector
-     * @param normalizer
      * @return mapping
-     * @throws IOException
-     */
+	 */
     private Map<String, Long> getName2Uid(IConnector connector, final NameNormalizer normalizer) throws IOException {
         final Map<String, Long> name2uid = new HashMap<>();
         for (IReadBlockIterator it = connector.getAllReadsIterator(0, 10, false, false); it.hasNext(); ) {

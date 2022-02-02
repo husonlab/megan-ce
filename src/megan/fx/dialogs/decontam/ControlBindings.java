@@ -29,8 +29,7 @@ public class ControlBindings {
     /**
      * update the scene
      *
-     * @param viewer
-     */
+	 */
     public static void updateScene(final DecontamDialogController controller, DecontamDialog viewer) {
 
 

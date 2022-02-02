@@ -32,10 +32,7 @@ class Biom2MetaData {
     /**
      * read metadata from a BIOM2 file
      *
-     * @param reader
-     * @param sampleIds
-     * @param table
-     */
+	 */
     public static int read(IHDF5Reader reader, String[] sampleIds, SampleAttributeTable table) {
         table.setSampleOrder(Arrays.asList(sampleIds));
         final Map<String, Object> sample2value = new HashMap<>();
@@ -53,11 +50,7 @@ class Biom2MetaData {
     /**
      * write metadata to a BIOM2 file
      *
-     * @param writer
-     * @param sampleIds
-     * @param table
-     * @throws IOException
-     */
+	 */
     public static void write(IHDF5Writer writer, String[] sampleIds, SampleAttributeTable table) throws IOException {
         throw new IOException("Not implemented");
     }

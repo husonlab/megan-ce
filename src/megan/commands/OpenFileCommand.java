@@ -61,8 +61,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public OpenFileCommand(IDirector dir) {
         setDir(dir);
     }
@@ -81,9 +80,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         final var dir = getDir();
@@ -196,8 +193,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         var lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
 

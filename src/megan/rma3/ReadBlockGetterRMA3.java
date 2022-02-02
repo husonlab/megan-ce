@@ -63,11 +63,7 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
     /**
      * constructor
      *
-     * @param rma3File
-     * @param minScore
-     * @param maxExpected
-     * @throws IOException
-     */
+	 */
     public ReadBlockGetterRMA3(RMA3File rma3File, float minScore, float maxExpected, boolean wantReadText, boolean wantMatches) throws IOException {
         this.rma3File = rma3File;
         this.wantReadText = wantReadText;
@@ -112,10 +108,8 @@ public class ReadBlockGetterRMA3 implements IReadBlockGetter {
     /**
      * grabs the read block with the given UID
      *
-     * @param uid
      * @return read block
-     * @throws IOException
-     */
+	 */
     @Override
     public IReadBlock getReadBlock(long uid) throws IOException {
         if (uid == -1 && !inStreaming) {

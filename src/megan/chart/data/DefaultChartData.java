@@ -84,8 +84,7 @@ public class DefaultChartData implements IChartData {
     /**
      * set dataset name
      *
-     * @param name
-     */
+	 */
     public void setDataSetName(String name) {
         this.dataSetName = name;
     }
@@ -126,8 +125,7 @@ public class DefaultChartData implements IChartData {
     /**
      * get the number of datasets
      *
-     * @return
-     */
+	 */
     public int getNumberOfSeries() {
         return seriesNames.size();
     }
@@ -153,8 +151,7 @@ public class DefaultChartData implements IChartData {
     /**
      * set the collection of series names in the order that they should appear
      *
-     * @param allSeries
-     */
+	 */
     public void setAllSeries(Collection<String> allSeries) {
         this.seriesNames.clear();
         this.seriesNames.addAll(allSeries);
@@ -163,8 +160,7 @@ public class DefaultChartData implements IChartData {
     /**
      * set the total size for each series. This is needed when normalizing by the total number of reads in samples
      *
-     * @param sizes
-     */
+	 */
     public void setAllSeriesTotalSizes(float... sizes) {
         for (int i = 0; i < sizes.length; i++)
             this.series2TotalSize.put(seriesNames.get(i), sizes[i]);
@@ -182,8 +178,7 @@ public class DefaultChartData implements IChartData {
     /**
      * get  the collection of class names in the order that they should appear
      *
-     * @return
-     */
+	 */
     public Collection<String> getClassNames() {
         return classNames;
     }
@@ -191,8 +186,7 @@ public class DefaultChartData implements IChartData {
     /**
      * set the   collection of class names in the order that they should appear
      *
-     * @param classNames
-     */
+	 */
     public void setClassNames(Collection<String> classNames) {
         this.classNames.clear();
         this.classNames.addAll(classNames);
@@ -201,8 +195,6 @@ public class DefaultChartData implements IChartData {
     /**
      * gets the value for the given series and className
      *
-     * @param series
-     * @param className
      * @return number or null
      */
     public Number getValue(String series, String className) {
@@ -221,8 +213,6 @@ public class DefaultChartData implements IChartData {
     /**
      * gets the value for the given series and className
      *
-     * @param series
-     * @param className
      * @return number or null
      */
     public double getValueAsDouble(String series, String className) {
@@ -236,9 +226,7 @@ public class DefaultChartData implements IChartData {
     /**
      * set the data for a specific data set
      *
-     * @param series
-     * @param classes2values
-     */
+	 */
     public void setDataForSeries(String series, Map<String, Number> classes2values) {
         series2Class2Values.put(series, classes2values);
         Number min = null;
@@ -296,9 +284,7 @@ public class DefaultChartData implements IChartData {
     /**
      * gets the range of values for the given dataset
      *
-     * @param series
-     * @return
-     */
+	 */
     public Pair<Number, Number> getRange(String series) {
         return series2Range.get(series);
     }
@@ -321,10 +307,7 @@ public class DefaultChartData implements IChartData {
     /**
      * put a data point
      *
-     * @param series
-     * @param className
-     * @param value
-     */
+	 */
     public void putValue(String series, String className, Number value) {
         if (value == null)
             value = 0;

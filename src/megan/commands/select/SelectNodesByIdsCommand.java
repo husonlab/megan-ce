@@ -62,8 +62,7 @@ public class SelectNodesByIdsCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         String result = JOptionPane.showInputDialog(getViewer().getFrame(), "Enter Id", "Select Node by Id", JOptionPane.QUESTION_MESSAGE);
         if (result != null)

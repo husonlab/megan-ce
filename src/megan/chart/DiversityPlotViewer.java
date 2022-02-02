@@ -32,6 +32,7 @@ import megan.main.MeganProperties;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -51,8 +52,7 @@ public class DiversityPlotViewer extends ChartViewer {
     /**
      * constructor
      *
-     * @param dir
-     */
+	 */
     public DiversityPlotViewer(final Director dir, AlignmentViewer alignmentViewer, int kmer, int step, int mindepth) throws CanceledException {
         super(dir.getMainViewer(), dir, dir.getDocument().getSampleLabelGetter(), new DefaultPlot2DData(), ProgramProperties.isUseGUI());
         this.alignmentViewer = alignmentViewer;
@@ -116,8 +116,8 @@ public class DiversityPlotViewer extends ChartViewer {
             IPlot2DData chartData = (IPlot2DData) getChartData();
             chartData.clear();
 
-            LinkedList<Pair<Number, Number>> values = new LinkedList<>();
-            SortedMap<Number, Number> rank2percentage = new TreeMap<>();
+			LinkedList<Pair<Number, Number>> values = new LinkedList<>();
+			SortedMap<Number, Number> rank2percentage = new TreeMap<>(Comparator.comparingDouble(Number::doubleValue));
             WordCountAnalysis.apply(alignmentViewer.getAlignment(), kmer, step, mindepth, dir.getDocument().getProgressListener(), values, rank2percentage);
             Single<Integer> extrapolatedCount = new Single<>();
             LinkedList<Pair<Number, Number>> mentenKinetics = WordCountAnalysis.computeMentenKinetics(values, extrapolatedCount);

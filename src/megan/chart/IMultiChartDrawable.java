@@ -42,8 +42,7 @@ public interface IMultiChartDrawable extends IChartDrawer {
     /**
      * copy all user parameters from the given base drawer
      *
-     * @param baseDrawer
-     */
+	 */
     void setValues(IMultiChartDrawable baseDrawer);
 
     /**

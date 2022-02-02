@@ -20,7 +20,10 @@ package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.NumberUtils;
+import jloda.util.ProgramProperties;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;
 
@@ -33,10 +36,7 @@ public class ApplyLCA {
     /**
      * apply the LCA
      *
-     * @param args
-     * @throws UsageException
-     * @throws java.io.FileNotFoundException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -56,8 +56,7 @@ public class ApplyLCA {
     /**
      * run the program
      *
-     * @param args
-     */
+	 */
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Applies the LCA to taxon-ids");
         options.setVersion(ProgramProperties.getProgramVersion());

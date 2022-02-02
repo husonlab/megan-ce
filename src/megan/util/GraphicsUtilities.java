@@ -36,8 +36,6 @@ public class GraphicsUtilities {
     /**
      * creates an icon to use with this sample for JavaFX
      *
-     * @param doc
-     * @param sample
      * @return icon
      */
     public static Node makeSampleIconFX(Document doc, String sample, boolean setColor, boolean setShape, int size) {
@@ -47,13 +45,7 @@ public class GraphicsUtilities {
     /**
      * creates an icon to use with this sample for Swing
      *
-     * @param doc
-     * @param sample
-     * @param setColor
-     * @param setShape
-     * @param size
-     * @return
-     */
+	 */
     public static java.awt.image.BufferedImage makeSampleIconSwing(Document doc, String sample, boolean setColor, boolean setShape, int size) {
         Color color = null;
         if (setColor) {

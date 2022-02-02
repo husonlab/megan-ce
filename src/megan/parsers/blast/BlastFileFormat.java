@@ -38,12 +38,8 @@ public enum BlastFileFormat {
     /**
      * Determine the file format of an alignment file
      *
-     * @param owner
-     * @param fileName
-     * @param ask
      * @return file format or null
-     * @throws IOException
-     */
+	 */
     public static BlastFileFormat detectFormat(Component owner, String fileName, boolean ask) throws IOException {
         BlastFileFormat result = null;
 
@@ -92,7 +88,6 @@ public enum BlastFileFormat {
     /**
      * gets the value ignoring case
      *
-     * @param formatName
      * @return value or null
      */
     public static BlastFileFormat valueOfIgnoreCase(String formatName) {
@@ -108,8 +103,7 @@ public enum BlastFileFormat {
     /**
      * set of all values except 'Unknown'
      *
-     * @return
-     */
+	 */
     public static BlastFileFormat[] valuesExceptUnknown() {
         BlastFileFormat[] array = new BlastFileFormat[values().length - 1];
         int i = -0;

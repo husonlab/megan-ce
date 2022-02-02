@@ -42,8 +42,7 @@ public class DAAMatchRecord {
     /**
      * constructor
      *
-     * @param queryRecord
-     */
+	 */
     public DAAMatchRecord(DAAQueryRecord queryRecord) {
         this.queryRecord = queryRecord;
         this.daaParser = queryRecord.getDaaParser();
@@ -53,10 +52,8 @@ public class DAAMatchRecord {
     /**
      * parse from buffer
      *
-     * @param buffer
      * @param refIns input stream to read reference sequences
-     * @return new position
-     */
+	 */
     public void parseBuffer(ByteInputBuffer buffer, InputReaderLittleEndian refIns) throws IOException {
         subjectId = buffer.readIntLittleEndian();
         int flag = buffer.read();
@@ -75,13 +72,11 @@ public class DAAMatchRecord {
             case blastx -> {
                 frame = (flag & (1 << 6)) == 0 ? queryBegin % 3 : 3 + (queryRecord.getSourceSequence().length - 1 - queryBegin) % 3;
                 translatedQueryBegin = getQueryTranslatedBegin(queryBegin, frame, queryRecord.getSourceSequence().length, true);
-                break;
-            }
+			}
             case blastp -> {
                 frame = 0;
                 translatedQueryBegin = queryBegin;
-                break;
-            }
+			}
             case blastn -> {
                 frame = (flag & (1 << 6)) == 0 ? 0 : 1;
                 translatedQueryBegin = getQueryTranslatedBegin(queryBegin, frame, queryRecord.getSourceSequence().length);
@@ -100,8 +95,7 @@ public class DAAMatchRecord {
      * mismatches
      * gapOpeningS
      *
-     * @param transcript
-     */
+	 */
     private void parseTranscript(PackedTranscript transcript) {
         translatedQueryLen = 0;
         frameShiftAdjustmentForBlastXMode = 0;

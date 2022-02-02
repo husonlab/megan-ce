@@ -29,8 +29,7 @@ public class VectorN {
     /**
      * constructor
      *
-     * @param n
-     */
+	 */
     public VectorN(int n) {
         v = new double[n];
     }
@@ -38,8 +37,7 @@ public class VectorN {
     /**
      * constructor
      *
-     * @param vector
-     */
+	 */
     public VectorN(VectorN vector) {
         v = new double[vector.v.length];
         System.arraycopy(vector.v, 0, v, 0, v.length);
@@ -57,7 +55,6 @@ public class VectorN {
     /**
      * get component
      *
-     * @param j
      * @return j-th component
      */
     public double get(int j) {
@@ -67,9 +64,7 @@ public class VectorN {
     /**
      * set j-th component
      *
-     * @param j
-     * @param f
-     */
+	 */
     public void set(int j, double f) {
         v[j] = f;
     }
@@ -77,8 +72,7 @@ public class VectorN {
     /**
      * set
      *
-     * @param vector
-     */
+	 */
     public void set(VectorN vector) {
         for (int j = 0; j < size(); j++)
             set(j, vector.get(j));
@@ -99,8 +93,7 @@ public class VectorN {
     /**
      * multiple by given matrix
      *
-     * @param mat
-     */
+	 */
     public void transform(MatrixN mat) {
         final VectorN tmp = new VectorN(size());
         for (int i = 0; i < size(); i++) {
@@ -115,7 +108,6 @@ public class VectorN {
     /**
      * compute euclidean distance to given vector
      *
-     * @param vector
      * @return distance
      */
     public double distance(VectorN vector) {

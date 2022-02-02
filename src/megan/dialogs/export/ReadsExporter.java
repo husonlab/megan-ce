@@ -39,11 +39,7 @@ public class ReadsExporter {
     /**
      * export all matches in file
      *
-     * @param connector
-     * @param fileName
-     * @param progressListener
-     * @throws java.io.IOException
-     */
+	 */
     public static int exportAll(IConnector connector, String fileName, ProgressListener progressListener) throws IOException {
         int total = 0;
         try {
@@ -68,14 +64,7 @@ public class ReadsExporter {
     /**
      * export all reads for given set of classids in the given classification
      *
-     * @param classification
-     * @param classIds
-     * @param connector
-     * @param fileName
-     * @param progressListener
-     * @throws java.io.IOException
-     * @throws jloda.util.CanceledException
-     */
+	 */
     public static int export(String classification, Collection<Integer> classIds, IConnector connector, String fileName, ProgressListener progressListener) throws IOException, CanceledException {
         int total = 0;
         try {
@@ -111,11 +100,7 @@ public class ReadsExporter {
     /**
      * write the read
      *
-     * @param readBlock
-     * @param w
-     * @return number of reads written
-     * @throws java.io.IOException
-     */
+	 */
     private static void write(IReadBlock readBlock, Writer w) throws IOException {
         String header = readBlock.getReadHeader();
         if (header != null) {

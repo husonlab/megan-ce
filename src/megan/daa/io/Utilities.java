@@ -27,8 +27,6 @@ public class Utilities {
     /**
      * determines whether two byte arrays are equalOverShorterOfBoth over the whole minimum of their two lengths
      *
-     * @param a
-     * @param b
      * @return true, if shared indices have same value
      */
     public static boolean equalOverShorterOfBoth(byte[] a, byte[] b) {
@@ -44,8 +42,6 @@ public class Utilities {
     /**
      * copies the src to the target, resizing the target, if necessary
      *
-     * @param src
-     * @param target
      * @return result, possibly resized
      */
     public static byte[] copy(byte[] src, byte[] target) {
@@ -59,7 +55,6 @@ public class Utilities {
     /**
      * computes percent identity
      *
-     * @param match
      * @return percent identity
      */
     public static int computePercentIdentity(DAAMatchRecord match) {

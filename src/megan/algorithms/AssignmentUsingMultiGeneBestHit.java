@@ -46,8 +46,7 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     /**
      * constructor
      *
-     * @param cName
-     */
+	 */
     public AssignmentUsingMultiGeneBestHit(String cName) {
         this.cName = cName;
         allMatches = new IntervalTree<>();
@@ -58,8 +57,6 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
      * computes the id for a read from its matches
      * matches
      *
-     * @param activeMatches
-     * @param readBlock
      * @return id or 0
      */
     public int computeId(BitSet activeMatches, IReadBlock readBlock) {
@@ -85,7 +82,6 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     /**
      * get additional classes found for this read
      *
-     * @param index
      * @param numberOfClassifications used to set length of arrays returned in list
      * @param list                    of assignment arrays for use in DataProcessor
      * @return total number of classes
@@ -103,8 +99,6 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     /**
      * get the LCA of two ids
      *
-     * @param id1
-     * @param id2
      * @return LCA of id1 and id2
      */
     @Override
@@ -115,8 +109,6 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     /**
      * computes set of matches accepted for determining the class ids for this read
      *
-     * @param activeMatches
-     * @param readBlock
      * @return number of ids
      */
     private IntervalTree<IMatchBlock> computeAcceptedMatches(BitSet activeMatches, IReadBlock readBlock) {

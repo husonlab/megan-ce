@@ -42,9 +42,6 @@ public class Biom1ExportFViewer {
     /**
      * export taxon name to counts mapping
      *
-     * @param dir
-     * @param file
-     * @param progressListener
      * @return lines written
      */
     public static int apply(Director dir, String cName, File file, ProgressListener progressListener) throws IOException {
@@ -105,13 +102,7 @@ public class Biom1ExportFViewer {
     /**
      * recursively visit all the selected leaves
      *
-     * @param viewer
-     * @param v
-     * @param selected
-     * @param path
-     * @param rowList
-     * @param dataList
-     */
+	 */
     private static void visitSelectedLeavesRec(ClassificationViewer viewer, Node v, NodeSet selected, Vector<String> path,
                                                LinkedList<Map> rowList, LinkedList<float[]> dataList, Set<Integer> seen, ProgressListener progressListener) throws CanceledException {
         if (v.getOutDegree() > 0 || selected.contains(v)) {

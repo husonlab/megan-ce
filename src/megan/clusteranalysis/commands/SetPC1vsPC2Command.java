@@ -47,8 +47,7 @@ public class SetPC1vsPC2Command extends CommandBase implements ICheckBoxCommand 
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -120,8 +119,7 @@ public class SetPC1vsPC2Command extends CommandBase implements ICheckBoxCommand 
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set pc1=1 pc2=2;");
     }

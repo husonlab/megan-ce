@@ -42,8 +42,7 @@ public class CompareByAttributeRelativeCommand extends CommandBase implements IC
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 

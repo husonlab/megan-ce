@@ -44,9 +44,7 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("show histogram taxonId=");
@@ -74,8 +72,7 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         int taxId = ((MainViewer) getViewer()).getSelectedNodeIds().iterator().next();
@@ -86,8 +83,6 @@ public class ShowMatchesHistogramCommand extends CommandBase implements ICommand
     /**
      * compute the histogram associated with a given class
      *
-     * @param classId
-     * @param doc
      * @return histogram of counts of matches to different sequences
      */
     private int[] computeHistogram(int classId, Document doc) throws IOException {

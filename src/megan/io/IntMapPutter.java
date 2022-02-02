@@ -42,9 +42,7 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     /**
      * constructor
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public IntMapPutter(File file, boolean loadFileIfExists) throws IOException {
         this.file = file;
         map = new HashMap<>();
@@ -70,7 +68,6 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -83,9 +80,7 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     /**
      * puts value for given index
      *
-     * @param index
-     * @param value
-     */
+	 */
     @Override
     public void put(long index, int value) {
         if (index + 1 >= limit)

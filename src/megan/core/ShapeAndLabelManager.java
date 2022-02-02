@@ -40,7 +40,6 @@ class ShapeAndLabelManager {
     /**
      * get the set label
      *
-     * @param sample
      * @return label
      */
     public String getLabel(String sample) {
@@ -54,9 +53,7 @@ class ShapeAndLabelManager {
     /**
      * set label to use for sample
      *
-     * @param sample
-     * @param label
-     */
+	 */
     public void setLabel(String sample, String label) {
         sample2label.put(sample, label);
     }
@@ -80,7 +77,6 @@ class ShapeAndLabelManager {
     /**
      * get shape for sample
      *
-     * @param sample
      * @return shape
      */
     public NodeShape getShape(String sample) {
@@ -91,9 +87,7 @@ class ShapeAndLabelManager {
     /**
      * set shape to use with sample
      *
-     * @param sample
-     * @param shape
-     */
+	 */
     public void setShape(String sample, NodeShape shape) {
         sample2shape.put(sample, shape);
     }
@@ -145,8 +139,7 @@ class ShapeAndLabelManager {
     /**
      * parse label map from line
      *
-     * @param labelMapAsLine
-     */
+	 */
     public void parseLabelMapFromLine(String labelMapAsLine) {
         NexusStreamParser np = new NexusStreamParser(new StringReader(labelMapAsLine));
         try {
@@ -164,8 +157,7 @@ class ShapeAndLabelManager {
     /**
      * parse label map from line
      *
-     * @param shapeMapAsLine
-     */
+	 */
     public void parseShapeMapFromLine(String shapeMapAsLine) {
         NexusStreamParser np = new NexusStreamParser(new StringReader(shapeMapAsLine));
         try {

@@ -53,8 +53,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
     /**
      * draw a pie in which slices are classes
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         int x0 = 2;
         int x1 = getWidth() - 2;
@@ -136,8 +135,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
     /**
      * draw a pie in which slices are series
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         int x0 = 2;
         int x1 = getWidth() - 2;
@@ -234,8 +232,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
     /**
      * create a new instance of the given type of drawer, sharing internal data structures
      *
-     * @return
-     */
+	 */
     public PieChartDrawer createInstance() {
         final PieChartDrawer drawer = new PieChartDrawer();
         drawer.setViewer(viewer);
@@ -296,8 +293,7 @@ public class PieChartDrawer extends BarChartDrawer implements IChartDrawer, IMul
     /**
      * copy all user parameters from the given base drawer
      *
-     * @param baseDrawer
-     */
+	 */
     @Override
     public void setValues(IMultiChartDrawable baseDrawer) {
     }

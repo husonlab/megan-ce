@@ -76,10 +76,8 @@ public class FooterSectionRMA6 {
     /**
      * reads the start of the footer section
      *
-     * @param reader
      * @return start position of the footer section
-     * @throws IOException
-     */
+	 */
     public static long readStartFooterSection(IInputReaderOutputWriter reader) throws IOException {
         reader.seek(reader.length() - 16);
         return reader.readLong();
@@ -88,9 +86,7 @@ public class FooterSectionRMA6 {
     /**
      * write the footer
      *
-     * @param writer
-     * @throws IOException
-     */
+	 */
     public void write(IOutputWriter writer) throws IOException {
         writer.writeLong(numberOfReads);
         writer.writeLong(numberOfMatches);
@@ -217,7 +213,6 @@ public class FooterSectionRMA6 {
     /**
      * gets the start position for a named classification
      *
-     * @param classificationName
      * @return start or -1
      */
     public Long getStartClassification(String classificationName) {

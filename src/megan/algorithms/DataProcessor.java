@@ -50,8 +50,7 @@ public class DataProcessor {
     /**
      * process a dataset
      *
-     * @param doc
-     */
+	 */
     public static int apply(final Document doc) {
         final ProgressListener progress = doc.getProgressListener();
         try {
@@ -425,11 +424,7 @@ public class DataProcessor {
     /**
      * is one of the class ids known?
      *
-     * @param knownIds
-     * @param classId
-     * @param moreClassIds
-     * @return
-     */
+	 */
     private static boolean nonEmptyIntersection(Set<Integer> knownIds, int classId, ArrayList<int[]> moreClassIds) {
         for (int[] array : moreClassIds) {
             if (knownIds.contains(array[classId]))
@@ -442,8 +437,6 @@ public class DataProcessor {
      * check that enough of read is covered by alignments
      *
      * @param minCoveredPercent percent of read that must be covered
-     * @param readBlock
-     * @param activeMatches
      * @param intervals         this will be non-null in long read mode, in which case we check the total cover, otherwise, we check the amount covered by any one match
      * @return true, if sufficient coverage
      */

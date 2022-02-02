@@ -19,7 +19,6 @@
 package megan.io.experimental;
 
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import megan.io.ILongGetter;
 import megan.io.LongFileGetterMappedMemory;
 
@@ -47,10 +46,7 @@ public class LongFileGetterPagedMemory implements ILongGetter {
     /**
      * long file getter in memory
      *
-     * @param file
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public LongFileGetterPagedMemory(File file) throws IOException {
         this.file = file;
         limit = file.length() / 8;
@@ -65,7 +61,6 @@ public class LongFileGetterPagedMemory implements ILongGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -102,8 +97,7 @@ public class LongFileGetterPagedMemory implements ILongGetter {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;

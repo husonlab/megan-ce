@@ -19,7 +19,6 @@
 package megan.io.experimental;
 
 import jloda.util.Basic;
-import jloda.util.CanceledException;
 import megan.io.IByteGetter;
 
 import java.io.File;
@@ -44,10 +43,7 @@ public class ByteFileGetterPagedMemory implements IByteGetter {
     /**
      * constructor
      *
-     * @param file
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public ByteFileGetterPagedMemory(File file) throws IOException {
         this.file = file;
         limit = file.length();
@@ -62,12 +58,7 @@ public class ByteFileGetterPagedMemory implements IByteGetter {
     /**
      * bulk get
      *
-     * @param index
-     * @param bytes
-     * @param offset
-     * @param len
-     * @return
-     */
+	 */
     @Override
     public int get(long index, byte[] bytes, int offset, int len) throws IOException {
         synchronized (raf) {
@@ -80,7 +71,6 @@ public class ByteFileGetterPagedMemory implements IByteGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -112,7 +102,6 @@ public class ByteFileGetterPagedMemory implements IByteGetter {
     /**
      * gets next four bytes as a single integer
      *
-     * @param index
      * @return integer
      */
     @Override
@@ -124,8 +113,7 @@ public class ByteFileGetterPagedMemory implements IByteGetter {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;

@@ -55,8 +55,6 @@ public class MothurFileFilter extends FileFilterBase implements FilenameFilter {
     /**
      * is file acceptable?
      *
-     * @param directory
-     * @param fileName
      * @return true if acceptable
      */
     @Override

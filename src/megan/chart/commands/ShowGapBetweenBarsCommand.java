@@ -41,9 +41,7 @@ public class ShowGapBetweenBarsCommand extends CommandBase implements ICheckBoxC
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("show gapBetweenBars=");
@@ -67,8 +65,7 @@ public class ShowGapBetweenBarsCommand extends CommandBase implements ICheckBoxC
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         execute("show gapBetweenBars=" + (!isSelected()) + ";");

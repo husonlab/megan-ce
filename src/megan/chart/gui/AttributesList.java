@@ -35,8 +35,7 @@ public class AttributesList extends LabelsJList {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public AttributesList(final ChartViewer viewer) {
         super(viewer, createSyncListenerAttributesList(viewer), createPopupMenu(viewer));
         this.chartSelection = viewer.getChartSelection();

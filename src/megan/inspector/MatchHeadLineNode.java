@@ -34,14 +34,7 @@ public class MatchHeadLineNode extends NodeBase {
     /**
      * constructor
      *
-     * @param name
-     * @param score
-     * @param ignore
-     * @param isUsed
-     * @param uId
-     * @param taxId
-     * @param matchText
-     */
+	 */
     public MatchHeadLineNode(String name, float score, boolean ignore, boolean isUsed, long uId, int taxId, String matchText) {
         super(name);
         this.rank = -score;

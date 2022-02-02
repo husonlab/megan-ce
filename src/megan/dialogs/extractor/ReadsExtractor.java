@@ -49,14 +49,6 @@ public class ReadsExtractor {
     /**
      * extract all reads belonging to a given set of taxon ids
      *
-	 * @param progressListener
-	 * @param taxIds
-	 * @param outDirectory
-	 * @param outFileName
-	 * @param doc
-	 * @param summarized
-	 * @throws IOException
-	 * @throws CanceledException
 	 */
 	public static int extractReadsByTaxonomy(final ProgressListener progressListener, final Set<Integer> taxIds,
 											 final String outDirectory, final String outFileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
@@ -73,15 +65,7 @@ public class ReadsExtractor {
     /**
      * extract all reads belonging to a given set of  ids
      *
-     * @param progressListener
-     * @param classIds
-     * @param outDirectory
-     * @param outFileName
-     * @param doc
-     * @param summarized
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public static int extractReadsByFViewer(final String cName, final ProgressListener progressListener, final Collection<Integer> classIds,
                                             final String outDirectory, final String outFileName, final Document doc, boolean summarized) throws IOException, CanceledException {
 
@@ -98,18 +82,7 @@ public class ReadsExtractor {
     /**
      * extracts all reads for the given classes
      *
-     * @param progress
-     * @param classificationName
-     * @param classIds
-     * @param classId2Name
-     * @param classId2Descendants
-     * @param outDirectory
-     * @param fileName
-     * @param doc
-     * @param summarized
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     private static int extractReads(final ProgressListener progress, final String classificationName, final Collection<Integer> classIds, final Map<Integer, String> classId2Name,
                                     Map<Integer, Collection<Integer>> classId2Descendants,
                                     final String outDirectory, String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {

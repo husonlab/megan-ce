@@ -75,9 +75,7 @@ public class SetFillColorCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set fillColor=");
@@ -105,8 +103,7 @@ public class SetFillColorCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final Color color = ChooseColorDialog.showChooseColorDialog(getViewer().getFrame(), "Choose fill color", ProgramProperties.get("NodeFillColor", Color.WHITE));
         if (color != null) {

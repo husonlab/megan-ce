@@ -37,8 +37,7 @@ public class DrawCirclesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 
@@ -110,8 +109,7 @@ public class DrawCirclesCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final SamplesViewer samplesViewer = ((SamplesViewer) getViewer());
         final Collection<String> samples = samplesViewer.getSamplesTableView().getSelectedSamples();

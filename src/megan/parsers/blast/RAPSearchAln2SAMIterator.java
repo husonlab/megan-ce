@@ -45,9 +45,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RAPSearchAln2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         if (!RAPSearch2AlnFileFilter.getInstance().accept(fileName)) {
@@ -220,9 +218,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
         /**
          * parses the header line.
          *
-         * @param aLine
-         * @throws IOException
-         */
+		 */
         void parseHeader(String aLine) throws IOException {
             referenceLine = aLine;
             int index = aLine.indexOf(vsString);
@@ -282,11 +278,7 @@ public class RAPSearchAln2SAMIterator extends SAMIteratorBase implements ISAMIte
         /**
          * parse the lines containing the match
          *
-         * @param queryLine
-         * @param midLine
-         * @param subjectLine
-         * @throws IOException
-         */
+		 */
         void parseLines(String queryLine, String midLine, String subjectLine) throws IOException {
             if (!queryLine.startsWith(Query))
                 throw new IOException("Token '" + Query + "' not found in line: " + queryLine);

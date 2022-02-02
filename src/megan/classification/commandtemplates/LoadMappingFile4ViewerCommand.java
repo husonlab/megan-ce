@@ -57,8 +57,7 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
     /**
      * commandline syntax
      *
-     * @return
-     */
+	 */
     @Override
     public String getSyntax() {
         return null;
@@ -67,8 +66,7 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -76,8 +74,7 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         final File lastOpenFile = ProgramProperties.getFile(ClassificationManager.getMapFileKey(cName, mapType));
         getDir().notifyLockInput();

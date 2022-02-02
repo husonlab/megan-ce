@@ -53,12 +53,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
     /**
      * constructor
      *
-     * @param blastFile
-     * @param format
-     * @param blastMode
-     * @param maxMatchesPerRead
-     * @throws IOException
-     */
+	 */
     public BlastFileReadBlockIterator(String blastFile, String readsFile, BlastFileFormat format, BlastMode blastMode, String[] cNames, int maxMatchesPerRead, boolean longReads) throws IOException {
         this.readsFile = readsFile;
         this.cNames = cNames;
@@ -90,8 +85,7 @@ public class BlastFileReadBlockIterator implements Iterator<ReadBlockRMA6>, IClo
     /**
      * close
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         iterator.close();
     }

@@ -18,7 +18,6 @@
  */
 package megan.io;
 
-import jloda.util.CanceledException;
 import jloda.util.progress.ProgressPercentage;
 
 import java.io.BufferedInputStream;
@@ -39,10 +38,7 @@ public class LongFileGetterInMemory implements ILongGetter {
     /**
      * long file getter in memory
      *
-     * @param file
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public LongFileGetterInMemory(File file) throws IOException {
         limit = file.length() / 8;
 
@@ -72,7 +68,6 @@ public class LongFileGetterInMemory implements ILongGetter {
     /**
      * gets value for given index
      *
-     * @param index
      * @return value or 0
      */
     @Override
@@ -84,8 +79,7 @@ public class LongFileGetterInMemory implements ILongGetter {
      * length of array
      *
      * @return array length
-     * @throws IOException
-     */
+	 */
     @Override
     public long limit() {
         return limit;

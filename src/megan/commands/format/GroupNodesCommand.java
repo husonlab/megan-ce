@@ -44,9 +44,7 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set groupNodes=");
         final String choice = np.getWordMatchesIgnoringCase("none selected");
@@ -167,8 +165,7 @@ public class GroupNodesCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("show window=groups;set groupNodes=selected;");
     }

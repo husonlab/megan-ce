@@ -27,7 +27,6 @@ public class QIIMETaxonParser {
      * determines the taxon-id associated with a QIIME generated taxon path, which looks something like this:
      * k__Bacteria;p__Proteobacteria;c__Gammaproteobacteria;o__Enterobacteriales;f__Enterobacteriaceae;g__Escherichia;s__
      *
-     * @param taxonPath
      * @param ignorePathAbove just used last assignable, ignoring whether the path above matches
      * @return NCBI taxon id
      */

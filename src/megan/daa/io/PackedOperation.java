@@ -29,8 +29,7 @@ public class PackedOperation {
     /**
      * constructor
      *
-     * @param code
-     */
+	 */
     public PackedOperation(int code) {
         this.code = code;
     }
@@ -38,9 +37,7 @@ public class PackedOperation {
     /**
      * constructor
      *
-     * @param op
-     * @param count
-     */
+	 */
     public PackedOperation(PackedTranscript.EditOperation op, int count) {
         code = (byte) (((op.ordinal() << 6) | count) & 0xFF);
     }
@@ -48,9 +45,7 @@ public class PackedOperation {
     /**
      * constructor
      *
-     * @param op
-     * @param value
-     */
+	 */
     public PackedOperation(PackedTranscript.EditOperation op, byte value) {
         code = ((op.ordinal() << 6) | (int) value) & 0xFF;
     }
@@ -58,8 +53,7 @@ public class PackedOperation {
     /**
      * get the operation
      *
-     * @return
-     */
+	 */
     public PackedTranscript.EditOperation getEditOperation() {
         return PackedTranscript.EditOperation.values()[code >>> 6];
     }
@@ -72,8 +66,7 @@ public class PackedOperation {
     /**
      * get the count
      *
-     * @return
-     */
+	 */
     public int getCount() {
         return code & 63;
     }
@@ -81,8 +74,7 @@ public class PackedOperation {
     /**
      * get the letter
      *
-     * @return
-     */
+	 */
     public byte getLetter() {
         return (byte) (code & 63);
     }

@@ -41,8 +41,7 @@ public class ModifyAccessionMappingDatabase {
     /**
      * constructor
      *
-     * @param databaseFile
-     */
+	 */
     public ModifyAccessionMappingDatabase(String databaseFile) throws IOException, SQLException {
         this.databaseFile = databaseFile;
 
@@ -76,11 +75,6 @@ public class ModifyAccessionMappingDatabase {
     /**
      * adds a new column
      *
-     * @param classificationName
-     * @param inputFile
-     * @param description
-     * @throws SQLException
-     * @throws IOException
      */
     public void addNewColumn(String classificationName, String inputFile, String description) throws SQLException, IOException {
         if (classificationName == null) {

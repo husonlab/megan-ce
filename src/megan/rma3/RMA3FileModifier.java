@@ -35,9 +35,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * construct an RMA3 modifier and read in RMA3 data
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public RMA3FileModifier(String fileName) throws IOException {
         super(fileName, READ_WRITE);
         close(); // have read the file, now close the readerWriter
@@ -47,8 +45,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * start the modification process
      *
-     * @throws IOException
-     */
+	 */
     public void startModification() throws IOException {
         io = new InputOutputReaderWriter(new File(getFileName()), READ_WRITE);
         getClassificationsFooter().clear();
@@ -61,10 +58,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * rescan a specific classification
      *
-     * @param classificationType
-     * @param classId2locations
-     * @throws IOException
-     */
+	 */
     public void updateClassification(ClassificationType classificationType, Map<Integer, ListOfLongs> classId2locations) throws IOException {
         getClassificationsFooter().setStart(classificationType, io.getPosition());
         getClassificationsFooter().setDo(classificationType);
@@ -81,8 +75,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * finish the rescan process
      *
-     * @throws IOException
-     */
+	 */
     public void finishModification() throws IOException {
         getFileFooter().setClassificationsFooter(io.getPosition());
         getClassificationsFooter().write(io);
@@ -99,8 +92,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * close the readerWriter/writer, if it is open
      *
-     * @throws IOException
-     */
+	 */
     public void close() throws IOException {
         if (io != null) {
             try {
@@ -114,9 +106,7 @@ public class RMA3FileModifier extends RMA3File {
     /**
      * save the aux data to the rma3 file
      *
-     * @param label2data
-     * @throws IOException
-     */
+	 */
     public void saveAuxData(Map<String, byte[]> label2data) throws IOException {
         final FileFooterRMA3 fileFooter = getFileFooter();
 

@@ -64,9 +64,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public BlastX2SAMIterator(String fileName, int maxNumberOfMatchesPerRead) throws IOException {
         this(fileName, maxNumberOfMatchesPerRead, false);
         if (!BlastXTextFileFilter.getInstance().accept(fileName)) {
@@ -77,9 +75,7 @@ public class BlastX2SAMIterator extends SAMIteratorBase implements ISAMIterator 
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     protected BlastX2SAMIterator(String fileName, int maxNumberOfMatchesPerRead, boolean blastPMode) throws IOException {
         super(fileName, maxNumberOfMatchesPerRead);
         this.blastPMode = blastPMode;

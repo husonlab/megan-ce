@@ -48,8 +48,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
     /**
      * commandline syntax
      *
-     * @return
-     */
+	 */
     @Override
     public String getSyntax() {
         return null;
@@ -58,8 +57,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }
@@ -67,8 +65,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         if (isSelected())
             execute("set idParsing=false cName=" + cName + ";");

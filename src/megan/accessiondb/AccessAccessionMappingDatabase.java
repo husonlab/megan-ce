@@ -62,10 +62,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
     /**
      * constructor, opens and maintains connection to database
      *
-     * @param dbFile
-     * @throws IOException
-     * @throws SQLException
-     */
+	 */
     public AccessAccessionMappingDatabase(String dbFile) throws IOException, SQLException {
 		if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
 			throw new IOException("File not found or unreadable: " + dbFile);
@@ -174,7 +171,6 @@ public class AccessAccessionMappingDatabase implements Closeable {
     /**
      * get the size for a given classification index
      *
-     * @param classificationName
      * @return size for a given classification index or -1 if the classification was not found
      */
     public int getSize(String classificationName)  {
@@ -188,7 +184,6 @@ public class AccessAccessionMappingDatabase implements Closeable {
     /**
      * get the info string for a given classification
      *
-     * @param classificationName
      * @return info string provided when inserting the reference database or "" if no such string was given
      */
     public String getInfo(String classificationName) throws SQLException {
@@ -230,9 +225,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * alternative implementation for get
      * for an array of string accessions the method queries the database at once for all accessions in that array
      *
-     * @param accessions
      * @return a HashMap containing the accession and a list of the corresponding classifications
-     * @throws SQLException
      */
     public HashMap<String, int[]> getValues(String[] accessions, int length) throws SQLException {
         final StringBuilder buf = new StringBuilder();
@@ -327,9 +320,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
     /**
      * setups up the classification name to output index.
      *
-     * @param classificationNames
      * @return index, or max-int, if classification not included in database
-     * @throws SQLException
      */
     public int[] setupMapClassificationId2DatabaseRank(final String[] classificationNames) throws SQLException {
         final int[] result = new int[classificationNames.length];

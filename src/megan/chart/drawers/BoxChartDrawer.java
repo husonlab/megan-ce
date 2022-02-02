@@ -80,8 +80,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw the x axis
      *
-     * @param gc
-     */
+	 */
     protected void drawXAxis(Graphics2D gc) {
         gc.setFont(getFont(ChartViewer.FontKeys.XAxisFont.toString()));
         gc.setColor(getFontColor(ChartViewer.FontKeys.XAxisFont.toString(), Color.BLACK));
@@ -115,8 +114,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw chart
      *
-     * @param gc
-     */
+	 */
     public void drawChart(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         // if(sgc!=null) lastDown=(Rectangle)sgc.getSelectionRectangle().clone();
@@ -232,20 +230,17 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                                 value = 0;
                             else
                                 value *= (100 / total);
-                            break;
-                        }
+						}
                         case LOG -> {
                             if (value == 1)
                                 value = Math.log10(2) / 2;
                             else if (value > 0)
                                 value = Math.log10(value);
-                            break;
-                        }
+						}
                         case SQRT -> {
                             if (value > 0)
                                 value = Math.sqrt(value);
-                            break;
-                        }
+						}
                     }
                     whiskerDataTransformed.add(value, series);
                 }
@@ -336,8 +331,7 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
     /**
      * draw chart
      *
-     * @param gc
-     */
+	 */
     public void drawChartTransposed(Graphics2D gc) {
         SelectionGraphics<String[]> sgc = (gc instanceof SelectionGraphics ? (SelectionGraphics<String[]>) gc : null);
         // if(sgc!=null) lastDown=(Rectangle)sgc.getSelectionRectangle().clone();
@@ -459,20 +453,17 @@ public class BoxChartDrawer extends BarChartDrawer implements IChartDrawer {
                                 value = 0;
                             else
                                 value *= (100 / total);
-                            break;
-                        }
+						}
                         case LOG -> {
                             if (value == 1)
                                 value = Math.log10(2) / 2;
                             else if (value > 0)
                                 value = Math.log10(value);
-                            break;
-                        }
+						}
                         case SQRT -> {
                             if (value > 0)
                                 value = Math.sqrt(value);
-                            break;
-                        }
+						}
                     }
                     whiskerDataTransformed.add(value, series);
                 }

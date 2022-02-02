@@ -76,9 +76,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * constructor
      *
-     * @param blastFile
-     * @param blockQueue
-     */
+	 */
     public BlastXMLParser(File blastFile, BlockingQueue<MatchesText> blockQueue, int maxMatchesPerRead) {
         this.blastFile = blastFile;
         this.blockQueue = blockQueue;
@@ -89,9 +87,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * apply the parser
      *
-     * @throws CanceledException
-     * @throws IOException
-     */
+	 */
     public void apply() throws CanceledException, IOException, ParserConfigurationException, SAXException {
         if (saxParserFactory == null)
             saxParserFactory = SAXParserFactory.newInstance();
@@ -102,8 +98,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * start the document
      *
-     * @throws SAXException
-     */
+	 */
     @Override
     public void startDocument() throws SAXException {
         super.startDocument();
@@ -112,8 +107,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * end the document
      *
-     * @throws SAXException
-     */
+	 */
     @Override
     public void endDocument() throws SAXException {
         super.endDocument();
@@ -122,11 +116,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * start an element
      *
-     * @param uri
-     * @param localName
-     * @param qName
-     * @param attributes
-     */
+	 */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         elementText = new StringBuilder();
@@ -153,11 +143,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * end an element
      *
-     * @param uri
-     * @param localName
-     * @param qName
-     * @throws SAXException
-     */
+	 */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName) {
@@ -363,10 +349,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * resolve an entity
      *
-     * @param publicId
-     * @param systemId
-     * @return
-     */
+	 */
     @Override
     public InputSource resolveEntity(String publicId, String systemId) {
         return new InputSource(new StringReader(""));
@@ -375,10 +358,7 @@ public class BlastXMLParser extends DefaultHandler {
     /**
      * build current element text
      *
-     * @param chars
-     * @param start
-     * @param length
-     */
+	 */
     @Override
     public void characters(char[] chars, int start, int length) {
         elementText.append(chars, start, length);

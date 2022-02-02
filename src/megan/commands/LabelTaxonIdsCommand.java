@@ -59,8 +59,7 @@ public class LabelTaxonIdsCommand extends CommandBase implements ICheckBoxComman
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

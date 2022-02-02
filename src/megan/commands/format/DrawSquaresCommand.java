@@ -35,8 +35,7 @@ public class DrawSquaresCommand extends CommandBase implements ICommand {
     /**
      * apply
      *
-     * @param np
-     */
+	 */
     public void apply(NexusStreamParser np) {
     }
 
@@ -106,8 +105,7 @@ public class DrawSquaresCommand extends CommandBase implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     public void actionPerformed(ActionEvent ev) {
         execute("set nodeShape=square;");
     }

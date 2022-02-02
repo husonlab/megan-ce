@@ -44,8 +44,7 @@ interface IService {
     /**
      * set the file filter
      *
-     * @param fileFilter
-     */
+	 */
     void setFileFilter(FileFilter fileFilter);
 
     /**
@@ -65,7 +64,6 @@ interface IService {
     /**
      * gets the file length for the given file
      *
-     * @param fileId
      * @return file length
      */
     long getFileLength(int fileId);
@@ -73,7 +71,6 @@ interface IService {
     /**
      * opens the specified file for reading
      *
-     * @param name
      * @return handle id
      */
     int openFile(String name);
@@ -81,18 +78,13 @@ interface IService {
     /**
      * seek
      *
-     * @param handleId
-     * @param pos
-     */
+	 */
     void seek(int handleId, long pos);
 
     /**
      * read the specified number of bytes
      *
      * @param handleId value returned by openFile
-     * @param buffer
-     * @param offset
-     * @param length
      * @return number of bytes read
      */
     int read(int handleId, byte[] buffer, int offset, int length);
@@ -100,8 +92,7 @@ interface IService {
     /**
      * close the file associated with the given handle
      *
-     * @param handleId
-     */
+	 */
     void closeFile(int handleId);
 
     /**
@@ -114,7 +105,6 @@ interface IService {
     /**
      * get the file id for a name
      *
-     * @param name
      * @return file id
      */
     Integer getId(String name);
@@ -122,7 +112,6 @@ interface IService {
     /**
      * get current position in file
      *
-     * @param handleId
      * @return current position
      */
     long getPosition(int handleId);

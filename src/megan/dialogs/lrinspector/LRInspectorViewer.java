@@ -103,10 +103,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     /**
      * constructor
      *
-     * @param parent
-     * @param viewer
-     * @param classId
-     */
+	 */
     public LRInspectorViewer(JFrame parent, ClassificationViewer viewer, int classId) {
         this.dir = viewer.getDir();
         this.classificationName = viewer.getClassName();
@@ -342,11 +339,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     /**
      * print the window
      *
-     * @param gc0
-     * @param format
-     * @param pagenumber
-     * @return
-     */
+	 */
     public int print(Graphics gc0, PageFormat format, int pagenumber) {
         if (pagenumber == 0) {
             Graphics2D gc = ((Graphics2D) gc0);
@@ -394,7 +387,6 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     /**
      * find the named block. Need to do this because read blocks get re-used during parsing
      *
-     * @param readName
      * @return read block
      */
     public IReadBlock findReadBlock(String readName) {
@@ -693,11 +685,8 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     /**
      * save all selected reads
      *
-     * @param outputFile
-     * @param progressListener
      * @return number saved
-     * @throws IOException
-     */
+	 */
     public int exportSelectedReads(String outputFile, ProgressListener progressListener) throws IOException, CanceledException {
         int count = 0;
         if (getController() != null) {

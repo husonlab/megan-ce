@@ -26,8 +26,6 @@ class SAMCompress {
     /**
      * deflate current SAM line by replacing all fields that equalOverShorterOfBoth previous line by an ampersand
      *
-     * @param previous
-     * @param current
      * @return deflated SAM line
      */
     public static int deflate(byte[] previous, int previousLength, byte[] current, int currentLength, byte[] result) {
@@ -83,8 +81,6 @@ class SAMCompress {
     /**
      * inflate the current SAM line by replacing all & by the corresponding field in the previous SAM line
      *
-     * @param previous
-     * @param current
      * @return inflated SAM line
      */
     public static int inflate(byte[] previous, int previousLength, byte[] current, int currentLength, byte[] result) {
@@ -124,8 +120,6 @@ class SAMCompress {
     /**
      * deflate current SAM line by replacing all fields that equalOverShorterOfBoth previous line by an ampersand
      *
-     * @param previous
-     * @param current
      * @return deflated SAM line
      */
     public static String deflate(String previous, String current) {
@@ -177,8 +171,6 @@ class SAMCompress {
     /**
      * inflate the current SAM line by replacing all & by the corresponding field in the previous SAM line
      *
-     * @param previous
-     * @param current
      * @return inflated SAM line
      */
     public static String inflate(String previous, String current) {

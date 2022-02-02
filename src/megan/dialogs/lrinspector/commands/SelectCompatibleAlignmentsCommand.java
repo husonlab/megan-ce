@@ -37,8 +37,7 @@ public class SelectCompatibleAlignmentsCommand extends CommandBase implements IC
     /**
      * parses the given command and executes it
      *
-     * @param np
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) {
     }

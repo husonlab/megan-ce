@@ -123,8 +123,7 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * set the read length
      *
-     * @param readLength
-     */
+	 */
     public void setReadLength(int readLength) {
         System.err.println("Not implemented");
     }
@@ -136,8 +135,7 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * get the readComplexity
      *
-     * @param readComplexity
-     */
+	 */
     public void setComplexity(float readComplexity) {
     }
 
@@ -148,8 +146,7 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * set the weight of a read
      *
-     * @param readWeight
-     */
+	 */
 
     public void setReadWeight(int readWeight) {
         this.readWeight = readWeight;
@@ -181,8 +178,7 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * gets the current number of matches available
      *
-     * @return
-     */
+	 */
     public int getNumberOfAvailableMatchBlocks() {
         return matchBlocks != null ? matchBlocks.length : 0;
     }
@@ -203,7 +199,6 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * get the i-th match block
      *
-     * @param i
      * @return match block
      */
     public IMatchBlock getMatchBlock(int i) {
@@ -213,10 +208,7 @@ public class ReadBlockDAA implements IReadBlock {
     /**
      * set the read block and its match blocks from records
      *
-     * @param queryRecord
-     * @param matchRecords
-     * @param wantMatches
-     */
+	 */
     public void setFromQueryAndMatchRecords(DAAQueryRecord queryRecord, DAAMatchRecord[] matchRecords, boolean wantReadSequences, boolean wantMatches, float minScore, float maxExpected) {
         this.wantReadSequences = wantReadSequences;
         this.queryRecord = queryRecord;

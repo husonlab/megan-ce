@@ -31,7 +31,6 @@ public enum ClassificationType {
     /**
      * gets the short name used in IO
      *
-     * @param type
      * @return short name of type
      */
     public static String getShortName(ClassificationType type) {
@@ -46,7 +45,6 @@ public enum ClassificationType {
     /**
      * gets the short name used in IO
      *
-     * @param fullName
      * @return short name of type
      */
     public static String getShortName(String fullName) {
@@ -61,7 +59,6 @@ public enum ClassificationType {
     /**
      * gets the full name used in IO
      *
-     * @param shortName
      * @return short name of type
      */
     public static String getFullName(String shortName) {

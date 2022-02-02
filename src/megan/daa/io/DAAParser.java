@@ -100,8 +100,7 @@ public class DAAParser {
     /**
      * read the header of a DAA file and all reference names
      *
-     * @throws IOException
-     */
+	 */
     public static boolean isMeganizedDAAFile(String fileName, boolean checkWhetherMeganized) throws IOException {
         try (InputReaderLittleEndian ins = new InputReaderLittleEndian(new FileInputStreamAdapter(fileName))) {
             long magicNumber = ins.readLong();
@@ -145,10 +144,7 @@ public class DAAParser {
     /**
      * get all alignments in SAM format
      *
-     * @param maxMatchesPerRead
-     * @param outputQueue
-     * @throws IOException
-     */
+	 */
     void getAllAlignmentsSAMFormat(int maxMatchesPerRead, BlockingQueue<Pair<byte[], byte[]>> outputQueue, boolean parseLongReads) throws IOException {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
         final ByteOutputBuffer outputBuffer = new ByteOutputBuffer(100000);
@@ -228,10 +224,7 @@ public class DAAParser {
     /**
      * get all queries with matches
      *
-     * @param maxMatchesPerRead
-     * @param outputQueue
-     * @throws IOException
-     */
+	 */
     void getAllQueriesAndMatches(boolean wantMatches, int maxMatchesPerRead, BlockingQueue<Pair<DAAQueryRecord, DAAMatchRecord[]>> outputQueue, boolean longReads) throws IOException {
         final ByteInputBuffer inputBuffer = new ByteInputBuffer();
 
@@ -254,13 +247,10 @@ public class DAAParser {
     /**
      * read a query and its matches
      *
-     * @param ins
-     * @param maxMatchesPerRead
      * @param inputBuffer       used internally, if non null
      * @param matchRecords      used internally, if non null
      * @return query and matches
-     * @throws IOException
-     */
+	 */
     public Pair<DAAQueryRecord, DAAMatchRecord[]> readQueryAndMatches(InputReaderLittleEndian ins, InputReaderLittleEndian refIns, boolean wantMatches, int maxMatchesPerRead, ByteInputBuffer inputBuffer, DAAMatchRecord[] matchRecords, boolean longReads) throws IOException {
         final DAAQueryRecord queryRecord = new DAAQueryRecord(this);
 
@@ -371,11 +361,8 @@ public class DAAParser {
     /**
      * gets a block as a string of bytes
      *
-     * @param header
-     * @param blockType
      * @return block
-     * @throws IOException
-     */
+	 */
     public static byte[] getBlock(DAAHeader header, BlockType blockType) throws IOException {
         int index = header.getIndexForBlockType(blockType);
         if (index == -1)

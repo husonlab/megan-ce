@@ -29,8 +29,6 @@ import megan.viewer.MainViewer;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
-import java.io.IOException;
-
 /**
  * unweighted and weighted distance
  * Daniel Huson, 9.2012, 11.2017, 6.2018
@@ -43,8 +41,6 @@ public class UniFrac {
     /**
      * apply the unweighted taxonomic unifrac method
      *
-     * @param viewer
-     * @param threshold
      * @param distances for each pair of samples i and j, the proportion of ranked nodes in which either sample i or j has a none-zero count, but not both
      * @return number of nodes used to compute value
      */
@@ -103,12 +99,10 @@ public class UniFrac {
     /**
      * apply the named computation to the taxonomy
      *
-     * @param viewer
      * @param distances for each pair of samples i and j, the sum of absolute differences of summarized counts (not assigned counts!) on each node, normalized
      *                  such that two identical profiles get distance 0 and two disjoint profiles get distance 1
      * @return number of nodes used to compute value
-     * @throws IOException
-     */
+	 */
     public static int applyWeightedUniformUniFrac(final ClassificationViewer viewer, final Distances distances) throws CanceledException {
 		System.err.println("Computing " + StringUtils.fromCamelCase(WeightedUniformUniFrac) + " distances");
 
@@ -177,9 +171,6 @@ public class UniFrac {
     /**
      * recursively compute the summarized counts for all nodes in tree induced by user selection
      *
-     * @param v
-     * @param selected
-     * @param summarized
      * @return true, if selected nodes on or below v
      */
     private static boolean computeSummarizedCountsOnInducedTreeRec(Node v, NodeSet selected, ClassificationViewer viewer, NodeArray<float[]> summarized, int ntax) {
@@ -215,8 +206,6 @@ public class UniFrac {
     /**
      * remove the root node and root path
      *
-     * @param v
-     * @param induced
      * @return the root
      */
     private static Node removeRootNodeAndNodesOnPathLeadingToIt(Node v, NodeSet induced) {

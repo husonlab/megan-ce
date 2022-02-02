@@ -118,8 +118,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * set the read sequence
      *
-     * @param readSequence
-     */
+	 */
     public void setReadSequence(String readSequence) {
         this.readSequence = readSequence;
     }
@@ -154,8 +153,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * set the read length
      *
-     * @param readLength
-     */
+	 */
     public void setReadLength(int readLength) {
         this.readLength = readLength;
     }
@@ -175,8 +173,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * get the complexity
      *
-     * @param complexity
-     */
+	 */
     public void setComplexity(float complexity) {
         this.complexity = complexity;
     }
@@ -201,8 +198,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * gets the current number of matches available
      *
-     * @return
-     */
+	 */
     public int getNumberOfAvailableMatchBlocks() {
         if (matchBlocks != null)
             return matchBlocks.length;
@@ -213,8 +209,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * get the matches. May be less than the original number of matches (when filtering matches)
      *
-     * @return
-     */
+	 */
     public IMatchBlock[] getMatchBlocks() {
         return matchBlocks;
     }
@@ -228,7 +223,6 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * get the i-th match block
      *
-     * @param i
      * @return match block
      */
     public IMatchBlock getMatchBlock(int i) {
@@ -241,17 +235,9 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * read a read block from an RMA file
      *
-     * @param rma2Formatter
      * @param uid             seek to this position, unless -1
-     * @param wantReadText
-     * @param wantMatchData
-     * @param wantMatchText
-     * @param minScore
-     * @param textReader
-     * @param dataIndexReader
      * @return readblock
-     * @throws java.io.IOException
-     */
+	 */
     public static ReadBlockRMA2 read(RMA2Formatter rma2Formatter, long uid, boolean wantReadText, boolean wantMatchData,
                                      boolean wantMatchText, float minScore, float maxExpected, TextStorageReader textReader, IInputReader dataIndexReader) throws IOException {
         ReadBlockRMA2 readBlock = rma2Formatter.isWantLocationData() ? new ReadBlockFromBlast() : new ReadBlockRMA2();
@@ -310,12 +296,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * write a given read block to a RMA file
      *
-     * @param rma2Formatter
-     * @param readBlock
-     * @param dumpWriter
-     * @param indexWriter
-     * @throws java.io.IOException
-     */
+	 */
     public static void write(RMA2Formatter rma2Formatter, IReadBlockWithLocation readBlock, IOutputWriter dumpWriter, IOutputWriter indexWriter) throws IOException {
         readBlock.setUId(indexWriter.getPosition()); // uid is position in index file
 
@@ -393,8 +374,7 @@ public class ReadBlockRMA2 implements IReadBlock {
     /**
      * add the matchblocks to the readblock
      *
-     * @param matchBlocks
-     */
+	 */
     public void addMatchBlocks(SortedSet<IMatchBlock> matchBlocks) {
         setMatchBlocks(matchBlocks.toArray(new IMatchBlock[0]));
     }

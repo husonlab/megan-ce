@@ -66,7 +66,6 @@ public class GroupsPanel extends JPanel {
     /**
      * constructor
      *
-     * @param document
      */
     public GroupsPanel(Document document, IDirectableViewer viewer) {
         super(new BorderLayout());
@@ -283,8 +282,6 @@ public class GroupsPanel extends JPanel {
     /**
      * replace the selection state of the named samples
      *
-     * @param samples
-     * @param select
      */
     public void selectSamples(Collection<String> samples, boolean select) {
         if (!inSelectSamples) {
@@ -400,7 +397,6 @@ public class GroupsPanel extends JPanel {
     /**
      * add a new group
      *
-     * @param index
      */
     public void addNewGroup(int index) {
         if (index == -1)
@@ -470,7 +466,6 @@ public class GroupsPanel extends JPanel {
     /**
      * get listener for groups changed events
      *
-     * @return
      */
     public IGroupsChangedListener getGroupsChangedListener() {
         return groupsChangedListener;
@@ -479,7 +474,6 @@ public class GroupsPanel extends JPanel {
     /**
      * set listener for groups changed events
      *
-     * @param groupsChangedListener
      */
     public void setGroupsChangedListener(IGroupsChangedListener groupsChangedListener) {
         this.groupsChangedListener = groupsChangedListener;

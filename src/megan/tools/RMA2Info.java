@@ -47,10 +47,7 @@ public class RMA2Info {
     /**
      * RMA 2 info
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
@@ -71,10 +68,7 @@ public class RMA2Info {
     /**
      * run
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         final ArgsOptions options = new ArgsOptions(args, this, "Analyses an RMA file");
         options.setVersion(ProgramProperties.getProgramVersion());
@@ -440,9 +434,6 @@ public class RMA2Info {
     /**
      * determine whether given taxon is ancestor of one of the named taxa
      *
-     * @param taxonomy
-     * @param taxId
-     * @param ancestorIds
      * @return true, if is ancestor
      */
     private static boolean isDescendant(ClassificationFullTree taxonomy, int taxId, int... ancestorIds) {

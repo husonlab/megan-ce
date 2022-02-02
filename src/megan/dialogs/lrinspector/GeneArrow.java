@@ -52,10 +52,7 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
     /**
      * constructor
      *
-     * @param readLength
-     * @param arrowHeight
-     * @param panelWidth
-     */
+	 */
     public GeneArrow(String[] cNames, int readLength, int arrowHeight, double panelWidth, double panelHeight, int start, int end, final Set<Integer> starts) {
         this.cNames = cNames;
         this.start = Math.min(start, end);
@@ -69,8 +66,6 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
     /**
      * rescale coordinates to fit changed panel dimensions
      *
-     * @param panelWidth
-     * @param panelHeight
      */
     public void rescale(int maxReadLength, int arrowHeight, double panelWidth, double panelHeight, final Set<Integer> starts) {
         final double a = (panelWidth * getStart()) / maxReadLength;
@@ -161,8 +156,6 @@ public class GeneArrow extends Polygon implements Iterable<IMatchBlock> {
     /**
      * shows the arrow context menu
      *
-     * @param screenX
-     * @param screenY
      */
     public void showContextMenu(double screenX, double screenY) {
         final Set<String> accessions = new TreeSet<>();

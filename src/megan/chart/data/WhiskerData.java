@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class WhiskerData implements Iterable<Pair<Double, String>> {
     private final SortedSet<Pair<Double, String>> values = new TreeSet<>();
-    private double[] array;
+    private volatile double[] array;
 
     public void clear() {
         values.clear();

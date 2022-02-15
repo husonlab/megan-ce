@@ -19,8 +19,11 @@
 
 package megan.classification.util;
 
-import jloda.util.ProgramProperties;
+import jloda.util.FileLineIterator;
+import jloda.util.StringUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -37,7 +40,6 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     private String nextResult;
 
-   private final boolean allowMinusInAccession = ProgramProperties.get("AllowMinusInAccession", false);
 
     /**
      * iterator over all values following an occurrence of tag in aLine.
@@ -98,8 +100,8 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
                     break;
             }
             var b = a + 1;
-            while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-'))) {
-                // while(b <aLine.length() && C(haracter.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
+            while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
+                // while(b <aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
                 b++;
             }
             if (b - a > 4) {
@@ -153,7 +155,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
             return null;
 
         var b = tagPos + 1;
-        while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_' || (allowMinusInAccession && aLine.charAt(b) == '-'))) {
+        while (b < aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
             //while(b <aLine.length() && (Character.isLetterOrDigit(aLine.charAt(b)) || aLine.charAt(b) == '_')) {
             b++;
         }
@@ -196,5 +198,37 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public ArrayList<String> getAll() {
+        var result = new ArrayList<String>();
+        while (iterator().hasNext())
+            result.add(iterator().next());
+        return result;
+    }
+
+    public void getAll(ArrayList<String> target) {
+        target.clear();
+        while (iterator().hasNext())
+            target.add(iterator().next());
+    }
+
+    public static void main(String[] args) throws IOException {
+        var file = "/Users/huson/classify/ncbi/latest-ncbi/nr.gz";
+
+        var count = 0;
+        try (var it = new FileLineIterator(file, true)) {
+            while (it.hasNext()) {
+                var line = it.next();
+                if (line.startsWith(">")) {
+                    var tit = new TaggedValueIterator(line, true, true);
+                    System.err.println(line);
+                    System.err.println("Accessions: " + StringUtils.toString(tit.getAll(), " "));
+                    if (count++ == 10)
+                        break;
+                }
+            }
+
+        }
     }
 }

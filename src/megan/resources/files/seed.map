@@ -2,7 +2,7 @@
 -3	Low complexity
 -2	Not assigned
 -1	No hits
-1	SEED-2021
+1	SEED-2022
 2	Carbohydrates
 13	Photosynthesis
 107	Sulfur Metabolism
@@ -16,11 +16,11 @@
 667	Nucleosides and Nucleotides
 912	Metabolism of Aromatic Compounds
 991	Protein degradation
-1077	Membrane Transport
+1077	MEMBRANE TRANSPORT
 1388	Respiration
-1669	Miscellaneous
+1669	MISCELLANEOUS
 1905	Universal stress protein family
-2597	Regulation And Cell Signaling
+2597	REGULATION AND CELL SIGNALING
 4927	Hydrogenases
 6426	Exosome
 6517	Nucleoside triphosphate pyrophosphohydrolase MazG
@@ -352,35 +352,35 @@
 21156	Heme and heme d1 biosynthesis from siroheme
 21192	Metabolite damage and its repair or mitigation
 21216	tRNA aminoacylation, Pro
-22889	Metabolism
+22889	METABOLISM
 22890	Branched-chain amino acids
 22891	Carbonic anhydrase
 22892	Arginine; urea cycle, creatine, polyamines
 22893	Arginine biosynthesis via N-acetyl-L-citrulline
 22894	Proline and 4-hydroxyproline
 22895	Proline biosynthesis (for review)
-22896	Energy
+22896	ENERGY
 22897	Energy and Precursor Metabolites Generation
-22898	RNA Processing
+22898	RNA PROCESSING
 22899	RNA processing and modification
 22900	ATP synthases
-22901	DNA Processing
+22901	DNA PROCESSING
 22902	DNA repair
 22903	Clustering-based subsystems
 22904	Cell Division
 22905	Cell division related cluster
-22906	Protein Processing
+22906	PROTEIN PROCESSING
 22907	Protein Fate (folding, modification, targeting, degradation)
 22908	Protein processing and modification
-22909	Cellular Processes
+22909	CELLULAR PROCESSES
 22910	Cell Cycle, Cell Division and Death
 22911	Cell division cluster
 22912	Protein folding
 22913	Chaperones GroEL GroES and Thermosome
-22914	Stress Response, Defense, Virulence
+22914	STRESS RESPONSE, DEFENSE, VIRULENCE
 22915	Stress Response, Defense and Virulence
 22916	Stress Response: Heat/cold shock
-22917	Cell Envelope
+22917	CELL ENVELOPE
 22918	Cell Envelope, Capsule and Slime layer
 22919	Gram-Negative (Diderm) cell wall components
 22920	Electron donating reactions
@@ -797,9 +797,7 @@
 23331	Sphingolipids
 23332	Bacterial Sphingolipids
 23333	Ribosome SSU, eukaryotic and archaeal
-23334	RNA polymerase, archaeal
 23335	RNA polymerase, archaeal initiation factors
-23336	Translation initiation factors, eukaryotic and archaeal
 23337	L-2-amino-adipate to lysine module
 23338	Lysine Biosynthesis via alpha-aminoadipate AAA
 23339	LysX and ArgX disambiguation
@@ -859,7 +857,6 @@
 23393	Quinolone (Fluoroquinolone) resistance via Pentapeptide repeat proteins
 23394	Translation elongation factors, eukaryotic and archaeal
 23395	Ribosome biogenesis, archaeal
-23396	Prefoldin
 23397	D-xylose utilization
 23398	Na-driven 2-hydroxyglutarate pathway
 23399	Sucrose to levan conversions
@@ -907,18 +904,14 @@
 23441	Particulate methane monooxygenase (pMMO)
 23442	Chlorophyll a synthase and phytol kinase cluster
 23443	Photosystem I-type photosynthetic reaction center
-23444	Methanofuran biosynthesis
 23445	Methanogenesis
 23446	Methanogenesis from methylated compounds
-23447	Coenzyme B
-23448	Coenzyme B synthesis
 23449	CMP-pseudaminic acid synthesis
 23450	Plasmid related functions
 23451	RSF1010 like IncQ broad-host-range plasmids
 23452	Anaerobic respiratory complex QmoABC
 23453	3-amino-5-hydroxybenzoic Acid Synthesis
 23454	Energy-conserving hydrogenase (ferredoxin)
-23455	Ribosome LSU, eukaryotic and archaeal
 23456	Tmc complex
 23457	Fe(III) respiration - Shewanella type
 23458	Pertussis toxin
@@ -928,10 +921,8 @@
 23462	An Arabinose Sensor
 23463	Transcription factors, cyanobacterial RpoD-like sigma factors
 23464	Violacein biosynthesis
-23465	AMP to 3-phosphoglycerate
 23466	Fatty acid metabolism cluster
 23467	Siderophore [Alcaligin-like]
-23468	Ubiquitin-like archaeal modifier proteins (SAMPs)
 23469	Diphtheria toxin
 23470	Lasso peptide maturation cluster
 23471	Coenzyme F420 hydrogenase
@@ -939,15 +930,11 @@
 23473	tRNA aminoacylation, Pyr
 23474	5-nitroimidazole antibiotic resistance
 23475	Pentalenolactone Biosynthesis and Resistance
-23476	D-arabinose utilization
-23477	Coenzyme F420-H2 dehydrogenase (methanophenazine)
-23478	Methanophenazine hydrogenase
 23479	NADP-reducing [FeFe]-hydrogenase
 23480	Respiratory Systems - Shewanella (updated)
 23481	Heterocyst development
 23482	Heterocyst formation in cyanobacteria
 23483	Benzoyl-CoA pathway of anaerobic aromatic metabolism
-23484	H2:CoM-S-S-HTP oxidoreductase
 23485	Nicotinate catabolism, anaerobic
 23486	Quorum sensing regulation in Pseudomonas
 23487	Social motility and nonflagellar swimming in bacteria
@@ -965,10 +952,6 @@
 23499	Iron Scavenging cluster in Thermus
 23500	Bacteriocins in Lactobacilli
 23501	DNA repair and recombination, eukaryotic
-23502	Archaeal membrane bound hydrogenases
-23503	Energy conserving hydrogenase b, Methanococcales-Methanobacteriales-Methanopyrales
-23504	Mebrane bound hydrogenases
-23505	Energy conserving hydrogenase, Methanococcales-Methanobacteriales-Methanopyrales
 23506	Methylenomycin synthesis
 23507	Magnetotaxis
 23508	Magnetosome
@@ -976,4 +959,3 @@
 23510	Dimethylsulfide dehydrogenase
 23511	Perchlorate reduction
 23512	Anaerobic toluene and ethylbenzene degradation
-23513	Ri

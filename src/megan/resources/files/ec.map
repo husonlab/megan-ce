@@ -25,8 +25,8 @@
 101010021	1.1.1.21 Aldose reductase
 101010022	1.1.1.22 UDP-glucose 6-dehydrogenase
 101010023	1.1.1.23 Histidinol dehydrogenase
-101010024	1.1.1.24 Quinate dehydrogenase
-101010025	1.1.1.25 Shikimate dehydrogenase
+101010024	1.1.1.24 Quinate/shikimate dehydrogenase (NAD(+))
+101010025	1.1.1.25 Shikimate dehydrogenase (NADP(+))
 101010026	1.1.1.26 Glyoxylate reductase
 101010027	1.1.1.27 L-lactate dehydrogenase
 101010028	1.1.1.28 D-lactate dehydrogenase
@@ -180,7 +180,7 @@
 101010176	1.1.1.176 12-alpha-hydroxysteroid dehydrogenase
 101010177	1.1.1.177 Glycerol-3-phosphate 1-dehydrogenase (NADP(+))
 101010178	1.1.1.178 3-hydroxy-2-methylbutyryl-CoA dehydrogenase
-101010179	1.1.1.179 D-xylose 1-dehydrogenase (NADP(+))
+101010179	1.1.1.179 D-xylose 1-dehydrogenase (NADP(+), D-xylono-1,5-lactone-forming)
 101010180	1.1.1.180 Transferred entry: 1.1.1.131
 101010181	1.1.1.181 Cholest-5-ene-3-beta,7-alpha-diol 3-beta-dehydrogenase
 101010182	1.1.1.182 Transferred entry: 1.1.1.198, 1.1.1.227 and 1.1.1.228
@@ -283,7 +283,7 @@
 101010279	1.1.1.279 (R)-3-hydroxyacid-ester dehydrogenase
 101010280	1.1.1.280 (S)-3-hydroxyacid-ester dehydrogenase
 101010281	1.1.1.281 GDP-4-dehydro-6-deoxy-D-mannose reductase
-101010282	1.1.1.282 Quinate/shikimate dehydrogenase
+101010282	1.1.1.282 Quinate/shikimate dehydrogenase (NAD(P)(+))
 101010283	1.1.1.283 Methylglyoxal reductase (NADPH)
 101010284	1.1.1.284 S-(hydroxymethyl)glutathione dehydrogenase
 101010285	1.1.1.285 3''-deamino-3''-oxonicotianamine reductase
@@ -424,7 +424,9 @@
 101010420	1.1.1.420 D-apiose dehydrogenase
 101010421	1.1.1.421 D-apionate oxidoisomerase
 101010422	1.1.1.422 Pseudoephedrine dehydrogenase
-101010423	1.1.1.423 Ephedrine dehydrogenase
+101010423	1.1.1.423 (1R,2S)-ephedrine 1-dehydrogenase
+101010424	1.1.1.424 D-xylose 1-dehydrogenase (NADP(+), D-xylono-1,4-lactone-forming)
+101010425	1.1.1.425 Levoglucosan dehydrogenase
 101020000	1.1.2 With a cytochrome as acceptor
 101020001	1.1.2.1 Transferred entry: 1.1.5.3
 101020002	1.1.2.2 Mannitol dehydrogenase (cytochrome)
@@ -497,12 +499,14 @@
 101050005	1.1.5.5 Alcohol dehydrogenase (quinone)
 101050006	1.1.5.6 Transferred entry: 1.17.5.3
 101050007	1.1.5.7 Cyclic alcohol dehydrogenase (quinone)
-101050008	1.1.5.8 Quinate dehydrogenase (quinone)
+101050008	1.1.5.8 Quinate/shikimate dehydrogenase (quinone)
 101050009	1.1.5.9 Glucose 1-dehydrogenase (FAD, quinone)
 101050010	1.1.5.10 D-2-hydroxyacid dehydrogenase (quinone)
 101050011	1.1.5.11 1-butanol dehydrogenase (quinone)
 101050012	1.1.5.12 D-lactate dehydrogenase (quinone)
 101050013	1.1.5.13 (S)-2-hydroxyglutarate dehydrogenase
+101070000	1.1.7 With an iron-sulfur protein as acceptor
+101070001	1.1.7.1 4-hydroxybenzoyl-CoA reductase
 101090000	1.1.9 With a copper protein as acceptor
 101090001	1.1.9.1 Alcohol dehydrogenase (azurin)
 101980000	1.1.98 With other, known, acceptors
@@ -546,7 +550,7 @@
 101990030	1.1.99.30 2-oxo-acid reductase
 101990031	1.1.99.31 (S)-mandelate dehydrogenase
 101990032	1.1.99.32 L-sorbose 1-dehydrogenase
-101990033	1.1.99.33 Transferred entry: 1.17.99.7
+101990033	1.1.99.33 Transferred entry: 1.17.98.4
 101990034	1.1.99.34 Transferred entry: 1.1.98.2
 101990035	1.1.99.35 Soluble quinoprotein glucose dehydrogenase
 101990036	1.1.99.36 Alcohol dehydrogenase (nicotinoprotein)
@@ -660,12 +664,15 @@
 102010100	1.2.1.100 5-formyl-3-hydroxy-2-methylpyridine 4-carboxylate 5-dehydrogenase
 102010101	1.2.1.101 L-tyrosine reductase
 102010102	1.2.1.102 Isopyridoxal dehydrogenase (5-pyridoxate-forming)
-102010103	1.2.1.103 [Amino group carrier protein]-6-phospho-L-2-aminoadipate reductase
+102010103	1.2.1.103 [Amino-group carrier protein]-6-phospho-L-2-aminoadipate reductase
+102010104	1.2.1.104 Pyruvate dehydrogenase system
+102010105	1.2.1.105 2-oxoglutarate dehydrogenase system
+102010106	1.2.1.106 [Amino-group carrier protein]-5-phospho-L-glutamate reductase
 102020000	1.2.2 With a cytochrome as acceptor
 102020001	1.2.2.1 Formate dehydrogenase (cytochrome)
 102020002	1.2.2.2 Deleted entry
 102020003	1.2.2.3 Transferred entry: 1.17.2.3
-102020004	1.2.2.4 Carbon-monoxide dehydrogenase (cytochrome b-561)
+102020004	1.2.2.4 Deleted entry
 102030000	1.2.3 With oxygen as acceptor
 102030001	1.2.3.1 Aldehyde oxidase
 102030002	1.2.3.2 Transferred entry: 1.17.3.2
@@ -752,7 +759,7 @@
 103010031	1.3.1.31 2-enoate reductase
 103010032	1.3.1.32 Maleylacetate reductase
 103010033	1.3.1.33 Protochlorophyllide reductase
-103010034	1.3.1.34 2,4-dienoyl-CoA reductase (NADPH)
+103010034	1.3.1.34 2,4-dienoyl-CoA reductase ((2E)-enoyl-CoA-producing)
 103010035	1.3.1.35 Transferred entry: 1.14.19.22
 103010036	1.3.1.36 Geissoschizine dehydrogenase
 103010037	1.3.1.37 Cis-2-enoyl-CoA reductase (NADPH)
@@ -827,7 +834,7 @@
 103010106	1.3.1.106 Cobalt-precorrin-6A reductase
 103010107	1.3.1.107 Sanguinarine reductase
 103010108	1.3.1.108 Caffeoyl-CoA reductase
-103010109	1.3.1.109 Butanoyl-CoA dehydrogenase (NAD(+),ferredoxin)
+103010109	1.3.1.109 Butanoyl-CoA dehydrogenase complex (NAD(+), ferredoxin)
 103010110	1.3.1.110 Lactate dehydrogenase (NAD(+),ferredoxin)
 103010111	1.3.1.111 Geranylgeranyl-bacteriochlorophyllide a reductase
 103010112	1.3.1.112 Anthocyanidin reductase ((2S)-flavan-3-ol-forming)
@@ -842,6 +849,7 @@
 103010121	1.3.1.121 4-amino-4-deoxyprephenate dehydrogenase
 103010122	1.3.1.122 (S)-8-oxocitronellyl enol synthase
 103010123	1.3.1.123 7-epi-iridoid synthase
+103010124	1.3.1.124 2,4-dienoyl-CoA reductase ((3E)-enoyl-CoA-producing)
 103020000	1.3.2 With a cytochrome as acceptor
 103020001	1.3.2.1 Transferred entry: 1.3.8.1
 103020002	1.3.2.2 Transferred entry: 1.3.8.7
@@ -862,12 +870,13 @@
 103030013	1.3.3.13 Albonoursin synthase
 103030014	1.3.3.14 Aclacinomycin-A oxidase
 103030015	1.3.3.15 Coproporphyrinogen III oxidase (coproporphyrin-forming)
+103030016	1.3.3.16 Oxazoline dehydrogenase
 103040000	1.3.4 With a disulfide as acceptor
 103040001	1.3.4.1 Fumarate reductase (CoM/CoB)
 103050000	1.3.5 With a quinone or related compound as acceptor
 103050001	1.3.5.1 Succinate dehydrogenase (quinone)
 103050002	1.3.5.2 Dihydroorotate dehydrogenase (quinone)
-103050003	1.3.5.3 Protoporphyrinogen IX dehydrogenase (menaquinone)
+103050003	1.3.5.3 Protoporphyrinogen IX dehydrogenase (quinone)
 103050004	1.3.5.4 Fumarate reductase (quinol)
 103050005	1.3.5.5 15-cis-phytoene desaturase
 103050006	1.3.5.6 9,9'-di-cis-zeta-carotene desaturase
@@ -880,7 +889,7 @@
 103070006	1.3.7.6 Phycoerythrobilin synthase
 103070007	1.3.7.7 Ferredoxin:protochlorophyllide reductase (ATP-dependent)
 103070008	1.3.7.8 Benzoyl-CoA reductase
-103070009	1.3.7.9 4-hydroxybenzoyl-CoA reductase
+103070009	1.3.7.9 Transferred entry: 1.1.7.1
 103070010	1.3.7.10 Transferred entry: 1.14.19.8
 103070011	1.3.7.11 2,3-bis-O-geranylgeranyl-sn-glycero-phospholipid reductase
 103070012	1.3.7.12 Red chlorophyll catabolite reductase
@@ -892,7 +901,7 @@
 103080002	1.3.8.2 4,4'-diapophytoene desaturase (4,4'-diapolycopene-forming)
 103080003	1.3.8.3 (R)-benzylsuccinyl-CoA dehydrogenase
 103080004	1.3.8.4 Isovaleryl-CoA dehydrogenase
-103080005	1.3.8.5 2-methyl-branched-chain-enoyl-CoA reductase
+103080005	1.3.8.5 Short-chain 2-methylacyl-CoA dehydrogenase
 103080006	1.3.8.6 Glutaryl-CoA dehydrogenase (ETF)
 103080007	1.3.8.7 Medium-chain acyl-CoA dehydrogenase
 103080008	1.3.8.8 Long-chain-acyl-CoA dehydrogenase
@@ -903,6 +912,8 @@
 103080013	1.3.8.13 Crotonobetainyl-CoA reductase
 103080014	1.3.8.14 L-prolyl-[peptidyl-carrier protein] dehydrogenase
 103080015	1.3.8.15 3-(aryl)acrylate reductase
+103080016	1.3.8.16 2-amino-4-deoxychorismate dehydrogenase
+103080017	1.3.8.17 Dehydro coenzyme F420 reductase
 103980000	1.3.98 With other, known, acceptors
 103980001	1.3.98.1 Dihydroorotate oxidase (fumarate)
 103980002	1.3.98.2 Transferred entry: 1.3.4.1
@@ -910,6 +921,7 @@
 103980004	1.3.98.4 5a,11a-dehydrotetracycline reductase
 103980005	1.3.98.5 Hydrogen peroxide-dependent heme synthase
 103980006	1.3.98.6 AdoMet-dependent heme synthase
+103980007	1.3.98.7 [Mycofactocin precursor peptide]-tyrosine decarboxylase
 103990000	1.3.99 With other acceptors
 103990001	1.3.99.1 Deleted entry
 103990002	1.3.99.2 Transferred entry: 1.3.8.1
@@ -930,11 +942,11 @@
 103990017	1.3.99.17 Quinoline 2-oxidoreductase
 103990018	1.3.99.18 Quinaldate 4-oxidoreductase
 103990019	1.3.99.19 Quinoline-4-carboxylate 2-oxidoreductase
-103990020	1.3.99.20 Transferred entry: 1.3.7.9
+103990020	1.3.99.20 Transferred entry: 1.1.7.1
 103990021	1.3.99.21 Transferred entry: 1.3.8.3
 103990022	1.3.99.22 Transferred entry: 1.3.98.3
 103990023	1.3.99.23 All-trans-retinol 13,14-reductase
-103990024	1.3.99.24 2-amino-4-deoxychorismate dehydrogenase
+103990024	1.3.99.24 Transferred entry: 1.3.8.16
 103990025	1.3.99.25 Carvone reductase
 103990026	1.3.99.26 All-trans-zeta-carotene desaturase
 103990027	1.3.99.27 1-hydroxycarotenoid 3,4-desaturase
@@ -978,6 +990,7 @@
 104010024	1.4.1.24 3-dehydroquinate synthase II
 104010025	1.4.1.25 L-arginine dehydrogenase
 104010026	1.4.1.26 2,4-diaminopentanoate dehydrogenase (NAD(+))
+104010027	1.4.1.27 Glycine cleavage system
 104020000	1.4.2 With a cytochrome as acceptor
 104020001	1.4.2.1 Glycine dehydrogenase (cytochrome)
 104030000	1.4.3 With oxygen as acceptor
@@ -1006,6 +1019,7 @@
 104030023	1.4.3.23 7-chloro-L-tryptophan oxidase
 104030024	1.4.3.24 Pseudooxynicotine oxidase
 104030025	1.4.3.25 L-arginine oxidase
+104030026	1.4.3.26 Pre-mycofactocin synthase
 104040000	1.4.4 With a disulfide as acceptor
 104040001	1.4.4.1 Transferred entry: 1.21.4.1
 104040002	1.4.4.2 Glycine dehydrogenase (aminomethyl-transferring)
@@ -1044,7 +1058,7 @@
 105010015	1.5.1.15 Methylenetetrahydrofolate dehydrogenase (NAD(+))
 105010016	1.5.1.16 D-lysopine dehydrogenase
 105010017	1.5.1.17 Alanopine dehydrogenase
-105010018	1.5.1.18 Ephedrine dehydrogenase
+105010018	1.5.1.18 (-)-ephedrine dehydrogenase
 105010019	1.5.1.19 D-nopaline dehydrogenase
 105010020	1.5.1.20 Methylenetetrahydrofolate reductase (NAD(P)H)
 105010021	1.5.1.21 1-piperideine-2-carboxylate/1-pyrroline-2-carboxylate reductase (NADPH)
@@ -1079,6 +1093,8 @@
 105010050	1.5.1.50 Dihydromonapterin reductase
 105010051	1.5.1.51 N-((2S)-2-amino-2-carboxyethyl)-L-glutamate dehydrogenase
 105010052	1.5.1.52 Staphylopine dehydrogenase
+105010053	1.5.1.53 Methylenetetrahydrofolate reductase (NADPH)
+105010054	1.5.1.54 Methylenetetrahydrofolate reductase (NADH)
 105030000	1.5.3 With oxygen as acceptor
 105030001	1.5.3.1 Sarcosine oxidase
 105030002	1.5.3.2 N-methyl-L-amino-acid oxidase
@@ -1204,7 +1220,7 @@
 106990000	1.6.99 With other acceptors
 106990001	1.6.99.1 NADPH dehydrogenase
 106990002	1.6.99.2 Transferred entry: 1.6.5.2
-106990003	1.6.99.3 NADH dehydrogenase
+106990003	1.6.99.3 Deleted entry
 106990004	1.6.99.4 Transferred entry: 1.18.1.2
 106990005	1.6.99.5 Transferred entry: 1.6.5.11
 106990006	1.6.99.6 Transferred entry: 1.6.5.10
@@ -1298,6 +1314,7 @@
 108020004	1.8.2.4 Dimethyl sulfide:cytochrome c2 reductase
 108020005	1.8.2.5 Thiosulfate reductase (cytochrome)
 108020006	1.8.2.6 S-disulfanyl-L-cysteine oxidoreductase
+108020007	1.8.2.7 Thiocyanate desulfurase
 108030000	1.8.3 With oxygen as acceptor
 108030001	1.8.3.1 Sulfite oxidase
 108030002	1.8.3.2 Thiol oxidase
@@ -1367,7 +1384,7 @@
 110010000	1.10.1 With NAD(+) or NADP(+) as acceptor
 110010001	1.10.1.1 Trans-acenaphthene-1,2-diol dehydrogenase
 110020000	1.10.2 With a cytochrome as acceptor
-110020001	1.10.2.1 L-ascorbate--cytochrome-b5 reductase
+110020001	1.10.2.1 Deleted entry
 110020002	1.10.2.2 Transferred entry: 7.1.1.8
 110030000	1.10.3 With oxygen as acceptor
 110030001	1.10.3.1 Catechol oxidase
@@ -1433,6 +1450,7 @@
 111020003	1.11.2.3 Plant seed peroxygenase
 111020004	1.11.2.4 Fatty-acid peroxygenase
 111020005	1.11.2.5 3-methyl-L-tyrosine peroxygenase
+111020006	1.11.2.6 L-tyrosine peroxygenase
 112000000	1.12 Acting on hydrogen as donors
 112010000	1.12.1 With NAD(+) or NADP(+) as acceptor
 112010001	1.12.1.1 Transferred entry: 1.12.7.2
@@ -1564,6 +1582,8 @@
 113110087	1.13.11.87 Endo-cleaving rubber dioxygenase
 113110088	1.13.11.88 Isoeugenol monooxygenase
 113110089	1.13.11.89 (Hydroxymethyl)phosphonate dioxygenase
+113110090	1.13.11.90 betaine-forming)
+113110091	1.13.11.91 3-mercaptopropionate dioxygenase
 113120000	1.13.12 With incorporation of one atom of oxygen (internal monooxygenases or internal mixed function oxidases)
 113120001	1.13.12.1 Arginine 2-monooxygenase
 113120002	1.13.12.2 Lysine 2-monooxygenase
@@ -1685,6 +1705,11 @@
 114110069	1.14.11.69 [Histone H3]-trimethyl-L-lysine(36) demethylase
 114110070	1.14.11.70 7-deoxycylindrospermopsin hydroxylase
 114110071	1.14.11.71 Methylphosphonate hydroxylase
+114110072	1.14.11.72 (2-(trimethylamino)ethyl)phosphonate dioxygenase
+114110073	1.14.11.73 [Protein]-arginine 3-hydroxylase
+114110074	1.14.11.74 L-isoleucine 3(1)-dioxygenase
+114110075	1.14.11.75 3(1)-hydroxy-L-isoleucine 4-dioxygenase
+114110076	1.14.11.76 L-glutamate 3(R)-hydroxylase
 114120000	1.14.12 With NADH or NADPH as one donor, and incorporation of two atoms of oxygen into one donor
 114120001	1.14.12.1 Anthranilate 1,2-dioxygenase (deaminating, decarboxylating)
 114120002	1.14.12.2 Transferred entry: 1.14.13.35
@@ -1818,7 +1843,7 @@
 114130103	1.14.13.103 Transferred entry: 1.14.14.142
 114130104	1.14.13.104 Transferred entry: 1.14.14.143
 114130105	1.14.13.105 Monocyclic monoterpene ketone monooxygenase
-114130106	1.14.13.106 Epi-isozizaene 5-monooxygenase
+114130106	1.14.13.106 Transferred entry: 1.14.15.39
 114130107	1.14.13.107 Limonene 1,2-monooxygenase
 114130108	1.14.13.108 Transferred entry: 1.14.14.144
 114130109	1.14.13.109 Transferred entry: 1.14.14.145
@@ -1828,7 +1853,7 @@
 114130113	1.14.13.113 FAD-dependent urate hydroxylase
 114130114	1.14.13.114 6-hydroxynicotinate 3-monooxygenase
 114130115	1.14.13.115 Transferred entry: 1.14.14.148
-114130116	1.14.13.116 Geranylhydroquinone 3''-hydroxylase
+114130116	1.14.13.116 Transferred entry: 1.14.14.174
 114130117	1.14.13.117 Transferred entry: 1.14.14.39
 114130118	1.14.13.118 Transferred entry: 1.14.14.38
 114130119	1.14.13.119 Transferred entry: 1.14.14.149
@@ -1902,7 +1927,7 @@
 114130187	1.14.13.187 L-evernosamine nitrososynthase
 114130188	1.14.13.188 Transferred entry: 1.14.15.35
 114130189	1.14.13.189 5-methyl-1-naphthoate 3-hydroxylase
-114130190	1.14.13.190 Ferruginol synthase
+114130190	1.14.13.190 Transferred entry: 1.14.14.175
 114130191	1.14.13.191 Transferred entry: 1.14.14.70
 114130192	1.14.13.192 Transferred entry: 1.14.14.122
 114130193	1.14.13.193 Transferred entry: 1.14.14.123
@@ -2132,6 +2157,12 @@
 114140169	1.14.14.169 Eupatolide synthase
 114140170	1.14.14.170 8-epi-inunolide synthase
 114140171	1.14.14.171 Beta-amyrin 16-alpha-hydroxylase
+114140172	1.14.14.172 3,5,6-trichloropyridin-2-ol monooxygenase
+114140173	1.14.14.173 2,4,6-trichlorophenol monooxygenase
+114140174	1.14.14.174 Geranylhydroquinone 3''-hydroxylase
+114140175	1.14.14.175 Ferruginol synthase
+114140176	1.14.14.176 Taxadiene 5-alpha-hydroxylase
+114140177	1.14.14.177 Ultra-long-chain fatty acid omega-hydroxylase
 114150000	1.14.15 With reduced iron-sulfur protein as one donor, and incorporation of one atom of oxygen
 114150001	1.14.15.1 Camphor 5-monooxygenase
 114150002	1.14.15.2 Transferred entry: 1.14.14.108
@@ -2170,10 +2201,12 @@
 114150035	1.14.15.35 6-deoxyerythronolide B hydroxylase
 114150036	1.14.15.36 Sterol 14-alpha-demethylase (ferredoxin)
 114150037	1.14.15.37 Luteothin monooxygenase
+114150038	1.14.15.38 N,N-dimethyl phenylurea N-demethylase
+114150039	1.14.15.39 Epi-isozizaene 5-monooxygenase
 114160000	1.14.16 With reduced pteridine as one donor, and incorporation of one atom of oxygen
 114160001	1.14.16.1 Phenylalanine 4-monooxygenase
 114160002	1.14.16.2 Tyrosine 3-monooxygenase
-114160003	1.14.16.3 Anthranilate 3-monooxygenase
+114160003	1.14.16.3 Deleted entry
 114160004	1.14.16.4 Tryptophan 5-monooxygenase
 114160005	1.14.16.5 Alkylglycerol monooxygenase
 114160006	1.14.16.6 Mandelate 4-monooxygenase
@@ -2273,6 +2306,8 @@
 114190074	1.14.19.74 (+)-piperitol/(+)-sesamin synthase
 114190075	1.14.19.75 Very-long-chain acyl-lipid omega-9 desaturase
 114190076	1.14.19.76 Flavone synthase II
+114190077	1.14.19.77 Plasmanylethanolamine desaturase
+114190078	1.14.19.78 Decanoyl-[acyl-carrier protein] acetylenase
 114200000	1.14.20 With 2-oxoglutarate as one donor, and the other dehydrogenated
 114200001	1.14.20.1 Deacetoxycephalosporin-C synthase
 114200002	1.14.20.2 Transferred entry: 1.14.11.59
@@ -2321,7 +2356,7 @@
 114990016	1.14.99.16 Transferred entry: 1.14.18.9
 114990017	1.14.99.17 Transferred entry: 1.14.16.5
 114990018	1.14.99.18 Deleted entry
-114990019	1.14.99.19 Plasmanylethanolamine desaturase
+114990019	1.14.99.19 Transferred entry: 1.14.19.77
 114990020	1.14.99.20 Phylloquinone monooxygenase (2,3-epoxidizing)
 114990021	1.14.99.21 Latia-luciferin monooxygenase (demethylating)
 114990022	1.14.99.22 Ecdysone 20-monooxygenase
@@ -2339,8 +2374,8 @@
 114990034	1.14.99.34 Monoprenyl isoflavone epoxidase
 114990035	1.14.99.35 Thiophene-2-carbonyl-CoA monooxygenase
 114990036	1.14.99.36 Transferred entry: 1.13.11.63
-114990037	1.14.99.37 Taxadiene 5-alpha-hydroxylase
-114990038	1.14.99.38 Cholesterol 25-hydroxylase
+114990037	1.14.99.37 Transferred entry: 1.14.14.176
+114990038	1.14.99.38 Cholesterol 25-monooxygenase
 114990039	1.14.99.39 Ammonia monooxygenase
 114990040	1.14.99.40 Transferred entry: 1.13.11.79
 114990041	1.14.99.41 Transferred entry: 1.13.11.75
@@ -2369,6 +2404,9 @@
 114990064	1.14.99.64 Zeaxanthin 4-ketolase
 114990065	1.14.99.65 4-amino-L-phenylalanyl-[CmlP-peptidyl-carrier-protein] 3-hydroxylase
 114990066	1.14.99.66 [Histone-H3]-N(6),N(6)-dimethyl-L-lysine(4) FAD-dependent demethylase
+114990067	1.14.99.67 Alpha-N-dichloroacetyl-p-aminophenylserinol N-oxygenase
+114990068	1.14.99.68 4-aminobenzoate N-oxygenase
+114990069	1.14.99.69 tRNA 2-(methylsulfanyl)-N(6)-isopentenyladenosine(37) hydroxylase
 115000000	1.15 Acting on superoxide as acceptor
 115010000	1.15.1 Acting on superoxide as acceptor
 115010001	1.15.1.1 Superoxide dismutase
@@ -2377,10 +2415,10 @@
 116010000	1.16.1 With NAD(+) or NADP(+) as acceptor
 116010001	1.16.1.1 Mercury(II) reductase
 116010002	1.16.1.2 Diferric-transferrin reductase
-116010003	1.16.1.3 Aquacobalamin reductase
+116010003	1.16.1.3 Deleted entry
 116010004	1.16.1.4 Cob(II)alamin reductase
-116010005	1.16.1.5 Aquacobalamin reductase (NADPH)
-116010006	1.16.1.6 Cyanocobalamin reductase (cyanide-eliminating)
+116010005	1.16.1.5 Deleted entry
+116010006	1.16.1.6 Cyanocobalamin reductase
 116010007	1.16.1.7 Ferric-chelate reductase (NADH)
 116010008	1.16.1.8 [Methionine synthase] reductase
 116010009	1.16.1.9 Ferric-chelate reductase (NADPH)
@@ -2397,6 +2435,7 @@
 116090001	1.16.9.1 Iron:rusticyanin reductase
 116980000	1.16.98 With other known acceptors
 116980001	1.16.98.1 Transferred entry: 1.16.9.1
+116990000	1.16.99 With other acceptors
 117000000	1.17 Acting on CH or CH(2) groups
 117010000	1.17.1 With NAD(+) or NADP(+) as acceptor
 117010001	1.17.1.1 CDP-4-dehydro-6-deoxyglucose reductase
@@ -2438,10 +2477,12 @@
 117080001	1.17.8.1 Hydroxysqualene dehydroxylase
 117090000	1.17.9 With a copper protein as acceptor
 117090001	1.17.9.1 4-methylphenol dehydrogenase (hydroxylating)
+117090002	1.17.9.2 (+)-pinoresinol hydroxylase
 117980000	1.17.98 With other, known, acceptors
 117980001	1.17.98.1 Transferred entry: 1.1.1.395
 117980002	1.17.98.2 Bacteriochlorophyllide c C-7(1)-hydroxylase
 117980003	1.17.98.3 Formate dehydrogenase (coenzyme F420)
+117980004	1.17.98.4 Formate dehydrogenase (acceptor)
 117990000	1.17.99 With other acceptors
 117990001	1.17.99.1 Transferred entry: 1.17.9.1
 117990002	1.17.99.2 Ethylbenzene hydroxylase
@@ -2449,8 +2490,11 @@
 117990004	1.17.99.4 Uracil/thymine dehydrogenase
 117990005	1.17.99.5 Transferred entry: 1.1.1.395
 117990006	1.17.99.6 Epoxyqueuosine reductase
-117990007	1.17.99.7 Formate dehydrogenase (acceptor)
+117990007	1.17.99.7 Transferred entry: 1.17.98.4
 117990008	1.17.99.8 Limonene dehydrogenase
+117990009	1.17.99.9 Heme a synthase
+117990010	1.17.99.10 Steroid C-25 hydroxylase
+117990011	1.17.99.11 3-oxo-Delta(1)-steroid hydratase/dehydrogenase
 118000000	1.18 Acting on iron-sulfur proteins as donors
 118010000	1.18.1 With NAD(+) or NADP(+) as acceptor
 118010001	1.18.1.1 Rubredoxin--NAD(+) reductase
@@ -2633,12 +2677,12 @@
 201010053	2.1.1.53 Putrescine N-methyltransferase
 201010054	2.1.1.54 Deoxycytidylate C-methyltransferase
 201010055	2.1.1.55 tRNA (adenine-N(6)-)-methyltransferase
-201010056	2.1.1.56 mRNA (guanine-N(7)-)-methyltransferase
+201010056	2.1.1.56 mRNA (guanine-N(7))-methyltransferase
 201010057	2.1.1.57 Methyltransferase cap1
 201010058	2.1.1.58 Transferred entry: 2.1.1.57
 201010059	2.1.1.59 [Cytochrome c]-lysine N-methyltransferase
 201010060	2.1.1.60 Calmodulin-lysine N-methyltransferase
-201010061	2.1.1.61 tRNA (5-methylaminomethyl-2-thiouridylate)-methyltransferase
+201010061	2.1.1.61 tRNA (5-aminomethyl-2-thiouridylate)-methyltransferase
 201010062	2.1.1.62 mRNA (2'-O-methyladenosine-N(6)-)-methyltransferase
 201010063	2.1.1.63 Methylated-DNA--[protein]-cysteine S-methyltransferase
 201010064	2.1.1.64 3-demethylubiquinol 3-O-methyltransferase
@@ -2935,12 +2979,24 @@
 201010355	2.1.1.355 [Histone H3]-lysine(9) N-trimethyltransferase
 201010356	2.1.1.356 [Histone H3]-lysine(27) N-trimethyltransferase
 201010357	2.1.1.357 [Histone H3]-lysine(36) N-dimethyltransferase
-201010358	2.1.1.358 [Histone H3]-dimethyl-L-lysine(36) N-methyltransferase
+201010358	2.1.1.358 Deleted entry
 201010359	2.1.1.359 [Histone H3]-lysine(36) N-trimethyltransferase
 201010360	2.1.1.360 [Histone H3]-lysine(79) N-trimethyltransferase
 201010361	2.1.1.361 [Histone H4]-lysine(20) N-methyltransferase
 201010362	2.1.1.362 [Histone H4]-N-methyl-L-lysine(20) N-methyltransferase
 201010363	2.1.1.363 Pre-sodorifen synthase
+201010364	2.1.1.364 [Histone H3]-lysine(4) N-methyltransferase
+201010365	2.1.1.365 MMP 1-O-methyltransferase
+201010366	2.1.1.366 [Histone H3]-N(6),N(6)-dimethyl-lysine(9) N-methyltransferase
+201010367	2.1.1.367 [Histone H3]-lysine(9) N-methyltransferase
+201010368	2.1.1.368 [Histone H3]-lysine(9) N-dimethyltransferase
+201010369	2.1.1.369 [Histone H3]-lysine(27) N-methyltransferase
+201010370	2.1.1.370 [Histone H3]-lysine(4) N-dimethyltransferase
+201010371	2.1.1.371 [Histone H3]-lysine(27) N-dimethyltransferase
+201010372	2.1.1.372 [Histone H4]-lysine(20) N-trimethyltransferase
+201010373	2.1.1.373 2-hydroxy-4-(methylsulfanyl)butanoate S-methyltransferase
+201010374	2.1.1.374 2-heptyl-1-hydroxyquinolin-4(1H)-one methyltransferase
+201010375	2.1.1.375 NNS virus cap methyltransferase
 201020000	2.1.2 Hydroxymethyl-, formyl- and related transferases
 201020001	2.1.2.1 Glycine hydroxymethyltransferase
 201020002	2.1.2.2 Phosphoribosylglycinamide formyltransferase 1
@@ -2991,6 +3047,8 @@
 202010010	2.2.1.10 2-amino-3,7-dideoxy-D-threo-hept-6-ulosonate synthase
 202010011	2.2.1.11 6-deoxy-5-ketofructose 1-phosphate synthase
 202010012	2.2.1.12 3-acetyloctanal synthase
+202010013	2.2.1.13 Apulose-4-phosphate transketolase
+202010014	2.2.1.14 6-deoxy-6-sulfo-D-fructose transaldolase
 203000000	2.3 Acyltransferases
 203010000	2.3.1 Transferring groups other than amino-acyl groups
 203010001	2.3.1.1 Amino-acid N-acetyltransferase
@@ -3182,7 +3240,7 @@
 203010187	2.3.1.187 Acetyl-S-ACP:malonate ACP transferase
 203010188	2.3.1.188 Omega-hydroxypalmitate O-feruloyl transferase
 203010189	2.3.1.189 Mycothiol synthase
-203010190	2.3.1.190 Acetoin dehydrogenase
+203010190	2.3.1.190 Acetoin dehydrogenase system
 203010191	2.3.1.191 UDP-3-O-(3-hydroxymyristoyl)glucosamine N-acyltransferase
 203010192	2.3.1.192 Glycine N-phenylacetyltransferase
 203010193	2.3.1.193 tRNA(Met) cytidine acetyltransferase
@@ -3237,7 +3295,7 @@
 203010242	2.3.1.242 Kdo(2)-lipid IV(A) palmitoleoyltransferase
 203010243	2.3.1.243 Lauroyl-Kdo(2)-lipid IV(A) myristoyltransferase
 203010244	2.3.1.244 2-methylbutanoate polyketide synthase
-203010245	2.3.1.245 3-hydroxy-5-phosphonooxypentane-2,4-dione thiolase
+203010245	2.3.1.245 3-hydroxy-5-phosphooxypentane-2,4-dione thiolase
 203010246	2.3.1.246 3,5-dihydroxyphenylacetyl-CoA synthase
 203010247	2.3.1.247 3-keto-5-aminohexanoate cleavage enzyme
 203010248	2.3.1.248 Spermidine disinapoyl transferase
@@ -3292,6 +3350,10 @@
 203010297	2.3.1.297 Very-long-chain ceramide synthase
 203010298	2.3.1.298 Ultra-long-chain ceramide synthase
 203010299	2.3.1.299 Sphingoid base N-stearoyltransferase
+203010300	2.3.1.300 Branched-chain beta-ketoacyl-[acyl-carrier-protein] synthase
+203010301	2.3.1.301 Mycobacterial beta-ketoacyl-[acyl carrier protein] synthase III
+203010302	2.3.1.302 Hydroxycinnamoyl-CoA:5-hydroxyanthranilate N-hydroxycinnamoyltransferase
+203010303	2.3.1.303 PP-Und 2(IV)-O-acetyltransferase
 203020000	2.3.2 Aminoacyltransferases
 203020001	2.3.2.1 D-glutamyltransferase
 203020002	2.3.2.2 Gamma-glutamyltransferase
@@ -3326,6 +3388,9 @@
 203020031	2.3.2.31 RBR-type E3 ubiquitin transferase
 203020032	2.3.2.32 Cullin-RING-type E3 NEDD8 transferase
 203020033	2.3.2.33 RCR-type E3 ubiquitin transferase
+203020034	2.3.2.34 E2 NEDD8-conjugating enzyme
+203020035	2.3.2.35 Capsaicin synthase
+203020036	2.3.2.36 RING-type E3 ubiquitin transferase (cysteine targeting)
 203030000	2.3.3 Acyl groups converted into alkyl groups on transfer
 203030001	2.3.3.1 Citrate (Si)-synthase
 203030002	2.3.3.2 Decylcitrate synthase
@@ -3408,7 +3473,7 @@
 204010057	2.4.1.57 Transferred entry: 2.4.1.345
 204010058	2.4.1.58 Lipopolysaccharide glucosyltransferase I
 204010059	2.4.1.59 Transferred entry: 2.4.1.17
-204010060	2.4.1.60 Abequosyltransferase
+204010060	2.4.1.60 alpha-1,3-abequosyltransferase
 204010061	2.4.1.61 Transferred entry: 2.4.1.17
 204010062	2.4.1.62 Ganglioside galactosyltransferase
 204010063	2.4.1.63 Linamarin synthase
@@ -3723,6 +3788,15 @@
 204010372	2.4.1.372 Mutansucrase
 204010373	2.4.1.373 Alpha-(1->2) branching sucrase
 204010374	2.4.1.374 Beta-1,2-mannooligosaccharide synthase
+204010375	2.4.1.375 Rhamnogalacturonan I galactosyltransferase
+204010376	2.4.1.376 EGF-domain serine glucosyltransferase
+204010377	2.4.1.377 rhamnosyltransferase
+204010378	2.4.1.378 mannosyltransferase
+204010379	2.4.1.379 GDP-Man:alpha-D-Gal-diphosphoundecaprenol alpha-1,3-mannosyltransferase
+204010380	2.4.1.380 mannosyltransferase
+204010381	2.4.1.381 rahmnosyltransferase
+204010382	2.4.1.382 (1->3)-alpha-D-Gal-PP-Und alpha-1,3-abequosyltransferase
+204010383	2.4.1.383 mannosyltransferase
 204020000	2.4.2 Pentosyltransferases
 204020001	2.4.2.1 Purine-nucleoside phosphorylase
 204020002	2.4.2.2 Pyrimidine-nucleoside phosphorylase
@@ -3752,7 +3826,7 @@
 204020026	2.4.2.26 Protein xylosyltransferase
 204020027	2.4.2.27 dihydrostreptosyltransferase
 204020028	2.4.2.28 S-methyl-5'-thioadenosine phosphorylase
-204020029	2.4.2.29 tRNA-guanine(34) transglycosylase
+204020029	2.4.2.29 tRNA-guanosine(34) preQ(1) transglycosylase
 204020030	2.4.2.30 NAD(+) ADP-ribosyltransferase
 204020031	2.4.2.31 NAD(+)--protein-arginine ADP-ribosyltransferase
 204020032	2.4.2.32 Dolichyl-phosphate D-xylosyltransferase
@@ -3785,6 +3859,9 @@
 204020059	2.4.2.59 Sulfide-dependent adenosine diphosphate thiazole synthase
 204020060	2.4.2.60 Cysteine-dependent adenosine diphosphate thiazole synthase
 204020061	2.4.2.61 Alpha-dystroglycan beta-1,4-xylosyltransferase
+204020062	2.4.2.62 Xylosyl alpha-1,3-xylosyltransferase
+204020063	2.4.2.63 EGF-domain serine xylosyltransferase
+204020064	2.4.2.64 tRNA-guanosine(34) queuine transglycosylase
 204990000	2.4.99 Transferring other glycosyl groups
 204990001	2.4.99.1 Beta-galactoside alpha-(2,6)-sialyltransferase
 204990002	2.4.99.2 sialyltransferase
@@ -3807,6 +3884,7 @@
 204990019	2.4.99.19 Undecaprenyl-diphosphooligosaccharide--protein glycotransferase
 204990020	2.4.99.20 2'-phospho-ADP-ribosyl cyclase/2'-phospho-cyclic-ADP-ribose transferase
 204990021	2.4.99.21 Dolichyl-phosphooligosaccharide-protein glycotransferase
+204990022	2.4.99.22 N-acetylglucosaminide alpha-(2,6)-sialyltransferase
 205000000	2.5 Transferring alkyl or aryl groups, other than methyl groups
 205010000	2.5.1 Transferring alkyl or aryl groups, other than methyl groups
 205010001	2.5.1.1 Dimethylallyltranstransferase
@@ -3961,6 +4039,7 @@
 205010150	2.5.1.150 Lycopene elongase/hydratase (dihydrobisanhydrobacterioruberin-forming)
 205010151	2.5.1.151 Alkylcobalamin dealkylase
 205010152	2.5.1.152 D-histidine 2-aminobutanoyltransferase
+205010153	2.5.1.153 Adenosine tuberculosinyltransferase
 206000000	2.6 Transferring nitrogenous groups
 206010000	2.6.1 Transaminases
 206010001	2.6.1.1 Aspartate transaminase
@@ -4081,6 +4160,7 @@
 206010116	2.6.1.116 6-aminohexanoate aminotransferase
 206010117	2.6.1.117 L-glutamine--4-(methylsulfanyl)-2-oxobutanoate aminotransferase
 206010118	2.6.1.118 aminotransferase
+206010119	2.6.1.119 Vanillin aminotransferase
 206020000	2.6.2 Amidinotransferases
 206020001	2.6.2.1 Transferred entry: 2.1.4.1
 206030000	2.6.3 Oximinotransferases
@@ -4139,7 +4219,7 @@
 207010045	2.7.1.45 2-dehydro-3-deoxygluconokinase
 207010046	2.7.1.46 L-arabinokinase
 207010047	2.7.1.47 D-ribulokinase
-207010048	2.7.1.48 Uridine kinase
+207010048	2.7.1.48 Uridine/cytidine kinase
 207010049	2.7.1.49 Hydroxymethylpyrimidine kinase
 207010050	2.7.1.50 Hydroxyethylthiazole kinase
 207010051	2.7.1.51 L-fuculokinase
@@ -4322,6 +4402,8 @@
 207010228	2.7.1.228 Mannosyl-inositol-phosphoceramide inositolphosphotransferase
 207010229	2.7.1.229 Deoxyribokinase
 207010230	2.7.1.230 Amicoumacin kinase
+207010231	2.7.1.231 3-oxoisoapionate kinase
+207010232	2.7.1.232 Levoglucosan kinase
 207020000	2.7.2 Phosphotransferases with a carboxy group as acceptor
 207020001	2.7.2.1 Acetate kinase
 207020002	2.7.2.2 Carbamate kinase
@@ -4335,11 +4417,11 @@
 207020010	2.7.2.10 Phosphoglycerate kinase (GTP)
 207020011	2.7.2.11 Glutamate 5-kinase
 207020012	2.7.2.12 Acetate kinase (diphosphate)
-207020013	2.7.2.13 Glutamate 1-kinase
+207020013	2.7.2.13 Deleted entry
 207020014	2.7.2.14 Branched-chain-fatty-acid kinase
 207020015	2.7.2.15 Propionate kinase
 207020016	2.7.2.16 2-phosphoglycerate kinase
-207020017	2.7.2.17 [Amino group carrier protein]-L-2-aminoadipate 6-kinase
+207020017	2.7.2.17 [Amino-group carrier protein]-L-2-aminoadipate 6-kinase
 207030000	2.7.3 Phosphotransferases with a nitrogenous group as acceptor
 207030001	2.7.3.1 Guanidinoacetate kinase
 207030002	2.7.3.2 Creatine kinase
@@ -4355,7 +4437,7 @@
 207030012	2.7.3.12 Transferred entry: 2.7.13.2
 207030013	2.7.3.13 Glutamine kinase
 207040000	2.7.4 Phosphotransferases with a phosphate group as acceptor
-207040001	2.7.4.1 Polyphosphate kinase
+207040001	2.7.4.1 ATP-polyphosphate phosphotransferase
 207040002	2.7.4.2 Phosphomevalonate kinase
 207040003	2.7.4.3 Adenylate kinase
 207040004	2.7.4.4 Nucleoside-phosphate kinase
@@ -4387,6 +4469,8 @@
 207040030	2.7.4.30 Transferred entry: 2.7.8.43
 207040031	2.7.4.31 (5-(aminomethyl)furan-3-yl)methyl phosphate kinase
 207040032	2.7.4.32 Farnesyl phosphate kinase
+207040033	2.7.4.33 AMP-polyphosphate phosphotransferase
+207040034	2.7.4.34 GDP-polyphosphate phosphotransferase
 207050000	2.7.5 Phosphotransferases with regeneration of donors, apparently catalyzing intramolecular transfers
 207050001	2.7.5.1 Transferred entry: 5.4.2.2
 207050002	2.7.5.2 Transferred entry: 5.4.2.3
@@ -4469,8 +4553,8 @@
 207070065	2.7.7.65 Diguanylate cyclase
 207070066	2.7.7.66 Malonate decarboxylase holo-[acyl-carrier protein] synthase
 207070067	2.7.7.67 CDP-2,3-bis-(O-geranylgeranyl)-sn-glycerol synthase
-207070068	2.7.7.68 Phosphoenolpyruvate guanylyltransferase
-207070069	2.7.7.69 GDP-L-galactose phosphorylase
+207070068	2.7.7.68 2-phospho-L-lactate guanylyltransferase
+207070069	2.7.7.69 GDP-L-galactose/GDP-D-glucose: hexose 1-phosphate guanylyltransferase
 207070070	2.7.7.70 D-glycero-beta-D-manno-heptose 1-phosphate adenylyltransferase
 207070071	2.7.7.71 D-glycero-alpha-D-manno-heptose 1-phosphate guanylyltransferase
 207070072	2.7.7.72 CCA tRNA nucleotidyltransferase
@@ -4505,6 +4589,9 @@
 207070101	2.7.7.101 DNA primase DnaG
 207070102	2.7.7.102 DNA primase AEP
 207070103	2.7.7.103 L-glutamine-phosphate cytidylyltransferase
+207070104	2.7.7.104 2-hydroxyethylphosphonate cytidylyltransferase
+207070105	2.7.7.105 Phosphoenolpyruvate guanylyltransferase
+207070106	2.7.7.106 3-phospho-D-glycerate guanylyltransferase
 207080000	2.7.8 Transferases for other substituted phosphate groups
 207080001	2.7.8.1 Ethanolaminephosphotransferase
 207080002	2.7.8.2 Diacylglycerol cholinephosphotransferase
@@ -4533,7 +4620,7 @@
 207080025	2.7.8.25 Transferred entry: 2.4.2.52
 207080026	2.7.8.26 Adenosylcobinamide-GDP ribazoletransferase
 207080027	2.7.8.27 Sphingomyelin synthase
-207080028	2.7.8.28 Phosphoenolpyruvate transferase
+207080028	2.7.8.28 2-phospho-L-lactate transferase
 207080029	2.7.8.29 L-serine-phosphatidylethanolamine phosphatidyltransferase
 207080030	2.7.8.30 Transferred entry: 2.4.2.53
 207080031	2.7.8.31 Undecaprenyl-phosphate glucose phosphotransferase
@@ -4827,6 +4914,9 @@
 301010112	3.1.1.112 Isoamyl acetate esterase
 301010113	3.1.1.113 Ethyl acetate hydrolase
 301010114	3.1.1.114 Methyl acetate hydrolase
+301010115	3.1.1.115 D-apionolactonase
+301010116	3.1.1.116 sn-1-specific diacylglycerol lipase
+301010117	3.1.1.117 (4-O-methyl)-D-glucuronate--lignin esterase
 301020000	3.1.2 Thiolester hydrolases
 301020001	3.1.2.1 Acetyl-CoA hydrolase
 301020002	3.1.2.2 Palmitoyl-CoA hydrolase
@@ -4891,7 +4981,7 @@
 301030028	3.1.3.28 ADP-phosphoglycerate phosphatase
 301030029	3.1.3.29 N-acylneuraminate-9-phosphatase
 301030030	3.1.3.30 Transferred entry: 3.1.3.31
-301030031	3.1.3.31 Nucleotidase
+301030031	3.1.3.31 Deleted entry
 301030032	3.1.3.32 Polynucleotide 3'-phosphatase
 301030033	3.1.3.33 Polynucleotide 5'-phosphatase
 301030034	3.1.3.34 Deoxynucleotide 3'-phosphatase
@@ -5030,6 +5120,7 @@
 301040058	3.1.4.58 RNA 2',3'-cyclic 3'-phosphodiesterase
 301040059	3.1.4.59 Cyclic-di-AMP phosphodiesterase
 301040060	3.1.4.60 PApA phosphodiesterase
+301040061	3.1.4.61 Cyclic 2,3-diphosphoglycerate hydrolase
 301050000	3.1.5 Triphosphoric monoester hydrolases
 301050001	3.1.5.1 dGTPase
 301060000	3.1.6 Sulfuric ester hydrolases
@@ -5051,7 +5142,7 @@
 301060016	3.1.6.16 Monomethyl-sulfatase
 301060017	3.1.6.17 D-lactate-2-sulfatase
 301060018	3.1.6.18 Glucuronate-2-sulfatase
-301060019	3.1.6.19 (R)-specific secondary-alkylsulfatase
+301060019	3.1.6.19 (R)-specific secondary-alkylsulfatase (type III)
 301060020	3.1.6.20 S-sulfosulfanyl-L-cysteine sulfohydrolase
 301070000	3.1.7 Diphosphoric monoester hydrolases
 301070001	3.1.7.1 Prenyl-diphosphatase
@@ -5061,7 +5152,7 @@
 301070005	3.1.7.5 Geranylgeranyl diphosphate diphosphatase
 301070006	3.1.7.6 Farnesyl diphosphatase
 301070007	3.1.7.7 Transferred entry: 4.2.3.194
-301070008	3.1.7.8 Tuberculosinol synthase
+301070008	3.1.7.8 Transferred entry: 2.5.1.153
 301070009	3.1.7.9 Isotuberculosinol synthase
 301070010	3.1.7.10 (13E)-labda-7,13-dien-15-ol synthase
 301070011	3.1.7.11 Geranyl diphosphate diphosphatase
@@ -5422,6 +5513,7 @@
 302010211	3.2.1.211 Endo-(1->3)-fucoidanase
 302010212	3.2.1.212 Endo-(1->4)-fucoidanase
 302010213	3.2.1.213 Galactan exo-1,6-beta-galactobiohydrolase (non-reducing end)
+302010214	3.2.1.214 Exo beta-1,2-glucooligosaccharide sophorohydrolase (non-reducing end)
 302020000	3.2.2 Hydrolyzing N-glycosyl compounds
 302020001	3.2.2.1 Purine nucleosidase
 302020002	3.2.2.2 Inosine nucleosidase
@@ -6181,6 +6273,8 @@
 305010132	3.5.1.132 [Amino group carrier protein]-ornithine hydrolase
 305010133	3.5.1.133 N(alpha)-acyl-L-glutamine aminoacylase
 305010134	3.5.1.134 (Indol-3-yl)acetyl-L-aspartate hydrolase
+305010135	3.5.1.135 N(4)-acetylcytidine amidohydrolase
+305010136	3.5.1.136 N,N'-diacetylchitobiose non-reducing end deacetylase
 305020000	3.5.2 In cyclic amides
 305020001	3.5.2.1 Barbiturase
 305020002	3.5.2.2 Dihydropyrimidinase
@@ -6301,7 +6395,7 @@
 306010000	3.6.1 In phosphorus-containing anhydrides
 306010001	3.6.1.1 Inorganic diphosphatase
 306010002	3.6.1.2 Trimetaphosphatase
-306010003	3.6.1.3 Adenosinetriphosphatase
+306010003	3.6.1.3 Deleted entry
 306010004	3.6.1.4 Transferred entry: 3.6.1.3
 306010005	3.6.1.5 Apyrase
 306010006	3.6.1.6 Nucleoside diphosphate phosphatase
@@ -6372,6 +6466,7 @@
 306010071	3.6.1.71 Adenosine-5'-diphospho-5'-(DNA) diphosphatase
 306010072	3.6.1.72 DNA-3'-diphospho-5'-guanosine diphosphatase
 306010073	3.6.1.73 Inosine/xanthosine triphosphatase
+306010074	3.6.1.74 mRNA 5'-phosphatase
 306020000	3.6.2 In sulfonyl-containing anhydrides
 306020001	3.6.2.1 Adenylylsulfatase
 306020002	3.6.2.2 Phosphoadenylylsulfatase
@@ -6386,7 +6481,7 @@
 306030008	3.6.3.8 Transferred entry: 7.2.2.10
 306030009	3.6.3.9 Transferred entry: 7.2.2.13
 306030010	3.6.3.10 Transferred entry: 7.2.2.19
-306030011	3.6.3.11 Chloride-transporting ATPase
+306030011	3.6.3.11 Deleted entry
 306030012	3.6.3.12 Transferred entry: 7.2.2.6
 306030013	3.6.3.13 Transferred entry: 3.6.3.1
 306030014	3.6.3.14 Transferred entry: 7.1.2.2
@@ -6480,9 +6575,10 @@
 307010024	3.7.1.24 2,4-diacetylphloroglucinol hydrolase
 307010025	3.7.1.25 2-hydroxy-6-oxohepta-2,4-dienoate hydrolase
 307010026	3.7.1.26 2,4-didehydro-3-deoxy-L-rhamnonate hydrolase
+307010027	3.7.1.27 Neryl diphosphate diphosphatase
 308000000	3.8 Acting on halide bonds
 308010000	3.8.1 In C-halide compounds
-308010001	3.8.1.1 Alkylhalidase
+308010001	3.8.1.1 Deleted entry
 308010002	3.8.1.2 (S)-2-haloacid dehalogenase
 308010003	3.8.1.3 Haloacetate dehalogenase
 308010004	3.8.1.4 Transferred entry: 1.21.99.4
@@ -6645,6 +6741,8 @@
 401010117	4.1.1.117 2-((L-alanin-3-ylcarbamoyl)methyl)-2-hydroxybutanedioate decarboxylase
 401010118	4.1.1.118 Isophthalyl-CoA decarboxylase
 401010119	4.1.1.119 Phenylacetate decarboxylase
+401010120	4.1.1.120 3-oxoisoapionate decarboxylase
+401010121	4.1.1.121 3-oxoisoapionate-4-phosphate decarboxylase
 401020000	4.1.2 Aldehyde-lyases
 401020001	4.1.2.1 Transferred entry: 4.1.3.16
 401020002	4.1.2.2 Ketotetrose-phosphate aldolase
@@ -6707,6 +6805,7 @@
 401020059	4.1.2.59 Dihydroneopterin phosphate aldolase
 401020060	4.1.2.60 Dihydroneopterin triphosphate aldolase
 401020061	4.1.2.61 Feruloyl-CoA hydratase/lyase
+401020062	4.1.2.62 5-deoxyribulose 1-phosphate aldolase
 401030000	4.1.3 Oxo-acid-lyases
 401030001	4.1.3.1 Isocitrate lyase
 401030002	4.1.3.2 Transferred entry: 2.3.3.9
@@ -6780,6 +6879,7 @@
 401990023	4.1.99.23 5-hydroxybenzimidazole synthase
 401990024	4.1.99.24 L-tyrosine isonitrile synthase
 401990025	4.1.99.25 L-tryptophan isonitrile synthase
+401990026	4.1.99.26 synthase
 402000000	4.2 Carbon-oxygen lyases
 402010000	4.2.1 Hydro-lyases
 402010001	4.2.1.1 Carbonic anhydrase
@@ -7119,7 +7219,7 @@
 402030131	4.2.3.131 Miltiradiene synthase
 402030132	4.2.3.132 Neoabietadiene synthase
 402030133	4.2.3.133 Alpha-copaene synthase
-402030134	4.2.3.134 5-phosphonooxy-L-lysine phospho-lyase
+402030134	4.2.3.134 5-phosphooxy-L-lysine phospho-lyase
 402030135	4.2.3.135 Delta(6)-protoilludene synthase
 402030136	4.2.3.136 Alpha-isocomene synthase
 402030137	4.2.3.137 (E)-2-epi-beta-caryophyllene synthase
@@ -7411,7 +7511,7 @@
 501030009	5.1.3.9 N-acylglucosamine-6-phosphate 2-epimerase
 501030010	5.1.3.10 CDP-paratose 2-epimerase
 501030011	5.1.3.11 Cellobiose epimerase
-501030012	5.1.3.12 UDP-glucuronate 5'-epimerase
+501030012	5.1.3.12 Deleted entry
 501030013	5.1.3.13 dTDP-4-dehydrorhamnose 3,5-epimerase
 501030014	5.1.3.14 UDP-N-acetylglucosamine 2-epimerase (non-hydrolyzing)
 501030015	5.1.3.15 Glucose-6-phosphate 1-epimerase
@@ -7443,6 +7543,7 @@
 501030041	5.1.3.41 Fructoselysine 3-epimerase
 501030042	5.1.3.42 D-glucosamine-6-phosphate 4-epimerase
 501030043	5.1.3.43 Sulfoquinovose mutarotase
+501030044	5.1.3.44 Mannose 2-epimerase
 501990000	5.1.99 Acting on other compounds
 501990001	5.1.99.1 Methylmalonyl-CoA epimerase
 501990002	5.1.99.2 16-hydroxysteroid epimerase
@@ -7501,10 +7602,11 @@
 503010029	5.3.1.29 Ribose 1,5-bisphosphate isomerase
 503010030	5.3.1.30 5-deoxy-glucuronate isomerase
 503010031	5.3.1.31 Sulfoquinovose isomerase
-503010032	5.3.1.32 (4S)-4-hydroxy-5-phosphonooxypentane-2,3-dione isomerase
+503010032	5.3.1.32 (4S)-4-hydroxy-5-phosphooxypentane-2,3-dione isomerase
 503010033	5.3.1.33 L-erythrulose 1-phosphate isomerase
 503010034	5.3.1.34 D-erythrulose 4-phosphate isomerase
 503010035	5.3.1.35 2-dehydrotetronate isomerase
+503010036	5.3.1.36 D-apiose isomerase
 503020000	5.3.2 Interconverting keto- and enol-groups
 503020001	5.3.2.1 Phenylpyruvate tautomerase
 503020002	5.3.2.2 Oxaloacetate tautomerase
@@ -7537,6 +7639,7 @@
 503030020	5.3.3.20 Transferred entry: 5.4.99.64
 503030021	5.3.3.21 Delta(3,5)-Delta(2,4)-dienoyl-CoA isomerase
 503030022	5.3.3.22 Lutein isomerase
+503030023	5.3.3.23 S-methyl-5-thioribulose 1-phosphate isomerase
 503040000	5.3.4 Transposing S-S bonds
 503040001	5.3.4.1 Protein disulfide-isomerase
 503990000	5.3.99 Other intramolecular oxidoreductases
@@ -7818,6 +7921,15 @@
 602010061	6.2.1.61 Salicylate--[aryl-carrier protein] ligase
 602010062	6.2.1.62 3,4-dihydroxybenzoate--[aryl-carrier protein] ligase
 602010063	6.2.1.63 L-arginine--[L-arginyl-carrier protein] ligase
+602010064	6.2.1.64 E1 NEDD8-activating enzyme
+602010065	6.2.1.65 Salicylate--CoA ligase
+602010066	6.2.1.66 Glyine--[glycyl-carrier protein] ligase
+602010067	6.2.1.67 L-alanine--[L-alanyl-carrier protein] ligase
+602010068	6.2.1.68 L-glutamate--[L-glutamyl-carrier protein] ligase
+602020000	6.2.2 Amide--thiol ligases
+602020001	6.2.2.1 Thioglycine synthase
+602020002	6.2.2.2 Oxazoline synthase
+602020003	6.2.2.3 Thiazoline synthase
 603000000	6.3 Forming carbon-nitrogen bonds
 603010000	6.3.1 Acid--ammonia (or amine) ligases (amide synthases)
 603010001	6.3.1.1 Aspartate--ammonia ligase
@@ -7840,6 +7952,7 @@
 603010018	6.3.1.18 Gamma-glutamylanilide synthase
 603010019	6.3.1.19 Prokaryotic ubiquitin-like protein ligase
 603010020	6.3.1.20 Lipoate--protein ligase
+603010021	6.3.1.21 Phosphoribosylglycinamide formyltransferase 2
 603020000	6.3.2 Acid--amino-acid ligases (peptide synthases)
 603020001	6.3.2.1 Pantoate--beta-alanine ligase (AMP-forming)
 603020002	6.3.2.2 Glutamate--cysteine ligase
@@ -7883,7 +7996,7 @@
 603020040	6.3.2.40 Cyclopeptine synthase
 603020041	6.3.2.41 N-acetylaspartylglutamate synthase
 603020042	6.3.2.42 N-acetylaspartylglutamylglutamate synthase
-603020043	6.3.2.43 [Amino group carrier protein]--L-2-aminoadipate ligase
+603020043	6.3.2.43 [Amino-group carrier protein]--L-2-aminoadipate ligase
 603020044	6.3.2.44 Pantoate--beta-alanine ligase (ADP-forming)
 603020045	6.3.2.45 diaminoheptanedioate ligase
 603020046	6.3.2.46 Fumarate--(S)-2,3-diaminopropanoate ligase
@@ -7899,6 +8012,8 @@
 603020056	6.3.2.56 Staphyloferrin B synthase
 603020057	6.3.2.57 Staphyloferrin A synthase
 603020058	6.3.2.58 D-ornithine--citrate ligase
+603020059	6.3.2.59 3-methyl-D-ornithine--L-lysine ligase
+603020060	6.3.2.60 Glutamate--[amino group carrier protein] ligase
 603030000	6.3.3 Cyclo-ligases
 603030001	6.3.3.1 Phosphoribosylformylglycinamidine cyclo-ligase
 603030002	6.3.3.2 5-formyltetrahydrofolate cyclo-ligase
@@ -7967,6 +8082,7 @@
 605010006	6.5.1.6 DNA ligase (ATP or NAD(+))
 605010007	6.5.1.7 DNA ligase (ATP, ADP or GTP)
 605010008	6.5.1.8 3'-phosphate/5'-hydroxy nucleic acid ligase
+605010009	6.5.1.9 Cyclic 2,3-diphosphoglycerate synthase
 606000000	6.6 Forming nitrogen-metal bonds
 606010000	6.6.1 Forming coordination complexes
 606010001	6.6.1.1 Magnesium chelatase
@@ -7983,6 +8099,7 @@
 701010007	7.1.1.7 Ubiquinol oxidase (electrogenic, proton-motive force generating)
 701010008	7.1.1.8 Quinol--cytochrome-c reductase
 701010009	7.1.1.9 Cytochrome-c oxidase
+701010010	7.1.1.10 Ferredoxin--quinone oxidoreductase (H(+)-translocating)
 701020000	7.1.2 Hydron translocation linked to the hydrolysis of a nucleoside triphosphate
 701020001	7.1.2.1 P-type H(+)-exporting transporter
 701020002	7.1.2.2 H(+)-transporting two-sector ATPase
@@ -8015,6 +8132,7 @@
 702020019	7.2.2.19 H(+)/K(+)-exchanging ATPase
 702020020	7.2.2.20 ABC-type Zn(2+) transporter
 702020021	7.2.2.21 Cd(2+)-exporting ATPase
+702020022	7.2.2.22 P-type Mn(2+) transporter
 702030000	7.2.3 Linked to the hydrolysis of diphosphate
 702040000	7.2.4 Linked to decarboxylation
 702040001	7.2.4.1 Carboxybiotin decarboxylase
@@ -8046,6 +8164,7 @@
 704020011	7.4.2.11 ABC-type methionine transporter
 704020012	7.4.2.12 ABC-type cystine transporter
 704020013	7.4.2.13 ABC-type tyrosine transporter
+704020014	7.4.2.14 ABC-type antigen peptide transporter
 705000000	7.5 Catalysing the translocation carbohydrates and their derivatives
 705020000	7.5.2 Linked to the hydrolysis of a nucleoside triphosphate
 705020001	7.5.2.1 ABC-type maltose transporter

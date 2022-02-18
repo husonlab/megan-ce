@@ -19,7 +19,6 @@
 
 package megan.classification.data;
 
-import jloda.util.CanceledException;
 import jloda.util.progress.ProgressListener;
 import megan.data.IName2IdMap;
 
@@ -38,5 +37,5 @@ public interface IString2IntegerMapFactory {
      * @param progress progress listner
      * @return map or null
      */
-    IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException, CanceledException;
+    IString2IntegerMap create(IName2IdMap label2id, String fileName, ProgressListener progress) throws IOException;
 }

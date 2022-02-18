@@ -43,11 +43,10 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
      *
 	 */
     public Accession2IdMap(final IName2IdMap label2id, final String fileName, final ProgressListener progress) throws IOException {
-        map = new HashMap<>();
+        map = new HashMap<>(200000000);
         try (FileLineIterator it = new FileLineIterator(fileName)) {
             progress.setSubtask("Loading file: " + fileName);
             progress.setMaximum(it.getMaximumProgress());
-            progress.setProgress(it.getProgress());
             while (it.hasNext()) {
 				String[] tokens = StringUtils.split(it.next(), '\t');
                 if (tokens.length == 2) {
@@ -65,7 +64,6 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
                 }
                 progress.setProgress(it.getProgress());
             }
-            progress.reportTaskCompleted();
         }
     }
 
@@ -79,7 +77,7 @@ public class Accession2IdMap implements IString2IntegerMap, Closeable {
     }
 
     public int get(String accession) {
-        final Integer result = map.get(accession);
+        final var result = map.get(accession);
         return Objects.requireNonNullElse(result, 0);
     }
 

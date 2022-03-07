@@ -76,34 +76,34 @@ public class DAAMeganizer {
     private void run(String[] args) throws Exception {
         CommandManager.getGlobalCommands().addAll(ClassificationCommandHelper.getGlobalCommands());
 
-        final ArgsOptions options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
+        final var options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Files");
-        final String[] daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file(s). Each is meganized separately", new String[0]);
-        final String[] metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in files", new String[0]);
+        final var daaFiles = options.getOptionMandatory("-i", "in", "Input DAA file(s). Each is meganized separately", new String[0]);
+        final var metaDataFiles = options.getOption("-mdf", "metaDataFile", "Files containing metadata to be included in files", new String[0]);
 
         // options.comment("Reads");
-        final boolean pairedReads = false; // options.getOption("-pr", "paired", "Reads are paired", false);
-        final int pairedReadsSuffixLength = 0; // options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
+        final var pairedReads = false; // options.getOption("-pr", "paired", "Reads are paired", false);
+        final var pairedReadsSuffixLength = 0; // options.getOption("-ps", "pairedSuffixLength", "Length of name suffix used to distinguish between name of read and its mate", 0);
 
         options.comment("Mode");
-        boolean longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
+        var longReads = options.getOption("-lg", "longReads", "Parse and analyse as long reads", Document.DEFAULT_LONG_READS);
 
         options.comment("Parameters");
 
-        final boolean runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
-        final float minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
-        final float maxExpected = options.getOption("-me", "maxExpected", "Max expected", Document.DEFAULT_MAXEXPECTED);
-        final float minPercentIdentity = options.getOption("-mpi", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
-        final float topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
+        final var runClassifications = options.getOption("-class", "classify", "Run classification algorithm", true);
+        final var minScore = options.getOption("-ms", "minScore", "Min score", Document.DEFAULT_MINSCORE);
+        final var maxExpected = options.getOption("-me", "maxExpected", "Max expected", Document.DEFAULT_MAXEXPECTED);
+        final var minPercentIdentity = options.getOption("-mpi", "minPercentIdentity", "Min percent identity", Document.DEFAULT_MIN_PERCENT_IDENTITY);
+        final var topPercent = options.getOption("-top", "topPercent", "Top percent", Document.DEFAULT_TOPPERCENT);
         final int minSupport;
         final float minSupportPercent;
         {
-            final float minSupportPercent0 = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
-            final int minSupport0 = options.getOption("-sup", "minSupport", "Min support (0==off)", Document.DEFAULT_MINSUPPORT);
+            final var minSupportPercent0 = options.getOption("-supp", "minSupportPercent", "Min support as percent of assigned reads (0==off)", Document.DEFAULT_MINSUPPORT_PERCENT);
+            final var minSupport0 = options.getOption("-sup", "minSupport", "Min support (0==off)", Document.DEFAULT_MINSUPPORT);
             if (minSupportPercent0 != Document.DEFAULT_MINSUPPORT_PERCENT && minSupport0 == Document.DEFAULT_MINSUPPORT) {
                 minSupportPercent = minSupportPercent0;
                 minSupport = 0;
@@ -117,13 +117,13 @@ public class DAAMeganizer {
                 minSupport = minSupport0;
             }
         }
-        final float minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
-        final float minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
-        final int minReadLength=options.getOption("-mrl","minReadLength","Minimum read length",0);
+        final var minPercentReadToCover = options.getOption("-mrc", "minPercentReadCover", "Min percent of read length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_READ_TO_COVER);
+        final var minPercentReferenceToCover = options.getOption("-mrefc", "minPercentReferenceCover", "Min percent of reference length to be covered by alignments", Document.DEFAULT_MIN_PERCENT_REFERENCE_TO_COVER);
+        final var minReadLength=options.getOption("-mrl","minReadLength","Minimum read length",0);
 
-        final Document.LCAAlgorithm lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
+        final var lcaAlgorithm = Document.LCAAlgorithm.valueOfIgnoreCase(options.getOption("-alg", "lcaAlgorithm", "Set the LCA algorithm to use for taxonomic assignment",
                 Document.LCAAlgorithm.values(), longReads ? Document.DEFAULT_LCA_ALGORITHM_LONG_READS.toString() : Document.DEFAULT_LCA_ALGORITHM_SHORT_READS.toString()));
-        final float lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover",
+        final var lcaCoveragePercent = options.getOption("-lcp", "lcaCoveragePercent", "Set the percent for the LCA to cover",
                 lcaAlgorithm == Document.LCAAlgorithm.longReads ? Document.DEFAULT_LCA_COVERAGE_PERCENT_LONG_READS : (lcaAlgorithm == Document.LCAAlgorithm.weighted ? Document.DEFAULT_LCA_COVERAGE_PERCENT_WEIGHTED_LCA : Document.DEFAULT_LCA_COVERAGE_PERCENT_SHORT_READS));
 
         final String readAssignmentModeDefaultValue;
@@ -135,34 +135,34 @@ public class DAAMeganizer {
             readAssignmentModeDefaultValue = Document.DEFAULT_READ_ASSIGNMENT_MODE_SHORT_READS.toString();
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the read assignment mode", readAssignmentModeDefaultValue));
 
-        final String contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
+        final var contaminantsFile = options.getOption("-cf", "conFile", "File of contaminant taxa (one Id or name per line)", "");
 
         options.comment("Classification support:");
 
-        final String mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
-        final Set<String> dbSelectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
+        final var mapDBFile = options.getOption("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
+        final var dbSelectedClassifications = new HashSet<>(Arrays.asList(options.getOption("-on", "only", "Use only named classifications (if not set: use all)", new String[0])));
 
         options.comment("Deprecated classification support:");
 
-        final boolean parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
+        final var parseTaxonNames = options.getOption("-tn", "parseTaxonNames", "Parse taxon names", true);
 
-        final String acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
-        final String synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
+        final var acc2TaxaFile = options.getOption("-a2t", "acc2taxa", "Accession-to-Taxonomy mapping file", "");
+        final var synonyms2TaxaFile = options.getOption("-s2t", "syn2taxa", "Synonyms-to-Taxonomy mapping file", "");
         {
-            final String tags = options.getOption("-t4t", "tags4taxonomy", "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
+            final var tags = options.getOption("-t4t", "tags4taxonomy", "Tags for taxonomy id parsing (must set to activate id parsing)", "").trim();
             ProgramProperties.preset("TaxonomyTags", tags);
-            ProgramProperties.preset("TaxonomyParseIds", tags.equals(""));
+            ProgramProperties.preset("TaxonomyParseIds",  tags.length() > 0);
         }
 
-        final HashMap<String, String> class2AccessionFile = new HashMap<>();
-        final HashMap<String, String> class2SynonymsFile = new HashMap<>();
+        final var class2AccessionFile = new HashMap<String, String>();
+        final var class2SynonymsFile = new HashMap<String, String>();
 
-        for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+        for (var cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
             class2AccessionFile.put(cName, options.getOption("-a2" + cName.toLowerCase(), "acc2" + cName.toLowerCase(), "Accession-to-" + cName + " mapping file", ""));
             class2SynonymsFile.put(cName, options.getOption("-s2" + cName.toLowerCase(), "syn2" + cName.toLowerCase(), "Synonyms-to-" + cName + " mapping file", ""));
-            final String tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
+            final var tags = options.getOption("-t4" + cName.toLowerCase(), "tags4" + cName.toLowerCase(), "Tags for " + cName + " id parsing (must set to activate id parsing)", "").trim();
             ProgramProperties.preset(cName + "Tags", tags);
-            ProgramProperties.preset(cName + "ParseIds", tags.equals(""));
+            ProgramProperties.preset(cName + "ParseIds",  tags.length() > 0);
         }
         ProgramProperties.preset(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.preset(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
@@ -183,13 +183,13 @@ public class DAAMeganizer {
         if (Basic.getDebugMode())
             System.err.println("Java version: " + System.getProperty("java.version"));
 
-        for (String fileName : daaFiles) {
+        for (var fileName : daaFiles) {
 			FileUtils.checkFileReadableNonEmpty(fileName);
             if (!DAAFileFilter.getInstance().accept(fileName))
                 throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);
 		}
 
-		for (String fileName : metaDataFiles) {
+		for (var fileName : metaDataFiles) {
 			FileUtils.checkFileReadableNonEmpty(fileName);
 		}
 
@@ -203,15 +203,15 @@ public class DAAMeganizer {
 		if (StringUtils.notBlank(contaminantsFile))
 			FileUtils.checkFileReadableNonEmpty(contaminantsFile);
 
-		final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
+		final var mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
 		if (mapDBClassifications.size() > 0 && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
 			throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
 		if (mapDBClassifications.size() > 0)
 			ClassificationManager.setMeganMapDBFile(mapDBFile);
 
-		final ArrayList<String> cNames = new ArrayList<>();
-		for (String cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
+		final var cNames = new ArrayList<String>();
+		for (var cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
 			if ((dbSelectedClassifications.size() == 0 || dbSelectedClassifications.contains(cName))
 				&& (mapDBClassifications.contains(cName) || StringUtils.notBlank(class2AccessionFile.get(cName)) || StringUtils.notBlank(class2SynonymsFile.get(cName))))
 				cNames.add(cName);
@@ -219,8 +219,8 @@ public class DAAMeganizer {
         if (cNames.size() > 0)
 			System.err.println("Functional classifications to use: " + StringUtils.toString(cNames, ", "));
 
-        final IdMapper taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
-        final IdMapper[] idMappers = new IdMapper[cNames.size()];
+        final var taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();
+        final var idMappers = new IdMapper[cNames.size()];
 
         // Load all mapping files:
         if (runClassifications) {
@@ -237,8 +237,8 @@ public class DAAMeganizer {
 				taxonIdMapper.loadMappingFile(synonyms2TaxaFile, IdMapper.MapType.Synonyms, false, new ProgressPercentage());
 			}
 
-            for (int i = 0; i < cNames.size(); i++) {
-                final String cName = cNames.get(i);
+            for (var i = 0; i < cNames.size(); i++) {
+                final var cName = cNames.get(i);
 
                 idMappers[i] = ClassificationManager.get(cName, true).getIdMapper();
 
@@ -255,10 +255,10 @@ public class DAAMeganizer {
          * process each file
          */
 
-        for (int i = 0; i < daaFiles.length; i++) {
-            final String daaFile = daaFiles[i];
+        for (var i = 0; i < daaFiles.length; i++) {
+            final var daaFile = daaFiles[i];
             System.err.println("Meganizing: " + daaFile);
-            final String metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
+            final var metaDataFile = (metaDataFiles.length > 0 ? metaDataFiles[Math.min(i, metaDataFiles.length - 1)] : "");
             Meganize.apply(new ProgressPercentage(), daaFile, metaDataFile, cNames, minScore, maxExpected, minPercentIdentity,
                     topPercent, minSupportPercent, minSupport, pairedReads, pairedReadsSuffixLength,minReadLength, lcaAlgorithm, readAssignmentMode, lcaCoveragePercent, longReads,
                     minPercentReadToCover, minPercentReferenceToCover, contaminantsFile);

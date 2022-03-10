@@ -20,7 +20,10 @@
 package megan.daa.io;
 
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 /**
@@ -32,12 +35,12 @@ public class DAAModifier {
      * remove all data added by MEGAN
      */
     public static void removeAllMEGANData(String fileName) throws IOException {
-        final DAAHeader header = new DAAHeader(fileName);
+        final var header = new DAAHeader(fileName);
         header.load();
 
-        long newFileSize = -1L;
-        for (int i = 0; i < header.getBlockTypeRankArrayLength(); i++) {
-            BlockType type = header.getBlockType(i);
+        var newFileSize = -1L;
+        for (var i = 0; i < header.getBlockTypeRankArrayLength(); i++) {
+            var type = header.getBlockType(i);
             if (type != BlockType.empty) {
                 if (type.toString().startsWith("megan")) {
                     if (newFileSize == -1L)
@@ -63,10 +66,10 @@ public class DAAModifier {
      * remove all classification data added by MEGAN (leaves ref annotations)
      */
     public static void removeMEGANClassificationData(DAAHeader header) throws IOException {
-        boolean hasMeganBlock = false;
-        long meganStart = header.getHeaderSize();
-        for (int i = 0; i < header.getBlockTypeRankArrayLength(); i++) {
-            BlockType type = header.getBlockType(i);
+        var hasMeganBlock = false;
+        var meganStart = header.getHeaderSize();
+        for (var i = 0; i < header.getBlockTypeRankArrayLength(); i++) {
+            var type = header.getBlockType(i);
             if (type != BlockType.empty) {
                 if (type.toString().startsWith("megan") && !type.equals(BlockType.megan_ref_annotations)) {
                     hasMeganBlock = true;
@@ -90,16 +93,16 @@ public class DAAModifier {
      *
 	 */
     public static void replaceBlock(DAAHeader header, BlockType blockType, byte[] bytes, int size) throws IOException {
-        int index = header.getIndexForBlockType(blockType);
+        var index = header.getIndexForBlockType(blockType);
 
         {
             if (index != -1) {
                 header.setBlockTypeRank(index, BlockType.rank(BlockType.empty));
                 header.setBlockSize(index, 0);
                 if (index >= header.getLastDefinedBlockIndex()) {
-                    long newSize = header.getLocationOfBlockInFile(index);
+                    var newSize = header.getLocationOfBlockInFile(index);
                     if (newSize > 0) {
-                        try (RandomAccessFile raf = new RandomAccessFile(header.getFileName(), "rw")) {
+                        try (var raf = new RandomAccessFile(header.getFileName(), "rw")) {
                             raf.setLength(newSize);
                         }
                     }
@@ -107,7 +110,7 @@ public class DAAModifier {
                     throw new IOException("Can't replace block, not last");
             }
         }
-        try (OutputStream outs = new BufferedOutputStream(new FileOutputStream(header.getFileName(), true))) { // append
+        try (var outs = new BufferedOutputStream(new FileOutputStream(header.getFileName(), true))) { // append
             index = header.getFirstAvailableBlockIndex();
             header.setBlockTypeRank(index, BlockType.rank(blockType));
             header.setBlockSize(index, size);
@@ -121,11 +124,11 @@ public class DAAModifier {
      *
 	 */
     public static void appendBlocks(DAAHeader header, BlockType[] types, byte[][] blocks, int[] sizes) throws IOException {
-        try (OutputStream outs = new BufferedOutputStream(new FileOutputStream(header.getFileName(), true))) { // append to file...
-            for (int i = 0; i < blocks.length; i++) {
-                final byte[] bytes = blocks[i];
-                final int size = sizes[i];
-                final int index = header.getFirstAvailableBlockIndex();
+        try (var outs = new BufferedOutputStream(new FileOutputStream(header.getFileName(), true))) { // append to file...
+            for (var i = 0; i < blocks.length; i++) {
+                final var bytes = blocks[i];
+                final var size = sizes[i];
+                final var index = header.getFirstAvailableBlockIndex();
                 header.setBlockTypeRank(index, BlockType.rank(types[i]));
                 header.setBlockSize(index, size);
                 outs.write(bytes, 0, size);
@@ -139,7 +142,7 @@ public class DAAModifier {
      *
 	 */
     public static void appendBlocks(DAAHeader header, BlockType type, byte[][] blocks, int[] sizes) throws IOException {
-        BlockType[] types = new BlockType[blocks.length];
+        var types = new BlockType[blocks.length];
         Arrays.fill(types, type);
         appendBlocks(header, types, blocks, sizes);
     }

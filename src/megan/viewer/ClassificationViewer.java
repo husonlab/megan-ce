@@ -403,8 +403,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 
             if (lastRecomputeTimeFromDocument != dir.getDocument().getLastRecomputeTime()) {
                 lastRecomputeTimeFromDocument = dir.getDocument().getLastRecomputeTime();
-                // System.err.println("RECOMPUTING at "+
-                // lastRecomputeTimeFromDocument);
+                // System.err.println("RECOMPUTING at "+lastRecomputeTimeFromDocument);
                 updateData();
                 updateTree();
             }

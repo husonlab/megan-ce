@@ -245,7 +245,7 @@ public class SamplesTableView {
                     final Set<Pair<Integer, Integer>> selectedPairs = new HashSet<>();
                     final BitSet rows = new BitSet();
                     final BitSet cols = new BitSet();
-                    for (TablePosition position : tableView.getSelectedCells()) {
+                    for (var position : tableView.getSelectedCells()) {
                         final int row = position.getRow();
                         final int col = position.getColumn();
                         selectedPairs.add(new Pair<>(row, col));
@@ -374,7 +374,7 @@ public class SamplesTableView {
         sampleAttributeTable.getSampleOrder().clear();
         sampleAttributeTable.getSampleOrder().addAll(tableView.getRowNames());
         try {
-            samplesViewer.getDocument().getDataTable().reorderSamples(sampleAttributeTable.getSampleOrder());
+            samplesViewer.getDocument().reorderSamples(sampleAttributeTable.getSampleOrder());
         } catch (IOException e) {
             Basic.caught(e);
         }
@@ -407,6 +407,8 @@ public class SamplesTableView {
         initialUpdate = tableView.getUpdate();
 
         //System.err.println("Doc: "+w.toString());
+        if (false)
+            SwingUtilities.invokeLater(() -> samplesViewer.getDocument().getDir().notifyUpdateViewer(IDirector.ALL));
     }
 
     public void syncFromDocumentToView() {

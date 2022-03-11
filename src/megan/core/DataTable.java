@@ -1255,28 +1255,28 @@ public class DataTable {
      *
 	 */
     public void reorderSamples(Collection<String> newOrder) throws IOException {
-        final Integer[] order = new Integer[newOrder.size()];
+        final var order = new Integer[newOrder.size()];
 
-        int i = 0;
+        var i = 0;
         for (String sample : newOrder) {
-			int pid = StringUtils.getIndex(sample, getSampleNamesArray());
+            int pid = StringUtils.getIndex(sample, getSampleNamesArray());
             if (pid == -1)
                 throw new IOException("Can't reorder: unknown sample: " + sample);
             order[i++] = pid;
         }
 
-        final String[] datasetNames = modify(order, getSampleNamesArray());
-        final Long[] uids = modify(order, getSampleUIds());
-        final float[] sizes = modify(order, getSampleSizes());
-        final BlastMode[] modes = modify(order, getBlastModes());
+        final var datasetNames = modify(order, getSampleNamesArray());
+        final var uids = modify(order, getSampleUIds());
+        final var sizes = modify(order, getSampleSizes());
+        final var modes = modify(order, getBlastModes());
         setSamples(datasetNames, uids, sizes, modes);
 
-        final Map<String, Map<Integer, float[]>> classification2Class2Counts = getClassification2Class2Counts();
-        for (String classification : classification2Class2Counts.keySet()) {
-            final Map<Integer, float[]> class2Counts = classification2Class2Counts.get(classification);
-            final Set<Integer> keys = new HashSet<>(class2Counts.keySet());
-            for (Integer classId : keys) {
-                float[] values = class2Counts.get(classId);
+        final var classification2Class2Counts = getClassification2Class2Counts();
+        for (var classification : classification2Class2Counts.keySet()) {
+            final var class2Counts = classification2Class2Counts.get(classification);
+            final var keys = new HashSet<>(class2Counts.keySet());
+            for (var classId : keys) {
+                var values = class2Counts.get(classId);
                 if (values != null) {
                     values = modify(order, values);
                     class2Counts.put(classId, values);
@@ -1291,10 +1291,10 @@ public class DataTable {
      * @return modified array, possibly with changed length
      */
     private static String[] modify(Integer[] order, String[] array) {
-        String[] tmp = new String[order.length];
+        var tmp = new String[order.length];
 
-        int pos = 0;
-        for (Integer id : order) {
+        var pos = 0;
+        for (var id : order) {
             if (id < array.length)
                 tmp[pos++] = array[id];
         }
@@ -1307,9 +1307,9 @@ public class DataTable {
      * @return modified array, possibly with changed length
      */
     private static float[] modify(Integer[] order, float[] array) {
-        float[] tmp = new float[order.length];
-        int pos = 0;
-        for (Integer id : order) {
+        var tmp = new float[order.length];
+        var pos = 0;
+        for (var id : order) {
             if (id < array.length)
                 tmp[pos++] = array[id];
         }
@@ -1322,10 +1322,10 @@ public class DataTable {
      * @return modified array, possibly with changed length
      */
     private static Long[] modify(Integer[] order, Long[] array) {
-        Long[] tmp = new Long[order.length];
+        var tmp = new Long[order.length];
 
-        int pos = 0;
-        for (Integer id : order) {
+        var pos = 0;
+        for (var id : order) {
             if (id < array.length)
                 tmp[pos++] = array[id];
         }
@@ -1338,10 +1338,10 @@ public class DataTable {
      * @return modified array, possibly with changed length
      */
     private static BlastMode[] modify(Integer[] order, BlastMode[] array) {
-        BlastMode[] tmp = new BlastMode[order.length];
+        var tmp = new BlastMode[order.length];
 
-        int pos = 0;
-        for (Integer id : order) {
+        var pos = 0;
+        for (var id : order) {
             if (id < array.length)
                 tmp[pos++] = array[id];
         }

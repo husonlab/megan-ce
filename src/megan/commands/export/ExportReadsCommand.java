@@ -65,7 +65,7 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
         final Director dir = getDir();
         final Document doc = dir.getDocument();
 
-        int count;
+        long count;
 
         if (getViewer() instanceof ClassificationViewer) {
             final ClassificationViewer classificationViewer = (ClassificationViewer) dir.getViewerByClassName(data);

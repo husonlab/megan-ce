@@ -216,6 +216,20 @@ public class MatchBlockDAA implements IMatchBlock {
         }
     }
 
+    public String getTextBlastTab() {
+        var bitScore = daaParser.getHeader().computeAlignmentBitScore(matchRecord.getScore());
+        var evalue = daaParser.getHeader().computeAlignmentExpected(matchRecord.getQuery().length, matchRecord.getScore());
+        var percentIdentity = Utilities.computePercentIdentity(matchRecord);
+
+        // query id, ref id, percent identity, alignment length, number of mismatches, number of gap openings, query start, query end, subject start, subject end, Expect value, HSP bit score.
+        // 0         1       2                 3                 4                     5                       6            7           8             9            10            11
+
+        return "%s\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%.1f\t%.1f%n".formatted(StringUtils.toString(matchRecord.getQueryRecord().getQueryName()),StringUtils.toString(matchRecord.getSubjectName()),percentIdentity,
+                matchRecord.getLen(),matchRecord.getMismatches(),
+                matchRecord.getGapOpenings(),matchRecord.getQueryBegin(),matchRecord.getQueryEnd(),matchRecord.getSubjectBegin(),matchRecord.getSubjectBegin()+matchRecord.getSubjectLen(),
+                evalue,bitScore);
+    }
+
     /**
      * this is experimental code that is used to verify that DAA with frame-shifts is handled ok
      *

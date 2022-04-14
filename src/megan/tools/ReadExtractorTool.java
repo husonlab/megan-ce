@@ -141,7 +141,7 @@ public class ReadExtractorTool {
     /**
      * extract all reads for each specified classes, or all classes, if none specified
      */
-    private int extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames,
+    private long extract(boolean extractCorrectedReads, String classificationName, Collection<String> classNames,
                         boolean all, boolean allBelow, String inputFile, String outputFile) throws IOException {
         final var doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(inputFile, true);

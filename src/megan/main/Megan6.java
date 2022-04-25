@@ -66,12 +66,6 @@ public class Megan6 {
 			ensureInitFXInSwingProgram();
 			NotificationsInSwing.setTitle("MEGAN6");
 
-			//install shutdown hook
-			//its run() method is executed for sure as the VM shuts down
-			Runnable finalizer = () -> {
-			};
-			Runtime.getRuntime().addShutdownHook(new Thread(finalizer));
-
             //run application
             (new Megan6()).parseArguments(args);
 

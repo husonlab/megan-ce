@@ -26,7 +26,7 @@ import java.awt.*;
  */
 public class ColorSchemeNucleotidesDefault extends ColorSchemeBase implements IColorScheme {
     /**
-     * gets the background color for the amino-acid
+     * gets the background color
      *
      * @return color
      */

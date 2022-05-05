@@ -31,22 +31,22 @@ import java.util.Set;
  */
 public class ClassificationBlockDAA implements IClassificationBlock {
     private final Map<Integer, Float> id2weight;
-    private final Map<Integer, Integer> id2count;
+    private final Map<Integer, Integer> id2sum;
     private String classificationName;
 
     public ClassificationBlockDAA(String classificationName) {
         this.classificationName = classificationName;
         id2weight = new HashMap<>();
-        id2count = new HashMap<>();
+        id2sum = new HashMap<>();
     }
 
     public int getSum(Integer key) {
-        Integer value = id2count.get(key);
+        var value = id2sum.get(key);
         return (value == null ? 0 : value);
     }
 
     public float getWeightedSum(Integer key) {
-        final Float result = id2weight.get(key);
+        var result = id2weight.get(key);
         if (result != null && result > 0)
             return result;
         else
@@ -54,7 +54,7 @@ public class ClassificationBlockDAA implements IClassificationBlock {
     }
 
     public void setSum(Integer key, int num) {
-        id2count.put(key, num);
+        id2sum.put(key, num);
     }
 
     @Override
@@ -71,6 +71,6 @@ public class ClassificationBlockDAA implements IClassificationBlock {
     }
 
     public Set<Integer> getKeySet() {
-        return id2count.keySet();
+        return id2sum.keySet();
     }
 }

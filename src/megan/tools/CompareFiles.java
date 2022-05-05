@@ -235,7 +235,7 @@ public class CompareFiles {
 		System.err.printf("Output count:%,12d%n", doc.getNumberOfReads());
 
 		if (StringUtils.notBlank(metadataFile)) {
-			try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
+			try (var r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(metadataFile)))) {
 				System.err.print("Processing Metadata: " + metadataFile);
 				doc.getSampleAttributeTable().read(r, doc.getSampleNames(), true);
 				System.err.println(", attributes: " + doc.getSampleAttributeTable().getNumberOfUnhiddenAttributes());

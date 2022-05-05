@@ -69,13 +69,13 @@ public class SyncArchiveAndDataTable {
 	 */
     public static void syncArchive2Summary(Document.ReadAssignmentMode readAssignmentMode, String fileName, IConnector connector, DataTable table, SampleAttributeTable sampleAttributeTable) throws IOException {
         table.clear();
-        Map<String, byte[]> label2data = connector.getAuxiliaryData();
+        var label2data = connector.getAuxiliaryData();
         if (label2data.containsKey(SampleAttributeTable.USER_STATE)) {
             syncAux2Summary(fileName, label2data.get(SampleAttributeTable.USER_STATE), table);
         }
 
         if (readAssignmentMode == null && table.getParameters() != null) {
-            Document doc = new Document();
+            var doc = new Document();
             doc.parseParameterString(table.getParameters());
             readAssignmentMode = doc.getReadAssignmentMode();
         }
@@ -83,26 +83,26 @@ public class SyncArchiveAndDataTable {
         if (label2data.containsKey(SampleAttributeTable.SAMPLE_ATTRIBUTES)) {
             sampleAttributeTable.read(new StringReader(new String(label2data.get(SampleAttributeTable.SAMPLE_ATTRIBUTES))), null, true);
             if (sampleAttributeTable.getSampleSet().size() > 0) {
-				String sampleName = sampleAttributeTable.getSampleSet().iterator().next();
-				String name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
+				var sampleName = sampleAttributeTable.getSampleSet().iterator().next();
+				var name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
                 if (!sampleName.equals(name))
                     sampleAttributeTable.renameSample(sampleName, name, false);
             }
         } else {
-			String name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
+			var name = FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(fileName), "");
             sampleAttributeTable.addSample(name, new HashMap<>(), true, true);
         }
 
         // fix some broken files that contain two lines of metadata...
         if (sampleAttributeTable.getSampleSet().size() > 1) {
-			String sampleName = FileUtils.getFileNameWithoutPath(fileName);
+			var sampleName = FileUtils.getFileNameWithoutPath(fileName);
             if (sampleAttributeTable.getSampleSet().contains(sampleName))
                 sampleAttributeTable.removeSample(sampleName);
         }
 
-        String[] classifications = connector.getAllClassificationNames();
-        for (String classification : classifications) {
-            final IClassificationBlock classificationBlock = connector.getClassificationBlock(classification);
+        var classifications = connector.getAllClassificationNames();
+        for (var classification : classifications) {
+            final var classificationBlock = connector.getClassificationBlock(classification);
             if (classificationBlock != null)
                 syncClassificationBlock2Summary(readAssignmentMode, 0, 1, classificationBlock, table);
         }
@@ -135,19 +135,19 @@ public class SyncArchiveAndDataTable {
      * sync bytes from aux block to summary
      *
 	 */
-    static private void syncAux2Summary(String fileName, byte[] bytes, DataTable table) throws IOException {
+    static public void syncAux2Summary(String fileName, byte[] bytes, DataTable table) throws IOException {
         if (bytes != null) {
-			String string = StringUtils.toString(bytes);
+			var string = StringUtils.toString(bytes);
             if (string.startsWith(DataTable.MEGAN6_SUMMARY_TAG_NOT_USED_ANYMORE) || string.startsWith(DataTable.MEGAN4_SUMMARY_TAG) || string.startsWith("!MEGAN4")) {
-                BufferedReader r = new BufferedReader(new StringReader(string));
-                table.read(r, true);
-                r.close();
+                try(var r = new BufferedReader(new StringReader(string))) {
+                    table.read(r, true);
+                }
             } else if (string.startsWith("!MEGAN")) // is MEGAN3 summary
             {
                 System.err.println("Archive is in an old format, upgrading to MEGAN6");
-                BufferedReader r = new BufferedReader(new StringReader(string));
-                table.importMEGAN3SummaryFile(fileName, r, false);
-                r.close();
+                try(var r = new BufferedReader(new StringReader(string))) {
+                    table.importMEGAN3SummaryFile(fileName, r, false);
+                }
             }
         }
     }

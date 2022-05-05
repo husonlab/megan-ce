@@ -576,7 +576,7 @@ public class Document {
     public void saveAuxiliaryData() throws IOException {
         if (getMeganFile().hasDataConnector() && !getMeganFile().isReadOnly()) {
             if (dir != null) {
-                final MainViewer mainViewer = dir.getMainViewer();
+                final var mainViewer = dir.getMainViewer();
                 if (mainViewer != null)
                     SyncDataTableAndTaxonomy.syncFormattingFromViewer2Summary(mainViewer, getDataTable());
                 for (String cName : ClassificationManager.getAllSupportedClassifications()) {

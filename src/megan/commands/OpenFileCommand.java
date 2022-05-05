@@ -110,6 +110,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
             try {
                 SwingUtilities.invokeLater(() -> viewer.getFrame().toFront());
                  doc.closeConnector(); // close connector if it open
+                doc.setDirty(false);
 
                 final var meganFile = doc.getMeganFile();
 
@@ -168,7 +169,6 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 doc.neverOpenedReads = false;
                 if (!dir.isInternalDocument())
                     MeganProperties.addRecentFile(meganFile.getFileName());
-                doc.setDirty(false);
                 if (!meganFile.isMeganSummaryFile() && meganFile.hasDataConnector())
                     MeganFile.addUIdToSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId());
                 if (System.currentTimeMillis() - timeOfLastOpen > 5000) {
@@ -197,7 +197,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent ev) {
         var lastOpenFile = ProgramProperties.getFile(MeganProperties.MEGANFILE);
 
-        MeganAndRMAFileFilter meganRmaDaaFileFilter = new MeganAndRMAFileFilter();
+        var meganRmaDaaFileFilter = new MeganAndRMAFileFilter();
         meganRmaDaaFileFilter.setAllowGZipped(true);
         meganRmaDaaFileFilter.setAllowZipped(true);
         meganRmaDaaFileFilter.add(MeganizedDAAFileFilter.getInstance());

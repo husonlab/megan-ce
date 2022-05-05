@@ -61,6 +61,8 @@ public class DataTable {
     private static final String SIZES = "@Sizes";
     private static final String UIDS = "@Uids";
 
+    private static final String MERGED_FILES ="@MergedFiles";
+
     // variables:
     private String contentType = MEGAN4SummaryFormat;
     private String creator = ProgramProperties.getProgramName();
@@ -74,6 +76,8 @@ public class DataTable {
     private final Vector<BlastMode> blastModes = new Vector<>();
     private final Vector<Float> sampleSizes = new Vector<>();
     private final Vector<Long> sampleUIds = new Vector<>();
+
+    private final Vector<String> mergedFiles = new Vector<>();
 
     private final Set<String> disabledSamples = new HashSet<>();
     private DataTable originalData = null;
@@ -111,6 +115,7 @@ public class DataTable {
         sampleSizes.clear();
         sampleUIds.clear();
         disabledSamples.clear();
+        mergedFiles.clear();
         totalReads = -1;
         additionalReads = -1;
         totalReadWeights = -1;
@@ -151,8 +156,8 @@ public class DataTable {
                 if (aLine.startsWith("@")) {
                     switch (tokens[0]) {
                         case CONTENT_TYPE: {
-                            StringBuilder buf = new StringBuilder();
-                            for (int i = 1; i < tokens.length; i++)
+                            var buf = new StringBuilder();
+                            for (var i = 1; i < tokens.length; i++)
                                 buf.append(" ").append(tokens[i]);
                             contentType = buf.toString().trim();
                             if (!contentType.startsWith(MEGAN6SummaryFormat_NotUsedAnyMore) && !contentType.startsWith(MEGAN4SummaryFormat))
@@ -160,22 +165,22 @@ public class DataTable {
                             break;
                         }
                         case CREATOR: {
-                            StringBuilder buf = new StringBuilder();
-                            for (int i = 1; i < tokens.length; i++)
+                            var buf = new StringBuilder();
+                            for (var i = 1; i < tokens.length; i++)
                                 buf.append(" ").append(tokens[i]);
                             creator = buf.toString().trim();
                             break;
                         }
                         case CREATION_DATE: {
-                            StringBuilder buf = new StringBuilder();
-                            for (int i = 1; i < tokens.length; i++)
+                            var buf = new StringBuilder();
+                            for (var i = 1; i < tokens.length; i++)
                                 buf.append(" ").append(tokens[i]);
                             creationDate = buf.toString().trim();
                             break;
                         }
                         case BLAST_MODE:
-                            for (int i = 1; i < tokens.length; i++) {
-                                BlastMode blastMode = BlastMode.valueOfIgnoreCase(tokens[i]);
+                            for (var i = 1; i < tokens.length; i++) {
+                                var blastMode = BlastMode.valueOfIgnoreCase(tokens[i]);
                                 if (blastMode == null)
                                     blastMode = BlastMode.Unknown;
                                 blastModes.add(blastMode);
@@ -187,8 +192,11 @@ public class DataTable {
                         case DISABLED:
                             disabledSamples.addAll(Arrays.asList(tokens).subList(1, tokens.length));
                             break;
+                        case MERGED_FILES:
+                            mergedFiles.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+                            break;
                         case UIDS:
-                            for (int i = 1; i < tokens.length; i++)
+                            for (var i = 1; i < tokens.length; i++)
                                 if (tokens[i] != null && !tokens[i].equals("null"))
                                     sampleUIds.add(Long.parseLong(tokens[i]));
                             break;
@@ -390,6 +398,9 @@ public class DataTable {
 		if (disabledSamples.size() > 0) {
 			w.write(String.format("%s\t%s\n", DISABLED, StringUtils.toString(disabledSamples, "\t")));
 		}
+		if(mergedFiles.size() > 0) {
+            w.write(String.format("%s\t%s\n", MERGED_FILES, StringUtils.toString(mergedFiles, "\t")));
+        }
 		if (sampleUIds.size() > 0) {
 			w.write(String.format("%s\t%s\n", UIDS, StringUtils.toString(sampleUIds, "\t")));
 		}
@@ -465,7 +476,11 @@ public class DataTable {
         w.write("<b>" + BLAST_MODE.substring(1) + ":</b>");
         for (BlastMode blastMode : blastModes) w.write(" " + blastMode.toString());
         w.write("<br>");
-
+        if (mergedFiles.size() > 0) {
+            w.write("<b>" + MERGED_FILES.substring(1) + ":</b>");
+            for (var file : mergedFiles) w.write(" " + file);
+            w.write("<br>");
+        }
         if (sampleUIds.size() > 0) {
             w.write("<b>" + UIDS.substring(1) + ":</b>");
             for (Long dataUid : sampleUIds) w.write(" " + dataUid);
@@ -524,6 +539,9 @@ public class DataTable {
 		w.write(String.format("%s\t%s\n", NAMES, StringUtils.toString(sampleNames, "\t")));
 		w.write(String.format("%s\t%s\n", BLAST_MODE, StringUtils.toString(blastModes, "\t")));
 
+        if (mergedFiles.size() > 0) {
+            w.write(String.format("%s\t%s\n", MERGED_FILES, StringUtils.toString(mergedFiles, "\t")));
+        }
 		if (sampleUIds.size() > 0) {
 			w.write(String.format("%s\t%s\n", UIDS, StringUtils.toString(sampleUIds, "\t")));
 		}
@@ -545,9 +563,8 @@ public class DataTable {
         }
         w.write("\n");
 
-
-        for (String classification : classification2algorithm.keySet()) {
-            String algorithm = classification2algorithm.get(classification);
+        for (var classification : classification2algorithm.keySet()) {
+            var algorithm = classification2algorithm.get(classification);
             if (algorithm != null) {
                 w.write(String.format("%s\t%s\t%s\n", ALGORITHM, classification, algorithm));
             }
@@ -765,6 +782,7 @@ public class DataTable {
         sampleNames.clear();
         if (names != null)
             sampleNames.addAll(Arrays.asList(names));
+        mergedFiles.clear();
         sampleUIds.clear();
         if (uids != null)
             sampleUIds.addAll(Arrays.asList(uids));
@@ -795,6 +813,19 @@ public class DataTable {
 
     public Long[] getSampleUIds() {
         return sampleUIds.toArray(new Long[0]);
+    }
+
+    public String[] getMergedFiles() {
+        return mergedFiles.toArray(new String[0]);
+    }
+
+    public void setMergedFiles(String name, Collection<String> mergedFiles) {
+        if(name!=null) {
+            sampleNames.clear();
+            sampleNames.add(name);
+        }
+        this.mergedFiles.clear();
+        this.mergedFiles.addAll(mergedFiles);
     }
 
     /**
@@ -1042,44 +1073,47 @@ public class DataTable {
      *
 	 */
     private void removeSamples(Collection<String> toDelete) {
-        Set<Integer> dead = new HashSet<>();
-        for (String name : toDelete) {
+        var dead = new HashSet<Integer>();
+        for (var name : toDelete) {
 			dead.add(StringUtils.getIndex(name, sampleNames));
         }
+        if(dead.size()>0) {
+            mergedFiles.clear();
 
-        // System.err.println("Existing sample name: "+Basic.toString(sampleNames,","));
-        int top = sampleNames.size();
-        for (int pid = top - 1; pid >= 0; pid--) {
-            if (dead.contains(pid)) {
-                sampleNames.remove(pid);
-                sampleSizes.remove(pid);
-                if (sampleUIds.size() > pid)
-                    sampleUIds.remove(pid);
-                if (blastModes.size() > pid)
-                    blastModes.remove(pid);
+            // System.err.println("Existing sample name: "+Basic.toString(sampleNames,","));
+            var top = sampleNames.size();
+            for (var pid = top - 1; pid >= 0; pid--) {
+                if (dead.contains(pid)) {
+                    sampleNames.remove(pid);
+                    sampleSizes.remove(pid);
+                    if (sampleUIds.size() > pid)
+                        sampleUIds.remove(pid);
+                    if (blastModes.size() > pid)
+                        blastModes.remove(pid);
+                }
             }
-        }
-        int alive = sampleNames.size();
-        // System.err.println("Remaining sample name: "+Basic.toString(sampleNames,","));
+            var alive = sampleNames.size();
+            // System.err.println("Remaining sample name: "+Basic.toString(sampleNames,","));
 
-        for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
-            for (Integer classId : class2counts.keySet()) {
-                float[] counts = class2counts.get(classId);
-                if (counts != null) {
-                    float[] newCounts = new float[alive];
-                    int k = 0;
-                    for (int i = 0; i < counts.length; i++) {
-                        if (!dead.contains(i)) {
-                            newCounts[k++] = counts[i];
+            for (var class2counts : classification2class2counts.values()) {
+                for (var classId : class2counts.keySet()) {
+                    var counts = class2counts.get(classId);
+                    if (counts != null) {
+                        var newCounts = new float[alive];
+                        var k = 0;
+                        for (var i = 0; i < counts.length; i++) {
+                            if (!dead.contains(i)) {
+                                newCounts[k++] = counts[i];
+                            }
+                            class2counts.put(classId, newCounts);
                         }
-                        class2counts.put(classId, newCounts);
                     }
                 }
             }
-        }
-        totalReads = 0;
-        for (float size : sampleSizes) {
-            totalReads += size;
+            totalReads = 0;
+            for (var size : sampleSizes) {
+                totalReads += size;
+            }
         }
     }
 
@@ -1203,9 +1237,9 @@ public class DataTable {
         if (sampleNames.contains(newName))
             return;
 
-        Set<Integer> pids = new HashSet<>();
+        var pids = new HashSet<Integer>();
         BlastMode mode = null;
-        for (String name : samples) {
+        for (var name : samples) {
 			int pid = StringUtils.getIndex(name, sampleNames);
             if (pid == -1) {
                 System.err.println("No such sample: " + name);
@@ -1217,8 +1251,8 @@ public class DataTable {
             } else if (mode != BlastMode.Unknown && blastModes.get(pid) != mode)
                 mode = BlastMode.Unknown;
         }
-        float reads = 0;
-        for (int pid : pids) {
+        var reads = 0f;
+        for (var pid : pids) {
             reads += sampleSizes.get(pid);
         }
 
@@ -1227,16 +1261,16 @@ public class DataTable {
         sampleUIds.add(System.currentTimeMillis());
         blastModes.add(mode);
 
-		int tarId = StringUtils.getIndex(newName, sampleNames);
-        for (Map<Integer, float[]> class2counts : classification2class2counts.values()) {
-            for (Integer classId : class2counts.keySet()) {
-                float[] counts = class2counts.get(classId);
+		var tarId = StringUtils.getIndex(newName, sampleNames);
+        for (var class2counts : classification2class2counts.values()) {
+            for (var classId : class2counts.keySet()) {
+                var counts = class2counts.get(classId);
                 if (counts != null) {
-                    int newLength = Math.max(counts.length + 1, tarId + 1);
-                    float[] newCounts = new float[newLength];
+                    var newLength = Math.max(counts.length + 1, tarId + 1);
+                    var newCounts = new float[newLength];
                     System.arraycopy(counts, 0, newCounts, 0, counts.length);
-                    int sum = 0;
-                    for (int pid : pids) {
+                    var sum = 0;
+                    for (var pid : pids) {
                         if (pid < counts.length && counts[pid] != 0)
                             sum += counts[pid];
                     }
@@ -1245,7 +1279,7 @@ public class DataTable {
                 }
             }
         }
-        for (float size : sampleSizes) {
+        for (var size : sampleSizes) {
             totalReads += size;
         }
     }
@@ -1353,8 +1387,8 @@ public class DataTable {
      *
 	 */
     private void disableSamples(Collection<String> sampleNames) {
-        int size = disabledSamples.size();
-        Set<String> newDisabled = new HashSet<>();
+        var size = disabledSamples.size();
+        var newDisabled = new HashSet<String>();
         newDisabled.addAll(disabledSamples);
         newDisabled.addAll(sampleNames);
         if (newDisabled.size() != size) {
@@ -1374,9 +1408,8 @@ public class DataTable {
      * @return true, if changed
      */
     public boolean setEnabledSamples(Collection<String> names) {
-        Set<String> oldDisabled = new HashSet<>(disabledSamples);
-
-        Set<String> newDisabled = new HashSet<>();
+        var oldDisabled = new HashSet<>(disabledSamples);
+        var newDisabled = new HashSet<String>();
 
         if (originalData != null)
             newDisabled.addAll(originalData.sampleNames);
@@ -1396,7 +1429,7 @@ public class DataTable {
      *
 	 */
     public void enableSamples(Collection<String> sampleNames) {
-        int size = disabledSamples.size();
+        var size = disabledSamples.size();
         disabledSamples.removeAll(sampleNames);
         if (size != disabledSamples.size()) {
             if (originalData == null) {
@@ -1415,21 +1448,21 @@ public class DataTable {
     private void copyEnabled(Set<String> disabledSamples, DataTable originalData) {
         clear();
 
-        String[] origSampleNames = originalData.getSampleNamesArray();
-        BitSet activeIndices = new BitSet();
-        for (int i = 0; i < origSampleNames.length; i++) {
+        var origSampleNames = originalData.getSampleNamesArray();
+        var activeIndices = new BitSet();
+        for (var i = 0; i < origSampleNames.length; i++) {
             if (!disabledSamples.contains(origSampleNames[i])) {
                 activeIndices.set(i);
             }
         }
 
-        Long[] origSampleUIds = originalData.getSampleUIds();
-        float[] origSampleSizes = originalData.getSampleSizes();
-        BlastMode[] origBlastModes = originalData.getBlastModes();
+        var origSampleUIds = originalData.getSampleUIds();
+        var origSampleSizes = originalData.getSampleSizes();
+        var origBlastModes = originalData.getBlastModes();
 
         sampleNames.clear();
-        int totalReads = 0;
-        for (int origIndex = 0; origIndex < origSampleNames.length; origIndex++) {
+        var totalReads = 0;
+        for (var origIndex = 0; origIndex < origSampleNames.length; origIndex++) {
             if (activeIndices.get(origIndex)) {
                 sampleNames.addElement(origSampleNames[origIndex]);
                 if (origSampleUIds != null && origSampleUIds.length > origIndex)
@@ -1443,15 +1476,15 @@ public class DataTable {
         setTotalReads(totalReads);
 
         // write the data:
-        for (String classification : originalData.classification2class2counts.keySet()) {
-            Map<Integer, float[]> origClass2counts = originalData.classification2class2counts.get(classification);
-            Map<Integer, float[]> class2counts = classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
+        for (var classification : originalData.classification2class2counts.keySet()) {
+            var origClass2counts = originalData.classification2class2counts.get(classification);
+            var class2counts = classification2class2counts.computeIfAbsent(classification, k -> new HashMap<>());
 
-            for (Integer classId : origClass2counts.keySet()) {
-                float[] origCounts = origClass2counts.get(classId);
-                float[] counts = new float[activeIndices.cardinality()];
-                int index = 0;
-                for (int origIndex = 0; origIndex < origCounts.length; origIndex++) {
+            for (var classId : origClass2counts.keySet()) {
+                var origCounts = origClass2counts.get(classId);
+                var counts = new float[activeIndices.cardinality()];
+                var index = 0;
+                for (var origIndex = 0; origIndex < origCounts.length; origIndex++) {
                     if (activeIndices.get(origIndex)) {
                         counts[index++] = origCounts[origIndex];
                     }
@@ -1483,13 +1516,16 @@ public class DataTable {
      * @return ids
      */
     public BitSet getSampleIds(Collection<String> samples) {
-        BitSet sampleIds = new BitSet();
-        String[] sampleNames = getSampleNamesArray();
-        for (int i = 0; i < sampleNames.length; i++) {
+        var sampleIds = new BitSet();
+        var sampleNames = getSampleNamesArray();
+        for (var i = 0; i < sampleNames.length; i++) {
             if (samples.contains(sampleNames[i]))
                 sampleIds.set(i);
         }
         return sampleIds;
     }
 
+    public void clearCollapsed() {
+        classification2collapsedIds.clear();
+    }
 }

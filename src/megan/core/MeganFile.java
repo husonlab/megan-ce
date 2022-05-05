@@ -18,10 +18,11 @@
  */
 package megan.core;
 
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
 import jloda.util.Pair;
+import megan.data.merge.MergeConnector;
 import megan.daa.connector.DAAConnector;
-import megan.data.ConnectorCombiner;
 import megan.data.IConnector;
 import megan.ms.client.connector.MSConnector;
 import megan.rma2.RMA2Connector;
@@ -31,27 +32,30 @@ import megan.rma6.RMA6Connector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * manages MEGAN file associated with a document, can be an RMA file, a summary file or a MEGAN server file
  * Daniel Huson, 11.2012
  */
 public class MeganFile {
+
     private final static Map<Pair<String, Long>, Integer> openFiles = new HashMap<>();
     private String fileName = null;
     private Type fileType = Type.UNKNOWN_FILE;
     private boolean meganServerFile = false;
     private boolean readOnly = false;
+    private Boolean hasDAAConnector=null;
 
     private IConnector connector;
 
     public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE}
 
-    private final ArrayList<String> embeddedSourceFiles = new ArrayList<>();
+    private final ArrayList<String> mergedFiles =new ArrayList<>();
+    private final ArrayList<String> embeddedFiles = new ArrayList<>();
+
+    public MeganFile() {
+    }
 
     /**
      * set the megan file from an existing file
@@ -62,6 +66,7 @@ public class MeganFile {
             connector = null;
         this.fileName = fileName;
         this.readOnly = readOnly;
+        hasDAAConnector=null;
 
         meganServerFile = fileName.contains("::");
 
@@ -88,10 +93,10 @@ public class MeganFile {
         } else if (fileName.toLowerCase().endsWith(".daa")) {
             fileType = Type.DAA_FILE;
         } else if (fileName.toLowerCase().endsWith(".meg") || fileName.toLowerCase().endsWith(".megan")
-                || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")
-                || fileName.toLowerCase().endsWith(".meg.zip") || fileName.toLowerCase().endsWith(".megan.zip")) {
+                || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
-            setEmbeddedSourceFiles(determineEmbeddedSourceFiles(fileName));
+            setMergedFiles(determineMergedFiles(fileName));
+            setEmbeddedFiles(determineEmbeddedSourceFiles(fileName));
         } else
             fileType = Type.UNKNOWN_FILE;
     }
@@ -110,6 +115,7 @@ public class MeganFile {
         this.fileName = fileName;
         this.fileType = fileType;
         readOnly = false;
+        hasDAAConnector=null;
     }
 
     /**
@@ -214,12 +220,16 @@ public class MeganFile {
      * @return true, if data connector present
      */
     public boolean hasDataConnector() {
-        try {
-            return fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA")
-                    || (fileType == Type.MEGAN_SUMMARY_FILE && embeddedSourceFiles.size() > 0 && ConnectorCombiner.canOpenAllConnectors(embeddedSourceFiles)));
-        } catch (IOException e) {
-            return false;
+        if(hasDAAConnector==null) {
+            try {
+                hasDAAConnector = fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA")
+                                                                                || (fileType == Type.MEGAN_SUMMARY_FILE && ((getEmbeddedFiles().size() > 0 && MergeConnector.canOpenAllConnectors(getEmbeddedFiles())))
+                                                                                    || (getMergedFiles().size() > 0 && MergeConnector.canOpenAllConnectors(getMergedFiles()))));
+            } catch (IOException e) {
+                hasDAAConnector=false;
+            }
         }
+        return hasDAAConnector;
     }
 
     /**
@@ -264,9 +274,13 @@ public class MeganFile {
                     break;
                 }
                 case MEGAN_SUMMARY_FILE: {
-                    if (embeddedSourceFiles.size() > 0) {
-                        connector = new ConnectorCombiner(embeddedSourceFiles);
-                        break;
+                    if(getMergedFiles().size()>0) {
+                            connector = new MergeConnector(getFileName(), getMergedFiles());
+                         break;
+                    }
+                    else if (getEmbeddedFiles().size() > 0) { // this is for backward compatiblity
+                            connector = new MergeConnector(getFileName(), getEmbeddedFiles());
+                         break;
                     }
                     // else fall through to default:
                 }
@@ -328,7 +342,7 @@ public class MeganFile {
      * @return embedded source files
      */
     private static ArrayList<String> determineEmbeddedSourceFiles(String fileName) {
-        final Document doc = new Document();
+        final var doc = new Document();
         doc.getMeganFile().setFile(fileName, Type.MEGAN_SUMMARY_FILE);
         try {
             doc.loadMeganFile();
@@ -339,30 +353,71 @@ public class MeganFile {
     }
 
     /**
+     * gets the names of all source files embedded in a comparison file
+     *
+     * @return embedded source files
+     */
+    private static Collection<String> determineMergedFiles(String fileName) {
+        final var doc = new Document();
+        doc.getMeganFile().setFile(fileName, Type.MEGAN_SUMMARY_FILE);
+        try {
+            doc.loadMeganFile();
+        } catch (Exception e) {
+            //Basic.caught(e);
+        }
+        return new ArrayList<>(Arrays.asList(doc.getDataTable().getMergedFiles()));
+    }
+
+    /**
      * get the embedded source files
      *
      * @return get
      */
-    public ArrayList<String> getEmbeddedSourceFiles() {
-        return embeddedSourceFiles;
+    public ArrayList<String> getEmbeddedFiles() {
+        return embeddedFiles;
     }
 
     /**
      * set the embedded source files
-     *
 	 */
-    public void setEmbeddedSourceFiles(ArrayList<String> embeddedSourceFiles) {
-        this.embeddedSourceFiles.clear();
+    public void setEmbeddedFiles(ArrayList<String> embeddedFiles) {
+        this.embeddedFiles.clear();
 
-        if (embeddedSourceFiles != null) {
-            final ArrayList<String> filtered = new ArrayList<>();
-            for (String fileName : embeddedSourceFiles) {
-                final MeganFile file = new MeganFile();
-                file.setFileFromExistingFile(fileName, true);
-                if (!file.isMeganSummaryFile() && !file.isUnsupportedRMA1File() && !file.isMeganServerFile())
-                    filtered.add(fileName);
+        if (embeddedFiles != null) {
+            try {
+            if(!MergeConnector.canOpenAllConnectors(embeddedFiles)) {
+                throw new IOException("Embedded files: not found");
             }
-            this.embeddedSourceFiles.addAll(filtered);
+            } catch (IOException e) {
+                NotificationsInSwing.showWarning("Embedded files: not found");
+                return;
         }
+            this.embeddedFiles.addAll(embeddedFiles);
+        }
+    }
+
+    public ArrayList<String> getMergedFiles() {
+        return mergedFiles;
+    }
+
+    public void setMergedFiles(Collection<String> mergedFiles) {
+        embeddedFiles.clear();
+        if (mergedFiles != null) {
+            try {
+                if(!MergeConnector.canOpenAllConnectors(mergedFiles)) {
+                    throw new IOException("Merged files: not found");
+                }
+            } catch (IOException e) {
+                NotificationsInSwing.showWarning("Merged files: not found");
+                return;
+            }
+            this.mergedFiles.addAll(mergedFiles);
+        }
+    }
+
+    public static boolean hasReadableDAAConnector (String fileName) {
+        var meganFile=new MeganFile();
+        meganFile.setFileFromExistingFile(fileName,true);
+        return meganFile.isOkToRead() && meganFile.hasDataConnector();
     }
 }

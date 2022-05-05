@@ -139,7 +139,7 @@ public class CompareCommand extends CommandBase implements ICommand {
             doc.setReadAssignmentMode(readAssignmentMode);
             comparer.computeComparison(doc.getSampleAttributeTable(), doc.getDataTable(), progress);
             doc.setNumberReads(doc.getDataTable().getTotalReads());
-            doc.getMeganFile().setEmbeddedSourceFiles(doc.getSampleAttributeTable().getSourceFiles());
+            doc.getMeganFile().setEmbeddedFiles(doc.getSampleAttributeTable().getSourceFiles());
             doc.processReadHits();
             doc.setTopPercent(100);
             doc.setMinScore(0);

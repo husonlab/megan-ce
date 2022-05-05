@@ -91,6 +91,9 @@ public class SaveCommand extends CommandBase implements ICommand {
                         doc.getDataTable().setColorEdits(doc.getChartColorManager().getColorEdits());
                     }
 
+                    if(doc.getMeganFile().getMergedFiles().size()>0)
+                        doc.getDataTable().setMergedFiles(doc.getSampleNames().get(0),doc.getMeganFile().getMergedFiles());
+
                     doc.getDataTable().setParameters(doc.getParameterString());
                     doc.getDataTable().write(writer);
                     doc.getSampleAttributeTable().write(writer, false, true);

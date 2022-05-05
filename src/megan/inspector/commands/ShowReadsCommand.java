@@ -55,20 +55,20 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
         String regExpression = np.getWordRespectCase();
         np.matchIgnoreCase(";");
 
-        final InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
+        final var inspectorWindow = (InspectorWindow) getViewer();
         ProgramProperties.put(MeganProperties.FINDREAD, regExpression);
 
-        final Document doc = ((Director) getDir()).getDocument();
+        final var doc = ((Director) getDir()).getDocument();
 
-        final FindSelection findSelection = new FindSelection();
+        final var findSelection = new FindSelection();
         findSelection.useReadName = true;
 
         final ProgressListener progress = doc.getProgressListener();
         progress.setTasks("Searching for reads", "");
         progress.setProgress(0);
-        final Single<Boolean> canceled = new Single<>(false);
-        final Single<Integer> matchesFound = new Single<>(0);
-        try (IReadBlockIterator it = doc.getConnector().getFindAllReadsIterator(regExpression, findSelection, canceled)) {
+        final var canceled = new Single<>(false);
+        final var matchesFound = new Single<>(0);
+        try (var it = doc.getConnector().getFindAllReadsIterator(regExpression, findSelection, canceled)) {
             progress.setMaximum(it.getMaximumProgress());
             final ExecutorService executor = Executors.newFixedThreadPool(1);
             executor.submit(() -> {
@@ -117,8 +117,8 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
 	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
-        InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
-        String regularExpression = ProgramProperties.get(MeganProperties.FINDREAD, "");
+        var inspectorWindow = (InspectorWindow) getViewer();
+        var regularExpression = ProgramProperties.get(MeganProperties.FINDREAD, "");
         regularExpression = JOptionPane.showInputDialog(inspectorWindow.getFrame(), "Enter regular expression for read names:", regularExpression);
         if (regularExpression != null && regularExpression.trim().length() != 0) {
             regularExpression = regularExpression.trim();
@@ -176,7 +176,7 @@ public class ShowReadsCommand extends CommandBase implements ICommand {
      * @return true, if command can be applied
      */
     public boolean isApplicable() {
-        InspectorWindow inspectorWindow = (InspectorWindow) getViewer();
+        var inspectorWindow = (InspectorWindow) getViewer();
         return inspectorWindow != null;
     }
 }

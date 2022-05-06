@@ -35,10 +35,10 @@ import megan.viewer.gui.NodeDrawer;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.DoubleAdder;
+import java.util.concurrent.atomic.LongAccumulator;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * comparison of multiple datasets
@@ -91,29 +91,29 @@ public class Comparer {
         result.setCreator(ProgramProperties.getProgramName());
         result.setCreationDate((new Date()).toString());
 
-        final String[] names = new String[dirs.size()];
-        final Long[] uids = new Long[dirs.size()];
-        final float[] originalNumberOfReads = new float[dirs.size()];
-        final BlastMode[] blastModes = new BlastMode[dirs.size()];
+        final var names = new String[dirs.size()];
+        final var uids = new Long[dirs.size()];
+        final var originalNumberOfReads = new float[dirs.size()];
+        final var blastModes = new BlastMode[dirs.size()];
 
         // lock all unlocked projects involved in the comparison
-        final List<Director> myLocked = new LinkedList<>();
+        final var myLocked = new LinkedList<Director>();
 
         try {
-            final Map<String, Object> sample2source = new HashMap<>();
+            final var sample2source = new HashMap<String, Object>();
 
-            for (final Director dir : dirs) {
+            for (final var dir : dirs) {
                 if (!dir.isLocked()) {
                     dir.notifyLockInput();
                     myLocked.add(dir);
                 }
-                final int pos = pid2pos[dir.getID()];
+                final var pos = pid2pos[dir.getID()];
 				names[pos] = getUniqueName(names, pos, FileUtils.getFileBaseName(dir.getDocument().getTitle()));
 				originalNumberOfReads[pos] = (int) dir.getDocument().getNumberOfReads();
                 blastModes[pos] = dir.getDocument().getBlastMode();
                 if (dir.getDocument().getSampleAttributeTable().getNumberOfSamples() == 1) {
-                    String oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();
-                    Map<String, Object> attributes2value = dir.getDocument().getSampleAttributeTable().getAttributesToValues(oSample);
+                    var oSample = dir.getDocument().getSampleAttributeTable().getSampleSet().iterator().next();
+                    var attributes2value = dir.getDocument().getSampleAttributeTable().getAttributesToValues(oSample);
                     sampleAttributeTable.addSample(names[pos], attributes2value, false, true);
                 }
                 try {
@@ -127,14 +127,14 @@ public class Comparer {
 
             sampleAttributeTable.addAttribute(SampleAttributeTable.HiddenAttribute.Source.toString(), sample2source, true, true);
 
-            final boolean useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
+            final var useRelative = (getMode() == COMPARISON_MODE.RELATIVE);
 
             final double newSampleSize;
             {
-                double calculateNewSampleSize = 0;
+                var calculateNewSampleSize = 0.0;
                 if (useRelative) {
-                    for (Director dir : dirs) {
-                        final MainViewer mainViewer = dir.getMainViewer();
+                    for (var dir : dirs) {
+                        final var mainViewer = dir.getMainViewer();
                         final double numberOfReads;
 
                         if (isIgnoreUnassigned())
@@ -150,162 +150,131 @@ public class Comparer {
                 newSampleSize = calculateNewSampleSize;
             }
 
-            String parameters = "mode=" + getMode();
+            var parameters = "mode=" + getMode();
             if (useRelative)
                 parameters += " normalizedTo=" + newSampleSize;
             if (isIgnoreUnassigned())
                 parameters += " ignoreUnassigned=true";
             result.setParameters(parameters);
 
-            final float[] sizes = new float[dirs.size()];
+            final var sizes = new float[dirs.size()];
 
             progressListener.setMaximum(dirs.size());
             progressListener.setProgress(0);
 
-            final int numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), dirs.size());
-            final ArrayBlockingQueue<Director> inputQueue = new ArrayBlockingQueue<>(dirs.size() + numberOfThreads);
-            final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+            final var numberOfThreads = Math.min(ProgramExecutorService.getNumberOfCoresToUse(), dirs.size());
+            final var service = Executors.newFixedThreadPool(numberOfThreads);
 
-            final long[] assignedCountPerThread = new long[numberOfThreads];
 
-            final Single<Integer> progressListenerThread = new Single<>(-1); // make sure we are only moving progresslistener in one thread
-            final ProgressSilent progressSilent = new ProgressSilent();
-
-            final Single<Exception> exception = new Single<>();
-            final Director sentinel = new Director(null);
-
-            final CountDownLatch countDownLatch = new CountDownLatch(numberOfThreads);
-
-            for (int i = 0; i < numberOfThreads; i++) {
-                final int threadNumber = i;
-                service.execute(() -> {
-                    long readCount = 0;
-                    try {
-                        while (true) {
-                            final Director dir = inputQueue.take();
-
-                            if (dir == sentinel)
-                                return;
-
-                            final int pos = pid2pos[dir.getID()];
-                            readCount = 0;
-
-                            final DataTable table = dir.getDocument().getDataTable();
-
-                            final double numberOfReads;
-
-                            {
-                                final MainViewer mainViewer = dir.getMainViewer();
-                                if (isIgnoreUnassigned())
-                                    numberOfReads = mainViewer.getTotalAssignedReads();
-                                else {
-                                    numberOfReads = mainViewer.getNodeData(mainViewer.getTree().getRoot()).getCountSummarized();
-                                }
-                            }
-
-                            ProgressListener progress;
-                            synchronized (progressListenerThread) {
-                                if (progressListenerThread.get() == -1) {
-                                    progress = progressListener;
-                                    progressListenerThread.set(threadNumber);
-                                } else
-                                    progress = progressSilent;
-                            }
-
-                            for (String classificationName : table.getClassification2Class2Counts().keySet()) {
-                                boolean isTaxonomy = classificationName.equals(ClassificationType.Taxonomy.toString());
-
-                                Map<Integer, float[]> class2countsSrc = table.getClass2Counts(classificationName);
-                                Map<Integer, float[]> class2countsTarget = result.getClass2Counts(classificationName);
-                                if (class2countsTarget == null) {
-                                    synchronized (result) {
-                                        class2countsTarget = result.getClass2Counts(classificationName);
-                                        if (class2countsTarget == null) {
-                                            class2countsTarget = new HashMap<>();
-                                            result.getClassification2Class2Counts().put(classificationName, class2countsTarget);
-                                        }
-                                    }
-                                }
-
-                                final double factor = numberOfReads > 0 ? newSampleSize / numberOfReads : 1.0;
-
-                                for (Integer classId : class2countsSrc.keySet()) {
-                                    // todo: here we assume that the nohits id is the same for all classifications...
-                                    if (!isIgnoreUnassigned() || classId > 0) {
-                                        float[] countsTarget = class2countsTarget.get(classId);
-                                        if (countsTarget == null) {
-                                            synchronized (result) {
-                                                countsTarget = class2countsTarget.get(classId);
-                                                if (countsTarget == null) {
-                                                    countsTarget = new float[dirs.size()];
-                                                    Arrays.fill(countsTarget, 0);
-                                                    class2countsTarget.put(classId, countsTarget);
-                                                }
-                                            }
-                                        }
-                                        final float count = CollectionUtils.getSum(class2countsSrc.get(classId));
-                                        if (count == 0)
-                                            countsTarget[pos] = 0;
-                                        else if (useRelative) {
-                                            countsTarget[pos] = (float) (count * factor);
-                                            if (countsTarget[pos] == 0 && isKeep1())
-                                                countsTarget[pos] = 1;
-                                        } else
-                                            countsTarget[pos] = count;
-                                        if (isTaxonomy)
-                                            readCount += countsTarget[pos];
-                                    }
-                                }
-                            }
-                            sizes[pos] = (int) readCount;
-                            progress.incrementProgress();
-                        }
-                    } catch (Exception ex) {
-                        exception.set(ex);
-                        while (countDownLatch.getCount() > 0)
-                            countDownLatch.countDown();
-                        service.shutdownNow();
-                    } finally {
-                        synchronized (progressListenerThread) {
-                            if (progressListenerThread.get() == threadNumber)
-                                progressListenerThread.set(-1);
-                        }
-                        assignedCountPerThread[threadNumber] += readCount;
-                        countDownLatch.countDown();
-                    }
-                });
-            }
+            final var exception = new Single<Exception>();
 
             progressListener.setTasks("Computing comparison", "Using " + mode.toString().toLowerCase() + " mode");
             progressListener.setProgress(0);
             progressListener.setMaximum(dirs.size());
 
+            final var totalAssigned=new DoubleAdder();
+
             try {
-                for (Director dir : dirs) {
-                    inputQueue.put(dir);
+                for (var dir : dirs) {
+                    service.execute(() -> {
+                        if (exception.isNull()) {
+                            try {
+                                final var pos = pid2pos[dir.getID()];
+                                final DataTable table = dir.getDocument().getDataTable();
+
+                                final double numberOfReads;
+                                {
+                                    if (isIgnoreUnassigned())
+                                        numberOfReads = dir.getMainViewer().getTotalAssignedReads();
+                                    else {
+                                        numberOfReads = dir.getMainViewer().getNodeData(dir.getMainViewer().getTree().getRoot()).getCountSummarized();
+                                    }
+                                }
+
+                                var readsWithTaxonomyAssignment=0f;
+
+                                for (var classificationName : table.getClassification2Class2Counts().keySet()) {
+                                    var isTaxonomy = classificationName.equals(ClassificationType.Taxonomy.toString());
+
+                                    var class2countsSrc = table.getClass2Counts(classificationName);
+                                    var class2countsTarget = result.getClass2Counts(classificationName);
+                                    if (class2countsTarget == null) {
+                                        synchronized (result) {
+                                            class2countsTarget = result.getClass2Counts(classificationName);
+                                            if (class2countsTarget == null) {
+                                                class2countsTarget = new HashMap<>();
+                                                result.getClassification2Class2Counts().put(classificationName, class2countsTarget);
+                                            }
+                                        }
+                                    }
+
+                                    final var factor = numberOfReads > 0 ? newSampleSize / numberOfReads : 1.0;
+
+                                    for (var classId : class2countsSrc.keySet()) {
+                                        // todo: here we assume that the nohits id is the same for all classifications...
+                                        if (!isIgnoreUnassigned() || classId > 0) {
+                                            var countsTarget = class2countsTarget.get(classId);
+                                            if (countsTarget == null) {
+                                                synchronized (result) {
+                                                    countsTarget = class2countsTarget.get(classId);
+                                                    if (countsTarget == null) {
+                                                        countsTarget = new float[dirs.size()];
+                                                        Arrays.fill(countsTarget, 0);
+                                                        class2countsTarget.put(classId, countsTarget);
+                                                    }
+                                                }
+                                            }
+                                            final var count = CollectionUtils.getSum(class2countsSrc.get(classId));
+                                            if (count == 0)
+                                                countsTarget[pos] = 0;
+                                            else if (useRelative) {
+                                                countsTarget[pos] = (float) (count * factor);
+                                                if (countsTarget[pos] == 0 && isKeep1())
+                                                    countsTarget[pos] = 1;
+                                            } else
+                                                countsTarget[pos] = count;
+                                            if (isTaxonomy) {
+                                                readsWithTaxonomyAssignment += countsTarget[pos];
+                                            }
+                                        }
+                                    }
+                                    if(isTaxonomy) {
+                                        sizes[pos]=readsWithTaxonomyAssignment;
+                                        totalAssigned.add(readsWithTaxonomyAssignment);
+                                    }
+                                }
+                                synchronized (progressListener) {
+                                    progressListener.incrementProgress();
+                                }
+                            } catch (Exception ex) {
+                                exception.setIfCurrentValueIsNull(ex);
+                            }
+                        }
+                    });
                 }
-                for (int i = 0; i < numberOfThreads; i++) {
-                    inputQueue.put(sentinel);
-                }
-                // wait until all jobs are done
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                Basic.caught(e);
-                if (exception.get() == null)
-                    exception.set(new IOException("Comparison computation failed: " + e.getMessage(), e));
+            }
+            finally {
+                service.shutdown();
             }
 
-            if (exception.get() != null) {
-                throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
+            try {
+                if(!service.awaitTermination(1000, TimeUnit.DAYS))
+                    exception.setIfCurrentValueIsNull(new IOException("timed out"));
+            } catch (InterruptedException ex) {
+                exception.setIfCurrentValueIsNull(ex);
             }
-            service.shutdownNow();
+            finally {
+                service.shutdownNow();
+            }
+            if(exception.isNotNull())
+                throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
 
             // if we have a taxonomy classification, then use it to get exact values:
             if (result.getClassification2Class2Counts().containsKey(Classification.Taxonomy)) {
-                Map<Integer, float[]> class2counts = result.getClass2Counts(Classification.Taxonomy);
+                var class2counts = result.getClass2Counts(Classification.Taxonomy);
                 Arrays.fill(sizes, 0);
-                for (float[] counts : class2counts.values()) {
-                    for (int i = 0; i < counts.length; i++)
+                for (var counts : class2counts.values()) {
+                    for (var i = 0; i < counts.length; i++)
                         sizes[i] += counts[i];
                 }
             }
@@ -313,22 +282,20 @@ public class Comparer {
             result.setSamples(names, uids, sizes, blastModes);
             sampleAttributeTable.removeAttribute(SampleAttributeTable.HiddenAttribute.Label.toString());
 
-            final long totalAssigned = CollectionUtils.getSum(assignedCountPerThread);
-
-            for (String classificationName : result.getClassification2Class2Counts().keySet()) {
+            for (var classificationName : result.getClassification2Class2Counts().keySet()) {
                 result.setNodeStyle(classificationName, NodeDrawer.Style.PieChart.toString());
             }
 
             if (useRelative) {
-                System.err.printf("Total assigned: %,12d normalized%n", totalAssigned);
+                System.err.printf("Total assigned: %,12d normalized%n", totalAssigned.longValue());
             } else {
-                System.err.printf("Total assigned: %,12d%n", totalAssigned);
+                System.err.printf("Total assigned: %,12d%n", totalAssigned.longValue());
             }
 
             result.setTotalReads((int) CollectionUtils.getSum(originalNumberOfReads));
         } finally {
             // unlock all projects involved in the comparison
-            for (final Director dir : myLocked) {
+            for (var dir : myLocked) {
                 dir.notifyUnlockInput();
             }
         }
@@ -340,12 +307,12 @@ public class Comparer {
      * @return name or new name
      */
     private String getUniqueName(String[] names, int pos, String name) {
-        boolean ok = false;
-        int count = 0;
-        String newName = name;
+        var ok = false;
+        var count = 0;
+        var newName = name;
         while (!ok && count < 1000) {
             ok = true;
-            for (int i = 0; i < pos; i++) {
+            for (var i = 0; i < pos; i++) {
                 if (newName.equalsIgnoreCase(names[i])) {
                     ok = false;
                     break;
@@ -361,15 +328,15 @@ public class Comparer {
      * setup pid 2 position mapping
      */
     private int[] setupPid2Pos() {
-        int maxId = 0;
-        for (final Director dir : dirs) {
-            int pid = dir.getID();
+        var maxId = 0;
+        for (var dir : dirs) {
+            var pid = dir.getID();
             if (pid > maxId)
                 maxId = pid;
         }
-        int[] pid2pos = new int[maxId + 1];
-        int dirCount = 0;
-        for (final Director dir : dirs) {
+        var pid2pos = new int[maxId + 1];
+        var dirCount = 0;
+        for (var dir : dirs) {
             int pid = dir.getID();
             pid2pos[pid] = dirCount++;
         }
@@ -391,18 +358,17 @@ public class Comparer {
      * @return mode
      */
     static public COMPARISON_MODE parseMode(String parameterString) {
-        try {
-            if (parameterString != null) {
-                NexusStreamParser np = new NexusStreamParser(new StringReader(parameterString));
-                while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
-                    if (np.peekMatchIgnoreCase("mode=")) {
-                        np.matchIgnoreCase("mode=");
-                        return COMPARISON_MODE.valueOfIgnoreCase(np.getWordRespectCase());
-                    } else np.getWordRespectCase(); // skip
+        if (parameterString != null) {
+                try (var np = new NexusStreamParser(new StringReader(parameterString))) {
+                    while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
+                        if (np.peekMatchIgnoreCase("mode=")) {
+                            np.matchIgnoreCase("mode=");
+                            return COMPARISON_MODE.valueOfIgnoreCase(np.getWordRespectCase());
+                        } else np.getWordRespectCase(); // skip
+                    }
+                } catch (Exception ignored) {
                 }
             }
-        } catch (Exception ignored) {
-        }
         return COMPARISON_MODE.ABSOLUTE;
     }
 
@@ -412,24 +378,23 @@ public class Comparer {
      * @return number of reads normalized by
      */
     public static int parseNormalizedTo(String parameterString) {
-        try {
             if (parameterString != null) {
-                NexusStreamParser np = new NexusStreamParser(new StringReader(parameterString));
-                while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
-                    if (np.peekMatchIgnoreCase("normalizedTo=")) {
-                        np.matchIgnoreCase("normalizedTo=");
-                        return np.getInt();
+                try (var np = new NexusStreamParser(new StringReader(parameterString))) {
+                    while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
+                        if (np.peekMatchIgnoreCase("normalizedTo=")) {
+                            np.matchIgnoreCase("normalizedTo=");
+                            return np.getInt();
+                        }
+                        // for backward compatibility:
+                        if (np.peekMatchIgnoreCase("normalized_to=")) {
+                            np.matchIgnoreCase("normalized_to=");
+                            return np.getInt();
+                        }
+                        np.getWordRespectCase();
                     }
-                    // for backward compatibility:
-                    if (np.peekMatchIgnoreCase("normalized_to=")) {
-                        np.matchIgnoreCase("normalized_to=");
-                        return np.getInt();
-                    }
-                    np.getWordRespectCase();
+                } catch (Exception ignored) {
                 }
             }
-        } catch (Exception ignored) {
-        }
         return 0;
     }
 

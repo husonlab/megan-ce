@@ -1,5 +1,6 @@
 package megan.data.merge;
 
+import jloda.util.BiFunctionWithIOException;
 import jloda.util.FunctionWithIOException;
 import jloda.util.NumberUtils;
 import jloda.util.Single;
@@ -31,8 +32,21 @@ public class MergeConnector implements IConnector {
 	private int numberOfMatches=0;
 	private final Map<String, byte[]> auxiliaryData=new HashMap<>();
 
-	public static FunctionWithIOException<Collection<String>,Boolean> checkConnectors
-			= ls -> ls.stream().allMatch(MeganFile::hasReadableDAAConnector);
+	public static FunctionWithIOException<Collection<String>,Boolean> checkConnectors;
+
+	static
+	{
+		checkConnectors=files->{
+			var ok=true;
+			for(var file:files) {
+				if(!MeganFile.hasReadableDAAConnector(file)) {
+					ok=false;
+					System.err.println("Warning: File not found or not of required type: "+file);
+				}
+			}
+			return ok;
+		};
+	}
 
 	public MergeConnector(String fileName, Collection<String> inputFiles) throws IOException {
 		setFile(fileName);
@@ -40,7 +54,7 @@ public class MergeConnector implements IConnector {
 	}
 
 	public static boolean canOpenAllConnectors(Collection<String> fileNames) throws IOException {
-		return checkConnectors.apply(fileNames);
+		return fileNames.size()==0 || checkConnectors.apply(fileNames);
 	}
 
 	@Override

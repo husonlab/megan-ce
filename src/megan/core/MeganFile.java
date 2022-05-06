@@ -383,7 +383,7 @@ public class MeganFile {
     public void setEmbeddedFiles(ArrayList<String> embeddedFiles) {
         this.embeddedFiles.clear();
 
-        if (embeddedFiles != null) {
+        if (embeddedFiles != null && embeddedFiles.size()>0) {
             try {
             if(!MergeConnector.canOpenAllConnectors(embeddedFiles)) {
                 throw new IOException("Embedded files: not found");
@@ -405,10 +405,12 @@ public class MeganFile {
         if (mergedFiles != null) {
             try {
                 if(!MergeConnector.canOpenAllConnectors(mergedFiles)) {
-                    throw new IOException("Merged files: not found");
+                    throw new IOException();
                 }
+                else
+                    hasDAAConnector=true;
             } catch (IOException e) {
-                NotificationsInSwing.showWarning("Merged files: not found");
+                NotificationsInSwing.showWarning("Merged file: embbedded input files not found");
                 return;
             }
             this.mergedFiles.addAll(mergedFiles);

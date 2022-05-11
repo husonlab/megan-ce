@@ -52,7 +52,6 @@ public class MeganFile {
     public enum Type {UNKNOWN_FILE, RMA1_FILE, RMA2_FILE, RMA3_FILE, RMA6_FILE, DAA_FILE, MEGAN_SUMMARY_FILE}
 
     private final ArrayList<String> mergedFiles =new ArrayList<>();
-    private final ArrayList<String> embeddedFiles = new ArrayList<>();
 
     public MeganFile() {
     }
@@ -96,7 +95,6 @@ public class MeganFile {
                 || fileName.toLowerCase().endsWith(".meg.gz") || fileName.toLowerCase().endsWith(".megan.gz")) {
             fileType = Type.MEGAN_SUMMARY_FILE;
             setMergedFiles(determineMergedFiles(fileName));
-            setEmbeddedFiles(determineEmbeddedSourceFiles(fileName));
         } else
             fileType = Type.UNKNOWN_FILE;
     }
@@ -223,8 +221,7 @@ public class MeganFile {
         if(hasDAAConnector==null) {
             try {
                 hasDAAConnector = fileName != null && fileName.length() > 0 && (fileType.toString().startsWith("RMA") || fileType.toString().startsWith("DAA")
-                                                                                || (fileType == Type.MEGAN_SUMMARY_FILE && ((getEmbeddedFiles().size() > 0 && MergeConnector.canOpenAllConnectors(getEmbeddedFiles())))
-                                                                                    || (getMergedFiles().size() > 0 && MergeConnector.canOpenAllConnectors(getMergedFiles()))));
+                                                                                || (fileType == Type.MEGAN_SUMMARY_FILE && MergeConnector.canOpenAllConnectors(getMergedFiles())));
             } catch (IOException e) {
                 hasDAAConnector=false;
             }
@@ -276,10 +273,6 @@ public class MeganFile {
                 case MEGAN_SUMMARY_FILE: {
                     if(getMergedFiles().size()>0) {
                             connector = new MergeConnector(getFileName(), getMergedFiles());
-                         break;
-                    }
-                    else if (getEmbeddedFiles().size() > 0) { // this is for backward compatiblity
-                            connector = new MergeConnector(getFileName(), getEmbeddedFiles());
                          break;
                     }
                     // else fall through to default:
@@ -368,40 +361,12 @@ public class MeganFile {
         return new ArrayList<>(Arrays.asList(doc.getDataTable().getMergedFiles()));
     }
 
-    /**
-     * get the embedded source files
-     *
-     * @return get
-     */
-    public ArrayList<String> getEmbeddedFiles() {
-        return embeddedFiles;
-    }
-
-    /**
-     * set the embedded source files
-	 */
-    public void setEmbeddedFiles(ArrayList<String> embeddedFiles) {
-        this.embeddedFiles.clear();
-
-        if (embeddedFiles != null && embeddedFiles.size()>0) {
-            try {
-            if(!MergeConnector.canOpenAllConnectors(embeddedFiles)) {
-                throw new IOException("Embedded files: not found");
-            }
-            } catch (IOException e) {
-                NotificationsInSwing.showWarning("Embedded files: not found");
-                return;
-        }
-            this.embeddedFiles.addAll(embeddedFiles);
-        }
-    }
 
     public ArrayList<String> getMergedFiles() {
         return mergedFiles;
     }
 
     public void setMergedFiles(Collection<String> mergedFiles) {
-        embeddedFiles.clear();
         if (mergedFiles != null) {
             try {
                 if(!MergeConnector.canOpenAllConnectors(mergedFiles)) {

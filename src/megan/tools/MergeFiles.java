@@ -78,7 +78,7 @@ public class MergeFiles {
 			inputFiles.addAll(FileUtils.getAllFilesInDirectory(directory, true, ".megan", ".megan.gz", ".daa", ".rma", ".rma6"));
 		}
 
-        for (String fileName : inputFiles) {
+        for (var fileName : inputFiles) {
 			if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
 				throw new IOException("No such file or file empty: " + fileName);
         }
@@ -131,14 +131,5 @@ public class MergeFiles {
 
 		System.err.println("Output file: "+meganFileName);
 		System.err.printf("\t\t%,d reads%n",meganFile.getConnector().getNumberOfReads());
-
-		try(var it=connector.getReadsIterator(Classification.Taxonomy,33974,0,10,true,false)) {
-			var count=0;
-			while(it.hasNext()) {
-				System.err.println(it.next().getReadName());
-				count++;
-			}
-			System.err.printf("Got %d of %d%n", count,connector.getClassSize(Classification.Taxonomy,33974));
-		}
 	}
 }

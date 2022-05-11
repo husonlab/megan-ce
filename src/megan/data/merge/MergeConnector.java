@@ -54,7 +54,7 @@ public class MergeConnector implements IConnector {
 	}
 
 	public static boolean canOpenAllConnectors(Collection<String> fileNames) throws IOException {
-		return fileNames.size()==0 || checkConnectors.apply(fileNames);
+		return fileNames.size()>0 &&  checkConnectors.apply(fileNames);
 	}
 
 	@Override

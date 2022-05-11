@@ -121,7 +121,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
                 if (meganFile.isMeganServerFile() || meganFile.hasDataConnector()) {
                     if (meganFile.isMeganServerFile())
                         meganFile.setReadOnly(true);
-                    if (!meganFile.isReadOnly() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId())) {
+                    if (!meganFile.isReadOnly() && !meganFile.isMeganSummaryFile() && MeganFile.isUIdContainedInSetOfOpenFiles(meganFile.getName(), meganFile.getConnector().getUId())) {
                         NotificationsInSwing.showWarning(viewer.getFrame(), "File already open: " + meganFile.getFileName() + "\nWill open read-only");
                         meganFile.setReadOnly(true);
                     }

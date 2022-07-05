@@ -109,20 +109,19 @@ public class SyncArchiveAndDataTable {
     }
 
     /**
-     * sync classification block to the summary
-     *
+	 * sync classification block to the summary
 	 */
-    private static void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, IClassificationBlock classificationBlock, DataTable table) {
-        boolean useWeights = (readAssignmentMode != Document.ReadAssignmentMode.readCount);
+	private static void syncClassificationBlock2Summary(Document.ReadAssignmentMode readAssignmentMode, int dataSetId, int totalDataSets, final IClassificationBlock classificationBlock, DataTable table) {
+		boolean useWeights = (readAssignmentMode != Document.ReadAssignmentMode.readCount);
 
-        final Map<Integer, float[]> classId2count = new HashMap<>();
-        table.setClass2Counts(classificationBlock.getName(), classId2count);
+		final Map<Integer, float[]> classId2count = new HashMap<>();
+		table.setClass2Counts(classificationBlock.getName(), classId2count);
 
-        for (Integer classId : classificationBlock.getKeySet()) {
-            float sum = (useWeights ? classificationBlock.getWeightedSum(classId) : classificationBlock.getSum(classId));
-            if (sum > 0) {
-                classId2count.computeIfAbsent(classId, k -> new float[totalDataSets]);
-                classId2count.get(classId)[dataSetId] += sum;
+		for (Integer classId : classificationBlock.getKeySet()) {
+			float sum = (useWeights ? classificationBlock.getWeightedSum(classId) : classificationBlock.getSum(classId));
+			if (sum > 0) {
+				classId2count.computeIfAbsent(classId, k -> new float[totalDataSets]);
+				classId2count.get(classId)[dataSetId] += sum;
             }
         }
         if (table.getAdditionalReads() > 0) {

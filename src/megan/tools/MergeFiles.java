@@ -21,7 +21,6 @@ package megan.tools;
 import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
-import megan.classification.Classification;
 import megan.core.*;
 import megan.data.merge.MergeConnector;
 
@@ -29,48 +28,48 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * computes a merged view of multiple files
  * Daniel Huson, 5.2022
  */
 public class MergeFiles {
-    /**
-     * merge files
+	/**
+	 * merge files
 	 */
-    public static void main(String[] args) {
-        try {
-            ResourceManager.insertResourceRoot(megan.resources.Resources.class);
-            ProgramProperties.setProgramName("MergeFiles");
-            ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
+	public static void main(String[] args) {
+		try {
+			ResourceManager.insertResourceRoot(megan.resources.Resources.class);
+			ProgramProperties.setProgramName("MergeFiles");
+			ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 
-            PeakMemoryUsageMonitor.start();
-            (new MergeFiles()).run(args);
-            System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
-            System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
-            System.exit(0);
-        } catch (Exception ex) {
-            Basic.caught(ex);
-            System.exit(1);
-        }
-    }
+			PeakMemoryUsageMonitor.start();
+			(new MergeFiles()).run(args);
+			System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
+			System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+			System.exit(0);
+		} catch (Exception ex) {
+			Basic.caught(ex);
+			System.exit(1);
+		}
+	}
 
-    /**
-     * run
-     *
+	/**
+	 * run
 	 */
-    public void run(String[] args) throws Exception {
-        final ArgsOptions options = new ArgsOptions(args, this, "Computes the comparison of multiple megan, RMA or meganized DAA files");
-        options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-        options.setAuthors("Daniel H. Huson");
+	public void run(String[] args) throws Exception {
+		final ArgsOptions options = new ArgsOptions(args, this, "Computes the comparison of multiple megan, RMA or meganized DAA files");
+		options.setVersion(ProgramProperties.getProgramVersion());
+		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setAuthors("Daniel H. Huson");
 
-        options.comment("Input and Output:");
-        final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
-        final String meganFileName = options.getOption("-o", "out", "Output file", "merged.megan");
-        final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
-        options.done();
+		options.comment("Input and Output:");
+		final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
+		final String meganFileName = options.getOption("-o", "out", "Output file", "merged.megan");
+		final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
+		options.done();
 
 		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
 			final String directory = inputFiles.get(0);
@@ -78,15 +77,15 @@ public class MergeFiles {
 			inputFiles.addAll(FileUtils.getAllFilesInDirectory(directory, true, ".megan", ".megan.gz", ".daa", ".rma", ".rma6"));
 		}
 
-        for (var fileName : inputFiles) {
+		for (var fileName : inputFiles) {
 			if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
 				throw new IOException("No such file or file empty: " + fileName);
-        }
+		}
 
-        if (inputFiles.size() == 0)
-            throw new UsageException("No input file");
+		if (inputFiles.size() == 0)
+			throw new UsageException("No input file");
 
-		String parameters=null;
+		String parameters = null;
 
 		for (var fileName : inputFiles) {
 			final var file = new MeganFile();
@@ -95,23 +94,23 @@ public class MergeFiles {
 				throw new IOException("Can't process file (unreadable, or not meganized-DAA or RMA6): " + fileName);
 			System.err.println("Input file: " + fileName);
 			System.err.printf("\t\t%,d reads%n", file.getConnector().getNumberOfReads());
-			if (parameters==null) {
+			if (parameters == null) {
 				var table = new DataTable();
 				var label2data = file.getConnector().getAuxiliaryData();
 				SyncArchiveAndDataTable.syncAux2Summary(fileName, label2data.get(SampleAttributeTable.USER_STATE), table);
-				parameters=table.getParameters();
+				parameters = table.getParameters();
 			}
 		}
 
-        var doc=new Document();
-		if(parameters!=null)
+		var doc = new Document();
+		if (parameters != null)
 			doc.parseParameterString(parameters);
-        var meganFile=new MeganFile();
-        meganFile.setFile(meganFileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
+		var meganFile = new MeganFile();
+		meganFile.setFile(meganFileName, MeganFile.Type.MEGAN_SUMMARY_FILE);
 
-       var connector=new MergeConnector(meganFileName,inputFiles);
-		SyncArchiveAndDataTable.syncArchive2Summary(null,meganFileName,connector,doc.getDataTable(),doc.getSampleAttributeTable());
-		doc.getDataTable().setMergedFiles(FileUtils.getFileNameWithoutPathOrSuffix(meganFileName),inputFiles);
+		var connector = new MergeConnector(meganFileName, inputFiles);
+		SyncArchiveAndDataTable.syncArchive2Summary(null, meganFileName, connector, doc.getDataTable(), doc.getSampleAttributeTable());
+		doc.getDataTable().setMergedFiles(FileUtils.getFileNameWithoutPathOrSuffix(meganFileName), inputFiles);
 		meganFile.setMergedFiles(Arrays.asList(doc.getDataTable().getMergedFiles()));
 
 		doc.getDataTable().clearCollapsed();
@@ -129,7 +128,7 @@ public class MergeFiles {
 			}
 		}
 
-		System.err.println("Output file: "+meganFileName);
-		System.err.printf("\t\t%,d reads%n",meganFile.getConnector().getNumberOfReads());
+		System.err.println("Output file: " + meganFileName);
+		System.err.printf("\t\t%,d reads%n", meganFile.getConnector().getNumberOfReads());
 	}
 }

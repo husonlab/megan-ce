@@ -150,13 +150,12 @@ public class PCoA {
 		System.err.println(StringUtils.toString("%.8f", eigenValues, ", "));
 
         if (total > 0) {
-            for (int j = 0; j < eigenValues.length; j++) {
-                percentExplained[j] = 100.0 * eigenValues[j] / total;
-            }
-        }
-
-		System.err.println("Percent explained:");
-		System.err.println(StringUtils.toString("%.1f%%", percentExplained, ", "));
+			for (int j = 0; j < eigenValues.length; j++) {
+				percentExplained[j] = 100.0 * eigenValues[j] / total;
+			}
+			System.err.println("Percent explained:");
+			System.err.println(StringUtils.toString("%.1f%%", percentExplained, ", "));
+		}
 
         for (int i = 0; i < rank; i++) {
             String name = samples.getLabel(i + 1);

@@ -167,12 +167,12 @@ public class SplitSystem {
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
             Node w = f.getTarget();
             BitSet f_taxa;
-            if (!tree.isReticulatedEdge(f) || reticulateNode2Taxa.get(w) == null)
+            if (!tree.isReticulateEdge(f) || reticulateNode2Taxa.get(w) == null)
 				f_taxa = splitsFromTreeRec(w, tree, allTaxa, activeTaxa, reticulateNode2Taxa, splits);
 			else
-                f_taxa = reticulateNode2Taxa.get(w);
+				f_taxa = reticulateNode2Taxa.get(w);
 
-			if (!tree.isReticulatedEdge(f)) {
+			if (!tree.isReticulateEdge(f)) {
 				BitSet complement = (BitSet) activeTaxa.clone();
 				complement.andNot(f_taxa);
 				Split split = new Split(f_taxa, complement, tree.getWeight(f));

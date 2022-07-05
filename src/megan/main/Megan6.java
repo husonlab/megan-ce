@@ -35,7 +35,6 @@ import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
 import megan.core.Director;
 import megan.util.ClassificationRegistration;
-import megan.viewer.MainViewer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +83,7 @@ public class Megan6 {
     public static String[] processOpenFileArgs(String[] args) {
         try {
             if (args.length == 1 && !args[0].startsWith("-")) {// assume this is a single file name or URL
-                String fileName = args[0];
+                var fileName = args[0];
                 if (fileName.startsWith("megan:"))
                     fileName = StringUtils.convertPercentEncoding(fileName.substring("megan:".length()));
                 return new String[]{"-f", fileName};
@@ -114,12 +113,16 @@ public class Megan6 {
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
 
         ProgramProperties.setProgramLicence("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
-                "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
-                "Sources available at: https://github.com/husonlab/megan-ce");
+                                            "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
+                                            "Sources available at: https://github.com/husonlab/megan-ce");
 
         ProgramProperties.setUseGUI(true);
 
-        final ArgsOptions options = new ArgsOptions(args, this, "MEGAN MetaGenome Analyzer Community Edition");
+        final var options = new ArgsOptions(args, this, "MEGAN MetaGenome Analyzer Community Edition");
+        if (options.isDoHelp()) {
+            Basic.restoreSystemErr(System.out); // send system err to system out
+            System.err.println(Basic.stopCollectingStdErr());
+        }
         options.setAuthors("Daniel H. Huson");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense(ProgramProperties.getProgramLicence());
@@ -132,9 +135,9 @@ public class Megan6 {
         else
             defaultPreferenceFile = System.getProperty("user.home") + File.separator + ".Megan.def";
 
-        final String propertiesFile = options.getOption("-p", "propertiesFile", "Properties file", defaultPreferenceFile);
-        final boolean showMessageWindow = !options.getOption("+w", "hideMessageWindow", "Hide message window", false);
-        final boolean silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
+        final var propertiesFile = options.getOption("-p", "propertiesFile", "Properties file", defaultPreferenceFile);
+        final var showMessageWindow = !options.getOption("+w", "hideMessageWindow", "Hide message window", false);
+        final var silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
         options.done();
 
@@ -147,7 +150,7 @@ public class Megan6 {
 
         MeganProperties.initializeProperties(propertiesFile);
 
-        final String treeFile = ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE);
+        final var treeFile = ProgramProperties.get(MeganProperties.TAXONOMYFILE, MeganProperties.DEFAULT_TAXONOMYFILE);
 
         About.setVersionStringOffset(205,140);
         About.setAbout("megan6.png", ProgramProperties.getProgramVersion(), JDialog.DISPOSE_ON_CLOSE,0.25f);
@@ -155,8 +158,8 @@ public class Megan6 {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                final Director newDir = Director.newProject();
-                final MainViewer viewer = newDir.getMainViewer();
+                final var newDir = Director.newProject();
+                final var viewer = newDir.getMainViewer();
                 viewer.getFrame().setVisible(true);
                 if (MessageWindow.getInstance() == null) {
                     MessageWindow.setInstance(new MessageWindow(ProgramProperties.getProgramIcon(), "Messages - MEGAN", viewer.getFrame(), false));
@@ -178,7 +181,7 @@ public class Megan6 {
     }
 
     public static void ensureInitFXInSwingProgram() {
-        final JFrame jframe = new JFrame("Not used");
+        final var jframe = new JFrame("Not used");
         jframe.add(new JFXPanel());
     }
 }

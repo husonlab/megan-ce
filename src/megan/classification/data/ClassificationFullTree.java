@@ -80,7 +80,7 @@ public class ClassificationFullTree extends PhyloTree {
 
 		System.err.print("Loading " + FileUtils.getFileNameWithoutPath(fileName) + ": ");
         try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
-            read(r, true);
+            read(r);
         }
         for (Node v = getFirstNode(); v != null; v = v.getNext()) {
             if (NumberUtils.isInteger(getLabel(v))) {

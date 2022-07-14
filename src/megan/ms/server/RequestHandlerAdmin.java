@@ -150,6 +150,18 @@ public class RequestHandlerAdmin {
         };
     }
 
+    static RequestHandler shutdown() {
+        return (c, p) -> {
+             try {
+                checkKnownParameters(p);
+                System.exit(0);
+                return "Shut down".getBytes();
+            } catch (IOException ex) {
+                return reportError(c, p, ex.getMessage());
+            }
+        };
+    }
+
     static RequestHandler getLog() {
         return (c, p) -> {
             if (inUpdate.get())

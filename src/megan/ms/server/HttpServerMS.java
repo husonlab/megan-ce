@@ -79,6 +79,7 @@ public class HttpServerMS {
         createContext(path + "/admin/removeRole", new HttpHandlerMS(RequestHandlerAdmin.removeRole(userManager)),adminAuthenticator);
         createContext(path + "/admin/getLog", new HttpHandlerMS(RequestHandlerAdmin.getLog()),adminAuthenticator);
         createContext(path + "/admin/clearLog", new HttpHandlerMS(RequestHandlerAdmin.clearLog()),adminAuthenticator);
+        createContext(path + "/admin/shutdown", new HttpHandlerMS(RequestHandlerAdmin.shutdown()),adminAuthenticator);
 
         final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
         httpServer.setExecutor(threadPoolExecutor);
@@ -94,7 +95,6 @@ public class HttpServerMS {
 
         // general info:
         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
-        createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
         createContext(path + "/isReadOnly", new HttpHandlerMS( (c, p) -> "true".getBytes()),authenticator);
         createContext(path + "/list", new HttpHandlerMS(RequestHandler.getListDataset(database)),authenticator);
 

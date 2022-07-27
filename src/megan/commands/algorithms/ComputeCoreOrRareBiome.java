@@ -1,5 +1,5 @@
 /*
- * ComputeCoreBiome.java Copyright (C) 2022 Daniel H. Huson
+ * ComputeCoreOrRareBiome.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -39,7 +39,7 @@ import java.util.Map;
  * Reads summarized by a node are used to decide whether to keep node, reads assigned to node are used as counts
  * Daniel Huson, 2.2013
  */
-public class ComputeCoreBiome {
+public class ComputeCoreOrRareBiome {
     /**
      * computes core biome for a given threshold
      *
@@ -106,7 +106,7 @@ public class ComputeCoreBiome {
      *
      * @return thresholds
      */
-    private static int[] computeDetectionThreshold(String classificationName, int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
+    static int[] computeDetectionThreshold(String classificationName, int numberOfSamples, Map<Integer, float[]> srcClass2counts, float detectionThresholdPercent) {
         final int[] array = new int[numberOfSamples];
         if (detectionThresholdPercent > 0) {
             for (Integer id : srcClass2counts.keySet()) {
@@ -138,7 +138,7 @@ public class ComputeCoreBiome {
      * recursively compute the core biome
      *
 	 */
-    private static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold,
+    static float[] computeCoreBiomeRec(BitSet sampleIds, boolean asUpperBound, int numberOfSamples, int samplesThreshold, int[] detectionThreshold,
                                                Node v, Map<Integer, float[]> srcClass2counts, Map<Integer, float[]> tarClass2counts, ProgressListener progress) throws CanceledException {
         final float[] summarized = new float[numberOfSamples];
 

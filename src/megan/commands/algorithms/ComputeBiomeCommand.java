@@ -99,14 +99,14 @@ public class ComputeBiomeCommand extends CommandBase implements ICommand {
 
         if (what.equalsIgnoreCase("core")) {
             int minSamplesToHave = (int) Math.ceil((samplesThreshold / 100.0) * selectedSamples.size());
-            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, false, minSamplesToHave, classThreshold, classification2class2counts, doc.getProgressListener());
-            title = String.format("CoreBiome-%2.1f-%2.1f", samplesThreshold, classThreshold);
+            sampleSize = ComputeCoreOrRareBiome.apply(doc, selectedSamples, false, minSamplesToHave, classThreshold, classification2class2counts, doc.getProgressListener());
+            title = "CoreBiome-%s-%s".formatted(StringUtils.removeTrailingZerosAfterDot(samplesThreshold), StringUtils.removeTrailingZerosAfterDot(classThreshold));
         } else if (what.equalsIgnoreCase("rare")) {
             int minSamplesNotToHave = (int) Math.ceil((samplesThreshold / 100.0) * selectedSamples.size());
-            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, true, minSamplesNotToHave, classThreshold, classification2class2counts, doc.getProgressListener());
-            title = String.format("RareBiome-%2.1f-%2.1f", samplesThreshold, classThreshold);
+            sampleSize = ComputeCoreOrRareBiome.apply(doc, selectedSamples, true, minSamplesNotToHave, classThreshold, classification2class2counts, doc.getProgressListener());
+            title = "RareBiome-%s-%s".formatted(StringUtils.removeTrailingZerosAfterDot(samplesThreshold), StringUtils.removeTrailingZerosAfterDot(classThreshold));
         } else if (what.equalsIgnoreCase("total")) {
-            sampleSize = ComputeCoreBiome.apply(doc, selectedSamples, false, 0, classThreshold, classification2class2counts, doc.getProgressListener());
+            sampleSize = ComputeCoreOrRareBiome.apply(doc, selectedSamples, false, 0, classThreshold, classification2class2counts, doc.getProgressListener());
             title = "TotalBiome";
         }
 

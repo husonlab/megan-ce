@@ -53,6 +53,7 @@ public class ClassificationManager {
         defaultClassificationsListExcludingNCBITaxonomy.add("KEGG");
         defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
         defaultClassificationsListExcludingNCBITaxonomy.add("EC");
+        // defaultClassificationsListExcludingNCBITaxonomy.add("PGPT");
         allSupportedClassificationsExcludingNCBITaxonomy.addAll(defaultClassificationsListExcludingNCBITaxonomy);
 
         defaultClassificationsList.addAll(defaultClassificationsListExcludingNCBITaxonomy);

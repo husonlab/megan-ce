@@ -20,6 +20,7 @@ package megan.core;
 
 import jloda.seq.BlastMode;
 import jloda.util.*;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -1527,5 +1528,9 @@ public class DataTable {
 
     public void clearCollapsed() {
         classification2collapsedIds.clear();
+    }
+
+    public int getSampleId(String sample) {
+        return CollectionUtils.getIndex(sample,getSampleNamesArray());
     }
 }

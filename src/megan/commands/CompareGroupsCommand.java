@@ -28,7 +28,7 @@ import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
-import megan.commands.algorithms.ComputeCoreBiome;
+import megan.commands.algorithms.ComputeCoreOrRareBiome;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
@@ -126,7 +126,7 @@ public class CompareGroupsCommand extends jloda.swing.commands.CommandBase imple
         {
             for (Pair<String, List<String>> group : groups) {
                 final Map<String, Map<Integer, float[]>> classification2class2counts = new HashMap<>();
-                int sampleSize = ComputeCoreBiome.apply(doc, group.getSecond(), false, 0, 0, classification2class2counts, doc.getProgressListener());
+                int sampleSize = ComputeCoreOrRareBiome.apply(doc, group.getSecond(), false, 0, 0, classification2class2counts, doc.getProgressListener());
 
                 final Director tmpDir = Director.newProject(false);
                 final Document tmpDocument = tmpDir.getDocument();

@@ -430,22 +430,24 @@ public class RMA2Info {
         }
     }
 
-
     /**
      * determine whether given taxon is ancestor of one of the named taxa
      *
      * @return true, if is ancestor
      */
     private static boolean isDescendant(ClassificationFullTree taxonomy, int taxId, int... ancestorIds) {
-        Node v = taxonomy.getANode(taxId);
-        while (true) {
-            for (int id : ancestorIds)
-                if (v.getInfo()!=null && (Integer) v.getInfo() == id)
-                    return true;
-                else if (v.getInDegree() > 0)
-                    v = v.getFirstInEdge().getSource();
-                else
-                    return false;
+        var v = taxonomy.getANode(taxId);
+        if(v!=null) {
+            while (true) {
+                for (int id : ancestorIds)
+                    if (v.getInfo() != null && v.getInfo() instanceof Integer integer && id==integer)
+                        return true;
+                    else if (v.getInDegree() > 0)
+                        v = v.getFirstInEdge().getSource();
+                    else
+                        return false;
+            }
         }
+        return false;
     }
 }

@@ -73,7 +73,7 @@ public class CSVExportCViewer {
                 progressListener.setMaximum(selected.size());
                 progressListener.setProgress(0);
                 final var seen = new HashSet<>();
-                final var reportPath = format.startsWith(shortName + "Path");
+                final var reportPath = format.toLowerCase().startsWith(shortName.toLowerCase() + "path");
 
                 for (var v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
                     final var id = (Integer) v.getInfo();

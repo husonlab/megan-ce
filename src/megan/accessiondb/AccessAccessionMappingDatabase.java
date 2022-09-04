@@ -20,10 +20,7 @@
 package megan.accessiondb;
 
 
-import jloda.util.Basic;
-import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 import org.sqlite.SQLiteConfig;
 
 import java.io.Closeable;
@@ -53,8 +50,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
 
     private final Connection connection;
 
-    public static IntUnaryOperator accessionFilter = (x) -> (x > -1000 ? x : 0);
-    public static Function<String, Boolean> fileFilter = (x) -> !x.endsWith("_UE");
+    public static IntUnaryOperator accessionFilter = x -> (x > -1000 ? x : 0);
+    public static Function<String, Boolean> fileFilter = x -> !x.endsWith("_UE");
     
     private static final Single<Boolean> tempStoreInMemory=new Single<>(false);
     private static final Single<String> tempStoreDirectory=new Single<>("");
@@ -67,7 +64,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
 		if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
 			throw new IOException("File not found or unreadable: " + dbFile);
 
-        final SQLiteConfig config = new SQLiteConfig();
+        final var config = new SQLiteConfig();
         config.setCacheSize(10000);
         config.setReadOnly(true);
 
@@ -95,13 +92,13 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @return info string associated or null if no such string is defined
      */
     public String getInfo() throws SQLException {
-        final StringBuilder buf = new StringBuilder();
+        final var buf = new StringBuilder();
         try {
             buf.append(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0));
         } catch (IndexOutOfBoundsException e) {
             throw new SQLException(e);
         }
-        for (String name : getClassificationNames()) {
+        for (var name : getClassificationNames()) {
             buf.append("\n").append(name).append(": ").append(getInfo(name));
         }
         return buf.toString();
@@ -117,8 +114,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
             return executeQueryInt("SELECT size FROM info WHERE id = 'general';", 1).get(0);
         } catch (IndexOutOfBoundsException e) {
             // if the field is empty compute the size and store it in the info table
-            final int size = computeDBSize();
-            String insertionQuery = "UPDATE info SET size = " + size + " WHERE id = 'general';";
+            final var size = computeDBSize();
+            var insertionQuery = "UPDATE info SET size = " + size + " WHERE id = 'general';";
             try {
                 executeQueryInt(insertionQuery, 1);
             } catch (SQLException ex) {
@@ -135,13 +132,13 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @return the index in the database for a given classificationName, 1-based
      */
     public int getClassificationIndex(String classificationName) throws SQLException {
-        final String query = "SELECT * FROM mappings LIMIT 1;";
+        final var query = "SELECT * FROM mappings LIMIT 1;";
 
-        final ResultSetMetaData metaData = getMetaData(query);
+        final var metaData = getMetaData(query);
         // Note that for the database access the index is 1-based
         // this 1-based index will be returned
-        for (int i = 0; i < metaData.getColumnCount(); i++) {
-            String label = metaData.getColumnLabel(i + 1);
+        for (var i = 0; i < metaData.getColumnCount(); i++) {
+            var label = metaData.getColumnLabel(i + 1);
             if (label.equals(classificationName)) {
                 return i + 1;
             }
@@ -156,10 +153,10 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @return the ValueType of the index (either String or integer)
      */
     public ValueType getType(int classificationIndex) throws SQLException {
-        final String query = "SELECT * FROM mappings LIMIT 1;";
+        final var query = "SELECT * FROM mappings LIMIT 1;";
 
-        final ResultSetMetaData metaData = getMetaData(query);
-        final String typeName = metaData.getColumnTypeName(classificationIndex);
+        final var metaData = getMetaData(query);
+        final var typeName = metaData.getColumnTypeName(classificationIndex);
         if (typeName.equals("TEXT")) {
             return ValueType.TEXT;
         } else if (typeName.equals("INT") || typeName.equals("NUM")) {
@@ -188,8 +185,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
      */
     public String getInfo(String classificationName) throws SQLException {
         try {
-            final String infoString = executeQueryString("SELECT info_string FROM info WHERE id = '" + classificationName + "';", 1).get(0);
-            return String.format("%s, size: %,d", infoString, getSize(classificationName));
+            final var infoString = executeQueryString("SELECT info_string FROM info WHERE id = '" + classificationName + "';", 1).get(0);
+            return "%s, size: %,d".formatted(infoString, getSize(classificationName));
         } catch (IndexOutOfBoundsException e) {
             throw new SQLException(e);
         }
@@ -212,9 +209,9 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @return int[] or null
      */
     public int getValue(String classificationName, String accession) throws SQLException {
-        final ResultSet rs = connection.createStatement().executeQuery("SELECT " + classificationName + " FROM mappings WHERE Accession = '" + accession + "';");
+        final var rs = connection.createStatement().executeQuery("SELECT " + classificationName + " FROM mappings WHERE Accession = '" + accession + "';");
         while (rs.next()) {
-            final int value = rs.getInt(classificationName);
+            final var value = rs.getInt(classificationName);
             if (value != 0)
                 return accessionFilter.applyAsInt(value);
         }
@@ -228,10 +225,10 @@ public class AccessAccessionMappingDatabase implements Closeable {
      * @return a HashMap containing the accession and a list of the corresponding classifications
      */
     public HashMap<String, int[]> getValues(String[] accessions, int length) throws SQLException {
-        final StringBuilder buf = new StringBuilder();
+        final var buf = new StringBuilder();
         buf.append("select * from mappings where Accession in(");
-        boolean first = true;
-        for (int i = 0; i < length; i++) {
+        var first = true;
+        for (var i = 0; i < length; i++) {
             if (first)
                 first = false;
             else
@@ -240,19 +237,43 @@ public class AccessAccessionMappingDatabase implements Closeable {
         }
         buf.append(");");
 
-        final ResultSet rs = connection.createStatement().executeQuery(buf.toString());
-        final int columnCount = rs.getMetaData().getColumnCount();
+        final var rs = connection.createStatement().executeQuery(buf.toString());
+        final var columnCount = rs.getMetaData().getColumnCount();
 
-        final HashMap<String, int[]> results = new HashMap<>();
+        final var results = new HashMap<String,int[]>();
         while (rs.next()) {
-            final int[] values = new int[columnCount];
-            for (int i = 2; i <= columnCount; i++) {
+            final var values = new int[columnCount];
+            for (var i = 2; i <= columnCount; i++) {
                 // database index starts with 1; 1 is the accession everything else is result
                 values[i - 2] = accessionFilter.applyAsInt(rs.getInt(i));
             }
             results.put(rs.getString(1), values);
         }
+        return results;
+    }
 
+    /**
+     * for each provided accession, returns ids for all named classifications
+     * @param accessions queries
+     * @param cNames desired classifications
+     * @return for each accession, the ids for all given classifications, in the same order as the classifications
+     * @throws SQLException
+     */
+    public Collection<int[]> getValues(String[] accessions, String[] cNames) throws SQLException {
+        var query = "select " + StringUtils.toString(cNames, ",") + " from mappings where Accession in" +
+                     " ('" + StringUtils.toString(accessions, "', '") + "');";
+        var rs = connection.createStatement().executeQuery(query);
+        var columnCount = rs.getMetaData().getColumnCount();
+
+        var results = new ArrayList<int[]>();
+        while (rs.next()) {
+            final var values = new int[cNames.length];
+            for (var i = 0; i < columnCount; i++) {
+                // database index starts with 1; 1 is the accession everything else is result
+                values[i] = accessionFilter.applyAsInt(rs.getInt(i+1));
+            }
+            results.add(values);
+        }
         return results;
     }
 

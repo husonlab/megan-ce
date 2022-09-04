@@ -79,10 +79,10 @@ public class ClassificationFullTree extends PhyloTree {
         clear();
 
 		System.err.print("Loading " + FileUtils.getFileNameWithoutPath(fileName) + ": ");
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
+        try (var r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
             read(r);
         }
-        for (Node v = getFirstNode(); v != null; v = v.getNext()) {
+        for (var v = getFirstNode(); v != null; v = v.getNext()) {
             if (NumberUtils.isInteger(getLabel(v))) {
                 int id = Integer.parseInt(getLabel(v));
                 setInfo(v, id);
@@ -93,7 +93,7 @@ public class ClassificationFullTree extends PhyloTree {
                 throw new IOException("Node has illegal label: " + getLabel(v));
         }
         if (id2Node.get(IdMapper.NOHITS_ID) == null) {
-            Node v = newNode();
+            var v = newNode();
             addId2Node(IdMapper.NOHITS_ID, v);
             name2IdMap.put(IdMapper.NOHITS_LABEL, IdMapper.NOHITS_ID);
             name2IdMap.setRank(IdMapper.NOHITS_ID, 0);
@@ -103,7 +103,7 @@ public class ClassificationFullTree extends PhyloTree {
 
 
         if (id2Node.get(IdMapper.UNASSIGNED_ID) == null) {
-            Node v = newNode();
+            var v = newNode();
             addId2Node(IdMapper.UNASSIGNED_ID, v);
             name2IdMap.put(IdMapper.UNASSIGNED_LABEL, IdMapper.UNASSIGNED_ID);
             name2IdMap.setRank(IdMapper.UNASSIGNED_ID, 0);
@@ -112,7 +112,7 @@ public class ClassificationFullTree extends PhyloTree {
         setInfo(getANode(IdMapper.UNASSIGNED_ID), IdMapper.UNASSIGNED_ID);
 
         if (id2Node.get(IdMapper.LOW_COMPLEXITY_ID) == null) {
-            Node v = newNode();
+            var v = newNode();
             addId2Node(IdMapper.LOW_COMPLEXITY_ID, v);
             name2IdMap.put(IdMapper.LOW_COMPLEXITY_LABEL, IdMapper.LOW_COMPLEXITY_ID);
             name2IdMap.setRank(IdMapper.LOW_COMPLEXITY_ID, 0);
@@ -121,7 +121,7 @@ public class ClassificationFullTree extends PhyloTree {
         setInfo(getANode(IdMapper.LOW_COMPLEXITY_ID), IdMapper.LOW_COMPLEXITY_ID);
 
         if (id2Node.get(IdMapper.CONTAMINANTS_ID) == null) {
-            Node v = newNode();
+            var v = newNode();
             addId2Node(IdMapper.CONTAMINANTS_ID, v);
             name2IdMap.put(IdMapper.CONTAMINANTS_LABEL, IdMapper.CONTAMINANTS_ID);
             name2IdMap.setRank(IdMapper.CONTAMINANTS_ID, 0);
@@ -140,7 +140,6 @@ public class ClassificationFullTree extends PhyloTree {
             taxId = name2IdMap.get("Eukaryota");
             if (taxId > 0)
                 name2IdMap.setRank(taxId, 127);
-
 
             // disable taxa
             for (int t : ProgramProperties.get(DISABLED_TAXA, new int[0])) {
@@ -580,14 +579,14 @@ public class ClassificationFullTree extends PhyloTree {
      *
      * @return LCA
      */
-    public Integer getLCA(Set<Integer> ids) {
-        final Set<String> addresses = new HashSet<>();
-        for (Integer id : ids) {
-            String address = id2Address.get(id);
+    public Integer getLCA(Collection<Integer> ids) {
+        final var addresses = new HashSet<String>();
+        for (var id : ids) {
+            var address = id2Address.get(id);
             if (address != null)
                 addresses.add(address);
         }
-        String prefix = LCAAddressing.getCommonPrefix(addresses, true);
+        var prefix = LCAAddressing.getCommonPrefix(addresses, true);
         return address2Id.get(prefix);
     }
 

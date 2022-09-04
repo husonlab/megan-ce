@@ -26,10 +26,7 @@ import megan.classification.util.MultiWords;
 import megan.classification.util.TaggedValueIterator;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * this class does the work of parsing ids based on the given idMapper
@@ -113,8 +110,7 @@ public class IdParser {
                                     ids.add(id);
                                     break;
                                 case Majority:
-                                    final Integer count = id2count.get(id);
-                                    id2count.put(id, count == null ? 1 : count + 1);
+                                    id2count.put(id,id2count.getOrDefault(id,0)+1);
                                     break;
                             }
                         }
@@ -147,8 +143,7 @@ public class IdParser {
                                 ids.add(id);
                                 break;
                             case Majority:
-                                final Integer count = id2count.get(id);
-                                id2count.put(id, count == null ? 1 : count + 1);
+                                id2count.put(id,id2count.getOrDefault(id,0)+1);
                                 break;
                         }
                     }
@@ -174,8 +169,7 @@ public class IdParser {
                                 ids.add(id);
                                 break;
                             case Majority:
-                                final Integer count = id2count.get(id);
-                                id2count.put(id, count == null ? 1 : count + 1);
+                                id2count.put(id,id2count.getOrDefault(id,0)+1);
                                 break;
                         }
                     }
@@ -226,8 +220,7 @@ public class IdParser {
                                         ids.add(id);
                                         break;
                                     case Majority:
-                                        final Integer count = id2count.get(id);
-                                        id2count.put(id, count == null ? 1 : count + 1);
+                                        id2count.put(id,id2count.getOrDefault(id,0)+1);
                                         break;
                                 }
                             }
@@ -265,8 +258,7 @@ public class IdParser {
                                         ids.add(id);
                                         break;
                                     case Majority:
-                                        final Integer count = id2count.get(id);
-                                        id2count.put(id, count == null ? 1 : count + 1);
+                                        id2count.put(id,id2count.getOrDefault(id,0)+1);
                                         break;
                                 }
                             }
@@ -276,23 +268,19 @@ public class IdParser {
                 }
             }
         }
-
         // compute final result:
         if (ids.size() == 1)
-            return ids.iterator().next();
+            return ids.iterator().next(); // only one id or must be algorithm==Algorithm.First_Hit
         if (ids.size() > 0) { // must be algorithm==LCA
             return idMapper.fullTree.getLCA(ids);
-        } else if (id2count.size() > 0) { // must be algorithm=Majority
-            int bestId = 0;
-            int bestCount = 0;
-            for (Integer id : id2count.keySet()) {
-                Integer count = id2count.get(id);
-                if (count > bestCount) {
-                    bestCount = count;
-                    bestId = id;
-                }
+        } else if (id2count.size() > 0) { // and has ids.size()==0, must be Algorithm.Majority
+            var best=0;
+            var bestCount=0;
+            for(var id:id2count.keySet()) {
+                if(id2count.get(id)>bestCount)
+                    best=id;
             }
-            return bestId;
+            return best;
         } else if (disabled.size() > 0) { // only have disabled ids, return one of them
             if (disabled.size() == 1)
                 return disabled.iterator().next();
@@ -303,6 +291,39 @@ public class IdParser {
         }
         return 0;
     }
+
+    /**
+     * compute assignment for a list of IDs using specified algorithm
+     * @param ids the list
+     * @return id computed using specified algorithm
+     */
+    public int processMultipleIds(Collection<Integer> ids) {
+           // compute final result:
+        if(ids.size()==0)
+            return 0;
+        else if (ids.size() == 1 || algorithm==Algorithm.First_Hit)
+            return ids.iterator().next();
+        else if(algorithm==Algorithm.LCA) {
+            return idMapper.fullTree.getLCA(ids);
+        } else if(algorithm==Algorithm.Majority){
+            id2count.clear();
+            for(var id:ids) {
+                id2count.put(id,id2count.getOrDefault(id,0)+1);
+            }
+            var best=0;
+            var bestCount=0;
+            for(var id:id2count.keySet()) {
+                var count=id2count.get(id);
+                if(count>bestCount) {
+                    best = id;
+                    bestCount=count;
+                }
+            }
+            return best;
+        }
+         return 0;
+    }
+
 
     /**
      * get the name of the classification

@@ -203,12 +203,12 @@ public class IdMapper {
     }
 
     /**
-     * get a  id from an accession
+     * get a id from an accession
      *
      * @return KO id or null
      */
     public Integer getIdFromAccession(String accession) throws IOException {
-        if (isLoaded(MapType.Accession)) {
+        if (isLoaded(MapType.Accession) || isLoaded(MapType.MeganMapDB)) {
             return getAccessionMap().get(accession);
         }
         return null;

@@ -35,7 +35,7 @@ public class LCAAddressing {
      *
 	 */
     public static void computeAddresses(PhyloTree tree, Map<Integer, String> id2address, Map<String, Integer> address2id) {
-        Node root = tree.getRoot();
+        var root = tree.getRoot();
         if (root != null)
             buildId2AddressRec(root, "", id2address, address2id);
     }
@@ -45,12 +45,12 @@ public class LCAAddressing {
      *
 	 */
     private static void buildId2AddressRec(Node v, String path, Map<Integer, String> id2address, Map<String, Integer> address2id) {
-        int id = (Integer) v.getInfo();
+        var id = (Integer) v.getInfo();
         id2address.put(id, path);
         address2id.put(path, id);
         if (v.getOutDegree() < Character.MAX_VALUE) {
             char count = 1;
-            for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
+            for (var f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 buildId2AddressRec(f.getOpposite(v), path + count, id2address, address2id);
                 count++;
             }

@@ -9,7 +9,7 @@ module megan {
 
     requires Jama;
     requires sis.jhdf5.batteries.included;
-    requires sqlite.jdbc;
+    requires org.xerial.sqlitejdbc;
     requires gson;
     requires commons.math3;
     requires contrasts;
@@ -152,4 +152,5 @@ module megan {
     opens megan.ms.clientdialog.commands;
     exports megan.ms.server;
     exports megan.ms.clientdialog.service;
+	exports megan.tools.utils;
 }

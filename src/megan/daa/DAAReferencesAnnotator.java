@@ -72,7 +72,7 @@ class DAAReferencesAnnotator {
                 System.err.println("Annotating DAA file using FAST mode (accession database and first accession per line)");
                 progress.setSubtask("Annotating references");
 
-                final var chunkSize = 100000;
+                final var chunkSize = 10000; // don't make this too big, query will exceed SQLITE size limitation
 
                 final var numberOfTasks = (int) Math.ceil((double) header.getNumberOfReferences() / chunkSize);
 

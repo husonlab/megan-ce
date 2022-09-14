@@ -26,6 +26,7 @@ import megan.core.Document;
 import megan.daa.connector.DAAConnector;
 import megan.daa.io.DAAHeader;
 import megan.daa.io.DAAParser;
+import megan.main.MeganProperties;
 import megan.viewer.TaxonomyData;
 
 import java.io.*;
@@ -88,9 +89,13 @@ public class DAA2Info {
 		final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
 		final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
-        options.done();
 
-        final int taxonomyRoot;
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
+		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
+
+		final int taxonomyRoot;
         if (bacteriaOnly && viralOnly)
             throw new UsageException("Please specify only one of -bo and -vo");
         else if (bacteriaOnly)
@@ -102,13 +107,13 @@ public class DAA2Info {
 
         final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, true);
 
-        final Document doc = new Document();
+        final var doc = new Document();
         if (isMeganized) {
             doc.getMeganFile().setFileFromExistingFile(daaFile, true);
             doc.loadMeganFile();
         }
 
-		try (Writer outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+		try (var outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 			if (listGeneralInfo || listMoreStuff) {
 				final DAAHeader daaHeader = new DAAHeader(daaFile, true);
 				outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));

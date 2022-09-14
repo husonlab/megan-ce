@@ -27,6 +27,7 @@ import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdParser;
 import megan.classification.data.ClassificationCommandHelper;
+import megan.main.Megan6;
 import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
@@ -80,13 +81,9 @@ public class MergeMultipleAccessionAssignments {
 
         var cNames=options.getOption("-c","classifications","Classifications to assign (ALL or list of names)",new String[]{"ALL"});
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file", Megan6.getDefaultPropertiesFile());
         options.done();
 
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
 		FileUtils.checkFileReadableNonEmpty(inputFile);

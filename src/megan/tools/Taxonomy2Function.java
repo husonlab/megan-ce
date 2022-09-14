@@ -25,6 +25,7 @@ import jloda.util.progress.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.core.Document;
+import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -91,7 +92,11 @@ public class Taxonomy2Function {
 		options.comment(ArgsOptions.OTHER);
 		var showHeaderLine = options.getOption("-sh", "showHeadline", "Show a headline in the output naming classifications and files", false);
 		var pathSeparator = options.getOption("-ps", "pathSeparator", "Separator used when reporting paths", new String[]{"::", "|", "tab", "comma", "semi-colon"}, "::");
+
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
 
 		if (firstClassificationName.equals(secondClassificationName))
 			throw new UsageException("First second classifications must be different");

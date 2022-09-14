@@ -32,6 +32,7 @@ import megan.data.IConnector;
 import megan.data.IReadBlock;
 import megan.data.IReadBlockIterator;
 import megan.dialogs.export.CSVExportCViewer;
+import megan.main.MeganProperties;
 import megan.viewer.TaxonomicLevels;
 import megan.viewer.TaxonomyData;
 
@@ -98,7 +99,10 @@ public class RMA2Info {
 
         final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final int taxonomyRoot;
         if (bacteriaOnly && viralOnly)

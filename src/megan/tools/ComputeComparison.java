@@ -29,6 +29,7 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
 import megan.dialogs.compare.Comparer;
+import megan.main.MeganProperties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -88,7 +89,10 @@ public class ComputeComparison {
         final Document.ReadAssignmentMode readAssignmentMode = Document.ReadAssignmentMode.valueOfIgnoreCase(options.getOption("-ram", "readAssignmentMode", "Set the desired read-assignment mode", Document.ReadAssignmentMode.readCount.toString()));
         final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, minimum non-zero count is set to 1", false);
 
-        options.done();
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
+		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
 
 		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
 			final String directory = inputFiles.get(0);

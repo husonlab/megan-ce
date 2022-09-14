@@ -34,6 +34,7 @@ import megan.classification.data.ClassificationCommandHelper;
 import megan.core.ContaminantManager;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
+import megan.main.Megan6;
 import megan.main.MeganProperties;
 import megan.parsers.blast.BlastFileFormat;
 import megan.parsers.blast.BlastModeUtils;
@@ -166,13 +167,9 @@ public class SAM2RMA6 {
         ProgramProperties.put(SQLiteTempStoreInMemoryProgramProperty,options.getOption("-tsm","tempStoreInMemory","Temporary storage in memory for SQLITE",false));
         ProgramProperties.put(SQLiteTempStoreDirectoryProgramProperty,options.getOption("-tsd","tempStoreDir","Temporary storage directory for SQLITE (if not in-memory)",""));
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file", Megan6.getDefaultPropertiesFile());
         options.done();
 
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
         if (minSupport > 0 && minSupportPercent > 0)

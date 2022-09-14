@@ -35,6 +35,7 @@ import megan.genes.CDS;
 import megan.genes.GeneItem;
 import megan.genes.GeneItemCreator;
 import megan.io.OutputWriter;
+import megan.main.MeganProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +101,11 @@ public class AAdderBuild {
 
         options.comment(ArgsOptions.OTHER);
         final boolean lookInside = options.getOption("-ex", "extraStrict", "When given an input directory, look inside every input file to check that it is indeed in GFF3 format", false);
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
 		if (mapDBClassifications.size() > 0 && StringUtils.hasPositiveLengthValue(class2AccessionFile))

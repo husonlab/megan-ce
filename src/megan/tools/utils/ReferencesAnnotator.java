@@ -102,13 +102,9 @@ public class ReferencesAnnotator {
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number", ProgramProperties.get(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, true)));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
 
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
         MeganProperties.initializeProperties(propertiesFile);
 
 		FileUtils.checkFileReadableNonEmpty(inputFile);

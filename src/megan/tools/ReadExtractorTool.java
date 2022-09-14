@@ -29,6 +29,7 @@ import megan.daa.io.DAAParser;
 import megan.dialogs.export.ReadsExporter;
 import megan.dialogs.export.analysis.FrameShiftCorrectedReadsExporter;
 import megan.dialogs.extractor.ReadsExtractor;
+import megan.main.MeganProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +86,11 @@ public class ReadExtractorTool {
         options.comment(ArgsOptions.OTHER);
         final var ignoreExceptions = options.getOption("-IE", "ignoreExceptions", "Ignore exceptions and continue processing", false);
         final var gzOutputFiles = options.getOption("-gz", "gzipOutputFiles", "If output directory is given, gzip files written to directory", true);
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         if (classificationName.equals("") != all)
             throw new UsageException("Must specific either option --classification or --all, but not both");

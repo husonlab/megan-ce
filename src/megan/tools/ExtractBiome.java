@@ -29,6 +29,7 @@ import megan.commands.algorithms.ComputeBiomeCommand;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.MeganFile;
+import megan.main.MeganProperties;
 import megan.viewer.TaxonomyData;
 
 import java.io.File;
@@ -88,7 +89,10 @@ public class ExtractBiome {
         final float sampleThreshold = (float) options.getOption("-stp", "sampleThresholdPercent", "Min or max percent of samples that class must be present in to be included in core or rare biome, resp.", 50.0);
         final float classThreshold = (float) options.getOption("-ctp", "classThresholdPercent", "Min percent of sample that reads assigned to class must achieve for class to be considered present in sample", 0.1);
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         if (mode == null)
             throw new UsageException("Unknown compare mode");

@@ -23,6 +23,7 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
+import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -71,7 +72,11 @@ public class HMM2Blastx {
         final float minScore = options.getOption("-ms", "minScore", "Minimum bit score", 0);
         final int maxMatchesPerRead = options.getOption("-ma", "maxAlignmentsPerRead", "Maximum number of alignments per read", 25);
         final boolean reportNoHits = options.getOption("nh", "reportNoHits", "Report reads with no hits", false);
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final List<String> reads = new LinkedList<>();
         final Map<String, Integer> read2length = new HashMap<>();

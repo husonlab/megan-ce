@@ -43,7 +43,7 @@ import java.util.function.IntUnaryOperator;
  * Modified and extended by Daniel Huson, 9.2019
  */
 public class AccessAccessionMappingDatabase implements Closeable {
-    enum ValueType {TEXT, INT}
+    public enum ValueType {TEXT, INT}
     
     public static final String SQLiteTempStoreInMemoryProgramProperty="SQLiteTempStoreInMemory";
     public static final String SQLiteTempStoreDirectoryProgramProperty="SQLiteTempStoreDirectory";

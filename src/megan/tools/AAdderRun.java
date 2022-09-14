@@ -30,6 +30,7 @@ import megan.genes.GeneItem;
 import megan.genes.GeneItemCreator;
 import megan.io.IInputReader;
 import megan.io.InputReader;
+import megan.main.MeganProperties;
 
 import java.io.*;
 import java.util.*;
@@ -78,7 +79,11 @@ public class AAdderRun {
         options.comment(ArgsOptions.OTHER);
         final double minCoverageProportion = options.getOption("-c", "percentToCover", "Percent of alignment that must be covered by protein", 90.00) / 100.0;
         final boolean reportUnmappedAccessions = options.getOption("-rnf", "reportNotFound", "Report the names of DNA references for which no functional accession is available", false);
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final File outputDir;
         if (outputFiles.length == 1 && ((new File(outputFiles[0])).isDirectory())) {

@@ -27,6 +27,7 @@ import jloda.util.interval.IntervalTree;
 import jloda.util.progress.ProgressPercentage;
 import megan.core.MeganFile;
 import megan.data.*;
+import megan.main.MeganProperties;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -72,7 +73,10 @@ public class CompareProteinAlignments {
         options.comment("Options");
         final NameNormalizer normalizer = new NameNormalizer(options.getOption("-e", "nameEdit", "Command A/B applied as replaceAll(A,B) to all read/contig names", ""));
         final boolean onlyCompareDominatingMatches = options.getOption("-d", "dominatingOnly", "Compare only dominating matches", false);
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         if (inputFiles.length < 2)
 			throw new UsageException("--input '" + StringUtils.toString(inputFiles, " ") + "': must specify at least 2 input files");

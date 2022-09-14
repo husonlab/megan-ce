@@ -23,6 +23,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import megan.core.*;
 import megan.data.merge.MergeConnector;
+import megan.main.MeganProperties;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -69,7 +70,11 @@ public class MergeFiles {
 		final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
 		final String meganFileName = options.getOption("-o", "out", "Output file", "merged.megan");
 		final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
+
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
 
 		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
 			final String directory = inputFiles.get(0);

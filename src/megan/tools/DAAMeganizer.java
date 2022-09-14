@@ -171,14 +171,11 @@ public class DAAMeganizer {
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Number of threads", 8));
         ProgramProperties.put(SQLiteTempStoreInMemoryProgramProperty,options.getOption("-tsm","tempStoreInMemory","Temporary storage in memory for SQLITE",false));
         ProgramProperties.put(SQLiteTempStoreDirectoryProgramProperty,options.getOption("-tsd","tempStoreDir","Temporary storage directory for SQLITE (if not in-memory)",""));
-        options.done();
 
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
-        MeganProperties.initializeProperties(propertiesFile);
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
+		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
 
         if (Basic.getDebugMode())
             System.err.println("Java version: " + System.getProperty("java.version"));

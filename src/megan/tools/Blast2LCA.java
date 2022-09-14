@@ -125,7 +125,11 @@ public class Blast2LCA {
         options.comment(ArgsOptions.OTHER);
         ProgramProperties.put(IdParser.PROPERTIES_FIRST_WORD_IS_ACCESSION, options.getOption("-fwa", "firstWordIsAccession", "First word in reference header is accession number (set to 'true' for NCBI-nr downloaded Sep 2016 or later)", true));
         ProgramProperties.put(IdParser.PROPERTIES_ACCESSION_TAGS, options.getOption("-atags", "accessionTags", "List of accession tags", ProgramProperties.get(IdParser.PROPERTIES_ACCESSION_TAGS, IdParser.ACCESSION_TAGS)));
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         if (mapDBFile.length() > 0 && (acc2TaxaFile.length() > 0 || synonyms2TaxaFile.length() > 0 || acc2KeggFile.length() > 0 || synonyms2KeggFile.length() > 0))
             throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
@@ -135,13 +139,6 @@ public class Blast2LCA {
 
         if (topPercent == 0)
             topPercent = 0.0001f;
-
-        final String propertiesFile;
-        if (ProgramProperties.isMacOS())
-            propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
-        MeganProperties.initializeProperties(propertiesFile);
 
         if (blastFormat.equalsIgnoreCase(BlastFileFormat.Unknown.toString())) {
             blastFormat = BlastFileFormat.detectFormat(null, blastFile, true).toString();
@@ -181,7 +178,7 @@ public class Blast2LCA {
             System.err.println("Reading file: " + blastFile);
             System.err.println("Writing file: " + outputFile);
 
-            try (BlastFileReadBlockIterator it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoreCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, longReads)) {
+            try (var it = new BlastFileReadBlockIterator(blastFile, null, BlastFileFormat.valueOfIgnoreCase(blastFormat), BlastMode.valueOfIgnoreCase(blastMode), new String[]{"Taxonomy", "KEGG"}, 100, longReads)) {
                 final ProgressPercentage progressListener = new ProgressPercentage();
                 progressListener.setMaximum(it.getMaximumProgress());
 

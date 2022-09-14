@@ -23,6 +23,7 @@ import jloda.swing.util.ArgsOptions;
 import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
+import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -68,7 +69,11 @@ public class SortLastMAFAlignmentsByQuery {
         String readsFile = options.getOption("-r", "readsFile", "File containing all reads, if given, determines output order (.gz ok)", "");
 
         final String outputFile = options.getOption("-o", "output", "Output file (stdout or .gz ok)", "stdout");
+
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final HashMap<String, ArrayList<byte[][]>> readName2Alignments = new HashMap<>(1000000);
 

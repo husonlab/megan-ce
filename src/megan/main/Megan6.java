@@ -127,15 +127,10 @@ public class Megan6 {
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense(ProgramProperties.getProgramLicence());
 
-        final String[] meganFiles = options.getOption("-f", "files", "MEGAN RMA file(s) to open", new String[0]);
+        final var meganFiles = options.getOption("-f", "files", "MEGAN RMA file(s) to open", new String[0]);
 
-        String defaultPreferenceFile;
-        if (ProgramProperties.isMacOS())
-            defaultPreferenceFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            defaultPreferenceFile = System.getProperty("user.home") + File.separator + ".Megan.def";
+        final var propertiesFile = options.getOption("-p", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 
-        final var propertiesFile = options.getOption("-p", "propertiesFile", "Properties file", defaultPreferenceFile);
         final var showMessageWindow = !options.getOption("+w", "hideMessageWindow", "Hide message window", false);
         final var silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
         Basic.setDebugMode(options.getOption("-d", "debug", "Debug mode", false));
@@ -183,5 +178,12 @@ public class Megan6 {
     public static void ensureInitFXInSwingProgram() {
         final var jframe = new JFrame("Not used");
         jframe.add(new JFXPanel());
+    }
+
+    public static String getDefaultPropertiesFile() {
+        if (ProgramProperties.isMacOS())
+            return System.getProperty("user.home") + "/Library/Preferences/MEGAN.def";
+        else
+            return System.getProperty("user.home") + File.separator + ".MEGAN.def";
     }
 }

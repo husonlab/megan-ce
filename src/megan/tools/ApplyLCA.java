@@ -26,6 +26,7 @@ import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;
+import megan.main.MeganProperties;
 
 import java.io.*;
 
@@ -67,7 +68,10 @@ public class ApplyLCA {
         final String outputFile = options.getOption("-o", "output", "Output file (stdout, .gz ok)", "stdout");
         String separator = options.getOption("-s", "Separator", "Separator character (or detect)", "detect");
         final boolean firstLineIsHeader = options.getOption("-H", "hasHeaderLine", "Has header line", true);
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
         final AssignmentUsingLCA assignmentUsingLCA = new AssignmentUsingLCA(Classification.Taxonomy, false, 0);
 

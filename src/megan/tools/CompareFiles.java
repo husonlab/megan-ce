@@ -25,6 +25,7 @@ import jloda.util.*;
 import megan.core.ClassificationType;
 import megan.core.Document;
 import megan.dialogs.compare.Comparer;
+import megan.main.MeganProperties;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -81,7 +82,10 @@ public class CompareFiles {
 
         final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, non-zero counts are mapped to 1 or more", false);
 
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
+
+        MeganProperties.initializeProperties(propertiesFile);
 
 		if (inputFiles.size() == 1 && FileUtils.isDirectory(inputFiles.get(0))) {
 			final String directory = inputFiles.get(0);

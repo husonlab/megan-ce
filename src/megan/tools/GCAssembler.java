@@ -110,16 +110,12 @@ public class GCAssembler {
 		final var desiredNumberOfThreads = options.getOption("-t", "threads", "Number of worker threads", 8);
 		final var veryVerbose = options.getOption("-vv", "veryVerbose", "Report program is very verbose detail", false);
 
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();
 
-		final var doAllClasses = selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all");
-
-		final String propertiesFile;
-		if (ProgramProperties.isMacOS())
-			propertiesFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-		else
-			propertiesFile = System.getProperty("user.home") + File.separator + ".Megan.def";
 		MeganProperties.initializeProperties(propertiesFile);
+
+		final var doAllClasses = selectedClassIds.length == 1 && selectedClassIds[0].equalsIgnoreCase("all");
 
 		final var supportedClassifications = ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy();
 		if (!supportedClassifications.contains(classificationName) && !classificationName.equalsIgnoreCase("none")) {

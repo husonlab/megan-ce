@@ -25,6 +25,7 @@ import jloda.util.progress.ProgressPercentage;
 import megan.core.Document;
 import megan.daa.io.DAAParser;
 import megan.dialogs.export.ExportAlignedReads2GFF3Format;
+import megan.main.MeganProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,11 @@ public class DAA2GFF3 {
 		final String classificationToReport = options.getOption("-c", "classification", "Name of classification to report, or 'all'", "all");
 		final boolean includeIncompatible = options.getOption("-k", "incompatible", "Include incompatible", false);
 		final boolean includeDominated = options.getOption("-d", "dominated", "Include dominated", false);
+
+		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();
+
+		MeganProperties.initializeProperties(propertiesFile);
 
 		if (!DAAParser.isMeganizedDAAFile(daaFile, true))
 			throw new IOException("Input file is not meganized DAA file");

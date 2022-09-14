@@ -121,14 +121,7 @@ public class Reanalyzer {
         final boolean pairedReads = options.getOption("-pr", "paired", "Reads are paired", false);
         final boolean pairedReadsSet = options.optionWasExplicitlySet();
 
-        String defaultPreferenceFile;
-        if (ProgramProperties.isMacOS())
-            defaultPreferenceFile = System.getProperty("user.home") + "/Library/Preferences/Megan.def";
-        else
-            defaultPreferenceFile = System.getProperty("user.home") + File.separator + ".Megan.def";
-
-        final String propertiesFile = options.getOption("-p", "propertiesFile", "Properties file", defaultPreferenceFile);
-
+        final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
 
         MeganProperties.initializeProperties(propertiesFile);

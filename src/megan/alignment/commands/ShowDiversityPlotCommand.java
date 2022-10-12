@@ -38,8 +38,7 @@ import java.awt.event.KeyEvent;
 public class ShowDiversityPlotCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("chart wordCount kmer=");

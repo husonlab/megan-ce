@@ -21,10 +21,10 @@ package megan.commands.load;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
 import megan.core.Director;
@@ -77,8 +77,7 @@ public class LoadAlternativeTaxonomyFileCommand extends CommandBase implements I
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

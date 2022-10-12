@@ -40,8 +40,7 @@ public class ShowNucleotidesCommand extends CommandBase implements ICheckBoxComm
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

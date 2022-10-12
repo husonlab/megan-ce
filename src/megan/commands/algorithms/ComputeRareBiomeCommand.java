@@ -19,10 +19,10 @@
 package megan.commands.algorithms;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.TwoInputOptionsPanel;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;

@@ -134,7 +134,7 @@ public class ImportBlastDialog extends JDialog implements IDirectableViewer {
             showTaxonomyPane = false;
 
         dir.addViewer(this);
-        setIconImages(ProgramProperties.getProgramIconImages());
+		setIconImages(jloda.swing.util.ProgramProperties.getProgramIconImages());
 
         commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.importblast.commands"}, !ProgramProperties.isUseGUI());
         commandManager.addCommands(this, ClassificationCommandHelper.getImportBlastCommands(cNames0), true);

@@ -21,10 +21,10 @@ package megan.ms.server;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.PeakMemoryUsageMonitor;
-import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import megan.daa.connector.DAAConnector;
 import megan.rma6.RMA6Connector;

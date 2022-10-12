@@ -20,8 +20,9 @@ package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseColorLineWidthDialog;
+import jloda.swing.util.Colors;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.gui.PCoATab;
 
@@ -43,7 +44,7 @@ public class SetAxisColorCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("setColor target=");
         final String target = np.getWordMatchesIgnoringCase("axes biplot triplot groups");
         np.matchIgnoreCase("color=");
-        final Color color = np.getColor();
+        Color color = Colors.convert(np.getColor());
         final byte lineWidth;
         if (np.peekMatchIgnoreCase("lineWidth")) {
             np.matchIgnoreCase("lineWidth=");

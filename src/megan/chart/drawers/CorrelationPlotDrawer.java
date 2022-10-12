@@ -20,9 +20,9 @@ package megan.chart.drawers;
 
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.IPopupMenuModifier;
 import jloda.util.Correlation;
-import jloda.util.ProgramProperties;
 import jloda.util.Table;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;

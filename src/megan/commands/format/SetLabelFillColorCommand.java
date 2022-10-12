@@ -24,6 +24,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.Colors;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -74,8 +75,7 @@ public class SetLabelFillColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set labelFillColor=");
@@ -83,7 +83,7 @@ public class SetLabelFillColorCommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("null"))
             np.matchIgnoreCase("null");
         else
-            color = np.getColor();
+            color = Colors.convert(np.getColor());
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof GraphView) {

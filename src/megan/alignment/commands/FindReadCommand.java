@@ -20,8 +20,8 @@ package megan.alignment.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.gui.Alignment;
@@ -42,8 +42,7 @@ import java.util.regex.Pattern;
 public class FindReadCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("find read=");

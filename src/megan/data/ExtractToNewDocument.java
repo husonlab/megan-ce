@@ -19,9 +19,9 @@
 package megan.data;
 
 import jloda.seq.BlastMode;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.FileLineIterator;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import jloda.util.progress.ProgressListener;
 import megan.core.Document;

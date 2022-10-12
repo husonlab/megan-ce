@@ -45,8 +45,8 @@ public class SelectByRankCommand extends CommandBase implements ICommand {
         final ClassificationViewer viewer = (ClassificationViewer) getViewer();
 
         np.matchIgnoreCase("select rank=");
-		String rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
-		int rank = TaxonomicLevels.getId(rankName);
+        String rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
+        int rank = TaxonomicLevels.getId(rankName);
         np.matchRespectCase(";");
         if (rank == 0)
             NotificationsInSwing.showError(getViewer().getFrame(), "Unknown rank: " + rankName);

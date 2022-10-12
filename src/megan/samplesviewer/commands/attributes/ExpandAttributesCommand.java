@@ -46,8 +46,7 @@ public class ExpandAttributesCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("expand attribute=");
         final String attribute = np.getWordRespectCase();

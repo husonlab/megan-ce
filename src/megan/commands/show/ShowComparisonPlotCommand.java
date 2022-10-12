@@ -50,8 +50,8 @@ public class ShowComparisonPlotCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("show comparisonPlot");
         String data = "taxonomy";
         if (np.peekMatchIgnoreCase("data")) {
-			np.matchIgnoreCase("data=");
-			data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+            np.matchIgnoreCase("data=");
+            data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
         np.matchIgnoreCase(";");
 

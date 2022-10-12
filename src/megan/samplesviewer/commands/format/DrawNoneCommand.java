@@ -35,8 +35,7 @@ import java.util.Collection;
 public class DrawNoneCommand extends CommandBase implements ICommand {
     /**
      * apply
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

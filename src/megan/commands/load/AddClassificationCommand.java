@@ -14,11 +14,11 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.main.MeganProperties;
@@ -47,7 +47,6 @@ public class AddClassificationCommand extends CommandBase implements ICommand {
 
 	/**
 	 * parses the given command and executes it
-	 *
 	 */
 	@Override
 	public void apply(NexusStreamParser np) throws Exception {

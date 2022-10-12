@@ -33,12 +33,11 @@ import java.awt.event.ActionEvent;
 public class SetTreeDrawerCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set drawer=");
-		String drawerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ViewerBase.DiagramType.values(), " "));
+        String drawerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ViewerBase.DiagramType.values(), " "));
         np.matchIgnoreCase(";");
 
         ViewerBase viewer = (ViewerBase) getViewer();

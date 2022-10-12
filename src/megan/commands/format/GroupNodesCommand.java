@@ -43,8 +43,7 @@ import java.util.Collection;
 public class GroupNodesCommand extends CommandBase implements ICommand {
     /**
      * apply
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set groupNodes=");
         final String choice = np.getWordMatchesIgnoringCase("none selected");

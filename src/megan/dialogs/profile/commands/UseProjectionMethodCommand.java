@@ -35,8 +35,7 @@ import java.awt.event.ActionEvent;
 public class UseProjectionMethodCommand extends CommandBase implements ICheckBoxCommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());

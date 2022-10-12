@@ -22,9 +22,9 @@ package megan.groups;
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.ActionJList;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.NumberUtils;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.core.Document;
 
 import javax.swing.*;

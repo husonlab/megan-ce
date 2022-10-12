@@ -19,12 +19,8 @@
 package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.NexusFileFilter;
-import jloda.swing.util.ResourceManager;
-import jloda.swing.util.TextFileFilter;
+import jloda.swing.util.*;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
@@ -82,8 +78,7 @@ public class ExportDataCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws IOException {
         ClusterViewer viewer = getViewer();

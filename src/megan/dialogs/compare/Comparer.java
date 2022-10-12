@@ -20,25 +20,25 @@ package megan.dialogs.compare;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.seq.BlastMode;
-import jloda.util.*;
+import jloda.util.CollectionUtils;
+import jloda.util.FileUtils;
+import jloda.util.ProgramProperties;
+import jloda.util.Single;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressListener;
-import jloda.util.progress.ProgressSilent;
 import megan.classification.Classification;
 import megan.core.ClassificationType;
 import megan.core.DataTable;
 import megan.core.Director;
 import megan.core.SampleAttributeTable;
-import megan.viewer.MainViewer;
 import megan.viewer.gui.NodeDrawer;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.DoubleAdder;
-import java.util.concurrent.atomic.LongAccumulator;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * comparison of multiple datasets
@@ -359,16 +359,16 @@ public class Comparer {
      */
     static public COMPARISON_MODE parseMode(String parameterString) {
         if (parameterString != null) {
-                try (var np = new NexusStreamParser(new StringReader(parameterString))) {
-                    while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
-                        if (np.peekMatchIgnoreCase("mode=")) {
-                            np.matchIgnoreCase("mode=");
-                            return COMPARISON_MODE.valueOfIgnoreCase(np.getWordRespectCase());
-                        } else np.getWordRespectCase(); // skip
-                    }
-                } catch (Exception ignored) {
+            try (var np = new NexusStreamParser(new StringReader(parameterString))) {
+                while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
+                    if (np.peekMatchIgnoreCase("mode=")) {
+                        np.matchIgnoreCase("mode=");
+                        return COMPARISON_MODE.valueOfIgnoreCase(np.getWordRespectCase());
+                    } else np.getWordRespectCase(); // skip
                 }
+            } catch (Exception ignored) {
             }
+        }
         return COMPARISON_MODE.ABSOLUTE;
     }
 

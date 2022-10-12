@@ -36,8 +36,7 @@ import java.util.Collection;
 public class DrawCirclesCommand extends CommandBase implements ICommand {
     /**
      * apply
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

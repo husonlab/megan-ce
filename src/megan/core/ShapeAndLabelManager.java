@@ -18,8 +18,8 @@
  */
 package megan.core;
 
-import jloda.swing.graphview.NodeShape;
 import jloda.util.Basic;
+import jloda.util.NodeShape;
 import jloda.util.parse.NexusStreamParser;
 
 import java.io.IOException;

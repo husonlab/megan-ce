@@ -41,8 +41,7 @@ public class FlipHCommand extends CommandBase implements ICheckBoxCommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set flipH=");
         boolean flip = np.getBoolean();

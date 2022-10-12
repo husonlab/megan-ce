@@ -39,8 +39,7 @@ import java.awt.event.KeyEvent;
 public class ExpandNodesCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());

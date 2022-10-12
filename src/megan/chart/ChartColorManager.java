@@ -20,9 +20,9 @@ package megan.chart;
 
 import jloda.swing.util.ColorTable;
 import jloda.swing.util.ColorTableManager;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.io.IOException;

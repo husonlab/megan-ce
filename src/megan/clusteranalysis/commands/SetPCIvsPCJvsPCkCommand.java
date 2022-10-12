@@ -50,8 +50,7 @@ public class SetPCIvsPCJvsPCkCommand extends CommandBase implements ICheckBoxCom
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

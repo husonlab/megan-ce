@@ -77,8 +77,7 @@ public class MatrixTabCommand extends CommandBase implements ICheckBoxCommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

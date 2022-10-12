@@ -20,10 +20,10 @@ package megan.commands.additional;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.algorithms.ComputeCoreOrRareBiome;
 import megan.core.*;
@@ -49,8 +49,7 @@ public class CompareByAttributeCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         final Document doc = ((Director) getDir()).getDocument();
 

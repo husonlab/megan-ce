@@ -41,7 +41,6 @@ import megan.ms.client.connector.MSConnector;
 import megan.rma3.RMA3File;
 import megan.rma6.RMA6File;
 import megan.viewer.ClassificationViewer;
-import megan.viewer.MainViewer;
 import megan.viewer.SyncDataTableAndTaxonomy;
 import megan.viewer.TaxonomyData;
 
@@ -290,7 +289,7 @@ public class Document {
     public void parseParameterString(String parameters) {
         if (parameters != null && parameters.length() > 0) {
             try {
-                NexusStreamParser np = new NexusStreamParser(new StringReader(parameters));
+                 NexusStreamParser np = new NexusStreamParser(new StringReader(parameters));
                 List<String> tokens = np.getTokensRespectCase(null, null);
 
                 setMinScore(np.findIgnoreCase(tokens, "minScore=", getMinScore()));

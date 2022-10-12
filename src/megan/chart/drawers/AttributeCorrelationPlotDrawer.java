@@ -20,8 +20,12 @@ package megan.chart.drawers;
 
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.IPopupMenuModifier;
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.Correlation;
+import jloda.util.NumberUtils;
+import jloda.util.StringUtils;
 import megan.chart.IChartDrawer;
 import megan.chart.cluster.ClusteringTree;
 import megan.chart.gui.ChartViewer;

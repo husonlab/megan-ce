@@ -18,8 +18,8 @@
  */
 package megan.ms.clientdialog.service;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import megan.ms.Utilities;
 import megan.ms.clientdialog.IRemoteService;
 

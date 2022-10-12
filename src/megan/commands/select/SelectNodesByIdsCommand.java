@@ -44,7 +44,7 @@ public class SelectNodesByIdsCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("select id=");
         Set<Integer> ids = new HashSet<>();
         while (!np.peekMatchAnyTokenIgnoreCase(";")) {
-			ids.add(NumberUtils.parseInt(np.getWordRespectCase()));
+            ids.add(NumberUtils.parseInt(np.getWordRespectCase()));
         }
         np.matchRespectCase(";");
         Set<Node> nodes = new HashSet<>();

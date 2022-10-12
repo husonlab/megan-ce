@@ -18,9 +18,9 @@
  */
 package megan.dialogs.extractor;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.CanceledException;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;

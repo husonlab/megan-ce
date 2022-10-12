@@ -19,8 +19,8 @@
 package megan.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -69,20 +69,19 @@ public class SetAPropertyCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("setProp");
         String label = np.getWordRespectCase();
         np.matchIgnoreCase("=");
         String value = np.getWordRespectCase();
-		if (NumberUtils.isBoolean(value)) {
-			ProgramProperties.put(label, Boolean.parseBoolean(value));
-		} else if (NumberUtils.isInteger(value)) {
-			ProgramProperties.put(label, Integer.parseInt(value));
-		} else if (NumberUtils.isFloat(value)) {
-			ProgramProperties.put(label, Float.parseFloat(value));
+        if (NumberUtils.isBoolean(value)) {
+            ProgramProperties.put(label, Boolean.parseBoolean(value));
+        } else if (NumberUtils.isInteger(value)) {
+            ProgramProperties.put(label, Integer.parseInt(value));
+        } else if (NumberUtils.isFloat(value)) {
+            ProgramProperties.put(label, Float.parseFloat(value));
 		} else
 			ProgramProperties.put(label, value);
         np.matchIgnoreCase(";");

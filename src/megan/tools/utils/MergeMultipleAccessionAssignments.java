@@ -31,7 +31,6 @@ import megan.main.Megan6;
 import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -123,7 +122,6 @@ public class MergeMultipleAccessionAssignments {
             else
                 idParsers[i].setAlgorithm(IdParser.Algorithm.Majority);
         }
-
 
         try (var it = new FileLineIterator(inputFile,true);
              var w = new BufferedWriter(FileUtils.getOutputWriterPossiblyZIPorGZIP(outputFile));) {

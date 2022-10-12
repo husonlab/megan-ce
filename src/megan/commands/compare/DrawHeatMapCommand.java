@@ -74,8 +74,7 @@ public class DrawHeatMapCommand extends CommandBase implements ICheckBoxCommand 
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 }

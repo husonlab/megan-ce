@@ -56,8 +56,8 @@ public class ExportMatchesCommand extends CommandBase implements ICommand {
 
         String classificationName = ClassificationType.Taxonomy.toString();
         if (np.peekMatchIgnoreCase("data")) {
-			np.matchIgnoreCase("data=");
-			classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+            np.matchIgnoreCase("data=");
+            classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         }
         Set<Integer> classIds = new HashSet<>();
         if (classificationName.equals(Classification.Taxonomy))

@@ -51,8 +51,8 @@ public class ExportSelectedCommand extends CommandBase implements ICommand {
             final Document doc = ((LRInspectorViewer) getViewer()).getDir().getDocument();
             final byte[] selection = ((LRInspectorViewer) getViewer()).getSelection(doc.getProgressListener()).getBytes();
             try {
-				FileUtils.writeStreamToFile(new ByteInputStream(selection, selection.length), new File(fileName));
-				NotificationsInSwing.showInformation("Exported " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + fileName);
+                FileUtils.writeStreamToFile(new ByteInputStream(selection, selection.length), new File(fileName));
+                NotificationsInSwing.showInformation("Exported " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + fileName);
 			} catch (IOException ex) {
                 NotificationsInSwing.showError("Export failed: " + ex.getMessage());
             }

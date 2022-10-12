@@ -134,7 +134,7 @@ class TaxonomyEditing {
     }
 
     public int fromString(String string) throws IOException {
-        NexusStreamParser np = new NexusStreamParser(new StringReader(string));
+         NexusStreamParser np = new NexusStreamParser(new StringReader(string));
 
         int count = 0;
         while (np.peekMatchAnyTokenIgnoreCase("A R")) {
@@ -240,7 +240,7 @@ class Edit {
      * parse an edit object
      *
      * @return edit object
-	 */
+     */
     public static Edit parse(NexusStreamParser np) throws IOException {
         if (np.peekMatchIgnoreCase("A")) {
             np.matchIgnoreCase("A");

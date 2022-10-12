@@ -22,10 +22,10 @@ import jloda.graph.Node;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -82,8 +82,7 @@ public class LoadTaxonomyFileCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("load taxonomyFile=");

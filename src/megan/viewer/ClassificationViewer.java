@@ -28,6 +28,7 @@ import jloda.swing.find.SearchManager;
 import jloda.swing.format.Formatter;
 import jloda.swing.graphview.*;
 import jloda.swing.util.PopupMenu;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.*;
 import jloda.swing.window.MenuBar;
 import jloda.util.*;

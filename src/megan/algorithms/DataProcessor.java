@@ -18,10 +18,10 @@
  */
 package megan.algorithms;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import jloda.util.progress.ProgressListener;

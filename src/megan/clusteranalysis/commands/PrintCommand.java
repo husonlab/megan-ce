@@ -19,10 +19,10 @@
 package megan.clusteranalysis.commands;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 
@@ -77,8 +77,7 @@ public class PrintCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("print;");

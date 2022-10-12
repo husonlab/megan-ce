@@ -54,8 +54,7 @@ public class SetPCIvsPCJCommand extends CommandBase implements ICheckBoxCommand 
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         final ClusterViewer viewer = getViewer();

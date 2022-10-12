@@ -21,7 +21,7 @@ package megan.classification.commandtemplates;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.director.IDirectableViewer;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
@@ -56,8 +56,7 @@ public class SetUseIdParsing4ViewerCommand extends CommandBase implements ICheck
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

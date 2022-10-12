@@ -20,8 +20,8 @@ package megan.classification.commandtemplates;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ProgressDialog;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressListener;
@@ -51,17 +51,16 @@ public class LoadMappingFileCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("load mapFile=");
         final String fileName = np.getWordFileNamePunctuation();
         np.matchIgnoreCase("mapType=");
-		final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(StringUtils.toString(IdMapper.MapType.values(), " ")));
+        final IdMapper.MapType mapType = IdMapper.MapType.valueOf(np.getWordMatchesRespectingCase(StringUtils.toString(IdMapper.MapType.values(), " ")));
         np.matchIgnoreCase("cName=");
-		final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
-		final boolean parseTaxonName;
+        final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        final boolean parseTaxonName;
         if (np.peekMatchIgnoreCase("parseTaxonNames")) {
             np.matchIgnoreCase("parseTaxonNames=");
             parseTaxonName = np.getBoolean();

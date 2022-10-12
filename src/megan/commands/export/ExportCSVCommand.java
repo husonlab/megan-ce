@@ -20,13 +20,9 @@ package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirectableViewer;
-import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.RememberingComboBox;
-import jloda.swing.util.ResourceManager;
-import jloda.swing.util.TextFileFilter;
+import jloda.swing.util.*;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;

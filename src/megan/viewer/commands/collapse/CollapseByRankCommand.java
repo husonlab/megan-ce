@@ -19,8 +19,8 @@
 package megan.viewer.commands.collapse;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
@@ -47,8 +47,8 @@ public class CollapseByRankCommand extends CommandBase implements ICommand {
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("collapse rank=");
-		final String rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), " "));
-		Integer rank = TaxonomicLevels.getId(rankName);
+        final String rankName = np.getWordMatchesIgnoringCase(StringUtils.toString(TaxonomicLevels.getAllMajorRanks(), " "));
+        Integer rank = TaxonomicLevels.getId(rankName);
         np.matchRespectCase(";");
         if (rank == 0)
             NotificationsInSwing.showError(getViewer().getFrame(), "Unknown rank: " + rankName);

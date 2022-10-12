@@ -41,8 +41,7 @@ public class CompareByAttributeAbsoluteCommand extends CommandBase implements IC
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

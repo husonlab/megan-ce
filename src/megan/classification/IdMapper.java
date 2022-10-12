@@ -18,8 +18,8 @@
  */
 package megan.classification;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
 import megan.accessiondb.AccessAccessionAdapter;

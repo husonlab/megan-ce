@@ -19,11 +19,11 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.FileUtils;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 import megan.algorithms.AssignmentUsingLCA;
 import megan.classification.Classification;
 import megan.main.MeganProperties;

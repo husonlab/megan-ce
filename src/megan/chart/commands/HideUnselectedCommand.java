@@ -35,8 +35,7 @@ import java.awt.event.KeyEvent;
 public class HideUnselectedCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

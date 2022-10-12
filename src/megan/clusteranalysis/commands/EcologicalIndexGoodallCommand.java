@@ -115,8 +115,7 @@ public class EcologicalIndexGoodallCommand extends CommandBase implements ICheck
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

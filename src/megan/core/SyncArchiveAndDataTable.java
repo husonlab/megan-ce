@@ -19,8 +19,8 @@
 package megan.core;
 
 import jloda.seq.BlastMode;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.IdMapper;
 import megan.data.IClassificationBlock;

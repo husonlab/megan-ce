@@ -21,8 +21,8 @@ package megan.util;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import jloda.swing.graphview.NodeShape;
 import jloda.swing.graphview.NodeShapeIcon;
+import jloda.util.NodeShape;
 import megan.core.Document;
 
 import java.awt.*;

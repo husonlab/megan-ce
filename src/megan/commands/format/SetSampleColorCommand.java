@@ -21,8 +21,9 @@ package megan.commands.format;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.Colors;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.core.Document;
@@ -43,11 +44,11 @@ public class SetSampleColorCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeColor=");
-        final Color color = np.getColor();
+        final Color color = Colors.convert(np.getColor());
+
 
         final java.util.List<String> samples = new LinkedList<>();
         if (np.peekMatchIgnoreCase("sample=")) {

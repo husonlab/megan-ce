@@ -48,10 +48,10 @@ public class OpenNCBIWebPageCommand extends CommandBase implements ICommand {
 
         boolean ok = false;
         int taxId;
-		if (NumberUtils.isInteger(taxon))
-			taxId = Integer.parseInt(taxon);
-		else
-			taxId = TaxonomyData.getName2IdMap().get(taxon);
+        if (NumberUtils.isInteger(taxon))
+            taxId = Integer.parseInt(taxon);
+        else
+            taxId = TaxonomyData.getName2IdMap().get(taxon);
 
         if (taxId > 0) {
             try {

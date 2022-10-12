@@ -22,7 +22,7 @@ import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.find.ISearcher;
 import jloda.swing.message.MessageWindow;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Director;
 import megan.ms.clientdialog.commands.*;
 

@@ -137,7 +137,7 @@ public class ComputeComparison {
 		final SaveCommand saveCommand = new SaveCommand();
 		saveCommand.setDir(dir);
 		System.err.println("Saving to file: " + outputFile);
-        saveCommand.apply(new NexusStreamParser(new StringReader("save file='" + outputFile + "';")));
+		saveCommand.apply(new NexusStreamParser(new StringReader("save file='" + outputFile + "';")));
 
     }
 }

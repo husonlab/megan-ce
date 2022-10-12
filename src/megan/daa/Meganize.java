@@ -19,10 +19,10 @@
 
 package megan.daa;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.progress.ProgressListener;
 import megan.classification.Classification;
 import megan.core.ContaminantManager;

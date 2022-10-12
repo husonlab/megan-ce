@@ -49,7 +49,7 @@ public class ColorByLabelCommand extends CommandBase implements ICheckBoxCommand
         final boolean oldByPosition = doc.getChartColorManager().isColorByPosition();
 
         doc.getChartColorManager().setColorByPosition(byPosition);
-       updateColors(doc);
+        updateColors(doc);
 
         if (oldByPosition != byPosition)
             doc.setDirty(true);

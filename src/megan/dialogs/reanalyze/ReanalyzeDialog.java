@@ -19,8 +19,8 @@
 
 package megan.dialogs.reanalyze;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

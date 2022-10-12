@@ -20,9 +20,9 @@ package megan.commands;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.biom.biom1.BIOM1Importer;
 import megan.biom.biom2.Biom2Importer;

@@ -50,7 +50,7 @@ public class SetChartDrawerCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
         final ChartViewer chartViewer = (ChartViewer) getViewer();
         np.matchIgnoreCase("set chartDrawer=");
-		String chartDrawerName = np.getWordMatchesRespectingCase(StringUtils.toString(chartViewer.getChartDrawerNames(), " "));
+        String chartDrawerName = np.getWordMatchesRespectingCase(StringUtils.toString(chartViewer.getChartDrawerNames(), " "));
         np.matchIgnoreCase(";");
 
         chartViewer.chooseDrawer(chartDrawerName);

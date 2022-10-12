@@ -20,9 +20,9 @@ package megan.commands.format;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
-import jloda.swing.graphview.NodeShape;
 import jloda.swing.graphview.NodeShapeIcon;
 import jloda.swing.util.ResourceManager;
+import jloda.util.NodeShape;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
@@ -53,14 +53,13 @@ public class SetNodeShapeCommand extends CommandBase implements ICommand {
 
     /**
      * apply
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         final Document doc = ((Director) getDir()).getDocument();
 
         np.matchIgnoreCase("set nodeShape=");
-		String shape = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeShape.values(), " "));
-		final List<String> samples = new LinkedList<>();
+        String shape = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeShape.values(), " "));
+        final List<String> samples = new LinkedList<>();
         if (np.peekMatchIgnoreCase("sample=")) {
             np.matchIgnoreCase("sample=");
             while (!np.peekMatchIgnoreCase(";")) {

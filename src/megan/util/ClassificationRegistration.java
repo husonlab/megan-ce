@@ -18,9 +18,9 @@
  */
 package megan.util;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.ResourceUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;

@@ -46,8 +46,7 @@ public class SelectAllCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(final NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("select");
         final String what = np.getWordMatchesIgnoringCase(legalOptions);

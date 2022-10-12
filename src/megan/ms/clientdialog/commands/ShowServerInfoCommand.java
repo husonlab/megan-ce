@@ -36,14 +36,13 @@ import java.awt.event.ActionEvent;
 public class ShowServerInfoCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
         ServicePanel servicePanel = ((RemoteServiceBrowser) getViewer()).getServicePanel();
         if (servicePanel != null) {
-			Message.show(getViewer().getFrame(), servicePanel.getService().getInfo());
+            Message.show(getViewer().getFrame(), servicePanel.getService().getInfo());
         }
     }
 

@@ -36,12 +36,11 @@ public class LayoutCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set layout=");
-		String layout = np.getWordMatchesIgnoringCase(StringUtils.toString(AlignmentViewer.AlignmentLayout.values(), " "));
+        String layout = np.getWordMatchesIgnoringCase(StringUtils.toString(AlignmentViewer.AlignmentLayout.values(), " "));
         np.matchIgnoreCase(";");
 
         AlignmentViewer viewer = (AlignmentViewer) getViewer();

@@ -41,8 +41,7 @@ public class OpenDecontamCommand extends CommandBase implements ICommand {
 
     /**
      * apply the command
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase(getSyntax());
 

@@ -36,8 +36,7 @@ import java.awt.event.KeyEvent;
 public class SetNodeRadiusCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeRadius=");

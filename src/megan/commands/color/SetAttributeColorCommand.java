@@ -20,6 +20,7 @@ package megan.commands.color;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.Colors;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.ChartColorManager;
@@ -44,7 +45,7 @@ public class SetAttributeColorCommand extends CommandBase implements ICommand {
     public void apply(NexusStreamParser np) throws Exception {
 
         np.matchIgnoreCase("set color=");
-        final Color color = np.getColor();
+		Color color = Colors.convert(np.getColor());
         np.matchIgnoreCase("attribute=");
         final String attribute = np.getLabelRespectCase();
         np.matchIgnoreCase("state=");

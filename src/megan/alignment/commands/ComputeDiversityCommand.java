@@ -37,8 +37,7 @@ import java.awt.event.ActionEvent;
 public class ComputeDiversityCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute diversityRatio kmer=");

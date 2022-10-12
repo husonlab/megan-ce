@@ -23,7 +23,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeSet;
 import jloda.phylo.PhyloTree;
 import jloda.swing.find.IObjectSearcher;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import megan.classification.ClassificationManager;
 import megan.core.Director;
 

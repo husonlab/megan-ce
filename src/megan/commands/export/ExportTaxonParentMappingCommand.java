@@ -22,10 +22,10 @@ package megan.commands.export;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
@@ -46,14 +46,13 @@ public class ExportTaxonParentMappingCommand extends CommandBase implements ICom
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=taxonParentMap file=");
-        var file=np.getWordFileNamePunctuation();
+        var file = np.getWordFileNamePunctuation();
         boolean top;
-        if(np.peekMatchIgnoreCase("toTop")) {
+        if (np.peekMatchIgnoreCase("toTop")) {
             np.matchIgnoreCase("toTop=");
-            top=np.getBoolean();
-        }
-        else
-            top=true;
+            top = np.getBoolean();
+        } else
+            top = true;
         boolean names;
         if(np.peekMatchIgnoreCase("names")) {
             np.matchIgnoreCase("names=");

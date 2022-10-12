@@ -20,10 +20,10 @@ package megan.commands.additional;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.algorithms.NaiveProjectionProfile;
@@ -55,8 +55,8 @@ public class ProjectAssignmentsToRankCommand extends CommandBase implements ICom
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("project rank=");
-		final String rank = np.getWordMatchesRespectingCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
-		final float minPercent;
+        final String rank = np.getWordMatchesRespectingCase(StringUtils.toString(TaxonomicLevels.getAllNames(), " "));
+        final float minPercent;
         if (np.peekMatchIgnoreCase("minPercent")) {
             np.matchIgnoreCase("minPercent=");
             minPercent = (float) np.getDouble(0, 100);

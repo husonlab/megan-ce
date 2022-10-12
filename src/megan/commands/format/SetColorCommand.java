@@ -24,6 +24,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.Colors;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 
@@ -79,7 +80,7 @@ public class SetColorCommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("null"))
             np.matchIgnoreCase("null");
         else
-            color = np.getColor();
+			color = Colors.convert(np.getColor());
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof GraphView) {

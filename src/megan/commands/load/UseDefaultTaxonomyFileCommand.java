@@ -71,8 +71,7 @@ public class UseDefaultTaxonomyFileCommand extends CommandBase implements IComma
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

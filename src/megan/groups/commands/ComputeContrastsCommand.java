@@ -24,9 +24,9 @@ import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.Classification;
@@ -55,12 +55,11 @@ public class ComputeContrastsCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("compute contrasts data=");
-		final String viewerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        final String viewerName = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof GroupsViewer) {

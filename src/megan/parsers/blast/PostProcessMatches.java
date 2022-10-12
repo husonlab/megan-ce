@@ -19,9 +19,9 @@
 
 package megan.parsers.blast;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 

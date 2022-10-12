@@ -54,16 +54,15 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("export what=GFF file=");
         final String fileName = np.getWordFileNamePunctuation();
         final String classification;
         if (np.peekMatchIgnoreCase("classification")) {
-			np.matchIgnoreCase("classification=");
-			classification = np.getWordMatchesIgnoringCase("all " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+            np.matchIgnoreCase("classification=");
+            classification = np.getWordMatchesIgnoringCase("all " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         } else
             classification = "all";
 
@@ -139,7 +138,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
         {
             dialog.setModal(true);
             dialog.setTitle("Export in GFF3 Format - " + Version.NAME);
-            dialog.setIconImages(ProgramProperties.getProgramIconImages());
+            dialog.setIconImages(jloda.swing.util.ProgramProperties.getProgramIconImages());
             dialog.setLocationRelativeTo(frame);
             dialog.setSize(500, 160);
             dialog.getContentPane().setLayout(new BorderLayout());

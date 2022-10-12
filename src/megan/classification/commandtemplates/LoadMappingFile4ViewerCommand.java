@@ -21,10 +21,10 @@ package megan.classification.commandtemplates;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.accessiondb.AccessAccessionMappingDatabase;
 import megan.classification.ClassificationManager;
@@ -65,8 +65,7 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

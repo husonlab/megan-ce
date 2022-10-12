@@ -18,7 +18,7 @@
  */
 package megan.clusteranalysis.commands;
 
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.clusteranalysis.ClusterViewer;
 import megan.clusteranalysis.indices.DistancesManager;
@@ -33,8 +33,7 @@ import java.awt.event.ActionEvent;
 abstract class EcologicalIndexCommand extends CommandBase {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set index=");
         String method = np.getWordMatchesIgnoringCase(DistancesManager.getAllNames());

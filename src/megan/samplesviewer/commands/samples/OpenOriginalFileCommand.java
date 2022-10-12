@@ -40,8 +40,7 @@ public class OpenOriginalFileCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

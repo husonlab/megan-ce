@@ -40,20 +40,19 @@ import java.util.Set;
  */
 public class SelectFromPreviousWindowCommand extends CommandBase implements ICommand {
     /**
-     * parses the given command and executes it
-     *
+	 * parses the given command and executes it
 	 */
-    @Override
-    public void apply(NexusStreamParser np) throws Exception {
-        np.matchIgnoreCase(getSyntax());
+	@Override
+	public void apply(NexusStreamParser np) throws Exception {
+		np.matchIgnoreCase(getSyntax());
 
-        AlignmentViewer viewer = (AlignmentViewer) getViewer();
-        final Set<String> previousSelection = ProjectManager.getPreviouslySelectedNodeLabels();
-        viewer.getSelectedBlock().clear();
-        if (previousSelection.size() > 0) {
-            final Alignment alignment = viewer.getAlignment();
-            for (int row = 0; row < alignment.getNumberOfSequences(); row++) {
-                Lane lane = alignment.getLane(row);
+		AlignmentViewer viewer = (AlignmentViewer) getViewer();
+		final Set<String> previousSelection = ProjectManager.getPreviouslySelectedNodeLabels();
+		viewer.getSelectedBlock().clear();
+		if (previousSelection.size() > 0) {
+			final Alignment alignment = viewer.getAlignment();
+			for (int row = 0; row < alignment.getNumberOfSequences(); row++) {
+				Lane lane = alignment.getLane(row);
 				if (previousSelection.contains(StringUtils.getFirstWord(lane.getName()))) {
 					int firstJump = alignment.getGapColumnContractor().getTotalJumpBeforeLayoutColumn(lane.getFirstNonGapPosition());
 					int firstCol = lane.getFirstNonGapPosition() - firstJump;

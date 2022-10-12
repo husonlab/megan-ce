@@ -20,11 +20,11 @@ package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.biom.biom1.Biom1ExportFViewer;
@@ -56,7 +56,7 @@ public class ExportBIOMCommand extends CommandBase implements ICommand {
         Document doc = dir.getDocument();
 
         np.matchIgnoreCase("data=");
-		String data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        String data = np.getWordMatchesIgnoringCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
 
         np.matchIgnoreCase("file=");
         String outputFile = np.getAbsoluteFileName();

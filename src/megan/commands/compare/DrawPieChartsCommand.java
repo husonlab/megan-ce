@@ -19,8 +19,8 @@
 package megan.commands.compare;
 
 import jloda.swing.commands.ICheckBoxCommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -41,8 +41,8 @@ public class DrawPieChartsCommand extends CommandBase implements ICheckBoxComman
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set nodeDrawer=");
         final ViewerBase viewer = (ViewerBase) getViewer();
-		final Document doc = getDoc();
-		final String style = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.Style.values(), " "));
+        final Document doc = getDoc();
+        final String style = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.Style.values(), " "));
         np.matchIgnoreCase(";");
         viewer.getNodeDrawer().setStyle(style, NodeDrawer.Style.Circle);
         viewer.getLegendPanel().setStyle(viewer.getNodeDrawer().getStyle());

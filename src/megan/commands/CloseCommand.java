@@ -24,9 +24,9 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.graphview.GraphView;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.Director;
 import megan.viewer.MainViewer;
@@ -82,8 +82,7 @@ public class CloseCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("close");

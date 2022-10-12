@@ -26,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import jloda.fx.util.FXSwingUtilities;
 import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICheckBoxCommand;
 import jloda.swing.commands.ICommand;

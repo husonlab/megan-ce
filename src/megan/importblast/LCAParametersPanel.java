@@ -19,7 +19,7 @@
 package megan.importblast;
 
 import jloda.swing.commands.CommandManager;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Document;
 import megan.importblast.commands.SetUseIdentityFilterCommand;
 

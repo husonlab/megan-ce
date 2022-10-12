@@ -22,8 +22,9 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ChooseFontDialog;
+import jloda.swing.util.Colors;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.drawers.MultiChartDrawer;
@@ -51,7 +52,7 @@ public class SetChartDrawFontCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("default");
             color = null;
         } else {
-            color = np.getColor();
+            color = Colors.convert(np.getColor());
         }
 
         np.matchIgnoreCase("target=");

@@ -19,11 +19,11 @@
 package megan.commands.export;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.NumberUtils;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.alignment.AlignmentExporter;
@@ -60,7 +60,7 @@ public class ExportAlignmentsCommand extends CommandBase implements ICommand {
         np.matchIgnoreCase("export what=alignment file=");
         String fileName = np.getWordFileNamePunctuation();
         np.matchIgnoreCase("data=");
-		String classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+        String classificationName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase("classId=");
         boolean useSelected = false;
         Set<Integer> classIds = new HashSet<>();

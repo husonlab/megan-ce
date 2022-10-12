@@ -41,7 +41,7 @@ public class SetScaleLinearCommand extends CommandBase implements ICheckBoxComma
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set chartScale=");
-		String scale = np.getWordMatchesIgnoringCase(StringUtils.toString(ScalingType.values(), " "));
+        String scale = np.getWordMatchesIgnoringCase(StringUtils.toString(ScalingType.values(), " "));
         np.matchIgnoreCase(";");
 
         final ChartViewer chartViewer = (ChartViewer) getViewer();

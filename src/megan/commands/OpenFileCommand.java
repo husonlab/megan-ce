@@ -22,11 +22,11 @@ import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.ProjectManager;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ProgressDialog;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.core.ClassificationType;
 import megan.core.Director;
@@ -79,8 +79,7 @@ public class OpenFileCommand extends CommandBase implements ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         final var dir = getDir();

@@ -20,7 +20,7 @@ package megan.commands;
 
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICheckBoxCommand;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.viewer.ClassificationViewer;
 import megan.viewer.ViewerBase;
@@ -39,13 +39,13 @@ public class ShowScaleBoxCommand extends CommandBase implements ICheckBoxCommand
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("show scaleBox=");
-        final boolean show=np.getBoolean();
+        final boolean show = np.getBoolean();
         np.matchIgnoreCase(";");
 
         ViewerBase viewer = (ViewerBase) getViewer();
-        if(viewer instanceof ClassificationViewer) {
+        if (viewer instanceof ClassificationViewer) {
             ((ClassificationViewer) viewer).setShowScaleBox(show);
-            ProgramProperties.put("ShowScaleBox",show);
+            ProgramProperties.put("ShowScaleBox", show);
             viewer.repaint();
         }
     }

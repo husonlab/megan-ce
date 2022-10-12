@@ -34,8 +34,7 @@ import java.awt.event.ActionEvent;
 public class UngroupNodesCommand extends CommandBase implements ICommand {
     /**
      * apply
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 

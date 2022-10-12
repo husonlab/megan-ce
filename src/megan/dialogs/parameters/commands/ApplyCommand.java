@@ -40,8 +40,7 @@ import java.io.IOException;
 public class ApplyCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

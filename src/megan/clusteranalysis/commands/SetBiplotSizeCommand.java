@@ -34,20 +34,19 @@ import java.awt.event.ActionEvent;
 public class SetBiplotSizeCommand extends CommandBase implements ICommand {
 
     /**
-     * parses the given command and executes it
-     *
+	 * parses the given command and executes it
 	 */
-    @Override
-    public void apply(NexusStreamParser np) throws Exception {
-        final ClusterViewer viewer = getViewer();
-        int max = viewer.getPcoaTab().getPCoA().getLoadingVectorsBiPlot().size();
+	@Override
+	public void apply(NexusStreamParser np) throws Exception {
+		final ClusterViewer viewer = getViewer();
+		int max = viewer.getPcoaTab().getPCoA().getLoadingVectorsBiPlot().size();
 
-        np.matchIgnoreCase("set biplotSize=");
-        int number = np.getInt(0, max);
-        np.matchIgnoreCase(";");
+		np.matchIgnoreCase("set biplotSize=");
+		int number = np.getInt(0, max);
+		np.matchIgnoreCase(";");
 
-        viewer.getPcoaTab().setBiplotSize(number);
-    }
+		viewer.getPcoaTab().setBiplotSize(number);
+	}
 
     /**
      * get command-line usage description

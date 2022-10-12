@@ -19,9 +19,9 @@
 package megan.viewer.commands.collapse;
 
 import jloda.swing.commands.ICommand;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
-import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 import megan.classification.ClassificationManager;
 import megan.commands.CommandBase;

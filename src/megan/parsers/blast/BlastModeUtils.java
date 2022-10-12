@@ -20,9 +20,9 @@ package megan.parsers.blast;
 
 import jloda.seq.BlastMode;
 import jloda.swing.util.FastaFileFilter;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
-import jloda.util.ProgramProperties;
 import megan.daa.io.DAAParser;
 import megan.util.*;
 

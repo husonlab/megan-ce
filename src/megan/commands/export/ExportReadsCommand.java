@@ -53,8 +53,8 @@ public class ExportReadsCommand extends CommandBase implements ICommand {
 
         final String data;
         if (np.peekMatchIgnoreCase("data")) {
-			np.matchIgnoreCase("data=");
-			data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
+            np.matchIgnoreCase("data=");
+            data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         } else
             data = Classification.Taxonomy;
         np.matchIgnoreCase("file=");

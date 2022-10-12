@@ -18,11 +18,11 @@
  */
 package megan.dialogs.attributes;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 import megan.core.Document;
 import megan.main.MeganProperties;
 import megan.viewer.MainViewer;

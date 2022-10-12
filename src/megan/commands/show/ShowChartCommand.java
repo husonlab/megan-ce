@@ -57,9 +57,9 @@ public class ShowChartCommand extends CommandBase implements ICommand {
         final Director dir = getDir();
 
         np.matchIgnoreCase("show chart drawer=");
-		final String drawerType = np.getWordMatchesRespectingCase(StringUtils.toString(DrawerManager.getAllSupportedChartDrawers(), " "));
+        final String drawerType = np.getWordMatchesRespectingCase(StringUtils.toString(DrawerManager.getAllSupportedChartDrawers(), " "));
         np.matchIgnoreCase("data=");
-		final String data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes metadata");
+        final String data = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + " attributes metadata");
         np.matchIgnoreCase(";");
 
         ChartViewer chartViewer = null;

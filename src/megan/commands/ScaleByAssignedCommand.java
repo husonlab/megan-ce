@@ -36,7 +36,7 @@ public class ScaleByAssignedCommand extends CommandBase implements ICheckBoxComm
 
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set scaleBy=");
-		String value = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.ScaleBy.values(), " "));
+        String value = np.getWordMatchesIgnoringCase(StringUtils.toString(NodeDrawer.ScaleBy.values(), " "));
         np.matchIgnoreCase(";");
         ViewerBase viewer = (ViewerBase) getViewer();
         viewer.getNodeDrawer().setScaleBy(value);

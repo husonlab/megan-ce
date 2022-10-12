@@ -43,8 +43,7 @@ import java.util.Map;
 public class ShowMatchesHistogramCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("show histogram taxonId=");

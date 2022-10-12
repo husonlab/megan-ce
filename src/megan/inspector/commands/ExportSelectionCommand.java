@@ -52,8 +52,8 @@ public class ExportSelectionCommand extends CommandBase implements ICommand {
 
         final String selection = ((InspectorWindow) getViewer()).getSelection();
         if (selection.length() > 0) {
-			try (Writer writer = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
-				writer.write(selection);
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+                writer.write(selection);
 			}
         }
 		NotificationsInSwing.showInformation(getViewer().getFrame(), "Wrote " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + outputFile);

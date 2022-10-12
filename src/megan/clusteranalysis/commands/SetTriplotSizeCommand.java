@@ -34,20 +34,19 @@ import java.awt.event.ActionEvent;
 public class SetTriplotSizeCommand extends CommandBase implements ICommand {
 
     /**
-     * parses the given command and executes it
-     *
+	 * parses the given command and executes it
 	 */
-    @Override
-    public void apply(NexusStreamParser np) throws Exception {
-        final ClusterViewer viewer = getViewer();
-        int max = viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(null).size();
+	@Override
+	public void apply(NexusStreamParser np) throws Exception {
+		final ClusterViewer viewer = getViewer();
+		int max = viewer.getDir().getDocument().getSampleAttributeTable().getNumericalAttributes(null).size();
 
-        np.matchIgnoreCase("set triplotSize=");
-        int number = np.getInt(0, max);
-        np.matchIgnoreCase(";");
+		np.matchIgnoreCase("set triplotSize=");
+		int number = np.getInt(0, max);
+		np.matchIgnoreCase(";");
 
-        viewer.getPcoaTab().setTriplotSize(number);
-    }
+		viewer.getPcoaTab().setTriplotSize(number);
+	}
 
     /**
      * get command-line usage description

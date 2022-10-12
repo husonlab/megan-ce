@@ -38,8 +38,7 @@ import java.awt.event.KeyEvent;
 public class MoveUpCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("move dir=");
@@ -50,7 +49,7 @@ public class MoveUpCommand extends CommandBase implements ICommand {
         if (selectedBlock.isSelected()) {
             if (dir.equals("up")) {
                 if ((viewer.isShowAsMapping() && viewer.getAlignment().getRowCompressor().moveUp(selectedBlock.getFirstRow(), selectedBlock.getLastRow()))
-                        || (!viewer.isShowAsMapping() && AlignmentSorter.moveUp(viewer.getAlignment(), selectedBlock.getFirstRow(), selectedBlock.getLastRow()))) {
+                    || (!viewer.isShowAsMapping() && AlignmentSorter.moveUp(viewer.getAlignment(), selectedBlock.getFirstRow(), selectedBlock.getLastRow()))) {
                     selectedBlock.setFirstRow(selectedBlock.getFirstRow() - 1);
                     selectedBlock.setLastRow(selectedBlock.getLastRow() - 1);
                     selectedBlock.fireSelectionChanged();

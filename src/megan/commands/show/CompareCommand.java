@@ -20,10 +20,10 @@ package megan.commands.show;
 
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.ProjectManager;
+import jloda.swing.util.ProgramProperties;
+import jloda.swing.util.RecursiveFileLister;
 import jloda.swing.util.ResourceManager;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.RecursiveFileLister;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressListener;

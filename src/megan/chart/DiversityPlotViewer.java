@@ -18,7 +18,11 @@
  */
 package megan.chart;
 
-import jloda.util.*;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.CanceledException;
+import jloda.util.Pair;
+import jloda.util.Single;
+import jloda.util.StringUtils;
 import megan.alignment.AlignmentViewer;
 import megan.alignment.WordCountAnalysis;
 import megan.chart.data.DefaultPlot2DData;

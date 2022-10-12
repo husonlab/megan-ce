@@ -27,8 +27,8 @@ import jloda.swing.find.NodeLabelSearcher;
 import jloda.swing.find.SearchManager;
 import jloda.swing.graphview.NodeActionAdapter;
 import jloda.swing.graphview.NodeView;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import megan.clusteranalysis.ClusterViewer;
 import megan.viewer.ViewerBase;
 

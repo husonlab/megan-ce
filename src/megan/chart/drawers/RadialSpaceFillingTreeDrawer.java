@@ -18,13 +18,14 @@
  */
 package megan.chart.drawers;
 
+
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeData;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import megan.chart.IChartDrawer;
 import megan.chart.gui.ChartViewer;
 import megan.chart.gui.RedGradient;

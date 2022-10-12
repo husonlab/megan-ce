@@ -24,9 +24,9 @@ import com.install4j.api.update.ApplicationDisplayMode;
 import com.install4j.api.update.UpdateChecker;
 import com.install4j.api.update.UpdateDescriptor;
 import com.install4j.api.update.UpdateDescriptorEntry;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 

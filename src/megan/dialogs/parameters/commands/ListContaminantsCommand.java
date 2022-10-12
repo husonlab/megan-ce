@@ -48,8 +48,7 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
 
     /**
      * parses and applies the command
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

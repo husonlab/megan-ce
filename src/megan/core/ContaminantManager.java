@@ -64,7 +64,7 @@ public class ContaminantManager {
                             System.err.println("Failed to identify taxon for: '" + aLine + "'");
                     } else {
                         try (NexusStreamParser np = new NexusStreamParser(new StringReader(aLine))) {
-                            while ((np.peekNextToken()) != TT_EOF) {
+							while ((np.peekNextToken()) != TT_EOF) {
 								final String token = np.getWordRespectCase();
 								final int taxonId;
 								if (NumberUtils.isInteger(token))

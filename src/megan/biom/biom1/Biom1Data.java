@@ -19,7 +19,7 @@
 package megan.biom.biom1;
 
 import com.google.gson.Gson;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import java.io.IOException;

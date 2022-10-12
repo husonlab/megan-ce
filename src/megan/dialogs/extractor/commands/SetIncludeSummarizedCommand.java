@@ -41,8 +41,7 @@ public class SetIncludeSummarizedCommand extends CommandBase implements ICheckBo
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         np.matchIgnoreCase("set summarized=");

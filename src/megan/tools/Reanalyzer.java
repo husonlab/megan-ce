@@ -19,9 +19,9 @@
 package megan.tools;
 
 import jloda.swing.util.ArgsOptions;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
@@ -29,7 +29,6 @@ import megan.core.Director;
 import megan.core.Document;
 import megan.main.MeganProperties;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

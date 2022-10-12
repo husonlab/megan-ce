@@ -19,7 +19,7 @@
 package megan.viewer;
 
 import jloda.swing.util.BasicSwing;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import megan.core.Document;
 
 import javax.swing.*;

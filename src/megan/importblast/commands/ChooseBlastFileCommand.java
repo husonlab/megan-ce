@@ -19,12 +19,8 @@
 package megan.importblast.commands;
 
 import jloda.swing.commands.ICommand;
-import jloda.swing.util.BlastFileFilter;
-import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.FastaFileFilter;
-import jloda.swing.util.ResourceManager;
+import jloda.swing.util.*;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.importblast.ImportBlastDialog;
@@ -42,8 +38,7 @@ import java.io.File;
 public class ChooseBlastFileCommand extends CommandBase implements ICommand {
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     @Override
     public void apply(NexusStreamParser np) {
     }

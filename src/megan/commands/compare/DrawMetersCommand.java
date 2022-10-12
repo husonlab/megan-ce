@@ -75,8 +75,7 @@ public class DrawMetersCommand extends CommandBase implements ICheckBoxCommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     public void apply(NexusStreamParser np) {
     }
 }

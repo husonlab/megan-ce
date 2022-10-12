@@ -283,7 +283,7 @@ public class AlignmentExporter {
                     if (!warned) {
                         if (ProgramProperties.isUseGUI()) {
                             int result = JOptionPane.showConfirmDialog(parent, "Some files already exist, overwrite all existing files?", "Overwrite files?", JOptionPane.YES_NO_CANCEL_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
+									JOptionPane.QUESTION_MESSAGE, jloda.swing.util.ProgramProperties.getProgramIcon());
                             switch (result) {
                                 case JOptionPane.NO_OPTION -> overwrite = false;
                                 case JOptionPane.CANCEL_OPTION -> throw new CanceledException();

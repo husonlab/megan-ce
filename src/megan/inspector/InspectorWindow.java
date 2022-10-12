@@ -103,7 +103,7 @@ public class InspectorWindow implements IDirectableViewer, IViewerWithFindToolBa
 
         frame = new JFrame();
         setTitle();
-        frame.setIconImages(ProgramProperties.getProgramIconImages());
+		frame.setIconImages(jloda.swing.util.ProgramProperties.getProgramIconImages());
 
         frame.getContentPane().setLayout(new BorderLayout());
 

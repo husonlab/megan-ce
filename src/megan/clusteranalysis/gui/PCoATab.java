@@ -99,14 +99,14 @@ public class PCoATab extends JPanel implements ITab {
     private Pair<String, double[]>[] triplot;
     private final NodeArray<Point3D> node2point3D; // for external use
 
-    private Color axesColor = ProgramProperties.get("PCoAAxesColor", Colors.parseColor("lightgray"));
+    private Color axesColor = ProgramProperties.get("PCoAAxesColor", ColorUtilsSwing.convert(AColor.parseColor("lightgray")));
     private byte axesLineWidth = (byte) ProgramProperties.get("PCoAAxesLineWidth", 1);
-    private Color biPlotColor = ProgramProperties.get("PCoABiPlotColor", Colors.parseColor("darkseagreen"));
+    private Color biPlotColor = ProgramProperties.get("PCoABiPlotColor", ColorUtilsSwing.convert(AColor.parseColor("darkseagreen")));
     private byte biPlotLineWidth = (byte) ProgramProperties.get("PCoABiPlotLineWidth", 1);
-    private Color triPlotColor = ProgramProperties.get("PCoATriPlotColor", Colors.parseColor("sandybrown"));
+    private Color triPlotColor = ProgramProperties.get("PCoATriPlotColor", ColorUtilsSwing.convert(AColor.parseColor("sandybrown")));
     private byte triPlotLineWidth = (byte) ProgramProperties.get("PCoATriPlotLineWidth", 1);
 
-    private Color groupsColor = ProgramProperties.get("PCoAGroupColor", Colors.parseColor("lightblue"));
+    private Color groupsColor = ProgramProperties.get("PCoAGroupColor", ColorUtilsSwing.convert(AColor.parseColor("lightblue")));
     private byte groupLineWidth = (byte) ProgramProperties.get("PCoAGroupLineWidth", 1);
 
     // 3D figure:

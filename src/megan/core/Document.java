@@ -21,8 +21,12 @@ package megan.core;
 import jloda.seq.BlastMode;
 import jloda.swing.util.ColorTableManager;
 import jloda.swing.util.ILabelGetter;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.FileUtils;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import jloda.util.progress.ProgressCmdLine;
 import jloda.util.progress.ProgressListener;
@@ -158,7 +162,7 @@ public class Document {
     private ChartColorManager chartColorManager;
     private final ILabelGetter sampleLabelGetter;
 
-    private Color[] colorsArray = null;
+    private java.awt.Color[] colorsArray = null;
 
     // set of active fViewers
     private final Set<String> activeViewers = new HashSet<>();

@@ -22,7 +22,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ChooseFontDialog;
-import jloda.swing.util.Colors;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
@@ -52,7 +52,7 @@ public class SetChartDrawFontCommand extends CommandBase implements ICommand {
             np.matchIgnoreCase("default");
             color = null;
         } else {
-            color = Colors.convert(np.getColor());
+			color = ColorUtilsSwing.convert(np.getColor());
         }
 
         np.matchIgnoreCase("target=");
@@ -78,8 +78,8 @@ public class SetChartDrawFontCommand extends CommandBase implements ICommand {
         Color color = ProgramProperties.get(target + "Color", (Color) null);
         Pair<Font, Color> result = ChooseFontDialog.showChooseFontDialog(chartViewer.getFrame(), "Choose drawing font", font, color);
         if (result != null)
-            execute("set chartFont='" + BasicSwing.encode(result.getFirst())
-                    + "' color=" + (result.getSecond() != null ? BasicSwing.toString3Int(result.getSecond()) : "default") + " target='" + target + "';");
+			execute("set chartFont='" + BasicSwing.encode(result.getFirst())
+					+ "' color=" + (result.getSecond() != null ? ColorUtilsSwing.toString3Int(result.getSecond()) : "default") + " target='" + target + "';");
     }
 
     public boolean isApplicable() {

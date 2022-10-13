@@ -401,7 +401,7 @@ public class CommandManagerFX extends CommandManager {
         if ((acceleratorKey.getModifiers() & InputEvent.META_DOWN_MASK) != 0)
             modifiers.add(KeyCombination.META_DOWN);
 
-        KeyCode keyCode = FXSwingUtilities.getKeyCodeFX(acceleratorKey.getKeyCode());
+        KeyCode keyCode = KeyCodeUtils.convert(acceleratorKey.getKeyCode());
         return new KeyCodeCombination(keyCode, modifiers.toArray(new KeyCombination.Modifier[0]));
     }
 }

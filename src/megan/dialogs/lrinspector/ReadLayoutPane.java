@@ -35,7 +35,10 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import jloda.fx.control.AMultipleSelectionModel;
 import jloda.swing.util.BasicSwing;
+import jloda.swing.util.ColorUtilsFX;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.ProgramProperties;
+import jloda.util.AColor;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.StringUtils;
@@ -45,7 +48,6 @@ import megan.chart.ChartColorManager;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.data.IMatchBlock;
-import megan.fx.FXSwingUtilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -440,7 +442,8 @@ public class ReadLayoutPane extends Pane {
         showLabels(Arrays.asList(cNames), false);
 
         for (GeneArrow geneArrow : geneArrows) {
-            geneArrow.setFill(FXSwingUtilities.getColorFX(colorManager.getHeatMapTable().getColor(Math.round(geneArrow.getBestBitScore()), Math.round(maxScore) + 1), 0.5));
+            var color = ColorUtilsFX.convert(new AColor(ColorUtilsSwing.convert(colorManager.getHeatMapTable().getColor(Math.round(geneArrow.getBestBitScore()), Math.round(maxScore) + 1)), 0.5));
+            geneArrow.setFill(color);
         }
     }
 
@@ -453,7 +456,8 @@ public class ReadLayoutPane extends Pane {
         showLabels(Arrays.asList(cNames), false);
 
         for (GeneArrow geneArrow : geneArrows) {
-            geneArrow.setFill(FXSwingUtilities.getColorFX(colorManager.getHeatMapTable().getColor(Math.round(1000 * geneArrow.getBestNormalizedScore()), Math.round(maxNormalizedScore) + 1), 0.5));
+            var color = ColorUtilsFX.convert(new AColor(ColorUtilsSwing.convert(colorManager.getHeatMapTable().getColor(Math.round(1000 * geneArrow.getBestNormalizedScore()), Math.round(maxNormalizedScore) + 1)), 0.5));
+            geneArrow.setFill(color);
         }
     }
 
@@ -479,7 +483,7 @@ public class ReadLayoutPane extends Pane {
                             if (colorClassId > 0) {
                                 final String className = classification.getName2IdMap().get(colorClassId);
                                 if (className != null) {
-                                    final Color color = FXSwingUtilities.getColorFX(colorManager.getClassColor(className), 0.5);
+                                    var color = ColorUtilsFX.convert(new AColor(ColorUtilsSwing.convert(colorManager.getClassColor(className)), 0.5));
                                     geneArrow.setFill(color);
                                     colored = true;
                                     break;

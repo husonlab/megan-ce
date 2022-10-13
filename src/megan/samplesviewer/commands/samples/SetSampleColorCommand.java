@@ -21,7 +21,7 @@ package megan.samplesviewer.commands.samples;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.util.ChooseColorDialog;
-import jloda.swing.util.Colors;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
@@ -52,7 +52,7 @@ public class SetSampleColorCommand extends CommandBase implements ICommand {
         if (np.peekMatchIgnoreCase("null"))
             np.matchIgnoreCase("null");
         else
-            color = Colors.convert(np.getColor());
+			color = ColorUtilsSwing.convert(np.getColor());
         final List<String> samples = new LinkedList<>();
         if (np.peekMatchIgnoreCase("sample=")) {
             np.matchIgnoreCase("sample=");

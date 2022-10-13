@@ -22,7 +22,7 @@ import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
 import jloda.swing.director.IDirector;
 import jloda.swing.util.ChooseColorDialog;
-import jloda.swing.util.Colors;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.parse.NexusStreamParser;
 import megan.chart.ChartColorManager;
@@ -49,7 +49,7 @@ public class SetColorCommand extends CommandBase implements ICommand {
         ChartColorManager chartColors = viewer.getChartColorManager();
 
         np.matchIgnoreCase("set color=");
-        Color color = Colors.convert(np.getColor());
+		Color color = ColorUtilsSwing.convert(np.getColor());
 
         String series = null;
         if (np.peekMatchIgnoreCase("series")) {

@@ -1,5 +1,5 @@
 /*
- * FXSwingUtilities.java Copyright (C) 2022 Daniel H. Huson
+ * KeyCodeUtils.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,19 +19,18 @@
 
 package megan.fx;
 
-import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 /**
- * some Utilities to help integrate Swing and JavaFX
+ * utility to convert AWT key codes into Swing key codes
  */
-public class FXSwingUtilities {
+public class KeyCodeUtils {
     /**
      * convert awt key code to KeyCode
      *
      * @return KeyCode
      */
-    public static KeyCode getKeyCodeFX(int awtKeyCode) {
+    public static KeyCode convert(int awtKeyCode) {
         return switch (awtKeyCode) {
             case java.awt.event.KeyEvent.VK_A -> KeyCode.A;
             case java.awt.event.KeyEvent.VK_ACCEPT -> KeyCode.ACCEPT;
@@ -220,39 +219,5 @@ public class FXSwingUtilities {
             case java.awt.event.KeyEvent.VK_Z -> KeyCode.Z;
             default -> KeyCode.UNDEFINED;
         };
-    }
-
-    /**
-     * convert to AWT color
-     *
-     * @return AWT color
-     */
-    public static java.awt.Color getColorAWT(javafx.scene.paint.Color colorFX) {
-        return new java.awt.Color((float) colorFX.getRed(), (float) colorFX.getGreen(), (float) colorFX.getBlue());
-    }
-
-    /**
-     * convert to FX color
-     *
-     * @return AWT color
-     */
-    public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT) {
-        return getColorFX(colorAWT, 1);
-    }
-
-    /**
-     * convert to FX color
-     *
-     * @return AWT color
-     */
-    public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT, double opacity) {
-        if (colorAWT == null)
-            return null;
-        else
-            return new javafx.scene.paint.Color(colorAWT.getRed() / 255.0, colorAWT.getGreen() / 255.0, colorAWT.getBlue() / 255.0, opacity);
-    }
-
-    public static java.awt.geom.Point2D asAWTPoint2D(Point2D center) {
-        return new java.awt.geom.Point2D.Double(center.getX(), center.getY());
     }
 }

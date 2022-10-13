@@ -29,7 +29,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import jloda.fx.control.table.MyTableView;
 import jloda.swing.director.IDirector;
 import jloda.util.Basic;
@@ -40,7 +39,6 @@ import jloda.util.progress.ProgressSilent;
 import megan.core.Director;
 import megan.core.Document;
 import megan.core.SampleAttributeTable;
-import megan.fx.FXSwingUtilities;
 import megan.fx.PopupMenuFX;
 import megan.util.GraphicsUtilities;
 
@@ -174,16 +172,6 @@ public class SamplesTableView {
         initialUpdate = Long.MAX_VALUE;
 
         return tableView;
-    }
-
-    private void setColorForSelected(Color color) {
-        if (tableView != null) {
-            for (TablePosition position : tableView.getSelectedCells()) {
-                final String attribute = tableView.getColName(position.getColumn());
-                final String value = tableView.getValue(position.getRow(), position.getColumn());
-                samplesViewer.getDocument().getChartColorManager().setAttributeStateColor(attribute, value, FXSwingUtilities.getColorAWT(color));
-            }
-        }
     }
 
     /**

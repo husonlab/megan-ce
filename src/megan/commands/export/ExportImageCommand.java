@@ -25,7 +25,6 @@ import jloda.swing.export.*;
 import jloda.swing.graphview.GraphView;
 import jloda.swing.graphview.NodeView;
 import jloda.swing.util.IViewerWithJComponent;
-import jloda.swing.util.JPanelWithFXStageAndRoot;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.parse.NexusStreamParser;
@@ -33,6 +32,7 @@ import megan.chart.gui.ChartViewer;
 import megan.clusteranalysis.ClusterViewer;
 import megan.commands.CommandBase;
 import megan.core.Document;
+import megan.util.JPanelWithFXStageAndRoot;
 import megan.viewer.ViewerBase;
 
 import javax.swing.*;

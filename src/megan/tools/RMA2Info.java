@@ -70,7 +70,7 @@ public class RMA2Info {
      * run
      *
 	 */
-    private void run(String[] args) throws UsageException, IOException, CanceledException {
+    private void run(String[] args) throws UsageException, IOException {
         final ArgsOptions options = new ArgsOptions(args, this, "Analyses an RMA file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
@@ -215,7 +215,7 @@ public class RMA2Info {
                     var id2summarized = new HashMap<Integer, Float>();
                     var root = (isTaxonomy? taxonomyTree.getANode(taxonomyRootId) : tree.getRoot());
 
-                    tree.postorderTraversal(v -> {
+                    tree.postorderTraversal(root,v -> {
 						var summarized = classificationBlock.getWeightedSum((Integer) v.getInfo());
 						for (var w : v.children()) {
 							var id = (Integer) w.getInfo();

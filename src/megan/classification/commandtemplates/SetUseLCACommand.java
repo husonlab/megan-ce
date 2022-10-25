@@ -51,7 +51,7 @@ public class SetUseLCACommand extends CommandBase implements ICommand {
 		final String cName = np.getWordMatchesRespectingCase(StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " "));
         np.matchIgnoreCase(";");
 
-        final Set<String> set = new HashSet<>(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])));
+        final Set<String> set = new HashSet<>(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"})));
         if (useLCA)
             set.add(cName);
         else

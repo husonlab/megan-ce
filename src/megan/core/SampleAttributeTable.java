@@ -18,9 +18,7 @@
  */
 package megan.core;
 
-import jloda.swing.window.NotificationsInSwing;
 import jloda.util.*;
-import megan.viewer.MainViewer;
 
 import java.awt.*;
 import java.io.*;
@@ -884,7 +882,7 @@ public class SampleAttributeTable {
             }
         } finally {
             if (countNotFound > 0)
-                NotificationsInSwing.showWarning(MainViewer.getLastActiveFrame(), "Loaded metadata, ignored " + countNotFound + " unknown input samples.");
+                System.err.println("Warning: Loaded metadata, ignored " + countNotFound + " unknown input samples.");
             else {
                 if (knownSamples != null) {
                     for (String sample : knownSamples) {

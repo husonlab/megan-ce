@@ -40,7 +40,7 @@ public class SetUseLCA4ViewerCommand extends CommandBase implements ICheckBoxCom
     }
 
     public boolean isSelected() {
-        return Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(cName);
+        return Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"})).contains(cName);
     }
 
     /**

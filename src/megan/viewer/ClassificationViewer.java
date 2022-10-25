@@ -131,7 +131,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 		setGraphDrawer(new DefaultGraphDrawer(this));
 		getGraphDrawer().setNodeDrawer(nodeDrawer);
 		getNodeDrawer().setStyle(doc.getDataTable().getNodeStyle(getClassName()), this instanceof MainViewer ? NodeDrawer.Style.Circle : dir.getMainViewer().getNodeDrawer().getStyle());
-		getNodeDrawer().setScaleBy(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(classification.getName()) ? NodeDrawer.ScaleBy.Assigned : NodeDrawer.ScaleBy.Summarized);
+		getNodeDrawer().setScaleBy(Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"})).contains(classification.getName()) ? NodeDrawer.ScaleBy.Assigned : NodeDrawer.ScaleBy.Summarized);
 
 		this.commandManager = new CommandManager(dir, this, new String[]{"megan.commands", "megan.viewer.commands"}, !ProgramProperties.isUseGUI());
 
@@ -339,7 +339,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 		setupKeyListener();
 
 		splitPane.setDividerLocation(1);
-		if (doc.getNumberOfSamples() > 1 || Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(classification.getName())) {
+		if (doc.getNumberOfSamples() > 1 || Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"})).contains(classification.getName())) {
 			getMainSplitPane().getLeftComponent().setMinimumSize(new Dimension());
 			getMainSplitPane().setDividerLocation(0);
 		}

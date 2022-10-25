@@ -74,13 +74,13 @@ public class DataProcessor {
             final boolean[] useLCAForClassification = new boolean[numberOfClassifications];
             for (int c = 0; c < numberOfClassifications; c++) {
                 ClassificationManager.ensureTreeIsLoaded(cNames[c]);
-                if (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[0])).contains(cNames[c]))
+                if (Arrays.asList(ProgramProperties.get(MeganProperties.TAXONOMIC_CLASSIFICATIONS, new String[]{"Taxonomy", "GTDB"})).contains(cNames[c]))
                     useLCAForClassification[c] = true;
             }
 
-            final UpdateItemList updateList = new UpdateItemList(numberOfClassifications);
+            final var updateList = new UpdateItemList(numberOfClassifications);
 
-            final boolean doMatePairs = doc.isPairedReads() && doc.getMeganFile().isRMA6File();
+            final var doMatePairs = doc.isPairedReads() && doc.getMeganFile().isRMA6File();
 
             if (doc.isPairedReads() && !doc.getMeganFile().isRMA6File())
                 System.err.println("WARNING: Not an RMA6 file, will ignore paired read information");

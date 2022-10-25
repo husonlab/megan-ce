@@ -18,12 +18,11 @@
  */
 package megan.core;
 
-import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
 import jloda.util.Pair;
-import megan.data.merge.MergeConnector;
 import megan.daa.connector.DAAConnector;
 import megan.data.IConnector;
+import megan.data.merge.MergeConnector;
 import megan.ms.client.connector.MSConnector;
 import megan.rma2.RMA2Connector;
 import megan.rma2.RMA2File;
@@ -375,7 +374,7 @@ public class MeganFile {
                 else
                     hasDAAConnector=true;
             } catch (IOException e) {
-                NotificationsInSwing.showWarning("Merged file: embbedded input files not found");
+                System.err.println("Warning: Merged file: embbedded input files not found");
                 return;
             }
             this.mergedFiles.addAll(mergedFiles);

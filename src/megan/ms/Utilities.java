@@ -20,7 +20,6 @@
 package megan.ms;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import jloda.util.StringUtils;
 import megan.daa.connector.ClassificationBlockDAA;
 import megan.daa.io.ByteInputStream;
 import megan.daa.io.ByteOutputStream;
@@ -120,7 +119,7 @@ public class Utilities {
     }
 
     public static  String computeBCryptHash(byte[] password) {
-		return StringUtils.toString(BCrypt.withDefaults().hash(6, SALT, password));
+		return new String(BCrypt.withDefaults().hash(6, SALT, password));
     }
 
     public static boolean verify (char[] password,String bcryptHash) {

@@ -16,7 +16,7 @@ module megan {
     requires java.desktop;
     requires java.net.http;
     requires bcyrpt;
-    requires sqlite.jdbc;
+    requires org.xerial.sqlitejdbc;
 
     exports megan.accessiondb;
     exports megan.algorithms;

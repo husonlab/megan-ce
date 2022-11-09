@@ -50,7 +50,7 @@ public class ClientMS {
         this.serverAndPrefix = serverAndPrefix.replaceAll("/$", "");
         this.timeoutSeconds = timeoutSeconds;
 
-		final var proxyAddress = (StringUtils.notBlank(proxyName) ? new InetSocketAddress(proxyName, proxyPort) : null);
+        final var proxyAddress = (proxyName.isBlank() ? null:new InetSocketAddress(proxyName, proxyPort));
 
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeoutSeconds))
@@ -139,7 +139,7 @@ public class ClientMS {
     }
 
     public HttpRequest setupRequest(String command, boolean binary) {
-        final URI uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
+        final var uri = URI.create(serverAndPrefix + (command.startsWith("/") ? command : "/" + command));
         if(Basic.getDebugMode())
             System.err.println("Remote request: " +uri);
         return HttpRequest.newBuilder()

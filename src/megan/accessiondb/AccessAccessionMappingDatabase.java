@@ -20,7 +20,10 @@
 package megan.accessiondb;
 
 
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.FileUtils;
+import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import org.sqlite.SQLiteConfig;
 
 import java.io.Closeable;
@@ -44,46 +47,41 @@ import java.util.function.IntUnaryOperator;
  */
 public class AccessAccessionMappingDatabase implements Closeable {
     public enum ValueType {TEXT, INT}
-    
-    public static final String SQLiteTempStoreInMemoryProgramProperty="SQLiteTempStoreInMemory";
-    public static final String SQLiteTempStoreDirectoryProgramProperty="SQLiteTempStoreDirectory";
+
+    public static final String SQLiteTempStoreInMemoryProgramProperty = "SQLiteTempStoreInMemory";
+    public static final String SQLiteTempStoreDirectoryProgramProperty = "SQLiteTempStoreDirectory";
+    public static final String SQLiteCacheSizeProperty = "SQLiteCacheSizeProperty";
 
     private final Connection connection;
 
     public static IntUnaryOperator accessionFilter = x -> (x > -1000 ? x : 0);
     public static Function<String, Boolean> fileFilter = x -> !x.endsWith("_UE");
-    
-    private static final Single<Boolean> tempStoreInMemory=new Single<>(false);
-    private static final Single<String> tempStoreDirectory=new Single<>("");
 
     /**
      * constructor, opens and maintains connection to database
-     *
-	 */
+     */
     public AccessAccessionMappingDatabase(String dbFile) throws IOException, SQLException {
-		if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
-			throw new IOException("File not found or unreadable: " + dbFile);
+        if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
+            throw new IOException("File not found or unreadable: " + dbFile);
+
+        var tempStoreInMemory = ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty, false);
+        var tempStoreDirectory = ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty, "");
+        var cacheSize = ProgramProperties.get(SQLiteCacheSizeProperty, -10000);
 
         final var config = new SQLiteConfig();
-        config.setCacheSize(10000);
+        config.setCacheSize(cacheSize);
         config.setReadOnly(true);
 
-        tempStoreInMemory.set(ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty,tempStoreInMemory.get()));
-        tempStoreDirectory.set(ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty,tempStoreDirectory.get()));
-        
-        if(tempStoreInMemory.get()) {
+
+        if (tempStoreInMemory) {
             config.setTempStore(SQLiteConfig.TempStore.MEMORY);
-        }
-        else if(!tempStoreDirectory.get().isBlank()){
-                final File directory=new File(tempStoreDirectory.get());
-                if(directory.isDirectory() && directory.canWrite()) {
-                    config.setTempStoreDirectory(tempStoreDirectory.get());
-                }
+        } else if (FileUtils.isDirectory(tempStoreDirectory) && (new File(tempStoreDirectory).canWrite())) {
+            config.setTempStoreDirectory(tempStoreDirectory);
         }
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
         if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))
-			throw new IOException("Mapping file " + FileUtils.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
+            throw new IOException("Mapping file " + FileUtils.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
     }
 
     /**
@@ -170,7 +168,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
      *
      * @return size for a given classification index or -1 if the classification was not found
      */
-    public int getSize(String classificationName)  {
+    public int getSize(String classificationName) {
         try {
             return executeQueryInt("SELECT size FROM info WHERE id = '" + classificationName + "';", 1).get(0);
         } catch (Exception e) {
@@ -240,7 +238,7 @@ public class AccessAccessionMappingDatabase implements Closeable {
         final var rs = connection.createStatement().executeQuery(buf.toString());
         final var columnCount = rs.getMetaData().getColumnCount();
 
-        final var results = new HashMap<String,int[]>();
+        final var results = new HashMap<String, int[]>();
         while (rs.next()) {
             final var values = new int[columnCount];
             for (var i = 2; i <= columnCount; i++) {
@@ -254,27 +252,65 @@ public class AccessAccessionMappingDatabase implements Closeable {
 
     /**
      * for each provided accession, returns ids for all named classifications
+     *
      * @param accessions queries
-     * @param cNames desired classifications
+     * @param cNames     desired classifications
      * @return for each accession, the ids for all given classifications, in the same order as the classifications
      * @throws SQLException
      */
-    public Collection<int[]> getValues(String[] accessions, String[] cNames) throws SQLException {
+    public int[][] getValues(String[] accessions, int numberOfAccessions, String[] cNames) throws SQLException {
+        final var computedAccessionClassMapping = new int[accessions.length][cNames.length];
+
+        var query = "select Accession, %s from mappings where Accession in ('%s');".formatted(
+                StringUtils.toString(cNames, ","),
+                StringUtils.toString(accessions, 0, numberOfAccessions, "', '"));
+
+        var resultSet = connection.createStatement().executeQuery(query);
+        var columnCount = resultSet.getMetaData().getColumnCount();
+
+        var accessionIndexMap = new HashMap<String, Integer>();
+        for (var index = 0; index < numberOfAccessions; index++) {
+            accessionIndexMap.put(accessions[index], index);
+        }
+
+        while (resultSet.next()) {
+            var accession = resultSet.getString(1);
+            if (accessionIndexMap.containsKey(accession)) {
+                var array = computedAccessionClassMapping[accessionIndexMap.get(accession)];
+                //System.err.println(resultSet.getString(1));
+                for (var c = 1; c < columnCount; c++) {
+                    // database index starts with 1; 1 is the accession everything else is result
+                    array[c - 1] = accessionFilter.applyAsInt(resultSet.getInt(c + 1));
+                }
+            }
+        }
+        return computedAccessionClassMapping;
+    }
+
+    /**
+     * for each provided accession, returns ids for all named classifications
+     *
+     * @param accessions queries
+     * @param cNames     desired classifications
+     * @return for each accession and cName, the id
+     * @throws SQLException
+     */
+    public int[] getValues(Collection<String> accessions, String[] cNames) throws SQLException {
         var query = "select " + StringUtils.toString(cNames, ",") + " from mappings where Accession in" +
-                     " ('" + StringUtils.toString(accessions, "', '") + "');";
+                " ('" + StringUtils.toString(accessions, "', '") + "');";
         var rs = connection.createStatement().executeQuery(query);
         var columnCount = rs.getMetaData().getColumnCount();
 
-        var results = new ArrayList<int[]>();
+        var result = new int[accessions.size() * cNames.length];
+        var r = 0;
         while (rs.next()) {
             final var values = new int[cNames.length];
             for (var i = 0; i < columnCount; i++) {
                 // database index starts with 1; 1 is the accession everything else is result
-                values[i] = accessionFilter.applyAsInt(rs.getInt(i+1));
+                result[r++] = accessionFilter.applyAsInt(rs.getInt(i + 1));
             }
-            results.add(values);
         }
-        return results;
+        return result;
     }
 
     /**
@@ -353,13 +389,13 @@ public class AccessAccessionMappingDatabase implements Closeable {
     }
 
     public static Collection<String> getContainedClassificationsIfDBExists(String fileName) {
-		if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
-			try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(fileName)) {
-				return accessAccessionMappingDatabase.getClassificationNames();
-			} catch (IOException | SQLException ex) {
-				// ignore
-			}
-		}
+        if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
+            try (AccessAccessionMappingDatabase accessAccessionMappingDatabase = new AccessAccessionMappingDatabase(fileName)) {
+                return accessAccessionMappingDatabase.getClassificationNames();
+            } catch (IOException | SQLException ex) {
+                // ignore
+            }
+        }
         return Collections.emptySet();
     }
 }

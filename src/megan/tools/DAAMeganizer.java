@@ -25,6 +25,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 import megan.accessiondb.AccessAccessionMappingDatabase;
+import megan.accessiondb.ConfigRequests;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
 import megan.classification.IdMapper;
@@ -35,12 +36,8 @@ import megan.daa.Meganize;
 import megan.main.MeganProperties;
 import megan.util.DAAFileFilter;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreDirectoryProgramProperty;
-import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreInMemoryProgramProperty;
 
 /**
  * prepares a DAA file for use with MEGAN
@@ -169,8 +166,7 @@ public class DAAMeganizer {
 
         options.comment(ArgsOptions.OTHER);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Number of threads", 8));
-        ProgramProperties.put(SQLiteTempStoreInMemoryProgramProperty,options.getOption("-tsm","tempStoreInMemory","Temporary storage in memory for SQLITE",false));
-        ProgramProperties.put(SQLiteTempStoreDirectoryProgramProperty,options.getOption("-tsd","tempStoreDir","Temporary storage directory for SQLITE (if not in-memory)",""));
+		ConfigRequests.setCacheSize(options.getOption("-cs","cacheSize","Cache size for SQLITE (use with care)", ConfigRequests.getCacheSize()));
 
 		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();

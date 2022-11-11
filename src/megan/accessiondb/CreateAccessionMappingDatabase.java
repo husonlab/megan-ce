@@ -33,22 +33,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreDirectoryProgramProperty;
-import static megan.accessiondb.AccessAccessionMappingDatabase.SQLiteTempStoreInMemoryProgramProperty;
-
 /**
  * setup databases for accession lookup
  * Original implementation: Syliva Siegel, 2019
  * Modified and extended by Daniel Huson, 9.2019
  */
 public class CreateAccessionMappingDatabase {
+
     protected final String databaseFile;
     protected final ArrayList<String> tables;
 
     protected final SQLiteConfig config;
-
-    private static final Single<Boolean> tempStoreInMemory=new Single<>(false);
-    private static final Single<String> tempStoreDirectory=new Single<>("");
 
     /**
      * creates a new database file at the specified location
@@ -60,22 +55,11 @@ public class CreateAccessionMappingDatabase {
         // setting database configurations, as suggested by suggested by takrl at
         // https://stackoverflow.com/questions/784173/what-are-the-performance-characteristics-of-sqlite-with-very-large-database-files
         config = new SQLiteConfig();
-        config.setCacheSize(10000);
+        config.setCacheSize(ConfigRequests.getCacheSize());
         config.setLockingMode(SQLiteConfig.LockingMode.EXCLUSIVE);
         config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
 
-        tempStoreInMemory.set(ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty,tempStoreInMemory.get()));
-        tempStoreDirectory.set(ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty,tempStoreDirectory.get()));
-
-        if(tempStoreInMemory.get()) {
-            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
-        }
-        else if(!tempStoreDirectory.get().isBlank()){
-            final File directory=new File(tempStoreDirectory.get());
-            if(directory.isDirectory() && directory.canWrite()) {
-                config.setTempStoreDirectory(tempStoreDirectory.get());
-            }
-        }
+        config.setTempStore(ConfigRequests.isUseTempStoreInMemory()? SQLiteConfig.TempStore.MEMORY: SQLiteConfig.TempStore.DEFAULT);
 
         //config.setJournalMode(SQLiteConfig.JournalMode.WAL);
 
@@ -394,4 +378,5 @@ public class CreateAccessionMappingDatabase {
         }
         return result;
     }
+
 }

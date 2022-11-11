@@ -22,12 +22,10 @@ package megan.accessiondb;
 
 import jloda.util.Basic;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import org.sqlite.SQLiteConfig;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -48,8 +46,6 @@ import java.util.function.IntUnaryOperator;
 public class AccessAccessionMappingDatabase implements Closeable {
     public enum ValueType {TEXT, INT}
 
-    public static final String SQLiteCacheSizeProperty = "SQLiteCacheSizeProperty";
-
     private final Connection connection;
 
     public static IntUnaryOperator accessionFilter = x -> (x > -1000 ? x : 0);
@@ -62,11 +58,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
         if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
             throw new IOException("File not found or unreadable: " + dbFile);
 
-        var cacheSize = ProgramProperties.get(SQLiteCacheSizeProperty, -10000);
-
         final var config = new SQLiteConfig();
-        config.setTempStore(SQLiteConfig.TempStore.MEMORY);
-        config.setCacheSize(cacheSize);
+        config.setCacheSize(ConfigRequests.getCacheSize());
         config.setReadOnly(true);
 
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
@@ -389,4 +382,5 @@ public class AccessAccessionMappingDatabase implements Closeable {
         }
         return Collections.emptySet();
     }
+
 }

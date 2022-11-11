@@ -48,8 +48,6 @@ import java.util.function.IntUnaryOperator;
 public class AccessAccessionMappingDatabase implements Closeable {
     public enum ValueType {TEXT, INT}
 
-    public static final String SQLiteTempStoreInMemoryProgramProperty = "SQLiteTempStoreInMemory";
-    public static final String SQLiteTempStoreDirectoryProgramProperty = "SQLiteTempStoreDirectory";
     public static final String SQLiteCacheSizeProperty = "SQLiteCacheSizeProperty";
 
     private final Connection connection;
@@ -64,20 +62,13 @@ public class AccessAccessionMappingDatabase implements Closeable {
         if (!FileUtils.fileExistsAndIsNonEmpty(dbFile))
             throw new IOException("File not found or unreadable: " + dbFile);
 
-        var tempStoreInMemory = ProgramProperties.get(SQLiteTempStoreInMemoryProgramProperty, false);
-        var tempStoreDirectory = ProgramProperties.get(SQLiteTempStoreDirectoryProgramProperty, "");
         var cacheSize = ProgramProperties.get(SQLiteCacheSizeProperty, -10000);
 
         final var config = new SQLiteConfig();
+        config.setTempStore(SQLiteConfig.TempStore.MEMORY);
         config.setCacheSize(cacheSize);
         config.setReadOnly(true);
 
-
-        if (tempStoreInMemory) {
-            config.setTempStore(SQLiteConfig.TempStore.MEMORY);
-        } else if (FileUtils.isDirectory(tempStoreDirectory) && (new File(tempStoreDirectory).canWrite())) {
-            config.setTempStoreDirectory(tempStoreDirectory);
-        }
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
         if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))

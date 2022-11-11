@@ -127,7 +127,7 @@ public class MergeMultipleAccessionAssignments {
                 idParsers[i].setAlgorithm(IdParser.Algorithm.Majority);
         }
 
-        final var tmpData = new TmpData(cNames.length, accessionsPerQuery);
+        final var workingData = new WorkingData(accessionsPerQuery);
 
 
         try (var it = new FileLineIterator(inputFile, true);
@@ -148,25 +148,25 @@ public class MergeMultipleAccessionAssignments {
                     accessionRows[rowCount++] = nextRow;
 
                     if (rowCount >= linesPerCall) { // time to process what we have
-                        createOutput(w, database, idParsers, accessionRows, rowCount, cNames, tmpData);
+                        createOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
                         rowCount = 0;
                     }
                 }
             }
 
             if (rowCount > 0) {
-                createOutput(w, database, idParsers, accessionRows, rowCount, cNames, tmpData);
+                createOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
             }
         }
     }
 
     private void createOutput(final BufferedWriter w, final AccessAccessionMappingDatabase database, final IdParser[] idParsers,
-                              final String[][] accessionRows, final int rowCount, final String[] cNames, TmpData tmpData) throws SQLException, IOException {
+                              final String[][] accessionRows, final int rowCount, final String[] cNames, WorkingData workingData) throws SQLException, IOException {
 
         final int[][] accessionClassesMap;
         // compute mapping of accessions to their classes in different classifications
         {
-            final var accessions = tmpData.accessionsCleared();
+            final var accessions = workingData.accessionsCleared();
             for (var r = 0; r < rowCount; r++) {
                 Collections.addAll(accessions, accessionRows[r]);
             }
@@ -175,8 +175,8 @@ public class MergeMultipleAccessionAssignments {
 
             accessionClassesMap = new int[totalAccessions][];
 
-            for (var start = 0; start < totalAccessions; start += tmpData.maxQuerySize()) {
-                var end = Math.min(totalAccessions, start + tmpData.maxQuerySize());
+            for (var start = 0; start < totalAccessions; start += workingData.maxQuerySize()) {
+                var end = Math.min(totalAccessions, start + workingData.maxQuerySize());
                 var subAccessions = accessions.subList(start, end).toArray(new String[0]);
                 var subAccessionClassesTable = database.getValues(subAccessions, subAccessions.length, cNames);
                 System.arraycopy(subAccessionClassesTable, 0, accessionClassesMap, start, subAccessions.length);
@@ -193,16 +193,16 @@ public class MergeMultipleAccessionAssignments {
                 }
             }
         }
-        // for each row of accessions, compute the resulting class ids and write out first-accession to classes table:
+        // for each row of accessions, compute the resulting class ids and write out 'first-accession to classes' table:
         {
-            final var resultIds = tmpData.resultIds();
-            final var classIds = tmpData.classIdsCleared();
+            final var classIds = workingData.classIdsCleared();
 
             var accessionNumber = 0; // number of accession in flat list
             for (var r = 0; r < rowCount; r++) {
                 final var row = accessionRows[r];
                 final var firstAccessionInRow = row[0];
 
+                w.write(firstAccessionInRow);
                 for (var c = 0; c < cNames.length; c++) {
                     classIds.clear();
                     for (var posInRow = 0; posInRow < row.length; posInRow++) {
@@ -212,24 +212,22 @@ public class MergeMultipleAccessionAssignments {
                         // if(id<0)  System.err.println(id);
 
                     }
-                    resultIds[c] = idParsers[c].processMultipleIds(classIds);
+                   var id = idParsers[c].processMultipleIds(classIds);
+                    w.write("\t%s".formatted(id!=0?String.valueOf(id):""));
                 }
-                w.write("%s\t%s%n".formatted(firstAccessionInRow, StringUtils.toString(resultIds, "\t")));
-                w.flush();
+                w.write("\n");
                 accessionNumber += row.length;
             }
         }
-
     }
 
     /**
      * some tmp data structures that we recycle
      */
-    private record TmpData(int maxQuerySize, ArrayList<Integer> classIds, ArrayList<String> accessions,
-                           int[] resultIds) {
+    private record WorkingData(int maxQuerySize, ArrayList<Integer> classIds, ArrayList<String> accessions) {
 
-        public TmpData(int nClassifications, int maxQuerySize) {
-            this(maxQuerySize, new ArrayList<>(), new ArrayList<>(), new int[nClassifications]);
+        public WorkingData(int maxQuerySize) {
+            this(maxQuerySize, new ArrayList<>(), new ArrayList<>());
         }
 
         public ArrayList<Integer> classIdsCleared() {

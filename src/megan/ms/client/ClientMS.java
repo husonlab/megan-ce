@@ -50,7 +50,7 @@ public class ClientMS {
         this.serverAndPrefix = serverAndPrefix.replaceAll("/$", "");
         this.timeoutSeconds = timeoutSeconds;
 
-        final var proxyAddress = (proxyName.isBlank() ? null:new InetSocketAddress(proxyName, proxyPort));
+        final var proxyAddress = (proxyName == null || proxyName.isBlank() ? null : new InetSocketAddress(proxyName, proxyPort));
 
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(timeoutSeconds))

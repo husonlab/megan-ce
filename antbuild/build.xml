@@ -21,7 +21,7 @@
 		<property name="ant.build.javac.source" value="16"/>
 		<property name="ant.build.javac.target" value="16"/>
 
-		<property name="jfxDir" value="../../javafx/lib"/>
+		<property name="jfxDir" value="/Users/huson/lib/javafx/lib"/>
 		<property name="jlodaAntDir" value="../../jloda/antbuild"/>
 		<property name="buildSrcDir" value="../antbuild/src"/>
 		<property name="buildModulesDir" value="../antbuild/modules"/>

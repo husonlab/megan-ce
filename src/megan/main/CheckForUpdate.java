@@ -35,7 +35,7 @@ import javax.swing.*;
  * Daniel Huson, 3.2020
  */
 public class CheckForUpdate {
-    public static final String programURL = "https://oftware-ab.cs.uni-tuebingen.de/download/megan6";
+    public static final String programURL = "https://software-ab.cs.uni-tuebingen.de/download/megan6";
     public static final String updaterApplicationId = "1691242905";
     public static String updates = "updates.xml";
 

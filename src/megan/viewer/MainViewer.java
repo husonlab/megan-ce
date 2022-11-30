@@ -172,7 +172,10 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             throw ex;
         }
 
-        doc.closeConnector();
+        try {
+            doc.closeConnector();
+        }
+        catch (Exception ignored) {}
 
         if (lastActiveViewer == MainViewer.this)
             lastActiveViewer = null;

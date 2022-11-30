@@ -47,6 +47,8 @@ public class RemoteService implements IRemoteService {
      */
     public RemoteService(String serverURL, String user, String passwordHash) throws IOException {
         serverURL = serverURL.replaceAll("/$", "");
+        if(serverURL.endsWith("/help"))
+            serverURL=serverURL.substring(0,serverURL.length()-4); // remove help
         if (!serverURL.contains(("/")))
             serverURL += "/megan6server";
         this.serverURL = serverURL;

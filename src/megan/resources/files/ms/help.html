@@ -31,78 +31,78 @@
 <body style="font-family:Arial,serif">
 <h1>MeganServer resources</h1>
 
-To access resources on this server, all resource names must be prefixed by "<i>ServiceURL/</i>".<br><br>
+To access resources on this server, all resource names must be prefixed by "<i>ServiceURL</i>".<br><br>
 For example, to request the help resource, use "<i>ServiceURL/help</i>".
 
 <h2>General:</h2>
 <table>
     <tr>
-        <td>help</td><td> Get this help</td>
+        <td>/help</td><td> Get this help</td>
     </tr>
     <tr>
-        <td> about</td> <td> Get version and general info</td>
+        <td>/about</td> <td> Get version and general info</td>
     </tr>
     <tr>
-        <td> isReadOnly</td> <td> At present, always true</td>
+        <td>/isReadOnly</td> <td> At present, always true</td>
     </tr>
 </table>
 
 <h2>Files:</h2>
 <table>
     <tr>
-        <td> list</td> <td> List all datasets,
+        <td>/list</td> <td> List all datasets,
         optional parameters: readCount=<i>bool</i>, matchCount=<i>bool</i>, metadata=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getAuxiliary?file=<i>name</i></td> <td> Get auxiliary data for file. Optional parameter: binary=<i>bool</i></td>
+        <td>/getAuxiliary?file=<i>name</i></td> <td> Get auxiliary data for file. Optional parameter: binary=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getNumberOfReads?file=<i>name</i></td> <td> Get number of reads for file</td>
+        <td>/getNumberOfReads?file=<i>name</i></td> <td> Get number of reads for file</td>
     </tr>
     <tr>
-        <td>getNumberOfMatches?file=<i>name</i></td> <td> Get number of matches for file</td>
+        <td>/getNumberOfMatches?file=<i>name</i></td> <td> Get number of matches for file</td>
     </tr>
     <tr>
-        <td>getClassificationNames?file=<i>name</i></td> <td> Get list of all classifications for file</td>
+        <td>/getClassificationNames?file=<i>name</i></td> <td> Get list of all classifications for file</td>
     </tr>
     <tr>
-        <td>getDescription?file=<i>name</i></td> <td> Get a description of a file, if available</td>
+        <td>/getDescription?file=<i>name</i></td> <td> Get a description of a file, if available</td>
     </tr>
     <tr>
-        <td>download?file=<i>name</i></td> <td> Download a file</td>
+        <td>/download?file=<i>name</i></td> <td> Download a file</td>
     </tr>
 </table>
 
 <h2>Reads and matches:</h2>
 <table>
     <tr>
-        <td>getRead?file=<i>name</i>&readId=<i>num</i></td> <td> Get read and optionally all matches for given file and readId.
+        <td>/getRead?file=<i>name</i>&readId=<i>num</i></td> <td> Get read and optionally all matches for given file and readId.
         Optional parameters: header=<i>bool</i>, sequence=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getReads?file=<i>name</i></td>
+        <td>/getReads?file=<i>name</i></td>
         <td> Get all reads for a given file; returns first page and page-id for next.
             Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
-        <td> getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td>
+        <td>/getReadsForClass?file=<i>name</i>&classification=<i>name</i>&classId=<i>num,...</i></td>
         <td> Get all reads for a given file,  classification and one or more classes. Returns first page and page-id for next.
             Optional parameters: readIds=<i>bool</i>, headers=<i>bool</i>, sequences=<i>bool</i>, matches=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getNext?pageId=<i>num</i></td> <td> Get the next page of reads</td>
+        <td>/getNext?pageId=<i>num</i></td> <td> Get the next page of reads</td>
     </tr>
 </table>
 
 <h2>Classifications:</h2>
 <table>
     <tr>
-        <td>getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td>
+        <td>/getClassificationBlock?file=<i>name</i>&classification=<i>name</i> </td>
         <td> Get the classifications block for a named file and classification.
             Optional parameter: binary=<i>bool</i></td>
     </tr>
     <tr>
-        <td>getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td>
+        <td>/getClassSize?file=<i>name</i>&classification=<i>name</i>classId=<i>num</i></td>
         <td> Get the number reads for a given file, classification and classId.
             Optional parameter: sum=<i>bool</i></td>
     </tr>
@@ -111,33 +111,33 @@ For example, to request the help resource, use "<i>ServiceURL/help</i>".
 <h2>Admin:</h2>
 <table>
     <tr>
-        <td>admin/update</td> <td> Update server after files have been added to root directory</td>
+        <td>/admin/update</td> <td> Update server after files have been added to root directory</td>
     </tr>
     <tr>
-        <td>admin/listUsers</td> <td> List all defined users</td>
+        <td>/admin/listUsers</td> <td> List all defined users</td>
     </tr>
     <tr>
-        <td>admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td>
+        <td>/admin/addUser?name=<i>name</i>&password=<i>pwd</i>&isAdmin=<i>bool</i></td>
         <td> Add a new user.
             Optional parameter: replace=<i>bool</i></td>
     </tr>
     <tr>
-        <td>admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>
+        <td>/admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>
     </tr>
     <tr>
-        <td>admin/addRole?user=<i>name</i>&role=<i>role</i></td> <td> Add a role to a user (UE only)</td>
+        <td>/admin/addRole?user=<i>name</i>&role=<i>role</i></td> <td> Add a role to a user (UE only)</td>
     </tr>
     <tr>
-        <td>admin/removeRole?user=<i>name</i>&role=<i>role</i></td> <td> Remove a role from a user (UE only)</td>
+        <td>/admin/removeRole?user=<i>name</i>&role=<i>role</i></td> <td> Remove a role from a user (UE only)</td>
     </tr>
     <tr>
-        <td>admin/getLog</td> <td> Get log entries</td>
+        <td>/admin/getLog</td> <td> Get log entries</td>
     </tr>
     <tr>
-        <td>admin/clearLog</td> <td> Clear log entries</td>
+        <td>/admin/clearLog</td> <td> Clear log entries</td>
     </tr>
     <tr>
-        <td>admin/shutdown</td> <td> Shutdown the program</td>
+        <td>/admin/shutdown</td> <td> Shutdown the program</td>
     </tr>
 
 </table>

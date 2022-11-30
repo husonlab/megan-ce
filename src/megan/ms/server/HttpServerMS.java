@@ -68,11 +68,9 @@ public class HttpServerMS {
 
         // general info:
         var url="http://" + getAddress().getHostAddress() + ":" + getSocketAddress().getPort() +path;
-
-        createContext(path, new HttpHandlerMS(RequestHandler.getHelp(url)),null);
-
-        createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp(url)),null); // .setAuthenticator(authenticator);
+       createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp(url)),null); // .setAuthenticator(authenticator);
         createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
+        createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
 
         // admin commands:
         createContext(path + "/admin/update", new HttpHandlerMS(RequestHandlerAdmin.update(path2database.values())),adminAuthenticator);
@@ -98,6 +96,10 @@ public class HttpServerMS {
         final var authenticator = userManager.createAuthenticator(role);
 
         // general info:
+        var url="http://" + getAddress().getHostAddress() + ":" + getSocketAddress().getPort() +path;
+        createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp(url)),null); // .setAuthenticator(authenticator);
+        createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
+
         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
         createContext(path + "/isReadOnly", new HttpHandlerMS( (c, p) -> "true".getBytes()),authenticator);
         createContext(path + "/list", new HttpHandlerMS(RequestHandler.getListDataset(database)),authenticator);
@@ -193,7 +195,7 @@ public class HttpServerMS {
                        + "Known users: " + userManager.size() + "\n"
                        + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
                        + "Server started: " + (new Date(getStarted())) + "\n";
-        about += "Help URL: http://" + getAddress().getHostAddress() + ":"+getSocketAddress().getPort() + defaultPath+"\n";
+        about += "Help: http://" + getAddress().getHostAddress() + ":"+getSocketAddress().getPort() + defaultPath + "/help\n";
         return about;
     }
 }

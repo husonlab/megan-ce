@@ -19,9 +19,20 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<h1>MeganServer commands</h1>
+<head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+    <title>MeganServer resources</title>
 
-All commands are prefixed by "megan6server/" (or similar prefix).
+    <style>
+        a { color: #B22222; } /* CSS link color */
+        body { color: #444E57;}
+    </style>
+</head>
+<body style="font-family:Arial,serif">
+<h1>MeganServer resources</h1>
+
+To access resources on this server, all resource names must be prefixed by "<i>ServiceURL/</i>".<br><br>
+For example, to request the help resource, use "<i>ServiceURL/help</i>".
 
 <h2>General:</h2>
 <table>
@@ -114,10 +125,10 @@ All commands are prefixed by "megan6server/" (or similar prefix).
         <td>admin/removeUser?name=<i>name</i></td> <td> Remove a user</td>
     </tr>
     <tr>
-        <td>admin/addRole?user=<i>name</i>&role=<i>role</i></td> <td> Add a role to a user (UE)</td>
+        <td>admin/addRole?user=<i>name</i>&role=<i>role</i></td> <td> Add a role to a user (UE only)</td>
     </tr>
     <tr>
-        <td>admin/removeRole?user=<i>name</i>&role=<i>role</i></td> <td> Remove a role from a user (UE)</td>
+        <td>admin/removeRole?user=<i>name</i>&role=<i>role</i></td> <td> Remove a role from a user (UE only)</td>
     </tr>
     <tr>
         <td>admin/getLog</td> <td> Get log entries</td>
@@ -130,6 +141,6 @@ All commands are prefixed by "megan6server/" (or similar prefix).
     </tr>
 
 </table>
-
+</body>
 </html>
 

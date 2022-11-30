@@ -58,13 +58,13 @@ public interface RequestHandler {
     }
 
 
-    static RequestHandler getHelp() {
+    static RequestHandler getHelp(String url) {
         return (c, p) -> {
             try {
                 checkKnownParameters(p);
                 try (InputStream ins = ResourceManager.getFileAsStream("ms/help.html")) {
                     if (ins != null) {
-                        return ins.readAllBytes();
+                        return StringUtils.toString(ins.readAllBytes()).replaceAll("ServiceURL",url).getBytes();
                     }
                 }
                 throw new IOException("Resource not found: ms/help.html");

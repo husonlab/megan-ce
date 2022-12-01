@@ -123,12 +123,12 @@ public class MSConnector implements IConnector {
 
     @Override
     public int getNumberOfReads() throws IOException {
-        return NumberUtils.parseInt(client.getAsString("numberOfReads?file=" + fileName));
+        return NumberUtils.parseInt(client.getAsString("getNumberOfReads?file=" + fileName));
     }
 
     @Override
     public int getNumberOfMatches() throws IOException {
-        return NumberUtils.parseInt(client.getAsString("numberOfMatches?file=" + fileName));
+        return NumberUtils.parseInt(client.getAsString("getNumberOfMatches?file=" + fileName));
     }
 
     @Override

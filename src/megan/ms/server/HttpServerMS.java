@@ -63,15 +63,9 @@ public class HttpServerMS {
         address = InetAddress.getLocalHost();
         httpServer = HttpServer.create(new InetSocketAddress((InetAddress) null, port), backlog);
 
-        final var authenticator = userManager.createAuthenticator(null);
         final var adminAuthenticator = userManager.createAuthenticator(UserManager.ADMIN);
 
-        // general info:
-        var url="http://" + getAddress().getHostAddress() + ":" + getSocketAddress().getPort() +path;
-       createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp(url)),null); // .setAuthenticator(authenticator);
-        createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
-
-        // admin commands:
+         // admin commands:
         createContext(path + "/admin/update", new HttpHandlerMS(RequestHandlerAdmin.update(path2database.values())),adminAuthenticator);
         createContext(path + "/admin/listUsers", new HttpHandlerMS(RequestHandlerAdmin.listUsers(userManager)),adminAuthenticator);
         createContext(path + "/admin/addUser", new HttpHandlerMS(RequestHandlerAdmin.addUser(userManager)),adminAuthenticator);
@@ -92,9 +86,15 @@ public class HttpServerMS {
 
         path2database.put(path,database);
 
+        // general info:
+        var url="http://" + getAddress().getHostAddress() + ":" + getSocketAddress().getPort() +path;
+        createContext(path + "/help", new HttpHandlerMS(RequestHandler.getHelp(url)),null); // .setAuthenticator(authenticator);
+
+
         final var authenticator = userManager.createAuthenticator(role);
 
         // general info:
+        createContext(path + "/version", new HttpHandlerMS(RequestHandler.getVersion()),authenticator);
         createContext(path + "/about", new HttpHandlerMS(RequestHandler.getAbout(this)),authenticator);
         createContext(path + "/isReadOnly", new HttpHandlerMS( (c, p) -> "true".getBytes()),authenticator);
         createContext(path + "/list", new HttpHandlerMS(RequestHandler.getListDataset(database)),authenticator);
@@ -102,8 +102,12 @@ public class HttpServerMS {
         // file info:
         createContext(path + "/getFileUid", new HttpHandlerMS(RequestHandler.getFileUid(database)),authenticator);
         createContext(path + "/getAuxiliary", new HttpHandlerMS(RequestHandler.getAuxiliaryData(database)),authenticator);
+        createContext(path + "/getNumberOfReads", new HttpHandlerMS(RequestHandler.getNumberOfReads(database)),authenticator);
+        createContext(path + "/getNumberOfMatches", new HttpHandlerMS(RequestHandler.getNumberOfMatches(database)),authenticator);
+        // for backward compatibility:
         createContext(path + "/numberOfReads", new HttpHandlerMS(RequestHandler.getNumberOfReads(database)),authenticator);
         createContext(path + "/numberOfMatches", new HttpHandlerMS(RequestHandler.getNumberOfMatches(database)),authenticator);
+
         createContext(path + "/getClassificationNames", new HttpHandlerMS(RequestHandler.getClassifications(database)),authenticator);
 
         // access reads and matches

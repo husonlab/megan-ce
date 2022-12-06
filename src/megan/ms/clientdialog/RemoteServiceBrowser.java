@@ -46,6 +46,7 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  * Remote services browser
@@ -162,7 +163,12 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
             commandManager.updateEnableState();
         };
         urlComboBox.addItemListener(itemListener);
-        urlComboBox.addItems(RemoteServiceManager.getServers());
+        {
+            var items = new ArrayList<>(RemoteServiceManager.getServers());
+            items.remove(RemoteServiceManager.DEFAULT_MEGAN_SERVER);
+            items.set(0, RemoteServiceManager.DEFAULT_MEGAN_SERVER);
+            urlComboBox.addItems(items);
+        }
          urlComboBox.setMaximumSize(new Dimension(2000, 25));
         urlComboBox.setPreferredSize(new Dimension(600, 25));
         urlComboBox.setToolTipText("MEGAN server URL");

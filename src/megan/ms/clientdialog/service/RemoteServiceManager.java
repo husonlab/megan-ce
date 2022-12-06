@@ -25,6 +25,7 @@ import megan.ms.clientdialog.IRemoteService;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * remote service manager
@@ -34,7 +35,7 @@ import java.util.*;
 public class RemoteServiceManager {
     public static final String LOCAL = "Local::";
 
-    private static final String DEFAULT_MEGAN_SERVER = "http://maira.cs.uni-tuebingen.de:8001/megan6server";
+    public static final String DEFAULT_MEGAN_SERVER = "http://maira.cs.uni-tuebingen.de:8001/megan6server";
 
     private static final Map<String, IRemoteService> url2node = new HashMap<>();
 
@@ -187,11 +188,11 @@ public class RemoteServiceManager {
     private static void saveCredentialsToProperties() {
         final List<String> list = new LinkedList<>();
 
-        // remove old default server:
-        server2Credentials.remove("meganserver2.informatik.uni-tuebingen.de/Public");
+        // remove defunct servers:
+        server2Credentials.keySet().stream().filter(s->s.toLowerCase().contains("informatik.uni-tuebingen.de")).collect(Collectors.toList()).forEach(server2Credentials.keySet()::remove);
 
         for (String server : server2Credentials.keySet()) {
-            Pair<String, String> pair = server2Credentials.get(server);
+            var pair = server2Credentials.get(server);
             list.add(server + "::" + pair.getFirst() + "::" + pair.getSecond());
         }
         ProgramProperties.put("MeganServers", list.toArray(new String[0]));

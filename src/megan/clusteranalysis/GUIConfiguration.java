@@ -56,7 +56,8 @@ public class GUIConfiguration {
         menuConfig.defineMenu("Options", "Apply Triangulation Test...;|;PCoA Tab;UPGMA Tree Tab;NJ Tree Tab;Network Tab;Matrix Tab;|;Use JSD;Use Bray-Curtis;Use Euclidean;|;Use Unweighted Uniform UniFrac;Use Weighted Uniform UniFrac;|;Use Chi-Square;Use Kulczynski;Use Hellinger;Use Goodall;|;Sync;");
 
 
-        menuConfig.defineMenu("PCoA", "PCoA Tab;|;PC1 vs PC2;PC1 vs PC3;PC2 vs PC3;PCi vs PCj...;|;PC1 PC2 PC3;PCi PCj PCk...;|;Show Axes;|;Show BiPlot;BiPlot Size...;|;Show TriPlot;TriPlot Size...;");
+        menuConfig.defineMenu("PCoA", "PCoA Tab;|;PC1 vs PC2;PC1 vs PC3;PC2 vs PC3;PCi vs PCj...;|;PC1 PC2 PC3;PCi PCj PCk...;|;Show Axes;|;Show BiPlot;BiPlot Size...;|;Show TriPlot;TriPlot Size...;|;@More;");
+        menuConfig.defineMenu("More","Set BiPlot Scale Factor...;Set TriPlot Scale Factor...;");
 
         menuConfig.defineMenu("Window", "Message Window...;|;Samples Viewer...;Groups Viewer...;|;");
 

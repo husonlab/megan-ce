@@ -78,7 +78,9 @@ public class PCoATab extends JPanel implements ITab {
     private boolean showAxes = ProgramProperties.get("ShowPCoAAxes", true);
 
     private boolean showBiPlot = ProgramProperties.get("ShowBiPlot", false);
+    private double biPlotScaleFactor=ProgramProperties.get("BiPlotScaleFactor",1.0);
     private boolean showTriPlot = ProgramProperties.get("ShowTriPlot", false);
+    private double triPlotScaleFactor =ProgramProperties.get("TriPlotScaleFactor",1.0);
 
     private boolean showGroupsAsEllipses = ProgramProperties.get("ShowGroups", true);
     private boolean showGroupsAsConvexHulls = ProgramProperties.get("ShowGroupsAsConvexHulls", true);
@@ -646,6 +648,17 @@ public class PCoATab extends JPanel implements ITab {
         ProgramProperties.put("BiplotSize", biplotSize);
         computeBiPlotVectors(biplotSize);
     }
+    
+    public double getBiPlotScaleFactor() {
+        return biPlotScaleFactor;
+    }
+
+    public void setBiPlotScaleFactor(double factor) {
+        
+        this.biPlotScaleFactor = factor;
+        ProgramProperties.put("BiPlotScaleFactor", biPlotScaleFactor);
+        computeBiPlotVectors(biplotSize);
+    }
 
     public void setTriplotSize(int triplotSize) {
         if (triplotSize > 0)
@@ -663,6 +676,16 @@ public class PCoATab extends JPanel implements ITab {
         return triplotSize;
     }
 
+    public double getTriPlotScaleFactor() {
+        return triPlotScaleFactor;
+    }
+
+    public void setTriPlotScaleFactor(double factor) {
+        this.triPlotScaleFactor = factor;
+        ProgramProperties.put("TriPlotScaleFactor", triPlotScaleFactor);
+        computeTriPlotVectors(triplotSize);
+    }
+    
     public void setShowGroupsAsConvexHulls(boolean showGroupsAsConvexHulls) {
         this.showGroupsAsConvexHulls = showGroupsAsConvexHulls;
         ProgramProperties.put("ShowGroupsAsConvexHulls", showGroupsAsConvexHulls);
@@ -820,14 +843,14 @@ public class PCoATab extends JPanel implements ITab {
      */
     private void computeBiPlotVectors(int numberOfBiplotVectorsToShow) {
         // delete all existing biplot nodes:
-        for (Node v : biplotNodes)
+        for (var v : biplotNodes)
             graph.deleteNode(v);
         biplotNodes.clear();
         biplotEdges.clear();
         biplot = null;
 
         // compute biplot arrows:
-        final int top = Math.min(numberOfBiplotVectorsToShow, getPCoA().getLoadingVectorsBiPlot().size());
+        var top = Math.min(numberOfBiplotVectorsToShow, getPCoA().getLoadingVectorsBiPlot().size());
 
         if (top > 0) {
             final Node zero = graph.newNode();
@@ -838,14 +861,14 @@ public class PCoATab extends JPanel implements ITab {
             biplot = new Pair[getPCoA().getLoadingVectorsBiPlot().size()];
             for (int i = 0; i < getPCoA().getLoadingVectorsBiPlot().size(); i++) {
                 final Pair<String, double[]> pair = getPCoA().getLoadingVectorsBiPlot().get(i);
-                final double x = pair.getSecond()[firstPC];
-                final double y = pair.getSecond()[secondPC];
-                final double z = (thirdPC < pair.getSecond().length ? pair.getSecond()[thirdPC] : 0);
+                var x = pair.getSecond()[firstPC];
+                var y = pair.getSecond()[secondPC];
+                var z = (thirdPC < pair.getSecond().length ? pair.getSecond()[thirdPC] : 0);
                 biplot[i] = new Pair<>(pair.getFirst(), new double[]{x, y, z});
             }
             Arrays.sort(biplot, (a, b) -> {
-                double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-                double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+                var aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+                var bSquaredLength = Utilities.getSquaredLength(b.getSecond());
                 if (aSquaredLength > bSquaredLength)
                     return -1;
                 else if (aSquaredLength < bSquaredLength)
@@ -854,28 +877,29 @@ public class PCoATab extends JPanel implements ITab {
                     return a.getFirst().compareTo(b.getFirst());
             });
 
-            double scaleFactor = computeLoadingsScaleFactor(biplot[0].getSecond());
+            var scaleFactor = computeLoadingsScaleFactor(biplot[0].getSecond())*biPlotScaleFactor;
 
-            for (int i = 0; i < top; i++) {
-                final Pair<String, double[]> pair = biplot[i];
-                final double x = (flipH ? -1 : 1) * scaleFactor * pair.getSecond()[0];
-                final double y = (flipV ? -1 : 1) * scaleFactor * pair.getSecond()[1];
-                final double z = scaleFactor * pair.getSecond()[2];
-                final Node v = graph.newNode();
+            for (var i = 0; i < top; i++) {
+                var pair = biplot[i];
+                var x = (flipH ? -1 : 1) * scaleFactor * pair.getSecond()[0];
+                var y = (flipV ? -1 : 1) * scaleFactor * pair.getSecond()[1];
+                var z = scaleFactor * pair.getSecond()[2];
+
+                var v = graph.newNode();
                 biplotNodes.add(v);
                 graph.setLabel(v, pair.getFirst());
                 graphView.setLabel(v, pair.getFirst());
                 graphView.setLabelVisible(v, isShowBiPlot());
-                final NodeView nv = graphView.getNV(v);
+                var nv = graphView.getNV(v);
                 nv.setLocation(x, y);
                 node2vector.put(v, new Vector3D(x, y, z));
 
                 nv.setLabelLayoutFromAngle(Geometry.computeAngle(nv.getLocation()));
                 nv.setLabelColor(getBiPlotColor());
                 nv.setNodeShape(NodeShape.None);
-                final Edge e = graph.newEdge(zero, v);
+                var e = graph.newEdge(zero, v);
                 biplotEdges.add(e);
-                final EdgeView ev = graphView.getEV(e);
+                var ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
                 ev.setColor(getBiPlotColor());
                 ev.setLineWidth(getBiPlotLineWidth());
@@ -890,32 +914,32 @@ public class PCoATab extends JPanel implements ITab {
      */
     private void computeTriPlotVectors(int numberOfTriplotVectorsToShow) {
         // delete all existing triplot nodes:
-        for (Node v : triplotNodes)
+        for (var v : triplotNodes)
             graph.deleteNode(v);
         triplotNodes.clear();
         triplotEdges.clear();
         triplot = null;
 
         // compute triplot arrows:
-        final int top = Math.min(numberOfTriplotVectorsToShow, getPCoA().getLoadingVectorsTriPlot().size());
+        var top = Math.min(numberOfTriplotVectorsToShow, getPCoA().getLoadingVectorsTriPlot().size());
 
         if (top > 0) {
-            final Node zero = graph.newNode();
+            var zero = graph.newNode();
             graphView.setLocation(zero, 0, 0);
             graphView.setNodeShape(zero, NodeShape.None);
             triplotNodes.add(zero);
 
             triplot = new Pair[getPCoA().getLoadingVectorsTriPlot().size()];
             for (int i = 0; i < getPCoA().getLoadingVectorsTriPlot().size(); i++) {
-                final Pair<String, double[]> pair = getPCoA().getLoadingVectorsTriPlot().get(i);
-                final double x = pair.getSecond()[firstPC];
-                final double y = pair.getSecond()[secondPC];
-                final double z = (thirdPC < pair.getSecond().length ? pair.getSecond()[thirdPC] : 0);
+                var pair = getPCoA().getLoadingVectorsTriPlot().get(i);
+                var x = pair.getSecond()[firstPC];
+                var y = pair.getSecond()[secondPC];
+                var z = (thirdPC < pair.getSecond().length ? pair.getSecond()[thirdPC] : 0);
                 triplot[i] = new Pair<>(pair.getFirst(), new double[]{x, y, z});
             }
             Arrays.sort(triplot, (a, b) -> {
-                double aSquaredLength = Utilities.getSquaredLength(a.getSecond());
-                double bSquaredLength = Utilities.getSquaredLength(b.getSecond());
+                var aSquaredLength = Utilities.getSquaredLength(a.getSecond());
+                var bSquaredLength = Utilities.getSquaredLength(b.getSecond());
                 if (aSquaredLength > bSquaredLength)
                     return -1;
                 else if (aSquaredLength < bSquaredLength)
@@ -924,19 +948,19 @@ public class PCoATab extends JPanel implements ITab {
                     return a.getFirst().compareTo(b.getFirst());
             });
 
-            double scaleFactor = computeLoadingsScaleFactor(triplot[0].getSecond());
+            var scaleFactor = computeLoadingsScaleFactor(triplot[0].getSecond()) * triPlotScaleFactor;
 
-            for (int i = 0; i < top; i++) {
-                final Pair<String, double[]> pair = triplot[i];
-                final double x = (flipH ? -1 : 1) * scaleFactor * pair.getSecond()[0];
-                final double y = (flipV ? -1 : 1) * scaleFactor * pair.getSecond()[1];
-                final double z = scaleFactor * pair.getSecond()[2];
-                final Node v = graph.newNode();
+            for (var i = 0; i < top; i++) {
+                var pair = triplot[i];
+                var x = (flipH ? -1 : 1) * scaleFactor * pair.getSecond()[0];
+                var y = (flipV ? -1 : 1) * scaleFactor * pair.getSecond()[1];
+                var z = scaleFactor * pair.getSecond()[2];
+                var v = graph.newNode();
                 triplotNodes.add(v);
                 graph.setLabel(v, pair.getFirst());
                 graphView.setLabel(v, pair.getFirst());
                 graphView.setLabelVisible(v, isShowTriPlot());
-                final NodeView nv = graphView.getNV(v);
+                var nv = graphView.getNV(v);
                 nv.setLocation(x, y);
                 node2vector.put(v, new Vector3D(x, y, z));
                 triplot[i].setSecond(new double[]{x, y, z});
@@ -945,9 +969,9 @@ public class PCoATab extends JPanel implements ITab {
                 nv.setLabelColor(getTriPlotColor());
                 nv.setNodeShape(NodeShape.None);
 
-                final Edge e = graph.newEdge(zero, v);
+                var e = graph.newEdge(zero, v);
                 triplotEdges.add(e);
-                final EdgeView ev = graphView.getEV(e);
+                var ev = graphView.getEV(e);
                 ev.setDirection(EdgeView.DIRECTED);
                 ev.setColor(getTriPlotColor());
                 ev.setLineWidth((byte) getTriPlotLineWidth());

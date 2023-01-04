@@ -64,31 +64,31 @@ public class DAA2Info {
      *
 	 */
     private void run(String[] args) throws UsageException, IOException, CanceledException {
-        final ArgsOptions options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
+        final var options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output");
-        final String daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
+        final var daaFile = options.getOptionMandatory("-i", "in", "Input DAA file", "");
+        final var outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
         options.comment("Commands");
-		final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
-		final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
+		final var listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
+		final var listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
 
-		final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-		final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-		final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
-		final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
-		final boolean prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
-		final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
-		final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
-		final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
-		final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
-		final boolean useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
+		final var listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final var listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final var reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
+		final var reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
+		final var prefixRank = options.getOption("-r", "prefixRank", "When reporting class paths for taxonomy, prefix single letter to indicate taxonomic rank", false);
+		final var majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+		final var bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
+		final var viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
+		final var ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
+		final var useSummary = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
-		final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
+		final var extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
 
 		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
 		options.done();
@@ -105,7 +105,7 @@ public class DAA2Info {
         else
             taxonomyRoot = TaxonomyData.ROOT_ID;
 
-        final Boolean isMeganized = DAAParser.isMeganizedDAAFile(daaFile, true);
+        final var isMeganized = DAAParser.isMeganizedDAAFile(daaFile, true);
 
         final var doc = new Document();
         if (isMeganized) {
@@ -152,7 +152,7 @@ public class DAA2Info {
             }
         }
         if (extractSummaryFile.length() > 0) {
-            try (Writer w = new FileWriter(extractSummaryFile)) {
+            try (var w = new FileWriter(extractSummaryFile)) {
                 doc.getDataTable().write(w);
                 doc.getSampleAttributeTable().write(w, false, true);
             }

@@ -30,6 +30,7 @@ import jloda.swing.util.ResourceManager;
 import jloda.swing.window.About;
 import jloda.swing.window.NotificationsInSwing;
 import jloda.util.Basic;
+import jloda.util.PeakMemoryUsageMonitor;
 import jloda.util.StringUtils;
 import megan.chart.data.ChartCommandHelper;
 import megan.classification.data.ClassificationCommandHelper;
@@ -49,8 +50,16 @@ public class Megan6 {
      * runs MEGAN6
      */
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+           MessageWindow.getInstance().setVisible(false);
+            System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
+            System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+        }));
+        PeakMemoryUsageMonitor.start();
+
         try {
-			{
+
+            {
 				ResourceManager.insertResourceRoot(megan.resources.Resources.class);
 
 				// need to read properties so that registration can add external files directory
@@ -142,6 +151,7 @@ public class Megan6 {
             Basic.stopCollectingStdErr();
         }
         System.err.println("Java version: " + System.getProperty("java.version"));
+        System.err.println("Max memory: " + PeakMemoryUsageMonitor.getMaxMemoryString());
 
         MeganProperties.initializeProperties(propertiesFile);
 

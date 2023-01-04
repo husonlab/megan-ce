@@ -71,33 +71,33 @@ public class RMA2Info {
      *
 	 */
     private void run(String[] args) throws UsageException, IOException {
-        final ArgsOptions options = new ArgsOptions(args, this, "Analyses an RMA file");
+        final var options = new ArgsOptions(args, this, "Analyses an RMA file");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output");
-        final String daaFile = options.getOptionMandatory("-i", "in", "Input RMA file", "");
-        final String outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
+        final var daaFile = options.getOptionMandatory("-i", "in", "Input RMA file", "");
+        final var outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
         options.comment("Commands");
-		final boolean listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
-		final boolean listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
+		final var listGeneralInfo = options.getOption("-l", "list", "List general info about file", false);
+		final var listMoreStuff = options.getOption("-m", "listMore", "List more info about file (if meganized)", false);
 
-		final Set<String> listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-		final Set<String> listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
-		final boolean reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
-		final boolean reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
+		final var listClass2Count = new HashSet<>(options.getOption("-c2c", "class2count", "List class to count for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final var listRead2Class = new HashSet<>(options.getOption("-r2c", "read2class", "List read to class assignments for named classification(s) (Possible values: " + StringUtils.toString(ClassificationManager.getAllSupportedClassifications(), " ") + ")", new ArrayList<>()));
+		final var reportNames = options.getOption("-n", "names", "Report class names rather than class Id numbers", false);
+		final var reportPaths = options.getOption("-p", "paths", "Report class paths rather than class Id numbers", false);
 
-		final boolean prefixRank = options.getOption("-r", "ranks", "When reporting taxonomy, report taxonomic rank using single letter (K for Kingdom, P for Phylum etc)", false);
-		final boolean majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
-		final boolean bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
-		final boolean viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
-		final boolean ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
+		final var prefixRank = options.getOption("-r", "ranks", "When reporting taxonomy, report taxonomic rank using single letter (K for Kingdom, P for Phylum etc)", false);
+		final var majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major taxonomic ranks", false);
+		final var bacteriaOnly = options.getOption("-bo", "bacteriaOnly", "Only report bacterial reads and counts in taxonomic report", false);
+		final var viralOnly = options.getOption("-vo", "virusOnly", "Only report viral reads and counts in taxonomic report", false);
+		final var ignoreUnassigned = options.getOption("-u", "ignoreUnassigned", "Don't report on reads that are unassigned", true);
 
-		final boolean useSummarized = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
+		final var useSummarized = options.getOption("-s", "sum", "Use summarized rather than assigned counts when listing class to count", false);
 
-        final String extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
+        final var extractSummaryFile = options.getOption("-es", "extractSummaryFile", "Output a MEGAN summary file (contains all classifications, but no reads or alignments)", "");
 
         final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
@@ -114,21 +114,21 @@ public class RMA2Info {
         else
             taxonomyRoot = TaxonomyData.ROOT_ID; // means no root set
 
-        final Document doc = new Document();
+        final var doc = new Document();
         doc.getMeganFile().setFileFromExistingFile(daaFile, true);
         if (!doc.getMeganFile().isRMA2File() && !doc.getMeganFile().isRMA3File() && !doc.getMeganFile().isRMA6File())
             throw new IOException("Incorrect file type: " + doc.getMeganFile().getFileType());
         doc.loadMeganFile();
 
-		try (Writer outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+		try (var outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 			if (listGeneralInfo || listMoreStuff) {
-				final IConnector connector = doc.getConnector();
+				final var connector = doc.getConnector();
 				outs.write(String.format("# Number of reads:   %,d\n", doc.getNumberOfReads()));
 				outs.write(String.format("# Number of matches: %,d\n", connector.getNumberOfMatches()));
 				outs.write(String.format("# Alignment mode:  %s\n", doc.getDataTable().getBlastMode()));
 
 				outs.write("# Classifications:");
-				for (String classificationName : connector.getAllClassificationNames()) {
+				for (var classificationName : connector.getAllClassificationNames()) {
 					if (ClassificationManager.getAllSupportedClassifications().contains(classificationName)) {
 						outs.write(" " + classificationName);
                     }
@@ -149,7 +149,7 @@ public class RMA2Info {
             }
         }
         if (extractSummaryFile.length() > 0) {
-            try (Writer w = new FileWriter(extractSummaryFile)) {
+            try (var w = new FileWriter(extractSummaryFile)) {
                 doc.getDataTable().write(w);
                 doc.getSampleAttributeTable().write(w, false, true);
             }
@@ -328,12 +328,12 @@ public class RMA2Info {
     public static void reportRead2Count(Document doc, boolean listGeneralInfo, boolean listMoreStuff, boolean reportPaths, boolean reportNames,
                                         boolean prefixRank, boolean ignoreUnassigned, boolean majorRanksOnly,
                                         Collection<String> classificationNames, int taxonomyRoot, Writer w) throws IOException {
-        final IConnector connector = doc.getConnector();
+        final var connector = doc.getConnector();
 
-        final Map<String, Name2IdMap> classification2NameMap = new HashMap<>();
-        final Set<String> availableClassificationNames = new HashSet<>();
+        final var classification2NameMap = new HashMap<String, Name2IdMap>();
+        final var availableClassificationNames = new HashSet<String>();
 
-        for (String classificationName : connector.getAllClassificationNames()) {
+        for (var classificationName : connector.getAllClassificationNames()) {
             if (ClassificationManager.getAllSupportedClassifications().contains(classificationName)) {
                 availableClassificationNames.add(classificationName);
             }
@@ -341,7 +341,7 @@ public class RMA2Info {
 
         ClassificationFullTree taxonomyTree = null;
 
-        for (String classificationName : classificationNames) {
+        for (var classificationName : classificationNames) {
             if (availableClassificationNames.contains(classificationName)) {
                 if (listGeneralInfo || listMoreStuff)
                     w.write("# Reads to class for '" + classificationName + "':\n");
@@ -349,7 +349,7 @@ public class RMA2Info {
                 if (!availableClassificationNames.contains(classificationName))
 					throw new IOException("Classification '" + classificationName + "' not found in file, available: " + StringUtils.toString(availableClassificationNames, " "));
 
-                final boolean isTaxonomy = (classificationName.equals(Classification.Taxonomy));
+                final var isTaxonomy = (classificationName.equals(Classification.Taxonomy));
 
                 final Name2IdMap name2IdMap;
                 final Classification classification;
@@ -376,9 +376,9 @@ public class RMA2Info {
                     taxonomyTree = ClassificationManager.get(Classification.Taxonomy, true).getFullTree();
                 }
 
-                final Set<Integer> ids = new TreeSet<>(connector.getClassificationBlock(classificationName).getKeySet());
+                final var ids = new TreeSet<>(connector.getClassificationBlock(classificationName).getKeySet());
 
-                for (Integer classId : ids) {
+                for (var classId : ids) {
                     if (isTaxonomy && !(taxonomyRoot == 0 || isDescendant(Objects.requireNonNull(taxonomyTree), classId, taxonomyRoot)))
                         continue;
 
@@ -400,9 +400,9 @@ public class RMA2Info {
                                     else
                                         className = name2IdMap.get(classId);
                                     if (prefixRank) {
-                                        int rank = TaxonomyData.getTaxonomicRank(classId);
-                                        String rankLabel = TaxonomicLevels.getName(rank);
-                                        if (rankLabel == null || rankLabel.length() == 0)
+                                        var rank = TaxonomyData.getTaxonomicRank(classId);
+                                        var rankLabel = TaxonomicLevels.getName(rank);
+                                        if (rankLabel == null || rankLabel.isBlank())
                                             rankLabel = "?";
                                         w.write(readBlock.getReadName() + "\t" + rankLabel.charAt(0) + "\t" + className + "\n");
                                     } else
@@ -410,7 +410,7 @@ public class RMA2Info {
 
                                 } else {
                                     if (reportPaths) {
-                                        Collection<Node> nodes = classification.getFullTree().getNodes(classId);
+                                        var nodes = classification.getFullTree().getNodes(classId);
                                         if (nodes != null) {
                                             for (Node v : nodes) {
                                                 String label = CSVExportCViewer.getPath(classification, v);

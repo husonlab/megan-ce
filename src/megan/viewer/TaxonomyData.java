@@ -130,10 +130,10 @@ public class TaxonomyData {
             return id;
 
         while (true) {
-            int rank = getTaxonomicRank(id);
+            var rank = getTaxonomicRank(id);
             if (TaxonomicLevels.isMajorRank(rank))
                 return id;
-            String address = getAddress(id);
+            var address = getAddress(id);
             if (address == null || address.length() == 0)
                 return 1;
             address = address.substring(0, address.length() - 1);
@@ -155,8 +155,8 @@ public class TaxonomyData {
     }
 
     public static boolean isAncestor(int higherTaxonId, int lowerTaxonId) {
-        String higherAddress = getAddress(higherTaxonId);
-        String lowerAddress = getAddress(lowerTaxonId);
+        var higherAddress = getAddress(higherTaxonId);
+        var lowerAddress = getAddress(lowerTaxonId);
         return higherAddress != null && (lowerAddress == null || lowerAddress.startsWith(higherAddress));
     }
 
@@ -169,14 +169,14 @@ public class TaxonomyData {
         if (taxonIds.size() == 0)
             return IdMapper.NOHITS_ID;
 
-        final Set<String> addresses = new HashSet<>();
+        var addresses = new HashSet<String>();
 
-        int countKnownTaxa = 0;
+        var countKnownTaxa = 0;
 
         // compute addresses of all hit taxa:
-        for (Integer taxonId : taxonIds) {
+        for (var taxonId : taxonIds) {
             if (taxonId > 0 && !isTaxonDisabled(taxonId)) {
-                String address = getAddress(taxonId);
+                var address = getAddress(taxonId);
                 if (address != null) {
                     addresses.add(address);
                     countKnownTaxa++;
@@ -186,7 +186,7 @@ public class TaxonomyData {
 
         // compute LCA using addresses:
         if (countKnownTaxa > 0) {
-            final String address = LCAAddressing.getCommonPrefix(addresses, removeAncestors);
+            var address = LCAAddressing.getCommonPrefix(addresses, removeAncestors);
             return getAddress2Id(address);
         }
 
@@ -201,14 +201,14 @@ public class TaxonomyData {
      */
     public static String getPath(int taxId, boolean majorRanksOnly) {
 
-        final String expectedPath = "DKPCOFGS";
-        int expectedIndex = 0;
+        var expectedPath = "DKPCOFGS";
+        var expectedIndex = 0;
 
-        final Node v = taxonomyClassification.getFullTree().getANode(taxId);
+        final var v = taxonomyClassification.getFullTree().getANode(taxId);
         if (v != null) {
-            final LinkedList<Node> path = new LinkedList<>();
+            var path = new LinkedList<Node>();
             {
-                Node w = v;
+                var w = v;
                 while (true) {
                     if (!majorRanksOnly || TaxonomicLevels.isMajorRank(taxonomyClassification.getId2Rank().get((Integer) w.getInfo())))
                         path.push(w);
@@ -218,17 +218,17 @@ public class TaxonomyData {
                         break;
                 }
             }
-            StringBuilder buf = new StringBuilder();
+            var buf = new StringBuilder();
 
-            for (Node w : path) {
-                Integer id = (Integer) w.getInfo();
+            for (var w : path) {
+                var id = (Integer) w.getInfo();
                 if (id != null) {
                     if (majorRanksOnly) {
-                        String letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer) w.getInfo()));
+                        var letters = TaxonomicLevels.getName(taxonomyClassification.getId2Rank().get((Integer) w.getInfo()));
 
-                        final char key = Character.toUpperCase(letters.charAt(0));
+                        var key = Character.toUpperCase(letters.charAt(0));
                         while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {
-                            char missing = expectedPath.charAt(expectedIndex);
+                            var missing = expectedPath.charAt(expectedIndex);
                             if (missing != 'K') {
                                 if (buf.length() > 0)
                                     buf.append(" ");
@@ -261,7 +261,7 @@ public class TaxonomyData {
      * @return path or id
      */
     public static String getPathOrId(int taxId, boolean majorRanksOnly) {
-        String path = getPath(taxId, majorRanksOnly);
+        var path = getPath(taxId, majorRanksOnly);
         return path != null ? path : "" + taxId;
     }
 
@@ -271,7 +271,7 @@ public class TaxonomyData {
      *
 	 */
     public static void setDisabledInternalTaxa(Set<Integer> internal) {
-        final Node root = taxonomyClassification.getFullTree().getRoot();
+        var root = taxonomyClassification.getFullTree().getRoot();
         if (root != null)
             setDisabledInternalTaxaRec(root, internal, internal.contains((Integer) root.getInfo()));
     }
@@ -281,7 +281,7 @@ public class TaxonomyData {
      *
 	 */
     private static void setDisabledInternalTaxaRec(final Node v, final Set<Integer> internalDisabledIds, boolean disable) {
-        final int id = (int) v.getInfo();
+        final var id = (int) v.getInfo();
 
         if (!disable && internalDisabledIds.contains(id))
             disable = true;
@@ -291,7 +291,7 @@ public class TaxonomyData {
         else
             taxonomyClassification.getIdMapper().getDisabledIds().remove(id);
 
-        for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+        for(var e:v.outEdges()) {
             setDisabledInternalTaxaRec(e.getTarget(), internalDisabledIds, disable);
         }
     }
@@ -302,8 +302,8 @@ public class TaxonomyData {
      * @return disabled internal nodes
      */
     public static Set<Integer> getDisabledInternalTaxa() {
-        final Set<Integer> internalDisabledIds = new TreeSet<>();
-        final Node root = getTree().getRoot();
+        var internalDisabledIds = new TreeSet<Integer>();
+        var root = getTree().getRoot();
         if (root != null)
             getDisabledFromInternalTaxaRec(root, internalDisabledIds);
         return internalDisabledIds;
@@ -314,12 +314,12 @@ public class TaxonomyData {
      *
 	 */
     private static void getDisabledFromInternalTaxaRec(Node v, Set<Integer> internalDisabledIds) {
-        final int id = (int) v.getInfo();
+        var id = (int) v.getInfo();
 
         if (taxonomyClassification.getIdMapper().getDisabledIds().contains(id)) {
             internalDisabledIds.add(id);
         } else {
-            for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+            for(var e:v.outEdges()) {
                 getDisabledFromInternalTaxaRec(e.getTarget(), internalDisabledIds);
             }
         }
@@ -334,11 +334,11 @@ public class TaxonomyData {
     }
 
     public static Collection<Integer> getNonProkaryotesToCollapse() {
-        final Node root = taxonomyClassification.getFullTree().getRoot();
-        final ArrayList<Integer> ids2collapse = new ArrayList<>();
-        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
-            Node w = e.getTarget();
-            Integer id = (Integer) w.getInfo();
+         var root = taxonomyClassification.getFullTree().getRoot();
+        var ids2collapse = new ArrayList<Integer>();
+        for(var e:root.outEdges()) {
+            var w = e.getTarget();
+            var id = (Integer) w.getInfo();
             if (id != 131567 && id != 2 && id != 2157)// cellular organisms
                 ids2collapse.add(id);
         }
@@ -347,11 +347,11 @@ public class TaxonomyData {
     }
 
     public static Collection<Integer> getNonEukaryotesToCollapse() {
-        final Node root = taxonomyClassification.getFullTree().getRoot();
-        final ArrayList<Integer> ids2collapse = new ArrayList<>();
-        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
-            Node w = e.getTarget();
-            Integer id = (Integer) w.getInfo();
+        var root = taxonomyClassification.getFullTree().getRoot();
+        var ids2collapse = new ArrayList<Integer>();
+        for(var e:root.outEdges()) {
+            var w = e.getTarget();
+            var id = (Integer) w.getInfo();
             if (id != 131567)// cellular organisms
                 ids2collapse.add(id);
         }
@@ -361,11 +361,11 @@ public class TaxonomyData {
     }
 
     public static Collection<Integer> getNonVirusesToCollapse() {
-        final Node root = taxonomyClassification.getFullTree().getRoot();
-        final ArrayList<Integer> ids2collapse = new ArrayList<>();
-        for (Edge e = root.getFirstOutEdge(); e != null; e = root.getNextOutEdge(e)) {
-            Node w = e.getTarget();
-            Integer id = (Integer) w.getInfo();
+         var root = taxonomyClassification.getFullTree().getRoot();
+        var ids2collapse = new ArrayList<Integer>();
+        for(var e:root.outEdges()) {
+            var w = e.getTarget();
+            var id = (Integer) w.getInfo();
             if (id != 10239 && id != 12884)// viruses  or viroids
                 ids2collapse.add(id);
         }

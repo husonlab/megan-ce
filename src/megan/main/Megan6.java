@@ -51,9 +51,13 @@ public class Megan6 {
      */
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
-           MessageWindow.getInstance().setVisible(false);
-            System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
-            System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+                try {
+                    if (MessageWindow.getInstance() != null)
+                        MessageWindow.getInstance().setVisible(false);
+                    System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
+                    System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+                }
+                catch(Exception ignored){}
         }));
         PeakMemoryUsageMonitor.start();
 

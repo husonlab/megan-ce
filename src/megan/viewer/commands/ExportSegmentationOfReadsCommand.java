@@ -178,7 +178,6 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
         }
     }
 
-
     public boolean isApplicable() {
         if (getViewer() instanceof MainViewer) {
             final MainViewer viewer = (MainViewer) getViewer();
@@ -197,7 +196,7 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
     }
 
     public String getDescription() {
-        return "Export segmentation of reads, use %t or %i in filename for to save each class into a different file";
+        return "Export segmentation of reads. Occurrences of %f, %t or %i in filename will be replaced by input file name, class name or id, respectively.";
     }
 
     public boolean isCritical() {
@@ -207,5 +206,4 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
     public KeyStroke getAcceleratorKey() {
         return null;
     }
-
 }

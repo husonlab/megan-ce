@@ -62,6 +62,11 @@ public class MSConnector implements IConnector {
     }
 
     @Override
+    public String getFilename() {
+        return fileName;
+    }
+
+    @Override
     public boolean isReadOnly() {
         return true;
     }

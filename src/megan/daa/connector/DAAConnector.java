@@ -67,6 +67,11 @@ public class DAAConnector implements IConnector {
     }
 
     @Override
+    public String getFilename() {
+        return fileName;
+    }
+
+    @Override
     public boolean isReadOnly() {
         return fileName != null && ((new File(fileName)).canWrite());
     }

@@ -88,10 +88,7 @@ public class MatchSignaturesExporter {
                 progressListener.setProgress(it.getProgress());
             }
 
-            if (fileName.contains("%t"))
-				fileName = fileName.replaceAll("%t", StringUtils.replaceSpaces(name, '_'));
-            if (fileName.contains("%i"))
-                fileName = fileName.replaceAll("%i", "" + taxonId);
+            fileName= fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(name)).replaceAll("%i", "" + taxonId);
 
 			progressListener.setTasks("Export", "Writing to file: " + FileUtils.getFileBaseName(fileName));
 			progressListener.setMaximum(readsAndTaxa.size());

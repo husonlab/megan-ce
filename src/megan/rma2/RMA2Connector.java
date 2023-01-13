@@ -41,6 +41,11 @@ public class RMA2Connector implements IConnector {
         setFile(fileName);
     }
 
+    @Override
+    public String getFilename() {
+        return file.getPath();
+    }
+
     /**
      * set the file name of interest. Only one file can be used.
      *

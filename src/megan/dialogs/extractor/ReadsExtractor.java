@@ -91,7 +91,7 @@ public class ReadsExtractor {
         if (outDirectory.length() > 0)
             fileName = new File(outDirectory, fileName).getPath();
 
-        final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
+		final var useOneOutputFile = (!fileName.contains("%f") || !fileName.contains("%t") && !fileName.contains("%i"));
 
         final IConnector connector = doc.getConnector();
         int numberOfReads = 0;
@@ -135,7 +135,7 @@ public class ReadsExtractor {
 								if (w != null)
 									w.close();
 								final String cName = classId2Name.get(classId);
-								final String fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+								var fName = fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
 								w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fName)));
 							}
                             first = false;

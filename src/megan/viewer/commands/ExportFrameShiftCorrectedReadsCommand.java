@@ -100,7 +100,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
     }
 
     public String getDescription() {
-        return "Export frame-shift corrected reads, use %t or %i in filename for to save each class into a different file";
+        return "Export frame-shift corrected reads. Occurrences of %f, %t or %i in filename will be replaced by input file name, class name or id, respectively.";
     }
 
     public boolean isCritical() {

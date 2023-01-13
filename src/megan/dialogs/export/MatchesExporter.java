@@ -81,7 +81,7 @@ public class MatchesExporter {
 
             var asTab = fileName.endsWith(".tab") || fileName.endsWith(".tab.gz") || fileName.endsWith(".blasttab") || fileName.endsWith(".blasttab.gz");
 
-			final var useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
+			final var useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
 			final var classification = (!useOneOutputFile?ClassificationManager.get(classificationName, true):null);
 
 			var maxProgress = 100000 * classIds.size();
@@ -98,7 +98,7 @@ public class MatchesExporter {
 					if (w != null)
 						w.close();
 					var cName = classification.getName2IdMap().get(classId);
-					var fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+					var fName = fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
 					w = new BufferedWriter(FileUtils.getOutputWriterPossiblyZIPorGZIP(fName));
 				}
 

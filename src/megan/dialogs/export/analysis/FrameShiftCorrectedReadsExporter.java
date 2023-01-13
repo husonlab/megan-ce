@@ -51,13 +51,13 @@ public class FrameShiftCorrectedReadsExporter {
      *
 	 */
     public static int exportAll(IConnector connector, String fileName, ProgressListener progress) throws IOException {
-        int total = 0;
+        var total = 0;
         try {
 			progress.setTasks("Export", "Writing all corrected reads");
-			final String fName = fileName.replaceAll("%t", "all").replaceAll("%i", "all");
+			fileName=fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", "all").replaceAll("%i", "all");
 
-			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
-				 IReadBlockIterator it = connector.getAllReadsIterator(0, 10000, true, true)) {
+			try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fileName)));
+				 var it = connector.getAllReadsIterator(0, 10000, true, true)) {
 				progress.setMaximum(it.getMaximumProgress());
 				progress.setProgress(0);
 				while (it.hasNext()) {
@@ -81,7 +81,7 @@ public class FrameShiftCorrectedReadsExporter {
         try {
             progress.setTasks("Export", "Writing selected corrected reads");
 
-            final boolean useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
+            final boolean useOneOutputFile = (!fileName.contains("%f") || !fileName.contains("%t") && !fileName.contains("%i"));
 
             final Classification classification;
             BufferedWriter w;
@@ -113,7 +113,7 @@ public class FrameShiftCorrectedReadsExporter {
                                     if (w != null)
                                         w.close();
 									final String cName = classification.getName2IdMap().get(classId);
-									final String fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+                                    var fName = fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
 									final File file = new File(fName);
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);

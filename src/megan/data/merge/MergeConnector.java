@@ -53,6 +53,11 @@ public class MergeConnector implements IConnector {
 		setInputFiles(inputFiles);
 	}
 
+	@Override
+	public String getFilename() {
+		return fileName;
+	}
+
 	public static boolean canOpenAllConnectors(Collection<String> fileNames) throws IOException {
 		return fileNames.size()>0 &&  checkConnectors.apply(fileNames);
 	}

@@ -39,6 +39,8 @@ public interface IConnector {
 	 */
     void setFile(String filename) throws IOException;
 
+	public String getFilename();
+
     /**
      * is connected document readonly?
      *

@@ -46,6 +46,11 @@ public class RMA3Connector implements IConnector {
     }
 
     @Override
+    public String getFilename() {
+        return fileName;
+    }
+
+    @Override
     public void setFile(String file) {
         this.fileName = file;
     }

@@ -73,7 +73,7 @@ public class ReadExtractorTool {
 
         options.comment("Input and Output");
         final var inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "input", "Input DAA and/or RMA file(s)", new String[0])));
-        final var outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %t for class name and %i for class id. (Directory, stdout, .gz ok)", new String[]{"stdout"})));
+        final var outputFiles = new ArrayList<>(Arrays.asList(options.getOption("-o", "output", "Output file(s). Use %f for input file name, %t for class name and %i for class id. (Directory, stdout, .gz ok)", new String[]{"stdout"})));
 
         options.comment("Options");
         final var extractCorrectedReads = options.getOption("-fsc", "frameShiftCorrect", "Extract frame-shift corrected reads", false);

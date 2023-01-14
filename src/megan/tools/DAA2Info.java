@@ -113,40 +113,40 @@ public class DAA2Info {
             doc.loadMeganFile();
         }
 
-		try (var outs = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+		try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 			if (listGeneralInfo || listMoreStuff) {
 				final DAAHeader daaHeader = new DAAHeader(daaFile, true);
-				outs.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
-				outs.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
-				outs.write(String.format("# Is meganized:    %s\n", isMeganized));
+				w.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
+				w.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
+				w.write(String.format("# Is meganized:    %s\n", isMeganized));
 
 				if (isMeganized) {
-					outs.write("# Classifications:");
+					w.write("# Classifications:");
 					final DAAConnector connector = new DAAConnector(daaFile);
 					for (String classificationName : connector.getAllClassificationNames()) {
                         if (ClassificationManager.getAllSupportedClassifications().contains(classificationName)) {
-                            outs.write(" " + classificationName);
+                            w.write(" " + classificationName);
                         }
                     }
-                    outs.write("\n");
+                    w.write("\n");
 
                     if (listMoreStuff) {
-                        outs.write("# Meganization summary:\n");
-                        outs.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
+                        w.write("# Meganization summary:\n");
+                        w.write(doc.getDataTable().getSummary().replaceAll("^", "## ").replaceAll("\n", "\n## ") + "\n");
                     }
                 }
             }
 
             if (listClass2Count.size() > 0) {
                 if (isMeganized)
-                    RMA2Info.reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummary, outs);
+                    RMA2Info.reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummary, w);
                 else
                     System.err.println("Can't list class-to-count: file has not been meganized");
             }
 
             if (listRead2Class.size() > 0) {
                 if (isMeganized)
-                    RMA2Info.reportRead2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listRead2Class, taxonomyRoot, outs);
+                    RMA2Info.reportRead2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listRead2Class, taxonomyRoot, w);
                 else
                     System.err.println("Can't list read-to-count: file has not been meganized");
             }

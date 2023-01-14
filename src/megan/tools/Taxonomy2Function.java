@@ -24,8 +24,11 @@ import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
+import megan.classification.IdMapper;
 import megan.core.Document;
 import megan.main.MeganProperties;
+import megan.viewer.TaxonomicLevels;
+import megan.viewer.TaxonomyData;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -77,12 +80,12 @@ public class Taxonomy2Function {
         final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
         final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", List.of("all"));
 
-		var formats = new String[]{"name", "id", "path"};
-
-		final var firstFormat = options.getOption("-af", "firstFormat", "Format to report first classification class", formats, "name");
-		final var secondFormat = options.getOption("-bf", "secondFormat", "Format to report second classification class", formats, firstFormat);
+		final var firstFormat = options.getOption("-af", "firstFormat", "Format to report first classification class", new String[]{"name", "id", "path"}, "name");
+		final var secondFormat = options.getOption("-bf", "secondFormat", "Format to report second classification class", new String[]{"name", "id", "path"}, firstFormat);
 
 		final var listOption = options.getOption("-l", "list", "List counts or read names?", new String[]{"counts", "reads"}, "counts");
+
+		final var majorRanksOnly = options.getOption("-mro", "majorRanksOnly", "Only use major ranks for NCBI taxonomy", false);
 
 		var separator = options.getOption("-s", "separator", "Separator", new String[]{"tab", "comma", "semi-colon"}, "tab");
 
@@ -107,7 +110,7 @@ public class Taxonomy2Function {
 		}
 
 		if (inputFiles.length > 1 && listOption.equals("reads"))
-			throw new UsageException("Can't specify multiple input files and --list reads");
+			throw new UsageException("You must not specify multiple input files and use the option --list reads");
 
 		switch (separator) {
 			case "comma" -> separator = "'";
@@ -119,6 +122,13 @@ public class Taxonomy2Function {
 			case "comma" -> pathSeparator = "'";
 			case "semi-colon" -> pathSeparator = ";";
 			case "tab" -> pathSeparator = "\t";
+		}
+
+		var firstClassificationMajorRanksOnly=majorRanksOnly && firstClassificationName.equals(Classification.Taxonomy);
+		var secondClassificationMajorRanksOnly=majorRanksOnly && secondClassificationName.equals(Classification.Taxonomy);
+
+		if(firstClassificationMajorRanksOnly || secondClassificationMajorRanksOnly){
+			ClassificationManager.get(Classification.Taxonomy, true);
 		}
 
 		Collection<Integer> firstIds = null;
@@ -148,7 +158,7 @@ public class Taxonomy2Function {
 
 		for (var f = 0; f < inputFiles.length; f++) {
 			var inputFile = inputFiles[f];
-			var progress = new ProgressPercentage("Processing file", inputFile);
+			var progress = new ProgressPercentage("Processing file:", inputFile);
 
 			final var doc = new Document();
 			doc.getMeganFile().setFileFromExistingFile(inputFile, true);
@@ -161,10 +171,9 @@ public class Taxonomy2Function {
 
 			var first2reads = new TreeMap<Integer, ArrayList<String>>();
 
-
 			var firstClassificationBlock = connector.getClassificationBlock(firstClassificationName);
 
-			progress.setSubtask("First classification");
+			progress.setTasks("Processing:","First classification");
 			progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
 			if (firstIds == null || firstIds.size() == 0)
@@ -172,8 +181,11 @@ public class Taxonomy2Function {
 
 			for (var classId : firstIds) {
 				if (includeFirstUnassigned || classId > 0) {
-					var list = new ArrayList<String>();
-					first2reads.put(classId, list);
+					var mappedClassId=classId;
+					if(firstClassificationMajorRanksOnly) {
+						mappedClassId= TaxonomyData.getLowestAncestorWithMajorRank(classId);
+					}
+					var list = first2reads.computeIfAbsent(mappedClassId,k->new ArrayList<String>());
 					var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
 					while (it.hasNext()) {
 						var readBlock = it.next();
@@ -188,7 +200,7 @@ public class Taxonomy2Function {
 
 			var secondClassificationBlock = connector.getClassificationBlock(secondClassificationName);
 
-			progress.setSubtask("Second classification");
+			progress.setTasks("Processing:","Second classification");
 			progress.setProgress(0);
 			progress.setMaximum(secondClassificationBlock.getKeySet().size());
 
@@ -196,11 +208,15 @@ public class Taxonomy2Function {
 				secondIds = secondClassificationBlock.getKeySet();
 
 			for (var classId : secondIds) {
+				var mappedClassId=classId;
+				if(secondClassificationMajorRanksOnly) {
+					mappedClassId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
+				}
 				if (includeSecondUnassigned || classId > 0) {
 					var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);
 					while (it.hasNext()) {
 						var readBlock = it.next();
-						read2second.put(readBlock.getReadName(), classId);
+						read2second.put(readBlock.getReadName(),mappedClassId);
 					}
 				}
 				progress.incrementProgress();
@@ -252,7 +268,7 @@ public class Taxonomy2Function {
 
 			progress.setMaximum(numberOfReads);
 
-			try (Writer w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+			try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 				if (showHeaderLine)
 					w.write(firstClassificationName + separator + secondClassificationName + separator + StringUtils.toString(inputFiles, separator) + "\n");
 				for (var firstId : sorted(firstClassification, firstFormat, rowSet)) {

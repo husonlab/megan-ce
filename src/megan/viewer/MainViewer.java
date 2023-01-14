@@ -238,7 +238,7 @@ public class MainViewer extends ClassificationViewer implements IDirectableViewe
             } else {
                 buf2.append(String.format("Samples=%d,", doc.getNumberOfSamples()));
                 Comparer.COMPARISON_MODE mode = Comparer.parseMode(dataTable.getParameters());
-                int normalized_to = Comparer.parseNormalizedTo(dataTable.getParameters());
+                var normalized_to = Comparer.parseNormalizedTo(dataTable.getParameters());
                 if (mode.equals(Comparer.COMPARISON_MODE.RELATIVE)) {
                     buf2.append(String.format(" Relative Comparison, Assigned=%,d (normalized to %,d per sample)", getTotalAssignedReads(), normalized_to));
                 } else

@@ -58,7 +58,7 @@ public class MyJTreeCellRender implements TreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         if (value instanceof ViewerJTree.MyJTreeNode) {
             final ViewerJTree.MyJTreeNode jNode = (ViewerJTree.MyJTreeNode) value;
-            final Node v = jNode.getV(); // node in full tree tree
+            final Node v = jNode.getV(); // node in full tree
             final Integer classId = (Integer) v.getInfo();
             float count = 0;
             Set<Node> inducedNodes = id2NodesInInducedTree.get(classId);
@@ -78,7 +78,8 @@ public class MyJTreeCellRender implements TreeCellRenderer {
                 label.setText(name);
             }
 
-            selected = classificationViewer.getSelectedNodeIds().contains(v.getId());
+           if(!selected)
+                selected = classificationViewer.getSelectedNodeIds().contains(v.getId());
 
             if (selected) {
                 label.setBackground(ProgramProperties.SELECTION_COLOR);

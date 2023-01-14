@@ -19,6 +19,8 @@
 
 package megan.viewer.gui;
 
+import javafx.application.Platform;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
@@ -29,10 +31,7 @@ import megan.viewer.GUIConfiguration;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -56,9 +55,11 @@ public class ViewerJTree extends JTree {
     /**
      * constructor
      *
-	 */
+     */
     public ViewerJTree(ClassificationViewer classificationViewer) {
         this.classificationViewer = classificationViewer;
+
+        getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
         inducedTree = new PhyloTree();
         id2NodesInInducedTree = new HashMap<>();
@@ -102,7 +103,7 @@ public class ViewerJTree extends JTree {
     /**
      * add all children of a given node
      *
-	 */
+     */
     public void addChildren(MyJTreeNode node) {
         final Node v = node.getV();
         final DefaultTreeModel model = (DefaultTreeModel) getModel();
@@ -126,15 +127,15 @@ public class ViewerJTree extends JTree {
     /**
      * select a node by id
      *
-	 */
+     */
     public void setSelected(int id, boolean select) {
         if (!inSelection) {
             inSelection = true;
-            DefaultMutableTreeNode n = id2node.get(id);
+            var n = id2node.get(id);
             if (n != null) {
-                TreePath path = new TreePath(n);
+                var path = new TreePath(n.getPath());
                 if (select)
-                    setSelectionPath(path);
+                    addSelectionPath(path);
                 else
                     removeSelectionPath(path);
                 makeVisible(path);
@@ -147,26 +148,29 @@ public class ViewerJTree extends JTree {
     /**
      * select nodes by their ids
      *
-	 */
+     */
     public void setSelected(Collection<Integer> ids, boolean select) {
         if (!inSelection) {
             inSelection = true;
-            LinkedList<TreePath> paths = new LinkedList<>();
 
-            for (Integer id : ids) {
-                DefaultMutableTreeNode n = id2node.get(id);
-                if (n != null) {
-                    TreePath path = new TreePath(n);
-                    paths.add(path);
-                    if (paths.size() == 1)
-                        makeVisible(path);
+            var paths = new ArrayList<TreePath>();
+
+                for (var id : ids) {
+                    DefaultMutableTreeNode n = id2node.get(id);
+                    if (n != null) {
+                        var path = new TreePath(n.getPath());
+                        paths.add(path);
+                        if (select && paths.size() == 1)
+                            makeVisible(path);
+                    }
                 }
-            }
-            if (select)
-                setSelectionPaths(paths.toArray(new TreePath[0]));
-            else
-                removeSelectionPaths(paths.toArray(new TreePath[0]));
-            repaint();
+                if (paths.size() > 0) {
+                    if (select)
+                        addSelectionPaths(paths.toArray(new TreePath[0]));
+                    else
+                        removeSelectionPaths(paths.toArray(new TreePath[0]));
+                    SwingUtilities.invokeLater(this::repaint);
+                }
             inSelection = false;
         }
     }
@@ -225,7 +229,7 @@ class MyJTreeListener implements TreeWillExpandListener, TreeExpansionListener {
     /**
      * constructor
      *
-	 */
+     */
     MyJTreeListener(ViewerJTree jTree, ClassificationViewer classificationViewer, Map<Integer, ViewerJTree.MyJTreeNode> id2node) {
         this.jTree = jTree;
         this.classificationViewer = classificationViewer;

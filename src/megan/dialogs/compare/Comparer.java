@@ -383,12 +383,12 @@ public class Comparer {
                     while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
                         if (np.peekMatchIgnoreCase("normalizedTo=")) {
                             np.matchIgnoreCase("normalizedTo=");
-                            return np.getInt();
+                            return (int)Math.round(np.getDouble());
                         }
                         // for backward compatibility:
                         if (np.peekMatchIgnoreCase("normalized_to=")) {
                             np.matchIgnoreCase("normalized_to=");
-                            return np.getInt();
+                            return (int)Math.round(np.getDouble());
                         }
                         np.getWordRespectCase();
                     }

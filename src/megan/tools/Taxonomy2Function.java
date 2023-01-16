@@ -253,6 +253,7 @@ public class Taxonomy2Function {
 				progress.incrementProgress();
 			}
 			progress.reportTaskCompleted();
+			doc.closeConnector();
 		}
 
 		{

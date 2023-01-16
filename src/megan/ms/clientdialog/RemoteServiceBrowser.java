@@ -166,7 +166,10 @@ public class RemoteServiceBrowser extends JFrame implements IDirectableViewer, I
         {
             var items = new ArrayList<>(RemoteServiceManager.getServers());
             items.remove(RemoteServiceManager.DEFAULT_MEGAN_SERVER);
-            items.set(0, RemoteServiceManager.DEFAULT_MEGAN_SERVER);
+            if(items.size()==0)
+                items.add(RemoteServiceManager.DEFAULT_MEGAN_SERVER);
+            else
+                items.set(0, RemoteServiceManager.DEFAULT_MEGAN_SERVER);
             urlComboBox.addItems(items);
         }
          urlComboBox.setMaximumSize(new Dimension(2000, 25));

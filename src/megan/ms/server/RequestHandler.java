@@ -293,6 +293,8 @@ public interface RequestHandler {
                         Parameters.getValue(p, "matches", true));
 
                 final long readId = Parameters.getValue(p, "readId", -1L);
+                if(readId==-1)
+                    throw new IOException("readId: expected internally assigned long, got: "+Parameters.getValue(p,"readId"));
                 final boolean binary = Parameters.getValue(p, "binary", true);
 
                 if (binary) {

@@ -374,7 +374,7 @@ public class MeganFile {
                 else
                     hasDAAConnector=true;
             } catch (IOException e) {
-                System.err.println("Warning: Merged file: embbedded input files not found");
+                System.err.println("Warning: Merged file: embedded input files not found");
                 return;
             }
             this.mergedFiles.addAll(mergedFiles);

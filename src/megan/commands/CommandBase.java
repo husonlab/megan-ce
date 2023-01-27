@@ -18,6 +18,7 @@
  */
 package megan.commands;
 
+import jloda.swing.commands.CommandManager;
 import megan.core.Director;
 import megan.core.Document;
 
@@ -38,5 +39,11 @@ public abstract class CommandBase extends jloda.swing.commands.CommandBase {
 
     public KeyStroke getAcceleratorKey() {
         return null;
+    }
+
+    public CommandBase(){}
+
+    public CommandBase(CommandManager commandManager) {
+        super(commandManager);
     }
 }

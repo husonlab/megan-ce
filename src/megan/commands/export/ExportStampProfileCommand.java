@@ -118,8 +118,10 @@ public class ExportStampProfileCommand extends CommandBase implements ICommand {
         }
     }
 
+    public static String NAME="STAMP Format...";
+
     public String getName() {
-        return "STAMP Format...";
+        return NAME;
     }
 
     public ImageIcon getIcon() {

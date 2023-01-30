@@ -1,5 +1,5 @@
 /*
- * ReferencesAnnotator.java Copyright (C) 2022 Daniel H. Huson
+ * ReferencesAnnotator.java Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -71,7 +71,7 @@ public class MergeMultipleAccessionAssignments {
 
         final var options = new ArgsOptions(args, this, "Merge multiple accession assignments");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         final var inputFile = options.getOptionMandatory("-i", "in", "Input file, each line containing space-separated accessions (stdin, .gz ok)", "");

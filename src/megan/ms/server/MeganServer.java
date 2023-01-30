@@ -1,5 +1,5 @@
 /*
- * MeganServer.java Copyright (C) 2022 Daniel H. Huson
+ * MeganServer.java Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -67,7 +67,7 @@ public class MeganServer {
 
         final ArgsOptions options = new ArgsOptions(args, this, "Serves MEGAN files over the web via HTTP");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");

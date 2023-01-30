@@ -1,5 +1,5 @@
 /*
- * CompareProteinAlignments.java Copyright (C) 2022 Daniel H. Huson
+ * CompareProteinAlignments.java Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -63,7 +63,7 @@ public class CompareProteinAlignments {
     private void run(String[] args) throws Exception {
         final ArgsOptions options = new ArgsOptions(args, this, "Compares protein alignments for different analyses of the same sequences");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and output");

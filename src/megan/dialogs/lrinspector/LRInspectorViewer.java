@@ -661,7 +661,7 @@ public class LRInspectorViewer extends JFrame implements IDirectableViewer, Prin
     public boolean someSelectedItemHasAnyLabelsShowing() {
         if (getController() != null) {
             for (TableItem item : getController().getTableView().getItems()) {
-                if (item.getPane().getClassificationLabelsShowing().size() > 0)
+               if (item.getPane().getClassificationLabelsShowing().size() > 0)
                     return true;
             }
         }

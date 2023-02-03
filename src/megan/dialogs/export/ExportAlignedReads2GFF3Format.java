@@ -199,19 +199,19 @@ public class ExportAlignedReads2GFF3Format {
 		final BlastMode blastMode = viewer.getDir().getDocument().getBlastMode();
 
 		if (viewer.getController() != null) {
-			final int taxonId = (viewer.getClassificationName().equals(Classification.Taxonomy) ? viewer.getClassId() : 0);
+			final var taxonId = (viewer.getClassificationName().equals(Classification.Taxonomy) ? viewer.getClassId() : 0);
 			System.err.println("Writing file: " + file);
-			try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
+			try (var w = new BufferedWriter(new FileWriter(file))) {
 				progressListener.setSubtask("Reads to GFF");
 				progressListener.setMaximum(viewer.getController().getTableView().getSelectionModel().getSelectedItems().size());
 				progressListener.setProgress(0);
 				w.write(ExportAlignedReads2GFF3Format.getHeader());
-				for (TableItem item : viewer.getController().getTableView().getSelectionModel().getSelectedItems()) {
-					final String[] cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[0]);
+				for (var item : viewer.getController().getTableView().getSelectionModel().getSelectedItems()) {
+					var cNames = item.getPane().getClassificationLabelsShowing().toArray(new String[0]);
 					if (cNames.length == 0)
-						System.err.println("Skipping '" + item.getReadName() + "': no classification showing");
+						System.err.println("Skipping '" + item.getReadName() + "': no classification showing, use Layout menu to show");
 					else if (classificationToReport != null && !CollectionUtils.contains(cNames, classificationToReport) && !classificationToReport.equals("all"))
-						System.err.println("Skipping '" + item.getReadName() + "': selected classification not showing");
+						System.err.println("Skipping '" + item.getReadName() + "': selected classification not showing, use Layout menu to show");
 					else {
 						final String string = createGFFLines(blastMode, item.getReadName(), item.getReadLength(), cNames, classificationToReport, item.getPane().getIntervals(), taxonId, excludeIncompatible, excludeDominated);
 						w.write(string);

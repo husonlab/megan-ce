@@ -39,13 +39,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * imports CSV files to MEGAN
+ * import CSV files to MEGAN files
  * Daniel Huson,1.2023
  */
 public class CSV2Megan {
     /**
-     * DAA 2 info
-     *
+     * import CSV files to MEGAN files
 	 */
     public static void main(String[] args) {
         try {

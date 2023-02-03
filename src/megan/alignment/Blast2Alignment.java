@@ -115,7 +115,7 @@ public class Blast2Alignment {
                 ActiveMatches.compute(doc.getMinScore(), doc.getTopPercent(), doc.getMaxExpected(), doc.getMinPercentIdentity(), readBlock, classificationName, activeMatches);
 
                 if (activeMatches.cardinality() > 0) {
-					final String readHeader = StringUtils.swallowLeadingGreaterSign(readBlock.getReadHeader().substring(1)).replaceAll("[\r\n]", "").trim();
+					final String readHeader = StringUtils.swallowLeadingGreaterSign(readBlock.getReadHeader()).replaceAll("[\r\n]", "").trim();
 					final String readSequence;
                     {
                         final String sequence = readBlock.getReadSequence();
@@ -284,7 +284,7 @@ public class Blast2Alignment {
      * builds an alignment for the given reference string
      *
 	 */
-    public void makeAlignment(String matchRefLine, Alignment alignment, boolean showInsertions, ProgressListener progressListener) throws IOException, CanceledException {
+    public void makeAlignment(String matchRefLine, Alignment alignment, boolean showInsertions, ProgressListener progressListener) throws IOException {
         alignment.clear();
         alignment.setName(className);
 

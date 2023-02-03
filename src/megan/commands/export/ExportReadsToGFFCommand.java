@@ -21,7 +21,9 @@ package megan.commands.export;
 import jloda.seq.BlastMode;
 import jloda.swing.commands.CommandBase;
 import jloda.swing.commands.ICommand;
+import jloda.swing.message.MessageWindow;
 import jloda.swing.util.ChooseFileDialog;
+import jloda.swing.util.Message;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
 import jloda.swing.window.NotificationsInSwing;
@@ -81,7 +83,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
 
         np.matchIgnoreCase(";");
 
-        if (getViewer() instanceof final ClassificationViewer viewer) {
+        if (getViewer() instanceof final ClassificationViewer viewer)  {
             final Document doc = viewer.getDocument();
             final Pair<Long, Long> counts = ExportAlignedReads2GFF3Format.apply(viewer, new File(fileName), classification, excludeIncompatible, excludeDominated, doc.getProgressListener());
             NotificationsInSwing.showInformation(viewer.getFrame(), "Number of reads exported: " + counts.getFirst() + ", alignments exported: " + counts.getSecond());
@@ -93,7 +95,6 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
     }
 
     public void actionPerformed(ActionEvent event) {
-
         final boolean canExport;
         final boolean canExcludeIncompatible;
         {
@@ -105,11 +106,16 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
                 canExport = (((ClassificationViewer) getViewer()).getNumberSelectedNodes() > 0);
             } else if (getViewer() instanceof final LRInspectorViewer viewer) {
                 canExcludeIncompatible = viewer.getClassificationName().equals(Classification.Taxonomy) && viewer.someSelectedItemHasTaxonLabelsShowing();
-                canExport = viewer.someSelectedItemHasAnyLabelsShowing();
+                canExport=viewer.someSelectedItemHasAnyLabelsShowing();
             } else {
                 canExcludeIncompatible = false;
                 canExport = false;
             }
+        }
+
+        if(!canExport) {
+            NotificationsInSwing.showWarning("To export in GFF format, select reads(s) and activate classifications in Layout menu");
+            return;
         }
 
         final Triplet<Boolean, Boolean, String> options = getOptions(getViewer().getFrame(), canExport, canExcludeIncompatible);
@@ -165,7 +171,7 @@ public class ExportReadsToGFFCommand extends CommandBase implements ICommand {
             classificationCBox.addItem("All");
             for (String classification : ClassificationManager.getAllSupportedClassifications())
                 classificationCBox.addItem(classification);
-            classificationCBox.setSelectedItem(ProgramProperties.get("GFFExportClassification", Classification.Taxonomy));
+            classificationCBox.setSelectedItem(ProgramProperties.get("GFFExportClassification", "All"));
 
             final JPanel aLine = new JPanel();
             aLine.setLayout(new BoxLayout(aLine, BoxLayout.X_AXIS));

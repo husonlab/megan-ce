@@ -91,7 +91,7 @@ public class ReadsExtractor {
         if (outDirectory.length() > 0)
             fileName = new File(outDirectory, fileName).getPath();
 
-		final var useOneOutputFile = (!fileName.contains("%f") || !fileName.contains("%t") && !fileName.contains("%i"));
+		final var useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
 
         final IConnector connector = doc.getConnector();
         int numberOfReads = 0;

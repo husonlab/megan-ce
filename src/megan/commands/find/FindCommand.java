@@ -107,7 +107,7 @@ public class FindCommand extends CommandBase implements ICheckBoxCommand {
      * @return true, if critical
      */
     public boolean isCritical() {
-        return false;
+        return true;
     }
 
     /**

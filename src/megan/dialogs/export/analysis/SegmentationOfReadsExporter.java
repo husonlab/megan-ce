@@ -51,7 +51,7 @@ public class SegmentationOfReadsExporter {
         try {
             progress.setTasks("Segmentation", "Initializing");
 
-            final var useOneOutputFile = (!fileName.contains("%f") || !fileName.contains("%t") && !fileName.contains("%i"));
+            final var useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
 
             final Classification classification;
             BufferedWriter w;

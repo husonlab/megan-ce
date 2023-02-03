@@ -81,7 +81,7 @@ public class FrameShiftCorrectedReadsExporter {
         try {
             progress.setTasks("Export", "Writing selected corrected reads");
 
-            final boolean useOneOutputFile = (!fileName.contains("%f") || !fileName.contains("%t") && !fileName.contains("%i"));
+            final boolean useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
 
             final Classification classification;
             BufferedWriter w;

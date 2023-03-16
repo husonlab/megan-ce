@@ -69,10 +69,10 @@ public class ReadsExtractor {
     public static int extractReadsByFViewer(final String cName, final ProgressListener progressListener, final Collection<Integer> classIds,
                                             final String outDirectory, final String outFileName, final Document doc, boolean summarized) throws IOException, CanceledException {
 
-        final Classification classification = ClassificationManager.get(cName, true);
-        Map<Integer, String> classId2Name = new HashMap<>();
-        Map<Integer, Collection<Integer>> classId2Descendants = new HashMap<>();
-        for (Integer id : classIds) {
+        final var classification = ClassificationManager.get(cName, true);
+        var classId2Name = new HashMap<Integer, String>();
+        var classId2Descendants = new HashMap<Integer, Collection<Integer>>();
+        for (var id : classIds) {
             classId2Name.put(id, classification.getName2IdMap().get(id));
             classId2Descendants.put(id, classification.getFullTree().getAllDescendants(id));
         }
@@ -88,15 +88,21 @@ public class ReadsExtractor {
                                     final String outDirectory, String fileName, final Document doc, final boolean summarized) throws IOException, CanceledException {
         progress.setSubtask("Extracting by " + classificationName);
 
-        if (outDirectory.length() > 0)
-            fileName = new File(outDirectory, fileName).getPath();
+        if (outDirectory.length() > 0) {
+			fileName = new File(outDirectory, fileName).getPath();
+		}
 
-		final var useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
+		final var connector = doc.getConnector();
 
-        final IConnector connector = doc.getConnector();
-        int numberOfReads = 0;
+		if(fileName.contains("%f")) {
+			fileName=fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename()));
+		}
 
-        final IClassificationBlock classificationBlock = connector.getClassificationBlock(classificationName);
+		final var useOneOutputFile = !(fileName.contains("%t") || fileName.contains("%i"));
+
+        var numberOfReads = 0;
+
+        final var classificationBlock = connector.getClassificationBlock(classificationName);
 
         if (classificationBlock == null)
             return 0;
@@ -109,40 +115,40 @@ public class ReadsExtractor {
             w = null;
         }
 
-        final int maxProgress = 100000 * classIds.size();
+        final var maxProgress = 100000L * classIds.size();
 
         progress.setMaximum(maxProgress);
-        progress.setProgress(0);
+        progress.setProgress(0L);
 
-        int countClassIds = 0;
+        var countClassIds = 0;
         try {
 
-            for (Integer classId : classIds) {
+            for (var classId : classIds) {
                 countClassIds++;
 
-                final Collection<Integer> all = new HashSet<>();
+                final var all = new HashSet<Integer>();
                 all.add(classId);
                 if (summarized && classId2Descendants.get(classId) != null)
                     all.addAll(classId2Descendants.get(classId));
 
-                boolean first = true;
-                final boolean reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extract-reads", false);
+                var first = true;
+                final var reportTaxa = classificationName.equals(Classification.Taxonomy) && ProgramProperties.get("report-taxa-in-extract-reads", false);
 
-                try (IReadBlockIterator it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
+                try (var it = connector.getReadsIteratorForListOfClassIds(classificationName, all, 0, 10000, true, false)) {
                     while (it.hasNext()) {
                         if (first) {
                             if (!useOneOutputFile) {
 								if (w != null)
 									w.close();
-								final String cName = classId2Name.get(classId);
-								var fName = fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+								final var cName = classId2Name.get(classId);
+								var fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
 								w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(fName)));
 							}
                             first = false;
                         }
 
-                        final IReadBlock readBlock = it.next();
-                        String readHeader = readBlock.getReadHeader().trim();
+                        final var readBlock = it.next();
+                        var readHeader = readBlock.getReadHeader().trim();
                         if (!readHeader.startsWith(">"))
                             w.write(">");
                         w.write(readHeader);
@@ -152,7 +158,7 @@ public class ReadsExtractor {
                             w.write("tax|" + classId);
                         }
                         w.write("\n");
-                        String readData = readBlock.getReadSequence();
+                        var readData = readBlock.getReadSequence();
                         if (readData != null) {
                             w.write(readData);
                             if (!readData.endsWith("\n"))

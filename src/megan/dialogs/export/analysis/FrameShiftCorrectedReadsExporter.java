@@ -81,7 +81,11 @@ public class FrameShiftCorrectedReadsExporter {
         try {
             progress.setTasks("Export", "Writing selected corrected reads");
 
-            final boolean useOneOutputFile = (!fileName.contains("%f") && !fileName.contains("%t") && !fileName.contains("%i"));
+            if(fileName.contains("%f")) {
+                fileName = fileName.replaceAll("%f", FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename()));
+            }
+
+            final var useOneOutputFile = (!fileName.contains("%t") && !fileName.contains("%i"));
 
             final Classification classification;
             BufferedWriter w;
@@ -113,7 +117,7 @@ public class FrameShiftCorrectedReadsExporter {
                                     if (w != null)
                                         w.close();
 									final String cName = classification.getName2IdMap().get(classId);
-                                    var fName = fileName.replaceAll("%f",FileUtils.getFileNameWithoutPathOrSuffix(connector.getFilename())).replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
+                                    var fName = fileName.replaceAll("%t", StringUtils.toCleanName(cName)).replaceAll("%i", "" + classId);
 									final File file = new File(fName);
                                     if (ProgramProperties.isUseGUI() && file.exists()) {
                                         final Single<Boolean> ok = new Single<>(true);

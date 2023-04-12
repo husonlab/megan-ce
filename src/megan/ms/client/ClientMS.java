@@ -42,13 +42,15 @@ public class ClientMS {
     private final int timeoutSeconds;
     private final HttpClient httpClient;
     private int pageSize = 100;
+    private final char[] passwordHashChars;
 
     /**
      * constructor
      */
-    public ClientMS(String serverAndPrefix, String proxyName, int proxyPort, String user, String passwdMD5, int timeoutSeconds) {
+    public ClientMS(String serverAndPrefix, String proxyName, int proxyPort, String user, String passwordHash, int timeoutSeconds) {
         this.serverAndPrefix = serverAndPrefix.replaceAll("/$", "");
         this.timeoutSeconds = timeoutSeconds;
+        this.passwordHashChars=passwordHash.toCharArray();
 
         final var proxyAddress = (proxyName == null || proxyName.isBlank() ? null : new InetSocketAddress(proxyName, proxyPort));
 
@@ -56,7 +58,7 @@ public class ClientMS {
                 .connectTimeout(Duration.ofSeconds(timeoutSeconds))
                 .authenticator(new Authenticator() {
                                    protected PasswordAuthentication getPasswordAuthentication() {
-                                       return new PasswordAuthentication(user, passwdMD5.toCharArray());
+                                       return new PasswordAuthentication(user, passwordHashChars);
                                    }
                                }
                 )
@@ -110,9 +112,9 @@ public class ClientMS {
      */
     public String getAsString(String command) throws IOException {
         try {
-            final HttpRequest request = setupRequest(command, false);
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            final String result = response.body();
+            final var request = setupRequest(command, false);
+            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            final var result = response.body();
             if (result.startsWith(Utilities.SERVER_ERROR)) {
 				System.err.println(StringUtils.getFirstLine(result));
 				throw new IOException(StringUtils.getFirstLine(result));
@@ -125,9 +127,9 @@ public class ClientMS {
 
     public byte[] getAsBytes(String command) throws IOException {
         try {
-			final HttpRequest request = setupRequest(command, true);
-			final HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
-			final byte[] result = response.body();
+			final var request = setupRequest(command, true);
+			final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+			final var result = response.body();
 			if (StringUtils.startsWith(result, Utilities.SERVER_ERROR)) {
 				System.err.println(StringUtils.getFirstLine(result));
 				throw new IOException(StringUtils.getFirstLine(result));

@@ -29,12 +29,15 @@ import megan.ms.client.ClientMS;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * read blocks iterator
  * Daniel Huson, 8.2020
  */
 public class ReadBlockIteratorMS implements IReadBlockIterator {
+    private final static Map<ClientMS,String[]> clientClassificationsMap=new HashMap<>();
     private final ClientMS client;
     private final String[] classifications;
     private final ArrayList<IReadBlock> reads = new ArrayList<>();
@@ -55,9 +58,22 @@ public class ReadBlockIteratorMS implements IReadBlockIterator {
      * constructor
      */
     public ReadBlockIteratorMS(ClientMS client, String fileName, String classification, Collection<Integer> classIds, float minScore, float maxExpected, boolean wantReadSequence, boolean wantMatches) throws IOException {
+        var pageSize=client.getPageSize();
+        if(!wantReadSequence)
+            pageSize*=10;
+        if(!wantMatches)
+            pageSize*=10;
+
 		this.client = client;
-		this.classifications = StringUtils.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]);
-		processBytes(client.getAsBytes("getReadsForClass?file=" + fileName + "&binary=true&classification=" + classification + "&classId=" + StringUtils.toString(classIds, ",") + "&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + client.getPageSize()));
+        if(!clientClassificationsMap.containsKey(client)) {
+            synchronized (clientClassificationsMap) {
+                if(!clientClassificationsMap.containsKey(client)) {
+                    clientClassificationsMap.put(client,StringUtils.getLinesFromString(client.getAsString("getClassificationNames?file=" + fileName), 1000).toArray(new String[0]));
+                }
+            }
+        }
+        this.classifications =clientClassificationsMap.get(client);
+		processBytes(client.getAsBytes("getReadsForClass?file=" + fileName + "&binary=true&classification=" + classification + "&classId=" + StringUtils.toString(classIds, ",") + "&sequences=" + wantReadSequence + "&matches=" + wantMatches + "&pageSize=" + pageSize));
 	}
 
     private void processBytes(byte[] bytes) throws IOException {

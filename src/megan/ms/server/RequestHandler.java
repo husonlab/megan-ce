@@ -299,7 +299,7 @@ public interface RequestHandler {
 
                 if (binary) {
                     final String[] cNames = database.getClassifications(fileName).toArray(new String[0]);
-                    return ReadBlockMS.writeToBytes(cNames, database.getRead(fileName, readId, format.isMatches()), format.isMatches());
+                    return ReadBlockMS.writeToBytes(cNames, database.getRead(fileName, readId, format.isMatches()), format.isSequences(),format.isMatches());
                 } else {
                     return ReadBlockMS.writeToString(database.getRead(fileName, readId, format.isMatches()), format.isReadIds(), format.isHeaders(), format.isSequences(), format.isMatches()).getBytes();
                 }
@@ -392,7 +392,7 @@ public interface RequestHandler {
                 final ArrayList<byte[]> list = new ArrayList<>();
                 list.add(Utilities.getBytesLittleEndian(page.getReads().size()));
                 for (IReadBlock readBlock : page.getReads()) {
-                    final byte[] bytes = ReadBlockMS.writeToBytes(page.getCNames(), readBlock, page.getFormat().isMatches());
+                    final byte[] bytes = ReadBlockMS.writeToBytes(page.getCNames(), readBlock, page.getFormat().isSequences(),page.getFormat().isMatches());
                     list.add(Utilities.getBytesLittleEndian(bytes.length));
                     list.add(bytes);
                 }

@@ -26,6 +26,6 @@ package megan.main;
  */
 public class Version {
 	static public final String NAME = "MEGAN";
-	static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.24.20, built 5 Feb 2023)";
+	static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.24.22, built 12 Apr 2023)";
 }
 

@@ -93,7 +93,7 @@ public class RemoteServiceManager {
      * @return full file URL as required by connector
      */
     public static String getServerURL(String serverFileName) {
-        int pos = serverFileName.indexOf(("::"));
+        var pos = serverFileName.indexOf(("::"));
         if (pos > 0)
             return serverFileName.substring(0, pos);
         else
@@ -107,7 +107,7 @@ public class RemoteServiceManager {
      */
     public static String getFilePath(String serverFileName) {
         if (isRemoteFile(serverFileName)) {
-            int pos = serverFileName.indexOf("::");
+            var pos = serverFileName.indexOf("::");
             return serverFileName.substring(pos + "::".length());
         } else
             return null;
@@ -119,11 +119,11 @@ public class RemoteServiceManager {
      * @return remote user
      */
     public static String getUser(String serviceName) {
-        final Pair<String, String> credentials = getCredentials(serviceName);
+        var credentials = getCredentials(serviceName);
         if (credentials != null)
             return credentials.getFirst();
         else
-            return null;
+            return "guest";
     }
 
     /**
@@ -136,7 +136,7 @@ public class RemoteServiceManager {
         if (credentials != null)
             return credentials.getSecond();
         else
-            return null;
+            return "guest";
     }
 
     /**
@@ -171,9 +171,9 @@ public class RemoteServiceManager {
      */
     public static void ensureCredentialsHaveBeenLoadedFromProperties() {
         if (!loaded) {
-            final String[] credentials = ProgramProperties.get("MeganServers", new String[0]);
-            for (String line : credentials) {
-                String[] tokens = line.split("::");
+            final var credentials = ProgramProperties.get("MeganServers", new String[0]);
+            for (var line : credentials) {
+                var tokens = line.split("::");
                 if (tokens.length > 0) {
                     server2Credentials.put(tokens[0], new Pair<>(tokens.length > 1 ? tokens[1] : "", (tokens.length > 2 ? tokens[2] : "")));
                 }
@@ -186,14 +186,20 @@ public class RemoteServiceManager {
      * save all credentials to properties
      */
     private static void saveCredentialsToProperties() {
-        final List<String> list = new LinkedList<>();
+        final var list = new LinkedList<String>();
 
-        // remove defunct servers:
-        server2Credentials.keySet().stream().filter(s->s.toLowerCase().contains("informatik.uni-tuebingen.de")).collect(Collectors.toList()).forEach(server2Credentials.keySet()::remove);
+        var toDelete=new ArrayList<String>();
+        for (var server : server2Credentials.keySet()) {
+            if (server.toLowerCase().contains("informatik.uni-tuebingen.de")) {
+                System.err.println("Removed defunct server address: " + server);
+                toDelete.add(server);
+            }
+        }
+        toDelete.forEach(server2Credentials.keySet()::remove);
 
-        for (String server : server2Credentials.keySet()) {
-            var pair = server2Credentials.get(server);
-            list.add(server + "::" + pair.getFirst() + "::" + pair.getSecond());
+        for (var server : server2Credentials.keySet()) {
+                var pair = server2Credentials.get(server);
+                list.add(server + "::" + pair.getFirst() + "::" + pair.getSecond());
         }
         ProgramProperties.put("MeganServers", list.toArray(new String[0]));
     }
@@ -212,8 +218,8 @@ public class RemoteServiceManager {
     }
 
     public static void ensureDefaultService() {
-        final String user = "guest";
-        final String passwordHash = Utilities.computeBCryptHash("guest".getBytes());
+        var user = "guest";
+        var passwordHash = Utilities.computeBCryptHash("guest".getBytes());
         saveCredentials(DEFAULT_MEGAN_SERVER, user, passwordHash);
     }
 }

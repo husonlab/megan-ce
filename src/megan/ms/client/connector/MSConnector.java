@@ -46,12 +46,11 @@ public class MSConnector implements IConnector {
 
     public MSConnector(String serverFileName) {
         RemoteServiceManager.ensureCredentialsHaveBeenLoadedFromProperties();
-        final String[] parts = serverFileName.split("::");
-
-        final String serverURL = parts[0];
-        final String user = RemoteServiceManager.getUser(serverURL);
-        final String passwordHash = RemoteServiceManager.getPasswordHash(serverURL);
-        final String filePath = parts[1];
+        var parts = serverFileName.split("::");
+        var serverURL = parts[0];
+        var user = RemoteServiceManager.getUser(serverURL);
+        var passwordHash = RemoteServiceManager.getPasswordHash(serverURL);
+        var filePath = parts[1];
         client = new ClientMS(serverURL, null, 0, user, passwordHash, 600);
         setFile(filePath);
     }
@@ -155,7 +154,7 @@ public class MSConnector implements IConnector {
      * load the set megan summary file
      */
     public void loadMeganSummaryFile(Document document) throws IOException {
-		final String fileContent = StringUtils.toString(getAuxiliaryData().get("FILE_CONTENT"));
+		 var fileContent = StringUtils.toString(getAuxiliaryData().get("FILE_CONTENT"));
         document.loadMeganSummary(new BufferedReader(new StringReader(fileContent)));
     }
 }

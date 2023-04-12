@@ -186,12 +186,20 @@ public class ReadBlockMS implements IReadBlock {
     /**
      * write a match block to bytes
      */
-    public static byte[] writeToBytes(String[] cNames, IReadBlock readBlock, boolean includeMatches) throws IOException {
-        try (ByteOutputStream stream = new ByteOutputStream();
-             OutputWriterLittleEndian outs = new OutputWriterLittleEndian(stream)) {
+    public static byte[] writeToBytes(String[] cNames, IReadBlock readBlock, boolean includeSequences,boolean includeMatches) throws IOException {
+        try (var stream = new ByteOutputStream(); var outs = new OutputWriterLittleEndian(stream)) {
             outs.writeLong(readBlock.getUId());
             outs.writeNullTerminatedString(readBlock.getReadHeader().getBytes());
-            outs.writeNullTerminatedString(readBlock.getReadSequence().getBytes());
+
+            if(includeSequences) {
+                var sequence=readBlock.getReadSequence();
+                if(sequence!=null)
+                    outs.writeNullTerminatedString(sequence.getBytes());
+                else
+                    outs.write((byte) 0);
+            }
+            else
+                outs.write((byte) 0);
             outs.writeInt(readBlock.getReadWeight());
             outs.writeLong(readBlock.getMateUId());
             outs.writeInt(readBlock.getReadLength());

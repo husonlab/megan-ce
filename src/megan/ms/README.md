@@ -29,5 +29,4 @@ Data is sent and received via REST which makes reuse of HTTP technology. While u
 
 ## Publication 
 
-- Anupam Gautam, Wenhaun Zeng, and Daniel H Huson. <i>MeganServer</i>: facilitating interactive access to metagenomic data on a server. preprint *bioRxiv*, **2022**. https://www.biorxiv.org/content/10.1101/2022.12.05.518498v1.full
-
+- Anupam Gautam, Wenhaun Zeng, and Daniel H Huson. <i>MeganServer</i>: facilitating interactive access to metagenomic data on a server. *Bioinformatics*, 39(3), 02 2023. btad105. https://doi.org/10.1093/bioinformatics/btad105

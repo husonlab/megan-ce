@@ -23,6 +23,7 @@ import jloda.swing.util.ChooseFileDialog;
 import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextFileFilter;
+import jloda.swing.window.NotificationsInSwing;
 import jloda.util.FileUtils;
 import jloda.util.parse.NexusStreamParser;
 import megan.commands.CommandBase;
@@ -59,12 +60,22 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
             showUnassigned = np.getBoolean();
         }
 
+        var useIds = false;
+        if (np.peekMatchIgnoreCase("useIds")) {
+            np.matchIgnoreCase("useIds=");
+            useIds = np.getBoolean();
+        }
+
         np.matchIgnoreCase(";");
 
         if (getViewer() instanceof ViewerBase) {
             var viewer = (ViewerBase) getViewer();
             try(var w = new BufferedWriter(new FileWriter(outputFile))) {
-                ExportTree.apply(viewer, w, showInternalLabels, showUnassigned, simplify);
+                var count=ExportTree.apply(viewer, w, useIds,showInternalLabels, showUnassigned, simplify);
+                if(count==0)
+                NotificationsInSwing.showWarning("Export tree failed: Empty tree");
+                else
+                    NotificationsInSwing.showInformation("Export tree: %,d nodes".formatted(count));
             }
         } else
             System.err.println("Invalid command");
@@ -79,7 +90,7 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
     }
 
     public String getSyntax() {
-        return "export what=tree file=<filename> [simplify={false|true}] [showInternalLabels={true|false}] [showUassigned={true|false}];";
+        return "export what=tree file=<filename> [simplify={false|true}] [showInternalLabels={true|false}] [showUassigned={true|false}] [useIds={false|true}];";
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -95,7 +106,7 @@ public class ExportTreeCommand extends CommandBase implements ICommand {
         var file = ChooseFileDialog.chooseFileToSave(getViewer().getFrame(), lastOpenFile, new TextFileFilter(), new TextFileFilter(), event, "Save as tree", ".txt");
 
         if (file != null) {
-            execute("export what=tree file='" + file.getPath() + "' showInternalLabels=true showUnassigned=true;");
+            execute("export what=tree file='" + file.getPath() + "' showInternalLabels=true showUnassigned=true useIds=false;");
             ProgramProperties.put("TreeDirectory", file.getParent());
         }
     }

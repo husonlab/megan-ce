@@ -38,12 +38,12 @@ public class ExportTree {
      * export the tree
      *
 	 */
-    public static void apply(ViewerBase viewer, Writer writer, boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
+    public static int apply(ViewerBase viewer, Writer writer, boolean useIds,boolean showInternalLabels, boolean showUnassignedLabels, boolean simplify) throws IOException {
         final PhyloTree tree = viewer.getTree();
         Node root = tree.getRoot();
 
         if (root == null)
-            return;
+            return 0;
 
         NodeSet toUse = null;
         if (viewer.getSelectedNodes().size() > 0) {
@@ -69,8 +69,9 @@ public class ExportTree {
             }
         }
 
-        final int countNodes = writeAsTreeRec(viewer, toUse, root, writer, showInternalLabels, showUnassignedLabels, simplify, 0);
+        int countNodes = writeAsTreeRec(viewer, toUse, root, writer, useIds,showInternalLabels, showUnassignedLabels, simplify, 0);
         writer.write(";\n");
+        return countNodes;
     }
 
     /**
@@ -94,9 +95,12 @@ public class ExportTree {
      *
      * @return number of labeled nodes
 	 */
-    private static int writeAsTreeRec(ViewerBase viewer, NodeSet toUse, Node v, Writer writer, boolean showInternalLabels, boolean showUnassignedNodes, boolean simplify, int count) throws IOException {
+    private static int writeAsTreeRec(ViewerBase viewer, NodeSet toUse, Node v, Writer writer,boolean useIds, boolean showInternalLabels, boolean showUnassignedNodes, boolean simplify, int count) throws IOException {
         if (v.getOutDegree() == 0) {
-			writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
+            if(useIds)
+                writer.write(String.valueOf(v.getInfo()));
+            else
+			    writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
 			count++;
         } else {
             LinkedList<Edge> toVisit = new LinkedList<>();
@@ -116,13 +120,16 @@ public class ExportTree {
                     first = false;
                 else
                     writer.write(",");
-                count = writeAsTreeRec(viewer, toUse, w, writer, showInternalLabels, showUnassignedNodes, simplify, count);
+                count = writeAsTreeRec(viewer, toUse, w, writer, useIds,showInternalLabels, showUnassignedNodes, simplify, count);
             }
             if (!simplify || toVisit.size() > 1)
                 writer.write(")");
 
             if (showInternalLabels && viewer.getLabel(v) != null && (!simplify || count != 1)) {
-				writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
+                if(useIds)
+                    writer.write(String.valueOf(v.getInfo()));
+                else
+                    writer.write(StringUtils.toCleanName(viewer.getLabel(v)));
 				count++;
             }
 

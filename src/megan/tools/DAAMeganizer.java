@@ -51,7 +51,6 @@ public class DAAMeganizer {
     public static void main(String[] args) {
         try {
             ResourceManager.insertResourceRoot(megan.resources.Resources.class);
-
             ProgramProperties.setProgramName("Meganizer");
             ProgramProperties.setProgramVersion(megan.main.Version.SHORT_DESCRIPTION);
 

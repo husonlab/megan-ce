@@ -722,7 +722,7 @@ public class ClassificationViewer extends ViewerBase implements IDirectableViewe
 	 * rescan the status bar
 	 */
 	void updateStatusBar() {
-		statusBar.setText1("Terms=" + getTree().getNumberOfNodes());
+		statusBar.setText1("Terms=%,d".formatted(getTree().getNumberOfNodes()));
 		final long totalReads = doc.getNumberOfReads();
 		final StringBuilder buf2 = new StringBuilder();
 

@@ -20,6 +20,7 @@ package megan.daa;
 
 import javafx.beans.property.SimpleObjectProperty;
 import jloda.fx.util.ProgramExecutorService;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.StringUtils;
@@ -72,7 +73,7 @@ class DAAReferencesAnnotator {
                 System.err.println("Annotating DAA file using FAST mode (accession database and first accession per line)");
                 progress.setSubtask("Annotating references");
 
-                final var chunkSize = 10000; // don't make this too big, query will exceed SQLITE size limitation
+                final var chunkSize = ProgramProperties.get("AccessionChunkSize",5000); // don't make this too big, query will exceed SQLITE size limitation
 
                 final var numberOfTasks = (int) Math.ceil((double) header.getNumberOfReferences() / chunkSize);
 

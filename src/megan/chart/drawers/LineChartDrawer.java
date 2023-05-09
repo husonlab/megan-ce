@@ -134,8 +134,10 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
                 if (isSelected) {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     gc.setStroke(HEAVY_STROKE);
-                } else
+                } else {
                     gc.setColor(color);
+                    gc.setStroke(NORMAL_STROKE);
+                }
 
                 Point bPt = previousPoint[c];
                 if (bPt != null) {
@@ -280,8 +282,10 @@ public class LineChartDrawer extends BarChartDrawer implements IChartDrawer {
                 if (isSelected) {
                     gc.setColor(ProgramProperties.SELECTION_COLOR);
                     gc.setStroke(HEAVY_STROKE);
-                } else
+                } else {
                     gc.setColor(color);
+                    gc.setStroke(NORMAL_STROKE);
+                }
 
                 Point bPt = previousPoint[d];
                 if (bPt != null) {

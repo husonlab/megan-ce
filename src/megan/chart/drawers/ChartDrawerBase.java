@@ -21,6 +21,7 @@ package megan.chart.drawers;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ILabelGetter;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.IPopupMenuModifier;
 import jloda.util.Pair;
 import megan.chart.ChartColorManager;
@@ -74,8 +75,8 @@ public class ChartDrawerBase extends JPanel {
     private final EnumSet<ScalingType> supportedScalingTypes = EnumSet.of(ScalingType.LINEAR, ScalingType.LOG,
             ScalingType.PERCENT, ScalingType.SQRT);
 
-    final static Stroke NORMAL_STROKE = new BasicStroke(1);
-    final static Stroke HEAVY_STROKE = new BasicStroke(2);
+    final  Stroke NORMAL_STROKE;
+    final  Stroke HEAVY_STROKE;
 
     private Rectangle2D scrollBackReferenceRect = null;  // reference rectangle
     private Point2D scrollBackWindowPoint = null;
@@ -89,6 +90,8 @@ public class ChartDrawerBase extends JPanel {
     boolean transposedHeightsAdditive = false;
 
     public ChartDrawerBase() {
+        NORMAL_STROKE = new BasicStroke((float)ProgramProperties.get("ChartLineWidth",1.0));
+        HEAVY_STROKE = new BasicStroke(2*(float)ProgramProperties.get("ChartLineWidth",1.0));
     }
 
     public void setViewer(ChartViewer viewer) {

@@ -154,8 +154,6 @@ public class Megan6 {
             Basic.hideSystemOut();
             Basic.stopCollectingStdErr();
         }
-        System.err.println("Java version: " + System.getProperty("java.version"));
-        System.err.println("Max memory: " + PeakMemoryUsageMonitor.getMaxMemoryString());
 
         MeganProperties.initializeProperties(propertiesFile);
 

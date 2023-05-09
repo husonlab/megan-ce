@@ -172,10 +172,7 @@ public class DAAMeganizer {
 
 		MeganProperties.initializeProperties(propertiesFile);
 
-        if (Basic.getDebugMode())
-            System.err.println("Java version: " + System.getProperty("java.version"));
-
-        for (var fileName : daaFiles) {
+		for (var fileName : daaFiles) {
 			FileUtils.checkFileReadableNonEmpty(fileName);
             if (!DAAFileFilter.getInstance().accept(fileName))
                 throw new IOException("File not in DAA format (or incorrect file suffix?): " + fileName);

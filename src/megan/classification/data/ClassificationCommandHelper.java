@@ -42,10 +42,18 @@ public class ClassificationCommandHelper {
         final StringBuilder buf = new StringBuilder();
         for (String name : ClassificationManager.getDefaultClassificationsListExcludingNCBITaxonomy()) {
             buf.append((new OpenFViewerCommand(name)).getName()).append(";");
+            if(name.equals("GTDB"))
+                buf.append("|;");
         }
+        var first=true;
         for (String name : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-            if (!ClassificationManager.getDefaultClassificationsListExcludingNCBITaxonomy().contains(name))
+            if (!ClassificationManager.getDefaultClassificationsListExcludingNCBITaxonomy().contains(name)) {
+                if(first) {
+                    buf.append("|;");
+                    first = false;
+                }
                 buf.append((new OpenFViewerCommand(name)).getName()).append(";");
+            }
         }
         return buf.toString();
     }

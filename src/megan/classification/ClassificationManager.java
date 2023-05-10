@@ -46,14 +46,13 @@ public class ClassificationManager {
     private static boolean useFastAccessionMappingMode;
 
     static {
-        //defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
+        defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
         defaultClassificationsListExcludingNCBITaxonomy.add("INTERPRO2GO");
         defaultClassificationsListExcludingNCBITaxonomy.add("EGGNOG");
         defaultClassificationsListExcludingNCBITaxonomy.add("SEED");
         defaultClassificationsListExcludingNCBITaxonomy.add("KEGG");
-        defaultClassificationsListExcludingNCBITaxonomy.add("GTDB");
         defaultClassificationsListExcludingNCBITaxonomy.add("EC");
-        // defaultClassificationsListExcludingNCBITaxonomy.add("PGPT");
+        defaultClassificationsListExcludingNCBITaxonomy.add("PGPT");
         allSupportedClassificationsExcludingNCBITaxonomy.addAll(defaultClassificationsListExcludingNCBITaxonomy);
 
         defaultClassificationsList.addAll(defaultClassificationsListExcludingNCBITaxonomy);

@@ -519,6 +519,16 @@ public class PCoATab extends JPanel implements ITab {
         }
     }
 
+    public ArrayList<Pair<String,double[]>> getPoints() {
+        var result=new ArrayList<Pair<String,double[]>>();
+        for (int t = 1; t <= pcoa.getSamples().size(); t++) {
+            var name = pcoa.getSamples().getLabel(t);
+            double[] coordinates = pcoa.getProjection(firstPC, secondPC, thirdPC, name);
+            result.add(new Pair<>(name,coordinates));
+         }
+        return result;
+    }
+
     /**
      * run the MDS code
      *

@@ -359,4 +359,7 @@ public class PCoA {
         return percentExplained[pc];
     }
 
+    public Taxa getSamples() {
+        return samples;
+    }
 }

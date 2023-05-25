@@ -128,7 +128,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
 
     public static Consumer<ClusterViewer> clusterViewerAddOn;
 
-
     /**
      * creates a new network viewer
      *

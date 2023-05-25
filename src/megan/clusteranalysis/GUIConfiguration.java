@@ -37,10 +37,11 @@ public class GUIConfiguration {
         menuConfig.defineMenuBar("File;Edit;Select;Layout;Options;PCoA;Window;Help;");
 
         menuConfig.defineMenu("File", "New...;|;Open...;@Open Recent;|;Open From Server...;|;Compare...;|;Import From BLAST...;@Import;Meganize DAA File...;|;Save As...;|;"
-                + "Export Image...;Export Legend...;Export Distances...;|;Page Setup...;Print...;|;Close;|;Quit;");
+                + "@Export;|;Page Setup...;Print...;|;Close;|;Quit;");
         menuConfig.defineMenu("Open Recent", ";");
 
         menuConfig.defineMenu("Import", "Import Text (CSV) Format...;Import BIOM Format...;|;Import Metadata...;");
+        menuConfig.defineMenu("Export", "Export Image...;Export Legend...;|;Export Distances...;Export Points...;");
 
         menuConfig.defineMenu("Edit", "Copy;Copy Image;Copy Legend;Paste;|;Format...;Set Node Shape...;Set Color...;|;Set Axes Linewidth and Color...;Set BiPlot Linewidth and Color...;Set TriPlot Linewidth and Color...;Set Groups Linewidth and Color...;|;Group Nodes;Ungroup All;|;Find...;Find Again;|;Colors...;");
 

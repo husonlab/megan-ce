@@ -116,6 +116,7 @@ public class DAA2Info {
 		try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
 			if (listGeneralInfo || listMoreStuff) {
 				final DAAHeader daaHeader = new DAAHeader(daaFile, true);
+				w.write(String.format("# DIAMOND version + build: %d %d%n",daaHeader.getVersion(),daaHeader.getDiamondBuild()));
 				w.write(String.format("# Number of reads: %,d\n", daaHeader.getQueryRecords()));
 				w.write(String.format("# Alignment mode:  %s\n", daaHeader.getAlignMode().toString().toUpperCase()));
 				w.write(String.format("# Is meganized:    %s\n", isMeganized));

@@ -97,13 +97,24 @@ public class ExportPointsCommand extends CommandBase implements ICommand {
             throw new IOException("File exists: " + fileName + ", use REPLACE=true to overwrite");
 
         try (var w = new BufferedWriter(FileUtils.getOutputWriterPossiblyZIPorGZIP(fileName))) {
-            w.write("#Computed using " + viewer.getEcologicalIndex() + " applied to " + viewer.getDataType() + " data\n");
-            for(var item:viewer.getPcoaTab().getPoints()) {
+            w.write("# Computed by applying " + viewer.getEcologicalIndex() + " to " + viewer.getDataType() + " data\n");
+            if(viewer.getPcoaTab().isIs3dMode()) {
+                w.write("# PC1=%d PC2=%d PC3=%d%n".formatted(viewer.getPcoaTab().getFirstPC()+1,viewer.getPcoaTab().getSecondPC()+1,viewer.getPcoaTab().getThirdPC()+1));
+            } else {
+                w.write("# PC1=%d PC2=%d%n".formatted(viewer.getPcoaTab().getFirstPC()+1,viewer.getPcoaTab().getSecondPC()+1));
+            }
+                for(var item:viewer.getPcoaTab().getPoints()) {
                 var name=item.getFirst();
                 var point=item.getSecond();
-                w.write("%s\t%s\t%s\t%s%n".formatted(name,StringUtils.removeTrailingZerosAfterDot("%.8f",point[0]),
-                        StringUtils.removeTrailingZerosAfterDot("%.8f",point[1]),
-                        StringUtils.removeTrailingZerosAfterDot("%.8f",point[2])));
+                if(viewer.getPcoaTab().isIs3dMode()) {
+                    w.write("%s\t%s\t%s\t%s%n".formatted(name, StringUtils.removeTrailingZerosAfterDot("%.8f", point[0]),
+                            StringUtils.removeTrailingZerosAfterDot("%.8f", point[1]),
+                            StringUtils.removeTrailingZerosAfterDot("%.8f", point[2])));
+                }
+                else {
+                    w.write("%s\t%s\t%s%n".formatted(name, StringUtils.removeTrailingZerosAfterDot("%.8f", point[0]),
+                            StringUtils.removeTrailingZerosAfterDot("%.8f", point[1])));
+                }
             }
         } catch (IOException ex) {
             throw ex;

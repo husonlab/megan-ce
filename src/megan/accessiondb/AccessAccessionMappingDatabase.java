@@ -31,10 +31,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
@@ -272,6 +269,27 @@ public class AccessAccessionMappingDatabase implements Closeable {
     }
 
     /**
+     * for each provided accession, returns ids for all  classifications
+     *
+     * @param accessions queries
+     * @param result results are written here, must have length accessions.size()*number-of-classifications
+     * @throws SQLException
+     */
+    public void getValues(Collection<String> accessions, int[] result) throws SQLException {
+        var query = "select * from mappings where Accession in ('" + StringUtils.toString(accessions, "', '") + "');";
+        var rs = connection.createStatement().executeQuery(query);
+        var columnCount = rs.getMetaData().getColumnCount();
+
+        var r = 0;
+        while (rs.next()) {
+            for (var i = 1; i < columnCount; i++) {
+                // database index starts with 1; 1 is the accession everything else is result
+                result[r++] = accessionFilter.applyAsInt(rs.getInt(i + 1));
+            }
+        }
+    }
+
+    /**
      * for each provided accession, returns ids for all named classifications
      *
      * @param accessions queries
@@ -288,7 +306,6 @@ public class AccessAccessionMappingDatabase implements Closeable {
         var result = new int[accessions.size() * cNames.length];
         var r = 0;
         while (rs.next()) {
-            final var values = new int[cNames.length];
             for (var i = 0; i < columnCount; i++) {
                 // database index starts with 1; 1 is the accession everything else is result
                 result[r++] = accessionFilter.applyAsInt(rs.getInt(i + 1));

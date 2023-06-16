@@ -44,6 +44,25 @@ public class DrawScaleBox {
     }
 
     public static void draw(String label,Graphics g, int x, int y, Document doc, NodeDrawer.Style style, ScalingType scalingType, int maxCount, int maxNodeSize) {
+        if(true) { // this makes value a multiple of 2.5, 5 or 10:
+            var newMaxCount=largestPowerOf10Below(maxCount);
+            var newMaxNodeSize=(maxNodeSize*newMaxCount/maxCount);
+             if(newMaxNodeSize<15) {
+                newMaxCount=2.5*newMaxCount; // 25
+                newMaxNodeSize=(maxNodeSize*newMaxCount/maxCount);
+            }
+            if(newMaxNodeSize<15) {
+                newMaxCount=2*newMaxCount; // 50
+                newMaxNodeSize=(maxNodeSize*newMaxCount/maxCount);
+            }
+            if(newMaxNodeSize<15) {
+                newMaxCount=2*newMaxCount; // 100
+                newMaxNodeSize=(maxNodeSize*newMaxCount/maxCount);
+            }
+                maxNodeSize = (int) newMaxNodeSize;
+            maxCount=(int)newMaxCount;
+        }
+
         var colorGradient = (doc != null ? new ColorGradient(doc.getChartColorManager().getHeatMapTable(), maxCount) : null);
 
         if (maxCount > 1) {
@@ -75,9 +94,17 @@ public class DrawScaleBox {
         }
     }
 
+    private static double largestPowerOf10Below(double number) {
+        var powerOf10 = Math.floor(Math.log10(number));
+        return Math.pow(10, powerOf10);
+    }
+
     private static void drawHeatMapScale(Graphics g, int x, int y, ColorGradient colorGradient, ScalingType scalingType, int maxCount) {
         for (int i = 0; i < width; i++) {
-            final int value = Math.round((i * maxCount) / (float) width);
+            final int value = (int)Math.round((double)i * maxCount/(double)width);
+
+            System.err.println("i="+i+": "+value+"/"+maxCount+" = "+(int)Math.round(value/(float)maxCount));
+
             final Color color = switch (scalingType) {
                 default /* case LINEAR */ -> colorGradient.getColor(value);
                 case SQRT -> colorGradient.getColorSqrtScale(value);

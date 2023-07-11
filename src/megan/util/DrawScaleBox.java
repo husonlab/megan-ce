@@ -59,7 +59,7 @@ public class DrawScaleBox {
                 newMaxCount=2*newMaxCount; // 100
                 newMaxNodeSize=(maxNodeSize*newMaxCount/maxCount);
             }
-                maxNodeSize = (int) newMaxNodeSize;
+            maxNodeSize = (int) newMaxNodeSize;
             maxCount=(int)newMaxCount;
         }
 
@@ -103,7 +103,7 @@ public class DrawScaleBox {
         for (int i = 0; i < width; i++) {
             final int value = (int)Math.round((double)i * maxCount/(double)width);
 
-            System.err.println("i="+i+": "+value+"/"+maxCount+" = "+(int)Math.round(value/(float)maxCount));
+            // System.err.println("i="+i+": "+value+"/"+maxCount+" = "+(int)Math.round(value/(float)maxCount));
 
             final Color color = switch (scalingType) {
                 default /* case LINEAR */ -> colorGradient.getColor(value);

@@ -61,7 +61,8 @@ public class AccessAccessionMappingDatabase implements Closeable {
 
         connection = config.createConnection("jdbc:sqlite:" + dbFile);
 
-        if (!fileFilter.apply(executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1).get(0)))
+        var result=executeQueryString("SELECT info_string FROM info WHERE id = 'general';", 1);
+        if (result.size()>0 && !fileFilter.apply(result.get(0)))
             throw new IOException("Mapping file " + FileUtils.getFileNameWithoutPath(dbFile) + " is intended for use with MEGAN Ultimate Edition, it is not compatible with MEGAN Community Edition");
     }
 

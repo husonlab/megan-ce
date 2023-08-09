@@ -18,7 +18,7 @@
  */
 package megan.classification.data;
 
-import jloda.util.CanceledException;
+import jloda.util.FileUtils;
 import megan.io.IIntGetter;
 import megan.io.IntFileGetterMappedMemory;
 import megan.io.IntFileGetterRandomAccess;
@@ -38,12 +38,9 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
      * open a bin  file
      *
 	 */
-    public Long2IntegerBinMap(String fileName) throws IOException, CanceledException {
-        final File file = new File(fileName);
-        if (!file.exists())
-            throw new IOException("No such file: " + file);
-        if (!file.canRead())
-            throw new IOException("Can't read file: " + file);
+    public Long2IntegerBinMap(String fileName) throws IOException{
+        FileUtils.checkFileReadableNonEmpty(fileName);
+        var file = new File(fileName);
         if (!isBinFile(fileName))
             throw new IOException("Wrong magic number: " + file);
         try {
@@ -77,8 +74,8 @@ class Long2IntegerBinMap implements ILong2IntegerMap, Closeable {
      * @return true, if this looks like a valid bin file
      */
     public static boolean isBinFile(String fileName) {
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(fileName))) {
-            int firstInt = dis.readInt();
+        try (var dis = new DataInputStream(new FileInputStream(fileName))) {
+            var firstInt = dis.readInt();
             return firstInt == 0 || firstInt == MAGIC_NUMBER;
         } catch (Exception e) {
             return false;

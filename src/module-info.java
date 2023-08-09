@@ -10,13 +10,14 @@ module megan {
 
     requires Jama;
     requires sis.jhdf5.batteries.included;
-    requires gson;
-    requires commons.math3;
+    requires  gson;
+    requires  commons.math3;
     requires contrasts;
-    requires java.desktop;
-    requires java.net.http;
-    requires bcyrpt;
-    requires org.xerial.sqlitejdbc;
+    requires transitive java.desktop;
+    requires transitive java.net.http;
+    requires  bcyrpt;
+    requires transitive org.xerial.sqlitejdbc;
+    requires transitive java.sql.rowset;
 
     exports megan.accessiondb;
     exports megan.algorithms;

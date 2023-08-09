@@ -365,10 +365,10 @@ class CSVExportTaxonomy {
     private static String getTaxonLabelSource(String format, int taxonId) {
         if (format.startsWith("taxonName"))
 			return StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
-        else if (format.startsWith("taxonPath"))
-			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.startsWith("taxonPathKPCOFGS"))
             return getPath(taxonId, true);
+        else if (format.startsWith("taxonPath"))
+			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.startsWith("taxonRank")) {
             final String rankName = TaxonomicLevels.getName(TaxonomyData.getName2IdMap().getRank(taxonId));
             if (rankName != null)
@@ -387,13 +387,13 @@ class CSVExportTaxonomy {
     private static String getTaxonLabelTarget(Director dir, String format, int taxonId, IReadBlock readBlock) {
         if (format.endsWith("taxonName"))
 			return StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
-        else if (format.endsWith("taxonPath"))
-			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.endsWith("taxonPathKPCOFGS"))
             return getPath(taxonId, true);
         else if (format.endsWith("taxonPathPercent")) // // PathPercent has been disabled
             return getPathPercent(dir, readBlock);
-        else
+        else if (format.endsWith("taxonPath"))
+            return StringUtils.getInCleanQuotes(getPath(taxonId, false));
+       else
             return "" + taxonId;
     }
 

@@ -18,8 +18,7 @@
  */
 package megan.dialogs.export;
 
-import jloda.util.CanceledException;
-import jloda.util.StringUtils;
+import jloda.util.*;
 import jloda.util.progress.ProgressListener;
 import megan.algorithms.ActiveMatches;
 import megan.algorithms.TaxonPathAssignment;
@@ -115,6 +114,8 @@ class CSVExportTaxonomy {
             progressListener.setMaximum(selected.size());
             progressListener.setProgress(0);
 
+            var taxonCountMap=new TreeMap<String,float[]>();
+
             for (var v = selected.getFirstElement(); v != null; v = selected.getNextElement(v)) {
                 var taxonId = (Integer) v.getInfo();
                 if (taxonId != null) {
@@ -122,15 +123,21 @@ class CSVExportTaxonomy {
                     final var counts = (reportSummarized || v.getOutDegree() == 0 ? data.getSummarized() : data.getAssigned());
                     final var name = getTaxonLabelSource(format, taxonId);
                     if (counts.length == names.size()) {
-                        w.write(name);
-                        for (var num : counts)
-                            w.write(separator + "" + num);
-                        w.write("\n");
-                        totalLines++;
+                        var sum=taxonCountMap.computeIfAbsent(name,k->new float[counts.length]);
+                        for(var i=0;i<sum.length;i++) {
+                            sum[i] += counts[i];
+                        }
                     } else
                         System.err.println("Skipped " + name + ", number of values: " + counts.length);
                 }
                 progressListener.incrementProgress();
+            }
+            for(var name:taxonCountMap.keySet()) {
+                var counts=taxonCountMap.get(name);
+                if(CollectionUtils.getSum(counts) > 0) {
+                    w.write(name+"\t"+StringUtils.toString(counts,"\t")+"\n");
+                    totalLines++;
+                }
             }
         } catch (CanceledException canceled) {
             System.err.println("USER CANCELED");
@@ -298,7 +305,7 @@ class CSVExportTaxonomy {
                 try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
                     while (it.hasNext()) {
                         var readId = it.next().getReadName();
-                        w.write(separator + "" + readId);
+                        w.write(separator + readId);
                         progressListener.checkForCancel();
                     }
                     w.write("\n");
@@ -343,7 +350,7 @@ class CSVExportTaxonomy {
                 try (var it = connector.getReadsIteratorForListOfClassIds(viewer.getClassName(), allBelow, 0, 10000, true, false)) {
                     while (it.hasNext()) {
                         var readId = it.next().getReadName();
-                        w.write(separator + "" + readId);
+                        w.write(separator + readId);
                         progressListener.checkForCancel();
                     }
                     w.write("\n");
@@ -365,8 +372,13 @@ class CSVExportTaxonomy {
     private static String getTaxonLabelSource(String format, int taxonId) {
         if (format.startsWith("taxonName"))
 			return StringUtils.getInCleanQuotes(TaxonomyData.getName2IdMap().get(taxonId));
-        else if (format.startsWith("taxonPathKPCOFGS"))
-            return getPath(taxonId, true);
+        else if (format.startsWith("taxonPathKPCOFGS")) {
+             var path=getPath(taxonId, true);
+             if(!path.isEmpty())
+                 return path;
+             else
+                 return "0__"+TaxonomyData.getName2IdMap().get(taxonId);
+        }
         else if (format.startsWith("taxonPath"))
 			return StringUtils.getInCleanQuotes(getPath(taxonId, false));
         else if (format.startsWith("taxonRank")) {

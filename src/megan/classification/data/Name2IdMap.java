@@ -181,7 +181,7 @@ public class Name2IdMap implements IName2IdMap {
                 }
             }
         } catch (NullPointerException ex) {
-            throw new IOException("not found");
+            throw new IOException("not found: " + fileName);
         }
         System.err.printf("%,9d%n", id2name.size());
     }

@@ -210,7 +210,7 @@ class DAAReferencesAnnotator {
                 final var task = t;
                 service.submit(() -> {
                     try {
-                        final var outs = new ByteOutputStream();
+                        final var outs = new ByteOutputStream(1048576);
                         final var w = new OutputWriterLittleEndian(outs);
                         w.writeNullTerminatedString(cNames[task].getBytes());
                         final var ref2class = cName2ref2class[task];

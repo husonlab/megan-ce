@@ -20,6 +20,7 @@
 package megan.daa.io;
 
 
+import jloda.util.Basic;
 import megan.io.IOutput;
 
 import java.io.OutputStream;
@@ -49,7 +50,9 @@ public final class ByteOutputStream extends OutputStream implements IOutput {
     private void ensureCapacity(int space) {
         int newCount = space + this.count;
         if (newCount > this.buf.length) {
-            byte[] tmp = new byte[Math.max(this.buf.length << 1, newCount)];
+            if ((long) newCount > (long) Basic.MAX_ARRAY_SIZE)
+                throw new RuntimeException("ByteOutputStream overflow");
+            var tmp = new byte[Math.max((int) Math.min((long) Basic.MAX_ARRAY_SIZE, ((long) this.buf.length) << 1L), newCount)];
             System.arraycopy(this.buf, 0, tmp, 0, this.count);
             this.buf = tmp;
         }
@@ -86,8 +89,7 @@ public final class ByteOutputStream extends OutputStream implements IOutput {
 
     public byte[] getExactLengthCopy() {
         final byte[] bytes = new byte[size()];
-        if (bytes.length >= 0)
-            System.arraycopy(getBytes(), 0, bytes, 0, bytes.length);
+        System.arraycopy(getBytes(), 0, bytes, 0, bytes.length);
         return bytes;
     }
 

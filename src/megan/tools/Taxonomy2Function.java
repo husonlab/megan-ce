@@ -75,7 +75,7 @@ public class Taxonomy2Function {
 		final var outputFile = options.getOption("-o", "out", "Output file (stdout or .gz ok)", "stdout");
 
 		options.comment("Options");
-		final var firstClassificationName = options.getOption("-a", "firstClassification", "first classification name", ClassificationManager.getAllSupportedClassifications(), "Taxonomy");
+		final var firstClassificationName = options.getOption("-a", "firstClassification", "First classification name", ClassificationManager.getAllSupportedClassifications(), "Taxonomy");
         final var firstClasses = options.getOption("-ac", "firstClasses", "Class IDs in first classification?", List.of("all"));
         final var secondClassificationName = options.getOption("-b", "secondClassification", "Second classification name", ClassificationManager.getAllSupportedClassifications(), "EGGNOG");
         final var secondClasses = options.getOption("-bc", "secondClasses", "Class IDs in second classifications?", List.of("all"));
@@ -93,6 +93,9 @@ public class Taxonomy2Function {
 		final var includeSecondUnassigned = options.getOption("-bu", "includeSecondUnassigned", "include reads unassigned second classification", true);
 
 		options.comment(ArgsOptions.OTHER);
+		var firstRank=options.getOption("-ar","firstRank","If the first classification is Taxonomy, report at specified rank",TaxonomicLevels.getAllMajorRanks(),"");
+		var secondRank=options.getOption("-br","secondRank","If the second classification is Taxonomy, report at specified rank",TaxonomicLevels.getAllMajorRanks(),"");
+
 		var showHeaderLine = options.getOption("-sh", "showHeadline", "Show a headline in the output naming classifications and files", false);
 		var pathSeparator = options.getOption("-ps", "pathSeparator", "Separator used when reporting paths", new String[]{"::", "|", "tab", "comma", "semi-colon"}, "::");
 
@@ -102,7 +105,7 @@ public class Taxonomy2Function {
 		MeganProperties.initializeProperties(propertiesFile);
 
 		if (firstClassificationName.equals(secondClassificationName))
-			throw new UsageException("First second classifications must be different");
+			throw new UsageException("First and second classifications must be different");
 
 		for (var file : inputFiles) {
 			if (!FileUtils.fileExistsAndIsNonEmpty(file))
@@ -126,6 +129,15 @@ public class Taxonomy2Function {
 
 		var firstClassificationMajorRanksOnly=majorRanksOnly && firstClassificationName.equals(Classification.Taxonomy);
 		var secondClassificationMajorRanksOnly=majorRanksOnly && secondClassificationName.equals(Classification.Taxonomy);
+
+		int firstRankId=TaxonomicLevels.getId(firstRank);
+		if(firstRankId!=0 && !firstClassificationName.equalsIgnoreCase(Classification.Taxonomy)) {
+				throw new UsageException("--firstRank: first classification must be Taxonomy");
+		}
+		int secondRankId=TaxonomicLevels.getId(secondRank);
+		if(secondRankId!=0 && !secondClassificationName.equalsIgnoreCase(Classification.Taxonomy)) {
+			throw new UsageException("--secondRank: second classification must be Taxonomy");
+		}
 
 		if(firstClassificationMajorRanksOnly || secondClassificationMajorRanksOnly){
 			ClassificationManager.get(Classification.Taxonomy, true);
@@ -176,7 +188,7 @@ public class Taxonomy2Function {
 			progress.setTasks("Processing:","First classification");
 			progress.setMaximum(firstClassificationBlock.getKeySet().size());
 
-			if (firstIds == null || firstIds.size() == 0)
+			if (firstIds == null || firstIds.isEmpty())
 				firstIds = firstClassificationBlock.getKeySet();
 
 			for (var classId : firstIds) {
@@ -185,7 +197,12 @@ public class Taxonomy2Function {
 					if(firstClassificationMajorRanksOnly) {
 						mappedClassId= TaxonomyData.getLowestAncestorWithMajorRank(classId);
 					}
-					var list = first2reads.computeIfAbsent(mappedClassId,k->new ArrayList<String>());
+					if(firstRankId!=0) {
+						mappedClassId=TaxonomyData.getAncestorAtGivenRank(classId,firstRankId);
+						if(mappedClassId==0)
+							mappedClassId=1;
+					}
+					var list = first2reads.computeIfAbsent(mappedClassId,k->new ArrayList<>());
 					var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
 					while (it.hasNext()) {
 						var readBlock = it.next();
@@ -204,13 +221,18 @@ public class Taxonomy2Function {
 			progress.setProgress(0);
 			progress.setMaximum(secondClassificationBlock.getKeySet().size());
 
-			if (secondIds == null || secondIds.size() == 0)
+			if (secondIds == null || secondIds.isEmpty())
 				secondIds = secondClassificationBlock.getKeySet();
 
 			for (var classId : secondIds) {
 				var mappedClassId=classId;
 				if(secondClassificationMajorRanksOnly) {
 					mappedClassId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
+				}
+				if(secondRankId!=0) {
+					mappedClassId=TaxonomyData.getAncestorAtGivenRank(classId,secondRankId);
+					if(mappedClassId==0)
+						secondRankId=1;
 				}
 				if (includeSecondUnassigned || classId > 0) {
 					var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);
@@ -260,51 +282,51 @@ public class Taxonomy2Function {
 			var firstClassification = (firstFormat.equals("id") ? null : ClassificationManager.get(firstClassificationName, true));
 			var secondClassification = (secondFormat.equals("id") ? null : ClassificationManager.get(secondClassificationName, true));
 
-			var progress = new ProgressPercentage("Writing", outputFile);
-			progress.setProgress(0);
+			try (var progress = new ProgressPercentage("Writing", outputFile)) {
 
-			var rowSet = (useReadsTable ? readsTable.rowKeySet() : countsTable.rowKeySet());
-			var colSet = (useReadsTable ? readsTable.columnKeySet() : countsTable.columnKeySet());
-			var numberOfReads = (useReadsTable ? readsTable.getNumberOfRows() : countsTable.getNumberOfRows());
+				var rowSet = (useReadsTable ? readsTable.rowKeySet() : countsTable.rowKeySet());
+				var colSet = (useReadsTable ? readsTable.columnKeySet() : countsTable.columnKeySet());
+				var numberOfReads = (useReadsTable ? readsTable.getNumberOfRows() : countsTable.getNumberOfRows());
 
-			progress.setMaximum(numberOfReads);
+				progress.setMaximum(numberOfReads);
+				progress.setProgress(0);
 
-			try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
-				if (showHeaderLine)
-					w.write(firstClassificationName + separator + secondClassificationName + separator + StringUtils.toString(inputFiles, separator) + "\n");
-				for (var firstId : sorted(firstClassification, firstFormat, rowSet)) {
-					var firstName =
-							switch (firstFormat) {
-								default -> String.valueOf(firstId);
-								case "id" -> String.valueOf(firstId);
-								case "name" -> firstClassification.getName2IdMap().get(firstId);
-								case "path" -> firstClassification.getPath(firstId, pathSeparator);
-							};
-					for (var secondId : sorted(secondClassification, secondFormat, colSet)) {
-						var secondName =
-								switch (secondFormat) {
-									default -> String.valueOf(secondId);
-									case "id" -> String.valueOf(secondId);
-									case "name" -> secondClassification.getName2IdMap().get(secondId);
-									case "path" -> secondClassification.getPath(secondId, pathSeparator);
+				try (var w = new BufferedWriter(new OutputStreamWriter(FileUtils.getOutputStreamPossiblyZIPorGZIP(outputFile)))) {
+					if (showHeaderLine)
+						w.write(firstClassificationName + separator + secondClassificationName + separator + StringUtils.toString(inputFiles, separator) + "\n");
+					for (var firstId : sorted(firstClassification, firstFormat, rowSet)) {
+						var firstName =
+								switch (firstFormat) {
+									default -> String.valueOf(firstId);
+									case "id" -> String.valueOf(firstId);
+									case "name" -> firstClassification.getName2IdMap().get(firstId);
+									case "path" -> firstClassification.getPath(firstId, pathSeparator);
 								};
-						if (useReadsTable) {
-							if (readsTable.contains(firstId, secondId)) {
-								var values = readsTable.get(firstId, secondId);
-								w.write(firstName + separator + secondName + separator + StringUtils.toString(values, ", ") + "\n");
-							}
-						} else {
-							if (countsTable.contains(firstId, secondId)) {
-								var values = countsTable.get(firstId, secondId);
-								w.write(firstName + separator + secondName + separator + StringUtils.toString(values, separator) + "\n");
+						for (var secondId : sorted(secondClassification, secondFormat, colSet)) {
+							var secondName =
+									switch (secondFormat) {
+										default -> String.valueOf(secondId);
+										case "id" -> String.valueOf(secondId);
+										case "name" -> secondClassification.getName2IdMap().get(secondId);
+										case "path" -> secondClassification.getPath(secondId, pathSeparator);
+									};
+							if (useReadsTable) {
+								if (readsTable.contains(firstId, secondId)) {
+									var values = readsTable.get(firstId, secondId);
+									w.write(firstName + separator + secondName + separator + StringUtils.toString(values, ", ") + "\n");
+								}
+							} else {
+								if (countsTable.contains(firstId, secondId)) {
+									var values = countsTable.get(firstId, secondId);
+									w.write(firstName + separator + secondName + separator + StringUtils.toString(values, separator) + "\n");
 
+								}
 							}
 						}
+						progress.incrementProgress();
 					}
-					progress.incrementProgress();
 				}
 			}
-			progress.reportTaskCompleted();
 		}
 	}
 

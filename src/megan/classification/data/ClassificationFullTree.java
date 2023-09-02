@@ -633,7 +633,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @return id
      */
     public int getAddress2Id(String address) {
-        Integer id = address2Id.get(address);
+        var id = address2Id.get(address);
         return Objects.requireNonNullElse(id, 0);
     }
 
@@ -643,7 +643,7 @@ public class ClassificationFullTree extends PhyloTree {
      * @return set of nodes
      */
     public Set<Integer> getAllAtLevel(int level) {
-        final Set<Integer> result = new HashSet<>();
+        var result = new HashSet<Integer>();
         getAllAtLevelRec(getRoot(), 0, level, result);
         return result;
     }
@@ -656,7 +656,7 @@ public class ClassificationFullTree extends PhyloTree {
         if (current == level) {
             result.add((Integer) v.getInfo());
         } else {
-            for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+            for (var e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
                 getAllAtLevelRec(e.getTarget(), current + 1, level, result);
             }
         }

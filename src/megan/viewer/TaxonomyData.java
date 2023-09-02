@@ -134,16 +134,37 @@ public class TaxonomyData {
             if (TaxonomicLevels.isMajorRank(rank))
                 return id;
             var address = getAddress(id);
-            if (address == null || address.length() == 0)
+            if (address == null || address.isEmpty())
                 return 1;
             address = address.substring(0, address.length() - 1);
-            if (address.length() == 0)
+            if (address.isEmpty())
                 return 1;
             id = getAddress2Id(address);
             if (id <= 0)
                 return 1;
         }
 
+    }
+
+    /**
+     * gets the ancestor at the given rank, or 0
+     */
+    public static int getAncestorAtGivenRank(Integer id,int rank) {
+         while (id>0) {
+            if(getTaxonomicRank(id)==rank)
+                    return id;
+             var address = getAddress(id);
+            if (address == null || address.isEmpty())
+                return 0;
+            do {
+                address = address.substring(0, address.length() - 1);
+                if (address.isEmpty())
+                    return 0;
+                id = getAddress2Id(address);
+            }
+            while(id==0);
+         }
+        return 0;
     }
 
     public static String getAddress(Integer id) {
@@ -166,7 +187,7 @@ public class TaxonomyData {
      * @return id
      */
     public static int getLCA(Set<Integer> taxonIds, boolean removeAncestors) {
-        if (taxonIds.size() == 0)
+        if (taxonIds.isEmpty())
             return IdMapper.NOHITS_ID;
 
         var addresses = new HashSet<String>();
@@ -230,7 +251,7 @@ public class TaxonomyData {
                         while (expectedIndex < expectedPath.length() && key != expectedPath.charAt(expectedIndex)) {
                             var missing = expectedPath.charAt(expectedIndex);
                             if (missing != 'K') {
-                                if (buf.length() > 0)
+                                if (!buf.isEmpty())
                                     buf.append(" ");
                                 buf.append("[").append(missing == 'D' ? "D" : missing).append("] unknown;");
                             }
@@ -240,11 +261,11 @@ public class TaxonomyData {
 
                         letters = letters.substring(0, 1);
 
-                        if (buf.length() > 0)
+                        if (!buf.isEmpty())
                             buf.append(" ");
                         buf.append("[").append(letters).append("] ").append(taxonomyClassification.getName2IdMap().get(id)).append(";");
                     } else {
-                        if (buf.length() > 0)
+                        if (!buf.isEmpty())
                             buf.append(" ");
                         buf.append(taxonomyClassification.getName2IdMap().get(id)).append(";");
                     }
@@ -329,7 +350,7 @@ public class TaxonomyData {
      * ensures that the disabled taxa have been initialized
      */
     public static void ensureDisabledTaxaInitialized() {
-        if (getDisabledTaxa().size() == 0 && getDisabledInternalTaxa().size() > 0)
+        if (getDisabledTaxa().isEmpty() && !getDisabledInternalTaxa().isEmpty())
             TaxonomyData.setDisabledInternalTaxa(getDisabledInternalTaxa());
     }
 

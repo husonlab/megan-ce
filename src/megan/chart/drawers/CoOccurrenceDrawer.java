@@ -244,7 +244,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
             }
         }
 
-        if (valuesList.size() > 0) {
+        if (!valuesList.isEmpty()) {
             gc.setFont(getFont(ChartViewer.FontKeys.YAxisFont.toString()));
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
             DrawableValue.drawValues(gc, valuesList, false, true);
@@ -321,7 +321,7 @@ public class CoOccurrenceDrawer extends BarChartDrawer implements IChartDrawer {
                                     intersection.add(series1);
                                 }
                             }
-                            if (union.size() > 0) {
+                            if (!union.isEmpty()) {
                                 final boolean positive;
                                 if (isShowCoOccurring() && !isShowAntiOccurring())
                                     positive = true;

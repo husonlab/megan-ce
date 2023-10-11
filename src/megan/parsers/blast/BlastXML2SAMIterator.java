@@ -69,7 +69,7 @@ public class BlastXML2SAMIterator implements ISAMIterator {
                 blastXMLParser.apply();
             } catch (Exception e) {
                 Basic.caught(e);
-                NotificationsInSwing.showError(Basic.getShortName(e.getClass()) + ": " + e.getMessage());
+                NotificationsInSwing.showError(Basic.getShortName(e.getClass()) + ": " + (e.getMessage()!=null ? e.getMessage() : e.toString()));
             } finally {
                 try {
                     queue.put(sentinel);

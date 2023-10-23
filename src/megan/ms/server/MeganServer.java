@@ -76,7 +76,7 @@ public class MeganServer {
         final String[] inputFileExtensions = options.getOption("-x", "extensions", "Input file extensions", new String[]{".daa", ".rma", ".rma6", ".megan", ".megan.gz"});
 
         options.comment("Server");
-        final String endpointName = options.getOption("-e", "endpoint", "Endpoint name", "megan6server");
+        final String endpoint = options.getOption("-e", "endpoint", "Endpoint name", "megan6server");
 
         final int port = options.getOption("-p", "port", "Server port", 8001);
 
@@ -99,7 +99,7 @@ public class MeganServer {
 
         options.done();
 
-        if(endpointName.length()==0)
+        if(endpoint.length()==0)
             throw new UsageException("--endpoint: must have positive length");
 
         final UserManager userManager = new UserManager(usersFile);
@@ -111,9 +111,9 @@ public class MeganServer {
             System.err.println("Guests can login with name: guest and password: guest");
         }
 
-        final HttpServerMS server = new HttpServerMS(endpointName, port,userManager, backlog, readsPerPage,pageTimeout);
+        final HttpServerMS server = new HttpServerMS(endpoint, port,userManager, backlog, readsPerPage,pageTimeout);
         final Database database = new Database(new File(inputDirectory), inputFileExtensions, recursive);
-        server.addDatabase(endpointName,database,null);
+        server.addDatabase(endpoint,database,null);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.err.println("Stopping http server...");
@@ -128,8 +128,9 @@ public class MeganServer {
         System.err.println(server.getAbout());
 
         System.err.println("Server address:");
-        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + "/"+endpointName);
-        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() +"/"+ endpointName);
+        System.err.println("http://" + server.getAddress().getHostAddress() + ":" + server.getSocketAddress().getPort() + "/"+endpoint);
+        System.err.println("http://" + server.getAddress().getHostName() + ":" + server.getSocketAddress().getPort() +"/"+ endpoint);
+        System.err.println("Help: http://" + server.getAddress().getHostAddress() + ":"+server.getSocketAddress().getPort() + endpoint + "/help");
         System.err.println();
 
         server.rebuildDatabases();

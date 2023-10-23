@@ -186,15 +186,13 @@ public class HttpServerMS {
     }
 
     public String getAbout() {
-        String about = MeganServer.Version + "\n"
-                       + "Version: " + ProgramProperties.getProgramVersion() + "\n"
-                       + "Hostname: " + getAddress().getHostName() + "\n"
-                       + "IP address: " + getAddress().getHostAddress() + "\n"
-                       + "Port: " + getSocketAddress().getPort() + "\n"
-                       + "Known users: " + userManager.size() + "\n"
-                       + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
-                       + "Server started: " + (new Date(getStarted())) + "\n";
-        about += "Help: http://" + getAddress().getHostAddress() + ":"+getSocketAddress().getPort() + defaultPath + "/help\n";
-        return about;
+		return MeganServer.Version + "\n"
+			   + "Version: " + ProgramProperties.getProgramVersion() + "\n"
+			   + "Hostname: " + getAddress().getHostName() + "\n"
+			   + "IP address: " + getAddress().getHostAddress() + "\n"
+			   + "Port: " + getSocketAddress().getPort() + "\n"
+			   + "Known users: " + userManager.size() + "\n"
+			   + "Total requests: " + (HttpHandlerMS.getNumberOfRequests().get() + 1L) + "\n"
+			   + "Server started: " + (new Date(getStarted())) + "\n";
     }
 }

@@ -318,9 +318,12 @@ public interface RequestHandler {
 				var pageSize = Parameters.getValue(p, "pageSize", defaultReadsPerPage);
 				final var fileName = Parameters.getValue(p, "file");
 
+                if(database.getRecord(fileName)==null)
+                    return reportError(c, p, "File not found: "+fileName);
+
 				if (pageSize == 100) { // older versions of MEGAN always request 100 reads per page, reduce to 1 for long reads
 					// set page size depending on whether long reads or not
-					pageSize = database.getRecord(fileName).isLongReads() ? 1 : 100;
+					pageSize =  database.getRecord(fileName).isLongReads() ? 1 : 100;
 				}
 
 				final ReadsOutputFormat format = new ReadsOutputFormat(

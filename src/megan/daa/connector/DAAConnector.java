@@ -21,6 +21,7 @@ package megan.daa.connector;
 import jloda.util.CanceledException;
 import jloda.util.ListOfLongs;
 import jloda.util.Single;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 import megan.daa.io.*;
 import megan.data.*;
@@ -116,14 +117,20 @@ public class DAAConnector implements IConnector {
 
     @Override
     public int getClassificationSize(String classificationName) throws IOException {
-        IClassificationBlock classificationBlock = getClassificationBlock(classificationName);
-        return classificationBlock.getKeySet().size();
+        var classificationBlock = getClassificationBlock(classificationName);
+        if(classificationBlock==null) {
+            System.err.printf("Error: getClassificationSize(%s): classificationBlock is null%n", classificationName);
+            System.err.println("Known classifications: " + StringUtils.toString(getAllClassificationNames(),", "));
+        }
+        return classificationBlock==null?0:classificationBlock.getKeySet().size();
     }
 
     @Override
     public int getClassSize(String classificationName, int classId) throws IOException {
-        IClassificationBlock classificationBlock = getClassificationBlock(classificationName);
-        return classificationBlock.getSum(classId);
+        var classificationBlock = getClassificationBlock(classificationName);
+        if(classificationBlock==null)
+            System.err.printf("Error: getClassSize(%s,%d): classificationBlock is null%n",classificationName,classId);
+        return classificationBlock==null?0:classificationBlock.getSum(classId);
     }
 
     @Override

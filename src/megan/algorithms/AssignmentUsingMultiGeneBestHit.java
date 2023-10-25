@@ -114,15 +114,15 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
     private IntervalTree<IMatchBlock> computeAcceptedMatches(BitSet activeMatches, IReadBlock readBlock) {
         if (activeMatches == null) {
             activeMatches = new BitSet();
-            for (int i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
+            for (var i = 0; i < readBlock.getNumberOfAvailableMatchBlocks(); i++) {
                 activeMatches.set(i);
             }
         }
 
         allMatches.clear();
         reverseMatches.clear();
-        for (int i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
-            final IMatchBlock matchBlock = readBlock.getMatchBlock(i);
+        for (var i = activeMatches.nextSetBit(0); i != -1; i = activeMatches.nextSetBit(i + 1)) {
+            var matchBlock = readBlock.getMatchBlock(i);
             if (matchBlock.getId(cName) > 0) {
                 if (matchBlock.getAlignedQueryStart() <= matchBlock.getAlignedQueryEnd()) {
                     allMatches.add(matchBlock.getAlignedQueryStart(), matchBlock.getAlignedQueryEnd(), matchBlock);
@@ -132,21 +132,30 @@ public class AssignmentUsingMultiGeneBestHit implements IMultiAssignmentAlgorith
         }
 
         // remove all matches covered by stronger ones
-        for (int i = 0; i < 2; i++) {
+        for (var i = 0; i < 2; i++) {
             final IntervalTree<IMatchBlock> matches = (i == 0 ? allMatches : reverseMatches);
-            final ArrayList<Interval<IMatchBlock>> toDelete = new ArrayList<>();
-            for (final Interval<IMatchBlock> interval : matches) {
-                final IMatchBlock match = interval.getData();
-                for (final Interval<IMatchBlock> otherInterval : matches.getIntervals(interval)) {
-                    final IMatchBlock other = otherInterval.getData();
+            var toDeleteLists = new ArrayList<ArrayList<Interval<IMatchBlock>>>(10000);
+            var toDelete = new ArrayList<Interval<IMatchBlock>>(10000000);
+            toDeleteLists.add(toDelete);
+            for (var interval : matches) {
+                var match = interval.getData();
+                for (var otherInterval : matches.getIntervals(interval)) {
+                    var other = otherInterval.getData();
                     if (otherInterval.overlap(interval) > 0.5 * interval.length() &&
-                            (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId()))
+                        (other.getBitScore() > match.getBitScore() || other.getBitScore() == match.getBitScore() && other.getUId() < match.getUId())) {
+                        if (toDelete.size() > 10000000) {
+                            toDelete = new ArrayList<>(10000000);
+                            toDeleteLists.add(toDelete);
+                        }
                         toDelete.add(interval);
+                    }
                 }
             }
-            if (toDelete.size() > 0) {
-                matches.removeAll(toDelete);
-                toDelete.clear();
+            for (var list : toDeleteLists) {
+                if (!list.isEmpty()) {
+                    matches.removeAll(list);
+                }
+                toDeleteLists.clear();
             }
         }
         allMatches.addAll(reverseMatches.intervals());

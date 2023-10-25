@@ -126,20 +126,26 @@ public class Taxonomy2Function {
 			case "semi-colon" -> pathSeparator = ";";
 			case "tab" -> pathSeparator = "\t";
 		}
+		
+		final var firstClassificationIsTaxonomy=firstClassificationName.equals(Classification.Taxonomy);
+		final var secondClassificationIsTaxonomy=secondClassificationName.equals(Classification.Taxonomy);
 
-		var firstClassificationMajorRanksOnly=majorRanksOnly && firstClassificationName.equals(Classification.Taxonomy);
-		var secondClassificationMajorRanksOnly=majorRanksOnly && secondClassificationName.equals(Classification.Taxonomy);
+		var firstClassificationMajorRanksOnly=(majorRanksOnly && firstClassificationIsTaxonomy);
+		var secondClassificationMajorRanksOnly=(majorRanksOnly &&secondClassificationIsTaxonomy);
 
-		int firstRankId=TaxonomicLevels.getId(firstRank);
-		if(firstRankId!=0 && !firstClassificationName.equalsIgnoreCase(Classification.Taxonomy)) {
-				throw new UsageException("--firstRank: first classification must be Taxonomy");
-		}
-		int secondRankId=TaxonomicLevels.getId(secondRank);
-		if(secondRankId!=0 && !secondClassificationName.equalsIgnoreCase(Classification.Taxonomy)) {
+		final int firstRankId;
+		if(!firstClassificationIsTaxonomy && !firstRank.isEmpty())
+			throw new UsageException("--firstRank: first classification must be Taxonomy");
+		else
+			firstRankId=TaxonomicLevels.getId(firstRank);
+
+		final int secondRankId;
+		if(!secondClassificationIsTaxonomy && !secondRank.isEmpty())
 			throw new UsageException("--secondRank: second classification must be Taxonomy");
-		}
+		else
+			secondRankId=TaxonomicLevels.getId(secondRank);
 
-		if(firstClassificationMajorRanksOnly || secondClassificationMajorRanksOnly){
+		if(firstClassificationIsTaxonomy || secondClassificationIsTaxonomy){
 			ClassificationManager.get(Classification.Taxonomy, true);
 		}
 
@@ -194,13 +200,15 @@ public class Taxonomy2Function {
 			for (var classId : firstIds) {
 				if (includeFirstUnassigned || classId > 0) {
 					var mappedClassId=classId;
-					if(firstClassificationMajorRanksOnly) {
-						mappedClassId= TaxonomyData.getLowestAncestorWithMajorRank(classId);
-					}
-					if(firstRankId!=0) {
-						mappedClassId=TaxonomyData.getAncestorAtGivenRank(classId,firstRankId);
-						if(mappedClassId==0)
-							mappedClassId=1;
+					if(firstClassificationIsTaxonomy) {
+						if (firstClassificationMajorRanksOnly) {
+							mappedClassId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
+						}
+						if (firstRankId != 0) {
+							mappedClassId = TaxonomyData.getAncestorAtGivenRank(classId, firstRankId);
+							if (mappedClassId == 0)
+								mappedClassId = 1;
+						}
 					}
 					var list = first2reads.computeIfAbsent(mappedClassId,k->new ArrayList<>());
 					var it = connector.getReadsIterator(firstClassificationName, classId, 0, 10, false, false);
@@ -226,13 +234,15 @@ public class Taxonomy2Function {
 
 			for (var classId : secondIds) {
 				var mappedClassId=classId;
-				if(secondClassificationMajorRanksOnly) {
-					mappedClassId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
-				}
-				if(secondRankId!=0) {
-					mappedClassId=TaxonomyData.getAncestorAtGivenRank(classId,secondRankId);
-					if(mappedClassId==0)
-						secondRankId=1;
+				if(secondClassificationIsTaxonomy) {
+					if (secondClassificationMajorRanksOnly) {
+						mappedClassId = TaxonomyData.getLowestAncestorWithMajorRank(classId);
+					}
+					if (secondRankId != 0) {
+						mappedClassId = TaxonomyData.getAncestorAtGivenRank(classId, secondRankId);
+						if (mappedClassId == 0)
+							mappedClassId = 1;
+					}
 				}
 				if (includeSecondUnassigned || classId > 0) {
 					var it = connector.getReadsIterator(secondClassificationName, classId, 0, 10, false, false);

@@ -74,8 +74,8 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
 
         try {
             w.write("########## Begin of summary for file: " + doc.getMeganFile().getFileName() + "\n");
-            w.write("Samples: " + doc.getNumberOfSamples() + "\n");
-            w.write("Reads total: " + doc.getNumberOfReads() + "\n");
+            w.write("Samples:     %,d%n".formatted(doc.getNumberOfSamples()));
+            w.write("Reads total: %,d%n".formatted(doc.getNumberOfReads()));
             countLines.set(3);
 
             if (viewer.getTree().getRoot() != null) {
@@ -113,7 +113,7 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
             if (data.getCountSummarized() > 0) {
                 for (int i = 0; i < indent; i++)
                     outs.write(" ");
-				outs.write(name + ": " + StringUtils.toString(data.getSummarized(), ",") + "\n");
+				outs.write(name + ": " + StringUtils.toString("%,.0f",data.getSummarized(),0,data.getSummarized().length,",") + "\n");
 				countLines.set(countLines.get() + 1);
             }
         }
@@ -128,7 +128,7 @@ public class ListSummaryCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         executeImmediately("show window=message;");
         ViewerBase viewer = (ViewerBase) getViewer();
-        if (viewer.getSelectedNodes().size() == 0)
+        if (viewer.getSelectedNodes().isEmpty())
             execute("list summary nodes=all;");
         else
             execute("list summary nodes=selected;");

@@ -144,7 +144,7 @@ public class DataTable {
             while ((aLine = r.readLine()) != null) {
                 lineNumber++;
                 aLine = aLine.trim();
-                if (aLine.length() == 0 || aLine.startsWith("#"))
+                if (aLine.isEmpty() || aLine.startsWith("#"))
                     continue;
                 final String[] tokens = aLine.split("\t");
 
@@ -155,145 +155,128 @@ public class DataTable {
                     break; // BEGIN_METADATA_TABLE is for legacy purposes only and is no longer used or supported
 
                 if (aLine.startsWith("@")) {
-                    switch (tokens[0]) {
-                        case CONTENT_TYPE: {
-                            var buf = new StringBuilder();
-                            for (var i = 1; i < tokens.length; i++)
-                                buf.append(" ").append(tokens[i]);
-                            contentType = buf.toString().trim();
-                            if (!contentType.startsWith(MEGAN6SummaryFormat_NotUsedAnyMore) && !contentType.startsWith(MEGAN4SummaryFormat))
-                                throw new IOException("Wrong content type: " + contentType + ", expected: " + MEGAN4SummaryFormat);
-                            break;
-                        }
-                        case CREATOR: {
-                            var buf = new StringBuilder();
-                            for (var i = 1; i < tokens.length; i++)
-                                buf.append(" ").append(tokens[i]);
-                            creator = buf.toString().trim();
-                            break;
-                        }
-                        case CREATION_DATE: {
-                            var buf = new StringBuilder();
-                            for (var i = 1; i < tokens.length; i++)
-                                buf.append(" ").append(tokens[i]);
-                            creationDate = buf.toString().trim();
-                            break;
-                        }
-                        case BLAST_MODE:
-                            for (var i = 1; i < tokens.length; i++) {
-                                var blastMode = BlastMode.valueOfIgnoreCase(tokens[i]);
-                                if (blastMode == null)
-                                    blastMode = BlastMode.Unknown;
-                                blastModes.add(blastMode);
-                            }
-                            break;
-                        case NAMES:
-                            sampleNames.addAll(Arrays.asList(tokens).subList(1, tokens.length));
-                            break;
-                        case DISABLED:
-                            disabledSamples.addAll(Arrays.asList(tokens).subList(1, tokens.length));
-                            break;
-                        case MERGED_FILES:
-                            mergedFiles.addAll(Arrays.asList(tokens).subList(1, tokens.length));
-                            break;
-                        case UIDS:
-                            for (var i = 1; i < tokens.length; i++)
-                                if (tokens[i] != null && !tokens[i].equals("null"))
-                                    sampleUIds.add(Long.parseLong(tokens[i]));
-                            break;
-                        case SIZES:
-                            for (int i = 1; i < tokens.length; i++)
-                                sampleSizes.add(NumberUtils.parseFloat(tokens[i]));
-                            break;
-                        case TOTAL_READS:
-                            totalReads = (Long.parseLong(tokens[1]));
-                            break;
-                        case ADDITIONAL_READS:
-                            additionalReads = (Long.parseLong(tokens[1]));
-                            break;
-                        case COLLAPSE:
-                            if (tokens.length > 1) {
-                                String data = tokens[1];
-                                Set<Integer> collapsedIds = new HashSet<>();
-                                classification2collapsedIds.put(data, collapsedIds);
-                                for (int i = 2; i < tokens.length; i++)
-                                    collapsedIds.add(Integer.parseInt(tokens[i]));
-                            }
-                            break;
-                        case ALGORITHM:
-                            if (tokens.length > 1) {
-                                String data = tokens[1];
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 2; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                classification2algorithm.put(data, buf.toString().trim());
-                            }
-                            break;
-                        case NODE_STYLE:
-                            if (tokens.length > 1) {
-                                String data = tokens[1];
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 2; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                classification2NodeStyle.put(data, buf.toString().trim());
-                            }
-                            break;
-                        case COLOR_TABLE:
-                            colorTable = tokens[1];
-                            colorByPosition = false;
-                            for (int k = 2; k < tokens.length; k++) {
-                                if (tokens[k].equals("byPosition"))
-                                    colorByPosition = true;
-                                else
-                                    colorTableHeatMap = tokens[k];
-                            }
-                            break;
-                        case COLOR_EDITS:
-                            if (tokens.length > 1) {
+					switch (tokens[0]) {
+						case CONTENT_TYPE -> {
+							var buf = new StringBuilder();
+							for (var i = 1; i < tokens.length; i++)
+								buf.append(" ").append(tokens[i]);
+							contentType = buf.toString().trim();
+							if (!contentType.startsWith(MEGAN6SummaryFormat_NotUsedAnyMore) && !contentType.startsWith(MEGAN4SummaryFormat))
+								throw new IOException("Wrong content type: " + contentType + ", expected: " + MEGAN4SummaryFormat);
+						}
+						case CREATOR -> {
+							var buf = new StringBuilder();
+							for (var i = 1; i < tokens.length; i++)
+								buf.append(" ").append(tokens[i]);
+							creator = buf.toString().trim();
+						}
+						case CREATION_DATE -> {
+							var buf = new StringBuilder();
+							for (var i = 1; i < tokens.length; i++)
+								buf.append(" ").append(tokens[i]);
+							creationDate = buf.toString().trim();
+						}
+						case BLAST_MODE -> {
+							for (var i = 1; i < tokens.length; i++) {
+								var blastMode = BlastMode.valueOfIgnoreCase(tokens[i]);
+								if (blastMode == null)
+									blastMode = BlastMode.Unknown;
+								blastModes.add(blastMode);
+							}
+						}
+						case NAMES -> sampleNames.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+						case DISABLED -> disabledSamples.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+						case MERGED_FILES -> mergedFiles.addAll(Arrays.asList(tokens).subList(1, tokens.length));
+						case UIDS -> {
+							for (var i = 1; i < tokens.length; i++)
+								if (tokens[i] != null && !tokens[i].equals("null"))
+									sampleUIds.add(Long.parseLong(tokens[i]));
+						}
+						case SIZES -> {
+							for (int i = 1; i < tokens.length; i++)
+								sampleSizes.add(NumberUtils.parseFloat(tokens[i]));
+						}
+						case TOTAL_READS -> totalReads = (Long.parseLong(tokens[1]));
+						case ADDITIONAL_READS -> additionalReads = (Long.parseLong(tokens[1]));
+						case COLLAPSE -> {
+							if (tokens.length > 1) {
+								String data = tokens[1];
+								Set<Integer> collapsedIds = new HashSet<>();
+								classification2collapsedIds.put(data, collapsedIds);
+								for (int i = 2; i < tokens.length; i++)
+									collapsedIds.add(Integer.parseInt(tokens[i]));
+							}
+						}
+						case ALGORITHM -> {
+							if (tokens.length > 1) {
+								String data = tokens[1];
+								StringBuilder buf = new StringBuilder();
+								for (int i = 2; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								classification2algorithm.put(data, buf.toString().trim());
+							}
+						}
+						case NODE_STYLE -> {
+							if (tokens.length > 1) {
+								String data = tokens[1];
+								StringBuilder buf = new StringBuilder();
+								for (int i = 2; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								classification2NodeStyle.put(data, buf.toString().trim());
+							}
+						}
+						case COLOR_TABLE -> {
+							colorTable = tokens[1];
+							colorByPosition = false;
+							for (int k = 2; k < tokens.length; k++) {
+								if (tokens[k].equals("byPosition"))
+									colorByPosition = true;
+								else
+									colorTableHeatMap = tokens[k];
+							}
+						}
+						case COLOR_EDITS -> {
+							if (tokens.length > 1) {
 								colorEdits = StringUtils.toString(tokens, 1, tokens.length - 1, "\t");
-                            } else
-                                colorEdits = null;
-                            break;
-                        case NODE_FORMATS:
-                            if (tokens.length > 1) {
-                                String data = tokens[1];
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 2; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                classification2NodeFormats.put(data, buf.toString().trim());
-                            }
-                            break;
-                        case EDGE_FORMATS:
-                            if (tokens.length > 1) {
-                                String data = tokens[1];
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 2; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                classification2EdgeFormats.put(data, buf.toString().trim());
-                            }
-                            break;
-                        case PARAMETERS: {
-                            if (tokens.length > 1) {
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 1; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                parameters = buf.toString().trim();
-                            }
-                            break;
-                        }
-                        case CONTAMINANTS: {
-                            if (tokens.length > 1) {
-                                StringBuilder buf = new StringBuilder();
-                                for (int i = 1; i < tokens.length; i++)
-                                    buf.append(" ").append(tokens[i]);
-                                setContaminants(buf.toString().trim());
-                            }
-                            break;
-                        }
-                        default:
-                            System.err.println("Line: " + lineNumber + ": Skipping unknown token: " + tokens[0]);
-                            break;
-                    }
+							} else
+								colorEdits = null;
+						}
+						case NODE_FORMATS -> {
+							if (tokens.length > 1) {
+								String data = tokens[1];
+								StringBuilder buf = new StringBuilder();
+								for (int i = 2; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								classification2NodeFormats.put(data, buf.toString().trim());
+							}
+						}
+						case EDGE_FORMATS -> {
+							if (tokens.length > 1) {
+								String data = tokens[1];
+								StringBuilder buf = new StringBuilder();
+								for (int i = 2; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								classification2EdgeFormats.put(data, buf.toString().trim());
+							}
+						}
+						case PARAMETERS -> {
+							if (tokens.length > 1) {
+								StringBuilder buf = new StringBuilder();
+								for (int i = 1; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								parameters = buf.toString().trim();
+							}
+						}
+						case CONTAMINANTS -> {
+							if (tokens.length > 1) {
+								StringBuilder buf = new StringBuilder();
+								for (int i = 1; i < tokens.length; i++)
+									buf.append(" ").append(tokens[i]);
+								setContaminants(buf.toString().trim());
+							}
+						}
+						default -> System.err.println("Line: " + lineNumber + ": Skipping unknown token: " + tokens[0]);
+					}
                 } else {
                     if (headerOnly)
                         break;
@@ -396,16 +379,16 @@ public class DataTable {
 		w.write(String.format("%s\t%s\n", CONTENT_TYPE, getContentType()));
 		w.write(String.format("%s\t%s\n", NAMES, StringUtils.toString(sampleNames, "\t")));
 		w.write(String.format("%s\t%s\n", BLAST_MODE, StringUtils.toString(blastModes, "\t")));
-		if (disabledSamples.size() > 0) {
+		if (!disabledSamples.isEmpty()) {
 			w.write(String.format("%s\t%s\n", DISABLED, StringUtils.toString(disabledSamples, "\t")));
 		}
-		if(mergedFiles.size() > 0) {
+		if(!mergedFiles.isEmpty()) {
             w.write(String.format("%s\t%s\n", MERGED_FILES, StringUtils.toString(mergedFiles, "\t")));
         }
-		if (sampleUIds.size() > 0) {
+		if (!sampleUIds.isEmpty()) {
 			w.write(String.format("%s\t%s\n", UIDS, StringUtils.toString(sampleUIds, "\t")));
 		}
-		if (sampleSizes.size() > 0) {
+		if (!sampleSizes.isEmpty()) {
 			w.write(String.format("%s\t%s\n", SIZES, StringUtils.removeTrailingZerosAfterDot(StringUtils.toString(sampleSizes, "\t"))));
 		}
 

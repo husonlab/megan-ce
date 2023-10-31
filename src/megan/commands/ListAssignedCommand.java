@@ -111,7 +111,7 @@ public class ListAssignedCommand extends CommandBase implements ICommand {
             if (data.getCountSummarized() > 0) {
                 for (int i = 0; i < indent; i++)
                     outs.write(" ");
-				outs.write(name + ": " + StringUtils.toString(data.getSummarized(), ",") + "\n");
+				outs.write(name + ": " + StringUtils.toString("%,.0f",data.getSummarized(),0,data.getSummarized().length, ",") + "\n");
 				countLines.set(countLines.get() + 1);
             }
         }
@@ -126,7 +126,7 @@ public class ListAssignedCommand extends CommandBase implements ICommand {
     public void actionPerformed(ActionEvent event) {
         executeImmediately("show window=message;");
         final ViewerBase viewer = (ViewerBase) getViewer();
-        if (viewer.getSelectedNodes().size() == 0)
+        if (viewer.getSelectedNodes().isEmpty())
             execute("list assigned nodes=all;");
         else
             execute("list assigned nodes=selected;");

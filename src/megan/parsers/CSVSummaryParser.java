@@ -103,8 +103,8 @@ public class CSVSummaryParser {
         try (FileLineIterator it = new FileLineIterator(fileName)) {
             while (it.hasNext()) {
                 numberOfLines++;
-                String aLine = it.next().trim();
-                if (aLine.length() == 0 || (!first && aLine.startsWith("#")))
+                var aLine = it.next().trim();
+                if (aLine.isEmpty() || (!first && aLine.startsWith("#")))
                     continue;
                 try {
                     String[] tokens = aLine.split(separator);
@@ -208,6 +208,8 @@ public class CSVSummaryParser {
                 } catch (Exception ex) {
                     System.err.println("Error: " + ex + ", skipping");
                     numberOfErrors++;
+                    if(numberOfErrors>1000)
+                        throw new IOException("Too many errors");
                 }
             }
         }

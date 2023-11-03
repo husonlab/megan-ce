@@ -83,7 +83,7 @@ public class DAA2RMA6 {
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN .rma6 file from a DIAMOND .daa file");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");

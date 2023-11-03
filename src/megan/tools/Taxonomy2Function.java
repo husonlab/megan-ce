@@ -24,7 +24,6 @@ import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 import megan.classification.Classification;
 import megan.classification.ClassificationManager;
-import megan.classification.IdMapper;
 import megan.core.Document;
 import megan.main.MeganProperties;
 import megan.viewer.TaxonomicLevels;
@@ -33,7 +32,6 @@ import megan.viewer.TaxonomyData;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.*;
 
 /**
@@ -67,7 +65,7 @@ public class Taxonomy2Function {
 	private void run(String[] args) throws UsageException, IOException {
 		final var options = new ArgsOptions(args, this, "Reports taxonomy-by-function classification");
 		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
 		options.setAuthors("Daniel H. Huson");
 
 		options.comment("Input and Output");

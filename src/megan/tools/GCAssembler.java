@@ -36,7 +36,6 @@ import megan.data.IReadBlockIterator;
 import megan.main.MeganProperties;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class GCAssembler {
 
 		final var options = new ArgsOptions(args, this, "Gene-centric assembly");
 		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
 		options.setAuthors("Daniel H. Huson");
 
 		options.comment("Input and output");

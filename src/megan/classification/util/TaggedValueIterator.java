@@ -36,6 +36,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     private final String[] tags;
     private int tagPos;
     private final boolean attemptFirstWord;
+    private boolean attemptWordsAfterSOH;
     private boolean enabled;
 
     private String nextResult;
@@ -72,6 +73,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
 	 */
     public TaggedValueIterator(final String aLine, final boolean attemptFirstWord, final boolean enabled, final String... tags) {
         this.attemptFirstWord = attemptFirstWord;
+        this.attemptWordsAfterSOH = attemptFirstWord;
         this.enabled = enabled;
         this.tags = tags;
         if (aLine != null)
@@ -139,7 +141,7 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
     private String getNextResult() {
         loop:
         while (tagPos < aLine.length()) {
-            if (attemptFirstWord && aLine.charAt(tagPos) == 1) {
+            if (attemptWordsAfterSOH && aLine.charAt(tagPos) == 1) {
                 tagPos++;
                 break;
             }
@@ -211,6 +213,14 @@ public class TaggedValueIterator implements Iterator<String>, java.lang.Iterable
         target.clear();
         while (iterator().hasNext())
             target.add(iterator().next());
+    }
+
+    public boolean isAttemptWordsAfterSOH() {
+        return attemptWordsAfterSOH;
+    }
+
+    public void setAttemptWordsAfterSOH(boolean attemptWordsAfterSOH) {
+        this.attemptWordsAfterSOH = attemptWordsAfterSOH;
     }
 
     public static void main(String[] args) throws IOException {

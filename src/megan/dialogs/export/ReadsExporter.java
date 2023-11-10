@@ -25,7 +25,6 @@ import jloda.util.progress.ProgressListener;
 import megan.classification.ClassificationManager;
 import megan.data.IConnector;
 import megan.data.IReadBlock;
-import megan.data.IReadBlockIterator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,12 +32,14 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
 
+import static megan.data.Stats.count;
+
 /**
  * export all reads  to a file (or those associated with the set of selected taxa, if any selected)
  * Daniel Huson, 6.2010
  */
 public class ReadsExporter {
-    /**
+	/**
      * export all matches in file
      *
 	 */
@@ -109,6 +110,8 @@ public class ReadsExporter {
                             write(it.next(), w);
                             progressListener.setProgress(currentProgress);
                             currentProgress += progressIncrement;
+							if(!count.apply((int)total))
+								return total;
                         }
                     }
                 }

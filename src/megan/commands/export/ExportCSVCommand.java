@@ -43,7 +43,7 @@ import java.util.Objects;
 public class ExportCSVCommand extends CommandBase implements ICommand {
     private static final String EXPORT_CHOICE = "CSVExportChoice";
     private static final String COUNT_CHOICE = "CSVCount";
-    private static final String SEPARATOR_CHOICE = "CSVSeperator";
+    private static final String SEPARATOR_CHOICE = "CSVSeparator";
 
     public enum Choice {assigned, summarized}
 

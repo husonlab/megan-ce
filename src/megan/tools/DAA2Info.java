@@ -138,21 +138,21 @@ public class DAA2Info {
                 }
             }
 
-            if (listClass2Count.size() > 0) {
+            if (!listClass2Count.isEmpty()) {
                 if (isMeganized)
                     RMA2Info.reportClass2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listClass2Count, taxonomyRoot,useSummary, w);
                 else
                     System.err.println("Can't list class-to-count: file has not been meganized");
             }
 
-            if (listRead2Class.size() > 0) {
+            if (!listRead2Class.isEmpty()) {
                 if (isMeganized)
                     RMA2Info.reportRead2Count(doc, listGeneralInfo, listMoreStuff, reportPaths, reportNames, prefixRank, ignoreUnassigned, majorRanksOnly, listRead2Class, taxonomyRoot, w);
                 else
                     System.err.println("Can't list read-to-count: file has not been meganized");
             }
         }
-        if (extractSummaryFile.length() > 0) {
+        if (!extractSummaryFile.isEmpty()) {
             try (var w = new FileWriter(extractSummaryFile)) {
                 doc.getDataTable().write(w);
                 doc.getSampleAttributeTable().write(w, false, true);

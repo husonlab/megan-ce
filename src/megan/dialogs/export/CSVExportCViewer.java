@@ -36,6 +36,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import static megan.data.Stats.count;
+
 /**
  * methods for exporting FViewer data in csv format
  * Daniel Huson, 4.2010
@@ -88,6 +90,8 @@ public class CSVExportCViewer {
 								w.write(StringUtils.removeTrailingZerosAfterDot(separator + " " + a));
                             w.write("\n");
                             totalLines++;
+                            if(!count.apply(totalLines))
+                                return totalLines;
                         } else
                             System.err.println("Skipped " + name + ", number of values: " + counts.length);
                     }
@@ -163,6 +167,8 @@ public class CSVExportCViewer {
                                 totalLines++;
                             } else
                                 System.err.println("Skipped " + name + ", number of values: " + counts.length);
+                            if(!count.apply(totalLines))
+                                return totalLines;
                         }
                         progressListener.incrementProgress();
                     }
@@ -196,9 +202,11 @@ public class CSVExportCViewer {
                     if (names)
                         w.write(classification.getName2IdMap().get((Integer) v.getInfo()) + "\n");
                     else
-                        w.write("" + v.getInfo() + "\n");
+                        w.write(v.getInfo() + "\n");
                     progressListener.incrementProgress();
                     totalLines++;
+                    if(!count.apply(totalLines))
+                        return totalLines;
 
                 }
             }
@@ -253,6 +261,8 @@ public class CSVExportCViewer {
                         if (hasSome) {
                             w.write(separator + " " + length + "\n");
                             totalLines++;
+                            if(!count.apply(totalLines))
+                                return totalLines;
                         }
                         progressListener.incrementProgress();
                     }
@@ -316,6 +326,8 @@ public class CSVExportCViewer {
                         if (hasSome) {
 							w.write(StringUtils.removeTrailingZerosAfterDot(String.format("%c%.3f\n", separator, ((double) (1000 * count) / (double) (lengthFactor * length)))));
 							totalLines++;
+                            if(!Stats.count.apply(totalLines))
+                                return totalLines;
                         }
                         progressListener.incrementProgress();
                     }
@@ -366,6 +378,8 @@ public class CSVExportCViewer {
                                         seen.add(uid);
                                     w.write(readBlock.getReadName() + separator + " " + getLabelTarget(classification, format, v) + "\n");
                                     totalLines++;
+                                    if(!count.apply(totalLines))
+                                        return totalLines;
                                 }
                             }
                             progressListener.checkForCancel();
@@ -426,6 +440,8 @@ public class CSVExportCViewer {
                         if (hasSome) {
                             w.write("\n");
                             totalLines++;
+                            if(!count.apply(totalLines))
+                                return totalLines;
                         }
                         progressListener.incrementProgress();
                     }

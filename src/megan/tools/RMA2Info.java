@@ -27,10 +27,7 @@ import megan.classification.ClassificationManager;
 import megan.classification.data.ClassificationFullTree;
 import megan.classification.data.Name2IdMap;
 import megan.core.Document;
-import megan.data.IClassificationBlock;
-import megan.data.IConnector;
-import megan.data.IReadBlock;
-import megan.data.IReadBlockIterator;
+import megan.data.*;
 import megan.dialogs.export.CSVExportCViewer;
 import megan.main.MeganProperties;
 import megan.viewer.TaxonomicLevels;
@@ -268,6 +265,7 @@ public class RMA2Info {
                             ids.addAll(keep);
                         }
                     }
+                    var totalCount=0;
                     for (Integer taxId : ids) {
                         if (taxId > 0 || !ignoreUnassigned) {
                             final String classLabel;
@@ -282,30 +280,38 @@ public class RMA2Info {
                                 String rankLabel = null;
                                 if (TaxonomicLevels.isMajorRank(rank))
                                     rankLabel = TaxonomicLevels.getName(rank);
-                                if (rankLabel == null || rankLabel.length() == 0)
+                                if (rankLabel == null || rankLabel.isEmpty())
                                     rankLabel = "-";
                                 writer.write(rankLabel.charAt(0) + "\t");
                             }
                             writer.write(classLabel + "\t" + taxId2count.apply(taxId) + "\n");
+                            totalCount++;
+                            if(!Stats.count.apply(totalCount))
+                                break;
                         }
                     }
-
                 } else { // not taxonomy
                     if (reportPaths) {
                         final var classification = ClassificationManager.get(classificationName, true);
 
+                        var totalCount=0;
                         for (var classId : ids) {
                             final var nodes = classification.getFullTree().getNodes(classId);
                             if (nodes != null) {
                                 for (var v : nodes) {
                                     String label = CSVExportCViewer.getPath(classification, v);
                                     writer.write(label + "\t" + id2count.apply(classId) + "\n");
+                                    totalCount++;
                                 }
                             } else {
                                 writer.write("Class " + classId + "\t" + id2count.apply(classId) + "\n");
+                                totalCount++;
                             }
+                            if(!Stats.count.apply(totalCount))
+                                break;
                         }
                     } else {
+                        var totalCount=0;
                         for (var classId : classificationBlock.getKeySet()) {
                             if (classId > 0 || !ignoreUnassigned) {
                                 final String className;
@@ -314,6 +320,9 @@ public class RMA2Info {
                                 else
                                     className = name2IdMap.get(classId);
                                 writer.write(className + "\t" + id2count.apply(classId) + "\n");
+                                totalCount++;
+                                if(!Stats.count.apply(totalCount))
+                                    break;
                             }
                         }
                     }
@@ -341,6 +350,7 @@ public class RMA2Info {
 
         ClassificationFullTree taxonomyTree = null;
 
+        var totalCount=0;
         for (var classificationName : classificationNames) {
             if (availableClassificationNames.contains(classificationName)) {
                 if (listGeneralInfo || listMoreStuff)
@@ -405,16 +415,19 @@ public class RMA2Info {
                                         if (rankLabel == null || rankLabel.isBlank())
                                             rankLabel = "?";
                                         w.write(readBlock.getReadName() + "\t" + rankLabel.charAt(0) + "\t" + className + "\n");
-                                    } else
+                                        totalCount++;
+                                    } else {
                                         w.write(readBlock.getReadName() + "\t" + className + "\n");
-
+                                        totalCount++;
+                                    }
                                 } else {
                                     if (reportPaths) {
                                         var nodes = classification.getFullTree().getNodes(classId);
                                         if (nodes != null) {
                                             for (Node v : nodes) {
-                                                String label = CSVExportCViewer.getPath(classification, v);
+                                                var label = CSVExportCViewer.getPath(classification, v);
                                                 w.write(readBlock.getReadName() + "\t" + label + "\n");
+                                                totalCount++;
                                             }
                                         }
                                     } else {
@@ -423,9 +436,11 @@ public class RMA2Info {
                                         else
                                             className = name2IdMap.get(classId);
                                         w.write(readBlock.getReadName() + "\t" + className + "\n");
+                                        totalCount++;
                                     }
-
                                 }
+                                if(!Stats.count.apply(totalCount))
+                                    return;
                             }
                         }
                     }

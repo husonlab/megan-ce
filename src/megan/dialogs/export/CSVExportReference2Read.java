@@ -59,7 +59,7 @@ class CSVExportReference2Read {
 
             Map<String, List<String>> reference2reads = new HashMap<>();
 
-            if (taxonIds.size() == 0) {
+            if (taxonIds.isEmpty()) {
                 try (IReadBlockIterator it = connector.getAllReadsIterator(doc.getMinScore(), doc.getMaxExpected(), true, false)) {
                     progressListener.setMaximum(it.getMaximumProgress());
                     progressListener.setProgress(0);

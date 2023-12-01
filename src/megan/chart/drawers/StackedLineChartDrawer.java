@@ -240,9 +240,14 @@ public class StackedLineChartDrawer extends BarChartDrawer implements IChartDraw
         switch (scalingType) {
             case PERCENT -> {
                 final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
-                percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
-                topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
-			}
+                var percentFactorIncludingDisabled = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
+                topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactorIncludingDisabled);
+                percentFactor=new double[series.length];
+                for(var i=0;i<series.length;i++) {
+                    var j= CollectionUtils.getIndex(series[i],seriesIncludingDisabled);
+                    percentFactor[i]=percentFactorIncludingDisabled[j];
+                }
+            }
             case LOG -> {
                 topY = computeMaxYAxisValueLogScale(getMaxValue());
                 percentFactor = null;

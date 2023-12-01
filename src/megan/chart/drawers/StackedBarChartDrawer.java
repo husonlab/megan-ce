@@ -21,6 +21,7 @@ package megan.chart.drawers;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ProgramProperties;
+import jloda.util.CollectionUtils;
 import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.gui.ChartViewer;
@@ -159,8 +160,13 @@ public class StackedBarChartDrawer extends BarChartDrawer implements IChartDrawe
         final double[] percentFactor;
         if (scalingType == ScalingType.PERCENT) {
             final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
-            percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
-            topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
+            var percentFactorIncludingDisabled = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
+            topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactorIncludingDisabled);
+            percentFactor=new double[series.length];
+            for(var i=0;i<series.length;i++) {
+                var j= CollectionUtils.getIndex(series[i],seriesIncludingDisabled);
+                percentFactor[i]=percentFactorIncludingDisabled[j];
+            }
         } else {
             topY = 1.1 * getMaxValue();
             percentFactor = null;

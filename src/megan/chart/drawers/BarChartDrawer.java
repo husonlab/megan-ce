@@ -21,6 +21,7 @@ package megan.chart.drawers;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ProgramProperties;
+import jloda.util.CollectionUtils;
 import megan.chart.IChartDrawer;
 import megan.chart.data.DefaultChartData;
 import megan.chart.data.IChartData;
@@ -532,17 +533,19 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                     sgc.clearCurrentItem();
             }
 
+            var percentFactor=0.0;
+            if(scalingType==ScalingType.PERCENT) {
+                var total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
+                if(total>0)
+                    percentFactor=100.0/total;
+            }
+
             int c = 0;
             for (String className : getChartData().getClassNames()) {
                 double value = getChartData().getValueAsDouble(series, className);
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT -> {
-                        double total = getChartData().getTotalForSeriesIncludingDisabledAttributes(series);
-
-                        if (total == 0)
-                            value = 0;
-                        else
-                            value *= (100 / total);
+                        value *= percentFactor;
                     }
                     case LOG -> {
                         if (value == 1)
@@ -591,7 +594,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             }
             d++;
         }
-        if (valuesList.size() > 0) {
+        if (!valuesList.isEmpty()) {
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
             DrawableValue.drawValues(gc, valuesList, true, false);
             valuesList.clear();
@@ -622,8 +625,13 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         final double[] percentFactor;
         if (scalingType == ScalingType.PERCENT) {
             final String[] seriesIncludingDisabled = getChartData().getSeriesNamesIncludingDisabled();
-            percentFactor = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
-            topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactor);
+            var percentFactorIncludingDisabled = computePercentFactorPerSampleForTransposedChart((DefaultChartData) getChartData(), seriesIncludingDisabled);
+            topY = computeMaxClassValueUsingPercentFactorPerSeries((DefaultChartData) getChartData(), seriesIncludingDisabled, percentFactorIncludingDisabled);
+           percentFactor=new double[series.length];
+            for(var i=0;i<series.length;i++) {
+                var j= CollectionUtils.getIndex(series[i],seriesIncludingDisabled);
+                percentFactor[i]=percentFactorIncludingDisabled[j];
+            }
         } else if (scalingType == ScalingType.LOG) {
             topY = computeMaxYAxisValueLogScale(getMaxValue());
             percentFactor = null;
@@ -644,7 +652,7 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
 
         final int numberOfDataSets = getChartData().getNumberOfSeries();
         final int numberOfClasses = getChartData().getNumberOfClasses();
-        double xStep = (x1 - x0) / (numberOfClasses * (numberOfDataSets + (isGapBetweenBars() ? 1 : 0))); // step size if big spaces were as big as bars
+        double xStep = (double) (x1 - x0) / (numberOfClasses * (numberOfDataSets + (isGapBetweenBars() ? 1 : 0))); // step size if big spaces were as big as bars
         final double bigSpace = Math.max(2.0, Math.min(10.0, xStep));
         xStep = (x1 - x0 - (isGapBetweenBars() ? bigSpace * (numberOfClasses) : 0)) / (double) (numberOfClasses * numberOfDataSets);
 
@@ -679,8 +687,10 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
                 double value = getChartData().getValueAsDouble(seriesName, className);
                 switch (scalingType) { // modify if not linear scale:
                     case PERCENT -> {
-                        value *= Objects.requireNonNull(percentFactor)[i];
-                    }
+                        var oldValue=value;
+                        if(percentFactor!=null)
+                            value*=percentFactor[i];
+                     }
                     case LOG -> {
                         if (value == 1)
                             value = Math.log10(2) / 2;
@@ -726,7 +736,8 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
             }
             c++;
         }
-        if (valuesList.size() > 0) {
+
+        if (!valuesList.isEmpty()) {
             gc.setFont(getFont(ChartViewer.FontKeys.ValuesFont.toString()));
             DrawableValue.drawValues(gc, valuesList, true, false);
             valuesList.clear();
@@ -787,31 +798,38 @@ public class BarChartDrawer extends ChartDrawerBase implements IChartDrawer {
         for (int i = 0; i < series.length; i++) {
             double value = chartData.getTotalForSeriesIncludingDisabledAttributes(series[i]);
             percentFactorPerSample[i] = (value == 0 ? 0 : 100 / value);
-        }
+         }
         return percentFactorPerSample;
     }
 
     /**
-     * gets the max value for a given class in a transposed chart when using percentages
+     * gets the max percentage value for a given class in a transposed chart
      *
-     * @return max sum seen for any of the classes
+     * @return max percentage value or sum (if transposedHeightsAdditive) seen for any of the classes
      */
     public double computeMaxClassValueUsingPercentFactorPerSeries(DefaultChartData chartData, String[] series, double[] percentFactorPerSeries) {
-        double maxValue = 0;
+        var maxValue = 0.0;
+
         for (String className : chartData.getClassNamesIncludingDisabled()) {
-            double total = 0;
+            var classValue = 0.0;
+
             for (int i = 0; i < series.length; i++) {
                 String seriesName = series[i];
                 if (transposedHeightsAdditive) // stacked charts
-                    total += percentFactorPerSeries[i] * chartData.getValueAsDouble(seriesName, className);
+                {
+                    classValue += percentFactorPerSeries[i] * chartData.getValueAsDouble(seriesName, className);
+                }
                 else // bar chart, line chart
-                    total = Math.max(total, percentFactorPerSeries[i] * chartData.getValueAsDouble(seriesName, className));
+                {
+                    var value=percentFactorPerSeries[i] * chartData.getValueAsDouble(seriesName, className);
+                    classValue = Math.max(classValue,value);
+                }
             }
-            if (total > maxValue) {
-                maxValue = total;
+            if (classValue > maxValue) {
+                maxValue = classValue;
             }
         }
-        return 1.1 * maxValue;
+         return 1.1 * maxValue;
     }
 
     public boolean isShowVerticalGridLines() {

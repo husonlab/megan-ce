@@ -65,22 +65,22 @@ public class CompareFiles {
      *
 	 */
     private void run(String[] args) throws Exception {
-        final ArgsOptions options = new ArgsOptions(args, this, "Computes the comparison of multiple megan, RMA or meganized DAA files");
+        final var options = new ArgsOptions(args, this, "Computes the comparison of multiple megan, RMA or meganized DAA files");
         options.setVersion(ProgramProperties.getProgramVersion());
         options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output:");
-        final ArrayList<String> inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
-        final String outputFile = options.getOption("-o", "out", "Output file", "comparison.megan");
-        final String metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
+        final var inputFiles = new ArrayList<>(Arrays.asList(options.getOptionMandatory("-i", "in", "Input RMA and/or meganized DAA files (single directory ok)", new String[0])));
+        final var outputFile = options.getOption("-o", "out", "Output file", "comparison.megan");
+        final var metadataFile = options.getOption("-mdf", "metaDataFile", "Metadata file", "");
         options.comment("Options:");
-        final boolean allowSameNames=options.getOption("-s","allowSameNames","All the same sample name to appear multiple times (will add -1, -2 etc)",false);
+        final var allowSameNames=options.getOption("-s","allowSameNames","All the same sample name to appear multiple times (will add -1, -2 etc)",false);
 
-        final boolean normalize = options.getOption("-n", "normalize", "Normalize counts", true);
-        final boolean ignoreUnassignedReads = options.getOption("-iu", "ignoreUnassignedReads", "Ignore unassigned, no-hit or contaminant reads", false);
+        final var normalize = options.getOption("-n", "normalize", "Normalize counts", true);
+        final var ignoreUnassignedReads = options.getOption("-iu", "ignoreUnassignedReads", "Ignore unassigned, no-hit or contaminant reads", false);
 
-        final boolean keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, non-zero counts are mapped to 1 or more", false);
+        final var keepOne = options.getOption("-k1", "keepOne", "In a normalized comparison, non-zero counts are mapped to 1 or more", false);
 
         final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file",megan.main.Megan6.getDefaultPropertiesFile());
         options.done();
@@ -98,10 +98,10 @@ public class CompareFiles {
 				throw new IOException("No such file or file empty: " + fileName);
         }
 
-        if (inputFiles.size() == 0)
+        if (inputFiles.isEmpty())
             throw new UsageException("No input file");
 
-        final ArrayList<SampleData> samples=new ArrayList<>();
+        var samples=new ArrayList<SampleData>();
 
         for(var fileName:inputFiles) {
             System.err.println("Processing file: "+fileName);
@@ -119,8 +119,8 @@ public class CompareFiles {
 
         // ensure unique names:
         {
-            final Set<String> names = new HashSet<>();
-            int count=0;
+            var names = new HashSet<String>();
+            var count=0;
             for (var sample : samples) {
                 if (names.contains(sample.getName())) {
                     if (allowSameNames) {
@@ -168,9 +168,9 @@ public class CompareFiles {
             System.err.printf("Normalizing to:%,10d per sample%n",(long) min.getAsDouble());
         }
 
-        final int numberOfSamples=samples.size();
+        var numberOfSamples=samples.size();
 
-        final Document doc = new Document();
+        var doc = new Document();
         final float[] sizes;
         if(!normalize) {
             if(!ignoreUnassignedReads)
@@ -184,8 +184,8 @@ public class CompareFiles {
 
         doc.getDataTable().setSamples(getSampleNames(samples), getUids(samples), sizes, getBlastModes(samples));
         {
-            final Map<String,Object> sample2source=new HashMap<>();
-            for(SampleData sample:samples) {
+            var sample2source=new HashMap<String,Object>();
+            for(var sample:samples) {
                 sample2source.put(sample.getName(),sample.getDoc().getMeganFile().getFileName());
             }
             doc.getSampleAttributeTable().addAttribute("@Source",sample2source,false,true);
@@ -209,17 +209,20 @@ public class CompareFiles {
                 sample.setFactor(factor);
             }
 
-            for(int c: getClassIds(classification,samples,ignoreUnassignedReads)) {
-                final float[] newValues=class2counts.computeIfAbsent(c,z->new float[numberOfSamples]);
-                for (int s = 0; s < numberOfSamples; s++) {
+            for(var c: getClassIds(classification,samples,ignoreUnassignedReads)) {
+                var newValues=class2counts.computeIfAbsent(c,z->new float[numberOfSamples]);
+                for (var s = 0; s < numberOfSamples; s++) {
                     final SampleData sample = samples.get(s);
                     final int which=sample.getWhich();
-                    final float[] values = sample.getDoc().getDataTable().getClass2Counts(classification).get(c);
-                    if (values != null && which<values.length) {
-                        final float value=values[which];
-                         newValues[s] = (float)sample.getFactor() * value;
-                         if(keepOne && value>0 && newValues[s]==0)
-                             newValues[s]=1;
+                    var counts=sample.getDoc().getDataTable().getClass2Counts(classification);
+                    if(counts!=null) {
+                       var values = counts.get(c);
+                        if (values != null && which < values.length) {
+                            var value = values[which];
+                            newValues[s] = (float) sample.getFactor() * value;
+                            if (keepOne && value > 0 && newValues[s] == 0)
+                                newValues[s] = 1;
+                        }
                     }
                 }
             }
@@ -228,7 +231,7 @@ public class CompareFiles {
 
          doc.setReadAssignmentMode(readAssignmentMode);
 
-		String parameters = "mode=" + (normalize ? Comparer.COMPARISON_MODE.RELATIVE : Comparer.COMPARISON_MODE.ABSOLUTE);
+		var parameters = "mode=" + (normalize ? Comparer.COMPARISON_MODE.RELATIVE : Comparer.COMPARISON_MODE.ABSOLUTE);
 		if (normalize)
 			parameters += " normalizedTo=" + StringUtils.removeTrailingZerosAfterDot("" + min.getAsDouble());
 		parameters += " readAssignmentMode=" + readAssignmentMode.toString();

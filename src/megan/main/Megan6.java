@@ -72,7 +72,7 @@ public class Megan6 {
 				else
 					MeganProperties.initializeProperties(System.getProperty("user.home") + File.separator + ".Megan.def");
 
-				ClassificationRegistration.register();
+				ClassificationRegistration.register(true);
 			}
 
 			ensureInitFXInSwingProgram();

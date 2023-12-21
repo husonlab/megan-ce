@@ -42,7 +42,7 @@ public class ClassificationRegistration {
 	/**
 	 * register all known classifications
 	 */
-	public static void register() {
+	public static void register(boolean verbose) {
 		try {
 			final Set<String> treeFiles = Arrays.stream(ResourceUtils.fetchResources(Megan6.class, "megan/resources/files")).filter(s -> s.endsWith(".tre")).collect(Collectors.toSet());
 			final Set<String> mapFiles = Arrays.stream(ResourceUtils.fetchResources(Megan6.class, "megan/resources/files")).filter(s -> s.endsWith(".map")).collect(Collectors.toSet());
@@ -61,7 +61,8 @@ public class ClassificationRegistration {
 						treeFiles.add(treeFile.getName());
 						mapFiles.add(mapFile.getName());
 						existingFiles.add(fileLocation);
-						System.err.println("Loading additional classification " + classificationName + " from: " + treeFile + " and " + mapFile);
+						if(verbose)
+							System.err.println("Loading additional classification " + classificationName + " from: " + treeFile + " and " + mapFile);
 					}
 				}
 				if (existingFiles.size() < classificationFiles.length) {
@@ -84,4 +85,5 @@ public class ClassificationRegistration {
 			Basic.caught(ex);
 		}
 	}
+
 }

@@ -90,6 +90,8 @@ public class MeganProperties {
 
     public static final String TAXONOMIC_CLASSIFICATIONS = "AdditionalTaxonomyViewers";
 
+    public static Runnable runnable;
+
     /**
      * sets the program properties
      *
@@ -143,6 +145,9 @@ public class MeganProperties {
         ReadMagnitudeParser.setUnderScoreEnabled(ProgramProperties.get("allow-read-weights-underscore", false));
 
         ProgramProperties.addPresets();
+
+        if(runnable!=null)
+            runnable.run();
     }
 
     /**

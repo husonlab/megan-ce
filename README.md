@@ -4,7 +4,7 @@ MEGAN Community Edition - Interactive exploration and analysis of large-scale mi
 [Daniel H. Huson, Sina Beier, Isabell Flade, Anna Gorska, Mohamed El-Hadidi, Suparna Mitra, Hans-Joachim Ruscheweyh and Rewati Tappu.
 PLoS Computational Biology, 2016](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004957)
 
-Download installers for MEGAN Community Edition here: http://www-ab.cs.uni-tuebingen.de/software/megan6 (Alternative download [here](https://unitc-my.sharepoint.com/personal/iijhu01_cloud_uni-tuebingen_de/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fiijhu01%5Fcloud%5Funi%2Dtuebingen%5Fde%2FDocuments%2FApps%2FMegan&ga=1))
+Download installers for MEGAN Community Edition here: http://www-ab.cs.uni-tuebingen.de/software/megan6 (Alternative download [here](https://unitc-my.sharepoint.com/:f:/g/personal/iijhu01_cloud_uni-tuebingen_de/EvXxoL8mF9NAi5I_brpxg4MBUC-WdcOxMB2ufGzNIRB0OQ?e=4Xeii7))
 
 Access the MEGAN Ultimate Edition here: https://computomics.com/megan
 

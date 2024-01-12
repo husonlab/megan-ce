@@ -396,7 +396,7 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                         if (useColors) {
                             String sample = graph.getLabel(v);
                             Color color = dir.getDocument().getChartColorManager().getSampleColor(sample);
-                            if (nodeRadius > 1 || !showLabels) {
+                            if (nodeRadius > 1  || !showLabels) {
                                 nv.setBackgroundColor(color);
                                 nv.setLabelBackgroundColor(null);
                             } else
@@ -654,7 +654,6 @@ public class ClusterViewer extends JFrame implements IDirectableViewer, IViewerW
                     showThisLabel=false;
                 if(!showThisLabel) {
                         nv.setLabelVisible(false);
-                        nv.setNodeShape(NodeShape.None);
                 }
             }
             for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {

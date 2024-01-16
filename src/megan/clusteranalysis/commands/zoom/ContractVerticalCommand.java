@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 
 public class ContractVerticalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "contract direction=vertical;";
+        return "contract vertical;";
     }
 
     public void apply(NexusStreamParser np) throws Exception {

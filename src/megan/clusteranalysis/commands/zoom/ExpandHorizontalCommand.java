@@ -31,7 +31,7 @@ import java.awt.event.ActionEvent;
 
 public class ExpandHorizontalCommand extends CommandBase implements ICommand {
     public String getSyntax() {
-        return "expand direction=horizontal;";
+        return "expand horizontal;";
     }
 
     public void apply(NexusStreamParser np) throws Exception {

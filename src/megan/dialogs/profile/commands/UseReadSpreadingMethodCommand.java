@@ -1,5 +1,5 @@
 /*
- * UseReadSpreadingMethodCommand.java Copyright (C) 2023 Daniel H. Huson
+ * UseReadSpreadingMethodCommand.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *

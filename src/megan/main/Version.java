@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2023 Daniel H. Huson
+ * Version.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -26,6 +26,6 @@ package megan.main;
  */
 public class Version {
 	static public final String NAME = "MEGAN";
-	static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.25.8, built 15 Jan 2024)";
+	static public final String SHORT_DESCRIPTION = "MEGAN Community Edition (version 6.25.9, built 16 Jan 2024)";
 }
 

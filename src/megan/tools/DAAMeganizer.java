@@ -1,5 +1,5 @@
 /*
- * DAAMeganizer.java Copyright (C) 2023 Daniel H. Huson
+ * DAAMeganizer.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -74,7 +74,7 @@ public class DAAMeganizer {
 
         final var options = new ArgsOptions(args, this, "Prepares ('meganizes') a DIAMOND .daa file for use with MEGAN");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Files");

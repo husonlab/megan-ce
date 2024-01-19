@@ -1,5 +1,5 @@
 /*
- * SAM2RMA6.java Copyright (C) 2023 Daniel H. Huson
+ * SAM2RMA6.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -85,7 +85,7 @@ public class SAM2RMA6 {
 
         final ArgsOptions options = new ArgsOptions(args, this, "Computes a MEGAN RMA (.rma) file from a SAM (.sam) file that was created by DIAMOND or MALT");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input");

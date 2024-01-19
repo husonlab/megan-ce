@@ -1,5 +1,5 @@
 /*
- * DAA2Info.java Copyright (C) 2023 Daniel H. Huson
+ * DAA2Info.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -66,7 +66,7 @@ public class DAA2Info {
     private void run(String[] args) throws UsageException, IOException, CanceledException {
         final var options = new ArgsOptions(args, this, "Analyses a DIAMOND file");
         options.setVersion(ProgramProperties.getProgramVersion());
-        options.setLicense("Copyright (C) 2023. This program comes with ABSOLUTELY NO WARRANTY.");
+        options.setLicense("Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
         options.comment("Input and Output");

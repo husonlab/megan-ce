@@ -108,10 +108,10 @@ public class AAdderBuild {
         MeganProperties.initializeProperties(propertiesFile);
 
         final Collection<String> mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-		if (mapDBClassifications.size() > 0 && StringUtils.hasPositiveLengthValue(class2AccessionFile))
+		if (!mapDBClassifications.isEmpty() && StringUtils.hasPositiveLengthValue(class2AccessionFile))
 			throw new UsageException("Illegal to use both --mapDB and ---acc2... options");
 
-        if (mapDBClassifications.size() > 0)
+        if (!mapDBClassifications.isEmpty())
             ClassificationManager.setMeganMapDBFile(mapDBFile);
 
         // setup the gff file:
@@ -119,7 +119,7 @@ public class AAdderBuild {
 
         // setup gene item creator, in particular accession mapping
         final GeneItemCreator creator;
-        if (mapDBFile.length() > 0)
+        if (!mapDBFile.isEmpty())
             creator = setupCreator(mapDBFile);
         else
             creator = setupCreator(acc2TaxaFile, class2AccessionFile);
@@ -143,7 +143,7 @@ public class AAdderBuild {
                 for (File aFile : BasicSwing.getAllFilesInDirectory(file, new GFF3FileFilter(true, lookInside), true)) {
                     gffFiles.add(aFile.getPath());
                 }
-                if (gffFiles.size() == 0)
+                if (gffFiles.isEmpty())
                     throw new IOException("No GFF files found in directory: " + file);
                 else
                     System.err.printf("Found: %,d%n", gffFiles.size());
@@ -170,10 +170,10 @@ public class AAdderBuild {
         final String[] cNames;
         {
             final ArrayList<String> list = new ArrayList<>();
-            if (acc2TaxaFile != null && acc2TaxaFile.length() > 0)
+            if (acc2TaxaFile != null && !acc2TaxaFile.isEmpty())
                 list.add(Classification.Taxonomy);
             for (String cName : class2AccessionFile.keySet())
-                if (class2AccessionFile.get(cName).length() > 0 && !list.contains(cName))
+                if (!class2AccessionFile.get(cName).isEmpty() && !list.contains(cName))
                     list.add(cName);
             cNames = list.toArray(new String[0]);
         }
@@ -183,7 +183,7 @@ public class AAdderBuild {
         for (int i = 0; i < cNames.length; i++) {
             final String cName = cNames[i];
             idMappers[i] = ClassificationManager.get(cName, true).getIdMapper();
-            if (cName.equals(Classification.Taxonomy) && acc2TaxaFile != null && acc2TaxaFile.length() > 0)
+            if (cName.equals(Classification.Taxonomy) && acc2TaxaFile != null && !acc2TaxaFile.isEmpty())
                 idMappers[i].loadMappingFile(acc2TaxaFile, IdMapper.MapType.Accession, false, new ProgressPercentage());
             else
                 idMappers[i].loadMappingFile(class2AccessionFile.get(cName), IdMapper.MapType.Accession, false, new ProgressPercentage());

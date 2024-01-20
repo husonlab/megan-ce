@@ -193,19 +193,19 @@ public class DAAMeganizer {
 			FileUtils.checkFileReadableNonEmpty(contaminantsFile);
 
 		final var mapDBClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(mapDBFile);
-		if (mapDBClassifications.size() > 0 && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
+		if (!mapDBClassifications.isEmpty() && (StringUtils.hasPositiveLengthValue(class2AccessionFile) || StringUtils.hasPositiveLengthValue(class2SynonymsFile)))
 			throw new UsageException("Illegal to use both --mapDB and ---acc2... or --syn2... options");
 
-		if (mapDBClassifications.size() > 0)
+		if (!mapDBClassifications.isEmpty())
 			ClassificationManager.setMeganMapDBFile(mapDBFile);
 
 		final var cNames = new ArrayList<String>();
 		for (var cName : ClassificationManager.getAllSupportedClassificationsExcludingNCBITaxonomy()) {
-			if ((dbSelectedClassifications.size() == 0 || dbSelectedClassifications.contains(cName))
+			if ((dbSelectedClassifications.isEmpty() || dbSelectedClassifications.contains(cName))
 				&& (mapDBClassifications.contains(cName) || StringUtils.notBlank(class2AccessionFile.get(cName)) || StringUtils.notBlank(class2SynonymsFile.get(cName))))
 				cNames.add(cName);
         }
-        if (cNames.size() > 0)
+        if (!cNames.isEmpty())
 			System.err.println("Functional classifications to use: " + StringUtils.toString(cNames, ", "));
 
         final var taxonIdMapper = ClassificationManager.get(Classification.Taxonomy, true).getIdMapper();

@@ -149,11 +149,11 @@ public class Name2IdMap implements IName2IdMap {
      */
     public void loadFromFile(String fileName) throws IOException {
 		System.err.print("Loading " + FileUtils.getFileNameWithoutPath(fileName) + ": ");
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName, true)))) {
             String aLine;
             while ((aLine = r.readLine()) != null) {
                 if (aLine.length() > 0 && !aLine.startsWith("#")) {
-					String[] tokens = StringUtils.split(aLine, '\t');
+                    String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length >= 2) {
                         if (tokens[0].trim().length() == 0)
                             continue; // Silva has such lines...

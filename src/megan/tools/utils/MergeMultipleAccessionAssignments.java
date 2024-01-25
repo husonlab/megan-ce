@@ -34,7 +34,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -76,6 +75,7 @@ public class MergeMultipleAccessionAssignments {
 
         final var inputFile = options.getOptionMandatory("-i", "in", "Input file, each line containing a cluster accession followed  member accessions (stdin, .gz ok)", "");
         var outputFile = options.getOption("-o", "out", "Output file, each line containing first accession and merged assignments (stdout or .gz ok)", "stdout");
+        var outputScript = options.getOption("-s", "script", "Script to be processed by sqlite3", "stdout");
         final var mapDBFile = options.getOptionMandatory("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");
 
         var cNames = options.getOption("-c", "classifications", "Classifications to assign (ALL or list of names)", new String[]{"ALL"});
@@ -115,6 +115,7 @@ public class MergeMultipleAccessionAssignments {
         }
         System.err.println("Classifications: " + StringUtils.toString(cNames, ", "));
 
+
         final var idParsers = new IdParser[cNames.length];
         for (var i = 0; i < cNames.length; i++) {
             final var cName = cNames[i];
@@ -128,6 +129,8 @@ public class MergeMultipleAccessionAssignments {
         }
 
         final var workingData = new WorkingData(accessionsPerQuery);
+
+        var sizes = new long[cNames.length];
 
         try (var it = new FileLineIterator(inputFile, true);
              var w = new BufferedWriter(FileUtils.getOutputWriterPossiblyZIPorGZIP(outputFile));) {
@@ -169,7 +172,7 @@ public class MergeMultipleAccessionAssignments {
                                 accessionRows[rowCount++] = row;
 
                                 if (rowCount >= linesPerCall) { // time to process what we have
-                                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
+                                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData, sizes);
                                     rowCount = 0;
                                 }
                             }
@@ -193,11 +196,12 @@ public class MergeMultipleAccessionAssignments {
                     accessionRows[rowCount++] = nextRow;
                 }
                 if (rowCount > 0) {
-                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
+                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData, sizes);
                 }
             }
 
-            if (false) {
+            /*
+            if (false) { // this is the old code
                 while (it.hasNext()) {
                     final var line = it.next().trim();
 
@@ -208,21 +212,26 @@ public class MergeMultipleAccessionAssignments {
                         accessionRows[rowCount++] = nextRow;
 
                         if (rowCount >= linesPerCall) { // time to process what we have
-                            writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
+                            writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData,sizes);
                             rowCount = 0;
                         }
                     }
                 }
 
                 if (rowCount > 0) {
-                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData);
+                    writeOutput(w, database, idParsers, accessionRows, rowCount, cNames, workingData,sizes);
                 }
             }
+             */
+        }
+
+        try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(outputScript)) {
+            w.write(getSQLITECommands(cNames, getInfo(cNames, database), sizes, outputFile));
         }
     }
 
     private static void writeOutput(final BufferedWriter w, final AccessAccessionMappingDatabase database, final IdParser[] idParsers,
-                                    final String[][] accessionRows, final int rowCount, final String[] cNames, WorkingData workingData) throws SQLException, IOException {
+                                    final String[][] accessionRows, final int rowCount, final String[] cNames, WorkingData workingData, long[] counts) throws SQLException, IOException {
 
         final int[][] accessionClassesMap;
         // compute mapping of accessions to their classes in different classifications
@@ -268,13 +277,19 @@ public class MergeMultipleAccessionAssignments {
                     classIds.clear();
                     for (var posInRow = 0; posInRow < row.length; posInRow++) {
                         var id = accessionClassesMap[accessionNumber + posInRow][c];
-                        if (id != 0)
+                        if (id != 0) {
                             classIds.add(id);
+                        }
                         // if(id<0)  System.err.println(id);
 
                     }
                     var id = idParsers[c].processMultipleIds(classIds);
-                    w.write("\t%s".formatted(id != 0 ? String.valueOf(id) : ""));
+                    if (id != 0) {
+                        w.write("\t" + id);
+                        counts[c]++;
+                    } else {
+                        w.write("\t");
+                    }
                 }
                 w.write("\n");
                 accessionNumber += row.length;
@@ -312,5 +327,44 @@ public class MergeMultipleAccessionAssignments {
             accessions.clear();
             return accessions();
         }
+    }
+
+    public static String getSQLITECommands(String[] cNames, String[] info, long[] size, String dataFile) {
+        var buf = new StringBuilder();
+
+        buf.append("CREATE TABLE info(id TEXT PRIMARY KEY, info_string TEXT, size NUMERIC );\n");
+        for (var i = 0; i < cNames.length; i++) {
+            buf.append("INSERT INTO info (id, info_string, size) VALUES ('%s', '%s', '%d';\n".formatted(cNames[i], info[i], size[i]));
+        }
+        buf.append("CREATE TABLE mappings (Accession PRIMARY KEY\n");
+        for (var name : cNames) {
+            buf.append(", ").append(name.toUpperCase()).append(" INT");
+        }
+        buf.append(") WITHOUT ROWID;\n");
+
+        if (!dataFile.equals("stdout") && FileUtils.isZIPorGZIPFile(dataFile)) {
+            buf.append(".mode tabs\n");
+            buf.append(".import data.tab %s%n".formatted(dataFile));
+        }
+        return buf.toString();
+    }
+
+    /**
+     * gets the info strings from classifications
+     *
+     * @param cNames
+     * @param database
+     * @return info
+     */
+    private String[] getInfo(String[] cNames, AccessAccessionMappingDatabase database) {
+        var info = new String[cNames.length];
+        for (var i = 0; i < cNames.length; i++) {
+            try {
+                info[i] = database.getInfo(cNames[i]);
+            } catch (SQLException ignored) {
+                info[i] = "?";
+            }
+        }
+        return info;
     }
 }

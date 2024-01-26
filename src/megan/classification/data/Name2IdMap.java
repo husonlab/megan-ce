@@ -149,13 +149,13 @@ public class Name2IdMap implements IName2IdMap {
      */
     public void loadFromFile(String fileName) throws IOException {
 		System.err.print("Loading " + FileUtils.getFileNameWithoutPath(fileName) + ": ");
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName, true)))) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(ResourceManager.getFileAsStream(fileName)))) {
             String aLine;
             while ((aLine = r.readLine()) != null) {
-                if (aLine.length() > 0 && !aLine.startsWith("#")) {
+                if (!aLine.isEmpty() && !aLine.startsWith("#")) {
                     String[] tokens = StringUtils.split(aLine, '\t');
                     if (tokens.length >= 2) {
-                        if (tokens[0].trim().length() == 0)
+                        if (tokens[0].trim().isEmpty())
                             continue; // Silva has such lines...
                         int id = Integer.parseInt(tokens[0]);
                         String name = tokens[1];

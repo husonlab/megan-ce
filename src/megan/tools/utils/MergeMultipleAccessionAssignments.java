@@ -73,7 +73,7 @@ public class MergeMultipleAccessionAssignments {
         options.setLicense("Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.");
         options.setAuthors("Daniel H. Huson");
 
-        final var inputFile = options.getOptionMandatory("-i", "in", "Input file, each line containing a cluster accession followed  member accessions (stdin, .gz ok)", "");
+        final var inputFile = options.getOptionMandatory("-i", "in", "Input file, each line containing a cluster accession followed by member accessions (stdin, .gz ok)", "");
         var outputFile = options.getOption("-o", "out", "Output file, each line containing first accession and merged assignments (stdout or .gz ok)", "stdout");
         var outputScript = options.getOption("-s", "script", "Script to be processed by sqlite3", "stdout");
         final var mapDBFile = options.getOptionMandatory("-mdb", "mapDB", "MEGAN mapping db (file megan-map.db)", "");

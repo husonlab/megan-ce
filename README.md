@@ -1,4 +1,4 @@
-# megan-ce [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/megan/README.html)
+# megan-ce [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://anaconda.org/bioconda/megan) [![Downloads](https://anaconda.org/bioconda/megan/badges/downloads.svg)](https://anaconda.org/bioconda/megan)
 MEGAN Community Edition - Interactive exploration and analysis of large-scale microbiome sequencing data
 
 [Daniel H. Huson, Sina Beier, Isabell Flade, Anna Gorska, Mohamed El-Hadidi, Suparna Mitra, Hans-Joachim Ruscheweyh and Rewati Tappu.

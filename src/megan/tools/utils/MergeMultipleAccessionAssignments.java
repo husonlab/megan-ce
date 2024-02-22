@@ -274,7 +274,7 @@ public class MergeMultipleAccessionAssignments {
 
                     }
                     var id = idParsers[c].processMultipleIds(classIds);
-                    w.write("\t%s".formatted(id != 0 ? String.valueOf(id) : ""));
+                    w.write("\t%s".formatted(id != 0 ? String.valueOf(id) : "null"));
                 }
                 w.write("\n");
                 accessionNumber += row.length;

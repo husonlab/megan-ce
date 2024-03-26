@@ -205,7 +205,7 @@ public class CoOccurrenceToolBar extends JToolBar {
 
                     chartViewer.getDir().execute("show what=all target=classes;", chartViewer.getCommandManager());
                 } catch (Exception ex) {
-                    NotificationsInSwing.showInternalError(chartViewer.getFrame(), "CoOccurrence drawer: " + ex.getMessage());
+                    NotificationsInSwing.showInternalError(chartViewer.getFrame(), "CoOccurrence drawer: " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()));
                 }
             }
         });

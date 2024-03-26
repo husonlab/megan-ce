@@ -53,7 +53,7 @@ public class PrintCommand extends CommandBase implements ICommand {
             try {
                 job.print();
             } catch (Exception ex) {
-                NotificationsInSwing.showError(getViewer().getFrame(), "Print failed: " + ex.getMessage());
+                NotificationsInSwing.showError(getViewer().getFrame(), "Print failed: " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()));
             }
         }
     }

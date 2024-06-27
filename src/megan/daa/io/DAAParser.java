@@ -20,10 +20,7 @@
 package megan.daa.io;
 
 import jloda.seq.BlastMode;
-import jloda.util.Basic;
-import jloda.util.ByteInputBuffer;
-import jloda.util.ByteOutputBuffer;
-import jloda.util.Pair;
+import jloda.util.*;
 import jloda.util.interval.Interval;
 import jloda.util.interval.IntervalTree;
 import megan.io.FileInputStreamAdapter;
@@ -32,9 +29,7 @@ import megan.parsers.blast.PostProcessMatches;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -47,7 +42,7 @@ public class DAAParser {
     private final byte[] sourceAlphabet;
     private final byte[] alignmentAlphabet;
 
-	private final BlastMode blastMode;
+    private final BlastMode blastMode;
 
     // blocking queue sentinel:
     public final static Pair<byte[], byte[]> SENTINEL_SAM_ALIGNMENTS = new Pair<>(null, null);
@@ -55,6 +50,8 @@ public class DAAParser {
 
     private final IntervalTree<DAAMatchRecord> intervalTree = new IntervalTree<>(); // used in parsing of long reads
     private final ArrayList<DAAMatchRecord> list = new ArrayList<>();
+    private final int MAX_ALIGNMENTS_ON_SAME_QUERY_INTERVAL = ProgramProperties.get("max-number-of-alignments-on-same-query-interval", 250);
+    private final Map<Pair<Integer, Integer>, Integer> intervalCountMap = new HashMap<>();
 
     /**
      * constructor
@@ -267,6 +264,7 @@ public class DAAParser {
         int numberOfMatches = 0;
         if (wantMatches) {
             if (!longReads) {
+                intervalCountMap.clear();
                 if (matchRecords == null)
                     matchRecords = new DAAMatchRecord[maxMatchesPerRead];
 
@@ -274,6 +272,17 @@ public class DAAParser {
                     DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
                     try {
                         matchRecord.parseBuffer(inputBuffer, refIns);
+
+                        if (true) { // ignore too many alignments of same query segment
+                            var pair = new Pair<>(matchRecord.getQueryBegin(), matchRecord.getQueryEnd());
+                            var count = intervalCountMap.getOrDefault(pair, 0) + 1;
+                            if (count < MAX_ALIGNMENTS_ON_SAME_QUERY_INTERVAL) {
+                                intervalCountMap.put(pair, count);
+                            } else {
+                                continue;
+                            }
+                        }
+
                         if (numberOfMatches < maxMatchesPerRead)
                             matchRecords[numberOfMatches++] = matchRecord;
                         else
@@ -284,15 +293,27 @@ public class DAAParser {
                 }
             } else {
                 intervalTree.clear();
+                intervalCountMap.clear();
+
                 final Set<Interval<DAAMatchRecord>> alive = new HashSet<>();
 
                 while (inputBuffer.getPosition() < inputBuffer.size()) {
-                    final DAAMatchRecord aMatchRecord = new DAAMatchRecord(queryRecord);
-                    aMatchRecord.parseBuffer(inputBuffer, refIns);
+                    final DAAMatchRecord matchRecord = new DAAMatchRecord(queryRecord);
+                    matchRecord.parseBuffer(inputBuffer, refIns);
 
-                    final Interval<DAAMatchRecord> interval = new Interval<>(aMatchRecord.getQueryBegin(), aMatchRecord.getQueryEnd(), aMatchRecord);
+                    if (true) { // ignore too many alignments of same query segment
+                        var pair = new Pair<>(matchRecord.getQueryBegin(), matchRecord.getQueryEnd());
+                        var count = intervalCountMap.getOrDefault(pair, 0) + 1;
+                        if (count < MAX_ALIGNMENTS_ON_SAME_QUERY_INTERVAL) {
+                            intervalCountMap.put(pair, count);
+                        } else {
+                            continue;
+                        }
+                    }
 
-                    if (interval.getStart() > 10 && interval.getEnd() < queryRecord.getQueryLength() - 10 && aMatchRecord.getSubjectLen() < 0.8 * aMatchRecord.getTotalSubjectLen())
+                    final Interval<DAAMatchRecord> interval = new Interval<>(matchRecord.getQueryBegin(), matchRecord.getQueryEnd(), matchRecord);
+
+                    if (interval.getStart() > 10 && interval.getEnd() < queryRecord.getQueryLength() - 10 && matchRecord.getSubjectLen() < 0.8 * matchRecord.getTotalSubjectLen())
                         continue; // skip mini alignment that are not at the beginning or end of the read
 
                     boolean covered = false;

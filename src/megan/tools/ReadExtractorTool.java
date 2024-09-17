@@ -135,7 +135,7 @@ public class ReadExtractorTool {
                 }
             } catch (Exception ex) {
                 if (ignoreExceptions)
-                    System.err.println(Basic.getShortName(ex.getClass()) + ": " + ex.getMessage() + ", while processing file: " + inputFile);
+                    System.err.println(Basic.getShortName(ex.getClass()) + ": " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()) + ", while processing file: " + inputFile);
                 else
                     throw ex;
             }

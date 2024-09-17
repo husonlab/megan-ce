@@ -282,8 +282,8 @@ public class MeganizeDAACommand extends CommandBase implements ICommand {
             } catch (CanceledException ex) {
                 throw ex;
             } catch (Exception ex) {
-                NotificationsInSwing.showError(ex.getMessage());
-                System.err.println(ex.getMessage());
+                NotificationsInSwing.showError(ex.getMessage()!=null?ex.getMessage():ex.toString());
+                ex.printStackTrace();
                 countFailed++;
             }
         }

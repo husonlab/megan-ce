@@ -50,9 +50,9 @@ import java.util.*;
 public class SamplesTableView {
     private static final Set<String> seenFXExceptions = new HashSet<>();
     private static final Thread.UncaughtExceptionHandler fxExceptionHandler = (t, e) -> {
-        if (!seenFXExceptions.contains(e.getMessage())) {
-            seenFXExceptions.add(e.getMessage());
-            System.err.println("FX Exception: " + e.getMessage());
+        if (!seenFXExceptions.contains(e.getMessage() != null ? e.getMessage() : e.toString())) {
+            seenFXExceptions.add(e.getMessage() != null ? e.getMessage() : e.toString());
+            System.err.println("FX Exception: " + (e.getMessage() != null ? e.getMessage() : e.toString()));
         }
     };
 

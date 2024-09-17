@@ -78,7 +78,7 @@ public class Loader {
                             // System.err.println("USER CANCELED EXECUTE");
                         } catch (Exception ex) {
                             Basic.caught(ex);
-                            NotificationsInSwing.showError(inspectorWindow.getFrame(), "Load data failed: " + ex.getMessage());
+                            NotificationsInSwing.showError(inspectorWindow.getFrame(), "Load data failed: " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()));
                         }
                     }
                 } finally {

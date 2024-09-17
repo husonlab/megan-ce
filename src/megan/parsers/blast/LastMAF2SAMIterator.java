@@ -197,7 +197,7 @@ public class LastMAF2SAMIterator extends SAMIteratorBase implements ISAMIterator
             }
 
         } catch (Exception ex) {
-            System.err.println("Error parsing file near line: " + getLineNumber() + ": " + ex.getMessage());
+            System.err.println("Error parsing file near line: " + getLineNumber() + ": " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()));
             if (incrementNumberOfErrors() >= getMaxNumberOfErrors())
                 throw new RuntimeException("Too many errors");
         }

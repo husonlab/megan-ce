@@ -286,7 +286,7 @@ public class Director implements IDirectableViewer, IDirector {
 
             return false;
         } catch (Exception ex) {
-            NotificationsInSwing.showError("Command failed: " + ex.getMessage());
+            NotificationsInSwing.showError("Command failed: " + (ex.getMessage()!=null ? ex.getMessage() : ex.toString()));
             return false;
         }
     }

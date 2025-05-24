@@ -77,7 +77,7 @@ public class ExportConsensusCommand extends CommandBase implements ICommand {
                 w.close();
             }
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export Consensus failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export Consensus failed: " + e);
         }
     }
 

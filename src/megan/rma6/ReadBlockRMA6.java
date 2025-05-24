@@ -331,7 +331,7 @@ public class ReadBlockRMA6 implements IReadBlock {
                             copies[matchCount++] = matchBlock; // this match is ok, keep it
                     }
                 } catch (IOException ex) {
-                    System.err.println("RMA6 Parse error: " + ex.getMessage() + ", numberOfMatches=" + numberOfMatches + ", i=" + i + " line=" + aLine);
+                    System.err.println("RMA6 Parse error: " + ex + ", numberOfMatches=" + numberOfMatches + ", i=" + i + " line=" + aLine);
                 }
             }
             if (matchCount < matchBlocks.length) { // some matches didn't meet the minScore or maxExpected criteria, resize

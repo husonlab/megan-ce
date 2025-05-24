@@ -267,7 +267,7 @@ public class Comparer {
                 service.shutdownNow();
             }
             if(exception.isNotNull())
-                throw new IOException("Comparison computation failed: " + exception.get().getMessage(), exception.get());
+                throw new IOException("Comparison computation failed: " + exception.get(), exception.get());
 
             // if we have a taxonomy classification, then use it to get exact values:
             if (result.getClassification2Class2Counts().containsKey(Classification.Taxonomy)) {

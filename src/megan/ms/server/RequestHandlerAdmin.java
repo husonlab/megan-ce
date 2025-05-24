@@ -58,7 +58,7 @@ public class RequestHandlerAdmin {
                 userManager.addUser(user, password, allowReplace, role);
                 return ("User '" + user + "' added").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -81,7 +81,7 @@ public class RequestHandlerAdmin {
                 userManager.addRoles(user, roles);
 				return ("User " + user + ": role " + StringUtils.toString(roles, ",") + " added").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -104,7 +104,7 @@ public class RequestHandlerAdmin {
                 userManager.removeRoles(user, roles);
 				return ("User " + user + ": role " + StringUtils.toString(roles, ",") + " removed").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -123,7 +123,7 @@ public class RequestHandlerAdmin {
                 userManager.removeUser(user);
                 return ("User '" + user + "' removed").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -143,7 +143,7 @@ public class RequestHandlerAdmin {
                     list.add(database.rebuild().getBytes());
 				return StringUtils.concatenate(list);
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             } finally {
                 inUpdate.set(false);
             }
@@ -157,7 +157,7 @@ public class RequestHandlerAdmin {
                 System.exit(0);
                 return "Shut down".getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -171,7 +171,7 @@ public class RequestHandlerAdmin {
                 checkKnownParameters(p);
                 return Basic.getCollected().getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -187,7 +187,7 @@ public class RequestHandlerAdmin {
                 Basic.startCollectionStdErr();
                 return "Log cleared".getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }

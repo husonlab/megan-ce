@@ -83,7 +83,7 @@ public class ExportOverlapGraphCommand extends CommandBase implements ICommand {
             if (showGraph)
                 alignmentAssembler.showOverlapGraph(dir, dir.getDocument().getProgressListener());
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export overlap file FAILED: " + e.getMessage());
+            NotificationsInSwing.showError("Export overlap file FAILED: " + e);
         }
     }
 

@@ -44,7 +44,7 @@ public class RequestHandlerAdditional {
                 final var file = database.getRecord(name).getFile();
                 return (DOWNLOAD_FILE_PREFIX + file).getBytes();
             } catch (IOException ex) {
-                return RequestHandler.reportError(c, p, ex.getMessage());
+                return RequestHandler.reportError(c, p, ex.toString());
             }
         };
     }

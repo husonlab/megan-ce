@@ -76,7 +76,7 @@ public class ExportReferenceCommand extends CommandBase implements ICommand {
                 w.close();
             }
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export Reference failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export Reference failed: " + e);
         }
     }
 

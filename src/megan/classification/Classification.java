@@ -89,7 +89,7 @@ public class Classification {
             progress.setProgress(2);
         } catch (Exception e) {
             Basic.caught(e);
-            NotificationsInSwing.showError(MainViewer.getLastActiveFrame(), "Failed to open files: " + treeFile + " and " + mapFile + ": " + e.getMessage());
+            NotificationsInSwing.showError(MainViewer.getLastActiveFrame(), "Failed to open files: " + treeFile + " and " + mapFile + ": " + e);
         } finally {
             progress.setCancelable(true);
         }

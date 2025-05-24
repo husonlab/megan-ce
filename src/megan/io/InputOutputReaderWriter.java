@@ -100,7 +100,7 @@ public class InputOutputReaderWriter implements IInputReaderOutputWriter {
             try {
                 return compressor.inflateByteArray2String(-size, bytes);
             } catch (DataFormatException e) {
-                throw new IOException(e.getMessage());
+                throw new IOException(e.toString());
             }
         } else {
             return Compressor.convertUncompressedByteArray2String(size, bytes);

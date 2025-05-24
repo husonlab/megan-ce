@@ -83,7 +83,7 @@ public class Megan6 {
 
         } catch (Throwable th) {
             //catch any exceptions and the like that propagate up to the top level
-            if (!th.getMessage().equals("Help")) {
+            if (!"Help".equals(th.getMessage())) {
                 System.err.println("MEGAN fatal error:" + "\n" + th);
                 Basic.caught(th);
                 System.exit(1);

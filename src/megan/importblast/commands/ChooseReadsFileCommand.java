@@ -83,7 +83,7 @@ public class ChooseReadsFileCommand extends CommandBase implements ICommand {
 				importBlastDialog.setReadFileName(StringUtils.toString(files, "\n"));
 				importBlastDialog.getReadFileNameField().setText(StringUtils.toString(files, "\n"));
 			} catch (IOException ex) {
-                NotificationsInSwing.showError(getViewer().getFrame(), "Failed to load file: " + ex.getMessage());
+                NotificationsInSwing.showError(getViewer().getFrame(), "Failed to load file: " + ex);
             }
         }
     }

@@ -416,7 +416,7 @@ public class DataProcessor {
             return (int) doc.getDataTable().getTotalReads();
         } catch (IOException ex) {
             Basic.caught(ex);
-            NotificationsInSwing.showInternalError("Data Processor failed: " + ex.getMessage());
+            NotificationsInSwing.showInternalError("Data Processor failed: " + ex);
         }
         return 0;
     }

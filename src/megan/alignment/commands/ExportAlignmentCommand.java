@@ -77,7 +77,7 @@ public class ExportAlignmentCommand extends CommandBase implements ICommand {
                 w.close();
             }
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export Alignment failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export Alignment failed: " + e);
         }
     }
 

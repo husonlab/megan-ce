@@ -101,7 +101,7 @@ public class ExportTaxonParentMappingCommand extends CommandBase implements ICom
             exception.setIfCurrentValueIsNull(ex);
         }
         if(exception.isNotNull()) {
-            NotificationsInSwing.showError("Write failed: "+exception.get().getMessage());
+            NotificationsInSwing.showError("Write failed: "+exception.get());
         }
     }
 

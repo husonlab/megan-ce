@@ -69,7 +69,7 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
                     executeImmediately("show window=message; list taxa=" + contaminantManager.getTaxonIdsString() + " title='Contaminants';");
 
                 } catch (IOException e) {
-                    NotificationsInSwing.showWarning("Read contaminant file failed: " + e.getMessage());
+                    NotificationsInSwing.showWarning("Read contaminant file failed: " + e);
                 }
             }
         }

@@ -50,9 +50,9 @@ import java.util.*;
 public class SamplesTableView {
     private static final Set<String> seenFXExceptions = new HashSet<>();
     private static final Thread.UncaughtExceptionHandler fxExceptionHandler = (t, e) -> {
-        if (!seenFXExceptions.contains(e.getMessage())) {
-            seenFXExceptions.add(e.getMessage());
-            System.err.println("FX Exception: " + e.getMessage());
+        if (!seenFXExceptions.contains(e.toString())) {
+            seenFXExceptions.add(e.toString());
+            System.err.println("FX Exception: " + e);
         }
     };
 
@@ -394,7 +394,7 @@ public class SamplesTableView {
         }
         initialUpdate = tableView.getUpdate();
 
-        //System.err.println("Doc: "+w.toString());
+        //System.err.println("Doc: "+w);
         if (false)
             SwingUtilities.invokeLater(() -> samplesViewer.getDocument().getDir().notifyUpdateViewer(IDirector.ALL));
     }

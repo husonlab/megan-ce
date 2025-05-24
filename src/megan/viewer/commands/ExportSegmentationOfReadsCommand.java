@@ -89,7 +89,7 @@ public class ExportSegmentationOfReadsCommand extends CommandBase implements ICo
             NotificationsInSwing.showInformation("Exported segmentation of reads: " + count);
 
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export segmentation of reads failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export segmentation of reads failed: " + e);
         }
     }
 

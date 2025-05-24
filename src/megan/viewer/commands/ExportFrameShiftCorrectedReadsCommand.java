@@ -63,7 +63,7 @@ public class ExportFrameShiftCorrectedReadsCommand extends CommandBase implement
             NotificationsInSwing.showInformation("Exported corrected reads: " + count);
 
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export corrected reads failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export corrected reads failed: " + e);
         }
     }
 

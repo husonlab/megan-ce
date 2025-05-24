@@ -59,7 +59,7 @@ public class ExportDataCommand extends CommandBase implements ICommand {
             chartViewer.getChartDrawer().writeData(w);
             w.close();
         } catch (IOException e) {
-            NotificationsInSwing.showError("Export Data failed: " + e.getMessage());
+            NotificationsInSwing.showError("Export Data failed: " + e);
         }
     }
 

@@ -193,7 +193,7 @@ public class RunBlastOnNCBICommand extends CommandBase implements ICommand {
                                     }
                                 }
                             } catch (Exception ex) {
-                                NotificationsInSwing.showError("Create RMA file failed: " + ex.getMessage());
+                                NotificationsInSwing.showError("Create RMA file failed: " + ex);
                                 getDir().notifyUnlockInput();
                                 getDir().executeImmediately("close what=current;", ((Director) getDir()).getCommandManager());
                             }

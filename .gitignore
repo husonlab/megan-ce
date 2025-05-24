@@ -38,6 +38,9 @@ antbuild/
 .classpath
 .project
 
+#emacs
+*~
+
 # LaTeX auxiliary files
 *.aux
 *.blg

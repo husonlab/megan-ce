@@ -155,7 +155,7 @@ public class InputReader implements IInputReader {
             try {
                 return compressor.inflateByteArray2String(-size, bytes);
             } catch (DataFormatException e) {
-                throw new IOException(e.getMessage());
+                throw new IOException(e.toString());
             }
         } else {
             return Compressor.convertUncompressedByteArray2String(size, bytes);
@@ -183,7 +183,7 @@ public class InputReader implements IInputReader {
             try {
                 return compressor.inflateByteArray(size, tmp, target);
             } catch (DataFormatException e) {
-                throw new IOException(e.getMessage());
+                throw new IOException(e.toString());
             }
         }
     }

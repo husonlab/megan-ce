@@ -54,7 +54,7 @@ public class ExportSelectedCommand extends CommandBase implements ICommand {
                 FileUtils.writeStreamToFile(new ByteInputStream(selection, selection.length), new File(fileName));
                 NotificationsInSwing.showInformation("Exported " + StringUtils.countOccurrences(selection, '\n') + " lines to file: " + fileName);
 			} catch (IOException ex) {
-                NotificationsInSwing.showError("Export failed: " + ex.getMessage());
+                NotificationsInSwing.showError("Export failed: " + ex);
             }
         }
     }

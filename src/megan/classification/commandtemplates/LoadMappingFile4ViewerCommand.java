@@ -99,7 +99,7 @@ public class LoadMappingFile4ViewerCommand extends CommandBase implements IComma
                         ClassificationManager.setMeganMapDBFile(file.toString());
                         ClassificationManager.setUseFastAccessionMappingMode(true);
                     } catch (IOException e) {
-                        NotificationsInSwing.showError("Load MEGAN mapping db failed: " + e.getMessage());
+                        NotificationsInSwing.showError("Load MEGAN mapping db failed: " + e);
                         return;
                     }
                     final Collection<String> supportedClassifications = AccessAccessionMappingDatabase.getContainedClassificationsIfDBExists(file.getPath());

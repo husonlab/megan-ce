@@ -79,7 +79,7 @@ public class AttributeData {
             System.err.println("done (" + attribute2kind2taxaNames.size() + ")");
         } catch (IOException e) {
             Basic.caught(e);
-            NotificationsInSwing.showError(MainViewer.getLastActiveFrame(), "Init failed: " + e.getMessage());
+            NotificationsInSwing.showError(MainViewer.getLastActiveFrame(), "Init failed: " + e);
         }
         setTaxaAttributes();
         setAttributes2Properties();

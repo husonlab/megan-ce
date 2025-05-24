@@ -59,7 +59,7 @@ public class SetWindowSizeCommand extends jloda.swing.commands.CommandBase imple
                     throw new NumberFormatException("Unexpected characters at end of string");
                 execute("set windowSize=" + width + " x " + height + ";");
             } catch (NumberFormatException e) {
-                NotificationsInSwing.showError("Window Size: Invalid entry: " + e.getMessage());
+                NotificationsInSwing.showError("Window Size: Invalid entry: " + e.toString());
             }
         }
     }

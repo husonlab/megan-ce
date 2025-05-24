@@ -65,7 +65,7 @@ public class ListContaminantsCommand extends CommandBase implements ICommand {
                 contaminantManager.read(((ImportBlastDialog) getViewer()).getContaminantsFileName());
             } catch (IOException e) {
                 NotificationsInSwing.showError("Failed to parse file: " + ((ImportBlastDialog) getViewer()).getContaminantsFileName()
-                        + ":\n" + e.getMessage());
+                        + ":\n" + e);
             }
             executeImmediately("show window=message;list taxa=" + contaminantManager.getTaxonIdsString() + " title='Contaminants';");
         }

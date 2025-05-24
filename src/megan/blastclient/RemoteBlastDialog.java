@@ -229,7 +229,7 @@ public class RemoteBlastDialog {
                                         break;
                                 }
                             } catch (IOException ex) {
-                                NotificationsInSwing.showError("Write file failed: " + ex.getMessage());
+                                NotificationsInSwing.showError("Write file failed: " + ex);
                                 return;
                             }
                             System.err.println("Reads written to: " + readsFile);

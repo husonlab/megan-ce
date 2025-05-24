@@ -112,7 +112,7 @@ public class AssignmentUsingBestHit implements IAssignmentAlgorithm {
                     }
                 }
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                System.err.println(ex);
             }
             System.err.println("Count: " + map.size());
             if (map.size() > 0)

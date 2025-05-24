@@ -69,7 +69,7 @@ public interface RequestHandler {
                 }
                 throw new IOException("Resource not found: ms/help.html");
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -80,7 +80,7 @@ public interface RequestHandler {
                 checkKnownParameters(p);
                 return MeganServer.Version.getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -108,7 +108,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -125,7 +125,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, " ").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -142,7 +142,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, " ").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -159,7 +159,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -186,7 +186,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -214,7 +214,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -243,7 +243,7 @@ public interface RequestHandler {
 					return StringUtils.toString(list, "\n").getBytes();
                 }
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -274,7 +274,7 @@ public interface RequestHandler {
                 }
 				return StringUtils.toString(list, "\n").getBytes();
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -304,7 +304,7 @@ public interface RequestHandler {
                     return ReadBlockMS.writeToString(database.getRead(fileName, readId, format.isMatches()), format.isReadIds(), format.isHeaders(), format.isSequences(), format.isMatches()).getBytes();
                 }
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -337,7 +337,7 @@ public interface RequestHandler {
 				final ReadIteratorPagination.Page page = database.getReads(fileName, format, pageSize);
                 return getReads(c, binary, page);
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -364,7 +364,7 @@ public interface RequestHandler {
                 final ReadIteratorPagination.Page page = database.getReadsForMultipleClassIds(fileName, classification, classIds, format, pageSize);
                 return getReads(c, binary, page);
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
@@ -382,7 +382,7 @@ public interface RequestHandler {
                 final ReadIteratorPagination.Page page = database.getNextPage(pageId, pageSize);
                 return getReads(c, binary, page);
             } catch (IOException ex) {
-                return reportError(c, p, ex.getMessage());
+                return reportError(c, p, ex.toString());
             }
         };
     }
